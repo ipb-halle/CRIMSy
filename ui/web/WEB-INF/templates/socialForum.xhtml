@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <b:form id="forumForm">
+            <b:poll id="searchPoll"
+                    interval="30000" 
+                    update="topicTable postingArea"
+                    actionListener="#{forumBean.triggerNewSearch()}">
+            </b:poll>
+
+            <b:container id="forumcontainer">
+                <b:row>
+                    <b:column span="12">
+                        <b:jumbotron>
+                            <b:row id="lbac_logo">
+                                <b:column span="4"></b:column>
+                                <b:column span="8">
+                                    <b:image value="/resources/img/cloudlogo-forum.svg"
+                                             id="forum-cloudlogo"
+                                             styleClass="img-responsive"/>
+                                </b:column>
+                            </b:row>
+                        </b:jumbotron>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="5">
+                        <b:container>
+                            <b:row>
+                                <b:column span="4">
+                                    <b:dataTable
+                                        value="#{forumBean.allReadableTopics}"
+                                        var="topic"
+                                        styleClass="forumTopicTable"
+                                        id="topicTable">
+                                        <b:dataTableColumn styleClass="forumTopicTableRow">
+                                            <h:commandLink 
+                                                onclick="return;"
+                                                value="#{topic.name}"
+                                                action="#{forumBean.chooseActiveTopic(topic)}">
+                                                <f:ajax render="@form" />
+                                            </h:commandLink>
+                                        </b:dataTableColumn>
+                                    </b:dataTable>
+                                </b:column>
+                                <b:column span="1">
+
+                                    <b:commandButton styleClass="pull-right newTopicButton"
+                                                     style="margin:0 2px;"
+                                                     iconAwesome="fa-plus-circle"
+                                                     rendered="#{forumBean.isCreationOfNewTopicAllowed()}"
+                                                     value="new Topic"
+                                                     look="primary"
+                                                     ajax="true"
+                                                     type="button"
+                                                     oncomplete="$('.modalNewTopicClass').modal()"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="5">
+                                    <b:inputText styleClass="fullTextSearch"
+                                                 label="#{msgs.forum_fullTextSearch_label}"
+                                                 placeholder="#{msgs.searchMgr_searchtext_placeholder}"
+                                                 required="false"
+                                                 ajax="true"
+                                                 id="fullTextSearchId"
+                                                 value="#{forumBean.fullTextSearch}">
+                                        <f:facet name="append">
+                                            <b:commandButton look="primary"
+                                                             value=""
+                                                             type="submitt"
+                                                             icon="search"
+                                                             ajax="true"
+                                                             id="startSearchButton"
+                                                             update="forumcontainer"
+                                                             action="#{forumBean.triggerNewSearch()}">
+                                            </b:commandButton>
+                                        </f:facet>
+                                    </b:inputText>
+
+                                </b:column>
+                            </b:row>
+                        </b:container>
+                    </b:column>
+                    <b:column span="7">
+                        <b:container>
+                            <b:row>
+                                <b:column span="2"></b:column>
+                                <b:column span="5">
+                                    <h:outputText
+                                        value="#{forumBean.getTopicName()}"
+                                        styleClass="topicHeaderText"
+                                        escape="false"/>
+
+
+                                </b:column>
+                                <b:column span="7">
+                                    <p:scrollPanel 
+                                        style="height:400px;width:100%" 
+                                        styleClass="postingPanel"
+                                        id="postingArea">
+                                        <ui:repeat
+                                            value="#{forumBean.getPostsOfActiveTopic()}"
+                                            var="posting">
+
+                                            <b:row>
+                                                <b:column span="8">
+                                                    <h:outputText
+                                                        value="#{posting. getUserTag()}"
+                                                        escape="false"
+                                                        styleClass="userStyle"> </h:outputText>
+                                                </b:column>
+
+                                                <b:column span="4">
+                                                    <h:outputText value="#{posting.getCreated()}" escape="false">
+                                                        <f:convertDateTime
+                                                            pattern="dd-MM-yyyy HH:mm"
+                                                            timeZone="CET"/></h:outputText>
+                                                </b:column>
+                                            </b:row>
+                                            <b:row>
+                                                <b:column span="12">
+                                                    <h:outputText
+                                                        value="#{posting.getText()}"
+                                                        escape="false"
+                                                        styleClass="postingText"> </h:outputText>
+                                                </b:column>
+                                            </b:row>
+
+
+
+                                        </ui:repeat>
+
+                                    </p:scrollPanel>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="6">
+                                    <p:textEditor 
+                                        styleClass="textEditorStyleClass"
+                                        rendered="#{forumBean.isPostingAllowed()}"
+                                        value="#{forumBean.postingText}"
+                                        id="forumEditor">
+                                        <f:facet 
+                                            id="forumEditorToolBar"
+                                            name="toolbar">
+                                            <span class="ql-formats">
+                                                <button class="ql-bold"></button>
+                                                <button class="ql-italic"></button>
+                                                <button class="ql-underline"></button>
+                                                <button class=""></button>
+                                            </span>
+                                            <span class="ql-formats">
+                                                <select class="ql-color" />
+                                            </span>
+
+                                            <span class="ql-formats">
+                                                <button class="ql-list" value="ordered" />
+                                                <button class="ql-list" value="bullet" />
+                                            </span>
+                                        </f:facet>
+
+                                    </p:textEditor>
+                                </b:column>
+                                <b:column span="1">
+                                    <b:commandButton
+                                        rendered="#{forumBean.isPostingAllowed()}"
+                                        ajax="true"
+                                        value="#{msgs.forum_button_newPosting}"
+                                        onclick="ajax:forumBean.addPostingToActiveTopic();"
+                                        update="@(.postingPanel) @(.textEditorStyleClass)"
+                                        styleClass="insertPostingButtonStyleClass newPostingButton"
+                                        oncomplete="$('.postingText')[$('.postingText').length-1].scrollIntoView( true );" 
+                                        id="instertPostingButton"/>
+                                </b:column>
+                            </b:row>
+                        </b:container>
+                    </b:column>
+                </b:row>
+            </b:container>
+            <b:modal 
+                id="modalNewTopic"
+                styleClass="modalNewTopicClass"
+                backdrop="false"
+                close-on-escape="false"
+                title="#{msgs.forum_modalNewTopic_Header}">
+
+
+                <b:selectOneMenu
+                    label="#{msgs.forum_modalCloudLabel}"
+                    disabled="#{forumBean.availableClouds.size()==1}"
+                    value="#{forumBean.cloudOfTopic}">
+                    <f:selectItems value="#{forumBean.availableClouds}"/>
+                </b:selectOneMenu>
+
+                <b:inputText  value="#{forumBean.newTopicName}"
+                              renderLabel="true"
+                              placeholder="#{msgs.forum_modalNewTopic_PlaceHolder}"
+                              required="false">
+                    <f:facet name="prepend">
+                        <b:iconAwesome name="files-o"/>
+                    </f:facet>
+                </b:inputText>
+                <b:message for="@previous"/>
+                <b:row styleClass="modal-footer">
+                    <b:button value="#{msgs.forum_modalNewTopic_Cancel}" dismiss="modal"/>
+                    <b:commandButton value="#{msgs.forum_modalNewTopic_Create}"
+                                     update="forumcontainer"
+                                     type="submit"
+                                     ajax="true"
+                                     onclick="ajax:forumBean.createNewTopic();"
+                                     oncomplete="$('.modalNewTopicClass').modal('hide');" 
+                                     look="primary"/>
+                </b:row>
+            </b:modal>
+        </b:form>
+    </h:body>
+
+</html>

@@ -1,0 +1,19 @@
+Leibniz Bioactives Cloud
+
+Copyright 2015-2017 Leibniz-Institut f. Pflanzenbiochemie
+                    Weinberg 3
+                    06120 Halle (Saale)
+                    Deutschland
+
+The following people have contributed code to this project:
+
+- Frank Broda (fbroda@ipb-halle.de)
+- Henrik Teuscher (hteusche@ipb-halle.de)
+- Fabian Mauz (fmauz@ipb-halle.de)
+
+
+In addition to libraries linked with this product, this product 
+includes portions developed by other projects: 
+
+* Apache Commons CLI (http://commons.apache.org/proper/commons-cli)
+  (deep/src/main/java/org/apache/commons/cli/ExtendedDefaultParser.java)

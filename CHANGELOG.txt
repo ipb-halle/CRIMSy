@@ -1,0 +1,69 @@
+1.3.0 - 2020-03-12
+        * Feature: features MultiCloud & DTO were rolled out to production
+
+1.2.4 - 2019-12-02
+        * Feature: Security improvements (HSTS, CSP headers, ...)
+        * Feature: MultiCloud (multiple cloud memberships for single nodes)
+        * Feature: DTO - data transfer objects as an abstraction layer 
+        * BugFix : diverse bugfixes
+
+1.2.3 - 2019-11-28
+	* BugFix : public collections with same ID are now visible
+	
+1.2.2 - 2019-11-22
+	* Feature: user experience improved
+		- Add results button now interactive if new documents arrived
+	* Feature: increased performance of remote requests
+	* BugFix : installation of cronjob supports now ubuntu
+
+1.2.1 - 2019-11-11
+	* Feature: performance increase on remote requests
+	* BugFix : multiple display removed 
+	* BugFix : removed websocket support from proxy
+	* BugFix : database update from 00003 -> 00004 fixed
+
+1.2.0 - 2019-11-07
+	* Feature: performance of wordcloud improved
+	* Feature: performance of documentsearch improved
+	* BugFix : removed limit of 10 shown documents
+
+1.1.3 - 2019-10-29
+	* BugFix : restart of apache after CRL update
+	* BugFix : download of files with whitespace in name fixed
+
+1.1.2 - 2019-10-14
+	* Feature: ADD concatination of search terms allowed
+	* Feature: paragraphs in postings allowed
+	* BugFix : LDAP groups are now correctly transfered
+
+1.1.1 - 2019-09-30
+	* Feature: language galish added 
+	* BugFix : only privileged users are allowed to see certain views
+	* BugFix : LDAP connection fixed
+	* BugFix : redesign of polling mechanism
+	* BugFix : new users are automaticly added to public group
+	* BugFix : delete of users fixed
+	* BugFix : better responsibility at button clicks in document seach site
+	* BugFix : typo in groupmanagment fixed
+	* BugFix : multilingual seach fixed
+	* BugFix : default order in document table set to descent
+	* BugFix : missing label number in collection button fixed
+	* BugFix : removed memberships from deleted users
+	* BugFix : only three digits shown at document relevance
+
+1.1.0 - 2019-09-24
+	* Feature: added a social forum
+		- user can create topics
+		- user can add a post in a topic
+
+1.0.1 - 2019-09-16
+	* BufFix: wordcloud
+		- starting a new search clears only previous results instead of all ones
+
+1.0.0 - 2019-09-12
+	* Initialrelease of leibniz biocloud with keyfeatures
+		- automatic installation routine
+		- document search on local and remote nodes
+		- local and remote user and group managment
+		- wordcloud 
+		- multi language support

@@ -1,0 +1,8 @@
+META-INF
+config
+target
+ui/doc/diagrams/png/
+ui/doc/diagrams/svg/
+ui/nbactions.xml
+ui/nb-configuration.xml
+ui/target

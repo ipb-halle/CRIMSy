@@ -1,0 +1,698 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>11</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>275</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>Autor        Fabian Mauz
+Last Edit    2019-07-25
+--
+UseCase : Get Document from LBAC
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>209</x>
+      <y>231</y>
+      <w>110</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>login.xhtml</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLActor</id>
+    <coordinates>
+      <x>110</x>
+      <y>264</y>
+      <w>66</w>
+      <h>121</h>
+    </coordinates>
+    <panel_attributes>Actor</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>715</x>
+      <y>231</y>
+      <w>143</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>UserBean
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>231</y>
+      <w>429</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+&lt;jsf:userBean.actionLogin&gt;</panel_attributes>
+    <additional_attributes>370.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>264</y>
+      <w>429</w>
+      <h>121</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+LogInResponse&lt;jsf&gt;</panel_attributes>
+    <additional_attributes>370.0;10.0;100.0;10.0;100.0;90.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>209</x>
+      <y>341</y>
+      <w>110</w>
+      <h>693</h>
+    </coordinates>
+    <panel_attributes>default.xhtml
+&lt;logged in&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>715</x>
+      <y>374</y>
+      <w>143</w>
+      <h>495</h>
+    </coordinates>
+    <panel_attributes>Search 
+End
+Point
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>385</y>
+      <w>429</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+&lt;ws:ui/websocket/search&gt;</panel_attributes>
+    <additional_attributes>370.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1001</x>
+      <y>374</y>
+      <w>110</w>
+      <h>495</h>
+    </coordinates>
+    <panel_attributes>Simple
+Search
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>847</x>
+      <y>385</y>
+      <w>176</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+actionSearch</panel_attributes>
+    <additional_attributes>140.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1309</x>
+      <y>352</y>
+      <w>110</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>Collection
+Service
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1100</x>
+      <y>363</y>
+      <w>231</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+load</panel_attributes>
+    <additional_attributes>190.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1100</x>
+      <y>396</y>
+      <w>231</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+List&lt;Collection&gt;
+</panel_attributes>
+    <additional_attributes>190.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1309</x>
+      <y>484</y>
+      <w>110</w>
+      <h>385</h>
+    </coordinates>
+    <panel_attributes>Search
+Orchestrator
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1100</x>
+      <y>506</y>
+      <w>231</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+orchestrate
+List&lt;Collection&gt;</panel_attributes>
+    <additional_attributes>190.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1683</x>
+      <y>506</y>
+      <w>110</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>SolrSearcher
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1408</x>
+      <y>517</y>
+      <w>297</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+SearchRequest:role(request)
+</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1683</x>
+      <y>660</y>
+      <w>110</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>WebClient
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1408</x>
+      <y>671</y>
+      <w>297</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+SearchRequest:role(request)</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1848</x>
+      <y>660</y>
+      <w>110</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>Serach 
+End
+Point
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1782</x>
+      <y>671</y>
+      <w>88</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>60.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1100</x>
+      <y>770</y>
+      <w>231</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+documentCallBack.apply</panel_attributes>
+    <additional_attributes>10.0;20.0;190.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>847</x>
+      <y>759</y>
+      <w>165</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+documentCallBack:
+sendMessage()</panel_attributes>
+    <additional_attributes>10.0;20.0;130.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>759</y>
+      <w>429</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+lbac_ws.js -&gt;server.onmessage 
+</panel_attributes>
+    <additional_attributes>370.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1408</x>
+      <y>539</y>
+      <w>297</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+SearchRequest:role(response)
+</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1408</x>
+      <y>693</y>
+      <w>297</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+SearchRequest:role(response)
+</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2013</x>
+      <y>660</y>
+      <w>110</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>...
+transparency=0
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1947</x>
+      <y>671</y>
+      <w>88</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>60.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>627</x>
+      <y>198</y>
+      <w>1188</w>
+      <h>836</h>
+    </coordinates>
+    <panel_attributes>layer=-1
+bg=light_gray
+Local Note</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1826</x>
+      <y>198</y>
+      <w>374</w>
+      <h>836</h>
+    </coordinates>
+    <panel_attributes>layer=-1
+bg=light_gray
+Remote Note</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>209</x>
+      <y>1056</y>
+      <w>110</w>
+      <h>506</h>
+    </coordinates>
+    <panel_attributes>default.xhtml
+&lt;logged in&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>638</x>
+      <y>1155</y>
+      <w>143</w>
+      <h>253</h>
+    </coordinates>
+    <panel_attributes>Document
+SearchBean
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1177</x>
+      <y>1078</y>
+      <w>143</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>Document
+SearchService
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1870</x>
+      <y>1375</y>
+      <w>143</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>Document
+SearchEndpoint
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1177</x>
+      <y>1375</y>
+      <w>143</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>Document
+Search
+Orchestrator
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>1221</y>
+      <w>352</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+actionStartSearch()</panel_attributes>
+    <additional_attributes>300.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1474</x>
+      <y>1078</y>
+      <w>143</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>SolrSearcher
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>770</x>
+      <y>1089</y>
+      <w>429</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+getDocumentsOfCollection()</panel_attributes>
+    <additional_attributes>370.0;10.0;80.0;10.0;80.0;80.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>770</x>
+      <y>1188</y>
+      <w>429</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+DocumentSearchState ist aktualisiert</panel_attributes>
+    <additional_attributes>370.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>770</x>
+      <y>1254</y>
+      <w>473</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+getDocumentsOfCollectionFromRemote()</panel_attributes>
+    <additional_attributes>10.0;10.0;150.0;10.0;150.0;130.0;370.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>693</x>
+      <y>1397</y>
+      <w>506</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+DocumentSearchState ist aktualisiert
+&lt;asynchronus&gt;</panel_attributes>
+    <additional_attributes>440.0;40.0;10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1309</x>
+      <y>1089</y>
+      <w>187</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+getDocOfColl</panel_attributes>
+    <additional_attributes>150.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1309</x>
+      <y>1122</y>
+      <w>187</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+List&lt;Documents&gt;</panel_attributes>
+    <additional_attributes>150.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1474</x>
+      <y>1375</y>
+      <w>143</w>
+      <h>143</h>
+    </coordinates>
+    <panel_attributes>DocumentSearch
+WebClient
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1309</x>
+      <y>1375</y>
+      <w>187</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+getDocOfColl</panel_attributes>
+    <additional_attributes>150.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1309</x>
+      <y>1408</y>
+      <w>187</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+List&lt;Document&gt;</panel_attributes>
+    <additional_attributes>150.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>616</x>
+      <y>1056</y>
+      <w>1188</w>
+      <h>506</h>
+    </coordinates>
+    <panel_attributes>layer=-1
+bg=light_gray
+Local Note</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1826</x>
+      <y>1056</y>
+      <w>374</w>
+      <h>506</h>
+    </coordinates>
+    <panel_attributes>layer=-1
+bg=light_gray
+Remote Note</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1606</x>
+      <y>1375</y>
+      <w>286</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+REST
+/xx/xx
+</panel_attributes>
+    <additional_attributes>10.0;20.0;240.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1606</x>
+      <y>1441</y>
+      <w>286</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+JSON
+List&lt;Document&gt;
+</panel_attributes>
+    <additional_attributes>10.0;20.0;240.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>1276</y>
+      <w>352</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+poll: every 3 seconds
+refreshDocumentsToShow()
+updates search information</panel_attributes>
+    <additional_attributes>300.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>308</x>
+      <y>1342</y>
+      <w>352</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+addNewSearchResultsToTable()</panel_attributes>
+    <additional_attributes>300.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2068</x>
+      <y>1408</y>
+      <w>110</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>...
+transparency=0
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2002</x>
+      <y>1419</y>
+      <w>88</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+</panel_attributes>
+    <additional_attributes>60.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+</diagram>

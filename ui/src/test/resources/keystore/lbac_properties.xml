@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<!-- 
+  * LBAC Properties 
+  * (c) 2019 Leibniz Bioactives Cloud Development Team 
+  -->
+<comment>Properties for Leibniz Bioactives Cloud Testcases</comment>
+
+<!--
+  Mutual ssl authentication
+-->
+<entry key="SecureWebClient.KEYSTORE_TYPE">JKS</entry>
+<entry key="SecureWebClient.KEYSTORE_PATH">src/test/resources/keystore/</entry>
+<entry key="SecureWebClient.KEYSTORE_PASSWORD">abcdef</entry>
+<entry key="SecureWebClient.TRUSTSTORE_TYPE">JKS</entry>
+<entry key="SecureWebClient.TRUSTSTORE_PATH">src/test/resources/keystore/</entry>
+<entry key="SecureWebClient.TRUSTSTORE_PASSWORD">abcdef</entry>
+<entry key="SecureWebClient.SSL_PROTOCOL">TLSv1.2</entry>
+<entry key="LBAC_INTERNET_FQHN">test</entry>
+
+</properties>

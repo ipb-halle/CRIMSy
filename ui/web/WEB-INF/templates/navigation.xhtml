@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:body>
+        <ui:composition>
+            <b:form>
+                <b:navBar position="top" sticky="true">
+                    <b:navbarLinks rendered="#{navigator.access}">
+                        <b:navCommandLink style="font-size: 175%;" value="LBAC"
+                                          actionListener="#{navigator.navigate('default')}"/>
+                        <b:navCommandLink value="Word Cloud Search"
+                                          actionListener="#{navigator.navigate('wordCloud2')}"/>
+                        
+                        <b:navCommandLink value="Forum"
+                                          actionListener="#{navigator.navigate('socialForum')}"/>
+                         
+                    </b:navbarLinks>
+
+                    <!-- Following line is needed for TBS 3.0.1 (panel content overflow issue) -->
+
+                    <b:navbarLinks pull="right">
+                        <b:navLink value="    " href="#"/>
+                    </b:navbarLinks>
+
+                    <!-- ##################################################################### -->
+
+                    <b:navbarLinks pull="right">
+                        <b:navCommandLink iconAwesome="log-in" rendered="#{userBean.currentAccount.isPublicAccount()}" value="Login"
+                                          actionListener="#{navigator.navigate('login')}"/>
+                        <b:navCommandLink iconAwesome="log-out" rendered="#{! userBean.currentAccount.isPublicAccount()}" value="Logout"
+                                          actionListener="#{userBean.actionLogout}"/>
+                        <b:dropMenu value="#{msgs.Settings}" rendered="#{! userBean.currentAccount.isPublicAccount()}" iconAwesome="cog"
+                                    iconAlign="left">
+                            <b:navLink header="#{userBean.currentAccount.name}"/>
+
+                            <!-- Admission -->
+                            <b:navCommandLink iconAwesome="pencil" value="Mein Account"
+                                              actionListener="#{navigator.navigate('myAccount')}"/>
+
+                            <b:navCommandLink iconAwesome="user"
+                                              value="#{msgs.userMgr_formTitle}"
+                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                              actionListener="#{navigator.navigate('userManagement')}"/>
+                            <b:navCommandLink iconAwesome="users"
+                                              value="#{msgs.groupMgr_formTitle}"
+                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                              actionListener="#{navigator.navigate('groupManagement')}"/>
+                            <b:navCommandLink iconAwesome="fa-users"
+                                              value="#{msgs.LDAP_Connection}"
+                                              rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
+                                              actionListener="#{navigator.navigate('LdapAdminProperties')}"/>
+                            <b:navCommandLink iconAwesome="wrench"
+                                              value="#{msgs.SystemSettings}"
+                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
+                                              actionListener="#{navigator.navigate('systemSettings')}"/>
+                            <b:navCommandLink iconAwesome="wrench"
+                                              value="#{msgs.CloudNodeManagement}"
+                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                              actionListener="#{navigator.navigate('cloudNodeManagement')}"/>
+
+                            <!-- Collections -->
+                            <b:navCommandLink iconAwesome="fa-file-archive-o"
+                                              value="Collectionverwaltung"
+                                              actionListener="#{navigator.navigate('collectionManagement')}"/>
+
+                            <!-- LBAC-QSAR-35 playground -->
+
+                            <!--
+                            <b:navCommandLink iconAwesome="bar-chart" value="QSAR Admin"
+                                              actionListener="#{navigator.navigate('qsaradmin')}" />
+                            -->
+
+                            <!--  end playground -->
+
+
+                        </b:dropMenu>
+                    </b:navbarLinks>
+                </b:navBar>
+            </b:form>
+        </ui:composition>
+    </h:body>
+</html>

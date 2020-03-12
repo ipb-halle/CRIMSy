@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:body>
+        <ui:composition>
+            <ui:insert name="acCols">
+                <ui:include src="/WEB-INF/templates/acEditModal.xhtml"/>
+            </ui:insert>
+            <h2>#{msgs.collMgr_header}</h2>
+            <b:modal 
+                id="modalCollection"
+                title="#{collectionBean.modalDialogTitle}" 
+                styleClass="modalCollection"
+                backdrop="false"
+                close-on-escape="false">
+                <b:form id="frmModalCollection" horizontal="true">
+                    <b:inputText id="ID" value="#{collectionBean.activeCollection.id}"
+                                 label="ID"
+                                 renderLabel="true"
+                                 rendered="#{collectionBean.editMode != 'UPDATE'}"
+                                 disabled="true"
+                                 placeholder=""
+                                 required="false">
+                        <f:facet name="prepend">
+                            <b:icon name="cloud"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="name" value="#{collectionBean.activeCollection.name}"
+                                 label="Name"
+                                 renderLabel="true"
+                                 rendered="true"
+                                 disabled="#{collectionBean.editMode != 'CREATE'}"
+                                 placeholder="public"
+                                 required="#{collectionBean.editMode == 'CREATE'}">
+                        <f:validator validatorId="CollectionInputValidator"/>
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="files-o"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+
+                    <b:inputText id="description" 
+                                 value="#{collectionBean.activeCollection.description}"
+                                 label="#{msgs.collMgr_modal_description}"
+                                 renderLabel="true"
+                                 rendered="true"
+                                 disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR' or collectionBean.editMode == 'REINDEX' }"
+                                 placeholder="public collection @your place"
+                                 required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="fa-tag"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+
+                    <b:inputText id="indexpath" 
+                                 value="#{collectionBean.activeCollection.indexPath}"
+                                 label="#{msgs.collMgr_modal_indexpath}"
+                                 renderLabel="true"
+                                 rendered="#{collectionBean.editMode != 'CREATE'}"
+                                 disabled="true">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="fa-list"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="storagepath"
+                                 value="#{collectionBean.activeCollection.storagePath}"
+                                 label="#{msgs.collMgr_modal_filepath}"
+                                 renderLabel="true"
+                                 rendered="#{collectionBean.editMode != 'CREATE'}"
+                                 disabled="true">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="fa-folder-open"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="institut" value="#{collectionBean.activeCollection.node.institution}"
+                                 label="#{msgs.collMgr_modal_institute}"
+                                 renderLabel="true"
+                                 rendered="#{collectionBean.editMode == 'DELETE'}"
+                                 required="false"
+                                 disabled="true">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="building"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:fetchBeanInfos/>
+                    <b:row styleClass="modal-footer">
+                        <b:button value="#{msgs.collMgr_modal_cancel}" dismiss="modal"/>
+                        <b:commandButton value="#{msgs.collMgr_modal_button_apply}"
+                                         rendered="#{collectionBean.getEditMode() == 'CREATE'}"
+                                         update="@form frmCollectionList:collectionList"
+                                         type="submit"
+                                         ajax="true"
+                                         onclick="ajax:collectionBean.actionCreate();"
+                                         oncomplete="if(!validationFailed){$('.modalCollection').modal('hide')};return false;"
+                                         look="primary"/>
+                        <b:commandButton value="#{msgs.collMgr_modal_button_edit}"
+                                         rendered="#{collectionBean.getEditMode() == 'UPDATE'}"
+                                         update="@form frmCollectionList:collectionList"
+                                         type="submit"
+                                         ajax="true"
+                                         onclick="ajax:collectionBean.actionUpdate();"
+                                         oncomplete="if(!validationFailed){$('.modalCollection').modal('hide')};return false;"
+                                         look="primary"/>
+                        <b:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
+                                         rendered="#{collectionBean.getEditMode() == 'CLEAR'}"
+                                         update="@form frmCollectionList:collectionList"
+                                         type="submit"
+                                         ajax="true"
+                                         onclick="ajax:collectionBean.actionClear();"
+                                         oncomplete="if(!validationFailed){$('.modalCollection').modal('hide')};return false;"
+                                         look="primary"/>
+                        <b:commandButton value="#{msgs.collMgr_modal_button_reindex}"
+                                         rendered="#{collectionBean.getEditMode() == 'REINDEX'}"
+                                         update="@form frmCollectionList:collectionList"
+                                         type="submit"
+                                         ajax="true"
+                                         onclick="ajax:collectionBean.actionReindex();"
+                                         oncomplete="if(!validationFailed){$('.modalCollection').modal('hide')};return false;"
+                                         look="primary"/>
+                        <b:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
+                                         rendered="#{collectionBean.getEditMode() == 'DELETE'}"
+                                         update="@form frmCollectionList:collectionList"
+                                         type="submit"
+                                         ajax="true"
+                                         onclick="ajax:collectionBean.actionDelete();"
+                                         oncomplete="$('.modalCollection').modal('hide');" 
+                                         look="primary"/>
+                    </b:row>
+                </b:form>
+            </b:modal>
+
+            <b:form id="frmCollectionList">
+                <b:poll id="searchPoll"
+                        class="searchPollClass"
+                        interval="#{collectionBean.getPollIntervall()}" 
+                        update="frmCollectionList:collectionList:collectionRefreshButton searchPoll"/>
+
+                <b:dataTable id="collectionList"
+                             value="#{collectionBean.getLocalCollectionList()}"
+                             styleClass="collectionList"
+                             striped="true"
+                             responsive="false"
+                             customOptions="autoWidth:true"
+                             fixedHeader="true"
+                             var="collection"
+                             csv="false"
+                             columnVisibility="true">
+                    <f:facet name="header" id="facetHeader">
+                        <tr>
+                            <th colspan="7">
+                                <b:selectBooleanCheckbox
+                                    value="#{collectionBean.showLocalCollectionsOnly}"
+                                    caption="#{msgs.collMgr_datatable_localCollections}"
+                                    update="@form frmCollectionList:collectionList"
+                                    />
+                                <b:commandButton styleClass="pull-right"
+                                                 style="margin:0 2px;"
+                                                 iconAwesome="fa-plus-circle"
+                                                 value="#{msgs.collMgr_button_newCollection}"
+                                                 look="primary"
+                                                 ajax="true"
+                                                 type="button"
+                                                 process="@this"
+                                                 update="modalCollection frmModalCollection"
+                                                 rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}" 
+                                                 onclick="ajax:collectionBean.setEditMode('CREATE');"
+                                                 oncomplete="$('.modalCollection').modal()"/>
+                                <b:commandButton styleClass="refreshButtonClass pull-right"
+                                                 style="margin:0 2px;"
+                                                 iconAwesome="refresh"
+                                                 value="#{msgs.collMgr_button_refresh}"
+                                                 look="default"
+                                                 ajax="true"
+                                                 type="button"
+                                                 process="@this"
+                                                 id="collectionRefreshButton"
+                                                 tooltip="#{collectionBean.getToolTipForRefresh()}"
+                                                 update="frmCollectionList:collectionList frmCollectionList:searchPoll"
+                                                 onclick="javascript:frmCollectionListCollectionListWidget.DataTable().destroy();ajax:collectionBean.refreshCollectionSearch();">
+                                    <b:badge 
+                                        style="margin-left: 4px"
+                                        styleClass="newcollection_badge"
+                                        value="#{collectionBean.getNewDocumentsToShow()}" />
+                                </b:commandButton>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>#{msgs.collMgr_datatable_header_name}</th>
+                            <th>#{msgs.collMgr_datatable_header_descr}</th>
+                            <th>#{msgs.collMgr_datatable_header_owner}</th>
+                            <th>#{msgs.collMgr_datatable_header_solr}</th>
+                            <th>#{msgs.collMgr_datatable_header_location}</th>
+                            <th style="min-width:68px">Tools</th>
+                        </tr>
+                    </f:facet>
+                    <b:dataTableColumn order="asc">
+                        <b:badge tooltip="id: #{collection.id}"
+                                 style="margin-right:4px;background-color: #4e6aca;"
+                                 value="i"/>
+                        #{collection.name}
+                    </b:dataTableColumn>
+                    <b:dataTableColumn value="#{collection.description}"/>
+                    <b:dataTableColumn value="#{collection.getOwner().getName()}"/>
+                    <b:dataTableColumn>
+                        <b:badge tooltip="#{msgs.collMgr_tooltip_solrDocs}"
+                                 rendered="#{collection.node.local}"
+                                 style="margin-right:4px;background-color: #4e6aca;"
+                                 value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
+                        #{collection.indexPath}
+                    </b:dataTableColumn>
+                    <b:dataTableColumn value="#{collection.node.institution}"/>
+                    <b:dataTableColumn>
+                        <b:commandButton style="padding: 0 4px;"
+                                         icon="pencil"
+                                         look="link"
+                                         ajax="true"
+                                         process="@this"
+                                         type="button"
+                                         update="modalCollection frmModalCollection"
+                                         tooltip="#{msgs.collMgr_tooltip_editCollection}"
+                                         disabled="#{!collectionBean.isEditAllowed(collection)}"
+                                         action="#{collectionBean.setEditMode('UPDATE')}"
+                                         onclick="ajax:collectionBean.setActiveCollection(collection);"
+                                         oncomplete="$('.modalCollection').modal();"/>
+                        <b:commandButton style="padding: 0 4px;"
+                                         iconAwesome="fa-fast-backward"
+                                         look="link"
+                                         ajax="true"
+                                         process="@this"
+                                         update="modalCollection frmModalCollection"
+                                         disabled="#{!collectionBean.isClearAllowed(collection)}"
+                                         type="button"
+                                         tooltip="#{msgs.collMgr_tooltip_clearCollection}"
+                                         onclick="ajax:collectionBean.setEditMode('CLEAR');collectionBean.setActiveCollection(collection);"
+                                         oncomplete="$('.modalCollection').modal();"/>
+                        <b:commandButton style="padding: 0 4px;"
+                                         iconAwesome="fa-refresh"
+                                         look="link"
+                                         ajax="true"
+                                         process="@this"
+                                         tooltip="#{msgs.collMgr_tooltip_reindex}"
+                                         update="modalCollection frmModalCollection"
+                                         disabled="#{!collectionBean.isReindexingAllowed(collection)}"
+                                         type="button"
+                                         onclick="ajax:collectionBean.setEditMode('REINDEX');collectionBean.setActiveCollection(collection);"
+                                         oncomplete="$('.modalCollection').modal();"/>
+                        <b:commandButton style="padding: 0 4px;"
+                                         icon="trash"
+                                         look="link"
+                                         ajax="true"
+                                         process="@this"
+                                         tooltip="#{msgs.collMgr_tooltip_deleteCollection}"
+                                         update="modalCollection frmModalCollection"
+                                         disabled="#{!collectionBean.isDeleteAllowed(collection)}"
+                                         type="button"
+                                         onclick="ajax:collectionBean.setEditMode('DELETE');collectionBean.setActiveCollection(collection);"
+                                         oncomplete="$('.modalCollection').modal();"/>
+                        <b:commandButton style="padding: 0 4px;"
+                                         icon="glyphicon glyphicon-user"
+                                         look="link"
+                                         ajax="true"
+                                         process="@this"
+                                         tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                         update="modalAcListID frmACList"
+                                         type="button"
+                                         action="#{permissionEditBean.initModal()}"
+                                         onclick="ajax:collectionBean.setActiveCollection(collection);"
+                                         oncomplete="$('.modalAcList').modal();return false;"
+                                         disabled="#{!collectionBean.isPermissionEditAllowed(collection)}"/>
+                    </b:dataTableColumn>
+                </b:dataTable>
+            </b:form>
+        </ui:composition>
+    </h:body>
+</html>

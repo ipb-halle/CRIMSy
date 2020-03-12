@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>11</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>143</y>
+      <w>297</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>Autor        Fabian Mauz
+Last Edit    2019-08-05
+--
+UseCase : Announce User
+
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>352</x>
+      <y>297</y>
+      <w>22</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>363</x>
+      <y>352</y>
+      <w>143</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>484</x>
+      <y>319</y>
+      <w>110</w>
+      <h>165</h>
+    </coordinates>
+    <panel_attributes>InitApplication
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>682</x>
+      <y>330</y>
+      <w>209</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>Membership
+Announcement
+Orchestrator
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>363</x>
+      <y>385</y>
+      <w>143</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>308</x>
+      <y>253</y>
+      <w>110</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>Start
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>308</x>
+      <y>473</y>
+      <w>110</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>End
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>979</x>
+      <y>330</y>
+      <w>209</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>Membership
+WebClient
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>583</x>
+      <y>341</y>
+      <w>121</w>
+      <h>33</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>880</x>
+      <y>330</y>
+      <w>121</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+für alle
+remote
+Knoten</panel_attributes>
+    <additional_attributes>90.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1496</x>
+      <y>330</y>
+      <w>209</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>Membership
+WebServer
+transparency=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1177</x>
+      <y>330</y>
+      <w>341</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+REST
+xxx</panel_attributes>
+    <additional_attributes>290.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>275</x>
+      <y>231</y>
+      <w>957</w>
+      <h>352</h>
+    </coordinates>
+    <panel_attributes>layer=-1
+bg=light_gray
+Local Note</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1463</x>
+      <y>231</y>
+      <w>286</w>
+      <h>352</h>
+    </coordinates>
+    <panel_attributes>layer=-1
+bg=light_gray
+Remote Note</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

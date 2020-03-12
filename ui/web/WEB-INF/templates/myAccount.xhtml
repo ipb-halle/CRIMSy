@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:body>
+    <ui:composition>
+        <b:panelGrid colSpans="6,6" size="sm">
+            <b:form id="accountChange" method="post">
+                <b:panel contentDisabled="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}" collapsible="false"
+                         look="info">
+                    <f:facet name="heading">
+                        <h:outputText value="Nutzerdaten verwalten"
+                                      rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"/>
+                        <h:outputText value="Nutzerdaten anzeigen"
+                                      rendered="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}"/>
+                    </f:facet>
+
+                    <b:inputText id="ID" value="#{userBean.currentAccount.id}" label="ID" renderLabel="true"
+                                 disabled="true" placeholder="" required="false">
+                        <f:facet name="prepend">
+                            <b:icon name="cloud"/>
+                        </f:facet>
+                    </b:inputText>
+                    <!-- name and login changes must be arranged by administrator --> 
+                    <b:inputText id="name" value="#{userBean.currentAccount.name}" label="#{msgs.Name}" renderLabel="true"
+                                 placeholder="Username" disabled="true">
+                        <f:facet name="prepend">
+                            <b:icon name="user"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="login" value="#{userBean.currentAccount.login}" label="#{msgs.Login}" renderLabel="true"
+                                 placeholder="login name" disabled="true">
+                        <f:facet name="prepend">
+                            <b:icon name="star"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="email" value="#{userBean.currentAccount.email}" label="#{msgs.Email}" renderLabel="true"
+                                 type="email" required="false">
+                        <f:validator validatorId="EmailAddressValidator"/>
+                        <f:facet name="prepend">
+                            <b:icon name="envelope"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="phone" value="#{userBean.currentAccount.phone}" label="#{msgs.Phone}" renderLabel="true"
+                                 type="tel" required="false">
+                        <f:facet name="prepend">
+                            <b:icon name="phone"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:column styleClass="text-center">
+                        <b:commandButton type="submit"
+                                         rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"
+                                         action="#{userBean.actionModify}"
+                                         value="#{msgs.Save}"/>
+                    </b:column>
+                </b:panel>
+            </b:form>
+            <b:form id="passwordChange" rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}">
+                <b:panel title="Password verwalten" collapsible="false" look="primary">
+                    <b:inputSecret id="oldpassword" value="#{userBean.oldPassword}" label="altes Password"
+                                   placeholder="old password" renderLabel="true"
+                                   required="true">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="fa-key"/>
+                        </f:facet>
+                    </b:inputSecret>
+                    <b:message for="@previous"/>
+                    <b:inputSecret id="newpassword" value="#{userBean.newPassword}" label="neues Password"
+                                   placeholder="new password" renderLabel="true"
+                                   required="true">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="fa-key"/>
+                        </f:facet>
+                    </b:inputSecret>
+                    <b:message for="@previous"/>
+                    <b:inputSecret id="newpassword_repeat" value="#{userBean.newPasswordRepeat}"
+                                   label="Wiederholung"
+                                   placeholder="repeat new password" renderLabel="true"
+                                   required="true">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="fa-key"/>
+                        </f:facet>
+                    </b:inputSecret>
+                    <b:message for="@previous"/>
+
+                    <b:column styleClass="text-center">
+                        <b:commandButton type="submit"
+                                         action="#{userBean.actionChangePassword}"
+                                         value="#{msgs.Save}"/>
+                    </b:column>
+                </b:panel>
+            </b:form>
+        </b:panelGrid>
+    </ui:composition>
+</h:body>
+</html>

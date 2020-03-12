@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:body>
+    <ui:composition>
+        <b:modal id="modalQsarDialog" title="Title. Bean?" styleClass="modalQsarDialogStyle"
+                 backdrop="false" close-on-escape="false">
+          <b:form id="frmModalQsar" horizontal="true">
+
+            <b:inputText styleClass="default" placeholder="Enter descriptor flavour here ..."
+                value="#{qsarBean.neuralNetwork.flavour}"
+                required="false" label="Flavour" 
+                labelColXs="0" labelColMd="0">
+                <!-- onkeypress="if(event.keyCode === 13){ send(); return false;}" -->
+            </b:inputText>
+            <b:message for="@previous"/>
+
+            <b:inputText styleClass="default" placeholder="Enter network name here ..."
+                value="#{qsarBean.neuralNetwork.name}"
+                required="false" label="Name"
+                labelColXs="0" labelColMd="0">
+                <!-- onkeypress="if(event.keyCode === 13){ send(); return false;}" -->
+            </b:inputText>
+            <b:message for="@previous"/>
+
+
+            <b:inputText styleClass="default" placeholder="Enter description here ..."
+                value="#{qsarBean.neuralNetwork.description}"
+                required="false" label="Description"
+                labelColXs="0" labelColMd="0">
+                <!-- onkeypress="if(event.keyCode === 13){ send(); return false;}" -->
+            </b:inputText>
+            <b:message for="@previous"/>
+
+            <!-- ... -->
+            <b:fetchBeanInfos/>
+
+                <b:row styleClass="modal-footer">
+                    <b:button value="Cancel" dismiss="modal"/>
+                    <b:commandButton value="Create"
+                                     rendered="#{qsarBean.mode == 'CREATE'}"
+                                     update="@form frmNeuralNetworkList:neuralNetworkList"
+                                     type="submit"
+                                     ajax="true"
+                                     onclick="ajax:qsarBean.actionCreate();"
+                                     oncomplete="if(!validationFailed){$('.modalQsarDialogStyle').modal('hide')};return false;"
+                                     look="primary"/>
+                    <b:commandButton value="Update"
+                                     rendered="#{qsarBean.mode == 'UPDATE'}"
+                                     update="@form frmNeuralNetworkList:neuralNetworkList"
+                                     type="submit"
+                                     ajax="true"
+                                     onclick="ajax:qsarBean.actionUpdate();"
+                                     oncomplete="if(!validationFailed){$('.modalQsarDialogStyle').modal('hide')};return false;"
+                                     look="primary"/>
+                    <b:commandButton value="Delete"
+                                     rendered="#{qsarBean.mode == 'DELETE'}"
+                                     update="@form frmNeuralNetworkList:neuralNetworkList"
+                                     type="submit"
+                                     ajax="true"
+                                     onclick="ajax:qsarBean.actionDelete();"
+                                     oncomplete="$('.modalQsarDialogStyle').modal('hide');"
+                                     look="primary"/>
+                </b:row>
+
+
+          </b:form>
+        </b:modal>
+
+
+        <b:form id="frmNeuralNetworkList">
+            <b:dataTable id="neuralNetworkList"
+                         value="#{qsarBean.localNNList}"
+                         styleClass="neuralNetworkList"
+                         striped="true"
+                         responsive="false"
+                         customOptions="autoWidth:true"
+                         fixedHeader="true"
+                         var="neuralNetwork"
+                         csv="false"
+                         columnVisibility="true">
+
+                <f:facet name="header">
+                    <tr>
+                        <th colspan="7">
+                            <b:commandButton styleClass="pull-right"
+                                             style="margin:0 2px;"
+                                             iconAwesome="fa-plus-circle"
+                                             value="New neural network"
+                                             look="primary"
+                                             ajax="true"
+                                             type="button"
+                                             update="modalQsarDialog frmModalQsar"
+                                             rendered="#{qsarBean.permQsarMgr}" 
+                                             onclick="ajax:qsarBean.initNeuralNetwork();qsarBean.setMode('CREATE');"
+                                             oncomplete="$('.modalQsarDialogStyle').modal()"/>
+                            <b:commandButton styleClass="pull-right"
+                                             style="margin:0 2px;"
+                                             iconAwesome="refresh"
+                                             value="Refresh"
+                                             look="default"
+                                             ajax="true"
+                                             type="button"
+                                             update="@(.neuralNetworkList)"
+                                             rendered="#{qsarBean.permQsarMgr}" 
+                                             onclick="javascript:frmNeuralNetworkListNeuralNetworkListWidget.DataTable().destroy();ajax:qsarBean.refresh();"/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Institution</th>
+                        <th style="min-width:50px">Tools</th>
+                    </tr>
+                </f:facet>
+
+
+            <b:dataTableColumn value="#{neuralNetwork.name}"/>
+            <b:dataTableColumn value="#{neuralNetwork.description}"/>
+            <b:dataTableColumn value="#{neuralNetwork.node.institution}"/>
+
+            <b:dataTableColumn>
+                <b:commandButton style="padding: 0 4px;"
+                                 icon="pencil"
+                                 look="link"
+                                 ajax="true"
+                                 type="button"
+                                 update="modalQsarDialog frmModalQsar"
+                                 tooltip="edit network"
+                                 disabled="#{(!neuralNetwork.node.local)}"
+                                 onclick="ajax:qsarBean.setMode('UPDATE');qsarBean.setNeuralNetwork(neuralNetwork);"
+                                 oncomplete="$('.modalQsarDialogStyle').modal();"/>
+                <b:commandButton style="padding: 0 4px;"
+                                 icon="trash"
+                                 look="link"
+                                 ajax="true"
+                                 tooltip="delete neural network"
+                                 update="modalQsarDialog frmModalQsar"
+                                 disabled="#{! neuralNetwork.node.local}"
+                                 type="button"
+                                 onclick="ajax:qsarBean.setMode('DELETE');qsarBean.setNeuralNetwork(neuralNetwork);"
+                                 oncomplete="$('.modalQsarDialogStyle').modal();"/>
+            </b:dataTableColumn>
+
+
+            </b:dataTable>
+            
+        </b:form>
+    </ui:composition>
+</h:body>
+</html>

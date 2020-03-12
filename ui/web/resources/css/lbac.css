@@ -1,0 +1,439 @@
+/*
+ *
+ * Leibniz Bioactives Cloud
+ * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/*
+   customer styles
+
+*/
+
+.jumbotron {
+    height: 200px;
+}
+
+/*
+ * center logo
+ */
+.centerPanel {
+    margin: 0 auto;
+}
+
+.modal-content {
+    padding: 0 15px 0 15px;
+}
+
+#modalError_body {
+    display: inline-block;
+}
+
+/* tiny text  e.g. on login form */
+.tinyGrayText {
+    font-size: 10px;
+    color:#666;
+}
+
+.CloudNodeStatusOk {
+    font-weight: bold;
+    color: #0d0;
+}
+
+.CloudNodeStatusFailed {
+    font-weight: bold;
+    color: #d00;
+}
+
+.CloudNodeStatusWaiting {
+    font-weight: bold;
+    color: #fc0;
+}
+
+/* dropdown menu */
+.dropdown-header {
+    margin-left: 16px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #e4e4e4;
+}
+
+/* style search result table */
+#documentResultList td a {
+    color: #3f90c7;
+}
+#defaultResultList td a {
+    color: #3f90c7;
+}
+
+#searchRelevanz {
+    max-width: 60px;
+}
+
+/** format info box test results in ldpap check **/
+
+span.bf-message-detail {
+    display: block;
+    padding-left: 40px;
+}
+
+span.bficon.bficon-info.bf-message-icon,
+span.bficon.bficon-error-circle-o.bf-message-icon,
+span.bficon.bficon-warning-triangle-o.bf-message-icon {
+    padding-top: 6px;
+}
+
+/* style file upload modal dialog */
+#fileUpload div.bootstrap-select {
+    width: 100px;
+}
+
+#fileUpload .progress {
+    width: 65px;
+}
+
+#fileUpload .progress span {
+    font-size: 10px;
+    text-align: center;
+    display: block;
+    line-height: 20px;
+}
+
+#fileUpload .btn-group, .btn-group-vertical {
+    min-width: 70px;
+}
+
+table > tbody > tr > td.colBttn {
+    min-width: 94px;
+}
+
+.dataTables_info {
+    float: none !important;
+}
+
+footer {
+    position: fixed;
+    height: 60px;
+    padding-top: 15px;
+    bottom: 0;
+    width: 100%;
+    background: #f2f2f2;
+    border-top: 1px solid #e4e4e4;
+    color: #666;
+    z-index: 99;
+}
+
+footer .globalinfo {
+    font-size: 10px;
+    padding: 0 15px;
+}
+
+.simplesearch {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.bottom_ul {
+    list-style-type: none;
+    float: right;
+    margin-bottom: 0;
+}
+
+.bottom_ul li {
+    float: left;
+}
+
+.bottom_ul li:after {
+    content: "/";
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.bottom_ul li a {
+    font-size: 12px;
+}
+
+/* fine uploader */
+.qq-upload-list {
+    font-size: 13px;
+}
+
+.qq-upload-file {
+    width: 180px;
+}
+
+select.selCollection {
+    max-width: 100px;
+    overflow: hidden;
+}
+
+.upload-collection { 
+    max-width: 100px;
+    overflow: hidden;
+}
+
+.upload-collection-settings {
+    padding-bottom: 20px
+}
+
+/* wordcloud*/
+
+#wordcloudlogo {
+    position: absolute;
+    z-index: 3;
+}
+
+#wordcloud2 {
+    position: absolute;
+    z-index: 2;
+    left: 40%;
+    top: 7%;
+    width: 150px;
+}
+
+.wordcloudWell {
+    margin-right: 28px;
+    height:1000px;
+}
+
+#shuffleWordCloud {
+    position: absolute;
+    top: 10px;
+    left: 25px;
+}
+
+#resetWordCloud {
+    position: absolute;
+    top: 10px;
+    left: 70px;
+}
+
+#shuffleWordCloud:hover, #resetWordCloud:hover {
+    color: #A91B0C;
+}
+
+.selectCountWords {
+    position: absolute;
+    top: 5px;
+    left: 110px;
+    width: 70px;
+}
+
+.searchInputEL {
+    position: absolute;
+    top: 5px;
+    left: 205px;
+    width: 50%;
+}
+
+#wc-canvas-hover {
+    position: absolute;
+    border: 2px solid #fff;
+    box-shadow: 0 0 4px 0 #008;
+    padding: 2px;
+    margin: -4px;
+    pointer-events: none;
+}
+
+#wc-canvas-hover-label {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgba(255, 240, 38, 0.88);
+    color: #921928;
+    margin-top: 6px;
+    padding: 0 0.5em;
+    border-radius: 0.5em;
+    white-space: nowrap;
+}
+.wordCloud{
+    width:100% !important;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tag-badge{
+    padding-right:20px !important;
+}
+.tag-badge-icon{
+    position: relative !important;
+    background-color: #D9230F !important;
+    border: none !important;
+    padding: 0px !important;
+    top: -0px !important;
+    left:-16px !important;
+    height: 17px !important;
+}
+.tagInputForm{
+    padding:10px !important;
+}
+
+.ui-tagcloud{
+    background-color:#FCFCFC;
+    border: none;
+}
+
+.img-cloud1{
+    display: block;
+    max-width: 200%;
+    width: 200%;
+    height: auto;
+}
+
+.img-cloud2{
+    display: block;
+    max-width: 500%;
+    width: 500%;
+    height: auto;
+    position: relative;
+    left: -338px;
+}
+
+.forumTopicTable>thead{
+    display:none;
+}
+.forumTopicTable{
+    border:0px !important;
+}
+
+.forumTopicTableRow{
+    border:0px !important;
+    padding:2px !important
+        background-color:#FCFCFC !important;
+}
+
+.forumTopicTableCol1{
+    padding:2px !important;
+}
+
+.postingPanel{
+    background-color:#FCFCFC !important;
+    padding-left: 20px !important;
+    border:0px;
+}
+
+
+#forumForm .dataTables_wrapper input{
+    width:100px !important;
+}
+
+.newTopicButton{
+    left: 20px !important;
+    position: relative !important;
+}
+
+.newPostingButton{
+    margin-top: 42px !important;
+    margin-left: -23px !important;
+
+}
+
+#forumForm .ui-editor-toolbar{
+    border:0px !important;
+}
+#forumForm .ql-container{
+    border: 0px !important;
+    background-color: #f2f1f1;
+}
+
+
+#forumForm .ui-scrollpanel{
+
+}
+
+#forumForm .forumFormtopicTableTable button{
+    min-width: 150px !important;
+
+}
+#forumForm .forumFormtopicTableTable button:hover {
+    background-color: #474949 !important;
+
+}
+#forumForm .forumFormtopicTableTable td{
+    padding:2px !important;
+    background-color: #FCFCFC !important;
+}
+#forumForm .forumFormtopicTableTable tr{
+    padding:0px !important;
+}
+#forumForm .ui-scrollpanel-container .row:nth-child(odd){
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-color: #dfdfdf;
+}
+#forumForm .ui-scrollpanel-container .row:first-child{
+    border-top-width: 0px;
+    border-top-style: solid;
+    border-color: #dfdfdf;
+}
+
+.userStyle{
+    font-weight: bold;
+}
+.topicHeaderText{
+    font-weight: bold;
+    margin: 5px;
+    font-size: 20px;
+}
+.newcollection_badge{
+    margin-left: 0px;
+    margin-right: 4px;
+    padding-left: 5px;
+    padding-top: 3px;
+}
+
+.pulsingButton {
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 0 0 0 rgba(232, 76, 61, 0.7);
+    background-color: #FF0000;
+    -webkit-animation: pulsing 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+    -moz-animation: pulsing 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+    -ms-animation: pulsing 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+    animation: pulsing 1.25s infinite cubic-bezier(0.66, 0, 0, 1);
+    
+
+    transition: all 300ms ease-in-out;
+}
+@-webkit-keyframes pulsing {
+    to {
+        box-shadow: 0 0 0 10px rgba(232, 76, 61, 0);
+    }
+}
+
+@-moz-keyframes pulsing {
+    to {
+        box-shadow: 0 0 0 10px rgba(232, 76, 61, 0);
+    }
+}
+
+@-ms-keyframes pulsing {
+    to {
+        box-shadow: 0 0 0 10px rgba(232, 76, 61, 0);
+    }
+}
+
+@keyframes pulsing {
+    to {
+        box-shadow: 0 0 0 10px rgba(232, 76, 61, 0);
+    }
+}
+
+
+
+
+

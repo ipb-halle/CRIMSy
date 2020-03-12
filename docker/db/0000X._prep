@@ -1,0 +1,58 @@
+include(dist/etc/config_m4.inc)dnl
+/*
+ * Leibniz Bioactives Cloud
+ * Initial data 
+ * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/* 
+ * Common header to all scripts; just increment schema version
+ */
+\connect lbac 
+\connect - lbac
+\set LBAC_SCHEMA_VERSION '\'0000X\''
+
+BEGIN;
+UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
+
+
+CREATE TABLE descriptor_types (
+    id          SERIAL NOT NULL PRIMARY KEY,
+    classname   VARCHAR,
+    node_id     UUID,
+    flavour     VARCHAR,
+    description VARCHAR,
+    size        INTEGER
+);
+
+CREATE TABLE descriptor_values (
+    id                  SERIAL NOT NULL PRIMARY KEY,
+    type_id             INTEGER NOT NULL REFERENCES descriptor_types ( id ),
+    value               INTEGER NOT NULL,
+    output_column       INTEGER DEFAULT NULL,
+    UNIQUE(type_id, value)
+);
+
+CREATE TABLE neural_networks (
+    id                  UUID NOT NULL PRIMARY KEY,
+    node_id             UUID NOT NULL REFERENCES nodes,
+    description         VARCHAR NOT NULL,
+    flavour             VARCHAR NOT NULL,
+    name                VARCHAR NOT NULL,
+    path                VARCHAR 
+);
+
+COMMIT;

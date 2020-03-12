@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>456</x>
+      <y>352</y>
+      <w>152</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>nodes
+--
+id:UUID [PK,NN]
+baseUrl:varchar [NN]
+institution:varchar [NN]
+local:bool [NN]
+publicNode:bool [NN]
+rank:int [NN]
+version:varchar [NN]
+publickey:varchar [NN]</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>920</x>
+      <y>328</y>
+      <w>216</w>
+      <h>296</h>
+    </coordinates>
+    <panel_attributes>usersGroups
+--
+id:UUID [PK,NN]
+memberType:Varchar(1) [NN]
+subSystemType:int
+subSystemData:varchar
+modified:timestamp
+node_id:UUID
+login_varchar
+name:varchar
+email:varchar
+password:varchar
+phone:varchar
+
+--
+memberTypes:
+G - Group
+U - User
+
+subSystemType:
+0 - BuildIn
+1 - Local
+2 -
+3 -
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>400</y>
+      <w>336</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+node_id 
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;20.0;400.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>192</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Autor        Fabian Mauz
+Last Edit    2019-10-02
+--
+database shemata
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1264</x>
+      <y>384</y>
+      <w>216</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>memberships
+--
+id:UUID [PK,NN]
+group_id:UUID [NN]
+user_id:UUID [NN]
+nested:bool [NN]
+--
+Constrains:
+Unique (group_id,member_id)
+--
+Indices:
+i_memberships_group(group_id)
+i_memberships_member(member_id)
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1128</x>
+      <y>400</y>
+      <w>152</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+group_id
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;20.0;170.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1128</x>
+      <y>432</y>
+      <w>152</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+user_id
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;20.0;170.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1272</x>
+      <y>608</y>
+      <w>232</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>membership_nestingpathsets
+--
+membership_id:UUID [NN]
+nestingpathset_id:UUID [NN]
+--
+Constrains:
+Unique (nestingpathset_id, membership_id)
+
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1320</x>
+      <y>768</y>
+      <w>120</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>nestingpathsets
+--
+id:UUID [PK,NN]
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1360</x>
+      <y>528</y>
+      <w>128</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+membership_id
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1360</x>
+      <y>696</y>
+      <w>128</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+nestingpathset_id 
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>424</x>
+      <y>792</y>
+      <w>192</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>aclists
+--
+id:UUID [PK]
+name:varchar
+node_id:UUID
+modified:timestamp
+permCode:int
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>520</x>
+      <y>488</y>
+      <w>128</w>
+      <h>320</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+node_id 
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;380.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>920</x>
+      <y>776</y>
+      <w>192</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>acentries
+--
+aclist_id:UUID [NN]
+memberlist_id:UUID [NN]
+permRead:bool [NN]
+permEdit:bool [NN]
+permCreate:bool [NN]
+permDelete:bool [NN]
+permChown:bool [NN]
+permGrant:bool [NN]
+permSuper:bool [NN]
+--
+Constraints:
+PK (aclist_id.member_id)
+
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>608</x>
+      <y>848</y>
+      <w>328</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+aclist_id
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;20.0;390.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1000</x>
+      <y>616</y>
+      <w>128</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+member_id
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;200.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>680</x>
+      <y>608</y>
+      <w>192</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>info
+--
+key:varchar [NN,PK]
+value:varchar
+owner_id:UUID
+aclist_id:UUID
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>768</x>
+      <y>472</y>
+      <w>168</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+owner_id
+CASCADE : DELETE
+</panel_attributes>
+    <additional_attributes>190.0;20.0;10.0;20.0;10.0;170.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>552</x>
+      <y>680</y>
+      <w>232</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+aclist_id
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>10.0;140.0;10.0;50.0;270.0;50.0;270.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>128</x>
+      <y>352</y>
+      <w>192</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>collections
+--
+id:UUID [NN,PK]
+description:varchar
+name:varchar
+indexPath:varchar
+storagePath:varchar
+node_id:UUID [NN]
+owner_id:UUID [NN]
+aclist_id:UUID [NN]
+
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>288</x>
+      <y>472</y>
+      <w>152</w>
+      <h>424</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+aclist_id 
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>170.0;500.0;10.0;500.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>312</x>
+      <y>408</y>
+      <w>160</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+node_id 
+CASCADE : DELETE</panel_attributes>
+    <additional_attributes>180.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>256</y>
+      <w>696</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+owner_id
+CASCADE : DELETE
+</panel_attributes>
+    <additional_attributes>850.0;90.0;850.0;20.0;10.0;20.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>512</x>
+      <y>48</y>
+      <w>192</w>
+      <h>176</h>
+    </coordinates>
+    <panel_attributes>files
+--
+id:UUID [PK,NN]
+name:varchar [NN]
+filename:varchar [NN]
+hash:varchar
+created:timestamp
+user_id:UUID
+termvectors:jsonb
+collection_id:UUID [NN]
+--
+Indices:
+idxTvTf (termvectors);
+
+
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>128</y>
+      <w>368</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+collection_id
+CASCADE : NONE</panel_attributes>
+    <additional_attributes>10.0;280.0;10.0;10.0;440.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>696</x>
+      <y>128</y>
+      <w>424</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+user_id 
+CASCADE : SET NULL</panel_attributes>
+    <additional_attributes>370.0;250.0;370.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1104</x>
+      <y>976</y>
+      <w>192</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>info
+--
+key:varchar
+value:varchar
+owner_id:UUID
+aclist_id:UUID
+
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1120</x>
+      <y>616</y>
+      <w>72</w>
+      <h>376</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+owner_id
+</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;450.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>608</x>
+      <y>872</y>
+      <w>512</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+aclist_id
+</panel_attributes>
+    <additional_attributes>10.0;10.0;180.0;10.0;180.0;170.0;620.0;170.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1104</x>
+      <y>1112</y>
+      <w>192</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>topics
+--
+id:UUID
+name:varchar
+category:varchar
+owner_id:UUID
+aclist_id:UUID
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1128</x>
+      <y>576</y>
+      <w>224</w>
+      <h>584</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+owner_id
+</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0;110.0;440.0;260.0;440.0;260.0;710.0;210.0;710.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>608</x>
+      <y>888</y>
+      <w>512</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+aclist_id
+</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;10.0;160.0;330.0;620.0;330.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1400</x>
+      <y>1112</y>
+      <w>192</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>postings
+--
+id:UUID
+text:varchar
+owner_id:UUID
+topic_id:UUID
+created:datetime
+halign=left</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1288</x>
+      <y>1144</y>
+      <w>128</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+topic_id</panel_attributes>
+    <additional_attributes>10.0;20.0;140.0;20.0</additional_attributes>
+  </element>
+</diagram>

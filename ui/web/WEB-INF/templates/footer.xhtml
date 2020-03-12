@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:body>
+    <ui:composition>
+        <footer>
+            <b:row styleClass="globalinfo">
+                <b:column span="4" offset="2">
+                    <h:outputText value="LBAC-Version: #{versions.buildNumber} &lt;br /&gt;"
+                                  escape="false"/>
+                    <h:outputLink value="dsgvo.xhtml" target="_blank">Datenschutzerklärung</h:outputLink>
+                </b:column>
+                <b:column span="4" offset="2">
+                    <h:outputText value="&#xA9; 2020 Leibniz-Institut für Pflanzenbiochemie  &lt;br /&gt;"
+                                  escape="false"/>
+                    <h:outputText value="Licensed under the ">
+                    </h:outputText>
+                    <h:outputLink value="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
+                        Apache License, Version 2.0
+                    </h:outputLink>
+                </b:column>
+            </b:row>
+        </footer>
+    </ui:composition>
+</h:body>
+</html>

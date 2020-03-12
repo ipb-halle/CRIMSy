@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+ 
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ 
+-->
+
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+
+    <persistence-unit name="de.ipb_halle.lbac" transaction-type="JTA">
+        <!-- transaction-type="RESOURCE_LOCAL" -->
+        <description>LBAC api</description>
+        <jta-data-source>apiDS</jta-data-source>
+
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!--    <class>de.ipb_halle.lbac.api.ACObject</class> -->
+        <class>de.ipb_halle.lbac.entity.ACEntryEntity</class>
+        <class>de.ipb_halle.lbac.entity.ACListEntity</class>
+        <class>de.ipb_halle.lbac.entity.CloudEntity</class>
+        <class>de.ipb_halle.lbac.entity.CloudNodeEntity</class>
+        <class>de.ipb_halle.lbac.entity.CollectionEntity</class>
+        <class>de.ipb_halle.lbac.entity.FileObjectEntity</class>
+        <class>de.ipb_halle.lbac.entity.GroupEntity</class>
+        <class>de.ipb_halle.lbac.entity.InfoObjectEntity</class>
+        <class>de.ipb_halle.lbac.entity.MemberEntity</class>
+        <class>de.ipb_halle.lbac.entity.MembershipEntity</class>
+        <class>de.ipb_halle.lbac.entity.NestingPathEntity</class>
+        <class>de.ipb_halle.lbac.entity.NestingPathSetEntity</class>
+        <class>de.ipb_halle.lbac.entity.NodeEntity</class>
+        <class>de.ipb_halle.lbac.entity.UserEntity</class>
+        <class>de.ipb_halle.lbac.forum.TopicEntity</class>
+        <class>de.ipb_halle.lbac.forum.PostingEntity</class>
+        <class>de.ipb_halle.lbac.entity.TermVectorEntity</class>
+        
+      
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+
+            <property name="hibernate.archive.autodetection" value="class"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
+
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.flushMode" value="FLUSH_AUTO"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+
+            <property name="tomee.jpa.cdi" value="false"/> 
+        </properties>
+
+    </persistence-unit>
+</persistence> 
+

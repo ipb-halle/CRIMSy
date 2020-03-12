@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+
+    <h:body>
+        <ui:composition>
+            <h2>#{msgs.groupMgr_formTitle}</h2>
+
+            <!-- group details -->
+
+            <b:modal id="modalGroupDialog" title="#{groupMgrBean.dialogTitle}" styleClass="modalGroupDialog"
+                     backdrop="false"
+                     close-on-escape="false">
+                <b:form id="frmModalGroupDialog" horizontal="true">
+
+                    <h:outputText
+                        value="#{msgs.groupMgr_viewOnly}" 
+                        rendered="#{groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL'}"/>
+
+                    <b:inputText id="id"
+                                 value="#{groupMgrBean.getGroup().id}"
+                                 label="Id"
+                                 renderLabel="true"
+                                 disabled="true"
+                                 required="false">
+                        <f:facet name="prepend">
+                            <b:icon name="cloud"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="name"
+                                 value="#{groupMgrBean.getGroup().name}"
+                                 label="#{msgs.Name}"
+                                 disabled="#{groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL'}"
+                                 renderLabel="true"
+                                 placeholder="#{msgs.Name}"
+                                 required="true">
+                        <f:facet name="prepend">
+                            <b:iconAwesome name="users"/>
+                        </f:facet>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputText id="subsystem"
+                                 value="#{groupMgrBean.getGroup().getSubSystemType().toString()}"
+                                 label="#{msgs.Type}"
+                                 disabled="true" 
+                                 renderLabel="true">
+                    </b:inputText>
+                    <b:message for="@previous"/>
+
+                    <b:fetchBeanInfos/>
+
+                    <b:row styleClass="modal-footer">
+                        <b:button value="#{msgs.Close}" dismiss="modal"/>
+                        <b:commandButton value="#{msgs.Save}"
+                                         rendered="#{groupMgrBean.mode == 'CREATE'}"
+                                         type="submit"
+                                         ajax="true"
+                                         update="@form frmGroupList:groupList"
+                                         onclick="ajax:groupMgrBean.actionCreate();"
+                                         oncomplete="javascript:if(!validationFailed){$('.modalGroupDialog').modal('hide')};return false;"
+                                         look="primary"/>
+                        <b:commandButton value="#{msgs.Edit}"
+                                         rendered="#{groupMgrBean.mode == 'UPDATE'}"
+                                         type="submit"
+                                         ajax="true"
+                                         update="@form frmGroupList:groupList"
+                                         onclick="ajax:groupMgrBean.actionUpdate();"
+                                         oncomplete="if(!validationFailed){$('.modalGroupDialog').modal('hide')};return false;"
+                                         look="primary"/>
+                        <b:commandButton value="#{msgs.Delete}"
+                                         rendered="#{groupMgrBean.mode == 'DELETE'}"
+                                         update="frmGroupList:groupList"
+                                         type="submit"
+                                         ajax="true"
+                                         onclick="ajax:groupMgrBean.actionDelete();"
+                                         oncomplete="$('.modalGroupDialog').modal('hide');"
+                                         look="primary"/>
+
+                    </b:row>
+                </b:form>
+            </b:modal>
+
+            <!-- group memberships -->
+
+            <b:modal id="modalMembershipDialog" title="#{msgs.groupMgr_manage_memberships}: #{groupMgrBean.group.name}" styleClass="modalMembershipDialog"
+                     backdrop="false" size="modal-lg"
+                     close-on-escape="false">
+                <b:form id="frmModalMembershipDialog" horizontal="true">
+
+                    <b:row>#{msgs.groupMgr_Members}</b:row>
+                    <b:dataTable id="membershipList"
+                                 value="#{groupMgrBean.membershipList}"
+                                 styleClass="membershipList"
+                                 striped="true"
+                                 responsive="false"
+                                 page-length="5"
+                                 page-length-menu="5,7,10,15"
+                                 customOptions="autoWidth:true"
+                                 fixedHeader="true"
+                                 var="ms"
+                                 csv="false"
+                                 columnVisibility="false">
+                        <f:facet name="header">
+                            <tr>
+                                <th colspan="5">
+                                    <b:commandButton style="padding: 0 4px;"
+                                                     value="#{msgs.userMgr_showNested}"
+                                                     iconAwesome="#{groupMgrBean.nestedFlag ? 'toggle-on' : 'toggle-off'}"
+                                                     ajax="true"
+                                                     type="link"
+                                                     update="frmModalMembershipDialog"
+                                                     onclick="ajax:groupMgrBean.actionToggleNestedFlag();" />
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>#{msgs.Name}</th>
+                                <th>#{msgs.Institution}</th>
+                                <th>#{msgs.Type}</th>
+                                <th>#{msgs.userMgr_nested}</th>
+                                <th style="min-width:30px">#{msgs.Tools}</th>
+                            </tr>
+                        </f:facet>
+
+                        <b:dataTableColumn value="#{ms.getMember().getName()}" order="asc"/>
+                        <b:dataTableColumn value="#{ms.getMember().getNode().getInstitution()}"/>
+                        <b:dataTableColumn value="#{ms.getMember().getSubSystemType().toString()}"/>
+                        <b:dataTableColumn value="#{ms.nested ? msgs.YES : msgs.NO}"/>
+                        <b:dataTableColumn>
+                            <b:commandButton style="padding: 0 4px;"
+                                             icon="trash"
+                                             look="link"
+                                             ajax="true"
+                                             type="button"
+                                             update="frmModalMembershipDialog"
+                                             disabled="#{ms.nested || (ms.getGroup().getSubSystemType().toString() != 'LOCAL')}"
+                                             onclick="ajax:groupMgrBean.actionDeleteMembership(ms);" />
+                        </b:dataTableColumn>
+                    </b:dataTable>
+
+
+                    <b:row>#{msgs.groupMgr_AvailableMembers}</b:row>
+                    <b:dataTable id="memberList"
+                                 value="#{groupMgrBean.availableMemberList}"
+                                 styleClass="memberList"
+                                 striped="true"
+                                 responsive="false"
+                                 page-length="5"
+                                 page-length-menu="5,7,10,15"
+                                 customOptions="autoWidth:true"
+                                 fixedHeader="true"
+                                 var="member"
+                                 csv="false"
+                                 columnVisibility="false">
+                        <f:facet name="header">
+                            <tr>
+                                <th>#{msgs.Name}</th>
+                                <th>#{msgs.Institution}</th>
+                                <th>#{msgs.Type}</th>
+                                <th style="min-width:30px">#{msgs.Tools}</th>
+                            </tr>
+                        </f:facet>
+
+                        <b:dataTableColumn value="#{member.name}" order="asc"/>
+                        <b:dataTableColumn value="#{member.getNode().getInstitution()}"/>
+                        <b:dataTableColumn value="#{member.getSubSystemType().toString()}" />
+                        <b:dataTableColumn>
+                            <b:commandButton style="padding: 0 4px;"
+                                             iconAwesome="user-plus"
+                                             look="link"
+                                             ajax="true"
+                                             type="button"
+                                             update="frmModalMembershipDialog"
+                                             onclick="ajax:groupMgrBean.actionAddMembership(member)" />
+                        </b:dataTableColumn>
+                    </b:dataTable>
+
+
+                    <b:message for="@previous"/>
+
+                    <b:fetchBeanInfos/>
+
+                    <b:row styleClass="modal-footer">
+                        <b:button value="#{msgs.Close}" dismiss="modal"/>
+                    </b:row>
+                </b:form>
+            </b:modal>
+
+
+            <!-- group list -->
+
+            <b:form id="frmGroupList">
+                <b:dataTable id="groupList"
+                             value="#{groupMgrBean.groupList}"
+                             styleClass="groupList"
+                             striped="true"
+                             responsive="false"
+                             customOptions="autoWidth:true"
+                             fixedHeader="true"
+                             var="group"
+                             csv="true"
+                             columnVisibility="true">
+                    <f:facet name="header">
+                        <tr>
+                            <th colspan="4">
+                                <b:commandButton styleClass="pull-right"
+                                                 style="margin:0 2px;"
+                                                 iconAwesome="fa-plus-circle"
+                                                 value="#{msgs.groupMgr_newGroup}"
+                                                 look="primary"
+                                                 ajax="true"
+                                                 type="button"
+                                                 update="modalGroupDialog frmModalGroupDialog"
+                                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
+                                                 onclick="ajax:groupMgrBean.setModeCreate();"
+                                                 oncomplete="$('.modalGroupDialog').modal();"/>
+                                <b:commandButton styleClass="pull-right"
+                                                 style="margin:0 2px;"
+                                                 iconAwesome="refresh"
+                                                 value="#{msgs.Refresh}"
+                                                 look="default"
+                                                 ajax="true"
+                                                 type="button"
+                                                 update="@form"
+                                                 rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
+                                                 onclick="ajax:groupMgrBean.refreshGroupList();"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>#{msgs.Name}</th>
+                            <th>#{msgs.Type}</th>
+                            <th>#{msgs.Institution}</th>
+                            <th style="min-width:50px">#{msgs.Tools}</th>
+                        </tr>
+                    </f:facet>
+                    <b:dataTableColumn value="#{group.name}" order="asc"/>
+                    <b:dataTableColumn value="#{group.getSubSystemType().toString()}"/>
+                    <b:dataTableColumn value="#{group.node.institution}"/>
+                    <b:dataTableColumn>
+                        <b:commandButton style="padding: 0 4px;"
+                                         icon="pencil"
+                                         look="link"
+                                         ajax="true"
+                                         type="button"
+                                         disabled="#{groupMgrBean.isOperationForbidden(group, 'edit')}"
+                                         update="modalGroupDialog frmModalGroupDialog"
+                                         onclick="ajax:groupMgrBean.setModeUpdate();groupMgrBean.setGroup(group);"
+                                         oncomplete="$('.modalGroupDialog').modal();"/>
+                        <!-- possibly 'modalMembershipDialog.DataTable().responsive.recalc();' could be 
+                             necessary for responsive tables within a modal form -->
+                        <b:commandButton style="padding: 0 4px;"
+                                         iconAwesome="users"
+                                         look="link"
+                                         ajax="true"
+                                         type="button"
+                                         disabled="#{groupMgrBean.isOperationForbidden(group, groupMgrBean.getOPERATIONNAME_MANAGE_MEMBERS())}"
+                                         update="modalMembershipDialog frmModalMembershipDialog"
+                                         onclick="ajax:groupMgrBean.setGroup(group);" 
+                                         oncomplete="$('.modalMembershipDialog').modal();"/>
+                        <b:commandButton style="padding: 0 4px;"
+                                         icon="trash"
+                                         look="link"
+                                         ajax="true"
+                                         type="button"
+                                         disabled="#{groupMgrBean.isOperationForbidden(group, 'delete')}"
+                                         update="modalGroupDialog frmModalGroupDialog"
+                                         onclick="ajax:groupMgrBean.setModeDelete();groupMgrBean.setGroup(group);"
+                                         oncomplete="$('.modalGroupDialog').modal();"/>
+                    </b:dataTableColumn>
+                </b:dataTable>
+            </b:form>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+>
+
+<h:body>
+    <ui:composition>
+        <b:modal id="modalcheckLDAP" styleClass="modalcheckLDAP" close-on-escape="true">
+            <b:form id="checkLdapForm" method="post">
+                <b:panel title="#{msgs.admission_ldap_test}" collapsible="false" look="info">
+                    <b:inputText value="#{ldapTestBean.ldapLogin}" label="#{msgs.admission_loginForm_login}" required="true">
+                        <f:facet name="prepend">
+                            <b:icon name="envelope"/>
+                        </f:facet>
+                        <b:focus rendered="true"/>
+                    </b:inputText>
+                    <b:message for="@previous"/>
+                    <b:inputSecret value="#{ldapTestBean.ldapPassword}" label="#{admission_loginForm_password}" required="true">
+                        <f:facet name="prepend">
+                            <b:icon name="ok"/>
+                        </f:facet>
+                    </b:inputSecret>
+                    <b:message for="@previous"/>
+                    <b:column styleClass="text-center">
+                        <b:commandButton id="bttn_checkldap"
+                                         ajax="true"
+                                         type="button"
+                                         update="@form"
+                                         onclick="ajax:ldapTestBean.checkLdapConnect();"
+                                         value="#{msgs.admission_ldap_check}"/>
+                    </b:column>
+                    <h:outputText id="testresult" value="#{msgs.test_result}:"/>
+                    <b:message showSummary="true" showDetail="true" for="testresult" escape="false"/>
+                </b:panel>
+            </b:form>
+        </b:modal>
+        <b:panelGrid colSpans="9,3" size="sm">
+            <b:form id="ldapProperties" horizontal="true" method="post">
+                <b:panel title="LDAP Anbindung Parameter" collapsible="false" look="info">
+
+                    <b:selectBooleanCheckbox offsetMd="4" value="#{ldapProps.ldapEnabled}"
+                          caption="LDAP Authentifizierung aktivieren" ajax="true" update="@form"/>
+
+                    <ui:repeat id="ldapPropList" value="#{ldapProps.ldapProperties}" var="p" varStatus="status">
+                        <b:inputText
+                                rendered="#{p.key != 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
+                                label="#{msgs[p.key]}:"
+                                title="#{msgs[p.key.concat('_detail')]}"
+                                disabled="#{!ldapProps.ldapEnabled}"
+                                labelColMd="4" labelStyle="text-align:right;" value="#{p.value}" colMd="7">
+                            <f:facet name="append">
+                                <b:iconAwesome name="th-list"/>
+                            </f:facet>
+                        </b:inputText>
+                        <b:inputSecret
+                                rendered="#{p.key == 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
+                                disabled="#{!ldapProps.ldapEnabled}"
+                                label="#{msgs[p.key]}:"
+                                title="#{msgs[p.key.concat('_detail')]}"
+                                labelColMd="4" labelStyle="text-align:right;" value="#{p.value}" colMd="7">
+                            <f:facet name="append">
+                                <b:iconAwesome name="key"/>
+                            </f:facet>
+                        </b:inputSecret>
+                    </ui:repeat>
+                    <b:column styleClass="text-center">
+                        <b:commandButton type="button" iconAwesome="cogs" ajax="true"
+                                         onclick="$('.modalcheckLDAP').modal();"
+                                         disabled="#{!ldapProps.ldapEnabled}"
+                                         style="margin-right:3px;"
+                                         value="Test LDAP Connect"/>
+                        <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
+                                         action="#{ldapProps.save}" value="Speichern"/>
+                    </b:column>
+                </b:panel>
+            </b:form>
+        </b:panelGrid>
+    </ui:composition>
+</h:body>
+</html>
