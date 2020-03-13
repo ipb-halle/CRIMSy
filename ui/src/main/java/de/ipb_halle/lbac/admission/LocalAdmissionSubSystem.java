@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.entity.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -37,7 +37,7 @@ public class LocalAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     public LocalAdmissionSubSystem() {
         this.subSystemType = AdmissionSubSystemType.LOCAL;
-        logger = Logger.getLogger(LocalAdmissionSubSystem.class);
+        logger = LogManager.getLogger(LocalAdmissionSubSystem.class);
     }
 
     /**

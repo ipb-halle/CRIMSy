@@ -44,7 +44,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -57,7 +57,7 @@ public class DocumentSearchBean implements Serializable {
     private final int MAX_RESULTS = Integer.MAX_VALUE;
     private final int POLLING_INTERVALL_ACTIVE = 1000;
     private final int POLLING_INTERVALL_INACTIVE = 1000 * 60 * 60;
-    private final Logger logger = Logger.getLogger(DocumentSearchBean.class);
+    private final Logger logger = LogManager.getLogger(DocumentSearchBean.class);
     private int pollCounter = 0;
     private boolean tableUpdateLocked = false;
     private final List<Document> shownDocs = new ArrayList<>();

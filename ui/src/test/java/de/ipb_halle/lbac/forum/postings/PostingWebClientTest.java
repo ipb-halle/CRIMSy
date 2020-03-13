@@ -55,7 +55,7 @@ public class PostingWebClientTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("TopicsWebClientTest.war")
+        return prepareDeployment("PostingWebClientTest.war")
                 .addClass(KeyManager.class)
                 .addClass(PostingWebServiceMock.class)
                 .addClass(ForumService.class)

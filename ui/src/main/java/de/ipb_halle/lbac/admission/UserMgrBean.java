@@ -39,7 +39,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Named("userMgrBean")
 @SessionScoped
@@ -97,7 +97,7 @@ public class UserMgrBean implements Serializable {
         this.credentialHandler = new CredentialHandler();
         this.nestedFlag = false;
         this.tempPassword = "";
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

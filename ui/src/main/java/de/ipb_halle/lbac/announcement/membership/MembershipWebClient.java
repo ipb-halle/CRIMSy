@@ -26,7 +26,7 @@ import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webservice.RestApiHelper;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +46,7 @@ public class MembershipWebClient
             = RestApiHelper.getRestApiDefaultPath(MembershipWebService.class);
     
     private MembershipWebRequest membershipAnnouncement;
-    private Logger LOGGER = Logger.getLogger(this.getClass().getName());
+    private Logger LOGGER = LogManager.getLogger(this.getClass().getName());
 
     /**
      * Triggers a REST call which announces the user with all its groups.The

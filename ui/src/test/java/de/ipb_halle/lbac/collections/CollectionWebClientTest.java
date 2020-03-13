@@ -54,7 +54,7 @@ import java.security.PublicKey;
 import java.util.Base64;
 import java.util.List;
 import javax.inject.Inject;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;

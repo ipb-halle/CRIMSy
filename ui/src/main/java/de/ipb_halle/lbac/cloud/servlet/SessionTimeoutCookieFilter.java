@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.cloud.servlet;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -42,7 +42,7 @@ public class SessionTimeoutCookieFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        logger = Logger.getLogger(SessionTimeoutCookieFilter.class);
+        logger = LogManager.getLogger(SessionTimeoutCookieFilter.class);
     }
 
     @Override

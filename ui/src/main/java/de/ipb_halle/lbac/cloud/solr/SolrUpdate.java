@@ -27,7 +27,7 @@ import java.io.File;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
@@ -40,7 +40,7 @@ public class SolrUpdate {
     private FileService fs;
 
     public SolrUpdate() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.fs = new FileService();
     }
 

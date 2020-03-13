@@ -29,7 +29,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class SolrTermVectorSearch {
@@ -39,7 +39,7 @@ public class SolrTermVectorSearch {
     private Logger logger;
     
     public SolrTermVectorSearch() {
-        logger = Logger.getLogger(SolrTermVectorSearch.class);
+        logger = LogManager.getLogger(SolrTermVectorSearch.class);
     }
 
     /**

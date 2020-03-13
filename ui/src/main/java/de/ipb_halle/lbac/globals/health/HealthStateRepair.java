@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
 import de.ipb_halle.lbac.service.CollectionService;
 import java.util.UUID;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Tries to repair some discrepancies found by the healtcheck procedere
@@ -38,7 +38,7 @@ public class HealthStateRepair {
 
     private String publicCollectionName;
     private Collection publicCollection;
-    private Logger logger = Logger.getLogger(HealthStateRepair.class);
+    private Logger logger = LogManager.getLogger(HealthStateRepair.class);
     private HealthState healthState;
     private Node localNode;
     private CollectionService collectionService;

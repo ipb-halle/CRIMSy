@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Represents a list of termvectors and its frequency with the representations
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 public class TermFrequencyList {
 
     private List<TermFrequency> termFreq = new ArrayList<>();
-    private Logger logger = Logger.getLogger(TermFrequencyList.class);
+    private Logger logger = LogManager.getLogger(TermFrequencyList.class);
     private List<StemmedWordOrigin> unstemmedWords = new ArrayList<>();
 
     /**

@@ -42,7 +42,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class TermVectorEntityService implements Serializable {
@@ -107,7 +107,7 @@ public class TermVectorEntityService implements Serializable {
      */
     @PostConstruct
     public void FileEntityServiceInit() {
-        logger = Logger.getLogger(this.getClass());
+        logger = LogManager.getLogger(this.getClass());
         if (em == null) {
             logger.error("Injection failed for Entitimanager em.");
         }

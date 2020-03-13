@@ -46,7 +46,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class MembershipService implements Serializable {
@@ -66,7 +66,7 @@ public class MembershipService implements Serializable {
      * default constructor
      */
     public MembershipService() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

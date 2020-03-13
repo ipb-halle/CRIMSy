@@ -59,7 +59,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Provides a webservice endpoint for propagating user and groups from a local
@@ -89,7 +89,7 @@ public class MembershipWebService extends LbacWebService {
      * default constructor
      */
     public MembershipWebService() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     @PostConstruct

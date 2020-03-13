@@ -44,7 +44,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -67,7 +67,7 @@ public class SolrSearcher {
     private Logger logger;
 
     public SolrSearcher() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

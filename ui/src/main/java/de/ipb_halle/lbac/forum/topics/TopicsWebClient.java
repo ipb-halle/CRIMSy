@@ -35,7 +35,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -47,7 +47,7 @@ public class TopicsWebClient extends
         LbacWebClient {
     
     private final static String REST_PATH = getRestApiDefaultPath(TopicsWebService.class);
-    private Logger logger = Logger.getLogger(TopicsWebClient.class);
+    private Logger logger = LogManager.getLogger(TopicsWebClient.class);
     
     @Inject
     private CloudNodeService cloudNodeService;

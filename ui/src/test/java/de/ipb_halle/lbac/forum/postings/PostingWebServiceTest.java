@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.collections.CollectionWebService;
 import de.ipb_halle.lbac.collections.PermissionEditBean;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SolrSearcher;
@@ -47,6 +48,7 @@ import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
@@ -91,7 +93,6 @@ public class PostingWebServiceTest
         initializeKeyStoreFactory();
     }
 
-    @Ignore
     @Test
     public void testPostingWebService() throws Exception {
         User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
@@ -110,31 +111,17 @@ public class PostingWebServiceTest
         Response resp = postingWebService.addPosting(wr);
     }
 
+    @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("PostingWebServiceTest.war")
                 .addClass(GlobalAdmissionContext.class)
                 .addClass(KeyManager.class)
-                .addClass(CollectionWebService.class)
-                .addPackage(CollectionService.class.getPackage())
-                .addClass(NodeService.class)
-                .addClass(KeyManager.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
-                .addPackage(WordCloudWebService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
-                .addPackage(CollectionBean.class.getPackage())
-                .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(PermissionEditBean.class.getPackage())
-                .addPackage(UserBean.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
-                .addPackage(Navigator.class.getPackage())
-                .addPackage(Updater.class.getPackage())
-                .addClass(SolrTermVectorSearch.class)
-                .addClass(MembershipOrchestrator.class)
-                .addClass(FileService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(WebRequestAuthenticator.class);
+                .addClass(WebRequestAuthenticator.class)
+                .addClass(PostingWebService.class)
+                .addClass(ForumService.class)
+                .addClass(PostingWebClient.class);
 
     }
 }

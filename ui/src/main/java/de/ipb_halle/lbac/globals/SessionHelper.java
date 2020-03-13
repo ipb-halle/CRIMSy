@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 public class SessionHelper implements Serializable {
 
@@ -36,7 +36,7 @@ public class SessionHelper implements Serializable {
     private Logger logger;
 
     public SessionHelper() {
-        logger = Logger.getLogger(SessionHelper.class);
+        logger = LogManager.getLogger(SessionHelper.class);
     }
 
     public User getCurrentUser() {

@@ -26,7 +26,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Named("cloudNodeBean")
 @SessionScoped
@@ -49,7 +49,7 @@ public class CloudNodeBean implements Serializable {
      * default constructor
      */
     public CloudNodeBean() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

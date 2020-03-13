@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Checks some basic preconditions for start of the programm.
@@ -41,7 +41,7 @@ public class HealthStateCheck {
 
     private final String DB_SCHEMA_KEY = "DBSchema Version";
 
-    private final Logger logger = Logger.getLogger(HealthStateCheck.class);
+    private final Logger logger = LogManager.getLogger(HealthStateCheck.class);
     private InfoObjectService infoObjectService;
     private SolrAdminService solrAdminService;
     private FileService fileService;

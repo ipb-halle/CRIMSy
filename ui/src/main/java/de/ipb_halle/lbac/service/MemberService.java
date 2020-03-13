@@ -45,7 +45,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class MemberService implements Serializable {
@@ -63,7 +63,7 @@ public class MemberService implements Serializable {
     private Logger logger;
 
     public MemberService() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

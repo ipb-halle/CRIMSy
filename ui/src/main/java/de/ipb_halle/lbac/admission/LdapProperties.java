@@ -39,7 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.Context;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 //@ManagedBean(name = "ldapProps")
 @Named("ldapProps")
@@ -79,7 +79,7 @@ public class LdapProperties implements Serializable {
      * default constructor
      */
     public LdapProperties() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.ldapProperties = new ArrayList<InfoObject>();
         this.ldapPropertyKeys = new HashMap<String, Integer>();
     }
@@ -87,7 +87,7 @@ public class LdapProperties implements Serializable {
     public LdapProperties(
             List<InfoObject> infoEntities,
             HashMap<String, Integer> propertyKeys) {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.ldapProperties = infoEntities;
         this.ldapPropertyKeys = propertyKeys;
     }

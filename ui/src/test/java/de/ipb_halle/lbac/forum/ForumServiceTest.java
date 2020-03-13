@@ -35,8 +35,8 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,8 +63,9 @@ public class ForumServiceTest extends TestBase {
 
     }
 
-    @After
-    public void finish() {
+    @Before
+    public void setUp() {
+        super.setUp();
         entityManagerService.doSqlUpdate("DELETE FROM postings");
         entityManagerService.doSqlUpdate("DELETE FROM topics");
         entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id>1");
@@ -117,7 +118,7 @@ public class ForumServiceTest extends TestBase {
     }
 
     /**
-     * Needs test01 executed before to success
+     *
      */
     @Test
     public void test02_addPostingToTopic() throws Exception {
@@ -145,10 +146,12 @@ public class ForumServiceTest extends TestBase {
     }
 
     /**
-     * Needs test01 and test02 executed before to success
+     *
      */
     @Test
     public void test03_loadReadableTopics() {
+
+        // entityManagerService.doSqlQuery("DELETE FROM ")
         User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         Cloud cloud1 = cloudService.load().get(0);
         Cloud cloud2 = new Cloud();

@@ -33,7 +33,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
@@ -45,7 +45,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     public LdapAdmissionSubSystem() {
         this.subSystemType = AdmissionSubSystemType.LDAP;
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

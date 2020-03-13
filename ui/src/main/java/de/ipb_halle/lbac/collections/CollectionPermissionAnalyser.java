@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -32,7 +32,7 @@ public class CollectionPermissionAnalyser implements Serializable {
 
     private final String PUBLIC_COLLECTION_NAME;
     private final ACListService acListService;
-    private final Logger LOGGER = Logger.getLogger(CollectionPermissionAnalyser.class);
+    private final Logger LOGGER = LogManager.getLogger(CollectionPermissionAnalyser.class);
 
     public CollectionPermissionAnalyser(String publicColName, ACListService acListService) {
         this.PUBLIC_COLLECTION_NAME = publicColName;

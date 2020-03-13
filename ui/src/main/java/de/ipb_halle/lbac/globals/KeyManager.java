@@ -37,7 +37,7 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -57,7 +57,7 @@ public class KeyManager {
     private CloudNodeService cloudNodeService;
 
     public KeyManager() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     public PrivateKey getLocalPrivateKey(String cloudName) throws KeyStoreException, NoSuchAlgorithmException, UnrecoverableKeyException {

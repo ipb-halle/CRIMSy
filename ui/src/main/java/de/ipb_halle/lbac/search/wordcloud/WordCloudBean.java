@@ -44,7 +44,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.tagcloud.DefaultTagCloudItem;
 import org.primefaces.model.tagcloud.DefaultTagCloudModel;
@@ -64,7 +64,7 @@ public class WordCloudBean implements Serializable {
 
     private Set<String> tagList = new HashSet<>();
     private String maxTerms = "300";
-    private Logger logger = Logger.getLogger(WordCloudBean.class);
+    private Logger logger = LogManager.getLogger(WordCloudBean.class);
     private TagCloudModel model = new DefaultTagCloudModel();
     private boolean wordCloudVisible = false;
     private WordTermCategoriser categoriser;

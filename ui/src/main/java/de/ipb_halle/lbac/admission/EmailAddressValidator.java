@@ -28,7 +28,7 @@ import javax.faces.validator.FacesValidator;
 import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * This validator validates email adresses according to a fixed 
@@ -53,7 +53,7 @@ public class EmailAddressValidator implements Validator {
      */
     public EmailAddressValidator() {
         pattern = Pattern.compile(EMAIL_PATTERN);
-        logger = Logger.getLogger(this.getClass().getName());
+        logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Servlet to deliver Documents to local and remote destinations.
@@ -82,7 +82,7 @@ public class DocumentServlet extends HttpServlet {
      */
     public DocumentServlet() {
         super();
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

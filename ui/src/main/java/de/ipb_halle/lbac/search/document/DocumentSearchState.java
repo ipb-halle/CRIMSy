@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Holds the current document information from local and remote nodes and has
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  */
 public class DocumentSearchState implements Serializable {
 
-    private Logger LOGGER = Logger.getLogger(DocumentSearchState.class);
+    private Logger LOGGER = LogManager.getLogger(DocumentSearchState.class);
     private int totalDocs = 0;
     private List<Document> foundDocuments = Collections.synchronizedList(new ArrayList<>());
     private Set<UUID> unfinishedCollectionRequests = new HashSet<>();

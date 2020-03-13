@@ -31,7 +31,7 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("PasswordValidator")
 public class PasswordValidator implements Validator {
@@ -53,7 +53,7 @@ public class PasswordValidator implements Validator {
      * default constructor
      */
     public PasswordValidator() {
-        logger = Logger.getLogger(this.getClass().getName());
+        logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /*

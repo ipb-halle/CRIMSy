@@ -27,7 +27,7 @@ import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.ejb.*;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Updater schedules queries to the master node for an updated list of nodes and
@@ -54,7 +54,7 @@ public class Updater {
 
     private List<IUpdateWebClient> updateWebClients;
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
      * initalize the update timer.

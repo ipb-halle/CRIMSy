@@ -31,7 +31,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.directory.*;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 public class LdapHelper {
 
@@ -50,7 +50,7 @@ public class LdapHelper {
      */
     public LdapHelper(LdapProperties prop) {
         this.ldapProperties = prop;
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

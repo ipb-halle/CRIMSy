@@ -46,7 +46,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Triggers remote search requests and puts the results into the @see
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
 public class DocumentSearchOrchestrator implements Serializable {
 
     private final String REST_PATH = "/rest/search";
-    private final Logger logger = Logger.getLogger(this.getClass());
+    private final Logger logger = LogManager.getLogger(this.getClass());
 
     final List<CompletableFuture<DocumentSearchRequest>> taskList = new ArrayList<>();
 

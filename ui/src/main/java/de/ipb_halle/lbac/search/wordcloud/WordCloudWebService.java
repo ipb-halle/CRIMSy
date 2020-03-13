@@ -39,7 +39,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * REST endpoint for WordCloud Documents.
@@ -67,7 +67,7 @@ public class WordCloudWebService extends LbacWebService {
 
     @PostConstruct
     public void TermVectorWebServiceInit() {
-        logger = Logger.getLogger(WordCloudWebService.class);
+        logger = LogManager.getLogger(WordCloudWebService.class);
     }
 
     /**

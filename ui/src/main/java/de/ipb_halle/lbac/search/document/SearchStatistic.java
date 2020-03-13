@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.search.document;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Class for storing the amount of total docs and average words length of nodes
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  */
 public class SearchStatistic {
 
-    private final Logger LOGGER = Logger.getLogger(SearchStatistic.class);
+    private final Logger LOGGER = LogManager.getLogger(SearchStatistic.class);
     private final Map<UUID, Integer[]> wordsInNode = new HashMap<>();
 
     /**

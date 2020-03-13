@@ -49,7 +49,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @SessionScoped
 @Named("userBean")
@@ -127,7 +127,7 @@ public class UserBean implements Serializable {
     @PostConstruct
     public void init() {
         // current account
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.permissionCache = new HashMap<ResourcePermission, Boolean>();
         this.oldPassword = "";
         this.newPassword = "";

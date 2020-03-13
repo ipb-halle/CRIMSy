@@ -35,7 +35,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Manages the actions from the socialForum.xhtml
@@ -49,7 +49,7 @@ public class ForumBean implements Serializable {
     private String postingText;
     private ForumSearchState searchState = new ForumSearchState();
     private Topic activeTopic;
-    private Logger logger = Logger.getLogger(ForumBean.class);
+    private Logger logger = LogManager.getLogger(ForumBean.class);
     private PostingTextTransformator postingTrafo = new PostingTextTransformator();
     private String fullTextSearch = "";
     protected HTMLInputFilter vFilter;

@@ -30,14 +30,14 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 public class Document implements Serializable, Comparable<Document> {
 
     private final static long serialVersionUID = 1L;
     private final static String UTF8 = "UTF-8";
     private final static String UI_PATH = "/ui";
-    private Logger LOGGER = Logger.getLogger(Document.class);
+    private Logger LOGGER = LogManager.getLogger(Document.class);
 
     @JohnzonConverter(LocalUUIDConverter.class)
     private UUID id;

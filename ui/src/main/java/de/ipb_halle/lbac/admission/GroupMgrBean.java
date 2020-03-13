@@ -38,7 +38,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Named("groupMgrBean")
 @SessionScoped
@@ -83,7 +83,7 @@ public class GroupMgrBean implements Serializable {
     public GroupMgrBean() {
         this.mode = MODE.READ;
         this.nestedFlag = false;
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
 

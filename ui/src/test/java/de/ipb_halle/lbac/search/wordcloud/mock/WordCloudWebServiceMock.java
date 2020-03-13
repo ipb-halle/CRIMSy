@@ -30,7 +30,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 @Path("rest/termvector")
 public class WordCloudWebServiceMock {
 
-    private final Logger LOGGER = Logger.getLogger(WordCloudWebServiceMock.class);
+    private final Logger LOGGER = LogManager.getLogger(WordCloudWebServiceMock.class);
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

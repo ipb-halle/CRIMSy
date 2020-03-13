@@ -36,7 +36,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
@@ -51,7 +51,7 @@ public class CollectionOperation {
     private final FileService fileService;
     private final FileEntityService fileEntityService;
     private final GlobalAdmissionContext globalAdmissionContext;
-    private final Logger LOGGER = Logger.getLogger(CollectionOperation.class);
+    private final Logger LOGGER = LogManager.getLogger(CollectionOperation.class);
     private final SolrAdminService solrAdminService;
     private final NodeService nodeService;
     private final CollectionService collectionService;

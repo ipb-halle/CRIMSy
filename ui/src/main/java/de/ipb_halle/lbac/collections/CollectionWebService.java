@@ -42,7 +42,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Provides a webservice endpoint for getting collections.
@@ -57,7 +57,7 @@ public class CollectionWebService extends LbacWebService {
     @Inject
     private CollectionService collectionService;
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Inject
     private ACListService aclistService;

@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * holds the version numbers of used LBAC components
@@ -70,7 +70,7 @@ public class GlobalVersions implements Serializable {
     @PostConstruct
     public void GlobalVersionsInit(){
         try {
-            logger = Logger.getLogger(GlobalVersions.class);
+            logger = LogManager.getLogger(GlobalVersions.class);
             if (context != null) {
                 Manifest mf = new Manifest();
                 mf.read(context.getResourceAsStream("META-INF/MANIFEST.MF"));

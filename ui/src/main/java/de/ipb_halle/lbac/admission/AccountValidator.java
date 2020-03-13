@@ -34,41 +34,42 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("AccountValidator")
 public class AccountValidator implements Validator {
 
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages"; 
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     @Inject
-    private MemberService       memberService;
+    private MemberService memberService;
 
     @Inject
-    private UserMgrBean         userMgrBean;
+    private UserMgrBean userMgrBean;
 
-    private Logger  logger;
-
+    private Logger logger;
 
     /**
      * default constructor
      */
     public AccountValidator() {
-        logger = Logger.getLogger(this.getClass().getName());
+        logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**
      * check for duplicate accounts. Only local (i.e. LOCAL and LDAP) subsystems
-     * will be checked. Duplicate accounts for different institutions must be 
+     * will be checked. Duplicate accounts for different institutions must be
      * allowed (e.g. jdoe@example.com and jdoe@somewhere.com).
+     *
      * @param login the user login
      * @param id the user id of the currently processed user
      * @throws ValidatorException upon duplicate accounts or on internal failure
      */
     private void checkDuplicateAccount(String login) throws ValidatorException {
-        Map<String, Object> cmap = new HashMap<String, Object> ();
+        Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put("login", login);
-        cmap.put("subSystemType", new AdmissionSubSystemType[] { AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP } );
+        cmap.put("subSystemType", new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
 
         List<User> list = this.memberService.loadUsers(cmap);
         if (list != null) {
@@ -76,19 +77,18 @@ public class AccountValidator implements Validator {
                 // login exists but belongs to the currently managed user 
                 return;
             }
-            if (list.size() > 0) { 
+            if (list.size() > 0) {
                 throw new ValidatorException(
-                  UIMessage.getErrorMessage(MESSAGE_BUNDLE, "admission_non_unique_user", null));
+                        UIMessage.getErrorMessage(MESSAGE_BUNDLE, "admission_non_unique_user", null));
             }
             return;
         }
         throw new ValidatorException(
-          UIMessage.getErrorMessage(MESSAGE_BUNDLE, "admission_error", new Object[] { "Database access failed." }));
+                UIMessage.getErrorMessage(MESSAGE_BUNDLE, "admission_error", new Object[]{"Database access failed."}));
     }
 
-
     /**
-     * this method checks for duplicate accounts 
+     * this method checks for duplicate accounts
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -97,4 +97,3 @@ public class AccountValidator implements Validator {
         // logger.info("Finished  validation.");
     }
 }
-

@@ -37,7 +37,7 @@ import javax.faces.view.ViewScoped;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation of the api for a modal to edit the permission rights of an ac
@@ -56,7 +56,7 @@ public class PermissionEditBean implements PermissionEdit, Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     private boolean dummy = true;
-    private Logger logger = Logger.getLogger(PermissionEditBean.class);
+    private Logger logger = LogManager.getLogger(PermissionEditBean.class);
 
     public boolean isDummy() {
         return dummy;

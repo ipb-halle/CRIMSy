@@ -45,7 +45,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 
 //import javax.naming.Context;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class CollectionService {
@@ -69,7 +69,7 @@ public class CollectionService {
 
     @PostConstruct
     public void CollectionServiceInit() {
-        logger = Logger.getLogger(this.getClass().getName());
+        logger = LogManager.getLogger(this.getClass().getName());
         if (nodeService == null) {
             logger.error("Injection failed for nodeService.");
         }

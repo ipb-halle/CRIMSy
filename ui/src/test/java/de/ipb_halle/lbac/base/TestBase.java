@@ -52,7 +52,7 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -76,7 +76,7 @@ public class TestBase implements Serializable {
 
 
     @ArquillianResource 
-    private URL baseUrl;
+    protected URL baseUrl;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
@@ -134,7 +134,7 @@ public class TestBase implements Serializable {
 
     @Before
     public void setUp() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

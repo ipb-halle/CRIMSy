@@ -41,7 +41,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Singleton(name = "globalAdmissionContext")
 @Startup
@@ -100,7 +100,7 @@ public class GlobalAdmissionContext implements Serializable {
      * default constructor
      */
     public GlobalAdmissionContext() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.credentialHandler = new CredentialHandler();
         this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo> ();
     }

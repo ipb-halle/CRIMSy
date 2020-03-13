@@ -48,7 +48,7 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Controller for view templates/collectionManagement.xhtml This bean displays
@@ -96,7 +96,7 @@ public class CollectionBean implements Serializable {
     @Inject
     private DocumentSearchBean documentSearchBean;
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private enum MODE {
         CREATE, //Creates a new collection

@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation of the Okapi BM25 Ranking
@@ -43,7 +43,7 @@ public class RelevanceCalculator {
 
     public RelevanceCalculator() {
         this.searchTerms =  new HashMap<>();
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.develop = false;
         this.originalSearchTerms = new ArrayList<>();
     }

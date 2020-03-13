@@ -41,7 +41,7 @@ import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.ConnectionType;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * SecureWebClient This class configures a JAX-RS WebClient to use our keystore
@@ -61,7 +61,7 @@ public class SecureWebClientBuilder {
      * private constructor
      */
     private SecureWebClientBuilder() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.sslContext = new HashMap<String, SSLContext> ();
     }
 

@@ -24,7 +24,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *  avoid caching of static assets like *.css *.js
@@ -40,7 +40,7 @@ public class NoCacheFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        logger = Logger.getLogger(NoCacheFilter.class);
+        logger = LogManager.getLogger(NoCacheFilter.class);
     }
 
     @Override

@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.search.wordcloud;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.entity.TermFrequency;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Merges a list of wordterms with a new chunk of found documents from a remote

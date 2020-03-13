@@ -26,7 +26,7 @@ import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import java.util.List;
@@ -42,7 +42,7 @@ public class WordCloudWebClient extends LbacWebClient {
 
     private final static String REST_PATH = getRestApiDefaultPath(WordCloudWebService.class);
 
-    private Logger logger = Logger.getLogger(WordCloudWebClient.class);
+    private Logger logger = LogManager.getLogger(WordCloudWebClient.class);
 
     @Inject
     private KeyManager keyManager;

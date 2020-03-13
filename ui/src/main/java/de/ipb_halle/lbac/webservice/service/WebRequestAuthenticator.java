@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Takes a WebRequestSignature tries to authentificate it. Authentification
@@ -50,7 +50,7 @@ public class WebRequestAuthenticator {
      * default constructor
      */
     public WebRequestAuthenticator() {
-        logger = Logger.getLogger(WebRequestAuthenticator.class.getName());
+        logger = LogManager.getLogger(WebRequestAuthenticator.class.getName());
     }
 
     /**

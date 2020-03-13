@@ -35,7 +35,7 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("CollectionInputValidator")
 public class CollectionInputValidator implements Validator {
@@ -59,7 +59,7 @@ public class CollectionInputValidator implements Validator {
      */
     public CollectionInputValidator() {
         this.pattern = Pattern.compile(COLLECTION_NAME_PATTERN);
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

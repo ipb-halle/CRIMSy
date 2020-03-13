@@ -38,7 +38,7 @@ import javax.ejb.Startup;
 import javax.inject.Inject;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import javax.enterprise.context.ApplicationScoped;
@@ -73,7 +73,7 @@ public class CollectionWebClient
     protected KeyManager keyManager;
 
     public CollectionWebClient() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

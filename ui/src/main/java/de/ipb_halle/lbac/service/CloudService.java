@@ -39,7 +39,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 // import javax.persistence.Persistence;
 @Stateless
@@ -53,7 +54,7 @@ public class CloudService implements Serializable {
     private Logger logger;
 
     public CloudService() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     @PostConstruct

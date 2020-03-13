@@ -40,7 +40,7 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -71,7 +71,7 @@ public class KeyStoreFactory {
     private KeyStoreFactory() {
         this.keyStore = new HashMap<String, KeyStore> ();
         this.trustStore = new HashMap<String, KeyStore> ();
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         init();
     }
 

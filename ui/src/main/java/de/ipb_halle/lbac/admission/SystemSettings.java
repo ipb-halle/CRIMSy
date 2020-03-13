@@ -36,7 +36,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.Context;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @Named("systemSettings")
 @ApplicationScoped
@@ -66,7 +66,7 @@ public class SystemSettings implements Serializable {
      * default constructor
      */
     public SystemSettings() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
         this.stringSettings = new LinkedHashMap<String, InfoObject>();
         this.boolSettings = new LinkedHashMap<String, InfoObject>();
     }

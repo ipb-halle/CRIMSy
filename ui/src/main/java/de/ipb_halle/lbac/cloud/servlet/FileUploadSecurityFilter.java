@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @WebFilter(urlPatterns = {"/uploaddocs/*"},
         filterName = "FileUploadSecurityFilter",
@@ -39,7 +39,7 @@ public class FileUploadSecurityFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        logger = Logger.getLogger(FileUploadSecurityFilter.class);
+        logger = LogManager.getLogger(FileUploadSecurityFilter.class);
     }
 
     @Override

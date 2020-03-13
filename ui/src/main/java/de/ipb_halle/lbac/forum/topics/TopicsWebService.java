@@ -33,7 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
 @Stateless
 public class TopicsWebService extends LbacWebService {
 
-    private Logger logger = Logger.getLogger(TopicsWebService.class);
+    private Logger logger = LogManager.getLogger(TopicsWebService.class);
 
     @Inject
     private ForumService forumService;

@@ -35,7 +35,7 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 @Stateless
 public class MembershipOrchestrator {
 
-    private Logger LOGGER = Logger.getLogger(MembershipOrchestrator.class);
+    private Logger LOGGER = LogManager.getLogger(MembershipOrchestrator.class);
 
     @Inject
     protected KeyManager keymanager;

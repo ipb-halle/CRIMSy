@@ -43,7 +43,7 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Service that triggers a search for collections. The search is divided into 2
@@ -82,7 +82,7 @@ public class CollectionOrchestrator implements Serializable {
     @Resource
     ManagedExecutorService managedExecutorService;
 
-    private static final Logger LOGGER = Logger.getLogger(CollectionOrchestrator.class);
+    private static final Logger LOGGER = LogManager.getLogger(CollectionOrchestrator.class);
 
     /**
      * Checking if all injected dependencies are present.

@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @WebServlet(name = "FileUploadWebService", urlPatterns = {"/uploaddocs/*"}, asyncSupported = true)
 @MultipartConfig(maxFileSize = 1024 * 1024 * 500, maxRequestSize = 1024 * 1024 * 1000)
@@ -51,7 +51,7 @@ public class FileUploadWebService extends HttpServlet {
     private final static long UPLOAD_TIMEOUT = 30L * 60L * 1000L;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    private final Logger logger = Logger.getLogger(FileUploadWebService.class);
+    private final Logger logger = LogManager.getLogger(FileUploadWebService.class);
 
     @Inject
     private CollectionService collectionService;

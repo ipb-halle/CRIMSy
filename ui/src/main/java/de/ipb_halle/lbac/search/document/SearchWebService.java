@@ -35,7 +35,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Consumes a SearchRequest and repsones a list of matching documents
@@ -55,7 +55,7 @@ public class SearchWebService extends LbacWebService {
     @Inject
     CollectionService collectionService;
     
-    private final Logger LOGGER = Logger.getLogger(SearchWebService.class);
+    private final Logger LOGGER = LogManager.getLogger(SearchWebService.class);
     
     private boolean develop = false;
 

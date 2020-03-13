@@ -51,7 +51,7 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

@@ -42,7 +42,7 @@ import javax.xml.bind.Marshaller;
 import java.io.ByteArrayOutputStream;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 
@@ -74,7 +74,7 @@ public class CloudNodeWebClient implements IUpdateWebClient {
     private Logger logger;
     
     public CloudNodeWebClient() {
-        logger = Logger.getLogger(this.getClass().getName());
+        logger = LogManager.getLogger(this.getClass().getName());
     }
     
     @PostConstruct

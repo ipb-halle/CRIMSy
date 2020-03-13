@@ -29,7 +29,7 @@ import java.util.Comparator;
 
 import javax.ejb.Stateless;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * implements functions for file handling in a repository
@@ -45,7 +45,7 @@ public class FileService implements Serializable {
     private String uploadRootPath;
 
     public FileService() {
-        logger = Logger.getLogger(FileService.class);
+        logger = LogManager.getLogger(FileService.class);
         this.uploadRootPath = System.getProperty(pathPropName, defaultPath);
     }
 

@@ -37,7 +37,8 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import javax.annotation.Resource;
@@ -71,7 +72,7 @@ public class InitApplication {
 
     @Inject
     private FileService fs;
-    private Logger logger = Logger.getLogger(InitApplication.class);
+    private Logger logger = LogManager.getLogger(InitApplication.class);
 
     @Inject
     private KeyManager keyManager;

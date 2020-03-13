@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 public class FileUpload implements Runnable {
 
@@ -96,7 +96,7 @@ public class FileUpload implements Runnable {
             TermVectorEntityService termVectorEntityService,
             User user) throws Exception {
 
-        this.logger = Logger.getLogger(FileUpload.class);
+        this.logger = LogManager.getLogger(FileUpload.class);
         this.asyncContext = asyncContext;
         final HttpServletRequest request = (HttpServletRequest) asyncContext.getRequest();
 

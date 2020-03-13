@@ -29,7 +29,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 public class FileDeleteExec implements Runnable {
 
@@ -43,7 +43,7 @@ public class FileDeleteExec implements Runnable {
 
     public FileDeleteExec(FileObject fe, FileEntityService fes, SolrAdminService s, AsyncContext asyncContext) {
 
-        this.logger = Logger.getLogger(FileDeleteExec.class);
+        this.logger = LogManager.getLogger(FileDeleteExec.class);
         this.asyncContext = asyncContext;
         this.solrAdminService = s;
         this.fileEntity = fe;

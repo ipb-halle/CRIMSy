@@ -28,7 +28,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @ManagedBean(name = "ldapTestBean")
 @RequestScoped
@@ -50,7 +50,7 @@ public class LdapTestBean implements Serializable {
      * default constructor
      */
     public LdapTestBean() {
-        this.logger = Logger.getLogger(this.getClass().getName());
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**

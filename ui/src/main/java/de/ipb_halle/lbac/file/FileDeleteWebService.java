@@ -36,13 +36,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @WebServlet(name = "FileDeleteWebService", urlPatterns = {"/deletedocs/*"}, asyncSupported = true)
 public class FileDeleteWebService extends HttpServlet {
 
     private final static long   serialVersionUID = 1L;
-    private final        Logger logger           = Logger.getLogger(FileDeleteWebService.class);
+    private final        Logger logger           = LogManager.getLogger(FileDeleteWebService.class);
 
     @Inject
     private CollectionService collectionService;
