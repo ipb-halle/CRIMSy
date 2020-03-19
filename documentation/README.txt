@@ -1,15 +1,15 @@
-Dokumentation in (GitHub flavoured?) Markdown
-============================================
+Dokumentation in Markdown
+=========================
 
 
 Erzeugung von PDFs 
 ------------------
 
-   pandoc --from gfm *.md -o x.pdf
+   pandoc *.md -o x.pdf
 
-Achtung: Das Format gfm unterstuetzt nur wenige pandoc-Plugins; grid_table ist 
-nicht darunter. Entsprechend ist die Formatierung von Tabellen schwierig, sobald 
-Zeilenumbrueche in Tabellenzellen vorkommen sollen. Ggf. anderes Format benutzen.
+Achtung: Das Format gfm unterstuetzt nur wenige pandoc-Plugins; komplexere Tabellen 
+sind nicht darunter. Entsprechend ist die Formatierung von Tabellen schwierig, sobald 
+Zeilenumbrueche in Tabellenzellen vorkommen sollen. Daher normales" Markdown.
 
 
 Erzeugung von HTML
