@@ -2,16 +2,14 @@
 Dieses Kapitel beschreibt das System als eine Sammlung von Bausteinen (Module, Komponenten, Klassen, Intefaces, usw.) und ihre Beziehungen, beginnend mit der obersten Ebene (Top-Down). 
 
 ![Bausteine](img/Bausteine_1.svg "Bausteinübersicht")
-Die vorstehende Abbildung zeigt das vollständige Ökosystem der Leibniz Bioactives Cloud aus der Sicht eines Knotens. Die Pfeilrichtung zeigt immer an, aus von welchem Partner eine Verbindung aufgebaut wird. Insbesondere schließt die Darstellung die für die Initialisierung benötigten Komponenten mit ein. Bei den meisten auf dieser Ebene gezeigten Bausteinen handelt es sich um Standardkomponenten (z.B. Nutzer-PCs, normale Webserver, Software-Repositories usw.), die keiner weiteren Erläuterung oder Konfiguration bedürfen. Näherer Erläuterung bedürfen insbesondere die Bausteine
+Die vorstehende Abbildung zeigt das vollständige Ökosystem der Leibniz Bioactives Cloud aus der Sicht eines Knotens. Die Pfeilrichtung zeigt immer an, aus von welchem Partner eine Verbindung aufgebaut wird. Insbesondere schließt die Darstellung die für die Initialisierung benötigten Komponenten mit ein. Bei den meisten auf dieser Ebene gezeigten Bausteinen handelt es sich um Standardkomponenten (z.B. Nutzer-PCs, normale Webserver, Software-Repositories usw.), die keiner weiteren Erläuterung oder Konfiguration bedürfen. In den folgenden Abschnitten sind daher nur die Bausteine
 
 * **Knoten**
-  Die Knoten sind die dezentralen Elemente der Leibniz Bioactives Cloud und stellen die Funktionen der Cloud zur Verfügung
+  Die Knoten sind die dezentralen Elemente der Leibniz Bioactives Cloud und stellen die Funktionen der Cloud zur Verfügung. Dieser Abschnitt vermittelt eine Übersicht, welche Komponenten in einem Knoten zusammenarbeiten. Auf die eigentliche Webanwendung wird aufgrund der besseren Übersicht in einem separaten Abschnitt eingegangen.
 * **Entwickler-PC**
   Der Entwickler-PC erfüllt die Aufgabe, aus dem Quellcode im Source-Code-Repository und der vom Administrator bereitgestellten Konfiguration ein individualisieres Installationspaket zu erzeugen. Ausserdem ist auf diesem Gerät die Leibniz-Bioactives Cloud-CA lokalisiert, die eine zentrale Rolle bei der Absicherung der Cloud spielt.
-* **PC / Browser**
-  Der PC bzw. Browser des Nutzers ist das Nutzerinterface zur Leibniz Bioactives Cloud. Neben der Kommunikation mit dem lokalen Knoten findet keine weitere Kommunikation statt; verwendete Bibliotheken wie JQuery, Bootsfaces, Stylesheets usw. werden auf dem lokalen Knoten gespiegelt.
-
-Die Details zu Knoten und dem Entwickler-PC werden in den folgenden Abschnitten beschrieben.
+* **Webanwendung**
+ Die Webanwendung ist eine Java Enterprise Edition Webanwendung, die letztendlich das Zusammenspiel der Knoten in der Cloud als auch der Komponenten innerhalb des Knotens steuert und die den Anwendern die Services zur Verfügung stellt. Während die übrigen Komponenten weitgehend fremdgefertigt sind und daher als Blackbox betrachtet werden können, steckt der größte Teil der Entwicklungsarbeit in dieser Komponente.
 
 ## Bausteinsicht: Knoten
 Die Cloud-Knoten in ihrer Gesamtheit bilden die Cloud. Jeder Knoten setzt sich aus verschiedenen Bestandteilen zusammen, um die benötigten Funktionen ausführen zu können. Die Cloud-Knoten sind weitgehend gleichberechtigt; ein Knoten fungiert jedoch als Master-Knoten und verteilt die Liste der bekannten Knoten.
@@ -189,61 +187,4 @@ Die spezifische Anwendungslogik der Leibniz Bioactives Cloud befindet sich grö�
 *  Installation der Leibniz Bioactives Cloud Webapp (ui.war)
 
 Als Enterprise Java Web Application Server stellt TomEE mithilfe von Hibernate die transaktionskontrollierte Persistierung der Java-Objekte sicher. Im Laufe der Entwicklung hat sich gezeigt, dass die Datenbankcredentials dafür am besten in der globalen Konfigurationsdatei tomee.xml hinterlegt werden. Die DataSource-Konfiguration für Hibernate innerhalb der Webanwendung (über hibernate.cfg.xml) hat sich demgegenüber nicht bewährt.
-
-## Entwickler-PC
-Auf dem Entwickler-PC sind mehrere Komponenten vereint:
-
-* ein Clon des CRIMSy Git-Repository 
-* ein Entwicklungssystem (mindestens Maven und JDK)
-* OpenSSL und das camgr.sh-Skript aus dem Repository zur Verwaltung der CA
-* etwas Speicher zur persistenten Speicherung der Konfiguration und der Zertifikate
-
-### camgr.sh
-Viele Funktionen der Cloud werden über Zertifikate abgesichert. Mit dem Skript `util/bin/camgr.sh` kann diese Public Key Infrastruktur (PKI) verwaltet werden. Die funktionen des Skripts sind im einzelnen:
-
-* die Erzeugung der Root-CA
-* die Erzeugung und Ausstellung von Zertifikaten für Sub-CAs
-* die Ausstellung von Zertifikaten für die Maschine-zu-Maschine-Kommunikation
-* die Ausstellung von Entwicklerzertifikaten für Codesigning und (Email-)Verschlüsselung
-* die Anzeige der momentan gültigen Zertifikate
-* der Widerruf von Zertifikaten und die Erstellung einer Certificate Revocation List
-* die Festlegung des Code Distribution Point (d.h. Download-URL für die Installationspakete und Updates)
-* die Erstellung von Java-Truststores mittels des keytool-Utility der JRE
-
-Einige Funktionen des Scripts können interaktiv über Menü genutzt werden:
-
-![Hauptmenü](img/camgr_01.PNG)
-Einige Funktionen (z.B. die Erzeugung von Zertifikaten für die Maschine-zu-Maschine-Kommunikation) sind auch über Kommandozeile zugänglich. Das Skript stellt dabei im wesentlichen einen Wrapper für OpenSSL dar und legt bestimmte Konfigurationsparameter für OpenSSL fest (z.B. Schlüssellänge, Digest-Algorithmus, Gültigkeitszeitraum, Key Usage usw.).
-
-#### On Disk Layout
-Das Skript `camgr.sh` erwartet seine Konfigurationsdaten im Verzeichnis `config/CA/` (Root-CA) bzw. `config/CLOUD_NAME/CA` (Cloud-CA), relativ zu einem Checkout des CRIMSy Git-Repositories: 
-
-    + config/
-      + CA/
-        + certs/
-        + crl/
-        + devcert/
-        + lbac/
-        + req/
-        + ca.cfg
-        + cloud.cfg
-        + index.cloud
-        + index.txt
-        + cacert.key
-        + cacert.passwd
-        + cacert.pem
-        + serial.txt
-        + [...]
-    + util/
-      + bin/
-        + camgr.sh
-
-#### Kommandozeile
-Das Skript kann mit Kommandozeilenoptionen aufgerufen werden, um:
-
-* eine Certificate Revocation List (CRL) zu erzeugen und sie zum Distributions-Server hochzuladen
-* einen Certificate Request zu signieren
-* einen Truststore zu erzeugen
-
-Eine Übersicht über die verfügbaren Kommandozeilenparameter erhält man mit der Option `--help`.
 
