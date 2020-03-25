@@ -3,6 +3,8 @@ Dieses Handbuch unternimmt den Versuch die Architektur und die Gründe für dive
 
 © We acknowledge that this document uses material from the arc 42 architecture template, http://www.arc42.de. Created by Dr. Peter Hruschka & Dr. Gernot Starke.
 
+Disclaimer: In dieser Dokumentation werden Marken, Produkt- und Warenzeichen ohne besondere Kennzeichnung benutzt. 
+
 ![Logo](img/lbac_logo.20161110a_small.png)
 CRIMSy (Cloud Resource & Information Management System) war und ist gewissermaßen das 'Betriebssystem der Leibniz Bioactives Cloud'. Großzügig durch den Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie" gefördert, startete das Projekt als "Leibniz Bioactives Cloud" (daher an vielen Stellen die Abkürzung "LBAC"). Ein neuer Name wurde notwendig, weil auch andere Verbünde bzw. Allianzen Interesse an der Nutzung und Weiterentwicklung der Software angemeldet haben. Stand März 2020 fördern der _[Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie"](https://www.leibniz-wirkstoffe.de/)_ und der _[Interdisziplinäre Verbund "Autonomie im Alter"](http://autonomie-im-alter.ovgu.de)_ die Weiterentwicklung der Software.
 
