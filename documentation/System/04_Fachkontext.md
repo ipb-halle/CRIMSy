@@ -2,21 +2,26 @@
 Dieses Kapitel listet alle beteiligten Kommunikationspartner (Nutzer und IT-Systeme) auf und beschreibt die verwendeten Ein- und Ausgabedaten sowie die verwendeten Protokolle. Die Darstellung beginnt mit dem Blick auf das Gesamtsystem geht im weiteren Verlauf auf die Details ein.
 
 ![Cloud Architecture](img/BigPicture.svg "Big picture: cloud architecture")
+Der ursprüngliche Ansatz, die Leibniz Bioactives Cloud, zeichnet sich dadurch aus, dass die Cloud durch mehrere Knoten gebildet wird, wobei von jeder beteiligten Institution ein eigener Knoten beigesteuert wird.  Dieser Knoten kann von den Nutzern des jeweiligen Instituts per Internet-Browser kontaktiert werden (orange Pfeile) und steht mit allen Knoten der übrigen Institute über eine verschlüsselte Verbindung (blaue Pfeile) in Verbindung. Die Knoten sind dabei weitgehend gleichberechtigt. Die einzige Ausnahme ist, dass ein Server als Master-Knoten fungiert, indem er ein Verzeichnis aller Knoten zur Verfügung stellt. Die Master-Rolle kann jedoch prinzipiell von jedem Knoten übernommen werden.
 
-Die Leibniz Bioactives Cloud wird durch die beteiligten Institute gebildet, indem jedes Institut einen Knoten zur Verfügung stellt. Dieser Knoten kann von den Nutzern des jeweiligen Instituts per Internet-Browser kontaktiert werden (orange Pfeile) und steht mit allen Knoten der übrigen Institute über eine verschlüsselte Verbindung (blaue Pfeile) in Verbindung. Die Knoten sind dabei weitgehend gleichberechtigt. Die einzige Ausnahme ist, dass ein Server als Master-Knoten fungiert, indem er ein Verzeichnis aller Knoten zur Verfügung stellt. Die Master-Rolle kann jedoch prinzipiell von jedem Knoten übernommen werden.
-
-Als Verbindungsprotokoll kommt ausschließlich HTTP mit TLSv1.2-Verschlüsselung (ggf. auch aktuellere Versionen) zum Einsatz. Die Zertifikate für Maschine-zu-Maschine-Kommunikation (also der Knoten untereinander) werden von einer speziellen CA (der Leibniz Bioactives Cloud CA) ausgestellt, während für die Kommunikation mit den Browsern der Nutzer Zertifikate weithin anerkannter CAs (z.B. DFN PKI) verwendet werden sollen. Als weitere Sicherung erfolgt die Maschine-zu-Maschine-Kommunikation ausschließlich mit gegenseitiger zertifikatsbasierter Authentifizierung.
+Als Verbindungsprotokoll kommt ausschließlich HTTP mit TLSv1.2-Verschlüsselung (ggf. auch aktuellere Versionen) zum Einsatz. Die Zertifikate für Maschine-zu-Maschine-Kommunikation (also der Knoten untereinander) werden von einer eigenen CA (z.B. der Leibniz Bioactives Cloud CA) ausgestellt, während für die Kommunikation mit den Browsern der Nutzer Zertifikate weithin anerkannter CAs (z.B. DFN PKI) verwendet werden sollen. Als weitere Sicherung erfolgt die Maschine-zu-Maschine-Kommunikation ausschließlich mit gegenseitiger zertifikatsbasierter Authentifizierung.
 
 Bei den ausgetauschten Daten handelt es sich einerseits um Suchanfragen, entsprechende Antworten und ggf. um die entsprechenden Dokumente. Andererseits tauschen die Systeme technische Informtionen, wie z.B. Adressen der verfügbaren Knoten, die durchsuchbaren Collections oder für die Berechtigungsermittlung notwendige Informationen (Name, Emailadresse, Session-Token usw.) aus.
 
 Im Schema nicht gezeigt sind Verbindungen zu öffentlichen Repositories, die die Knoten für Updates herstellen.
+
+![MultiCloud Architecture](img/MultiCloud.PNG "multi cloud architecture")
+Im neueren "MultiCloud"-Ansatz hat kann ein Knoten Mitglied in mehreren Clouds sein. Er erhält dazu von der für die jeweilige Cloud zuständigen CA ein Zertifkat. Mit diesem kann er sich gegenüber den übrigen Knoten der Cloud ausweisen. Vom Master-Knoten der jeweiligen Cloud erhält er eine Liste der jeweils in der Cloud bekannten Knoten. Durch die verschiedenen Zertifikate ist sichergestellt, dass Knoten die unterschiedlichen Clouds angehören, nicht miteinander kommunizieren können. 
+
+> **Info:** _Seit Version 1.2.4 können die Cloud-CAs von zwei unterschiedlichen Clouds zudem von einer gemeinsamen Root-CA zertifiziert werden. Diese gemeinsame Root-CA ist jedoch nicht zwingend und die Leibniz Bioactives Cloud wird weiterhin mit ihrer ursprünglichen CA betrieben. Ein Grund hierfür war, dass eine Änderung der CA den in der Dokumentation angegebenen Hash des CA-Zertifikats ungültig gemacht hätte._
+
 
 ## Knotensicht
 Jeder Knoten seinerseits besteht aus einem Docker-Host (Abbildung Mitte), der die verschiedenen Komponenten in sich vereint.
 
 ![Architektur](img/Architektur.svg "Knotenarchitektur")
 
-> **Info**:
+> **Info:**
 > _Die ursprüngliche Trennung der TomEE-Applikationen in Backend und UI wurde aufgegeben, da dieser Architekturansatz bei der Speicherung und Auslieferung von Dokumenten unpraktikabel ist. Die weitgehende Trennung der Nutzerkommunikation von der Maschine-zu-Maschine-Kommunikation wird jetzt durch die Komponente HTTPS-Proxy erreicht._
 
 Bevor auf die einzelnen Komponenten eingegangen wird, werden zunächst die verschiedenen Kommunikationspfade analysiert. Bei der Betrachtung der Kommunikation müssen zunächst folgende grundsätzliche Szenarien unterschieden werden:

@@ -28,6 +28,7 @@ Darüberhinaus wird der im TomEE Web Application Server laufenden Java-Web-Anwen
 
 ### Basissystem
 Das Basissystem besteht aus einem Linux-Server in Minimalkonfiguration, der um folgende Softwarepakete (zuzüglich eventueller Abhängigkeiten) ergänzt wurde:
+
 * Docker und Docker Compose (ab Docker Version 1.12)
 * Dialog (NCurses-Dialoge für Shell-Skripte)
 * cron
