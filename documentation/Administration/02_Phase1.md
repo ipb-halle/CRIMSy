@@ -74,10 +74,10 @@ Für die Funktion der Cloud sind aktuelle Zertifikatssperrlisten notwendig. Am b
     #
     #Min Hour Day Month Week Cmd
     # Root-CA
-    20 10 * * * /home/someone/git/lbac/util/bin/camgr.sh --mode genCRL 2>/dev/null >/dev/null
+    20 10 * * * /home/someone/git/CRIMSy/util/bin/camgr.sh --mode genCRL 2>/dev/null >/dev/null
     #
     # Sub-CA
-    21 10 * * * /home/someone/git/lbac/util/bin/camgr.sh --mode genCRL --cloud TEST 2>/dev/null >/dev/null
+    21 10 * * * /home/someone/git/CRIMSy/util/bin/camgr.sh --mode genCRL --cloud TEST 2>/dev/null >/dev/null
 
 Der CRON-Job sollte zum selben Nutzer gehören, der auch die Quellen ausgecheckt hat.
 
