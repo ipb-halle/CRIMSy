@@ -1,7 +1,8 @@
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud Maintenance Script
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie 
+# Maintenance Script
+# Cloud Resource & Information Management System (CRIMSy)
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie 
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -78,7 +79,7 @@ function update {
 # 
 #==========================================================
 #
-. $HOME/.lbac || error "Leibniz Bioactives Cloud not configured"
+. $HOME/.lbac || error "Local cloud node is configured properly"
 export LBAC_DATASTORE
 
 case "$1" in

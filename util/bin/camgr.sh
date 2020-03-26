@@ -273,6 +273,8 @@ function createSubCA {
 
 #
 # Create (duplicate and import to a) truststore
+# Obsolete: The truststore does not need to contain the client certificate 
+# but only CA certificates.
 #
 function createTruststore {
 
@@ -376,7 +378,7 @@ function dialogCA {
         DOWNLOAD_URL=$TMP_DOWNLOAD_URL
         dialogUpload
 
-        if test -z $CLOUD ; then
+        if test -z "$CLOUD" ; then
             createCA
             scp cacert.pem $SCP_ADDR/cacert.pem
             scp chain.txt $SCP_ADDR/chain.txt
@@ -387,10 +389,10 @@ function dialogCA {
             sleep 10
         else
             dialogDownload '*superior*'
-            wget $TMP_DOWNLOAD_URL/chain.txt
-            wget $TMP_DOWNLOAD_URL/addresses.txt
-            wget $TMP_DOWNLOAD_URL/truststore
-            wget $TMP_DOWNLOAD_URL/truststore.passwd
+            curl --output chain.txt $TMP_DOWNLOAD_URL/chain.txt
+            curl --output addresses.txt $TMP_DOWNLOAD_URL/addresses.txt
+            curl --output truststore $TMP_DOWNLOAD_URL/truststore
+            curl --output truststore.passwd $TMP_DOWNLOAD_URL/truststore.passwd
             createSubCA
         fi
         writeConfig
@@ -432,18 +434,27 @@ function dialogCert {
   CN_______: $TMP_CN" 15 76 || error "Aborted."
 }
 
+function dialogCloudName {
+    if test -z "$CLOUD" ; then
+        return
+    fi
+    dialog --backtitle "CA-Management" \
+        --inputbox "Please specify the 'full' cloud name for the $CLOUD CA (e.g. 'XY Cloud'):" \
+        15 72 "$CLOUD_NAME" 2>$TMP_RESULT || error "Aborted"
+        CLOUD_NAME=`cat $TMP_RESULT`
+}
 
 function dialogDownload {
         tmp=$1
 	dialog --backtitle "CA-Management" \
-	  --inputbox "Please specify download address for $tmp CA (http url):" \
+	  --inputbox "Please specify download (http or https) address for $tmp CA (no trailing slash):" \
 	  15 72 "$DOWNLOAD_URL" 2>$TMP_RESULT || error "Aborted"
 	TMP_DOWNLOAD_URL=`cat $TMP_RESULT`
 }
 
 function dialogUpload {
 	dialog --backtitle "CA-Management" \
-          --inputbox "Please specify secure copy upload address (including colon, e.g. user@server:/path):" \
+          --inputbox "Please specify secure copy upload address (including colon, no trailing slash - e.g. user@server:/path):" \
           15 72 "$SCP_ADDR" 2>$TMP_RESULT || error "Aborted"
         SCP_ADDR=`cat $TMP_RESULT`
 }
@@ -529,10 +540,6 @@ function getAction {
                         ACTION=1
                         MODE='quit'
                         ;;
-                trust)
-                        ACTION=3
-                        MODE='quit'
-                        ;;
                 genCRL)
                         ACTION=8
                         MODE='quit'
@@ -545,17 +552,21 @@ function getAction {
                         ACTION=12
                         MODE='quit'
                         ;;
+                trust)
+                        ACTION=13
+                        MODE='quit'
+                        ;;
                 quit)
                         ACTION=10
                         return
                         ;;
                 *)
-                        dialog --backtitle "Leibniz Bioactives Cloud CA" \
+                        dialog --backtitle "CA-Management" \
                           --menu "Please choose your option" 17 72 12 \
           1 "Sign Certificate request (Node)" \
           2 "Create Certificate (Developer)" \
-          3 "Create Truststore" \
-          4 "View Certificate(s)" \
+          3 "View Certificate(s)" \
+          4 "Set Cloud Name (Sub-CAs only)" \
           5 "Set scp upload address" \
           6 "Set download address" \
           7 "Revoke Certificate" \
@@ -582,15 +593,15 @@ function performAction {
                         devCert
                         ;;
                 3)
-                        test -z "$OUTPUT" -o ! -d "$OUTPUT" || error "no output file given"
-                        createTruststore 
+                        selectDialog View
                         ;;
                 4)
-                        selectDialog View
+                        dialogCloudName
+                        writeConfig
                         ;;
                 5)
                         dialogUpload
-	                writeConfig
+	                    writeConfig
                         ;;
                 6)
                         dialogDownload 'this'
@@ -617,6 +628,10 @@ function performAction {
                 12)
                         testRevoked
                         ;;
+                13)
+                        test -z "$OUTPUT" -o ! -d "$OUTPUT" || error "no output file given"
+                        createTruststore 
+                        ;;
                 *)
                         error "Invalid action"
                         ;;
@@ -640,8 +655,8 @@ ${BOLD}SYNOPSIS${REGULAR}
 ${BOLD}DESCRIPTION${REGULAR}
     Operate the Cloud CA or a subCA. Sign certificate requests, manage 
     certificates and generate CRLs and truststores. 
-    Input and output file names should be absolute or relative to the CA 
-    directory.
+    Input and output file names should be absolute or relative to the 
+    current directory.
 
 ${BOLD}OPTIONS${REGULAR}
 -c CLOUD| --cloud CLOUD
@@ -795,7 +810,7 @@ function selectDialog {
 	while test $repeat -eq 1 ; do
 		x=$(($x + 1))
 		if test -n "$pattern" ; then 
-			dialog --backtitle "CA-Manager" \
+			dialog --backtitle "CA-Management" \
 			  --inputbox "Please specify pattern for certificate subject:" \
 			  15 72 "$pattern" 2>$TMP_RESULT || error "Could not obtain pattern"
 			pattern=`cat $TMP_RESULT`
@@ -824,7 +839,7 @@ function selectDialog {
 		done
 		IFS=$oldIFS
 
-		dialog --backtitle "CA-Manager" \
+		dialog --backtitle "CA-Management" \
 		  --title $1 \
 		  --extra-button --extra-label "Search" \
 		  --menu "Please select the certificate" 19 72 10 \
@@ -891,11 +906,17 @@ function setup() {
                 DEV_OU="OU"
                 DEV_EMAIL="Email"
                 DEV_CN="Developer Name"
+                if test -z "$CLOUD" ; then
+                    CLOUD_NAME="ignore - RootCA"
+                else
+                    CLOUD_NAME="Cloud Name"
+                fi
         fi
 }
 
 #
 # test whether certificate has been revoked
+# The test is based on a file system lookup only!
 # Exit codes
 # 0 - valid certificate
 # 1 - invalid / revoked certificate
@@ -949,6 +970,7 @@ DEV_CERT="$DEV_CERT"
 DOWNLOAD_URL="$DOWNLOAD_URL"
 SCP_ADDR="$SCP_ADDR"
 CLOUD="$CLOUD"
+CLOUD_NAME="$CLOUD_NAME"
 EOF
 }
 #

@@ -1,8 +1,9 @@
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud Packaging Tool
+# Cloud Resource & Information Management System (CRIMSy)
+# Packaging Tool
 #
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie 
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie 
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -44,11 +45,11 @@ LBAC_UI="ui.war"
 #
 
 function dialog_CHECK_CONFIG {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --title "Kontrolle" \
 	  --exit-label "Ok" --textbox $LBAC_CONFIG 20 72 || error "Aborted"
 
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --yesno "Kann die Konfiguration gefahrlos eingelesen werden?" \
 	  15 72 || error "Aborted"
 
@@ -78,7 +79,7 @@ function dialog_SELECT_CONFIG {
 		  "`grep "LBAC_INSTITUTION=" $i | cut -d= -f2 | tr -d $'\n'`" )
 	done
 
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --menu "Bitte selektieren Sie die Konfiguration" \
 	  15 72 10 "${inst[@]}" 2>$TMP_RESULT || error "Aborted"
 
@@ -103,7 +104,7 @@ function makeCert {
         case $? in 
             0)  # everything is fine - do nothing
                 ;;
-            1)  dialog --backtitle "Leibniz Bioactives Cloud" \
+            1)  dialog --backtitle "$CLOUD_NAME" \
                     --msgbox "Ein Zertifikat wurde widerrufen: 
 
   Institut___________: $LBAC_INSTITUTION 
@@ -115,7 +116,7 @@ Für den Knoten muss mittels 'configure.sh' ein neuer Zertifikatsrequest erzeugt
                 ;;
             2)  # certificate not found
                 echo "certificate not found: $LBAC_CERT_IDENTIFIER"
-                dialog --backtitle "Leibniz Bioactives Cloud" \
+                dialog --backtitle "$CLOUD_NAME" \
           --msgbox "Im folgenden Schritt wird ggf. das Zertifikat ausgestellt. Bitte prüfen Sie gründlich." 15 72 || error "Aborted"
                 ;;
         esac
@@ -127,7 +128,7 @@ Für den Knoten muss mittels 'configure.sh' ein neuer Zertifikatsrequest erzeugt
 }
 
 function setupMaster {
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		   --msgbox "Erstelle neuen Master-Knoten" 15 72 || error "Aborted"
 
 		LBAC_MASTER_NODE_ID=$LBAC_NODE_ID
@@ -166,11 +167,6 @@ function copyCert {
         cp $LBAC_CA_DIR/addresses.txt $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/addresses.txt
         cp $LBAC_CA_DIR/truststore        $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.truststore
         cp $LBAC_CA_DIR/truststore.passwd $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.trustpass
-
-	# get copy of truststore
-# 	$LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode trust \
-#           --hash $LBAC_CERT_IDENTIFIER \
-#           --output $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/truststore
 }
 
 function copyDocker {

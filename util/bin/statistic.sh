@@ -1,7 +1,8 @@
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud Source Code Statistics
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie 
+# Cloud Resource & Information Management System (CRIMSy)
+# Source Code Statistics
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie 
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.

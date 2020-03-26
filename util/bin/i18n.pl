@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
-# Leibniz Bioactives Cloud
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+# Cloud Resource & Information Management System (CRIMSy)
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -52,8 +52,8 @@ close(XX);
 open(XX, ">$ARGV[1]") or die "Could not open $ARGV[1]\n";
 
 print XX "# 00
-# 01  Leibniz Bioactives Cloud
-# 02  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+# 01  Cloud Resource & Information Management System (CRIMSy)
+# 02  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
 # 03
 # 04  Licensed under the Apache License, Version 2.0 (the \"License\");
 # 05  you may not use this file except in compliance with the License.

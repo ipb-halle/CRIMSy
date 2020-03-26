@@ -1,8 +1,9 @@
 #!/bin/bash
 #
-# Collect installation data for Leibniz Bioactives Cloud
+# Collect installation data 
+# Cloud Resource & Information Management System
 #
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie 
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie 
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -19,15 +20,16 @@
 #
 #==========================================================
 #
-# The variable LBAC_DISTRIBUTION_POINT is adjusted by the 
-# upload.sh script, which takes the actual value from the 
-# CA configuration. 
+# The variables LBAC_DISTRIBUTION_POINT and CLOUD_NAME are
+# adjusted by the upload.sh script, which takes the actual 
+# values from the CA configuration. 
 #
 # Currently only a single code signing key is supported
 #
 
 #
-LBAC_DISTRIBUTION_POINT="DOWNLOAD_URL"
+LBAC_DISTRIBUTION_POINT="CLOUDCONFIG_DOWNLOAD_URL"
+CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
 
 #
 LBAC_CONFIG=etc/config.sh
@@ -47,8 +49,8 @@ LBAC_OFFICIAL_PWFILE=official_cert.passwd
 #==========================================================
 #
 function dialog_START {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
-	  --msgbox "Dieses Programm erhebt Daten für die Installation eines Knotens der Leibniz Bioactives Cloud. Bitte starten Sie dieses Programm auf dem Rechner und mit dem Account, mit dem später der Cloud-Knoten betrieben werden soll. Nähere Informationen und insbesondere Sicherheitshinweise entnehmen Sie bitte dem Konfigurationshandbuch: 
+	dialog --backtitle "$CLOUD_NAME" \
+	  --msgbox "Dieses Programm erhebt Daten für die Installation eines Knotens der $CLOUD_NAME. Bitte starten Sie dieses Programm auf dem Rechner und mit dem Account, mit dem später der Cloud-Knoten betrieben werden soll. Nähere Informationen und insbesondere Sicherheitshinweise entnehmen Sie bitte dem Konfigurationshandbuch: 
 
 $LBAC_DISTRIBUTION_POINT/ConfigManual.pdf 
 
@@ -71,7 +73,7 @@ function dialog_DATASTORE {
 	if test -z "$LBAC_DATASTORE" ; then
 		LBAC_DATASTORE=$HOME
 	fi
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
 	  --inputbox "Welches Verzeichnis kann der Knoten als Speicherplatz verwenden? Es darf sich nicht um ein per NFS gemountetes Verzeichnis handeln. Bitte geben Sie den absoluten Pfad an. Default: $LBAC_DATASTORE" \
 	15 72 "$LBAC_DATASTORE" 2>$TMP_RESULT
@@ -98,7 +100,7 @@ function dialog_CONFIG_OLD {
 	if test ! -r $LBAC_DATASTORE/$LBAC_CONFIG ; then
 		return
 	fi
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --yes-label "Ja" --no-label "Nein" \
 	  --yesno "Es wurde eine Konfigurationsdatei gefunden. Soll die Konfigurationsdatei eingelesen werden?  
 
@@ -125,7 +127,7 @@ Die empfohlene Antwort ist 'Ja'" \
 function dialog_OBJECT_IDS {
 	test -n "$LBAC_NODE_ID" || LBAC_NODE_ID=`uuidgen -r | tr -d $'\n'`
 
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
           --title "Object Identifier" \
           --ok-label "Ok" --cancel-label "Abbrechen" \
           --insecure \
@@ -146,7 +148,7 @@ function dialog_OBJECT_IDS {
 }
 
 function dialog_HARDWARE_OK {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --yes-label "Ja" --no-label "Nein" \
 	  --yesno "Verfügt Ihr Knoten über mindestens 2 GByte RAM, 20 GByte Disk-Speicher und eine 10 MBit Netzwerkanbindung?" \
 	15 72 
@@ -156,7 +158,7 @@ function dialog_HARDWARE_OK {
 		NEXT_FORM=DIALOG_PROXY_MODE 
 		;;
 	1)
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		  --infobox "Abbruch: Die Mindestanforderungen an Speicherplatz und Netzwerkanbindungen müssen erfüllt werden." \
 		15 72
 		NEXT_FORM=__END__
@@ -168,7 +170,7 @@ function dialog_HARDWARE_OK {
 }
 
 function dialog_INSTITUTION_FULL {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
 	  --inputbox "Bitte geben Sie den vollen Namen Ihrer Institution an:" \
 	15 72 "$LBAC_INSTITUTION" 2>$TMP_RESULT
@@ -190,7 +192,7 @@ function dialog_INSTITUTION_FULL {
 }
 
 function dialog_INSTITUTION_SHORT {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
 	  --inputbox "Bitte geben Sie einen Kurznamen Ihrer Institution an (z.B. 'DSMZ Braunschweig', 'IPB Halle', 'HKI Jena', ...):" \
 	15 72 "$LBAC_INSTITUTION_SHORT" 2>$TMP_RESULT
@@ -210,7 +212,7 @@ function dialog_INSTITUTION_SHORT {
 
 
 function dialog_ADMIN_EMAIL {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
 	  --inputbox "Bitte geben Sie eine Email-Adresse an, unter der wir Sie (bzw. den oder die Verantwortlichen für Ihren Knoten) erreichen können." \
 	15 72 "$LBAC_MANAGER_EMAIL" 2>$TMP_RESULT
@@ -235,7 +237,7 @@ function dialog_ADMIN_EMAIL {
 
 
 function dialog_INTRANET_FQHN {
-	dialog --colors --backtitle "Leibniz Bioactives Cloud" \
+	dialog --colors --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
 	  --inputbox "Bitte geben Sie den vollqualifizierten Hostnamen an, unter dem Ihr Knoten aus dem \Z1\ZbIntranet\Zn erreichbar ist:" \
 	15 72 "$LBAC_INTRANET_FQHN"  2>$TMP_RESULT 
@@ -259,7 +261,7 @@ function dialog_INTRANET_FQHN {
 
 
 function dialog_INTERNET_FQHN {
-	dialog --colors --backtitle "Leibniz Bioactives Cloud" \
+	dialog --colors --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
 	  --inputbox "Bitte geben Sie den vollqualifizierten Hostnamen an, unter dem Ihr Knoten für andere Knoten aus dem \Z1\ZbInternet\Zn erreichbar sein wird. Bitte geben Sie den Hostnamen auch an, wenn er mit dem Intranet-Hostnamen identisch ist." \
 	15 72 "$LBAC_INTERNET_FQHN" 2>$TMP_RESULT 
@@ -288,7 +290,7 @@ function dialog_PROXY_MODE {
         if test -z "$LBAC_PROXY_HSTS" ; then
                 LBAC_PROXY_HSTS=OFF
         fi
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
           --checklist "Falls Sie über eine fortgeschrittene Firewall mit Proxy-Funktion und ggf. Intrusion Detection verfügen, können Sie optional auf die Konfiguration eines Proxy-Containers verzichten. Sie müssen Ihren Proxy dann manuell konfigurieren. Bitte konsultieren Sie hierzu das Handbuch. " 15 72 2 \
           PROXY "Proxy-Container automatisch konfigurieren" $LBAC_PROXY_MODE \
@@ -329,7 +331,7 @@ function dialog_INIT_TYPE {
             tmp_sysv=OFF
             ;;
     esac
-    dialog --backtitle "Leibniz Bioactives Cloud" \
+    dialog --backtitle "$CLOUD_NAME" \
       --cancel-label "Abbrechen" \
       --radiolist "Bitte wählen Sie den Typ des Init-Systems auf dem Knoten" 15 72 2 \
         SYSTEMD "SystemD (default)" $tmp_systemd \
@@ -357,9 +359,9 @@ function dialog_DOCKER_HOST {
     if test -z "$LBAC_DOCKER_EXCLUSIVE" ; then
         LBAC_DOCKER_EXCLUSIVE="ON"
     fi
-    dialog --backtitle "Leibniz Bioactives Cloud" \
+    dialog --backtitle "$CLOUD_NAME" \
       --cancel-label "Abbrechen" \
-      --checklist "Steht der Knoten / Docker-Host exklusiv für die Leibniz Bioactives Cloud zur Verfügung (empfohlene Einstellung: EXCLUSIV)? Falls auf dem dem Docker-Host weitere Container ausgeführt werden, müssen verwaiste Docker-Container, -Images und -Volumes manuell aufgeräumt werden." 15 72 1 \
+      --checklist "Steht der Knoten / Docker-Host exklusiv für die $CLOUD_NAME zur Verfügung (empfohlene Einstellung: EXCLUSIV)? Falls auf dem dem Docker-Host weitere Container ausgeführt werden, müssen verwaiste Docker-Container, -Images und -Volumes manuell aufgeräumt werden." 15 72 1 \
       "DOCKER" "Exklusive Ausführung der Cloud" $LBAC_DOCKER_EXCLUSIVE 2>$TMP_RESULT
     case $? in
         0)
@@ -379,7 +381,7 @@ function dialog_DOCKER_HOST {
 function dialog_CERT_REQUEST {
 	if test -r "$LBAC_DATASTORE/etc/$LBAC_SSL_KEYFILE" \
 	  -a -r "$LBAC_DATASTORE/etc/$LBAC_SSL_REQ" ; then
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		  --extra-button --extra-label "Ansehen" \
 		  --ok-label "Ja" --cancel-label "Nein" \
 		  --yesno "Es wurde ein SSL-Zertifikatsantrag mit privatem Schlüssel gefunden. Antworten Sie bitte mit 'Ja', wenn Sie den Zertifikatsantrag weiter verwenden wollen und mit 'Nein', falls Sie die Zertifikatsdaten ändern wollen. Sie müssen einen neuen Zertifikatsantrag erstellen, wenn sich die Hostnamen geändert haben!" 15 72
@@ -399,7 +401,7 @@ function dialog_CERT_REQUEST {
 		esac
 	else
 		NEXT_FORM=DIALOG_ABORT
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		  --msgbox "Das SSL-Zertifikat oder der private Schlüssel wurden nicht gefunden. In den nächsten Schritten wird für Sie ein neuer Zertifikatsantrag ausgestellt." 15 72 && NEXT_FORM=DIALOG_CERT_DATA
 	fi
 }
@@ -421,7 +423,7 @@ function dialog_CERT_DATA {
 		LBAC_SSL_EMAIL="$LBAC_MANAGER_EMAIL"
 	fi
 
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --title "Zertifikatsdaten" \
 	  --ok-label "Ok" --cancel-label "Abbrechen" \
 	  --insecure \
@@ -453,7 +455,7 @@ function dialog_CERT_CHECK {
 	NEXT_FORM=DIALOG_ABORT
         openssl req -in "$LBAC_DATASTORE/etc/$LBAC_SSL_REQ" -text > $TMP_SSL_DATA
 
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --title "Bitte prüfen Sie die Antragsdaten" \
 	  --exit-label "Weiter" \
 	  --textbox $TMP_SSL_DATA 15 72
@@ -464,7 +466,7 @@ function dialog_CERT_CHECK {
 # arg1 positive outcome
 # arg2 negative outcome
 function dialog_CERT_OK {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --yes-label "Ja" --no-label "Nein" \
 	  --yesno "Waren die Daten im Zertifikatsantrag korrekt? Sie haben ansonsten die Möglichkeit Korrekturen vorzunehmen." 15 72
 	case $? in
@@ -485,7 +487,7 @@ function dialog_CERT_INFO {
 	cat "$LBAC_DATASTORE/etc/$LBAC_SSL_REQ" >> $TMP_CONFIG
 	echo "EOF" >> $TMP_CONFIG
 
-	dialog --colors --backtitle "Leibniz Bioactives Cloud" \
+	dialog --colors --backtitle "$CLOUD_NAME" \
 	  --msgbox "Der Zertifikatsantrag wurde für Sie in der Datei 
 
 $LBAC_DATASTORE/etc/$LBAC_SSL_REQ
@@ -508,7 +510,7 @@ bevor Sie den Installationsprozess starten. \Z1\ZbBitte schlagen Sie für näher
 }
 
 function dialog_SAVE {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --title "Speichern" \
 	  --yes-label "Ja" --no-label "Nein" \
 	  --yesno "Konfiguration speichern?" 15 72
@@ -538,7 +540,7 @@ function dialog_SAVE {
 #
 function dialog_ENCRYPT {
 
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --msgbox "Die Konfigurationsdatei wird jetzt verschlüsselt. Bitte senden Sie uns die Datei $LBAC_DATASTORE/$LBAC_CONFIG.asc per Email zu. Sie erhalten dann von uns Nachricht, wann und wie Sie mit dem Installationsprozess fortfahren können. " \
 	15 72
 	case $? in
@@ -566,7 +568,7 @@ EOF
 }
 
 function dialog_END {
-	dialog --backtitle "Leibniz Bioactives Cloud" \
+	dialog --backtitle "$CLOUD_NAME" \
 	  --infobox "Die Konfiguration ist beendet. Lassen Sie uns bitte die Datei 
 
 $LBAC_DATASTORE/$LBAC_CONFIG.asc
@@ -581,7 +583,7 @@ zukommen. Sie erhalten dann weitere Instruktionen für die Installation von uns.
 #
 function checkTerminal {
 	if test ! -w `tty` ; then
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		  --infobox "FEHLER: Es gibt ein Problem mit Ihrem Terminal. Möglicherweise arbeiten Sie in einer 'su'-Session." 15 72
 		NEXT_FORM=__END__
 		return
@@ -621,7 +623,7 @@ function checkTerminalSize {
 
 function checkUser {
 	if test `whoami | cut -f1` = "root" -o `id -u | cut -f1` -eq 0 ; then
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		  --infobox "FEHLER: Das Programm soll nicht als Superuser gestartet werden." 15 72
 		NEXT_FORM=__END__
 		return
@@ -644,9 +646,10 @@ function copyInstaller {
 	cat >$LBAC_DATASTORE/$LBAC_INSTALLER <<EOF
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud Installer
+# INSTALLER
+# Cloud Resource & Information Management System (CRIMSy)
 # 
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie 
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie 
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -661,7 +664,7 @@ function copyInstaller {
 #  limitations under the License.
 #
 if test ! -r \$HOME/.lbac ; then
-	echo "Leibniz Bioactives Cloud ist nicht richtig konfiguriert"
+	echo "Ihr Knoten ist nicht richtig konfiguriert"
 	exit 1
 fi
 . \$HOME/.lbac
@@ -802,7 +805,7 @@ function makeTempConfig {
 	TMP_CONFIG=`mktemp /tmp/lbac_config.XXXXXX`
 	cat >$TMP_CONFIG <<EOF
 #
-# Leibniz Bioactives Cloud 
+# $CLOUD_NAME 
 # public configuration
 # `date`
 #
@@ -888,7 +891,7 @@ while true ; do
 		dialog_END
 		;;
 	DIALOG_ABORT)
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		  --infobox "Das Programm wurde abgebrochen" 15 72
 		cleanUp
 		exit 1
@@ -902,7 +905,7 @@ while true ; do
 		exit 0
 		;;
 	*)
-		dialog --backtitle "Leibniz Bioactives Cloud" \
+		dialog --backtitle "$CLOUD_NAME" \
 		  --infobox "Ein Fehler ist aufgetreten: $NEXT_FORM" 15 72
 		cleanUp
 		exit 1

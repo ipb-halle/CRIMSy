@@ -1,7 +1,9 @@
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud Setup
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie 
+# Cloud Resource & Information Management System (CRIMSy)
+# Setup
+#
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie 
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -109,10 +111,10 @@ function createProperties {
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <!-- 
-  * LBAC Properties 
-  * (c) 2017 Leibniz Bioactives Cloud Development Team 
+  * CRIMSy Properties 
+  * (c) 2020 CRIMSy Development Team 
   -->
-<comment>Properties for Leibniz Bioactives Cloud UI and Backend</comment>
+<comment>Properties for CRIMSy UI</comment>
 
 <!--
   Mutual ssl authentication

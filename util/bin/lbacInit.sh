@@ -1,7 +1,9 @@
 #!/bin/bash
 #
-# Leibniz Bioactives Cloud Init Script
-# Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie 
+# Cloud Resource & Information Management System (CRIMSy)
+# Init Script
+#
+# Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie 
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -157,7 +159,7 @@ function stop() {
 #
 test `id -u` -eq 0 || error "This script must be called as root"
 
-. $HOME/.lbac || error "Leibniz Bioactives Cloud not configured"
+. $HOME/.lbac || error "Local cloud node not configured"
 . "$LBAC_DATASTORE/dist/etc/config.sh" || error "Could not load config file"
 
 pushd $LBAC_DATASTORE/dist > /dev/null
