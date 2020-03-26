@@ -1,5 +1,6 @@
 META-INF
 config
+documentation/**/*.pdf
 target
 ui/doc/diagrams/png/
 ui/doc/diagrams/svg/
