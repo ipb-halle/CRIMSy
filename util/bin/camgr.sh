@@ -925,10 +925,10 @@ function setup() {
 function testRevoked {
     cleanUp
     echo $HASH
+    if test -f $CA_DIR/revoked/$HASH.pem ; then
+        exit 1
+    fi
     if test -f $CA_DIR/cloud/$HASH.pem ; then
-        if test -f $CA_DIR/revoked/$HASH.pem ; then
-            exit 1
-        fi
         exit 0
     fi
     exit 2

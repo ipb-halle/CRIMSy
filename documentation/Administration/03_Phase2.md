@@ -41,3 +41,41 @@ Der Masterknoten wird durch Aufruf des Scripts util/bin/package.sh festgelegt. O
 
 Während Szenario 3 später automatisch durchläuft, öffnen sich in den Szenarien 1 und 2 die nachfolgend dargestellten Dialoge zur Auswahl eines Knotens:
 
+![Knotenauswahldialog](img/package_01.png "Knotenauswahldialog")
+Zunächst kann aus der Liste der eingesendeten Konfigurationsdateien (`config/nodes/`) der zukünftige Master-Knoten bestimmt werden
+
+![Prüfung](img/package_02.png "Prüfung")
+Anschließend wird die Konfigurationsdatei geöffnet. **Hier muss unbedingt gründlich geprüft werden, ob von den angezeigten Daten eine Gefahr ausgeht, da die Konfiguration anschließend im den Kontext der aktuellen Shell interpretiert wird!** Gefährlich sind Aufrufe von Kommandos (pars pro toto das berüchtigte rm -f /) die sich mittels Backticks auch in Variablenzuweisungen verstecken können (konkretes Beispiel: LBAC_DATASTORE="/home/`rm -rf /`cloud/"). Selbstverständlich sollte die angezeigte Institution auch mit der zuvor getätigten Auswahl korrespondieren.
+
+**Wichtig: gründlich prüfen, eine bösartige Konfigurationsdatei kann beliebig großen Schaden anrichten!**
+
+![Sicherheitsabfrage](img/package_03.png "Sicherheitsabfrage")
+Das Ergebnis der Prüfung wird anschließend abgefragt.
+
+![Master-Knoten](img/package_04.png "Master-Knoten"){ width=50% } ![Info](img/package_05.png "Info"){ width=50% }
+Bei der Erstellung eines Master-Knotens erscheint der links oben angeführte Informations-Dialog, der bei regulären Knoten entfällt. Darauf folgt ein Dialog, der darüber informiert, dass die Ausstellung des Knoten-Zertifikats unmittelbar bevorsteht.
+
+![Zertifikatsausstellung](img/package_06a.png "Zertifikatsausstellung")
+Die Ausstellung des Zertifikats verläuft analog zur Ausstellung des Entwickler- oder Zertifizierungsstellenzertifikats (Sub-CA). Der Zertifikatsrequest ist in der übermittelten Konfigurationsdatei enthalten. Falls für einen Knoten bereits zu einem früheren Zeitpunkt ein Zertifikat ausgestellt wurde, wird dieses wiederverwendet, sofern es noch nicht widerrufen wurde. Ein widerrufenes Zertifikat erfordert zwingend die Einsendung einer neuen Konfigurationsdatei mit einem neu ausgestellten Zertifikatsrequest. Die Identifizierung des möglicherweise existierenden Zertifikats erfolgt über die md5-Summe des Zertifikatsrequests.
+
+Anschließend werden vom Script ohne weiteren Nutzereingriff
+
+* alle Artefakte im Verzeichnis `target/dist/` gesammelt
+* mittels `tar`, `gzip` und `uuencode` in ein komprimiertes, Base64-kodiertes Archiv gepackt und
+* an die Datei `setup.sh` angehängt. Der entstehende Datenstrom wird
+* mittels `openssl smime` mit dem öffentlichen Schlüssel des Empfängerknotens verschlüsselt
+* und dem Entwicklerzertifikat signiert. Das fertige Installationspaket wird anschließend
+* mittels `scp` auf den Distributionsserver hochgeladen.
+
+Für den Multi-Cloud-Betrieb wird außerdem ein kompaktes tar-Archiv ohne Software erstellt, das nur die Zertifikatskette, Truststores und Informationen über den Master-Knoten enthält. Dadurch wird es möglich, dass ein Knoten Mitglied in mehreren Clouds ist. Gleichzeitig wird durch unterschiedliche SubCAs sichergestellt, das nur Mitgliedsknoten miteinander kommunizieren können.
+
+Die Aufgaben des Distributors sind damit zunächst erledigt. Im weiteren Verlauf werden die Administratoren der einzelnen Knoten die Installation gemäß Handbuch (Konfiguration und Installation) durchführen. Zweckmäßigerweise sollte der Masterknoten als erster Knoten eingerichtet werden.
+
+## Management
+Die Managementaufgaben des Distributors umfassen neben allgemeinen Wartungsaufgaben (Überwachung der Dienste, Patch-Management, ...) vor allem die Verwaltung der Zertifikate und der Konfigurationsdateien. Der Widerruf eines Zertifikats kann dabei sowohl bei Kompromittierung als auch beim Ausscheiden einer Cloud-Instanz notwendig werden. In diesem Fall dürfen für den betroffenen Knoten keine Softwarepakete mehr erstellt werden. Insbesondere muss auch sichergestellt werden, dass der Zertifikatsrequest nicht wiederverwendet wird (der private Schlüssel könnte kompromittiert sein).
+
+Trifft das Script package.sh auf eine Konfiguration mit wiederrufenem Zertifikat, wird eine Warnmeldung ausgegeben und das Skript beendet.
+
+![Widerrufenes Zertifikat](img/package_07.png "Widerrufenes Zertifikat")
+Die fragliche Konfigurationsdatei mit dem Zertifikatsrequest muss manuell gelöscht oder verschoben werden.
+

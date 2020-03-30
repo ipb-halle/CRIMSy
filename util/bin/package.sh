@@ -96,35 +96,35 @@ function makeCert {
 	cat $LBAC_CONFIG | sed -n -e "/BEGIN CERTIFICATE REQUEST/,/END CERTIFICATE REQUEST/p" \
 	  > $TMP_RESULT
 
-        # the certificate identifier is the md5sum of the certificate request
+    # the certificate identifier is the md5sum of the certificate request
 	LBAC_CERT_IDENTIFIER=`md5sum $TMP_RESULT | cut -c1-32`
 
-        # test whether certificate has been revoked
-        $LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode testRevoked --hash $LBAC_CERT_IDENTIFIER
-        case $? in 
-            0)  # everything is fine - do nothing
-                ;;
-            1)  dialog --backtitle "$CLOUD_NAME" \
-                    --msgbox "Ein Zertifikat wurde widerrufen: 
+    # test whether certificate has been revoked
+    $LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode testRevoked --hash $LBAC_CERT_IDENTIFIER
+    case $? in 
+        0)  # everything is fine - do nothing
+            ;;
+        1)  dialog --backtitle "$CLOUD_NAME" \
+                --msgbox "Ein Zertifikat wurde widerrufen: 
 
   Institut___________: $LBAC_INSTITUTION 
   Instituts-MD5______: $LBAC_INSTITUTION_MD5
   Konfigurationsdatei: `basename $CURRENT_CONFIG_FILE` 
 
 Für den Knoten muss mittels 'configure.sh' ein neuer Zertifikatsrequest erzeugt werden!" 15 72
-                error "Revoked certificate"
-                ;;
-            2)  # certificate not found
-                echo "certificate not found: $LBAC_CERT_IDENTIFIER"
-                dialog --backtitle "$CLOUD_NAME" \
-          --msgbox "Im folgenden Schritt wird ggf. das Zertifikat ausgestellt. Bitte prüfen Sie gründlich." 15 72 || error "Aborted"
-                ;;
-        esac
+            error "Revoked certificate"
+            ;;
+        2)  # certificate not found
+            echo "certificate not found: $LBAC_CERT_IDENTIFIER"
+            dialog --backtitle "$CLOUD_NAME" \
+      --msgbox "Im folgenden Schritt wird ggf. das Zertifikat ausgestellt. Bitte prüfen Sie gründlich." 15 72 || error "Aborted"
+            ;;
+    esac
 
-        # sign the certificate (or return an existing certificate)
-        $LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode sign \
-          --input $TMP_RESULT --output  $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.cert || \
-          error "Error in makeCert"
+    # sign the certificate (or return an existing certificate)
+    $LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode sign \
+      --input $TMP_RESULT --output  $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.cert || \
+      error "Error in makeCert"
 }
 
 function setupMaster {
