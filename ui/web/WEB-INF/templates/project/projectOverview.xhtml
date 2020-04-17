@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <b:form>
+            <b:container>
+                <b:row>
+                    <b:column span="1">
+                        <b:commandButton
+                            id="newProjectButton"
+                            value="neues Project erstellen"
+                            action="#{navigator.navigate('project/projectEdit')}"
+                            />
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="12">
+                        <b:dataTable
+                            styleClass="readableProjectTable"
+                            paginated="false"
+                            value="#{projectBean.getReadableProjects()}"
+                            var="project">
+                            <b:dataTableColumn
+                                label="Name"
+                                value="#{project.name}">
+                            </b:dataTableColumn>
+                            <b:dataTableColumn
+                                label="ProjektTyp"
+                                value="#{project.projectType}">
+                            </b:dataTableColumn>
+                            <b:dataTableColumn
+                                label="Projektleiter"
+                                value="#{project.getOwnerName()}">
+                            </b:dataTableColumn>
+                            <b:dataTableColumn
+                                label=""
+                                orderable="false">
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon="pencil"
+                                                 look="link"
+                                                 ajax="true"
+                                                 process="@this"
+                                                 type="button"
+                                                 tooltip="Projekt editieren"
+                                                 />
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon="glyphicon glyphicon-user"
+                                                 look="link"
+                                                 ajax="true"
+                                                 process="@this"
+                                                 type="button"
+                                                 tooltip="Nutzerrechte anpassen"
+                                                 />
+
+
+
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon="trash"
+                                                 look="link"
+                                                 ajax="true"
+                                                 process="@this"
+                                                 type="button"
+                                                 tooltip="Projekt lÃƒÂ¶schen"
+                                                 />
+                            </b:dataTableColumn>
+                        </b:dataTable>
+
+                    </b:column>
+
+                </b:row>
+
+            </b:container>
+        </b:form>
+    </h:body>
+
+</html>

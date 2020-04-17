@@ -32,6 +32,9 @@ public class EntityManagerService {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
+    public void flush(){
+        this.em.flush();
+    }
     public EntityManager getEm() {
         return em;
     }

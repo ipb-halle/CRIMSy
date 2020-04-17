@@ -412,5 +412,9 @@ public class UserBean implements Serializable {
         }
         return false;
     }
+    
+    public boolean isComponentAccessable(String s){
+        return true;
+    }
 
 }

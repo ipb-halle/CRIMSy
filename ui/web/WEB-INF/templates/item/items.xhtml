@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:nwc="http://ipb-halle.de/nwc"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <b:form 
+            id="itemForm">
+            <b:container>
+                <b:row>
+                    <b:column span="2"> 
+                        <b:container>
+                            <b:row>
+                                <b:column>
+                                    <h:outputText value="Suche"/>
+                                </b:column>
+                            </b:row>    
+                            <b:row>
+                                <b:column span="2">
+                                    <h:outputText value="Materialname"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <p:autoComplete value="#{itemOverviewBean.materialSearchName}"
+                                                    maxResults="10"
+                                                    completeMethod="#{itemOverviewBean.getSimilarMaterialNames}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <h:outputText value="Gebindenummer"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <b:inputText value="#{itemOverviewBean.itemSearchId}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <h:outputText value="User"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <p:autoComplete value="#{itemOverviewBean.searchUserName}"
+                                                    maxResults="10"
+                                                    completeMethod="#{itemOverviewBean.getSimilarUserNames}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <h:outputText value="Project"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+
+                                <b:column span="2">
+                                    <p:autoComplete value="#{itemOverviewBean.searchProject}"
+                                                    maxResults="10"
+                                                    completeMethod="#{itemOverviewBean.getSimilarProjectNames}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <h:outputText value="Standort"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <b:inputText value="#{itemOverviewBean.searchLocation}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <h:outputText value="Bemerkungen"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <b:inputText value="#{itemOverviewBean.searchDescription}"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="2">
+                                    <b:commandButton value="Clear"
+                                                     action="#{itemOverviewBean.actionClearSearchFilter()}"/>
+                                    <b:commandButton value="Search"
+                                                     action="#{itemOverviewBean.actionApplySearchFilter()}"/>
+                                </b:column>
+                            </b:row>
+
+
+                        </b:container>
+
+
+                    </b:column>    
+                    <b:column span="10">  
+                        <b:container>
+                            <b:row>
+                                <b:column span="12">
+                                    <b:dataTable
+                                        paginated="false"
+                                        value="#{itemOverviewBean.items}"
+                                        searching="false"
+                                        var="item">
+                                        <b:dataTableColumn
+                                            label="Gebindenummer" 
+                                            value="#{item.getId()}">
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_material}">
+                                            <h:outputText
+                                                escape="false"
+                                                value="#{itemOverviewBean.getMaterialName(item)}"/>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_projectOwner}"
+                                            value="#{itemOverviewBean.getOwnerString(item)}">
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_amount}"
+                                            value="#{itemOverviewBean.getAmountString(item)}">
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_location}"
+                                            value="#{itemOverviewBean.getLocationOfItem(item)}">
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_remarks}"
+                                            value="#{item.getDescription()}">
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_dates}">
+                                            <h:outputText
+                                                escape="false"
+                                                value="#{itemOverviewBean.getDatesOfItem(item)}"/>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.materialOverview_tableheader_actions}">
+                                            <b:commandButton style="padding: 0 4px;"
+                                                             icon="pencil"
+                                                             look="link"
+                                                             type="submit"
+                                                             ajax="false"
+                                                             action="#{itemOverviewBean.actionStartItemEdit(item)}"
+                                                             />
+                                        </b:dataTableColumn>
+                                    </b:dataTable>
+                                </b:column> 
+                                <b:column> 
+                                    <b:commandButton 
+                                        disabled="#{itemOverviewBean.isBackDeactivated()}"
+                                        action="#{itemOverviewBean.actionFirstItems()}"
+                                        />
+                                    <b:commandButton 
+                                        disabled="#{itemOverviewBean.isBackDeactivated()}"
+                                        action="#{itemOverviewBean.actionLastItems()}"
+                                        />
+
+                                    <b:commandButton 
+                                        disabled="#{itemOverviewBean.isForwardDeactivated()}"
+                                        action="#{itemOverviewBean.actionNextItems()}"
+                                        />
+                                    <b:commandButton 
+                                        disabled="#{itemOverviewBean.isForwardDeactivated()}"
+                                        action="#{itemOverviewBean.actionEndItems()}"
+                                        />
+                                </b:column> 
+                                <b:column offset="2"> 
+                                    <h:outputText value="#{itemOverviewBean.itemAmount}"/>
+                                </b:column> 
+                            </b:row>
+
+                        </b:container>
+                    </b:column> 
+                </b:row>
+            </b:container>
+
+
+
+
+
+
+
+
+        </b:form>
+    </h:body>
+
+</html>

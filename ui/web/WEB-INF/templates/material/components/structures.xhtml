@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:nwc="http://ipb-halle.de/nwc"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+
+        <ui:composition>
+            <b:panel 
+                styleClass="structurePanelClass"
+                title="#{msgs.materialCreation_panelStrucInfos_name}"
+                rendered="#{materialBean.permission.isDetailPanelVisible('STRUCTURE_INFORMATION')}">
+                <b:container>
+                    <b:row>
+                        <b:column span="5">
+                            <h:outputText
+                                value="#{msgs.materialCreation_panelStrucInfos_formula}"/>
+                        </b:column>
+                        <b:column span="6">
+                            <h:outputText
+                                value="#{msgs.materialCreation_panelStrucInfos_mass}"/>
+                        </b:column>
+
+
+                    </b:row>
+                    <b:row>
+                        <b:column span="6">
+                            <nwc:molPlugin
+                                value="#{materialBean.structureInfos.structureModel}"
+                                pluginType="MolPaintJS" 
+                                edit="#{materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}">
+                            </nwc:molPlugin>
+
+                        </b:column>
+                        <b:column span="6">
+                            <b:container>
+                                <b:row>
+                                    <b:column span="6">
+                                        <b:selectBooleanCheckbox 
+                                            disabled="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                            value="#{materialBean.calculateFormulaAndMassesByDb}"
+                                            caption="Formel und Masse automatisch berechnen"
+                                            ajax="true"
+                                            update="@(.autocalculatable)"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column span="2">
+                                        <h:outputText
+                                            value="#{msgs.materialCreation_panelStrucInfos_sumformula}"/>
+                                    </b:column>
+                                    <b:column span="2"
+                                              styleClass="autocalculatable">
+                                        <b:inputText
+                                            disabled="#{!materialBean.permission.isFormulaAndMassesInputsEnabled()}"
+                                            value="#{materialBean.structureInfos.sumFormula}"
+                                            />
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column span="2">
+                                        <h:outputText
+                                            value="#{msgs.materialCreation_panelStrucInfos_molarMass}"/>
+                                    </b:column>
+                                    <b:column span="2"
+                                              styleClass="autocalculatable">
+                                        <b:inputText
+                                            disabled="#{!materialBean.permission.isFormulaAndMassesInputsEnabled()}"
+                                            value="#{materialBean.structureInfos.molarMass}"
+                                            />
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column span="2">
+                                        <h:outputText
+                                            value="#{msgs.materialCreation_panelStrucInfos_exactMolarMass}"/>
+                                    </b:column>
+                                    <b:column span="2"
+                                              styleClass="autocalculatable">
+                                        <b:inputText
+                                            disabled="#{!materialBean.permission.isFormulaAndMassesInputsEnabled()}"
+                                            value="#{materialBean.structureInfos.exactMolarMass}"
+                                            />
+                                    </b:column>
+                                </b:row>
+                            </b:container>
+                        </b:column>
+                    </b:row>
+
+                </b:container>
+            </b:panel>
+
+        </ui:composition>
+    </h:body>
+
+</html>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib version="2.0"
+                xmlns="http://java.sun.com/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+   http://java.sun.com/xml/ns/javaee/web-facelettaglibary_2_0.xsd">
+    <namespace>http://ipb-halle.de/nwc</namespace>
+    <tag>
+        <tag-name>molPlugin</tag-name>
+        <component>
+            <component-type>UIMolPlugin</component-type> 
+            <component-class>de.ipb_halle.lbac.plugin.UIMolPlugin</component-class>
+        </component>
+    </tag>
+    <tag>
+        <tag-name>container</tag-name>
+        <component>
+            <component-type>ContainerComponent</component-type> 
+            <component-class>de.ipb_halle.lbac.items.components.ContainerComponent</component-class>
+        </component>
+    </tag>
+</facelet-taglib>

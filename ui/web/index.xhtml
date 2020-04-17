@@ -23,73 +23,86 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<h:head>
-    <title>LBAC</title>
-    <!-- CSP Header -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-    <meta http-equiv="X-WebKit-CSP" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-    <!-- -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <link rel="apple-touch-startup-image" href="resources/img/systemIcons/apple-icon-180x180.png"/>
-    <link rel="apple-touch-icon" sizes="57x57" href="resources/img/systemIcons/apple-icon-57x57.png"/>
-    <link rel="apple-touch-icon" sizes="60x60" href="resources/img/systemIcons/apple-icon-60x60.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="resources/img/systemIcons/apple-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="76x76" href="resources/img/systemIcons/apple-icon-76x76.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="resources/img/systemIcons/apple-icon-114x114.png"/>
-    <link rel="apple-touch-icon" sizes="120x120" href="resources/img/systemIcons/apple-icon-120x120.png"/>
-    <link rel="apple-touch-icon" sizes="144x144" href="resources/img/systemIcons/apple-icon-144x144.png"/>
-    <link rel="apple-touch-icon" sizes="152x152" href="resources/img/systemIcons/apple-icon-152x152.png"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="resources/img/systemIcons/apple-icon-180x180.png"/>
-    <link rel="icon" type="image/png" sizes="192x192" href="resources/img/systemIcons/android-icon-192x192.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="resources/img/systemIcons/avicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="96x96" href="resources/img/systemIcons/avicon-96x96.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="resources/img/systemIcons/favicon-16x16.png"/>
-    <link rel="manifest" href="resources/img/systemIcons/manifest.json"/>
-    <meta name="msapplication-TileColor" content="#ffffff"/>
-    <meta name="msapplication-TileImage" content="resources/img/systemIcons/ms-icon-144x144.png"/>
-    <meta name="theme-color" content="#ffffff"/>
+    <h:head>
+        <title>LBAC</title>
+        <!-- CSP Header -->
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
+        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
+        <meta http-equiv="X-WebKit-CSP" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
+        <!-- -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <link rel="apple-touch-startup-image" href="resources/img/systemIcons/apple-icon-180x180.png"/>
+        <link rel="apple-touch-icon" sizes="57x57" href="resources/img/systemIcons/apple-icon-57x57.png"/>
+        <link rel="apple-touch-icon" sizes="60x60" href="resources/img/systemIcons/apple-icon-60x60.png"/>
+        <link rel="apple-touch-icon" sizes="72x72" href="resources/img/systemIcons/apple-icon-72x72.png"/>
+        <link rel="apple-touch-icon" sizes="76x76" href="resources/img/systemIcons/apple-icon-76x76.png"/>
+        <link rel="apple-touch-icon" sizes="114x114" href="resources/img/systemIcons/apple-icon-114x114.png"/>
+        <link rel="apple-touch-icon" sizes="120x120" href="resources/img/systemIcons/apple-icon-120x120.png"/>
+        <link rel="apple-touch-icon" sizes="144x144" href="resources/img/systemIcons/apple-icon-144x144.png"/>
+        <link rel="apple-touch-icon" sizes="152x152" href="resources/img/systemIcons/apple-icon-152x152.png"/>
+        <link rel="apple-touch-icon" sizes="180x180" href="resources/img/systemIcons/apple-icon-180x180.png"/>
+        <link rel="icon" type="image/png" sizes="192x192" href="resources/img/systemIcons/android-icon-192x192.png"/>
+        <link rel="icon" type="image/png" sizes="32x32" href="resources/img/systemIcons/avicon-32x32.png"/>
+        <link rel="icon" type="image/png" sizes="96x96" href="resources/img/systemIcons/avicon-96x96.png"/>
+        <link rel="icon" type="image/png" sizes="16x16" href="resources/img/systemIcons/favicon-16x16.png"/>
+        <link rel="manifest" href="resources/img/systemIcons/manifest.json"/>
+        <meta name="msapplication-TileColor" content="#ffffff"/>
+        <meta name="msapplication-TileImage" content="resources/img/systemIcons/ms-icon-144x144.png"/>
+        <meta name="theme-color" content="#ffffff"/>
 
 
-    <h:outputStylesheet name="css/datatables/datatables.min.css" target="body" position="first"/>
-    <h:outputScript name="js/datatables/datatables.min.js" target="body" position="first"/>
-    <h:outputStylesheet name="css/fontawsome/font-awesome.min.css" target="head"/>
-    <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
-    <h:outputStylesheet name="css/bootstrap-select.css" position="last"/>
-    <h:outputStylesheet name="css/lbac.css" position="first"/>
-    <h:outputScript name="fine-uploader/jquery.fine-uploader.js" target="body" position="last"/>
-    <h:outputScript name="js/lbac_fineUploaderMulti.js" target="body" position="last"/>
-    <h:outputScript name="js/colorCloudTerms.js"/>
+        <h:outputStylesheet name="css/datatables/datatables.min.css" target="body" position="first"/>
+        <h:outputScript name="js/datatables/datatables.min.js" target="body" position="first"/>
+        <h:outputStylesheet name="css/fontawsome/font-awesome.min.css" target="head"/>
+        <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        <h:outputStylesheet name="css/bootstrap-select.css" position="last"/>
+        <h:outputStylesheet name="css/lbac.css" position="first"/>
+        <h:outputScript name="fine-uploader/jquery.fine-uploader.js" target="body" position="last"/>
+        <h:outputScript name="js/lbac_fineUploaderMulti.js" target="body" position="last"/>
+        <h:outputScript name="js/colorCloudTerms.js"/>
 
-</h:head>
-<h:body>
+        <h:outputScript name="js/panelManager.js"/>
 
-    <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
-             show-detail="true" show-summary="false" allowDismiss="true"
-             delay="10000" escape="true"/>
+        <h:outputScript name="plugin/molpaintjs/js/molpaint.js"/>
 
-    <b:modal id="modalError" title="Fehler" styleClass="modalError">
-        <b:column id="modalErrorBody" styleClass="modalErrorBody"> a error message</b:column>
-        <f:facet name="footer">
-            <b:button value="Schliessen" dismiss="modal"/>
-        </f:facet>
-    </b:modal>
+        <nwc:molPlugin
+            value=""
+            prolog="true"
+            pluginType="MolPaintJS"/>
 
-    <ui:insert name="navigation">
-        <ui:include src="/WEB-INF/templates/navigation.xhtml"/>
-    </ui:insert>
-    <b:container class="simplesearch">
-        <ui:insert name="content">
-            <ui:include src="#{navigator.nextPage}"/>
+
+    </h:head>
+    <h:body>
+
+
+        <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
+                 show-detail="true" show-summary="false" allowDismiss="true"
+                 delay="10000" escape="true"/>
+
+        <b:modal id="modalError" title="Fehler" styleClass="modalError">
+            <b:column id="modalErrorBody" styleClass="modalErrorBody"> a error message</b:column>
+            <f:facet name="footer">
+                <b:button value="Schliessen" dismiss="modal"/>
+            </f:facet>
+        </b:modal>
+
+        <ui:insert name="navigation">
+            <ui:include src="/WEB-INF/templates/navigation.xhtml"/>
+        </ui:insert>
+        <b:container class="simplesearch">
+            <ui:insert name="content">
+                <ui:include src="#{navigator.nextPage}"/>
+            </ui:insert>
+
+        </b:container>
+        <ui:insert name="footer">
+            <ui:include src="/WEB-INF/templates/footer.xhtml"/>
         </ui:insert>
 
-    </b:container>
-    <ui:insert name="footer">
-        <ui:include src="/WEB-INF/templates/footer.xhtml"/>
-    </ui:insert>
-
-</h:body>
+    </h:body>
 </html>

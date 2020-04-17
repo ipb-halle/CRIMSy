@@ -53,7 +53,7 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, "DocumentSearchServiceTest.war")
+        return prepareDeployment("WordCloudWebServiceTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(FileEntityService.class)
                 .addClass(SolrSearcher.class)
@@ -65,11 +65,7 @@ public class DocumentSearchServiceTest extends TestBase {
                 .addClass(FileService.class)
                 .addClass(MembershipService.class)
                 .addClass(MemberService.class)
-                .addClass(TermVectorEntityService.class)
-                .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                .addAsResource("init.sql", "init.sql")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return archive;
+                .addClass(TermVectorEntityService.class);
     }
 
     @Test

@@ -27,10 +27,15 @@ package de.ipb_halle.lbac.util.hibernatePG.dialect;
 import org.hibernate.dialect.PostgreSQL9Dialect;
 
 import java.sql.Types;
+import org.hibernate.dialect.function.StandardSQLFunction;
 
 public class PostgreSQLJsonDialect extends PostgreSQL9Dialect {
+
     public PostgreSQLJsonDialect() {
         registerColumnType(Types.JAVA_OBJECT, "json");
         registerColumnType(Types.JAVA_OBJECT - 1, "jsonb");
+        registerFunction("molformula", new StandardSQLFunction("molformula"));
+        registerFunction("exactmass", new StandardSQLFunction("exactmass"));
+        registerFunction("molweight", new StandardSQLFunction("molweight"));
     }
 }

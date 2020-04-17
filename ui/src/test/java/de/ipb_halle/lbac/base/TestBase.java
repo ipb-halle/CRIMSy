@@ -17,9 +17,11 @@
  */
 package de.ipb_halle.lbac.base;
 
+import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACListEntity;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.FileObject;
@@ -30,6 +32,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
+import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.CloudService;
@@ -89,6 +92,9 @@ public class TestBase implements Serializable {
 
     @Inject
     protected CloudNodeService cloudNodeService;
+    
+    @Inject
+    protected EntityManagerService entityManagerService;
 
     @Inject
     protected NodeService nodeService;
@@ -117,6 +123,7 @@ public class TestBase implements Serializable {
                 .addClass(CloudService.class)
                 .addClass(CloudNodeService.class)
                 .addClass(EntityManager.class)
+                .addClass(EntityManagerService.class)
                 .addClass(InfoObjectService.class)
                 .addClass(MemberService.class)
                 .addClass(MembershipService.class)
@@ -341,4 +348,52 @@ public class TestBase implements Serializable {
           .setLOCAL_KEY_ALIAS("test")
           .init();
     }
+    
+     protected void cleanAllProjectsFromDb() {
+        entityManagerService.doSqlUpdate("delete from projecttemplates");
+        entityManagerService.doSqlUpdate("delete from budgetreservations");
+        entityManagerService.doSqlUpdate("delete from projects");
+    }
+
+    protected void cleanProjectFromDB(Project p, boolean deleteAcl) {
+
+        entityManagerService.doSqlUpdate("delete from projecttemplates");
+        entityManagerService.doSqlUpdate("delete from budgetreservations");
+        entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
+        if (deleteAcl) {
+            entityManagerService.doSqlUpdate("delete from acentries where aclist_id='" + p.getUserGroups().getId().toString() + "'");
+            entityManagerService.doSqlUpdate("delete from aclists where id='" + p.getUserGroups().getId().toString() + "'");
+        }
+
+    }
+
+    public void cleanItemsFromDb() {
+        entityManagerService.doSqlUpdate("delete from item_positions");
+        entityManagerService.doSqlUpdate("delete from items_history");
+        entityManagerService.doSqlUpdate("delete from items");
+    }
+
+    protected void cleanMaterialsFromDB() {
+        entityManagerService.doSqlUpdate("delete from storagesconditions_storages_hist");
+        entityManagerService.doSqlUpdate("delete from hazards_materials_hist");
+        entityManagerService.doSqlUpdate("delete from storages_hist");
+        entityManagerService.doSqlUpdate("delete from material_indices_hist");
+        entityManagerService.doSqlUpdate("delete from storageconditions_storages");
+        entityManagerService.doSqlUpdate("delete from storages");
+        entityManagerService.doSqlUpdate("delete from structures_hist");
+        entityManagerService.doSqlUpdate("delete from materials_hist");
+        entityManagerService.doSqlUpdate("delete from material_indices");
+        entityManagerService.doSqlUpdate("delete from materialdetailrights");
+        entityManagerService.doSqlUpdate("delete from structures");
+        entityManagerService.doSqlUpdate("delete from storageconditions_storages");
+        entityManagerService.doSqlUpdate("delete from storages");
+        entityManagerService.doSqlUpdate("delete from hazards_materials");
+        entityManagerService.doSqlUpdate("delete from materials");
+    }
+
+    protected void cleanAcListFromDB(ACList acl) {
+        entityManagerService.removeEntity(ACListEntity.class, acl.getId());
+
+    }
+
 }

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:nwc="http://ipb-halle.de/nwc"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head></h:head>
+
+    <h:body>
+        <ui:composition>
+
+            <b:form 
+                id="itemEditForm">
+                <ui:insert name="containerModal">
+                    <ui:include src="/WEB-INF/templates/item/containerModal.xhtml"/>
+                </ui:insert>
+
+                <b:panel>
+                    <b:container>
+                        <b:row>
+                            <b:column span="2" offset="2">
+                                <h:outputText
+                                    value="#{msgs.itemEdit_materialPanel_name}"/>
+                            </b:column>
+                            <b:column span="2">
+                                <h:outputText
+                                    value="#{itemBean.getMaterialName()}"/>
+                            </b:column>
+                            <b:column span="1">
+                                <b:commandButton
+                                    value="back"
+                                    disabled="#{itemBean.isPreviousVersionButtonDisabled()}"
+                                    action="#{itemBean.applyNextNegativeDiff()}">
+                                </b:commandButton>
+                            </b:column>
+                            <b:column span="1">
+                                <h:outputText
+                                    value="#{itemBean.state.currentHistoryDate}"/>
+                            </b:column>
+                            <b:column span="1">
+                                <b:commandButton
+                                    value="forward"
+                                    disabled="#{itemBean.isNextVersionButtonDisabled()}"
+                                    action="#{itemBean.applyNextPositiveDiff()}">
+                                </b:commandButton>
+                            </b:column>
+                            <b:column span="1" offset="1">
+                                <b:commandButton
+                                    value="#{itemBean.getSaveButtonText()}"
+                                    action="#{itemBean.actionSave()}"
+                                    />
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </b:panel>
+
+                <b:panel
+                    title="#{msgs.itemEdit_projectPanel_title}">
+                    <b:container>
+                        <b:row>
+                            <b:column span="2">
+                                <b:selectOneMenu
+                                    label="#{msgs.itemEdit_projectPanel_name}"
+                                    value="#{itemBean.state.editedItem.project}">
+                                    <f:selectItems 
+                                        value="#{itemBean.getProjects()}"
+                                        var="p"
+                                        itemLabel="#{p.toString()}"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                            <b:column span="1">
+                                <b:selectBooleanCheckbox
+                                    label="#{msgs.itemEdit_projectPanel_checkBox}"
+                                    ajax="true"
+                                    update="@(.commercialClass)"
+                                    value="#{itemBean.commercialMaterial}"/>
+                            </b:column>
+                            <b:column span="1"
+                                      styleClass="commercialClass">
+                                <b:selectOneMenu
+                                    label="#{msgs.itemEdit_projectPanel_checkBox_provider}"
+                                    rendered="#{itemBean.commercialMaterial}"
+                                    value="2">
+                                </b:selectOneMenu>
+                            </b:column>
+
+                            <b:column 
+                                span="2"
+                                styleClass="commercialClass">
+                                <b:selectOneMenu
+                                    label="#{msgs.itemEdit_projectPanel_checkBox_article}"
+                                    rendered="#{itemBean.commercialMaterial}"
+                                    value="2">
+                                </b:selectOneMenu>
+                            </b:column>
+
+                        </b:row>
+                    </b:container>
+                </b:panel>
+
+                <b:panel
+                    title="#{msgs.itemEdit_itemPanel_title}">
+                    <b:container>
+                        <b:row>
+                            <b:column offset="1" span="9">
+                                <b:container>
+                                    <b:row>
+                                        <b:column span="1">
+                                            <b:inputText label='Item ID'
+                                                         disabled="true"
+                                                         rendered="#{itemBean.isIdVisible()}"
+                                                         value="#{itemBean.state.editedItem.id}"/>
+
+
+                                        </b:column>
+                                        <b:column span="1">
+                                            <b:selectBooleanCheckbox
+                                                label="#{msgs.itemEdit_itemPanel_directContainer}"
+                                                ajax="true"
+                                                update="@(.directContainerClass)"
+                                                value="#{itemBean.directContainer}"/>
+                                        </b:column>
+                                        <b:column span="2" styleClass="directContainerClass">
+                                            <b:inputText
+                                                rendered="#{itemBean.directContainer}"
+                                                id="containerSize"
+                                                value="#{itemBean.state.editedItem.containerSize}"
+                                                required="true"
+                                                required-message="#{msgs.itemEdit_itemPanel_amount_requiredtext}"
+                                                label="#{msgs.itemEdit_itemPanel_container_size}">
+                                                <f:validateDoubleRange minimum="0" for="containerSize"/>
+                                            </b:inputText>
+                                        </b:column>
+                                        <b:column span="2" styleClass="directContainerClass">
+                                            <b:selectOneMenu
+                                                rendered="#{itemBean.directContainer}"
+                                                disabled="#{!itemBean.isUnitEditable()}"
+                                                label="#{msgs.itemEdit_itemPanel_container_unit}"
+                                                value="#{itemBean.state.editedItem.unit}">
+                                                <f:selectItems 
+                                                    value="#{itemBean.getUnits()}"
+                                                    />
+                                            </b:selectOneMenu>
+                                        </b:column> 
+
+                                        <b:column span="4" styleClass="directContainerClass">
+                                            <b:selectOneMenu
+                                                rendered="#{itemBean.directContainer}"
+                                                label="#{msgs.itemEdit_itemPanel_container_type}"
+                                                value="#{itemBean.state.editedItem.containerType}">
+                                                <f:selectItems 
+                                                    value="#{itemBean.getContainerTypes()}"
+                                                    var ="ct"
+                                                    itemLabel="#{ct.getLocalizedName()}"/>
+                                            </b:selectOneMenu>
+                                        </b:column> 
+                                    </b:row>
+                                    <b:row 
+                                        styleClass="solventClass">
+                                        <b:column span="1" offset="1">
+                                            <b:selectBooleanCheckbox
+                                                label="#{msgs.itemEdit_itemPanel_solvent}"
+                                                ajax="true"
+                                                update="@(.solventClass)"
+                                                value="#{itemBean.solved}"/>
+                                        </b:column>
+                                        <b:column
+                                            span="2"
+                                            rendered="#{itemBean.isSolventRowVisisble()}">
+                                            <b:inputText
+                                                id="concentration"
+                                                label="#{msgs.itemEdit_itemPanel_concentration}"
+                                                value="#{itemBean.state.editedItem.concentration}"
+                                                >
+                                                <f:validateDoubleRange minimum="0" for="concentration"/>
+                                            </b:inputText>
+                                        </b:column>
+                                        <b:column
+                                            span="2"
+                                            rendered="#{itemBean.isSolventRowVisisble()}">
+                                            <b:selectOneMenu
+                                                label="#{msgs.itemEdit_itemPanel_concentration_unit}"
+                                                value="#{itemBean.state.editedItem.purity}">
+                                                <f:selectItems 
+                                                    value="#{itemBean.getPurityUnits()}"/>
+                                            </b:selectOneMenu>
+                                        </b:column> 
+                                        <b:column
+                                            span="4"
+                                            rendered="#{itemBean.isSolventRowVisisble()}">
+                                            <b:selectOneMenu
+                                                label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
+                                                value="#{itemBean.state.editedItem.solvent}">
+                                                <f:selectItems 
+                                                    value="#{itemBean.getSolvents()}"
+                                                    var="s"
+                                                    itemLabel="#{s.getLocalizedName()}"/>
+
+                                            </b:selectOneMenu>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="2" offset="2">
+                                            <b:inputText
+                                                id="amount"
+                                                value="#{itemBean.state.editedItem.amount}"
+                                                label="#{msgs.itemEdit_itemPanel_amount}">
+                                                <f:validateDoubleRange minimum="0" for="amount"/>
+                                            </b:inputText>
+                                        </b:column>
+                                        <b:column span="4">
+                                            <b:selectOneMenu
+                                                label="#{msgs.itemEdit_itemPanel_amount_purity}"
+                                                value="#{itemBean.state.editedItem.purity}">
+                                                <f:selectItems 
+                                                    value="#{itemBean.getPurities()}"
+                                                    />
+                                            </b:selectOneMenu>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="8">
+                                            <b:inputTextarea
+                                                label="#{msgs.itemEdit_itemPanel_description}"
+                                                value="#{itemBean.state.editedItem.description}"
+                                                placeholder="#{msgs.itemEdit_itemPanel_description_placeholder}">
+                                            </b:inputTextarea>
+                                        </b:column>
+                                    </b:row>
+
+                                </b:container>
+
+
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </b:panel>
+                <b:panel title="#{msgs.itemEdit_containerPanel_title}">
+                    <b:container>
+                        <b:row>
+                            <b:column span="4" styleClass="containerPseudoClass">
+                                <b:container>
+                                    <b:row>
+                                        <b:column span="1" >
+                                            <h:outputText value="#{msgs.itemEdit_containerPanel_container_name}"/>
+                                        </b:column>
+                                        <b:column offset="1" span="1" >
+                                            <h:outputText value="#{itemBean.getContainerName()}"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="1" >
+                                            <h:outputText value="#{msgs.itemEdit_containerPanel_container_type}"/>
+                                        </b:column>
+                                        <b:column offset="1" span="1" >
+                                            <h:outputText value="#{itemBean.getContainerType()}"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="1" >
+                                            <h:outputText value="#{msgs.itemEdit_containerPanel_container_project}"/>
+                                        </b:column>
+                                        <b:column offset="1" span="1" >
+                                            <h:outputText value="#{itemBean.getContainerProject()}"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="1" >
+                                            <h:outputText value="#{msgs.itemEdit_containerPanel_container_location}"/>
+                                        </b:column>
+                                        <b:column offset="1" span="1" >
+                                            <h:outputText value="#{itemBean.getContainerLocation()}"/>
+                                        </b:column>
+                                    </b:row>
+                                </b:container>
+
+                            </b:column>
+                            <b:column 
+                                span="4"
+                                styleClass="containerPseudoClass">
+                                <nwc:container
+                                    container="#{itemBean.container}"
+                                    positions="#{itemBean.itemPositions}"
+                                    id="customComponentContainer">
+
+                                </nwc:container>
+                            </b:column>
+                            <b:column span="3">
+                                <b:container>
+                                    <b:row>
+                                        <b:column span="2">
+                                            <h:outputText
+                                                value="#{msgs.itemEdit_containerPanel_quickSearch}"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="2">
+                                            <p:autoComplete value="#{itemBean.containerName}"
+                                                            maxResults="15"
+                                                            completeMethod="#{itemBean.nameSuggestions}">
+                                                <p:ajax 
+                                                    event="itemSelect" 
+                                                    listener="#{itemBean.onItemSelect}"
+                                                    update="@(.containerPseudoClass)"/>
+
+                                            </p:autoComplete>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="2">
+                                            <b:commandButton
+                                                ajax="true"
+                                                oncomplete="$('.containerModal').modal()"
+                                                value="erweiterte Suche"/>
+                                        </b:column>
+                                    </b:row>
+                                </b:container>
+                            </b:column>
+
+                        </b:row>
+
+
+                    </b:container>
+
+
+                </b:panel>
+            </b:form>
+
+        </ui:composition>
+    </h:body>
+
+</html>

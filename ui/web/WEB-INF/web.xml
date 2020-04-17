@@ -60,6 +60,10 @@
         <param-value>false</param-value>
     </context-param>
     <context-param>
+        <param-name>facelets.LIBRARIES</param-name>
+        <param-value>/WEB-INF/nwc.taglib.xml</param-value>
+    </context-param>
+    <context-param>
         <param-name>net.bootsfaces.get_bootstrap_from_cdn</param-name>
         <param-value>false</param-value>
     </context-param>
@@ -71,7 +75,7 @@
     <!-- debugging mode for jsf: set param to Development -->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Production</param-value>
+        <param-value>Development</param-value>
     </context-param>
     <context-param>
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>

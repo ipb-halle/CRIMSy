@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition>
+            <b:panel 
+                styleClass="storagePanelClass"
+                title="#{msgs.materialCreation_panelStorage_name}"
+                rendered="#{materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
+
+                <b:container>
+                    <b:row>
+                        <b:column span="2">
+                            <h:outputText
+                                value="#{msgs.materialCreation_panelStorage_storageClass}"/>
+                        </b:column>
+                        <b:column span="5">
+                            <b:selectOneMenu
+                                disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                                value="#{materialBean.storageClassInformation.storageClass}">
+                                <f:selectItems 
+                                    var="item"
+                                    value="#{materialBean.storageClassInformation.possibleStorageClasses}"
+                                    itemLabel="#{item.getName()}" />
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+
+                </b:container>
+                <b:inputText
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    label="#{msgs.materialCreation_panelStorage_remarks}"
+                    value="#{materialBean.storageClassInformation.remarks}"/>
+                <h:outputText 
+                    value="#{msgs.materialCreation_panelStorage_additionalStorageProperties}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.moistureSensitive}"
+                    caption="#{msgs.materialCreation_panelStorage_moistureSensitive}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.keepMoist}"
+                    caption="#{msgs.materialCreation_panelStorage_keepMoist}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.lightSensitive}"
+                    caption="#{msgs.materialCreation_panelStorage_lightSensitive}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.storeUnderProtectiveGas}"
+                    caption="#{msgs.materialCreation_panelStorage_storeUnderProtectiveGas}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.acidSensitive}"
+                    caption="#{msgs.materialCreation_panelStorage_acidSensitive}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.alkaliSensitive}"
+                    caption="#{msgs.materialCreation_panelStorage_alkaliSensitive}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.awayFromOxidants}"
+                    caption="#{msgs.materialCreation_panelStorage_awayFromOxidants}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.frostSensitive}"
+                    caption="#{msgs.materialCreation_panelStorage_frostSensitive}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.keepCool}"
+                    caption="#{msgs.materialCreation_panelStorage_keepCool}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.keepFrozen}"
+                    caption="#{msgs.materialCreation_panelStorage_keepFrozen}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.keepTempBelowMinus40Celsius}"
+                    caption="#{msgs.materialCreation_panelStorage_keepTempBelowMinus40Celsius}"/>
+                <b:selectBooleanCheckbox
+                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                    value="#{materialBean.storageClassInformation.keepTempBelowMinus80Celsius}"
+                    caption="#{msgs.materialCreation_panelStorage_keepTempBelowMinus80Celsius}"/>
+            </b:panel>
+        </ui:composition>
+    </h:body>
+
+</html>

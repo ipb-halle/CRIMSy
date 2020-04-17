@@ -30,15 +30,11 @@ package de.ipb_halle.lbac.service;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACEntryEntity;
-import de.ipb_halle.lbac.entity.ACEntryEntity_;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACListEntity;
-import de.ipb_halle.lbac.entity.ACListEntity_;
 
 import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.MemberEntity;
-import de.ipb_halle.lbac.entity.MemberEntity_;
 import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
@@ -46,13 +42,10 @@ import de.ipb_halle.lbac.entity.UserEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -61,11 +54,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.SingularAttribute;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 

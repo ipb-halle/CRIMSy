@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.FileObject;
@@ -35,6 +36,7 @@ import de.ipb_halle.lbac.service.MemberService;
 import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
 import de.ipb_halle.lbac.util.HexUtil;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
@@ -84,7 +86,8 @@ public class WordCloudWebServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, "WordCloudWebServiceTest.war")
+
+        return prepareDeployment("WordCloudWebServiceTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(FileEntityService.class)
                 .addClass(SolrSearcher.class)
@@ -105,10 +108,8 @@ public class WordCloudWebServiceTest extends TestBase {
                 .addClass(FileEntityService.class)
                 .addClass(SolrSearcher.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                .addAsResource("init.sql", "init.sql")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return archive;
+                .addClass(WordCloudWebServiceMock.class);
+
     }
 
     @Before

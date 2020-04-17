@@ -27,17 +27,40 @@
     <h:body>
         <ui:composition>
             <b:form>
-                <b:navBar position="top" sticky="true">
-                    <b:navbarLinks rendered="#{navigator.access}">
-                        <b:navCommandLink style="font-size: 175%;" value="LBAC"
-                                          actionListener="#{navigator.navigate('default')}"/>
-                        <b:navCommandLink value="Word Cloud Search"
-                                          actionListener="#{navigator.navigate('wordCloud2')}"/>
-                        
-                        <b:navCommandLink value="Forum"
-                                          actionListener="#{navigator.navigate('socialForum')}"/>
-                         
-                    </b:navbarLinks>
+
+
+                <b:navBar position="top" sticky="true" styleClass="navigationMenu">
+                    <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
+                        <b:dropMenu value="BioCloud">
+                            <b:navCommandLink  value="LBAC"
+                                               actionListener="#{navigator.navigate('default')}"/>
+                            <b:navCommandLink value="Word Cloud Search"
+                                              actionListener="#{navigator.navigate('wordCloud2')}"/>
+                            <b:navCommandLink value="Forum"
+                                              actionListener="#{navigator.navigate('socialForum')}"/>
+                        </b:dropMenu>
+                        <b:navLink />
+                    </b:flyOutMenu>
+
+                    <b:flyOutMenu
+                        width="50px" 
+                        rendered="#{userBean.isComponentAccessable('InhouseDB')}"
+                        styleClass="lbacDropDownMenu">
+                        <b:dropMenu value="LIMS">
+                            <b:navCommandLink 
+                                value="Materialien"
+                                actionListener="#{navigator.navigate('material/materials')}"/>
+                            <b:navCommandLink 
+                                value="Projekte"
+                                actionListener="#{navigator.navigate('project/projectOverview')}"/>
+                             <b:navCommandLink 
+                                value="Gebinde"
+                                actionListener="#{navigator.navigate('item/items')}"/>
+                            <b:navCommandLink value="..."
+                                              />
+                        </b:dropMenu>
+                        <b:navLink />
+                    </b:flyOutMenu>
 
                     <!-- Following line is needed for TBS 3.0.1 (panel content overflow issue) -->
 

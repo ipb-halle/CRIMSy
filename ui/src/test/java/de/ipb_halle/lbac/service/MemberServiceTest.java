@@ -36,6 +36,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webservice.Updater;
+import java.util.Set;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -44,6 +45,7 @@ import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
 import java.util.UUID;
+import org.junit.Assert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -213,6 +215,12 @@ public class MemberServiceTest extends TestBase {
 
         assertEquals("testNestedGroups() nested membership(0,9) has 1 path",
                 1, this.membershipService.getNestingPathSetSize(this.membershipService.load(g[0], g[9])));
+    }
+
+    @Test
+    public void testLoadSimilarUserNames() {
+        Set<String> names = memberService.loadSimilarUserNames("admi");
+        Assert.assertTrue(names.size() > 0);
     }
 
 }

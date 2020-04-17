@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.webclient;
 
-import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.util.HexUtil;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

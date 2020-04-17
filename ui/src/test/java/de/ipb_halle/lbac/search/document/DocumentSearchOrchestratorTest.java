@@ -72,6 +72,7 @@ public class DocumentSearchOrchestratorTest extends TestBase {
     }
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         initializeBaseUrl();
@@ -82,6 +83,7 @@ public class DocumentSearchOrchestratorTest extends TestBase {
     public void orchestrateTest()
             throws IOException, Exception {
 
+        
         searchState = new DocumentSearchState();
         DocumentSearchRequest searchReq = new DocumentSearchRequest();
         searchReq.setSearchQuery(new DocumentSearchQuery("java"));
@@ -91,7 +93,9 @@ public class DocumentSearchOrchestratorTest extends TestBase {
         // remote node; no RSA key because REST-API gets mocked.
         Cloud cloud = cloudService.loadByName(TESTCLOUD);
         Node node = createNode(nodeService, "remove this argument"); 
+        node.setBaseUrl(baseUrl.toString());
         cloudNodeService.save(new CloudNode(cloud, node));
+        nodeService.save(node);
 
         Collection col = new Collection();
         col.setId(UUID.randomUUID());

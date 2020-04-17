@@ -31,8 +31,10 @@ import de.ipb_halle.lbac.entity.UserEntity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class MemberService implements Serializable {
@@ -53,6 +56,7 @@ public class MemberService implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static String PUBLIC_ACCOUNT_ID = "088e3bc0-7fb2-422e-b29a-71ca3ec907d2";
     private final static String OWNER_ACCOUNT_ID = "0a662938-e11e-4825-bd45-fa117963d12f";
+    private final String SQL_GET_SIMILAR_NAMES = "SELECT name FROM usersgroups WHERE LOWER(name) LIKE LOWER(:name) AND membertype='U' AND name <> 'deactivated'";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -109,12 +113,25 @@ public class MemberService implements Serializable {
 
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));
 
-        List<Group> result = new ArrayList<> ();
-        for(GroupEntity ge : this.em.createQuery(criteriaQuery).getResultList()) {
+        List<Group> result = new ArrayList<>();
+        for (GroupEntity ge : this.em.createQuery(criteriaQuery).getResultList()) {
             Node node = this.nodeService.loadById(ge.getNode());
             result.add(new Group(ge, node));
         }
         return result;
+    }
+
+    /**
+     * Gets all materialnames which matches the pattern %name%
+     *
+     * @param name name for searching
+     * @return List of matching materialnames
+     */
+    public Set<String> loadSimilarUserNames(String name) {
+        return new HashSet(this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
+                .setParameter("name", "%" + name + "%")
+                .getResultList());
+
     }
 
     /**
@@ -160,8 +177,8 @@ public class MemberService implements Serializable {
 
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[]{})));
 
-        List<User> result = new ArrayList<User> ();
-        for(UserEntity ue : this.em.createQuery(criteriaQuery).getResultList()) {
+        List<User> result = new ArrayList<User>();
+        for (UserEntity ue : this.em.createQuery(criteriaQuery).getResultList()) {
             Node node = this.nodeService.loadById(ue.getNode());
             result.add(new User(ue, node));
         }
@@ -180,7 +197,7 @@ public class MemberService implements Serializable {
             Node node = this.nodeService.loadById(ge.getNode());
             return new Group(ge, node);
         }
-        return null; 
+        return null;
     }
 
     /**
@@ -210,12 +227,12 @@ public class MemberService implements Serializable {
         }
         return member;
     }
-    
+
     /**
      * save a single group
      *
      * @param g the Group to save
-     * @return 
+     * @return
      */
     public Group save(Group g) {
         GroupEntity ge = g.createEntity();
@@ -228,8 +245,9 @@ public class MemberService implements Serializable {
 
     /**
      * save a member; redirects to save(User) or save(Group)
+     *
      * @param m
-     * @return 
+     * @return
      */
     public Member save(Member m) {
         if (m.isGroup()) {
@@ -243,7 +261,7 @@ public class MemberService implements Serializable {
      * save a single user
      *
      * @param u the User to save
-     * @return 
+     * @return
      */
     public User save(User u) {
         UserEntity ue = u.createEntity();

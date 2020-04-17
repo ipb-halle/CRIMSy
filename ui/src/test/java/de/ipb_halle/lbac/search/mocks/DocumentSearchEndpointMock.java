@@ -32,7 +32,7 @@ import javax.ws.rs.core.Response;
  *
  * @author fmauz
  */
-@Path("rest/search")
+@Path("rest/search/")
 public class DocumentSearchEndpointMock {
 
     public static int SLEEPTIME_BETWEEN_REQUESTS = 500;

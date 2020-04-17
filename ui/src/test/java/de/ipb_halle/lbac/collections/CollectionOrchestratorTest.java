@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.collections;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.TESTCLOUD;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
@@ -28,6 +29,7 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.collections.mock.CollectionWebClientMock;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
+import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
@@ -101,11 +103,6 @@ public class CollectionOrchestratorTest extends TestBase {
         CloudNode cn = new CloudNode(cloudService.loadByName(TESTCLOUD), remoteNode);
 
         cloudNodeService.save(cn);
-
-        // Mocks the CollectionWebClient 
-        collectionOrc.setCollectionWebClient(
-                new CollectionWebClientMock(DELAY_IN_MILLISEC, AMOUNT_OF_REMOTE_COLLS)
-        );
         // Mocks the CollectionWebClient 
         collectionOrc.setCollectionWebClient(
                 new CollectionWebClientMock(DELAY_IN_MILLISEC, AMOUNT_OF_REMOTE_COLLS)
