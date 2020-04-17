@@ -55,6 +55,7 @@ public class CloudNodeServiceTest extends TestBase {
      */
     @Test
     public void testCloudNodeService() {
+        
         Cloud cloud = cloudService.save(new Cloud(TEST_CLOUDNODESERVICE_CLOUD));
         Node node = nodeService.loadById(TEST_NODE_ID);
         CloudNode cloudNode = cloudNodeService.save(new CloudNode(cloud, node));
