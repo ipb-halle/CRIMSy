@@ -518,6 +518,12 @@ CREATE TABLE containers(
     gvo_class VARCHAR,
     barcode VARCHAR);
 
+CREATE TABLE nested_containers(
+    sourceid INTEGER NOT NULL REFERENCES containers(id),
+    targetid INTEGER NOT NULL REFERENCES containers(id),
+    nested BOOLEAN NOT NULL,
+    PRIMARY KEY(sourceid,targetid));
+
 CREATE TABLE solvents(
     id SERIAL NOT NULL PRIMARY KEY,
     name VARCHAR NOT NULL);

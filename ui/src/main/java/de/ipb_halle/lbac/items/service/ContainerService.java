@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Container;
+import de.ipb_halle.lbac.items.ContainerNesting;
 import de.ipb_halle.lbac.items.ContainerType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.entity.ContainerEntity;
@@ -60,6 +61,8 @@ public class ContainerService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
+    private final String SQL_NESTED_TARGETS = "SELECT targetid FROM nested_containers WHERE sourceid=:source";
+
     public Container loadContainerById(int id) {
         ContainerEntity entity = this.em.find(ContainerEntity.class, id);
         Container container = new Container(entity);
@@ -88,6 +91,10 @@ public class ContainerService implements Serializable {
         dbe.setGvo_class(c.getGvoClass());
         dbe.setBarcode(c.getBarCode());
         em.persist(dbe);
+        c.setId(dbe.getId());
+        if(c.getParentContainer()!=null){
+             saveContainerNesting(new ContainerNesting(c.getId(), c.getParentContainer().getId(), false));
+        }
         c.setId(dbe.getId());
         return c;
     }
@@ -200,6 +207,58 @@ public class ContainerService implements Serializable {
         }
 
         return items;
+    }
+
+    /**
+     * Load a list of container ids which has the given id as a source (direct
+     * or indirect). That means that the container with id is positioned in the
+     * list of result ids.
+     *
+     * @param id container id
+     * @return list of ids in which the container is in (direct or indirect)
+     */
+    public List<Integer> loadNestedTargets(int id) {
+        return this.em.
+                createNativeQuery(SQL_NESTED_TARGETS)
+                .setParameter("source", id)
+                .getResultList();
+    }
+
+    /**
+     * Loads a list of container ids which has the given id as a target. (direct
+     * or indirect) That means all the ids of the result are positioned in the
+     * given id.
+     *
+     * @param id container id
+     * @return list of ids which are positioned in the container
+     */
+    public List<Integer> loadNestedSources(int id) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Removes a container from another container and removes all direct and
+     * indirect relationships.
+     *
+     * @param cn
+     */
+    public void removeContainerWithNesting(ContainerNesting cn) {
+
+    }
+
+    /**
+     * Adds a new container relationship and adds all indirect relationships.
+     *
+     * @param cn
+     */
+    public void saveContainerNesting(ContainerNesting cn) {
+        List<Integer> targets = loadNestedTargets(cn.getTarget());
+        this.em.merge(cn.createEntity());
+        for (Integer t : targets) {
+            this.em.merge(
+                    new ContainerNesting(cn.getSource(), t, true)
+                            .createEntity());
+        }
     }
 
     public ContainerType loadContainerTypeByName(String name) {
