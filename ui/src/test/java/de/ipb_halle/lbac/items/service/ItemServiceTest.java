@@ -65,7 +65,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ItemServiceTest extends TestBase {
 
-    private Container c0, c1;
+    private Container c0, c1,c2;
     @Inject
     private ItemService instance;
 
@@ -116,9 +116,19 @@ public class ItemServiceTest extends TestBase {
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90));
+        
+         c2 = new Container();
+        c2.setBarCode("43753456");
+        c2.setDimension(null);
+        c2.setFireSection(c1.getFireSection());
+        c2.setGvoClass(c1.getGvoClass());
+        c2.setLabel("Karton3");
+        c2.setParentContainer(c1);
+        c2.setType(new ContainerType("CARTON", 90));
 
         containerService.saveContainer(c0);
         containerService.saveContainer(c1);
+        containerService.saveContainer(c2);
 
     }
 
@@ -152,7 +162,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: Owner-id must be " + ownerid, owner.getId(), loadedItem.getOwner().getId());
         Assert.assertEquals("Testcase 001: Project-id must be " + project.getId(), project.getId(), loadedItem.getProject().getId());
         Assert.assertEquals("Testcase 001: Purity must be 'rein'", "rein", loadedItem.getPurity());
-        Assert.assertEquals("Testcase 001: One nested Container must be found", 1, items.get(0).getNestedContainer().size());
+        Assert.assertEquals("Testcase 001: One nested Container must be found", 2, items.get(0).getNestedContainer().size());
         Assert.assertNull("Testcase 001: Solvent must be null", loadedItem.getSolvent());
         Assert.assertNotNull(loadedItem.getcTime());
 
@@ -267,7 +277,7 @@ public class ItemServiceTest extends TestBase {
         item.setUnit("kg");
         item.setArticle(null);
         item.setConcentration(32d);
-        item.setContainer(c1);
+        item.setContainer(c2);
         item.setContainerSize(100d);
         item.setDescription("description");
         item.setMaterial(s);

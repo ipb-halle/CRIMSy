@@ -29,7 +29,9 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -262,9 +264,8 @@ public class ContainerService implements Serializable {
     }
 
     /**
-     * TO DO: Sorting order
-     * Loads all containers in which the container is present. The hierarchy is
-     * descent
+     * Loads all containers in which the container is
+     * present. The hierarchy is descent
      *
      * @param id
      * @return Descent ordered list of containers in which the container is
@@ -273,11 +274,33 @@ public class ContainerService implements Serializable {
     public List<Container> loadNestedContainer(int id) {
         List<Integer> parentContainer = loadNestedTargets(id);
         List<Container> nestedContainer = new ArrayList<>();
-        for (int i : parentContainer) {
-            nestedContainer.add(loadContainerById(i));
-        }
-        return nestedContainer;
 
+        Map<Integer, List<Integer>> l = new HashMap<>();
+        //Load all targets for every container in chain 
+        for (int i : parentContainer) {
+            l.put(i, loadNestedTargets(i));
+        }
+        while (!l.isEmpty()) {
+            int leastElements = getChainWithLeastElements(l);
+            nestedContainer.add(loadContainerById(leastElements));
+            l.remove(leastElements);
+            for (Integer k : l.keySet()) {
+                l.get(k).remove(Integer.valueOf(leastElements));
+            }
+        }
+        //Get the element with the fewest elements. 
+
+        return nestedContainer;
+    }
+
+    private int getChainWithLeastElements(Map<Integer, List<Integer>> l) {
+        int leastElementsId = -1;
+        for (int key : l.keySet()) {
+            if (leastElementsId == -1 || l.get(key).size() < l.get(leastElementsId).size()) {
+                leastElementsId = key;
+            }
+        }
+        return leastElementsId;
     }
 
     public ContainerType loadContainerTypeByName(String name) {
