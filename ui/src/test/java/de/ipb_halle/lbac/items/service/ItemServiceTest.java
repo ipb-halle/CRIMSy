@@ -26,6 +26,8 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.items.Container;
+import de.ipb_halle.lbac.items.ContainerType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.material.CreationTools;
@@ -63,11 +65,15 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ItemServiceTest extends TestBase {
 
+    private Container c0, c1;
     @Inject
     private ItemService instance;
 
     @Inject
     private EntityManagerService emService;
+
+    @Inject
+    private ContainerService containerService;
 
     @Inject
     private ProjectService projectService;
@@ -89,9 +95,30 @@ public class ItemServiceTest extends TestBase {
     public void setUp() {
         super.setUp();
         creationTools = new CreationTools("", "", "", memberService, projectService);
+
         cleanItemsFromDb();
         cleanMaterialsFromDB();
         createAndSaveMaterial();
+
+        c0 = new Container();
+        c0.setBarCode(null);
+        c0.setDimension("3;3;1");
+        c0.setFireSection("F1");
+        c0.setGvoClass("S0");
+        c0.setLabel("R302");
+        c0.setType(new ContainerType("ROOM", 90));
+
+        c1 = new Container();
+        c1.setBarCode("9845893457");
+        c1.setDimension("2;2;1");
+        c1.setFireSection(c0.getFireSection());
+        c1.setGvoClass(c0.getGvoClass());
+        c1.setLabel("Schrank1");
+        c1.setParentContainer(c0);
+        c1.setType(new ContainerType("CUPBOARD", 90));
+
+        containerService.saveContainer(c0);
+        containerService.saveContainer(c1);
 
     }
 
@@ -100,6 +127,8 @@ public class ItemServiceTest extends TestBase {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups where login='itemServiceTestUser'");
+        entityManagerService.doSqlUpdate("DELETE FROM nested_containers");
+        entityManagerService.doSqlUpdate("DELETE FROM containers");
     }
 
     @Test
@@ -109,19 +138,21 @@ public class ItemServiceTest extends TestBase {
 
         Assert.assertEquals(1, instance.getItemAmount(owner, new HashMap<>()));
         List<Item> items = instance.loadItems(owner, new HashMap(), 0, 25);
+
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         Item loadedItem = items.get(0);
         Assert.assertEquals("Testcase 001: Amount must be 23", 23d, (double) loadedItem.getAmount(), 0);
         Assert.assertEquals("Testcase 001: Unit must be kg", "kg", loadedItem.getUnit());
         Assert.assertNull("Testcase 001: Article must be null", loadedItem.getArticle());
         Assert.assertEquals("Testcase 001: Concentration must be 32", 32d, (double) loadedItem.getConcentration(), 0);
-        Assert.assertNull("Testcase 001: Parent container must be null", loadedItem.getContainer());
+        Assert.assertNotNull("Testcase 001: Parent container must be not null", loadedItem.getContainer());
         Assert.assertEquals("Testcase 001: containersize must be 100", 100d, loadedItem.getContainerSize(), 0);
         Assert.assertEquals("Testcase 001: Description must be 'description'", "description", loadedItem.getDescription());
         Assert.assertEquals("Testcase 001: Material id must be 1", 1, loadedItem.getMaterial().getId());
         Assert.assertEquals("Testcase 001: Owner-id must be " + ownerid, owner.getId(), loadedItem.getOwner().getId());
         Assert.assertEquals("Testcase 001: Project-id must be " + project.getId(), project.getId(), loadedItem.getProject().getId());
         Assert.assertEquals("Testcase 001: Purity must be 'rein'", "rein", loadedItem.getPurity());
+        Assert.assertEquals("Testcase 001: One nested Container must be found", 1, items.get(0).getNestedContainer().size());
         Assert.assertNull("Testcase 001: Solvent must be null", loadedItem.getSolvent());
         Assert.assertNotNull(loadedItem.getcTime());
 
@@ -236,7 +267,7 @@ public class ItemServiceTest extends TestBase {
         item.setUnit("kg");
         item.setArticle(null);
         item.setConcentration(32d);
-        item.setContainer(null);
+        item.setContainer(c1);
         item.setContainerSize(100d);
         item.setDescription("description");
         item.setMaterial(s);

@@ -42,9 +42,11 @@ import de.ipb_halle.lbac.service.ACListService;
 import java.util.List;
 import java.util.UUID;
 import javax.inject.Inject;
+import org.apache.openjpa.lib.util.J2DoPrivHelper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -115,6 +117,14 @@ public class ContainerServiceTest extends TestBase {
         c2.setType(new ContainerType("CARTON", 90));
     }
 
+    @After
+    public void finish() {
+
+        super.cleanItemsFromDb();
+        this.entityManagerService.doSqlUpdate("Delete from nested_containers");
+        this.entityManagerService.doSqlUpdate("Delete from containers");
+    }
+
     @Test
     public void test001_saveContainer() {
 
@@ -129,14 +139,14 @@ public class ContainerServiceTest extends TestBase {
 
         List<Object> nestedContainer = entityService.doSqlQuery("select sourceid,targetid,nested from nested_containers order by sourceid,targetid");
         Assert.assertEquals(3, (int) nestedContainer.size());
-        int[] targetSources=new int[]{c1.getId(),c2.getId(),c2.getId()};
-        int[] targetTargets=new int[]{c0.getId(),c0.getId(),c1.getId()};
-        boolean[] targetNested=new boolean[]{false,true,false};
+        int[] targetSources = new int[]{c1.getId(), c2.getId(), c2.getId()};
+        int[] targetTargets = new int[]{c0.getId(), c0.getId(), c1.getId()};
+        boolean[] targetNested = new boolean[]{false, true, false};
         for (int i = 0; i < 3; i++) {
             Object[] nc = (Object[]) nestedContainer.get(i);
-            Assert.assertEquals(targetSources[i],(int) nc[0]);
-            Assert.assertEquals(targetTargets[i],(int) nc[1]);
-            Assert.assertEquals(targetNested[i],(boolean) nc[2]);
+            Assert.assertEquals(targetSources[i], (int) nc[0]);
+            Assert.assertEquals(targetTargets[i], (int) nc[1]);
+            Assert.assertEquals(targetNested[i], (boolean) nc[2]);
         }
     }
 
@@ -184,7 +194,7 @@ public class ContainerServiceTest extends TestBase {
      * Adds items into containers at specified positions
      */
     @Test
-    public void test002_saveLoadItemsInContainer() {
+    public void test003_saveLoadItemsInContainer() {
         /**
          * Initialising the neccessary components for adding:
          * <ol>
@@ -240,7 +250,7 @@ public class ContainerServiceTest extends TestBase {
     }
 
     @Test
-    public void test003_nestedContainers() {
+    public void test004_nestedContainers() {
 
     }
 

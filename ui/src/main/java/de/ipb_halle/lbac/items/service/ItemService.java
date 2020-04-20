@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.items.Container;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.ItemComparator;
@@ -125,13 +126,15 @@ public class ItemService {
         List<ItemEntity> entities = q.getResultList();
 
         for (ItemEntity entity : entities) {
+
             Item i = new Item(entity,
                     entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
                     entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
                     materialService.loadMaterialById(entity.getMaterialid()),
                     memberService.loadUserById(entity.getOwner()),
                     entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
-                    entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()));
+                    entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
+                    containerService.loadNestedContainer(entity.getContainerid()));
             i.setHistory(loadHistoryOfItem(i));
             result.add(i);
         }
@@ -139,7 +142,7 @@ public class ItemService {
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SQL_LOAD_ITEMS_AMOUNT, cmap,null);
+        Query q = createItemQuery(SQL_LOAD_ITEMS_AMOUNT, cmap, null);
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();
     }
@@ -166,7 +169,8 @@ public class ItemService {
                 materialService.loadMaterialById(entity.getMaterialid()),
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
-                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()));
+                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
+                containerService.loadNestedContainer(entity.getContainerid()));
     }
 
     public Item loadItemByIdWithoutContainer(int id) {
@@ -177,7 +181,8 @@ public class ItemService {
                 materialService.loadMaterialById(entity.getMaterialid()),
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
-                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()));
+                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
+                new ArrayList<>());
     }
 
     /**

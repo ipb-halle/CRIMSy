@@ -92,8 +92,8 @@ public class ContainerService implements Serializable {
         dbe.setBarcode(c.getBarCode());
         em.persist(dbe);
         c.setId(dbe.getId());
-        if(c.getParentContainer()!=null){
-             saveContainerNesting(new ContainerNesting(c.getId(), c.getParentContainer().getId(), false));
+        if (c.getParentContainer() != null) {
+            saveContainerNesting(new ContainerNesting(c.getId(), c.getParentContainer().getId(), false));
         }
         c.setId(dbe.getId());
         return c;
@@ -233,7 +233,7 @@ public class ContainerService implements Serializable {
      * @return list of ids which are positioned in the container
      */
     public List<Integer> loadNestedSources(int id) {
-        return new ArrayList<>();
+        throw new RuntimeException("Not Yet implemented!");
     }
 
     /**
@@ -243,7 +243,7 @@ public class ContainerService implements Serializable {
      * @param cn
      */
     public void removeContainerWithNesting(ContainerNesting cn) {
-
+        throw new RuntimeException("Not Yet implemented!");
     }
 
     /**
@@ -259,6 +259,25 @@ public class ContainerService implements Serializable {
                     new ContainerNesting(cn.getSource(), t, true)
                             .createEntity());
         }
+    }
+
+    /**
+     * TO DO: Sorting order
+     * Loads all containers in which the container is present. The hierarchy is
+     * descent
+     *
+     * @param id
+     * @return Descent ordered list of containers in which the container is
+     * present.
+     */
+    public List<Container> loadNestedContainer(int id) {
+        List<Integer> parentContainer = loadNestedTargets(id);
+        List<Container> nestedContainer = new ArrayList<>();
+        for (int i : parentContainer) {
+            nestedContainer.add(loadContainerById(i));
+        }
+        return nestedContainer;
+
     }
 
     public ContainerType loadContainerTypeByName(String name) {
