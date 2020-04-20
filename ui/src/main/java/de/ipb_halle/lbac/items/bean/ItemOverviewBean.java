@@ -72,7 +72,7 @@ public class ItemOverviewBean implements Serializable {
 
     @Inject
     private MaterialService materialService;
-    
+
     @Inject
     private ProjectService projectService;
 
@@ -95,8 +95,11 @@ public class ItemOverviewBean implements Serializable {
         if (searchUserName != null && !searchUserName.isEmpty()) {
             cmap.put("OWNER_NAME", searchUserName);
         }
-          if (searchProject != null && !searchProject.isEmpty()) {
+        if (searchProject != null && !searchProject.isEmpty()) {
             cmap.put("PROJECT_NAME", searchProject);
+        }
+        if (searchDescription != null && !searchDescription.isEmpty()) {
+            cmap.put("DESCRIPTION", searchDescription);
         }
 
         itemAmount = itemService.getItemAmount(currentUser, cmap);
@@ -220,9 +223,9 @@ public class ItemOverviewBean implements Serializable {
         List<String> names = materialService.getSimilarMaterialNames(input, currentUser);
         return names;
     }
-    
-    public List<String> getSimilarProjectNames(String input){
-        return projectService.getSimilarProjectNames(input,currentUser);
+
+    public List<String> getSimilarProjectNames(String input) {
+        return projectService.getSimilarProjectNames(input, currentUser);
     }
 
     public List<String> getSimilarUserNames(String input) {

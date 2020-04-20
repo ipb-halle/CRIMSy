@@ -96,6 +96,7 @@ public class ItemService {
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1) "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
+            + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "ORDER BY i.id";
 
@@ -106,6 +107,7 @@ public class ItemService {
             + "JOIN projects p on p.id=i.projectid "
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
+            + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1)";
 
@@ -154,7 +156,9 @@ public class ItemService {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
+        
         return q
+                .setParameter("DESCRIPTION", cmap.containsKey("DESCRIPTION") ? cmap.get("DESCRIPTION") : "no_description_filter")
                 .setParameter("MATERIAL_NAME", cmap.containsKey("MATERIAL_NAME") ? cmap.get("MATERIAL_NAME") : "no_name_filter")
                 .setParameter("OWNER_NAME", cmap.containsKey("OWNER_NAME") ? cmap.get("OWNER_NAME") : "no_user_filter")
                 .setParameter("PROJECT_NAME", cmap.containsKey("PROJECT_NAME") ? cmap.get("PROJECT_NAME") : "no_project_filter")
