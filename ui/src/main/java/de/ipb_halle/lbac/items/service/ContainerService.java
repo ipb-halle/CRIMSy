@@ -264,14 +264,17 @@ public class ContainerService implements Serializable {
     }
 
     /**
-     * Loads all containers in which the container is
-     * present. The hierarchy is descent
+     * Loads all containers in which the container is present. The hierarchy is
+     * descent
      *
      * @param id
      * @return Descent ordered list of containers in which the container is
      * present.
      */
-    public List<Container> loadNestedContainer(int id) {
+    public List<Container> loadNestedContainer(Integer id) {
+        if (id == null) {
+            return new ArrayList<>();
+        }
         List<Integer> parentContainer = loadNestedTargets(id);
         List<Container> nestedContainer = new ArrayList<>();
 
