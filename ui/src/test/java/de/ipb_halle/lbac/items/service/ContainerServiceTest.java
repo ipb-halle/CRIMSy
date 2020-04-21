@@ -40,9 +40,9 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.service.ACListService;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
-import org.apache.openjpa.lib.util.J2DoPrivHelper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -79,6 +79,7 @@ public class ContainerServiceTest extends TestBase {
     private ProjectService projectService;
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         cleanItemsFromDb();
@@ -251,6 +252,17 @@ public class ContainerServiceTest extends TestBase {
 
     @Test
     public void test004_nestedContainers() {
+
+    }
+
+    @Test
+    public void test005_similarContainerLabels() {
+        instance.saveContainer(c0);
+        instance.saveContainer(c1);
+        instance.saveContainer(c2);
+        Set<String> names = instance.getSimilarMaterialNames("kart", publicUser);
+        Assert.assertEquals(1, names.size());
+        Assert.assertEquals("Karton3", names.iterator().next());
 
     }
 

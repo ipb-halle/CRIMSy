@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.items.Container;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.ItemComparator;
@@ -93,9 +92,13 @@ public class ItemService {
             + "JOIN material_indices mi ON mi.materialid=i.materialid "
             + "JOIN usersgroups u on u.id=i.owner "
             + "JOIN projects p on p.id=i.projectid "
+            + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
+            + "LEFT JOIN containers c ON nc.targetid=c.id "
+            + "LEFT JOIN containers c2 ON i.containerid=c2.id "
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1) "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
+            + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
             + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "ORDER BY i.id";
@@ -105,10 +108,14 @@ public class ItemService {
             + "JOIN material_indices mi ON mi.materialid=i.materialid "
             + "JOIN usersgroups u on u.id=i.owner "
             + "JOIN projects p on p.id=i.projectid "
+            + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
+            + "LEFT JOIN containers c ON nc.targetid=c.id "
+            + "LEFT JOIN containers c2 ON i.containerid=c2.id "
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
             + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
+            + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1)";
 
     /**
@@ -163,6 +170,7 @@ public class ItemService {
                 .setParameter("MATERIAL_NAME", cmap.containsKey("MATERIAL_NAME") ? cmap.get("MATERIAL_NAME") : "no_name_filter")
                 .setParameter("OWNER_NAME", cmap.containsKey("OWNER_NAME") ? cmap.get("OWNER_NAME") : "no_user_filter")
                 .setParameter("PROJECT_NAME", cmap.containsKey("PROJECT_NAME") ? cmap.get("PROJECT_NAME") : "no_project_filter")
+                .setParameter("LOCATION_NAME", cmap.containsKey("LOCATION_NAME") ? cmap.get("LOCATION_NAME") : "no_location_filter")
                 .setParameter("ITEM_ID", cmap.containsKey("ITEM_ID") ? Integer.parseInt(cmap.get("ITEM_ID")) : -1);
     }
 

@@ -90,12 +90,14 @@
                                 <b:column span="2">
                                     <h:outputText value="Standort"/>
                                 </b:column>
-                            </b:row>
-                            <b:row>
+                            </b:row>  
+                            <b:row>  
                                 <b:column span="2">
-                                    <b:inputText value="#{itemOverviewBean.searchLocation}"/>
+                                    <p:autoComplete value="#{itemOverviewBean.searchLocation}"
+                                                    maxResults="10"
+                                                    completeMethod="#{itemOverviewBean.getSimilarContainerNames}"/>
                                 </b:column>
-                            </b:row>
+                            </b:row>                           
                             <b:row>
                                 <b:column span="2">
                                     <h:outputText value="Bemerkungen"/>

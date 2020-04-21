@@ -30,8 +30,10 @@ import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -64,6 +66,22 @@ public class ContainerService implements Serializable {
     protected EntityManager em;
 
     private final String SQL_NESTED_TARGETS = "SELECT targetid FROM nested_containers WHERE sourceid=:source";
+    private final String SQL_GET_SIMILAR_NAMES = "SELECT label FROM containers WHERE LOWER(label) LIKE LOWER(:label)";
+
+    /**
+     * Gets all containersnames which matches the pattern %name%
+     *
+     * @param name name for searching
+     * @param user
+     * @return List of matching materialnames
+     */
+    @SuppressWarnings("unchecked")
+    public Set<String> getSimilarMaterialNames(String name, User user) {
+        List l = this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
+                .setParameter("label", "%" + name + "%")
+                .getResultList();
+        return new HashSet<>(l);
+    }
 
     public Container loadContainerById(int id) {
         ContainerEntity entity = this.em.find(ContainerEntity.class, id);
