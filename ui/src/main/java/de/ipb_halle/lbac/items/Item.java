@@ -23,8 +23,9 @@ import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.project.Project;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -50,12 +51,20 @@ public class Item implements DTO, Serializable {
     private Solvent solvent;
     private Date cTime;
     private SortedMap<Date, ItemHistory> history = new TreeMap<>();
+    private List<Container> nestedContainer = new ArrayList<>();
 
     public Item() {
 
     }
 
-    public Item(ItemEntity entity, Article art, Container con, Material mat, User owner, Project project, Solvent sol) {
+    public Item(ItemEntity entity,
+            Article art,
+            Container con,
+            Material mat,
+            User owner,
+            Project project,
+            Solvent sol,
+            List<Container> nestedContainer) {
         this.id = entity.getId();
         this.amount = entity.getAmount();
         this.unit = entity.getUnit();
@@ -73,6 +82,7 @@ public class Item implements DTO, Serializable {
         this.purity = entity.getPurity();
         this.solvent = sol;
         this.cTime = entity.getCtime();
+        this.nestedContainer = nestedContainer;
     }
 
     @Override
@@ -235,6 +245,10 @@ public class Item implements DTO, Serializable {
 
     public void setHistory(SortedMap<Date, ItemHistory> history) {
         this.history = history;
+    }
+
+    public List<Container> getNestedContainer() {
+        return nestedContainer;
     }
 
 }

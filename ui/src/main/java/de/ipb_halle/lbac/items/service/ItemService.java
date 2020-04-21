@@ -92,9 +92,14 @@ public class ItemService {
             + "JOIN material_indices mi ON mi.materialid=i.materialid "
             + "JOIN usersgroups u on u.id=i.owner "
             + "JOIN projects p on p.id=i.projectid "
+            + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
+            + "LEFT JOIN containers c ON nc.targetid=c.id "
+            + "LEFT JOIN containers c2 ON i.containerid=c2.id "
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1) "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
+            + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
+            + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "ORDER BY i.id";
 
@@ -103,9 +108,14 @@ public class ItemService {
             + "JOIN material_indices mi ON mi.materialid=i.materialid "
             + "JOIN usersgroups u on u.id=i.owner "
             + "JOIN projects p on p.id=i.projectid "
+            + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
+            + "LEFT JOIN containers c ON nc.targetid=c.id "
+            + "LEFT JOIN containers c2 ON i.containerid=c2.id "
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
+            + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
+            + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1)";
 
     /**
@@ -116,6 +126,7 @@ public class ItemService {
      * @param maxResults
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
         List<Item> result = new ArrayList<>();
         Query q = createItemQuery(SQL_LOAD_ITEMS, cmap, ItemEntity.class);
@@ -125,13 +136,15 @@ public class ItemService {
         List<ItemEntity> entities = q.getResultList();
 
         for (ItemEntity entity : entities) {
+
             Item i = new Item(entity,
                     entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
                     entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
                     materialService.loadMaterialById(entity.getMaterialid()),
                     memberService.loadUserById(entity.getOwner()),
                     entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
-                    entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()));
+                    entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
+                    containerService.loadNestedContainer(entity.getContainerid()));
             i.setHistory(loadHistoryOfItem(i));
             result.add(i);
         }
@@ -139,7 +152,7 @@ public class ItemService {
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SQL_LOAD_ITEMS_AMOUNT, cmap,null);
+        Query q = createItemQuery(SQL_LOAD_ITEMS_AMOUNT, cmap, null);
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();
     }
@@ -151,10 +164,13 @@ public class ItemService {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
+
         return q
+                .setParameter("DESCRIPTION", cmap.containsKey("DESCRIPTION") ? cmap.get("DESCRIPTION") : "no_description_filter")
                 .setParameter("MATERIAL_NAME", cmap.containsKey("MATERIAL_NAME") ? cmap.get("MATERIAL_NAME") : "no_name_filter")
                 .setParameter("OWNER_NAME", cmap.containsKey("OWNER_NAME") ? cmap.get("OWNER_NAME") : "no_user_filter")
                 .setParameter("PROJECT_NAME", cmap.containsKey("PROJECT_NAME") ? cmap.get("PROJECT_NAME") : "no_project_filter")
+                .setParameter("LOCATION_NAME", cmap.containsKey("LOCATION_NAME") ? cmap.get("LOCATION_NAME") : "no_location_filter")
                 .setParameter("ITEM_ID", cmap.containsKey("ITEM_ID") ? Integer.parseInt(cmap.get("ITEM_ID")) : -1);
     }
 
@@ -166,7 +182,8 @@ public class ItemService {
                 materialService.loadMaterialById(entity.getMaterialid()),
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
-                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()));
+                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
+                containerService.loadNestedContainer(entity.getContainerid()));
     }
 
     public Item loadItemByIdWithoutContainer(int id) {
@@ -177,7 +194,8 @@ public class ItemService {
                 materialService.loadMaterialById(entity.getMaterialid()),
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
-                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()));
+                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
+                new ArrayList<>());
     }
 
     /**

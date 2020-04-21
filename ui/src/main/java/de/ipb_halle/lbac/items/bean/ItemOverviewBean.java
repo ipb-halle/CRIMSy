@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.component.MaterialName;
 import de.ipb_halle.lbac.material.service.MaterialService;
@@ -72,9 +73,11 @@ public class ItemOverviewBean implements Serializable {
 
     @Inject
     private MaterialService materialService;
-    
+
     @Inject
     private ProjectService projectService;
+    @Inject
+    private ContainerService containerService;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Item> items;
@@ -95,8 +98,14 @@ public class ItemOverviewBean implements Serializable {
         if (searchUserName != null && !searchUserName.isEmpty()) {
             cmap.put("OWNER_NAME", searchUserName);
         }
-          if (searchProject != null && !searchProject.isEmpty()) {
+        if (searchProject != null && !searchProject.isEmpty()) {
             cmap.put("PROJECT_NAME", searchProject);
+        }
+        if (searchDescription != null && !searchDescription.isEmpty()) {
+            cmap.put("DESCRIPTION", searchDescription);
+        }
+         if (searchLocation != null && !searchLocation.isEmpty()) {
+            cmap.put("LOCATION_NAME", searchLocation);
         }
 
         itemAmount = itemService.getItemAmount(currentUser, cmap);
@@ -220,14 +229,17 @@ public class ItemOverviewBean implements Serializable {
         List<String> names = materialService.getSimilarMaterialNames(input, currentUser);
         return names;
     }
-    
-    public List<String> getSimilarProjectNames(String input){
-        return projectService.getSimilarProjectNames(input,currentUser);
+
+    public List<String> getSimilarProjectNames(String input) {
+        return projectService.getSimilarProjectNames(input, currentUser);
     }
 
     public List<String> getSimilarUserNames(String input) {
-        return new ArrayList(memberService.loadSimilarUserNames(input));
+        return new ArrayList<>(memberService.loadSimilarUserNames(input));
+    }
 
+    public List<String> getSimilarContainerNames(String input) {
+        return new ArrayList<>(containerService.getSimilarMaterialNames(input, currentUser));
     }
 
     public String getItemSearchId() {

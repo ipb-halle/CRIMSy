@@ -470,7 +470,7 @@ public class ItemBean implements Serializable {
 
     private void clearFormular() {
         containerUnit = units.get(0);
-        itemPositions = new HashSet();
+        itemPositions = new HashSet<>();
         containerSize = null;
         container = null;
         basicContainerType = containerTypes.get(0);

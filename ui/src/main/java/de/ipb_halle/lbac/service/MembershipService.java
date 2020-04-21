@@ -46,7 +46,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class MembershipService implements Serializable {
@@ -244,9 +245,10 @@ public class MembershipService implements Serializable {
      * @param cmap
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<Membership> load(Map<String, Object> cmap) {
         List<Membership> result = new ArrayList<>();
-        List<MembershipEntity> entities = em.createNativeQuery(
+        List l = em.createNativeQuery(
                 "SELECT ms.id, ms.group_id, ms.member_id, ms.nested "
                 + "FROM memberships AS ms "
                 + "JOIN usersgroups AS g ON ms.group_id = g.id "
@@ -267,8 +269,7 @@ public class MembershipService implements Serializable {
                 .setParameter("mSST", cmap.keySet().contains("member_subSystemType") ? ((AdmissionSubSystemType) cmap.get("member_subSystemType")).getIndex() : -1)
                 .setParameter("groupNode_id", cmap.keySet().contains("group_node") ? cmap.get("group_node") : NON_EXISTING_UUID)
                 .setParameter("memberNode_id", cmap.keySet().contains("member_node") ? cmap.get("member_node") : NON_EXISTING_UUID).getResultList();
-
-        for (MembershipEntity entity : entities) {
+        for (MembershipEntity entity : (List<MembershipEntity>) l) {
             result.add(new Membership(
                     entity,
                     memberService.loadMemberById(entity.getGroup()),
@@ -298,8 +299,8 @@ public class MembershipService implements Serializable {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private Collection<NestingPath> loadNestingPathByMembership(UUID membershipId) {
-
         List<NestingPathEntity> entities = em.createNativeQuery(
                 "SELECT np.nestingpathsets_id, np.memberships_id FROM nestingpathset_memberships AS np "
                 + "JOIN (SELECT id FROM nestingpathsets "
@@ -392,7 +393,7 @@ public class MembershipService implements Serializable {
 //          ms.dump(this.logger);
             remove(ms);
         }
-        
+
     }
 
     /**

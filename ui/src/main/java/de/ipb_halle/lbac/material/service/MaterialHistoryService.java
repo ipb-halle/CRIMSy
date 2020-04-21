@@ -40,7 +40,6 @@ import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  *
  * @author fmauz
@@ -142,6 +141,7 @@ public class MaterialHistoryService {
         return history;
     }
 
+    @SuppressWarnings("unchecked")
     protected void loadIndexHistory(int materialId, MaterialHistory history) {
         List<MaterialIndexHistoryEntity> indexHistory = materialService.getEm().createNativeQuery(SQL_GET_INDEX_HISTORY, MaterialIndexHistoryEntity.class).setParameter("mid", materialId).getResultList();
         Map<Date, ArrayList<MaterialIndexHistoryEntity>> diffsByDate = new HashMap<>();
@@ -157,6 +157,7 @@ public class MaterialHistoryService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void loadStructureHistory(
             int materialId,
             MaterialHistory history) {
@@ -179,6 +180,7 @@ public class MaterialHistoryService {
 
     }
 
+    @SuppressWarnings("unchecked")
     protected void loadOverviewHistory(int materialId, MaterialHistory history) {
         List<Object[]> hists = materialService.getEm()
                 .createNativeQuery(SQL_GET_OVERVIEW_HISTORY)
@@ -210,6 +212,7 @@ public class MaterialHistoryService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void loadHazardHistory(int materialId, MaterialHistory history) {
 
         List<HazardsMaterialHistEntity> dbEntities = materialService.getEm()
@@ -221,6 +224,7 @@ public class MaterialHistoryService {
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void loadStorageHistory(int materialId, MaterialHistory history) {
 
         Map<Date, StorageClassHistoryEntity> sortedClassHistories = new HashMap<>();

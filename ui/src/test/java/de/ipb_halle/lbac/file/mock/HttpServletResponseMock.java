@@ -51,11 +51,13 @@ public class HttpServletResponseMock implements HttpServletResponse {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String encodeUrl(String url) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String encodeRedirectUrl(String url) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -111,6 +113,7 @@ public class HttpServletResponseMock implements HttpServletResponse {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setStatus(int sc, String sm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -173,7 +176,7 @@ public class HttpServletResponseMock implements HttpServletResponse {
 
     @Override
     public void setContentType(String type) {
-       
+
     }
 
     @Override

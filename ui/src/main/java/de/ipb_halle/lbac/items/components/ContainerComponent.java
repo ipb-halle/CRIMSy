@@ -66,6 +66,7 @@ public class ContainerComponent extends UIComponentBase {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void decode(FacesContext context) {
         Object positionAttribute = getAttributes().get("positions");

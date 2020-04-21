@@ -127,8 +127,9 @@ public class MemberService implements Serializable {
      * @param name name for searching
      * @return List of matching materialnames
      */
+    @SuppressWarnings("unchecked")
     public Set<String> loadSimilarUserNames(String name) {
-        return new HashSet(this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
+        return new HashSet<>(this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("name", "%" + name + "%")
                 .getResultList());
 
