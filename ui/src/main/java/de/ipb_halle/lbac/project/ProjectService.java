@@ -68,6 +68,7 @@ public class ProjectService {
      * @param user
      * @return List of matching materialnames
      */
+    @SuppressWarnings("unchecked")
     public List<String> getSimilarProjectNames(String name, User user) {
         return this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("name", "%" + name + "%")
@@ -79,6 +80,7 @@ public class ProjectService {
      * @param pE
      * @return
      */
+    @SuppressWarnings("unchecked")
     private Project loadDetailInfosOfProject(ProjectEntity pE) {
         ACList projectACL = aclistService.loadById(pE.getUserGroups());
         Map<MaterialDetailType, ACList> detailTemplates = new HashMap<>();

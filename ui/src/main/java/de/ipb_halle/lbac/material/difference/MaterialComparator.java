@@ -35,7 +35,6 @@ import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  *
  * @author fmauz
@@ -85,6 +84,7 @@ public class MaterialComparator {
      * @param T
      * @return
      */
+    @SuppressWarnings("unchecked")
     public <T> T getDifferenceOfType(List<MaterialDifference> diffs, Class T) {
         for (MaterialDifference sd : diffs) {
             if (sd.getClass() == T) {

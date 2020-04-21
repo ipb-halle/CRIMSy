@@ -125,7 +125,7 @@ public class MaterialBeanTest extends TestBase {
         material.setOwnerID(publicUser.getId());
         materialService.setUserBean(userBean);
 
-        materialService.saveMaterialToDB(material, acl.getId(), new HashMap());
+        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>());
 
         instance.setMaterialIndexBean(new MaterialIndexBean());
         instance.setMaterialNameBean(new MaterialNameBean());

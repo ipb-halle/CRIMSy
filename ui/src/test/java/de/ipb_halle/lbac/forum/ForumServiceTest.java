@@ -42,8 +42,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-
-
 /**
  *
  * @author fmauz
@@ -150,6 +148,7 @@ public class ForumServiceTest extends TestBase {
     /**
      *
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void test03_loadReadableTopics() {
 
@@ -189,8 +188,8 @@ public class ForumServiceTest extends TestBase {
         Assert.assertEquals("2 Topics must be found in cloud 1", 2, topicsOfCloud1.size());
         List<Topic> topicsOfCloud2 = instance.loadReadableTopics(publicUser, cloud2);
         Assert.assertEquals("1 Topic  must be found in cloud 1", 1, topicsOfCloud2.size());
-        
-        entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id="+cloudNode.getId());
+
+        entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id=" + cloudNode.getId());
         entityManagerService.doSqlUpdate("DELETE FROM clouds WHERE name='Cloud2'");
 
     }

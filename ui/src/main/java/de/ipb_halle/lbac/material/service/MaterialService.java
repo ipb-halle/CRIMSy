@@ -146,7 +146,8 @@ public class MaterialService implements Serializable {
     public EntityManager getEm() {
         return em;
     }
-
+    
+    @SuppressWarnings("unchecked")
     public List<Material> getReadableMaterials() {
         Query q = em.createNativeQuery(SQL_GET_MATERIAL, MaterialEntity.class);
         q.setFirstResult(0);
@@ -174,6 +175,7 @@ public class MaterialService implements Serializable {
      * @param user
      * @return List of matching materialnames
      */
+     @SuppressWarnings("unchecked")
     public List<String> getSimilarMaterialNames(String name,User user) {
         return this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("name", "%" + name + "%")
@@ -185,6 +187,7 @@ public class MaterialService implements Serializable {
      * @param me
      * @return
      */
+     @SuppressWarnings("unchecked")
     protected Structure getStructure(MaterialEntity me) {
         Query q = em.createNativeQuery(SQL_GET_STORAGE, StorageEntity.class);
         Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionStorageEntity.class);

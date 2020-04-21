@@ -229,7 +229,7 @@ public class ItemOverviewBean implements Serializable {
     }
 
     public List<String> getSimilarUserNames(String input) {
-        return new ArrayList(memberService.loadSimilarUserNames(input));
+        return new ArrayList<String>(memberService.loadSimilarUserNames(input));
 
     }
 

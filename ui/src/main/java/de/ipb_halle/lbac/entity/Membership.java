@@ -23,7 +23,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Class for membership associations
@@ -50,6 +51,7 @@ public class Membership implements Serializable, DTO {
      * @param member
      * @param npSet
      */
+    @SuppressWarnings("unchecked")
     public Membership(
             MembershipEntity entity,
             Member group,
@@ -108,7 +110,7 @@ public class Membership implements Serializable, DTO {
                 this.group.getName(), this.member.getName(), psize,
                 this.nested ? "nested" : "direct"));
         Iterator<NestingPath> iter = this.nestingPathSet.iterator();
-       
+
         logger.info(" ");
     }
 

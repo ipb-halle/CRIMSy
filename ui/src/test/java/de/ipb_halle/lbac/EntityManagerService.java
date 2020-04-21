@@ -32,9 +32,10 @@ public class EntityManagerService {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void flush(){
+    public void flush() {
         this.em.flush();
     }
+
     public EntityManager getEm() {
         return em;
     }
@@ -43,6 +44,7 @@ public class EntityManagerService {
         em.createNativeQuery(query).executeUpdate();
     }
 
+    @SuppressWarnings("unchecked")
     public List<Object> doSqlQuery(String query) {
         return em.createNativeQuery(query).getResultList();
     }
@@ -51,6 +53,7 @@ public class EntityManagerService {
         this.em.createNativeQuery("delete from memberships where member_id='" + userId + "'").executeUpdate();
     }
 
+    @SuppressWarnings("unchecked")
     public void removeEntity(Class clazz, Object id) {
         this.em.remove(this.em.find(clazz, id));
 

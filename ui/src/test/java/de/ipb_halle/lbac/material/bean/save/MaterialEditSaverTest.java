@@ -125,6 +125,7 @@ public class MaterialEditSaverTest extends TestBase {
         cleanAcListFromDB(aclist);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void test001_saveStorageDiffs() throws Exception {
 
@@ -168,6 +169,7 @@ public class MaterialEditSaverTest extends TestBase {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void test002_saveStorageConditionsDiffsWithoutStorageClassDiffs() throws Exception {
         mOld.getStorageInformation().setAcidSensitive(true);

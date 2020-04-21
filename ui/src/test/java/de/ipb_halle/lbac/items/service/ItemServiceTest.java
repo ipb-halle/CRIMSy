@@ -147,7 +147,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
 
         Assert.assertEquals(1, instance.getItemAmount(owner, new HashMap<>()));
-        List<Item> items = instance.loadItems(owner, new HashMap(), 0, 25);
+        List<Item> items = instance.loadItems(owner, new HashMap<>(), 0, 25);
 
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         Item loadedItem = items.get(0);
@@ -271,7 +271,7 @@ public class ItemServiceTest extends TestBase {
     }
 
     private Item createItem() {
-        Structure s = new Structure("", 0, 0, 1, new ArrayList(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
+        Structure s = new Structure("", 0, 0, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
         item.setUnit("kg");

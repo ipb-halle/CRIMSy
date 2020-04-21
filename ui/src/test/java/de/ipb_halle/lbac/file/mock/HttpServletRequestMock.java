@@ -181,11 +181,6 @@ public class HttpServletRequestMock implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -340,6 +335,7 @@ public class HttpServletRequestMock implements HttpServletRequest {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String getRealPath(String path) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -397,6 +393,12 @@ public class HttpServletRequestMock implements HttpServletRequest {
 
     @Override
     public DispatcherType getDispatcherType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isRequestedSessionIdFromUrl() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

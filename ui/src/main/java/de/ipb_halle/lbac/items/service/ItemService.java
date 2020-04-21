@@ -119,6 +119,7 @@ public class ItemService {
      * @param maxResults
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
         List<Item> result = new ArrayList<>();
         Query q = createItemQuery(SQL_LOAD_ITEMS, cmap, ItemEntity.class);
@@ -156,7 +157,7 @@ public class ItemService {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
-        
+
         return q
                 .setParameter("DESCRIPTION", cmap.containsKey("DESCRIPTION") ? cmap.get("DESCRIPTION") : "no_description_filter")
                 .setParameter("MATERIAL_NAME", cmap.containsKey("MATERIAL_NAME") ? cmap.get("MATERIAL_NAME") : "no_name_filter")

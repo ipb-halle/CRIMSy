@@ -110,7 +110,8 @@ public class MaterialHistory {
     public SortedMap<Date, List<MaterialDifference>> getChanges() {
         return changes;
     }
-
+    
+    @SuppressWarnings("unchecked")
     public <T> T getDifferenceOfTypeAtDate(Class T, Date d) {
         if (changes.get(d) == null) {
             return null;

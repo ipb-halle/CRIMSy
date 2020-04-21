@@ -36,6 +36,7 @@ public class IndexService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
+    @SuppressWarnings("unchecked")
     public Map<Integer, String> loadIndexTypes() {
         Map<Integer, String> back = new HashMap<>();
         List<IndexTypeEntity> ies = em.createNativeQuery("select id,name,javaclass from indextypes", IndexTypeEntity.class).getResultList();

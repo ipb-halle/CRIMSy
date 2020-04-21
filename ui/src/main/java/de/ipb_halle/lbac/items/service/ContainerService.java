@@ -183,6 +183,7 @@ public class ContainerService implements Serializable {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public Item[][][] loadItemsOfContainer(Container c) {
         int[] dimSize = c.getDimensionIndex();
         if (dimSize == null) {
@@ -219,6 +220,7 @@ public class ContainerService implements Serializable {
      * @param id container id
      * @return list of ids in which the container is in (direct or indirect)
      */
+    @SuppressWarnings("unchecked")
     public List<Integer> loadNestedTargets(int id) {
         return this.em.
                 createNativeQuery(SQL_NESTED_TARGETS)
