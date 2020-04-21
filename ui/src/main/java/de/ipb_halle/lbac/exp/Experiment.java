@@ -45,7 +45,7 @@ public class Experiment implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private int experimentid;
+    private Integer experimentid;
 
     /**
      * A code (experiment number) by which this experiment can be identified.
@@ -69,12 +69,22 @@ public class Experiment implements DTO {
 */
 
     public Experiment(
-            int experimentid,
+            Integer experimentid,
             String code,
             String description) {
         this.experimentid = experimentid;
         this.code = code; 
         this.description = description;
+    }
+
+    /**
+     * constructor
+     * @param e ExperimentEntity to construct from
+     */
+    public Experiment(ExperimentEntity e) {
+        this.experimentid = e.getExperimentId();
+        this.code = e.getCode();
+        this.description = e.getDescription();
     }
 
     @Override
@@ -93,7 +103,7 @@ public class Experiment implements DTO {
         return this.description;
     }
 
-    public int getExperimentId() {
+    public Integer getExperimentId() {
         return this.experimentid;
     }
 
@@ -107,7 +117,7 @@ public class Experiment implements DTO {
         return this;
     }
 
-    public Experiment setExperimentId(int experimentid) { 
+    public Experiment setExperimentId(Integer experimentid) { 
         this.experimentid = experimentid; 
         return this;
     }

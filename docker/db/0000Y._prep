@@ -39,7 +39,7 @@ CREATE TABLE experiments (
 );
 
 CREATE TABLE exp_records (
-    exprecordid     SERIAL NOT NULL PRIMARY KEY,
+    exprecordid     BIGSERIAL NOT NULL PRIMARY KEY,
     experimentid    INTEGER NOT NULL REFERENCES experiments (experimentid) ON UPDATE CASCADE ON DELETE CASCADE,
     changetime      TIMESTAMP,
     creationtime    TIMESTAMP,
@@ -59,7 +59,7 @@ CREATE TABLE exp_sops (
  */
 CREATE TABLE exp_assay_outcomes (
     outcomeid       BIGSERIAL NOT NULL PRIMARY KEY,
-    exprecordid     INTEGER NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    exprecordid     BIGINTEGER NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     materialid      INTEGER NOT NULL /* REFERENCES material(materialid) ON UPDATE CASCADE ON DELETE CASCADE */,
     outcome         JSONB
 );
@@ -71,7 +71,7 @@ CREATE TABLE exp_assay_outcomes (
  */
 
 CREATE TABLE exp_assays (
-    exprecordid     INTEGER NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    exprecordid     BIGINTEGER NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     sopid           INTEGER NOT NULL REFERENCES exp_sops(sopid) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

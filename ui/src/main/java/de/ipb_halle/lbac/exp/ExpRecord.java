@@ -48,7 +48,7 @@ public abstract class ExpRecord implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private int             exprecordid;
+    private Long            exprecordid;
     private Experiment      experiment;
     private ExpRecordType   type;
     private Date            creationtime;
@@ -75,7 +75,7 @@ public abstract class ExpRecord implements DTO {
         return this.experiment; 
     }
 
-    public int getExpRecordId() {
+    public Long getExpRecordId() {
         return this.exprecordid;
     }
 
@@ -98,7 +98,7 @@ public abstract class ExpRecord implements DTO {
         return this;
     }
 
-    public ExpRecord setExpRecordId(int exprecordid) { 
+    public ExpRecord setExpRecordId(Long exprecordid) { 
         this.exprecordid = exprecordid; 
         return this;
     }

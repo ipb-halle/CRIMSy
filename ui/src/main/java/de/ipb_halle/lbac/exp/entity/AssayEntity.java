@@ -42,12 +42,12 @@ public class AssayEntity implements Serializable {
     private final static long serialVersionUID = 1L;
 
     @Id
-    private Integer exprecordid;
+    private Long exprecordid;
 
     @Column
     private Integer sopid;
    
-    public Integer getExpRecordId() {
+    public Long getExpRecordId() {
         return this.exprecordid;
     }
 
@@ -55,7 +55,7 @@ public class AssayEntity implements Serializable {
         return this.sopid;
     }
 
-    public AssayEntity setExpRecordId(Integer exprecordid) {
+    public AssayEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
         return this;
     }

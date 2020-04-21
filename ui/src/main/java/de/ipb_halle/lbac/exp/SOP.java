@@ -49,7 +49,7 @@ public class SOP implements DTO {
     private String      description;
     private FileObject  document;
 
-    public SOP(int sopid, 
+    public SOP(Integer sopid, 
             String description, 
             FileObject document) {
         this.description = description;
@@ -72,7 +72,7 @@ public class SOP implements DTO {
         return this.document;
     }
 
-    public int getSopId() {
+    public Integer getSopId() {
         return this.sopid;
     }
 
@@ -86,7 +86,7 @@ public class SOP implements DTO {
         return this;
     }
 
-    public SOP setSopId(int sopid) { 
+    public SOP setSopId(Integer sopid) { 
         this.sopid = sopid; 
         return this;
     }

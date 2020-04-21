@@ -85,7 +85,7 @@ public class SOPEntity implements Serializable {
         return this; 
     }
 
-    public SOPEntity setSopId(Integer experimentid) {
+    public SOPEntity setSopId(Integer sopid) {
         this.sopid = sopid;
         return this;
     }

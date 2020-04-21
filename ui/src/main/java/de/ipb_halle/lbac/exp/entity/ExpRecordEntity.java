@@ -44,7 +44,7 @@ public class ExpRecordEntity implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer exprecordid;
+    private Long exprecordid;
 
 
     @Column
@@ -63,7 +63,7 @@ public class ExpRecordEntity implements Serializable {
         return this.experimentid; 
     }
 
-    public Integer getExpRecordId() {
+    public Long getExpRecordId() {
         return this.exprecordid;
     }
 
@@ -94,7 +94,7 @@ public class ExpRecordEntity implements Serializable {
         return this;
     }
 
-    public ExpRecordEntity setExpRecordId(Integer exprecordid) {
+    public ExpRecordEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
         return this;
     }
