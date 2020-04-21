@@ -426,6 +426,10 @@ insert into containertypes(name,description,rank)values('PLASTIC_SACK',null,0);
 insert into containertypes(name,description,rank)values('PAPER_BAG',null,0);
 insert into containertypes(name,description,rank)values('COMPRESSED_GAS_CYLINDER',null,0);
 
+CREATE TABLE taxonomy(
+    id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
+    level INTEGER NOT NULL);
+
 COMMIT TRANSACTION;
 
 
