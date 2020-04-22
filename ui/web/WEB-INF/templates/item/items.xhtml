@@ -111,9 +111,13 @@
                             <b:row>
                                 <b:column span="2">
                                     <b:commandButton value="Clear"
-                                                     action="#{itemOverviewBean.actionClearSearchFilter()}"/>
+                                                     ajax="true"
+                                                     update="itemForm"
+                                                     onclick="ajax:itemOverviewBean.actionClearSearchFilter();"/>
                                     <b:commandButton value="Search"
-                                                     action="#{itemOverviewBean.actionApplySearchFilter()}"/>
+                                                     update="itemForm"
+                                                     ajax="true"
+                                                     onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
                                 </b:column>
                             </b:row>
 
@@ -178,20 +182,29 @@
                                 <b:column> 
                                     <b:commandButton 
                                         disabled="#{itemOverviewBean.isBackDeactivated()}"
-                                        action="#{itemOverviewBean.actionFirstItems()}"
+                                        onclick="ajax:itemOverviewBean.actionFirstItems();"
+                                        ajax="true"
+                                        update="itemForm"
                                         />
                                     <b:commandButton 
                                         disabled="#{itemOverviewBean.isBackDeactivated()}"
-                                        action="#{itemOverviewBean.actionLastItems()}"
+                                        onclick="ajax:itemOverviewBean.actionLastItems();"
+                                        ajax="true"
+                                        update="itemForm"
+
                                         />
 
                                     <b:commandButton 
                                         disabled="#{itemOverviewBean.isForwardDeactivated()}"
-                                        action="#{itemOverviewBean.actionNextItems()}"
+                                        onclick="ajax:itemOverviewBean.actionNextItems();"
+                                        ajax="true"
+                                        update="itemForm"
                                         />
                                     <b:commandButton 
                                         disabled="#{itemOverviewBean.isForwardDeactivated()}"
-                                        action="#{itemOverviewBean.actionEndItems()}"
+                                        onclick="ajax:itemOverviewBean.actionEndItems();"
+                                        ajax="true"
+                                        update="itemForm"
                                         />
                                 </b:column> 
                                 <b:column offset="2"> 
