@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.component;
 
-import de.ipb_halle.lbac.material.component.V2000;
+import de.ipb_halle.lbac.material.subtype.structure.V2000;
 import org.junit.Assert;
 import org.junit.Test;
 

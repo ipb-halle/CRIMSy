@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.material.entity.MaterialIndexHistoryEntity;
+import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;

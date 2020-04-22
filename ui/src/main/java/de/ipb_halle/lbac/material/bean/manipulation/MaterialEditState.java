@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.bean.manipulation;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.component.HazardInformation;
+import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import java.util.Date;

@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.project;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.MemberService;
 import java.util.ArrayList;

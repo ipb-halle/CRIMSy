@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.service;
 
-import de.ipb_halle.lbac.material.component.Molecule;
+import de.ipb_halle.lbac.material.subtype.structure.Molecule;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
@@ -35,22 +35,21 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
-import de.ipb_halle.lbac.material.component.Hazard;
-import de.ipb_halle.lbac.material.component.HazardInformation;
-import de.ipb_halle.lbac.material.component.IndexEntry;
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
-import de.ipb_halle.lbac.material.component.MaterialName;
-import de.ipb_halle.lbac.material.component.StorageClass;
-import de.ipb_halle.lbac.material.component.StorageClassInformation;
-import de.ipb_halle.lbac.material.component.StorageCondition;
+import de.ipb_halle.lbac.material.common.Hazard;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClass;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
-import de.ipb_halle.lbac.material.entity.MaterialIndexHistoryEntity;
+import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.MaterialServiceMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
-import de.ipb_halle.lbac.material.subtype.MaterialType;
-import de.ipb_halle.lbac.material.subtype.Structure;
-import de.ipb_halle.lbac.material.subtype.Taxonomy;
-import de.ipb_halle.lbac.material.subtype.TaxonomyLevel;
+import de.ipb_halle.lbac.material.subtype.structure.Structure;
+import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevel;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -76,6 +75,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -413,6 +413,10 @@ public class MaterialServiceTest extends TestBase {
         Taxonomy t = new Taxonomy(0, names, p.getId(), new HazardInformation(), new StorageClassInformation());
         t.setLevel(levels.get(0));
         instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
+
+        cleanTaxonomyFromDb();
+        cleanMaterialsFromDB();
+        cleanProjectFromDB(p, false);
 
     }
 

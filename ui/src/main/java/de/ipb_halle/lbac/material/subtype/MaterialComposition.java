@@ -18,9 +18,9 @@
 package de.ipb_halle.lbac.material.subtype;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.component.HazardInformation;
-import de.ipb_halle.lbac.material.component.MaterialName;
-import de.ipb_halle.lbac.material.component.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import java.util.HashMap;
 import java.util.List;
 

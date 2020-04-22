@@ -36,21 +36,22 @@
         <class>de.ipb_halle.lbac.exp.ExpRecord</class>
         <class>de.ipb_halle.lbac.exp.SOP</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.IndexEntryEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.IndexTypeEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.MaterialIndexEntryEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.HazardsMaterialsEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialHistoryEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.StorageConditionStorageEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.StorageEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.StructureEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.MaterialIndexHistory</class>
-        <class>de.ipb_halle.lbac.material.entity.MaterialIndexHistoryEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.StructureHistEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.HazardsMaterialHistEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.TaxonomyEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.TaxonomyLevelEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.index.IndexTypeEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity</class>      
+        <class>de.ipb_halle.lbac.material.entity.index.MaterialIndexEntryEntity</class>        
+        <class>de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialsEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialHistEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.storage.StorageConditionHistoryEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.storage.StorageConditionStorageEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.storage.StorageClassHistoryEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.storage.StorageEntity</class>    
+        <class>de.ipb_halle.lbac.material.entity.structure.StructureEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.structure.StructureHistEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.entity.ACEntryEntity</class>
         <class>de.ipb_halle.lbac.entity.ACListEntity</class>
         <class>de.ipb_halle.lbac.entity.CloudEntity</class>

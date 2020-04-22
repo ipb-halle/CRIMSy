@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.material.difference;
 
-import de.ipb_halle.lbac.material.component.StorageCondition;
-import de.ipb_halle.lbac.material.entity.StorageClassHistoryEntity;
-import de.ipb_halle.lbac.material.entity.StorageClassHistoryId;
-import de.ipb_halle.lbac.material.entity.StorageConditionHistoryEntity;
+import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.entity.storage.StorageClassHistoryEntity;
+import de.ipb_halle.lbac.material.entity.storage.StorageClassHistoryId;
+import de.ipb_halle.lbac.material.entity.storage.StorageConditionHistoryEntity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.bean.manipulation;
 
 import de.ipb_halle.lbac.material.bean.manipulation.NameListOperation;
-import de.ipb_halle.lbac.material.component.MaterialName;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

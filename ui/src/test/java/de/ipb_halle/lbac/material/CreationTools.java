@@ -17,19 +17,19 @@
  */
 package de.ipb_halle.lbac.material;
 
-import de.ipb_halle.lbac.material.component.Molecule;
+import de.ipb_halle.lbac.material.subtype.structure.Molecule;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.material.component.HazardInformation;
-import de.ipb_halle.lbac.material.component.IndexEntry;
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
-import de.ipb_halle.lbac.material.component.MaterialName;
-import de.ipb_halle.lbac.material.component.StorageClass;
-import de.ipb_halle.lbac.material.component.StorageClassInformation;
-import de.ipb_halle.lbac.material.subtype.Structure;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClass;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;

@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.subtype;
 
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.util.Arrays;
 import java.util.List;
 

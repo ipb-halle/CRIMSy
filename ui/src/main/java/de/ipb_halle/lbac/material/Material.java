@@ -17,18 +17,18 @@
  */
 package de.ipb_halle.lbac.material;
 
-import de.ipb_halle.lbac.material.component.MaterialDetailRight;
+import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.material.component.Hazard;
-import de.ipb_halle.lbac.material.component.HazardInformation;
-import de.ipb_halle.lbac.material.component.IndexEntry;
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
-import de.ipb_halle.lbac.material.component.MaterialName;
-import de.ipb_halle.lbac.material.component.StorageClassInformation;
-import de.ipb_halle.lbac.material.component.StorageCondition;
+import de.ipb_halle.lbac.material.common.Hazard;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -439,6 +439,15 @@ CREATE TABLE effective_taxonomy(
     taxoid INTEGER NOT NULL REFERENCES taxonomy(id),
     parentid INTEGER NOT NULL REFERENCES taxonomy(id));
 
+CREATE TABLE taxonomy_history(
+    actorid UUID NOT NULL REFERENCES usersgroups(id),
+    mdate TIMESTAMP NOT NULL,
+    action VARCHAR NOT NULL,
+    digest VARCHAR NOT NULL,
+    level_old INTEGER,
+    level_new INTEGER,
+    PRIMARY KEY(actorid,mdate));
+
 INSERT INTO taxonomy_level VALUES(1,'domain');
 INSERT INTO taxonomy_level VALUES(2,'kingdom');
 INSERT INTO taxonomy_level VALUES(3,'phylum');

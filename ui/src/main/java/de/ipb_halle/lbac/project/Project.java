@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

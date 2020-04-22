@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.difference;
 
 import com.google.common.base.Objects;
-import de.ipb_halle.lbac.material.entity.MaterialIndexHistoryEntity;
+import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

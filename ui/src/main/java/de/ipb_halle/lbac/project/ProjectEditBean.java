@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.service.MemberService;

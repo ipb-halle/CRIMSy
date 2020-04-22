@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.material.bean;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.material.component.IndexEntry;
-import de.ipb_halle.lbac.material.component.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.service.IndexService;
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -18,10 +18,10 @@
 package de.ipb_halle.lbac.material.difference;
 
 import de.ipb_halle.lbac.material.bean.ModificationType;
-import de.ipb_halle.lbac.material.component.Molecule;
+import de.ipb_halle.lbac.material.subtype.structure.Molecule;
 
-import de.ipb_halle.lbac.material.entity.StructureHistEntity;
-import de.ipb_halle.lbac.material.entity.StructureHistEntityId;
+import de.ipb_halle.lbac.material.entity.structure.StructureHistEntity;
+import de.ipb_halle.lbac.material.entity.structure.StructureHistEntityId;
 import java.util.Date;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;

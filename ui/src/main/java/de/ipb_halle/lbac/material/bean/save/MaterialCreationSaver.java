@@ -18,15 +18,15 @@
 package de.ipb_halle.lbac.material.bean.save;
 
 import de.ipb_halle.lbac.material.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.component.HazardInformation;
-import de.ipb_halle.lbac.material.component.IndexEntry;
-import de.ipb_halle.lbac.material.component.Molecule;
-import de.ipb_halle.lbac.material.component.MoleculeStructureModel;
-import de.ipb_halle.lbac.material.component.StorageClassInformation;
-import de.ipb_halle.lbac.material.component.StructureInformation;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.subtype.structure.Molecule;
+import de.ipb_halle.lbac.material.subtype.structure.MoleculeStructureModel;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.subtype.structure.StructureInformation;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
-import de.ipb_halle.lbac.material.subtype.Structure;
+import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;

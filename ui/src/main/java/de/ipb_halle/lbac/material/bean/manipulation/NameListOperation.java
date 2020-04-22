@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.bean.manipulation;
 
-import de.ipb_halle.lbac.material.component.MaterialName;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;

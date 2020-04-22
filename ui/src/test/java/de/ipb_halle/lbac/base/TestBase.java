@@ -143,6 +143,11 @@ public class TestBase implements Serializable {
     public void setUp() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
+    
+    public void cleanTaxonomyFromDb(){
+        this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
+        this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
+    }
 
     /**
      * Creates a Testuser which will be saved in the local database.

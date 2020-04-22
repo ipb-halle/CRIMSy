@@ -18,10 +18,10 @@
 package de.ipb_halle.lbac.material.mocks;
 
 import de.ipb_halle.lbac.material.service.MaterialService;
-import de.ipb_halle.lbac.material.component.Molecule;
+import de.ipb_halle.lbac.material.subtype.structure.Molecule;
 import de.ipb_halle.lbac.material.bean.save.MaterialEditSaver;
 import de.ipb_halle.lbac.material.difference.MaterialStructureDifference;
-import de.ipb_halle.lbac.material.subtype.Structure;
+import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import javax.persistence.Query;
 
 /**

@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.difference;
 
 import de.ipb_halle.lbac.material.bean.ModificationType;
-import de.ipb_halle.lbac.material.entity.HazardsMaterialHistEntity;
+import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialHistEntity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -20,11 +20,11 @@ package de.ipb_halle.lbac.material.service;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.component.HazardInformation;
-import de.ipb_halle.lbac.material.component.MaterialName;
-import de.ipb_halle.lbac.material.component.StorageClassInformation;
-import de.ipb_halle.lbac.material.subtype.Taxonomy;
-import de.ipb_halle.lbac.material.subtype.TaxonomyLevel;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevel;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;
@@ -47,9 +47,6 @@ public class TaxonomyServiceTest extends TestBase {
 
     @Inject
     private TaxonomyService service;
-    
-    @Inject
-    private MaterialService materialService;
 
     @Inject
     private ProjectService projectService;
@@ -74,7 +71,6 @@ public class TaxonomyServiceTest extends TestBase {
     public static WebArchive createDeployment() {
         return prepareDeployment("TaxonomyServiceTest.war")
                 .addClass(ProjectService.class)
-                .addClass(MaterialService.class)
                 .addClass(TaxonomyService.class);
     }
 }

@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.material.service;
 
-import de.ipb_halle.lbac.material.entity.TaxonomyEntity;
-import de.ipb_halle.lbac.material.entity.TaxonomyLevelEntity;
-import de.ipb_halle.lbac.material.subtype.Taxonomy;
-import de.ipb_halle.lbac.material.subtype.TaxonomyLevel;
+import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity;
+import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity;
+import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;

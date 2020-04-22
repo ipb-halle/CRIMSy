@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.bean;
 
 import de.ipb_halle.lbac.material.bean.manipulation.NameListOperation;
-import de.ipb_halle.lbac.material.component.MaterialName;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.bean.manipulation.NameListOperation.Button;
 import java.io.Serializable;
 import java.util.ArrayList;

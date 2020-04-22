@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.service;
 
-import de.ipb_halle.lbac.material.entity.IndexTypeEntity;
+import de.ipb_halle.lbac.material.entity.index.IndexTypeEntity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
