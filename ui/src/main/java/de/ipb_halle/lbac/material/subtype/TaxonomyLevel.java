@@ -17,33 +17,51 @@
  */
 package de.ipb_halle.lbac.material.subtype;
 
-import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.component.HazardInformation;
-import de.ipb_halle.lbac.material.component.MaterialName;
-import de.ipb_halle.lbac.material.component.StorageClassInformation;
-import java.util.List;
+import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.material.entity.TaxonomyLevelEntity;
 
 /**
  *
  * @author fmauz
  */
-public class Taxonomy extends Material {
-    
+public class TaxonomyLevel implements DTO {
 
-    public Taxonomy(int id, List<MaterialName> names,
-            int projectId, HazardInformation hazards,
-            StorageClassInformation storageInformation) {
-        super(id, names, projectId, hazards, storageInformation);
-    }
+    private int id;
+    private String name;
 
-    @Override
-    public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public TaxonomyLevel(TaxonomyLevelEntity dbentity) {
+        this.id = dbentity.getId();
+        this.name = dbentity.getName();
     }
 
     @Override
     public Object createEntity() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TaxonomyLevel other = (TaxonomyLevel) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
     }
 
 }

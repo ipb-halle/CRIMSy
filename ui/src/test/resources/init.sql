@@ -601,6 +601,24 @@ insert into containertypes(name,description,rank)values('PLASTIC_SACK',null,0);
 insert into containertypes(name,description,rank)values('PAPER_BAG',null,0);
 insert into containertypes(name,description,rank)values('COMPRESSED_GAS_CYLINDER',null,0);
 
+CREATE TABLE taxonomy_level(
+    id SERIAL NOT NULL PRIMARY KEY,
+    name VARCHAR NOT NULL);
+
 CREATE TABLE taxonomy(
     id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
-    level INTEGER NOT NULL);
+    level INTEGER NOT NULL REFERENCES taxonomy_level(id));
+
+CREATE TABLE effective_taxonomy(
+    id SERIAL NOT NULL PRIMARY KEY,
+    taxoid INTEGER NOT NULL REFERENCES taxonomy(id),
+    parentid INTEGER NOT NULL REFERENCES taxonomy(id));
+
+INSERT INTO taxonomy_level VALUES(1,'domain');
+INSERT INTO taxonomy_level VALUES(2,'kingdom');
+INSERT INTO taxonomy_level VALUES(3,'phylum');
+INSERT INTO taxonomy_level VALUES(4,'class');
+INSERT INTO taxonomy_level VALUES(5,'order');
+INSERT INTO taxonomy_level VALUES(6,'family');
+INSERT INTO taxonomy_level VALUES(7,'genus');
+INSERT INTO taxonomy_level VALUES(8,'species');

@@ -50,6 +50,7 @@
         <class>de.ipb_halle.lbac.material.entity.StructureHistEntity</class>
         <class>de.ipb_halle.lbac.material.entity.HazardsMaterialHistEntity</class>
         <class>de.ipb_halle.lbac.material.entity.TaxonomyEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.entity.ACEntryEntity</class>
         <class>de.ipb_halle.lbac.entity.ACListEntity</class>
         <class>de.ipb_halle.lbac.entity.CloudEntity</class>
