@@ -41,12 +41,16 @@ import de.ipb_halle.lbac.material.component.IndexEntry;
 import de.ipb_halle.lbac.material.component.MaterialDetailType;
 import de.ipb_halle.lbac.material.component.MaterialName;
 import de.ipb_halle.lbac.material.component.StorageClass;
+import de.ipb_halle.lbac.material.component.StorageClassInformation;
 import de.ipb_halle.lbac.material.component.StorageCondition;
 import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.entity.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.MaterialServiceMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
+import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.material.subtype.Structure;
+import de.ipb_halle.lbac.material.subtype.Taxonomy;
+import de.ipb_halle.lbac.material.subtype.TaxonomyLevel;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -62,7 +66,9 @@ import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -83,10 +89,15 @@ import org.junit.runner.RunWith;
 public class MaterialServiceTest extends TestBase {
 
     @Inject
+    private ACListService aclistService;
+    @Inject
     private MaterialServiceMock instance;
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private TaxonomyService taxoService;
 
     private CreationTools creationTools;
 
@@ -384,6 +395,27 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, nameSuggestions.size());
     }
 
+    @Test
+    public void test005_saveTaxonomy() {
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
+        instance.setUserBean(userBean);
+
+        creationTools = new CreationTools("", "", "", memberService, projectService);
+        Project p = creationTools.createProject();
+
+        List<TaxonomyLevel> levels = taxoService.loadTaxonomyLevel();
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("rose", "en", 1));
+        names.add(new MaterialName("Rose", "de", 2));
+        names.add(new MaterialName("Rosa ", "la", 3));
+
+        Taxonomy t = new Taxonomy(0, names, p.getId(), new HazardInformation(), new StorageClassInformation());
+        t.setLevel(levels.get(0));
+        instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
+
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("MaterialServiceTest.war")
@@ -400,6 +432,7 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(TermVectorEntityService.class)
                 .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
+                .addClass(ACListService.class)
                 .addClass(SolrSearcher.class)
                 .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
@@ -411,6 +444,7 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
+                .addClass(TaxonomyService.class)
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(MaterialIndexHistoryEntity.class)

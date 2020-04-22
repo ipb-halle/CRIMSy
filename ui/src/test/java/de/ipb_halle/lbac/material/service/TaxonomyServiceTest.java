@@ -19,7 +19,15 @@ package de.ipb_halle.lbac.material.service;
 
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.component.HazardInformation;
+import de.ipb_halle.lbac.material.component.MaterialName;
+import de.ipb_halle.lbac.material.component.StorageClassInformation;
+import de.ipb_halle.lbac.material.subtype.Taxonomy;
 import de.ipb_halle.lbac.material.subtype.TaxonomyLevel;
+import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -39,21 +47,34 @@ public class TaxonomyServiceTest extends TestBase {
 
     @Inject
     private TaxonomyService service;
+    
+    @Inject
+    private MaterialService materialService;
+
+    @Inject
+    private ProjectService projectService;
+
+    private CreationTools creationTools;
 
     @Before
     public void init() {
 
     }
 
-    @Deployment
-    public static WebArchive createDeployment() {
-        return prepareDeployment("TaxonomyServiceTest.war")
-                .addClass(TaxonomyService.class);
-    }
+   
 
     @Test
     public void test001_loadTaxonomyLevels() {
         List<TaxonomyLevel> levels = service.loadTaxonomyLevel();
         Assert.assertEquals("test001: 8 levels must be found", 8, levels.size());
+    }
+
+    
+     @Deployment
+    public static WebArchive createDeployment() {
+        return prepareDeployment("TaxonomyServiceTest.war")
+                .addClass(ProjectService.class)
+                .addClass(MaterialService.class)
+                .addClass(TaxonomyService.class);
     }
 }

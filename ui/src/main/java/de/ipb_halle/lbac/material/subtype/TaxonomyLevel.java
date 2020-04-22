@@ -64,4 +64,12 @@ public class TaxonomyLevel implements DTO {
         return true;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

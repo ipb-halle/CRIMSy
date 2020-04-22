@@ -44,6 +44,7 @@ public class StorageClassInformation {
 
     public StorageClassInformation() {
         init();
+        storageClass = possibleStorageClasses.get(0);
 
     }
 
@@ -296,7 +297,7 @@ public class StorageClassInformation {
         copy.possibleStorageClasses = possibleStorageClasses;
         copy.storageClass = new StorageClass(storageClass.getId(), storageClass.getName());
         copy.storageConditions.addAll(storageConditions);
-        copy.remarks=remarks;
+        copy.remarks = remarks;
 
         return copy;
     }

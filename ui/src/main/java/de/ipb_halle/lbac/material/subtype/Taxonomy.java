@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.component.HazardInformation;
 import de.ipb_halle.lbac.material.component.MaterialName;
 import de.ipb_halle.lbac.material.component.StorageClassInformation;
+import de.ipb_halle.lbac.material.entity.TaxonomyEntity;
 import java.util.List;
 
 /**
@@ -28,12 +29,14 @@ import java.util.List;
  * @author fmauz
  */
 public class Taxonomy extends Material {
-    
+
+    private TaxonomyLevel level;
 
     public Taxonomy(int id, List<MaterialName> names,
             int projectId, HazardInformation hazards,
             StorageClassInformation storageInformation) {
         super(id, names, projectId, hazards, storageInformation);
+        this.type = MaterialType.TAXONOMY;
     }
 
     @Override
@@ -42,8 +45,15 @@ public class Taxonomy extends Material {
     }
 
     @Override
-    public Object createEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public TaxonomyEntity createEntity() {
+        TaxonomyEntity entity = new TaxonomyEntity();
+        entity.setId(id);
+        entity.setLevel(level.getId());
+        return entity;
+    }
+
+    public void setLevel(TaxonomyLevel level) {
+        this.level = level;
     }
 
 }

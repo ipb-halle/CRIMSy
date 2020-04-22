@@ -47,7 +47,11 @@ public enum MaterialType {
             MaterialDetailType.COMMON_INFORMATION),
     SEQUENCE(
             5,
-            MaterialDetailType.COMMON_INFORMATION);
+            MaterialDetailType.COMMON_INFORMATION),
+    TISSUE(
+            6, MaterialDetailType.COMMON_INFORMATION),
+    TAXONOMY(
+            7, MaterialDetailType.COMMON_INFORMATION);
 
     private final List<MaterialDetailType> types;
     private final int id;

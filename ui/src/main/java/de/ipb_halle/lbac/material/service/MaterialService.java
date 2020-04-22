@@ -42,6 +42,7 @@ import de.ipb_halle.lbac.material.entity.StorageConditionStorageEntity;
 import de.ipb_halle.lbac.material.entity.StorageEntity;
 import de.ipb_halle.lbac.material.entity.StructureEntity;
 import de.ipb_halle.lbac.material.subtype.Structure;
+import de.ipb_halle.lbac.material.subtype.Taxonomy;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -146,7 +147,7 @@ public class MaterialService implements Serializable {
     public EntityManager getEm() {
         return em;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<Material> getReadableMaterials() {
         Query q = em.createNativeQuery(SQL_GET_MATERIAL, MaterialEntity.class);
@@ -175,8 +176,8 @@ public class MaterialService implements Serializable {
      * @param user
      * @return List of matching materialnames
      */
-     @SuppressWarnings("unchecked")
-    public List<String> getSimilarMaterialNames(String name,User user) {
+    @SuppressWarnings("unchecked")
+    public List<String> getSimilarMaterialNames(String name, User user) {
         return this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("name", "%" + name + "%")
                 .getResultList();
@@ -187,7 +188,7 @@ public class MaterialService implements Serializable {
      * @param me
      * @return
      */
-     @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     protected Structure getStructure(MaterialEntity me) {
         Query q = em.createNativeQuery(SQL_GET_STORAGE, StorageEntity.class);
         Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionStorageEntity.class);
@@ -356,6 +357,9 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.STRUCTURE) {
             saveStructureInformation(m);
         }
+        if (m.getType() == MaterialType.TAXONOMY) {
+            saveTaxonomy((Taxonomy) m);
+        }
 
     }
 
@@ -434,7 +438,11 @@ public class MaterialService implements Serializable {
         } else {
             em.persist(s.createDbEntity(m.getId(), null));
         }
+    }
 
+    public Taxonomy saveTaxonomy(Taxonomy t) {
+        this.em.persist(t.createEntity());
+        return t;
     }
 
     /**

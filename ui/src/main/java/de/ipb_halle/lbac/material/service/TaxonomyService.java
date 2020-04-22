@@ -45,7 +45,7 @@ public class TaxonomyService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void addNewTaxonomyEntry(Taxonomy t) {
+    public void saveNewTaxonomyEntry(Taxonomy t) {
 
     }
 
