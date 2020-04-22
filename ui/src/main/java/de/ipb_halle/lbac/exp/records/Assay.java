@@ -15,12 +15,13 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp;
+package de.ipb_halle.lbac.exp.records;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
+import de.ipb_halle.lbac.exp.SOP;
 import de.ipb_halle.lbac.exp.entity.AssayEntity;
 
 import java.util.ArrayList;
@@ -46,14 +47,16 @@ public class Assay extends ExpRecord implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private SOP             sop;
+    private SOP                 sop;
 
+    private List<AssayRecord>   records;
 
     /**
      * default constructor
      */
     public Assay() {
         setType(ExpRecordType.ASSAY);
+        this.records = new ArrayList<AssayRecord> ();
     }
 
     public AssayEntity createEntity() {
@@ -62,8 +65,17 @@ public class Assay extends ExpRecord implements DTO {
             .setSopId(this.sop.getSopId());
     }
 
+    public List<AssayRecord> getRecords() {
+        return this.records;
+    }
+
     public SOP getSOP() {
         return this.sop;
+    }
+
+    public Assay setRecords(List<AssayRecord> records) {
+        this.records = records;
+        return this;
     }
 
     public Assay setSOP(SOP sop) {

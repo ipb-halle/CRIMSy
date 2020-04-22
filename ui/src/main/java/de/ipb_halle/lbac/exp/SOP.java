@@ -49,12 +49,11 @@ public class SOP implements DTO {
     private String      description;
     private FileObject  document;
 
-    public SOP(Integer sopid, 
-            String description, 
+    public SOP(SOPEntity entity,
             FileObject document) {
-        this.description = description;
+        this.description = entity.getDescription();
         this.document = document;
-        this.sopid = sopid;
+        this.sopid = entity.getSopId(); 
     }
 
     public SOPEntity createEntity() {

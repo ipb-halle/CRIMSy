@@ -20,39 +20,69 @@ package de.ipb_halle.lbac.exp.entity;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Type;
 
 /**
  * @author fbroda
  */
 @Entity
-@Table(name = "exp_assays")
-public class AssayEntity implements Serializable {
+@Table(name = "exp_assay_records")
+public class AssayRecordEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
-
+   
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    private Long recordid;
+
+    @Column
     private Long exprecordid;
 
     @Column
-    private Integer sopid;
-   
+    private Integer materialid;
+
+    @Type(type = "RawJsonb")
+    private String outcome;
+
     public Long getExpRecordId() {
         return this.exprecordid;
     }
 
-    public Integer getSopId() {
-        return this.sopid;
+    public Integer getMaterialId() {
+        return this.materialid;
     }
 
-    public AssayEntity setExpRecordId(Long exprecordid) {
+    public String getOutcome() {
+        return this.outcome;
+    }
+
+    public Long getRecordId() {
+        return this.recordid;
+    }
+
+    public AssayRecordEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
         return this;
     }
 
-    public AssayEntity setSopId(Integer sopid) {
-        this.sopid = sopid;
+    public AssayRecordEntity setMaterialId(Integer materialid) {
+        this.materialid = materialid;
         return this;
     }
+
+    public AssayRecordEntity setOutcome(String outcome) {
+        this.outcome = outcome;
+        return this;
+    }
+
+    public AssayRecordEntity setRecordId(Long recordid) {
+        this.recordid = recordid;
+        return this;
+    }
+
 }

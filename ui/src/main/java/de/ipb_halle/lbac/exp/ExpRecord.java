@@ -75,6 +75,17 @@ public abstract class ExpRecord implements DTO {
         return this.experiment; 
     }
 
+    /**
+     * update the current object from the entity
+     */
+    public ExpRecord setExpRecordEntity(ExpRecordEntity entity) {
+        this.changetime = entity.getChangeTime();
+        this.creationtime = entity.getCreationTime();
+        this.exprecordid = entity.getExpRecordId();
+        this.type = entity.getType();
+        return this;
+    }
+
     public Long getExpRecordId() {
         return this.exprecordid;
     }

@@ -57,8 +57,8 @@ CREATE TABLE exp_sops (
  * - xxxxx referential integrity for material!
  * - xxxxx additional indexing for outcome column (example see below)
  */
-CREATE TABLE exp_assay_outcomes (
-    outcomeid       BIGSERIAL NOT NULL PRIMARY KEY,
+CREATE TABLE exp_assay_records (
+    recordid        BIGSERIAL NOT NULL PRIMARY KEY,
     exprecordid     BIGINTEGER NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     materialid      INTEGER NOT NULL /* REFERENCES material(materialid) ON UPDATE CASCADE ON DELETE CASCADE */,
     outcome         JSONB
