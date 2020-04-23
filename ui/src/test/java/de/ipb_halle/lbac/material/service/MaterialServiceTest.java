@@ -410,7 +410,7 @@ public class MaterialServiceTest extends TestBase {
         names.add(new MaterialName("Rose", "de", 2));
         names.add(new MaterialName("Rosa ", "la", 3));
 
-        Taxonomy t = new Taxonomy(0, names, p.getId(), new HazardInformation(), new StorageClassInformation());
+        Taxonomy t = new Taxonomy(0, names, p.getId(), new HazardInformation(), new StorageClassInformation(),new ArrayList<>());
         t.setLevel(levels.get(0));
         instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
 

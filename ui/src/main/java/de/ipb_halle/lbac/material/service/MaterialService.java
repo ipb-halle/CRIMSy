@@ -442,6 +442,7 @@ public class MaterialService implements Serializable {
 
     public Taxonomy saveTaxonomy(Taxonomy t) {
         this.em.persist(t.createEntity());
+        
         return t;
     }
 

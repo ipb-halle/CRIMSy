@@ -45,9 +45,7 @@ public class TaxonomyService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    public void saveNewTaxonomyEntry(Taxonomy t) {
-
-    }
+    
 
     public Set<String> getSimilarTaxonomy(String name) {
         return new HashSet<>();

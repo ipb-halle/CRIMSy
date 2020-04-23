@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,12 +33,16 @@ import java.util.List;
 public class Taxonomy extends Material {
 
     private TaxonomyLevel level;
+    private List<Taxonomy> taxHierachy=new ArrayList<>();
 
-    public Taxonomy(int id, List<MaterialName> names,
+    public Taxonomy(int id, 
+            List<MaterialName> names,
             int projectId, HazardInformation hazards,
-            StorageClassInformation storageInformation) {
+            StorageClassInformation storageInformation,
+            List<Taxonomy> hierarchy) {
         super(id, names, projectId, hazards, storageInformation);
         this.type = MaterialType.TAXONOMY;
+  
     }
 
     @Override
