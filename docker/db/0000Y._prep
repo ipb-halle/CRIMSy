@@ -35,7 +35,9 @@ UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
 CREATE TABLE experiments (
     experimentid    SERIAL NOT NULL PRIMARY KEY,
     code            VARCHAR,
-    description     VARCHAR
+    description     VARCHAR,
+    usergroups      UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    ownerid         UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE exp_records (

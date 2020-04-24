@@ -50,9 +50,14 @@ public class ExperimentEntity implements Serializable {
     @Column
     private String description;
 
+    @Column
+    private UUID ownerid;
 
-    public String getCode() { 
-        return this.code; 
+    @Column
+    private UUID usergroups;
+
+    public String getCode() {
+        return this.code;
     }
 
     public String getDescription() {
@@ -61,6 +66,14 @@ public class ExperimentEntity implements Serializable {
 
     public Integer getExperimentId() {
         return this.experimentid;
+    }
+
+    public UUID getOwnerid() {
+        return ownerid;
+    }
+
+    public UUID getUsergroups() {
+        return usergroups;
     }
 
     public ExperimentEntity setCode(String code) {
@@ -77,4 +90,13 @@ public class ExperimentEntity implements Serializable {
         this.experimentid = experimentid;
         return this;
     }
+
+    public void setOwnerid(UUID ownerid) {
+        this.ownerid = ownerid;
+    }
+
+    public void setUsergroups(UUID usergroups) {
+        this.usergroups = usergroups;
+    }
+
 }
