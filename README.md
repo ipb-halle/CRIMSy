@@ -1,3 +1,5 @@
+https://github.com/sneumann/CRIMSy/workflows/Java CI with Maven/badge.svg
+
 # CRIMSy
 _Cloud Resource & Information Managment System_
 
