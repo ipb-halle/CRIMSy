@@ -19,12 +19,14 @@ package de.ipb_halle.lbac.exp.service;
 
 /**
  * ExperimentService provides service to load, save, update experiment entities.
- * 
- * The current implementation is rather a mock implementation as many 
- * important aspects (permissions, history, filtering, ...) are missing.
+ *
+ * The current implementation is rather a mock implementation as many important
+ * aspects (permissions, history, filtering, ...) are missing.
  */
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.entity.ExperimentEntity;
+import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.service.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -47,6 +49,12 @@ import org.apache.logging.log4j.LogManager;
 public class ExperimentService implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private ACListService aclistService;
+
+    @Inject
+    private MemberService memberService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -74,9 +82,12 @@ public class ExperimentService implements Serializable {
         CriteriaQuery<ExperimentEntity> criteriaQuery = builder.createQuery(ExperimentEntity.class);
         Root<ExperimentEntity> experimentRoot = criteriaQuery.from(ExperimentEntity.class);
         criteriaQuery.select(experimentRoot);
-        List<Experiment> result = new ArrayList<Experiment> ();
-        for(ExperimentEntity e :  this.em.createQuery(criteriaQuery).getResultList()) {
-            result.add(new Experiment(e));
+        List<Experiment> result = new ArrayList<>();
+        for (ExperimentEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
+            result.add(new Experiment(
+                    e,
+                    aclistService.loadById(e.getUsergroups()),
+                    memberService.loadUserById(e.getOwnerid())));
         }
         return result;
     }
@@ -88,7 +99,10 @@ public class ExperimentService implements Serializable {
      * @return the Experiment object
      */
     public Experiment loadById(Integer id) {
-        return new Experiment(this.em.find(ExperimentEntity.class, id));
+        ExperimentEntity entity = this.em.find(ExperimentEntity.class, id);
+        return new Experiment(
+                entity, aclistService.loadById(entity.getUsergroups()),
+                memberService.loadUserById(entity.getOwnerid()));
     }
 
     /**
@@ -98,6 +112,9 @@ public class ExperimentService implements Serializable {
      * @return the persisted Experiment DTO
      */
     public Experiment save(Experiment c) {
-        return new Experiment(this.em.merge(c.createEntity()));
+        return new Experiment(
+                this.em.merge(c.createEntity()),
+                c.getAcList(),
+                c.getOwner());
     }
 }
