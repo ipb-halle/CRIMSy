@@ -37,7 +37,7 @@ source_suffix = ['.rst', '.md']
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
+    'sphinxcontrib.inkscapeconverter',
     'recommonmark',
 ]
 
