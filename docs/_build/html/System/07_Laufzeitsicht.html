@@ -34,7 +34,9 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Verteilungssicht" href="08_Verteilungssicht.html" />
+    <link rel="prev" title="Webanwendung" href="06_3_Bausteinsicht.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,41 +84,64 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Laufzeitsicht</a><ul>
-<li><a class="reference internal" href="#cookies-und-lokaler-speicher">Cookies und lokaler Speicher</a></li>
-<li><a class="reference internal" href="#prozessubersicht">Prozessübersicht</a><ul>
-<li><a class="reference internal" href="#suchanfragen">Suchanfragen</a><ul>
-<li><a class="reference internal" href="#platzhalter">Platzhalter</a></li>
-<li><a class="reference internal" href="#unscharfe-suche-fuzzy-search">Unscharfe Suche (<em>fuzzy search</em>)</a></li>
-<li><a class="reference internal" href="#nachbarschaftssuche-proximity-search">Nachbarschaftssuche (<em>proximity search</em>)</a></li>
-<li><a class="reference internal" href="#wichtung-der-suchbegriffe">Wichtung der Suchbegriffe</a></li>
-<li><a class="reference internal" href="#suche-mit-logischen-operatoren">Suche mit logischen Operatoren</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Administration/01_Setup.html">Administrator-Handbuch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/02_Phase1.html">Phase 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/03_Phase2.html">Phase 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/01_Vorbemerkung.html">Konfiguration und Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/02_Konfiguration.html">Konfigurationsskript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/03_ExternerProxy.html">Externer Proxy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/04_Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/05_Management.html">Management des Knotens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_Intro.html">Vorwort</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_Intro.html#einfuhrung">Einführung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_Aufgaben.html">Aufgabenstellung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_Randbedingungen.html">Randbedingungen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_Fachkontext.html">Fachlicher Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_TechnischerKontext.html">Technischer Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_1_Bausteinsicht.html">Bausteinsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_2_Bausteinsicht.html">Entwickler-PC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_3_Bausteinsicht.html">Webanwendung</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Laufzeitsicht</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cookies-und-lokaler-speicher">Cookies und lokaler Speicher</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prozessubersicht">Prozessübersicht</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#suchanfragen">Suchanfragen</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#platzhalter">Platzhalter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unscharfe-suche-fuzzy-search">Unscharfe Suche (<em>fuzzy search</em>)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nachbarschaftssuche-proximity-search">Nachbarschaftssuche (<em>proximity search</em>)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wichtung-der-suchbegriffe">Wichtung der Suchbegriffe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#suche-mit-logischen-operatoren">Suche mit logischen Operatoren</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#wordcloud-suche">Wordcloud-Suche</a><ul>
-<li><a class="reference internal" href="#controller-klasse-wordcloudbean">Controller (Klasse WordCloudBean)</a></li>
-<li><a class="reference internal" href="#darstellung-von-wortern-in-der-cloud">Darstellung von Wörtern in der Cloud</a></li>
-<li><a class="reference internal" href="#datenbank-support">Datenbank-Support</a></li>
-<li><a class="reference internal" href="#ausblick">Ausblick</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wordcloud-suche">Wordcloud-Suche</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#controller-klasse-wordcloudbean">Controller (Klasse WordCloudBean)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#darstellung-von-wortern-in-der-cloud">Darstellung von Wörtern in der Cloud</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#datenbank-support">Datenbank-Support</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ausblick">Ausblick</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#upload-von-dokumenten">Upload von Dokumenten</a></li>
-<li><a class="reference internal" href="#download-von-dokumenten">Download von Dokumenten</a></li>
-<li><a class="reference internal" href="#synchronisierung-von-entitaten">Synchronisierung von Entitäten</a><ul>
-<li><a class="reference internal" href="#nodes-and-cloudnodes">Nodes and CloudNodes</a></li>
-<li><a class="reference internal" href="#nutzer-gruppen-und-mitgliedschaften">Nutzer, Gruppen und Mitgliedschaften</a></li>
-<li><a class="reference internal" href="#nichtpersistente-entitaten">Nichtpersistente Entitäten</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upload-von-dokumenten">Upload von Dokumenten</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-von-dokumenten">Download von Dokumenten</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#synchronisierung-von-entitaten">Synchronisierung von Entitäten</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#nodes-and-cloudnodes">Nodes and CloudNodes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nutzer-gruppen-und-mitgliedschaften">Nutzer, Gruppen und Mitgliedschaften</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#nichtpersistente-entitaten">Nichtpersistente Entitäten</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#authentifizierung-nutzerverwaltung">Authentifizierung, Nutzerverwaltung</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="#authentifizierung-nutzerverwaltung">Authentifizierung, Nutzerverwaltung</a></li>
 </ul>
 </li>
 </ul>
-</div>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="08_Verteilungssicht.html">Verteilungssicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_Querschnitt.html">Querschnittliche Konzepte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_Risikoanalyse.html">Risiken und Datenschutz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_TechnSchulden.html">Technische Schulden</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_Glossar.html">Glossar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13_Lizenz.html">Lizenzierung</a></li>
+</ul>
+
             
           
         </div>
@@ -427,6 +452,15 @@ zur Gültigkeitsprüfung</p>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="08_Verteilungssicht.html" class="btn btn-neutral float-right" title="Verteilungssicht" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="06_3_Bausteinsicht.html" class="btn btn-neutral float-left" title="Webanwendung" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
