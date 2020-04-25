@@ -27,8 +27,6 @@
     <h:body>
         <ui:composition>
             <b:form>
-
-
                 <b:navBar position="top" sticky="true" styleClass="navigationMenu">
                     <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
                         <b:dropMenu value="BioCloud">
@@ -53,12 +51,15 @@
                             <b:navCommandLink 
                                 value="Projekte"
                                 actionListener="#{navigator.navigate('project/projectOverview')}"/>
-                             <b:navCommandLink 
+                            <b:navCommandLink 
                                 value="Gebinde"
                                 actionListener="#{navigator.navigate('item/items')}"/>
-                               <b:navCommandLink 
+                            <b:navCommandLink 
                                 value="Taxonomy"
                                 actionListener="#{navigator.navigate('material/taxonomy')}"/>
+                            <b:navCommandLink 
+                                value="Experiment"
+                                actionListener="#{navigator.navigate('exp/experiments')}"/>
                             <b:navCommandLink value="..."
                                               />
                         </b:dropMenu>
