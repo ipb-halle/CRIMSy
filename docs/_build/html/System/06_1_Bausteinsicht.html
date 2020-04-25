@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Bausteinsicht &mdash; Recommonmark 0.6.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Recommonmark
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Bausteinsicht</a><ul>
+<li><a class="reference internal" href="#bausteinsicht-knoten">Bausteinsicht: Knoten</a><ul>
+<li><a class="reference internal" href="#basissystem">Basissystem</a><ul>
+<li><a class="reference internal" href="#init-system">Init-System</a></li>
+<li><a class="reference internal" href="#hartung">Härtung</a></li>
+<li><a class="reference internal" href="#performance">Performance</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#storage">Storage</a><ul>
+<li><a class="reference internal" href="#on-disk-layout">On Disk Layout</a></li>
+<li><a class="reference internal" href="#docker-storage">Docker Storage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#postgresql">PostgreSQL</a><ul>
+<li><a class="reference internal" href="#debugging">Debugging</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#proxy">Proxy</a><ul>
+<li><a class="reference internal" href="#zertifikatsprufung">Zertifikatsprüfung</a></li>
+<li><a class="reference internal" href="#externer-proxy">Externer Proxy</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#solr">SolR</a></li>
+<li><a class="reference internal" href="#tomee">TomEE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Recommonmark</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Bausteinsicht</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/System/06_1_Bausteinsicht.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bausteinsicht">
+<h1>Bausteinsicht<a class="headerlink" href="#bausteinsicht" title="Permalink to this headline">¶</a></h1>
+<p>Dieses Kapitel beschreibt das System als eine Sammlung von Bausteinen (Module, Komponenten, Klassen, Intefaces, usw.) und ihre Beziehungen, beginnend mit der obersten Ebene (Top-Down).</p>
+<p><img alt="Bausteine" src="../_images/Bausteine_1.svg" />
+Die vorstehende Abbildung zeigt das vollständige Ökosystem der Leibniz Bioactives Cloud aus der Sicht eines Knotens. Die Pfeilrichtung zeigt immer an, aus von welchem Partner eine Verbindung aufgebaut wird. Insbesondere schließt die Darstellung die für die Initialisierung benötigten Komponenten mit ein. Bei den meisten auf dieser Ebene gezeigten Bausteinen handelt es sich um Standardkomponenten (z.B. Nutzer-PCs, normale Webserver, Software-Repositories usw.), die keiner weiteren Erläuterung oder Konfiguration bedürfen. In den folgenden Abschnitten sind daher nur die Bausteine</p>
+<ul class="simple">
+<li><p><strong>Knoten</strong>
+Die Knoten sind die dezentralen Elemente der Leibniz Bioactives Cloud und stellen die Funktionen der Cloud zur Verfügung. Dieser Abschnitt vermittelt eine Übersicht, welche Komponenten in einem Knoten zusammenarbeiten. Auf die eigentliche Webanwendung wird aufgrund der besseren Übersicht in einem separaten Abschnitt eingegangen.</p></li>
+<li><p><strong>Entwickler-PC</strong>
+Der Entwickler-PC erfüllt die Aufgabe, aus dem Quellcode im Source-Code-Repository und der vom Administrator bereitgestellten Konfiguration ein individualisieres Installationspaket zu erzeugen. Ausserdem ist auf diesem Gerät die Leibniz-Bioactives Cloud-CA lokalisiert, die eine zentrale Rolle bei der Absicherung der Cloud spielt.</p></li>
+<li><p><strong>Webanwendung</strong>
+Die Webanwendung ist eine Java Enterprise Edition Webanwendung, die letztendlich das Zusammenspiel der Knoten in der Cloud als auch der Komponenten innerhalb des Knotens steuert und die den Anwendern die Services zur Verfügung stellt. Während die übrigen Komponenten weitgehend fremdgefertigt sind und daher als Blackbox betrachtet werden können, steckt der größte Teil der Entwicklungsarbeit in dieser Komponente.</p></li>
+</ul>
+<div class="section" id="bausteinsicht-knoten">
+<h2>Bausteinsicht: Knoten<a class="headerlink" href="#bausteinsicht-knoten" title="Permalink to this headline">¶</a></h2>
+<p>Die Cloud-Knoten in ihrer Gesamtheit bilden die Cloud. Jeder Knoten setzt sich aus verschiedenen Bestandteilen zusammen, um die benötigten Funktionen ausführen zu können. Die Cloud-Knoten sind weitgehend gleichberechtigt; ein Knoten fungiert jedoch als Master-Knoten und verteilt die Liste der bekannten Knoten.</p>
+<p><img alt="Knotenübersicht" src="../_images/Bausteine_2.2.svg" />
+Die Grafik zeigt eine schematische Darstellung eines Knotens mit den Beziehungen der Bestandteile untereinander und den Verbindungen nach außen. Verbindungen (insbesondere des Basissystems zu öffentlichen Repositorien), die nur einmalig während der Installation bzw. für Updates notwendig sind, sind nicht dargestellt. Die einzelnen Bestandteile werden nachfolgend beschrieben:</p>
+<ul class="simple">
+<li><p>Basissystem</p></li>
+<li><p>Storage</p></li>
+<li><p>PostgreSQL-Datenbank</p></li>
+<li><p>Proxy (Apache HTTP Server)</p></li>
+<li><p>Solr</p></li>
+<li><p>TomEE (Web Application Server)</p></li>
+</ul>
+<p>Darüberhinaus wird der im TomEE Web Application Server laufenden Java-Web-Anwendung ein eigener Abschnitt gewidmet.</p>
+<div class="section" id="basissystem">
+<h3>Basissystem<a class="headerlink" href="#basissystem" title="Permalink to this headline">¶</a></h3>
+<p>Das Basissystem besteht aus einem Linux-Server in Minimalkonfiguration, der um folgende Softwarepakete (zuzüglich eventueller Abhängigkeiten) ergänzt wurde:</p>
+<ul class="simple">
+<li><p>Docker und Docker Compose (ab Docker Version 1.12)</p></li>
+<li><p>Dialog (NCurses-Dialoge für Shell-Skripte)</p></li>
+<li><p>cron</p></li>
+<li><p>ed (Zeileneditor)</p></li>
+<li><p>GnuZip</p></li>
+<li><p>M4 Makroprozessor</p></li>
+<li><p>OpenSSL</p></li>
+<li><p>sshd (nur falls Remote-Administration gewünscht wird)</p></li>
+<li><p>sudo</p></li>
+<li><p>tar</p></li>
+<li><p>sharutils (uuencode / uudecode)</p></li>
+<li><p>wget</p></li>
+</ul>
+<p>Java ist auf dem Basissystem nicht erforderlich.</p>
+<p>Ein Teil der Entwicklung der Leibniz Bioactives Cloud erfolgt unter OpenSUSE Leap 15.1 (Stand Mrz. 2020). Die Architektur ist jedoch weitgehend distributionsunabhängig; die Auswahl einer Distribution wird dem lokalen Administrator überlassen.</p>
+<div class="section" id="init-system">
+<h4>Init-System<a class="headerlink" href="#init-system" title="Permalink to this headline">¶</a></h4>
+<p>Momentan unterstützt das Installationsskript vorrangig Systeme mit Systemd-Initsystem. Das traditionelle SystemV-Init kann ebenfalls noch ausgewählt werden, die Testabdeckung ist jedoch schlechter.</p>
+</div>
+<div class="section" id="hartung">
+<h4>Härtung<a class="headerlink" href="#hartung" title="Permalink to this headline">¶</a></h4>
+<p>Es wäre wünschenswert, das System durch Erweiterungen wie beispielsweise SELinux gegen Angriffe zur härten. Bislang wurden noch keine Aktionen in diese Richtung unternommen.</p>
+</div>
+<div class="section" id="performance">
+<h4>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h4>
+<p>Die Docker-Performance und insbesondere der Speicherplatzbedarf sind von verwendeten Docker-Storage-Subsystem abhängig. Siehe nachfolgenden Abschnitt: Storage.</p>
+</div>
+</div>
+<div class="section" id="storage">
+<h3>Storage<a class="headerlink" href="#storage" title="Permalink to this headline">¶</a></h3>
+<p>Beim Speichersubsystem des Knotens handelt es sich um ein einfaches Verzeichnis in einem normalen Linux-Dateisystem (XFS, Ext4, …). Das SOLR-Handbuch warnt ausdrücklich davor, den Speicher als Netzwerkdateisystem (z. B. NFS oder CIFS) zur Verfügung zu stellen. Entsprechende Empfehlungen existieren auch für PostgreSQL. Unsere Empfehlung lautet daher, den Speicher als internen Plattenspeicher, DAS oder SAN-Speicher zur Verfügung zu stellen.</p>
+<blockquote>
+<div><p><strong>Tip:</strong>
+<em>Um spätere Erweiterungen des Speicherplatzes zu erleichtern, sollte das Verzeichnis für die Cloud-Daten in einem separaten Dateisystem mit darunterliegendem Volume-Management angelegt werden. Über die Natur dieses Managements (LVM, ZFS, Feature des SAN-Systems) werden keine Annahmen getroffen. Für den Anfang kann zunächst auch in der Root-Partition des Knotens gearbeitet werden.</em></p>
+</div></blockquote>
+<blockquote>
+<div><p><strong>Tip:</strong>
+<em>Sollte NFS die einzig mögliche Speicheroption sein, so empfehlen wir dringend, das NFS-Volume mit den Optionen sync und hard zu mounten, um möglichst weitreichende Konsistenzgarantien zu erhalten.</em></p>
+</div></blockquote>
+<p>Der Speicherort der Cloud-Instanz wird während der Konfiguration festgelegt und in der Datei <code class="docutils literal notranslate"><span class="pre">~/.lbac</span></code> gespeichert. Während der eigentlichen Installation wird eine gleiche Datei (<code class="docutils literal notranslate"><span class="pre">/root/.lbac</span></code>) für den Nutzer root erzeugt, auf die durch die Init-Scripte zugegriffen wird. Durch die Datei wird die Variable <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE</span></code> definiert, die den absoluten Pfad zum eigentlichen Speicherort der Cloud-Instanz definiert.</p>
+<div class="section" id="on-disk-layout">
+<h4>On Disk Layout<a class="headerlink" href="#on-disk-layout" title="Permalink to this headline">¶</a></h4>
+<p>Während der Konfiguration und anschließenden Installation werden in dem von der Variable <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE</span></code> bestimmten Speicherort folgende Verzeichnisse erzeugt:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">backup/</span></code>
+Backups und Datenbank-Dumps</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin/</span></code>
+Für diverse Skripte (Installation, Backup, …).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/</span></code>
+Die Daten der Cloud (Dokumente, SOLR-Indices, PostgreSQL-Datenbanken usw.); unterhalb von /data werden entsprechend Unterverzeichnisse erzeugt:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/db/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/solr/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">data/ui/</span></code></p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dist/</span></code>
+Die Softwaredistribution (Bibliotheken, WAR-Dateien, Konfiguration der Docker Container, usw.). Aus diesem Verzeichnis werden die Docker-Container instantiiert.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etc/</span></code>
+Das Verzeichnis <code class="docutils literal notranslate"><span class="pre">etc/</span></code> enthält Konfigurationsdaten, Zertifikate, Credentials usw. die bereits mit dem Konfigurationsskript erfasst bzw. erzeugt werden. Im Verlauf der Installation wird ein Großteil dieser Daten in das Verzeichnis <code class="docutils literal notranslate"><span class="pre">dist/etc/</span></code> kopiert.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tmp/</span></code>
+Das Verzeichnis tmp/ steht für temporäre Speicherung zur Verfügung. Während der Installation bzw. bei Updates wird dort das Installationspaket gespeichert. Ebenso speichert das Installationsskript das Logfile in diesem Verzeichnis.</p></li>
+</ul>
+</div>
+<div class="section" id="docker-storage">
+<h4>Docker Storage<a class="headerlink" href="#docker-storage" title="Permalink to this headline">¶</a></h4>
+<p>Die Standardkonfiguration des Docker-Storage-Subsystems (Verwendung eines Loop-Device) ist extrem ineffizient: Erstens wird der einmal von der Loop-Datei allozierte Speicher nicht mehr freigegeben, auch wenn die enthaltenen Volumes, Container und Images gelöscht werden. Dadurch können substanzielle Bereiche des Plattenspeichers dauerhaft blockiert werden. Zweitens ist die Verwendung eines Loop-Device die langsamste Variante. Es empfiehlt sich daher, die Standard-Einstellung des Docker-Storage-Treibers zu ändern. Am IPB liegen Erfahrungen mit dem overlay2-Treiber vor, bei dem Teile des Host-Dateisystems  per bind-mount in die Container eingeblendet werden. Dazu muss der Docker-Daemon mit der zusätzlichen Kommandozeilenoption “-s overlay2” gestartet werden.</p>
+<p>Erfahrungen mit BTRFS, ZFS oder einem LVM thin pool im Zusammenhang mit Docker liegen am IPB bislang nicht vor, da das Root-Filesystem unserer Hosts standardmäßig mit XFS formatiert wird und unseren Hosts darüberhinaus keine weiteren Storage-Ressourcen zur Verfügung stehen..</p>
+</div>
+</div>
+<div class="section" id="postgresql">
+<h3>PostgreSQL<a class="headerlink" href="#postgresql" title="Permalink to this headline">¶</a></h3>
+<p>Die Konfiguration des PostgreSQL-Containers ergänzt das offizielle Docker-Image um das Plugin pgChem:Tigress (zukünftig ist die zusätzliche Integration von RDKit geplant). Die Datenbankdateien werden im Datenverzeichnis des Knotens unterhalb von <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/data/db</span></code> gespeichert. Sofern das Datenverzeichnis noch nicht initialisiert wurde, erfolgt die Initialisierung durch SQL-Skripte, die in der Build-Phase unterhalb von /docker-entrypoint-initdb.d abgelegt werden und die Initialisierung der Datenbank beim Hochfahren des Containers übernehmen. Die Initialisierungsdateien sind numerisch geordnet, so dass im Verlauf der Entwicklung anfallende Änderungen am Datenbankschema ggf. nachvollzogen werden können. Die Datenbank selbst speichert die Schema-Version in der Tabelle <code class="docutils literal notranslate"><span class="pre">info</span></code>, so dass bei Versions-Updates fehlende Schemaänderungen erkannt werden.</p>
+<p>Aus der Webanwendung wird über Hibernate auf die Datenbank zugegriffen. Es hat sich gezeigt, dass aufgrund der Komplexität der Datenstrukturen und der vielfältigen Verknüpfungen (lokal und remote), innerhalb der Anwendung eine Zwischenschicht, nämlich Datatransferobjekte, eingeführt werden mussten.</p>
+<p>Das Backup der Datenbank sowie Datenbank-Dumps vor Softwareupdates müssen extern organisiert werden. Beide Funktionen werden vom Skript <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/bin/backup.sh</span></code> wahrgenommen, dass auch die Sicherung der übrigen Datenquellen (Solr, ui) übernimmt. Der Aufruf erfolgt entweder durch CRON oder während der Installation durch das Setup-Skript. Die Sicherung erfolgt in das Verzeichnis <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/backup</span></code>.</p>
+<p>Die Datenbank wird momentan nicht im ArchiveLog-Modus betrieben.</p>
+<div class="section" id="debugging">
+<h4>Debugging<a class="headerlink" href="#debugging" title="Permalink to this headline">¶</a></h4>
+<p>Normalerweise ist die Datenbank nur innerhalb des privaten Netzes (<code class="docutils literal notranslate"><span class="pre">lbac_private</span></code>) des Container-Hosts erreichbar. Durch die Installations-Option “<code class="docutils literal notranslate"><span class="pre">--debug</span></code>” kann man erreichen, dass die Datenbank auch von außerhalb erreichbar ist. Dies stellt ein Sicherheitsrisiko dar und sollte im Produktivbetrieb daher unterbleiben.</p>
+</div>
+</div>
+<div class="section" id="proxy">
+<h3>Proxy<a class="headerlink" href="#proxy" title="Permalink to this headline">¶</a></h3>
+<p>Der Baustein “Proxy” empfängt alle eingehenden Anfragen, übernimmt die Entschlüsselung und Zertifikatsprüfung sowie eine erste Zulässigkeitsprüfung der angefragten URL. In den Standardeinstellungen kommt ein Container mit Apache httpd 2.4 für diesen Zweck zum Einsatz. Externe Zugriffe werden vom Proxy auf folgende URLs beschränkt:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">https://$LBAC_INTERNET_FQHN:8443/ui/rest/*</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https://$LBAC_INTERNET_FQHN:8443/ui/servlet/document</span></code></p></li>
+</ul>
+<p>Der Wert der Variable <code class="docutils literal notranslate"><span class="pre">$LBAC_INTERNET_FQHN</span></code> ergibt sich aus der Konfigurationsdatei <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/etc/config.sh</span></code>.</p>
+<div class="section" id="zertifikatsprufung">
+<h4>Zertifikatsprüfung<a class="headerlink" href="#zertifikatsprufung" title="Permalink to this headline">¶</a></h4>
+<p>Externe Verbindungen werden durch gegenseitige zertifikatsbasierte Authentifizierung abgesichert. Die Prüfung der Zertifikate der Gegenstellen erfolgen mittels einer Zertifikatssperrliste (Certificate Revocation List; CRL), die durch einen Cron-Job auf dem Docker-Host regelmäßig aktualisiert wird. Die Einrichtung des Cron-Jobs erfolgt während der Installation. Für interne Verbindungen findet auf dem Proxy keine solche gegenseitige Authentifizierung statt.</p>
+</div>
+<div class="section" id="externer-proxy">
+<h4>Externer Proxy<a class="headerlink" href="#externer-proxy" title="Permalink to this headline">¶</a></h4>
+<p>Optional kann anstelle des Proxy-Containers ein externer Proxy eingesetzt werden. Der Vorteil eines externen Proxies kann in erweiterten Sicherheitsfunktionen (z.B. Deep Packet Inspection) liegen, die z.B. die Verbreitung von Malware oder den Einbruch in das System verhindern. Die Entscheidung für oder gegen einen externen Proxy wird normalerweise durch das Konfigurationsskript abgefragt. Es ist jedoch möglich, bei der Installation von dieser Voreinstellung abzuweichen. Das Installationsskript akzeptiert hierzu folgende Optionen:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--proxy</span></code>: Unabhängig von der Konfigurationseinstellung wird ein Proxy-Container eingerichtet</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--noproxy</span></code>: Unabhängig von der Konfigurationseinstellung muß ein externer Proxy konfiguriert sein</p></li>
+</ul>
+<p>Der externe Proxy muss jedoch manuell konfiguriert werden; das Installationsskript kann diese Aufgabe nicht erfüllen. Da die unterschiedlichsten Systeme zum Einsatz kommen können, kann das Handbuch keine konkrete Hilfe anbieten. Die nachfolgenden Ausschnitte aus den Konfigurationsdateien des Apache httpd 2.4 mögen als Orientierungshilfe dienen:</p>
+<p><strong>Interne Verbindungen</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="n">_default_</span><span class="p">:</span><span class="mi">443</span><span class="o">&gt;</span>
+    <span class="n">ServerName</span> <span class="n">LBAC_INTRANET_FQHN</span><span class="p">:</span><span class="mi">443</span>
+    <span class="n">ServerAdmin</span> <span class="n">LBAC_MANAGER_EMAIL</span>
+    <span class="n">DocumentRoot</span> <span class="s2">&quot;/usr/local/apache2/htdocs&quot;</span>
+ 
+    <span class="n">SSLEngine</span> <span class="n">on</span>
+    <span class="n">SSLCertificateFile</span> <span class="s2">&quot;/usr/local/apache2/conf/official_cert.pem&quot;</span>
+    <span class="n">SSLCertificateKeyFile</span> <span class="s2">&quot;/usr/local/apache2/conf/official_cert.key&quot;</span>
+ 
+    <span class="o">&lt;</span><span class="n">IfModule</span> <span class="n">mod_proxy</span><span class="o">.</span><span class="n">c</span><span class="o">&gt;</span>
+        <span class="n">ProxyPass</span>         <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">websocket</span><span class="o">/</span><span class="n">search</span>  <span class="n">ws</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">websocket</span><span class="o">/</span><span class="n">search</span>
+        <span class="n">ProxyPass</span>         <span class="o">/</span><span class="n">ui</span>                   <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span>
+        <span class="n">ProxyPassReverse</span>  <span class="o">/</span><span class="n">ui</span>                   <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span>
+    <span class="o">&lt;/</span><span class="n">IfModule</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">VirtualHost</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p><strong>Externe Verbindungen</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="n">_default_</span><span class="p">:</span><span class="mi">8443</span><span class="o">&gt;</span>
+    <span class="n">ServerName</span> <span class="n">LBAC_INTERNET_FQHN</span><span class="p">:</span><span class="mi">8443</span>
+    <span class="n">ServerAdmin</span> <span class="n">LBAC_MANAGER_EMAIL</span>
+    <span class="n">DocumentRoot</span> <span class="s2">&quot;/usr/local/apache2/htdocs&quot;</span>
+ 
+    <span class="n">SSLEngine</span> <span class="n">on</span>
+    <span class="n">SSLCertificateFile</span> <span class="s2">&quot;/usr/local/apache2/conf/lbac_cert.pem&quot;</span>
+    <span class="n">SSLCertificateKeyFile</span> <span class="s2">&quot;/usr/local/apache2/conf/lbac_cert.key&quot;</span>
+ 
+    <span class="c1"># Certificate Revocation Lists (CRL):</span>
+    <span class="n">SSLCARevocationCheck</span> <span class="n">chain</span>
+    <span class="n">SSLCARevocationPath</span> <span class="s2">&quot;/usr/local/apache2/conf/crl/&quot;</span>
+
+    <span class="n">SSLVerifyClient</span> <span class="n">require</span>
+    <span class="n">SSLVerifyDepth</span> <span class="mi">3</span>
+ 
+    <span class="n">SSLCACertificatePath</span> <span class="s2">&quot;/usr/local/apache2/conf/crt/&quot;</span>
+
+    <span class="o">&lt;</span><span class="n">IfModule</span> <span class="n">mod_proxy</span><span class="o">.</span><span class="n">c</span><span class="o">&gt;</span>
+        <span class="n">ProxyPass</span>         <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>              <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>
+        <span class="n">ProxyPassReverse</span>  <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>              <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>
+        <span class="n">ProxyPass</span>         <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span>
+        <span class="n">ProxyPassReverse</span>  <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span>
+    <span class="o">&lt;/</span><span class="n">IfModule</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">VirtualHost</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Die vom Proxy benötigten Zertifikate und Schlüssel werden bei der Installation im Verzeichnis <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/dist/etc</span></code> abgelegt.</p>
+<blockquote>
+<div><p><strong>Achtung:</strong>
+<em>Die Gültigkeit der Zertifikatssperrliste ist auf wenige Tage beschränkt. Die Zertifikatssperrliste (CRL) muss deshalb täglich aktualisiert werden. Die aktuelle Zertifkatssperrliste kann jeweils unter der URL <code class="docutils literal notranslate"><span class="pre">$LBAC_DISTRIBUTION_POINT/crl.pem</span></code> heruntergeladen werden. Der Wert der Variable <code class="docutils literal notranslate"><span class="pre">$LBAC_DISTRIBUTION_POINT</span></code> kann der Konfigurationsdatei <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/etc/config.sh</span></code> entnommen werden.</em></p>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="solr">
+<h3>SolR<a class="headerlink" href="#solr" title="Permalink to this headline">¶</a></h3>
+<p>Der Baustein Solr übernimmt die Indexierung (und zukünftig semantische Annotation) der Dokumente. Die Dokumenten werden dabei über den <code class="docutils literal notranslate"><span class="pre">/update/extract</span></code>-Mechanismus in Solr hochgeladen. Dabei durchlaufen sie eine komplexe Analyse-Pipeline. Zunächst wird mit Apache Tika eine Konvertierung der unterschiedlichen Formate (PDF, Microsoft .doc, …) in einen Textstream vorgenommen. Anschließend werden die relevanten Informationen durch Sprachanalyse, Tokenizing, Stemming, Stoppwort-Filterung und ggf. weitere Schritte bestimmt. Schließlich wird ein Index erzeugt, der Text gespeichert und ein Termvector erzeugt. Die exakte Abfolge der Analyseschritte und die gespeicherten Daten und Metadaten wird durch die Dateien solrconfig.xml und managed-schema (sowie damit verbundene Stoppwort-Listen usw.) gesteuert.</p>
+<p>Ein Problem stellte die Analyse und Speicherung von Dokumenten in mehreren Sprachen (mit der Vereinfachung: eine Sprache pro Dokument!) dar, da dieser Fall in SolR nach unserem Verständnis schwierig zu handhaben ist. Bei der Abarbeitung der Analysepipeline werden die (Text-)Daten sprachabhängig in unterschiedlichen Feldern gespeichert, z. B. <code class="docutils literal notranslate"><span class="pre">text_en</span></code>, <code class="docutils literal notranslate"><span class="pre">text_de</span></code> usw. Dies führt zur Abfragezeit dazu, dass Termvektoren, Textpositionen usw. aus verschiedenen Feldern zusammengesucht werden müssen. Die Speicherung in einem gemeinsamen Feld (z.B. <code class="docutils literal notranslate"><span class="pre">_general_</span></code>) ist nicht möglich, es sei denn, man verzichtet bei der Analyse (Stemming, Stopwort-Filterung, …) auf sprachspezifische Eigenheiten. Das führt aber zu häßlichen Artefakten und unbrauchbaren Suchergebnissen in der <em>Word Cloud Suche</em>. Perspektivisch ist daher geplant, SolR durch eine andere Lösung zu ersetzen. Die Ersatzlösung wird dabei voraussichtlich schlechter skalieren als SolR; dessen Leistungsfähigkeit ist im von uns anvisierten Einsatzszenario jedoch bei weitem überdimensioniert.</p>
+</div>
+<div class="section" id="tomee">
+<h3>TomEE<a class="headerlink" href="#tomee" title="Permalink to this headline">¶</a></h3>
+<p>Die spezifische Anwendungslogik der Leibniz Bioactives Cloud befindet sich größtenteils in der Webanwendung ui, die vom Baustein “TomEE Web Application Server” gehostet wird. Beim TomEE Web Application Server handelt sich um einen Docker-Container mit “Apache TomEE Plume”, der seinerseits als JavaEE Container für die Webanwendung fungiert. Die Konfiguration des Docker-Containers stützt sich auf das offizielle TomEE-Plume Image (Stand 2020-03-12: <code class="docutils literal notranslate"><span class="pre">tomee:8-jre-7.1.0-plume</span></code>) und modifiziert dieses wie folgt:</p>
+<ul class="simple">
+<li><p>Hinzufügen einiger zusätzlicher Java-Bibliotheken, v.a. PostgreSQL-JDBC und Hibernate</p></li>
+<li><p>Löschen der Default-Webapps (manager, docs, …)</p></li>
+<li><p>Installation bzw. Ersetzen von tomee.xml und tomcat-users.xml</p></li>
+<li><p>Installation der Keystores und Truststores für zertifikatsbasierte Authentifizierung und verschlüsselte Kommunikation</p></li>
+<li><p>Erstellen eines unpriviligierten Nutzers tomee mit uid 8080 und einer Gruppe tomee mit gid 8080</p></li>
+<li><p>Installation der Leibniz Bioactives Cloud Webapp (ui.war)</p></li>
+</ul>
+<p>Als Enterprise Java Web Application Server stellt TomEE mithilfe von Hibernate die transaktionskontrollierte Persistierung der Java-Objekte sicher. Im Laufe der Entwicklung hat sich gezeigt, dass die Datenbankcredentials dafür am besten in der globalen Konfigurationsdatei tomee.xml hinterlegt werden. Die DataSource-Konfiguration für Hibernate innerhalb der Webanwendung (über hibernate.cfg.xml) hat sich demgegenüber nicht bewährt.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Luca Barbato, Eric Holscher, and contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

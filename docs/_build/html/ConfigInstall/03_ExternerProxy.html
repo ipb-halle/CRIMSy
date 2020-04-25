@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Externer Proxy &mdash; Recommonmark 0.6.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Recommonmark
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Externer Proxy</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Recommonmark</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Externer Proxy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/ConfigInstall/03_ExternerProxy.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="externer-proxy">
+<h1>Externer Proxy<a class="headerlink" href="#externer-proxy" title="Permalink to this headline">¶</a></h1>
+<p>Der interne Proxy der Cloud basiert auf Apache httpd 2.4.x. Die Übernahme der Konfiguration in einen externen Proxy mit Apache httpd 2.4.x dürfte sich daher trivial gestalten. Beim Einsatz einer anderen Software wird der Aufwand naturgemäß höher ausfallen - eine Abschätzung können wir an dieser Stelle leider nicht liefern. Da der Apache httpd als (Reverse) Proxy mit Verschlüsselung betrieben wird, müssen zunächst die Module <code class="docutils literal notranslate"><span class="pre">mod_proxy</span></code>, <code class="docutils literal notranslate"><span class="pre">mod_proxy_http</span></code> und <code class="docutils literal notranslate"><span class="pre">mod_ssl</span></code> geladen sein.</p>
+<blockquote>
+<div><p><strong>Hinweis:</strong> Das Modul <code class="docutils literal notranslate"><span class="pre">mod_proxy_wstunnel</span></code> ist mittlerweile entbehrlich, weil Websockets nicht mehr verwendet werden.</p>
+</div></blockquote>
+<p>Als nächstes muss der Proxy Zugriff auf die Zertifikate des Knotens erhalten. Da ein Knoten Mitglied in mehreren Clouds sein kann, befinden sich die Dateien für jede Cloud in einem entsprechenden Unterordner unterhalb von <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/dist/etc/</span></code>. Für eine Cloud <code class="docutils literal notranslate"><span class="pre">TEST</span></code> befinden sich das Zertifikat des Knotens und der dazugehörige private Schlüssel in den den Dateien <code class="docutils literal notranslate"><span class="pre">TEST.cert</span></code> und <code class="docutils literal notranslate"><span class="pre">TEST.key</span></code> im Ordner <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/dist/etc/TEST/</span></code>.  Die URLS für den Download der Zertifikate der Zertifikatskette sowie der zugehörigen CRLs befinden sich in der Datei <code class="docutils literal notranslate"><span class="pre">addresses.txt</span></code> (jeweils im Unterordner der Cloud). Für offizielle Zertifikate gibt es bei Verwendung externer Proxies keinen vorgeschriebenen Speicherort.</p>
+<p>Schließlich müssen zwei VHosts für den internen und externen Datenverkehr konfiguriert werden. Für den Verkehr mit dem Intranet kommt folgendes Template für die Konfiguration des VHosts zum Einsatz:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="n">_default_</span><span class="p">:</span><span class="mi">443</span><span class="o">&gt;</span>
+    <span class="c1"># General setup for the virtual host</span>
+    <span class="n">ServerName</span> <span class="n">LBAC_INTRANET_FQHN</span><span class="p">:</span><span class="mi">443</span>
+    <span class="n">ServerAdmin</span> <span class="n">LBAC_MANAGER_EMAIL</span>
+    <span class="n">DocumentRoot</span> <span class="s2">&quot;/usr/local/apache2/htdocs&quot;</span>
+
+    <span class="n">SSLEngine</span> <span class="n">on</span>
+    <span class="n">SSLCertificateFile</span> <span class="s2">&quot;/usr/local/apache2/conf/official_cert.pem&quot;</span>
+    <span class="n">SSLCertificateKeyFile</span> <span class="s2">&quot;/usr/local/apache2/conf/official_cert.key&quot;</span>
+    <span class="n">SSLCACertificateFile</span> <span class="s2">&quot;/usr/local/apache2/conf/official_cacert.pem&quot;</span>
+
+    <span class="o">&lt;</span><span class="n">IfModule</span> <span class="n">mod_proxy</span><span class="o">.</span><span class="n">c</span><span class="o">&gt;</span>
+        <span class="n">ProxyPass</span>         <span class="o">/</span><span class="n">ui</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">DOCKER_HOST</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span>
+        <span class="n">ProxyPassReverse</span>  <span class="o">/</span><span class="n">ui</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">DOCKER_HOST</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span>
+    <span class="o">&lt;/</span><span class="n">IfModule</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">VirtualHost</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Für die Kommunikation mit dem Internet übernimmt der Proxy die zertifikatsbasierte Authentifizierung der Clients. Der Bereich erlaubter URLs ist zudem gegenüber dem Intranet eingeschränkt. Das Template für die Konfiguration des Internet-VHosts lautet daher:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="n">_default_</span><span class="p">:</span><span class="mi">8443</span><span class="o">&gt;</span>
+    <span class="c1"># General setup for the virtual host</span>
+    <span class="n">ServerName</span> <span class="n">LBAC_INTERNET_FQHN</span><span class="p">:</span><span class="mi">8443</span>
+    <span class="n">ServerAdmin</span> <span class="n">LBAC_MANAGER_EMAIL</span>
+    <span class="n">DocumentRoot</span> <span class="s2">&quot;/usr/local/apache2/htdocs&quot;</span>
+
+    <span class="n">SSLEngine</span> <span class="n">on</span>
+
+    <span class="n">SSLCertificateFile</span> <span class="s2">&quot;/usr/local/apache2/conf/TEST.pem&quot;</span>
+    <span class="n">SSLCertificateKeyFile</span> <span class="s2">&quot;/usr/local/apache2/conf/TEST.key&quot;</span>
+
+    <span class="c1"># Certificate Revocation Lists (CRL):</span>
+    <span class="n">SSLCARevocationCheck</span> <span class="n">chain</span>
+    <span class="n">SSLCARevocationPath</span> <span class="s2">&quot;/usr/local/apache2/conf/crl/&quot;</span>
+
+    <span class="n">SSLVerifyClient</span> <span class="n">require</span>
+    <span class="n">SSLVerifyDepth</span> <span class="mi">3</span>
+    <span class="n">SSLCACertificatePath</span> <span class="s2">&quot;/usr/local/apache2/conf/crt/&quot;</span>
+
+    <span class="o">&lt;</span><span class="n">IfModule</span> <span class="n">mod_proxy</span><span class="o">.</span><span class="n">c</span><span class="o">&gt;</span>
+        <span class="n">ProxyPass</span>         <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">DOCKER_HOST</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>
+        <span class="n">ProxyPassReverse</span>  <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">DOCKER_HOST</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">rest</span>
+        <span class="n">ProxyPass</span>         <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span>
+        <span class="n">ProxyPassReverse</span>  <span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">ui</span><span class="p">:</span><span class="mi">8080</span><span class="o">/</span><span class="n">ui</span><span class="o">/</span><span class="n">servlet</span><span class="o">/</span><span class="n">document</span>
+    <span class="o">&lt;/</span><span class="n">IfModule</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">VirtualHost</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Die Zertifikate aller Cloud-CAs eines Knotens werden im Verzeichnis <code class="docutils literal notranslate"><span class="pre">/usr/local/apache2/conf/crt/</span></code> abgelegt. Analog müssen die Sperrlisten aller beteiligten CAs im Verzeichnis <code class="docutils literal notranslate"><span class="pre">/usr/local/apache2/conf/crl/</span></code> abgelegt werden. Apache erwartet, dass die Zertifikate und Zertifikatssperrlisten über ihre <em>subject hashes</em> gefunden werden können (siehe Apache Dokumentation und <code class="docutils literal notranslate"><span class="pre">c_rehash</span></code>). Wichtig ist, die Zertifikatssperrliste täglich zu aktualisieren.</p>
+<p>Optional (hier nicht gezeigt) kann ein dritter VHost zum Einsatz kommen, um bei unverschlüsseltem Zugriff aus dem Intranet auf die verschlüsselte Seite(n) umzuleiten.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Luca Barbato, Eric Holscher, and contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
