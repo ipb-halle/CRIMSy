@@ -1,4 +1,4 @@
-![](https://github.com/sneumann/CRIMSy/workflows/Java%20CI%20with%20Maven/badge.svg)
+![](https://github.com/ipb-halle/CRIMSy/workflows/Java%20CI%20with%20Maven/badge.svg)
 
 # CRIMSy
 _Cloud Resource & Information Managment System_

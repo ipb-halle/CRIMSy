@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Querschnittliche Konzepte &mdash; Recommonmark 0.6.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Recommonmark
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Querschnittliche Konzepte</a><ul>
+<li><a class="reference internal" href="#entwicklungskonzepte">Entwicklungskonzepte</a><ul>
+<li><a class="reference internal" href="#programmiersprache">Programmiersprache</a></li>
+<li><a class="reference internal" href="#coding-conventions">Coding-Conventions</a></li>
+<li><a class="reference internal" href="#entwicklungsumgebung-ide">Entwicklungsumgebung (IDE)</a></li>
+<li><a class="reference internal" href="#build-system">Build-System</a></li>
+<li><a class="reference internal" href="#code-repository">Code-Repository</a></li>
+<li><a class="reference internal" href="#qualitatssicherung">Qualitätssicherung</a></li>
+<li><a class="reference internal" href="#dokumentation">Dokumentation</a></li>
+<li><a class="reference internal" href="#projektverwaltung">Projektverwaltung</a></li>
+<li><a class="reference internal" href="#continuous-integration">Continuous Integration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Recommonmark</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Querschnittliche Konzepte</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/System/09_Querschnitt.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="querschnittliche-konzepte">
+<h1>Querschnittliche Konzepte<a class="headerlink" href="#querschnittliche-konzepte" title="Permalink to this headline">¶</a></h1>
+<p>In diesem Kapitel werden übergreifende Konzepte und Regelungen beschrieben.</p>
+<div class="section" id="entwicklungskonzepte">
+<h2>Entwicklungskonzepte<a class="headerlink" href="#entwicklungskonzepte" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="programmiersprache">
+<h3>Programmiersprache<a class="headerlink" href="#programmiersprache" title="Permalink to this headline">¶</a></h3>
+<p>Der Hauptteil der Entwicklung erfolgt mit Java, wobei zunächst keine Festlegung auf eine bestimmte Implementierung (Oracle JDK, OpenJDK) getroffen wird. Die Lizenzbedingungen einiger JDKs zwingen jedoch quasi zur Benutzung von OpenJDK. Hinzu kommen – vor allem für Konfiguration, Installation und Betrieb – einige Shell-Skripte und SQL für das Datenbank-Setup.</p>
+</div>
+<div class="section" id="coding-conventions">
+<h3>Coding-Conventions<a class="headerlink" href="#coding-conventions" title="Permalink to this headline">¶</a></h3>
+<p>n.n.</p>
+</div>
+<div class="section" id="entwicklungsumgebung-ide">
+<h3>Entwicklungsumgebung (IDE)<a class="headerlink" href="#entwicklungsumgebung-ide" title="Permalink to this headline">¶</a></h3>
+<p>Das Projekt ist nicht an eine bestimmte IDE gebunden, jeder Entwickler entscheidet selbständig mit welchem Werkzeug er am besten zurecht kommt. Nach einer Phase mit IntelliJ IDEA findet die Entwicklung derzeit (Frühjahr 2020) mit NetBeans statt. Darüber hinaus findet Entwicklung auch ohne IDE mit vi unter Linux statt.</p>
+</div>
+<div class="section" id="build-system">
+<h3>Build-System<a class="headerlink" href="#build-system" title="Permalink to this headline">¶</a></h3>
+<p>Als Build-System wurde Maven ausgewählt, weil damit bereits Erfahrungen vorliegen und es in seiner Funktionalität weit über das ebenfalls bekannte Build-System Ant hinausgeht. Andere Build-Systeme wie Gradle, Grape, Buildr usw. wurden nicht betrachtet; eine Umstellung, sollte sie notwendig werden, dürfte aufgrund der geringen Projektgröße unkritisch sein.</p>
+</div>
+<div class="section" id="code-repository">
+<h3>Code-Repository<a class="headerlink" href="#code-repository" title="Permalink to this headline">¶</a></h3>
+<p>Der Quellcode wird mit Git verwaltet. Das zentrale Repository liegt auf GitHub <a class="reference external" href="https://github.com/ipb-halle/CRIMSy">https://github.com/ipb-halle/CRIMSy</a>.</p>
+<blockquote>
+<div><p><strong>Info:</strong> In der Anfangsphase des Projekts wurde der Quellcode mit Subversion (und das Gesamtprojekt mit Trac) verwaltet und später nach Git / Bitbucket / Confluence / Jira migriert. Um die Sichtbarkeit des Projekts zu verbessern,  den Administrationsaufwand im IPB zu minimieren und die Aktivitäten des IPB an einer Stelle zu bündeln, wurde entschieden, das Projekt in einem öffentlichen Repository (GitHub) weiterzuentwickeln. Dies zieht entsprechende Migrationsarbeiten für die Dokumentation und die Projektverwaltung nach sich. Zur Vertuschung unserer “Verbrechen” haben wir jedoch nicht die gesamte Projekthistorie nach GitHub übertragen ;-).</p>
+</div></blockquote>
+</div>
+<div class="section" id="qualitatssicherung">
+<h3>Qualitätssicherung<a class="headerlink" href="#qualitatssicherung" title="Permalink to this headline">¶</a></h3>
+<p>Um Qualität einer komplexen Software sicher zu stellen, sind umfangreiche Tests unerlässlich. Dieses Projekt pflegt zu diesem Zweck eine ganze Reihe von Testfällen und fügt dem Quelltext laufend neue Testfälle hinzu. Da es sich um eine verteilte Webanwendung handelt, sind einfach Unit-Tests nicht ausreichend. Bestimmte Szenarien erfordern das Zusammenspiel mehrerer Komponenten - das Framework Arquillian <a class="reference external" href="https://arquillian.org">https://arquillian.org</a> ist in diesem Zusammenhang sehr nützlich. Die Testabdeckung des Projekts beträgt über 40 Prozent (Stand März 2020). Vollautomatische Browser-Tests (Selenium-Framework o.ä.) sind momentan nicht realisiert.</p>
+</div>
+<div class="section" id="dokumentation">
+<h3>Dokumentation<a class="headerlink" href="#dokumentation" title="Permalink to this headline">¶</a></h3>
+<p>Die Dokumentation erfolgt als Markup innerhalb des Projekts, damit das bisherige interne Projekt-Wiki (Confluence) abgelöst werden kann. Alle wesentlichen Informationen (inkl. Graphiken) wurden bzw. werden aus Confluence übertragen. Dabei wird die Trennung zwischen Handbüchern und Wiki aufrecht erhalten werden.</p>
+</div>
+<div class="section" id="projektverwaltung">
+<h3>Projektverwaltung<a class="headerlink" href="#projektverwaltung" title="Permalink to this headline">¶</a></h3>
+<p>Die Projektverwaltung wird mittelfristig von Jira auf die bei GitHub verfügbare Projektverwaltung umgestellt (siehe auch den Info-Kasten im Abschnitt Code-Repository).</p>
+</div>
+<div class="section" id="continuous-integration">
+<h3>Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permalink to this headline">¶</a></h3>
+<p>Das bislang genutzte Produkt Bamboo wird mittelfristig von GitHub Actions abgelöst werden.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Luca Barbato, Eric Holscher, and contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

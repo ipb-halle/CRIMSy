@@ -1,0 +1,216 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Randbedingungen &mdash; Recommonmark 0.6.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Recommonmark
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Randbedingungen</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Recommonmark</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Randbedingungen</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/System/03_Randbedingungen.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="randbedingungen">
+<h1>Randbedingungen<a class="headerlink" href="#randbedingungen" title="Permalink to this headline">¶</a></h1>
+<p>Das Projekt unterliegt verschiedenen Randbedingungen, die unmittelbaren Einfluß auf die Architektur und Implementierung des Projekts ausüben. Dieses Kapitel versucht diese Randbedingungen möglichst vollständig zu erfassen geht auf ihre Implikationen ein:</p>
+<ul class="simple">
+<li><p><strong>Budget:</strong> Das Budget für das Projekt Leibniz Bioactives Cloud beträgt ungefähr 3 Mannjahre. Dem Projekt stehen 1 Entwickler in Vollzeit und ein weiterer Entwickler mit zusätzlichen anderen Aufgaben zur Verfügung. Damit sind die Möglichkeiten des Projekts sehr begrenzt und es kommt darauf an, die knappen Ressourcen möglichst effizient zu nutzen, indem weitgehend auf vorgefertigte Open Source Komponenten zurückgegriffen wird. Die Entwicklung soll weitgehend agil erfolgen - viele Vorgehensmodelle (bspw. Scrum) setzen jedoch größere Teams voraus, so dass eine Anpassung stattfinden muss.</p></li>
+<li><p><strong>Programmiersprache:</strong> Prinzipiell gibt es eine Reihe von Frameworks in verschiedenen Programmiersprachen (Java, PHP, Python, Ruby, …), mit denen man die geplante Webanwendung umsetzen könnte. Ausschlaggebend für die Entscheidung für Java waren folgende Gesichtspunkte:</p>
+<ul>
+<li><p>die bereits vorliegenden Erfahrungen mit der Entwicklung von Web-Anwendungen</p></li>
+<li><p>das Vorhandensein einer breiten Auswahl allgemeiner (Nutzerinterfaces, Datenbankzugriffe, …) und fachspezifischer (Chemie, Natural Language Processing, Ontologien, …) Bibliotheken</p></li>
+<li><p>aktiver Support, große Community</p></li>
+<li><p>Möglichkeit der Realisierung in einer einzigen Programmiersprache (d.h. Vermeidung von Sprachmix)</p></li>
+</ul>
+</li>
+<li><p><strong>Dezentralisierung:</strong> Die Rechtsformen der am Leibniz Forschungsverbund “Wirkstoffe und Biotechnologie” beteiligten Institute sind sehr unterschiedlich: eingetragene Vereine (e.V.), Gesellschaften mit beschränkter Haftung (GmbH), Stiftungen öffentlichen Rechts. Die Institute sind zudem in unterschiedlichen Bundesländern angesiedelt, so dass die Rechtslage zu einzelnen Fragen unterschiedlich sein dürfte. Ein zentraler Ansatz würde bedeuten, dass entweder eine eigene Rechtspersönlichkeit gegründet werden müsste, die die Haftung und Finanzierung der Leibniz Bioactives Cloud übernimmt oder dass eines der beteiligten Institute diese Verbindlichkeiten schultert. Mit einem dezentralen Ansatz behält jedes Institut die Hoheit über seine Daten (präziser: über die bei ihm liegenden Daten) und ist selbst verantwortlich für die Sicherheit seiner Daten und der Infrastruktur sowie deren Finanzierung.  Der im Rahmen des Projekts verfolgte dezentrale Ansatz hat zudem den Charme, dass weitere Interessenten eigene verteilte Clouds betreiben können. Jeder Teilnehmer kann Mitglied in einer oder mehreren solcher Clouds sein und muss dafür nur eine lokale Instanz betreiben.</p></li>
+<li><p><strong>Übertragungsprotokolle:</strong> Der Austausch mit den IT-Verantwortlichen hat gezeigt, dass der Definition von Schnittstellen und Übertragungsprotokollen eine besondere Bedeutung zukommt. Als Beispiele für auftretende Hürden seinen genannt:</p>
+<ul>
+<li><p>Am HKI gibt es starke Vorbehalte gegenüber dem CIFS-Protokoll, das in einem frühen Prototypen für das Hochladen von Dokumenten genutzt wurde.</p></li>
+<li><p>Das DSMZ besitzt keine Hoheit über seine DMZ; alle Dienste müssen eine Prüfung durch das Helmholtz-Zentrum für Infektionsforschung (HZI) durchlaufen und die verwendeten Schnittstellen, Protokolle und die Art der übertragenen Daten deklarieren</p></li>
+<li><p>Das Leibniz-Institut für Lebensmittelsystembiologie an der TU München (Leibniz LSB&#64;TUM) verfügt nicht über eine demilitarisierte Zone für den Betrieb seines Knotens. Die Firewall (Paketfilter) muss entsprechend manuell für das System konfiguriert werden.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Luca Barbato, Eric Holscher, and contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

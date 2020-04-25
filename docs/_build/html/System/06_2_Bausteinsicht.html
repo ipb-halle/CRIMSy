@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Entwickler-PC &mdash; Recommonmark 0.6.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Recommonmark
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Entwickler-PC</a><ul>
+<li><a class="reference internal" href="#camgr-sh">camgr.sh</a><ul>
+<li><a class="reference internal" href="#on-disk-layout">On Disk Layout</a></li>
+<li><a class="reference internal" href="#kommandozeile">Kommandozeile</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Recommonmark</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Entwickler-PC</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/System/06_2_Bausteinsicht.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="entwickler-pc">
+<h1>Entwickler-PC<a class="headerlink" href="#entwickler-pc" title="Permalink to this headline">¶</a></h1>
+<p>Auf dem Entwickler-PC sind mehrere Komponenten vereint:</p>
+<ul class="simple">
+<li><p>ein Clon des CRIMSy Git-Repository</p></li>
+<li><p>ein Entwicklungssystem (mindestens Maven und JDK)</p></li>
+<li><p>OpenSSL und das camgr.sh-Skript aus dem Repository zur Verwaltung der CA</p></li>
+<li><p>etwas Speicher zur persistenten Speicherung der Konfiguration und der Zertifikate</p></li>
+</ul>
+<div class="section" id="camgr-sh">
+<h2>camgr.sh<a class="headerlink" href="#camgr-sh" title="Permalink to this headline">¶</a></h2>
+<p>Viele Funktionen der Cloud werden über Zertifikate abgesichert. Mit dem Skript <code class="docutils literal notranslate"><span class="pre">util/bin/camgr.sh</span></code> kann diese Public Key Infrastruktur (PKI) verwaltet werden. Die funktionen des Skripts sind im einzelnen:</p>
+<ul class="simple">
+<li><p>die Erzeugung der Root-CA</p></li>
+<li><p>die Erzeugung und Ausstellung von Zertifikaten für Sub-CAs</p></li>
+<li><p>die Ausstellung von Zertifikaten für die Maschine-zu-Maschine-Kommunikation</p></li>
+<li><p>die Ausstellung von Entwicklerzertifikaten für Codesigning und (Email-)Verschlüsselung</p></li>
+<li><p>die Anzeige der momentan gültigen Zertifikate</p></li>
+<li><p>der Widerruf von Zertifikaten und die Erstellung einer Certificate Revocation List</p></li>
+<li><p>die Festlegung des Code Distribution Point (d.h. Download-URL für die Installationspakete und Updates)</p></li>
+<li><p>die Erstellung von Java-Truststores mittels des keytool-Utility der JRE</p></li>
+</ul>
+<p>Einige Funktionen des Scripts können interaktiv über Menü genutzt werden:</p>
+<p><img alt="Hauptmenü" src="../_images/camgr_01.PNG" />
+Einige Funktionen (z.B. die Erzeugung von Zertifikaten für die Maschine-zu-Maschine-Kommunikation) sind auch über Kommandozeile zugänglich. Das Skript stellt dabei im wesentlichen einen Wrapper für OpenSSL dar und legt bestimmte Konfigurationsparameter für OpenSSL fest (z.B. Schlüssellänge, Digest-Algorithmus, Gültigkeitszeitraum, Key Usage usw.).</p>
+<div class="section" id="on-disk-layout">
+<h3>On Disk Layout<a class="headerlink" href="#on-disk-layout" title="Permalink to this headline">¶</a></h3>
+<p>Das Skript <code class="docutils literal notranslate"><span class="pre">camgr.sh</span></code> erwartet seine Konfigurationsdaten im Verzeichnis <code class="docutils literal notranslate"><span class="pre">config/CA/</span></code> (Root-CA) bzw. <code class="docutils literal notranslate"><span class="pre">config/CLOUD_NAME/CA</span></code> (Cloud-CA), relativ zu einem Checkout des CRIMSy Git-Repositories:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+</span> <span class="n">config</span><span class="o">/</span>
+  <span class="o">+</span> <span class="n">CA</span><span class="o">/</span>
+    <span class="o">+</span> <span class="n">certs</span><span class="o">/</span>
+    <span class="o">+</span> <span class="n">crl</span><span class="o">/</span>
+    <span class="o">+</span> <span class="n">devcert</span><span class="o">/</span>
+    <span class="o">+</span> <span class="n">lbac</span><span class="o">/</span>
+    <span class="o">+</span> <span class="n">req</span><span class="o">/</span>
+    <span class="o">+</span> <span class="n">ca</span><span class="o">.</span><span class="n">cfg</span>
+    <span class="o">+</span> <span class="n">cloud</span><span class="o">.</span><span class="n">cfg</span>
+    <span class="o">+</span> <span class="n">index</span><span class="o">.</span><span class="n">cloud</span>
+    <span class="o">+</span> <span class="n">index</span><span class="o">.</span><span class="n">txt</span>
+    <span class="o">+</span> <span class="n">cacert</span><span class="o">.</span><span class="n">key</span>
+    <span class="o">+</span> <span class="n">cacert</span><span class="o">.</span><span class="n">passwd</span>
+    <span class="o">+</span> <span class="n">cacert</span><span class="o">.</span><span class="n">pem</span>
+    <span class="o">+</span> <span class="n">serial</span><span class="o">.</span><span class="n">txt</span>
+    <span class="o">+</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="o">+</span> <span class="n">util</span><span class="o">/</span>
+  <span class="o">+</span> <span class="nb">bin</span><span class="o">/</span>
+    <span class="o">+</span> <span class="n">camgr</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="kommandozeile">
+<h3>Kommandozeile<a class="headerlink" href="#kommandozeile" title="Permalink to this headline">¶</a></h3>
+<p>Das Skript kann mit Kommandozeilenoptionen aufgerufen werden, um:</p>
+<ul class="simple">
+<li><p>eine Certificate Revocation List (CRL) zu erzeugen und sie zum Distributions-Server hochzuladen</p></li>
+<li><p>einen Certificate Request zu signieren</p></li>
+<li><p>einen Truststore zu erzeugen</p></li>
+</ul>
+<p>Eine Übersicht über die verfügbaren Kommandozeilenparameter erhält man mit der Option <code class="docutils literal notranslate"><span class="pre">--help</span></code>.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Luca Barbato, Eric Holscher, and contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

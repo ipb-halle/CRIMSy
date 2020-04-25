@@ -2,7 +2,7 @@
 <Configuration status="info">
 
   <Properties>
-    <Property name="LOG_DIR">${sys:TOMCAT_HOME}</Property>
+    <Property name="LOG_DIR">/usr/local/tomee/logs/</Property>
   </Properties>
 
   <Appenders>

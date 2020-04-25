@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Risiken und Datenschutz &mdash; Recommonmark 0.6.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Recommonmark
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.6.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Risiken und Datenschutz</a><ul>
+<li><a class="reference internal" href="#risikoanalyse">Risikoanalyse</a><ul>
+<li><a class="reference internal" href="#feindliche-ubernahme">Feindliche Übernahme</a></li>
+<li><a class="reference internal" href="#unautorisierter-lesezugriff">Unautorisierter Lesezugriff</a></li>
+<li><a class="reference internal" href="#unautorisierte-datenmanipulation">Unautorisierte Datenmanipulation</a></li>
+<li><a class="reference internal" href="#denial-of-service">Denial of Service</a></li>
+<li><a class="reference internal" href="#technisches-versagen">Technisches Versagen</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datenschutz">Datenschutz</a><ul>
+<li><a class="reference internal" href="#anwenderperspektive">Anwenderperspektive</a></li>
+<li><a class="reference internal" href="#datenperspektive">Datenperspektive</a></li>
+<li><a class="reference internal" href="#betreiberperspektive">Betreiberperspektive</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Recommonmark</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Risiken und Datenschutz</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/System/10_Risikoanalyse.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="risiken-und-datenschutz">
+<h1>Risiken und Datenschutz<a class="headerlink" href="#risiken-und-datenschutz" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="risikoanalyse">
+<h2>Risikoanalyse<a class="headerlink" href="#risikoanalyse" title="Permalink to this headline">¶</a></h2>
+<p>Dieses Kapitel nimmt eine Risikoanalyse vor und versucht, die mit dem Betrieb der Leibniz Bioactives Cloud verbundenen Risiken und die Bedrohungen, denen die Leibniz Bioactives Cloud ausgesetzt ist, möglichst vollständig darzustellen und die Maßnahmen zu ihrer Minimierung zu skizzieren.</p>
+<p><strong>Es ist ausdrücklich nicht Ziel des Projekts, eine hochsichere oder hochverfügbare Lösung zu schaffen. Die Betreiber und Nutzer der Leibniz Bioactives Cloud sollen jedoch darauf vertrauen können, dass alle Maßnahmen zur Risikominimierung ergriffen wurden, die man vernünftigerweise erwarten kann.</strong></p>
+<p>Die Risiken bzw. Bedrohungen können dabei aus verschiedenen Blickwinkeln betrachtet werden. So kann man zunächst zwischen Risiken für den Betrieb der Leibniz Bioactives Cloud an sich und darüberhinausgehenden Risiken unterscheiden, wobei das Schadenpotential der zweiten Klasse leider erheblich höher ist. Zweitens ist eine Unterscheidung nach der Quelle der Bedrohung, nähmlich durch anonyme Angreifer aus dem Internet oder durch Insider aus dem Intranet möglich. Drittens sind bei der Betrachtung die mögliche Schadenshöhe und die geschätzte Eintrittswahrscheinlichkeit hilfreiche Kennziffern. Insgesamt ist der Betrieb der Leibniz Bioactives Cloud durch folgende Bedrohungen gekennzeichnet:</p>
+<ul class="simple">
+<li><p>Feindliche Übernahme der Infrastruktur</p></li>
+<li><p>Unautorisierter lesender Zugriff auf Daten</p></li>
+<li><p>Unautorisierte Datenmanipulation</p></li>
+<li><p>Denial of Service</p></li>
+<li><p>technisches Versagen</p></li>
+</ul>
+<p>Mit diesen Bedrohungen sind die Risiken</p>
+<ul class="simple">
+<li><p>Sach- und Vermögensschäden / Haftung</p></li>
+<li><p>Reputationsschaden</p></li>
+<li><p>Betriebsunterbrechung</p></li>
+<li><p>Datenverlust</p></li>
+</ul>
+<p>verbunden, die durch technische und organisatorische Maßnahmen zur Bedrohungsabwehr minimiert werden sollen. Bei allen Betrachtungen wird angenommen, dass aktuelle kryptographische Verfahren und speziell auch die Implementierungen sicher sind. Diese Einschätzung der Algorithmen beruht dabei auf der Beurteilung durch das Bundesamt für Sicherheit in der Informationstechnik (BSI). Sollten während des Betriebs der Cloud Schwachstellen bekannt werden, so muss mit entsprechenden Updates darauf reagiert werden.</p>
+<p>Da strenggenommen personenbezogene Daten verarbeitet werden ist auch eine Betrachtung zum Datenschutz notwendig (Kapitel im Anschluss).</p>
+<div class="section" id="feindliche-ubernahme">
+<h3>Feindliche Übernahme<a class="headerlink" href="#feindliche-ubernahme" title="Permalink to this headline">¶</a></h3>
+<p>Die feindliche Übernahme der Infrastruktur hat insgesamt das höchste Schadenpotential, da der Angreifer damit die volle Kontrolle über das System erlangt und es für seine Zwecke mißbrauchen kann. Denkbar sind unter anderem:</p>
+<ul class="simple">
+<li><p>Spam-Versand</p></li>
+<li><p>Teilnehmer in einem Bot-Net</p></li>
+<li><p>Mining von Crypto-Währungen</p></li>
+<li><p>Abfluß aller Daten</p></li>
+<li><p>Nutzung als Ausgangsbasis für weitere Angriffe</p></li>
+</ul>
+<p>Die feindliche Übernahme muss daher unter allen Umständen vermieden werden. Im Falle eines Falles sollte ein Einbruch bzw. ein Einbruchsversuch frühzeitig durch entsprechende Sensoren (intrusion detection) entdeckt werden. Eine zentrale Rolle kommt hier den Firewalls der DMZ zu, die die Möglichkeiten des Angreifers wirksam beschränken sollen. Ebenso wichtig sind eine sichere Grundkonfiguration des Knotens, auf dem nur die tatsächlich benötigte Software installiert sein soll, und das regelmäßige Einspielen von Sicherheitsupdates.</p>
+<p>Neben direkten Angriffen über das Netzwerk (von Außen über das Internet bzw. von Innen über das Intranet) besteht ein weiterer Angriffsvektor über bösartige Dokumente, die durch autorisierte Nutzer hochgeladen, z.B. durch Pufferüberläufe während der Indexierung, das System kompromittieren. Neben intrusion detection besteht die Gegenwehr in diesem Szenario hauptsächlich im regelmäßigen Update der eingesetzten Softwarekomponenten.</p>
+</div>
+<div class="section" id="unautorisierter-lesezugriff">
+<h3>Unautorisierter Lesezugriff<a class="headerlink" href="#unautorisierter-lesezugriff" title="Permalink to this headline">¶</a></h3>
+<p>Der Lesezugriff auf Dokumente darf nur über definierte Schnittstellen (DocumentServlet) möglich sein. Die Schnittstelle muss dabei prüfen, ob der Zugriff autorisiert ist. Die Autorisierung kann beispielsweise mittels eines Access-Tokens erfolgen, dass eine zeitlich begrenzte Gültigkeit hat. Auf diese Weise soll sichergestellt werden, dass Links auf Dokumente (z.B. aus dem Browser-Cache) nicht von unautorisierten Personen mißbraucht werden können. Die Infrastruktur für die Autorisierung ist im System selbst verankert und funktioniert über die Tripel (Asset, Zugriffsprivileg, Person/Gruppe). Die Authentifizierung als Person bzw. Gruppenmitglied kann gegen eine interne Nutzerdatenbank erfolgen. Zusätzlich besteht die Möglichkeit der Anbindung an externe Systeme (LDAP / Active Directory).</p>
+<p>Die Datenübertragung von Knoten zu Knoten oder zum Nutzer muss verschlüsselt erfolgen, so dass es nicht zum Datenabfluß während des Transits kommen kann.</p>
+<p>Ebenso muss das System gegen Lesezugriffe auf Zertifikatsschlüssel oder Passwörter geschützt sein. Der Zugriff auf Passwörter wird dadurch verhindert, dass Nutzerpasswörter nur gesalzen und mehrfach gehasht gespeichert werden. Verbindungen zu externen Authentifizierungssystemen (LDAP) werden verschlüsselt aufgebaut.</p>
+<p>Die Speicherung der Daten in einem verschlüsselten Dateisystem wird nicht für notwendig erachtet; die Leibniz Bioactives Cloud ist nicht für die Speicherung von Daten vorgesehen, die solche Sicherheitsmaßnahmen erfordern.</p>
+</div>
+<div class="section" id="unautorisierte-datenmanipulation">
+<h3>Unautorisierte Datenmanipulation<a class="headerlink" href="#unautorisierte-datenmanipulation" title="Permalink to this headline">¶</a></h3>
+<p>Ebenso wie Lesezugriffe dürfen Schreiboperationen (einschließlich Löschen) nur über definierte Schnittstellen (z.B. FileUpload) und nur mit Autorisierung möglich sein. Das im Abschnitt “Unautorisierter Lesezugriff” geschriebene gilt entsprechend analog.</p>
+</div>
+<div class="section" id="denial-of-service">
+<h3>Denial of Service<a class="headerlink" href="#denial-of-service" title="Permalink to this headline">¶</a></h3>
+<p>Für die Bedrohung Denial of Service sind verschiedene Szenarien zu betrachten:</p>
+<ol class="simple">
+<li><p><strong>Denial of Service gegen die Leibniz Bioactives Cloud</strong>, indem die Ressourcen (Speicher, CPU, Bandbreite) einzelner oder mehrerer Knoten durch gezielte Abfragen erschöpft werden Das Risiko dieses Szenarios soll dadurch minimiert werden, dass Eingabeparameter (z. B. in URLs oder Post-Requests) einer sorgfältigen Zulässigkeitsprüfung (Minimale und maximale Länge, Zeichenvorrat, Vollständigkeit , reguläre Ausdrücke, usw.) unterzogen werden. Ausserdem müssen sinnvolle Begrenzungen für Prozessorzeit und Upload-Dateigrößen definiert werden.</p></li>
+<li><p><strong>Denial of Service gegen andere interne (LDAP-Server, DNS-Server, usw.) oder externe (Software-Repositories, sonstige Server) Dienste:</strong> Hier sind vor allem Maßnahmen zum Schutz des LDAP-Servers gegen die Blockierung von Nutzer-Accounts zu nennen. Durch Intruder Lockout verhindert die Infrastruktur, dass Nutzeraccounts über den Cloud-Knoten gezielt angegriffen werden. Die Risiko für sonstige Server und Dienste (DNS, Software-Repositories, sonstige Server) wird als gering eingestuft, so dass bislang keine Maßnahmen geplant sind. Im Zweifel können auch hier die Firewalls eine Schutzfunktion übernehmen.</p></li>
+<li><p><strong>Denial of Service gegen Nutzer</strong>, z.B. durch Browser-Absturz oder Computerviren Im normalen Betrieb der Cloud sind die Nutzer vor allem durch bösartige Dokumente gefährdet. Hierunter werden Dokumente (PDF, DOCX, DOC, …) verstanden, in deren aktiven Inhalten sich Schadcode verbirgt. Solche Dokumente können (feindliche Übernahme des Systems ausgeschlossen) die Nutzer nur erreichen, wenn sie zuvor von einem autorisierten Nutzer hochgeladen wurden. Idealerweise wird dieses Risiko dadurch minimiert, dass sowohl der hochladende als auch der herunterladende Benutzer Virenscanner auf ihren Computern installiert haben. Unter Umständen kann auch die Firewall zum Intranet helfen, das Risiko dieser Bedrohung zu senken, wenn sie in der Lage ist, den Datenverkehr (als man-in-the-middle) transparent zu entschlüsseln und auf Viren zu scannen.</p></li>
+</ol>
+</div>
+<div class="section" id="technisches-versagen">
+<h3>Technisches Versagen<a class="headerlink" href="#technisches-versagen" title="Permalink to this headline">¶</a></h3>
+<p>Gegen technisches Versagen sollte die Installation durch adäquate Maßnahmen wie ECC-RAM oder fortschrittliche Storage-Systeme (RAID, ZFS, …) geschützt werden. Sollte es dennoch zu einer Betriebsunterbrechung bei einem einzelnen Knoten kommen, so bleibt die Leibniz Bioactives Cloud als ganzes durch ihre dezentrale Organisiation weiterhin nutzbar. Gegen Datenverluste des Knotens ist ein externes Backup vorzusehen. Die Software der Leibniz Bioactives Cloud wird hierfür regelmäßig Datenbank-Dumps erzeugen, die von individuell zu konfigurierenden Backup-Agenten gesichert werden können. Sofern ein funktionsfähiges Backup existiert, ist der zu erwartende Schaden bei Ausfall eines Knotens vergleichsweise gering und erfordert somit keine weiteren Maßnahmen.</p>
+</div>
+</div>
+<div class="section" id="datenschutz">
+<h2>Datenschutz<a class="headerlink" href="#datenschutz" title="Permalink to this headline">¶</a></h2>
+<p>Die Betrachtung der Datenverarbeitung durch die Leibniz Bioactives Cloud kann unter verschiedenen Aspekten erfolgen:</p>
+<ul class="simple">
+<li><p>aus der Perspektive der Anwender</p></li>
+<li><p>aus der Perspektive der gespeicherten Daten</p></li>
+<li><p>aus der Perspektive der Betreiber</p></li>
+</ul>
+<div class="section" id="anwenderperspektive">
+<h3>Anwenderperspektive<a class="headerlink" href="#anwenderperspektive" title="Permalink to this headline">¶</a></h3>
+<p>Für die Anwender der Leibniz Bioactives Cloud wurde eine Datenschutzerklärung verfasst, die über den jeweiligen Knoten abgerufen werden kann. Darin ist erklärt, welche Daten der Anwender zu welchem Zweck gespeichert und verarbeitet werden und nach welchen Fristen diese Daten gelöscht werden. Im Wesentlichen handelt es sich bei anonymen Zugriffen um die üblichen Verkehrsdaten (IP-Adresse usw.); bei authentifizierter Nutzung kommen noch der Name, Nutzername (“Login”), evtl. eindeutige externe Kennungen, Gruppenmitgliedschaften und ggf. dienstliche Telefonnummern bzw. dienstliche Emailadressen hinzu. Bei authentifizierter Nutzung eines Knotens werden diese Daten an die übrigen Knoten der Cloud annonciert, damit dem Nutzer Rechte an Objekten eingeräumt werden können. Der Nutzer kann vom Betreiber seines Knotens die Anonymisierung seines Nutzerkontos verlangen. Die Anonymisierung erfolgt dadurch, dass jegliche personenbezogene Daten (Name, Login, Telefonnummer, Emailadresse, ggf. eindeutige externe Kennungen) aus einem Nutzerkonto entfernt werden.</p>
+</div>
+<div class="section" id="datenperspektive">
+<h3>Datenperspektive<a class="headerlink" href="#datenperspektive" title="Permalink to this headline">¶</a></h3>
+<p>Auf den Knoten werden wissenschaftliche Daten und Dokumente (u.a. wissenschaftliche Veröffentlichungen) gespeichert. Diese Dokumente können personenbezogene Daten enthalten. Üblicherweise umfasst dies die Name der Autoren, ihre Affiliation und Kontaktdaten. In einigen wissenschaftlichen Publikationen finden sich gelegentlich auch Bilder und Lebensläufe. Die Leibniz Bioactives Cloud ist jedoch keinesfalls zur Speicherung darüberhinausgehender personenbezogener Informationen (Patientendaten, nicht anonymisierte Umfragedaten) geeignet.</p>
+</div>
+<div class="section" id="betreiberperspektive">
+<h3>Betreiberperspektive<a class="headerlink" href="#betreiberperspektive" title="Permalink to this headline">¶</a></h3>
+<p>Dem Betreiber der Leibniz Bioactives Cloud ist für die Einhaltung der datenschutzrechtlichen Vorschriften auf seinem Knoten verantwortlich. Er muss insbesondere sicherstellen, dass keine unzulässigen Dokumente in die Leibniz Bioactives Cloud hochgeladen werden und dass eventuellen Anonymisierungsbegehren von Nutzern Rechnung getragen wird. Darüber hinaus steht er in der Verantwortung der ordnungsgemäßen Datenlöschung bei Ausscheiden seines Knotens.</p>
+<p>Die im laufenden Betrieb anfallenden Log-Dateien, die personenbezogene Daten der Nutzer enthalten können, werden automatisch nach 7 Tagen gelöscht.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Luca Barbato, Eric Holscher, and contributors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
