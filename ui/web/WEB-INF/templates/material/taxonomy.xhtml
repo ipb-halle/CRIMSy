@@ -29,7 +29,55 @@
     <h:body>
         <b:form 
             id="taxonomyForm">
-         
+
+            <b:container>
+                <b:row>
+                    <b:column span="1" offset="5">
+                        <b:commandButton value="ZurÃ¼ck"/>
+                    </b:column>
+                    <b:column span="1" >
+                        History Eintrag
+                    </b:column>
+                    <b:column span="1" >
+                        <b:commandButton value="Vor"/>
+                    </b:column>
+
+                    <b:column span="1" offset="1">
+                        <b:commandButton value="Edit"/>
+                    </b:column>
+                    <b:column span="1">
+                        <b:commandButton
+                            value="#{taxonomyBean.getApplyButtonText()}"
+                            disabled="#{taxonomyBean.isApplyButtonDisabled()}"/>
+                    </b:column>
+
+                </b:row>
+                <b:row>
+                    <b:column span="4">
+                        <p:tree                             
+                            value="#{taxonomyBean.taxonomyTree}"
+                            var ="node"
+                            selectionMode="single"
+                            selection="#{taxonomyBean.selectedTaxonomy}">
+                            <p:ajax event="select" update="taxonomyForm" listener="#{taxonomyBean.onTaxonomySelect}" />
+                            <p:treeNode >
+
+                                <h:outputText value="#{node.getFirstName()}"/>
+                            </p:treeNode>              
+                        </p:tree>
+                    </b:column>
+                    <b:column span="8">
+                        <ui:insert> 
+                            <ui:include src="/WEB-INF/templates/material/components/taxonomyNames.xhtml"/>
+                        </ui:insert>
+
+                    </b:column>
+
+                </b:row>
+
+            </b:container>
+
+
 
         </b:form>
     </h:body>

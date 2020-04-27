@@ -33,16 +33,17 @@ import java.util.List;
 public class Taxonomy extends Material {
 
     private TaxonomyLevel level;
-    private List<Taxonomy> taxHierachy=new ArrayList<>();
+    private List<Taxonomy> taxHierachy = new ArrayList<>();
 
-    public Taxonomy(int id, 
+    public Taxonomy(int id,
             List<MaterialName> names,
-            int projectId, HazardInformation hazards,
+            int projectId,
+            HazardInformation hazards,
             StorageClassInformation storageInformation,
             List<Taxonomy> hierarchy) {
         super(id, names, projectId, hazards, storageInformation);
         this.type = MaterialType.TAXONOMY;
-  
+
     }
 
     @Override
@@ -61,5 +62,7 @@ public class Taxonomy extends Material {
     public void setLevel(TaxonomyLevel level) {
         this.level = level;
     }
+
+    
 
 }
