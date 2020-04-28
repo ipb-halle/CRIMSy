@@ -130,7 +130,7 @@ CREATE TABLE materials (
         userGroups UUID NOT NULL REFERENCES aclists(id),
         ownerId UUID NOT NULL REFERENCES usersgroups(id),
         deactivated BOOLEAN NOT NULL,
-        projectId INTEGER NOT NULL REFERENCES projects(id));
+        projectId INTEGER REFERENCES projects(id));
 
 CREATE TABLE material_indices (
         id SERIAL NOT NULL PRIMARY KEY,

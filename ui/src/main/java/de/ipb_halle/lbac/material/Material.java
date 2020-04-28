@@ -36,7 +36,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  *
  * @author fmauz
@@ -48,7 +47,7 @@ public abstract class Material implements DTO {
     protected int id;
     protected MaterialType type;
     protected List<MaterialName> names;
-    protected int projectId;
+    protected Integer projectId;
     protected ACList acList;
     protected UUID ownerID;
     protected Date creationTime;
@@ -61,7 +60,7 @@ public abstract class Material implements DTO {
     public Material(
             int id,
             List<MaterialName> names,
-            int projectId,
+            Integer projectId,
             HazardInformation hazards,
             StorageClassInformation storageInformation) {
         this.id = id;
@@ -121,7 +120,7 @@ public abstract class Material implements DTO {
         return "danger";
     }
 
-    public int getProjectId() {
+    public Integer getProjectId() {
         return projectId;
     }
 

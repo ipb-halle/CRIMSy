@@ -37,7 +37,7 @@ import org.apache.johnzon.mapper.JohnzonConverter;
  */
 @Entity
 @Table(name = "materials")
-public class MaterialEntity implements Serializable{
+public class MaterialEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
@@ -63,7 +63,7 @@ public class MaterialEntity implements Serializable{
     @Column
     private boolean deactivated;
     @Column
-    private int projectid;
+    private Integer projectid;
 
     public Integer getMaterialid() {
         return materialid;
@@ -105,11 +105,11 @@ public class MaterialEntity implements Serializable{
         this.ownerid = ownerid;
     }
 
-    public int getProjectid() {
+    public Integer getProjectid() {
         return projectid;
     }
 
-    public void setProjectid(int projectid) {
+    public void setProjectid(Integer projectid) {
         this.projectid = projectid;
     }
 
