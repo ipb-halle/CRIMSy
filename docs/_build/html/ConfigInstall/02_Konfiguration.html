@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Konfigurationsskript &mdash; CRIMSy 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Externer Proxy" href="03_ExternerProxy.html" />
+    <link rel="prev" title="Konfiguration und Installation" href="01_Vorbemerkung.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CRIMSy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Administration/01_Setup.html">Administrator-Handbuch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/02_Phase1.html">Phase 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/03_Phase2.html">Phase 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_Vorbemerkung.html">Konfiguration und Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Konfigurationsskript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_ExternerProxy.html">Externer Proxy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_Management.html">Management des Knotens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/01_Intro.html">Vorwort</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/01_Intro.html#einfuhrung">Einführung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/02_Aufgaben.html">Aufgabenstellung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/03_Randbedingungen.html">Randbedingungen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/04_Fachkontext.html">Fachlicher Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/05_TechnischerKontext.html">Technischer Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_1_Bausteinsicht.html">Bausteinsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_2_Bausteinsicht.html">Entwickler-PC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_3_Bausteinsicht.html">Webanwendung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/07_Laufzeitsicht.html">Laufzeitsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/08_Verteilungssicht.html">Verteilungssicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/09_Querschnitt.html">Querschnittliche Konzepte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/10_Risikoanalyse.html">Risiken und Datenschutz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/11_TechnSchulden.html">Technische Schulden</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/12_Glossar.html">Glossar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/13_Lizenz.html">Lizenzierung</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CRIMSy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Konfigurationsskript</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/ConfigInstall/02_Konfiguration.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="konfigurationsskript">
+<h1>Konfigurationsskript<a class="headerlink" href="#konfigurationsskript" title="Permalink to this headline">¶</a></h1>
+<p>Das digital signierte Konfigurationsskript steht auf der Distributions-Webseite der Cloud zum Herunterladen zur Verfügung. Die URL und die Credentials für den Zugriff werden vom Verwalter per Email mitgeteilt. Die Beispielwerte in den hier dargestellten Code-Schnipseln sind entsprechend zu ersetzen; zur Vereinfachung enthält die Distributionswebseite entsprechende Vorlagen für Copy &amp; Paste.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">configure</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">sig</span> \
+  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">test</span><span class="o">.</span><span class="n">crimsy</span><span class="o">.</span><span class="n">invalid</span><span class="o">/</span><span class="n">TEST</span><span class="o">/</span><span class="n">configure</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">sig</span>
+<span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">chain</span><span class="o">.</span><span class="n">txt</span> \
+  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">test</span><span class="o">.</span><span class="n">crimsy</span><span class="o">.</span><span class="n">invalid</span><span class="o">/</span><span class="n">TEST</span><span class="o">/</span><span class="n">chain</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">wget</span> <span class="o">-</span><span class="n">O</span> <span class="n">devcert</span><span class="o">.</span><span class="n">pem</span> \
+  <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">test</span><span class="o">.</span><span class="n">crimsy</span><span class="o">.</span><span class="n">invalid</span><span class="o">/</span><span class="n">TEST</span><span class="o">/</span><span class="n">devcert</span><span class="o">.</span><span class="n">pem</span>
+<span class="n">sha256sum</span> <span class="n">chain</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">openssl</span> <span class="n">verify</span> <span class="o">-</span><span class="n">CAfile</span> <span class="n">chain</span><span class="o">.</span><span class="n">txt</span> <span class="n">devcert</span><span class="o">.</span><span class="n">pem</span>
+<span class="n">openssl</span> <span class="n">smime</span> <span class="o">-</span><span class="n">verify</span> <span class="o">-</span><span class="ow">in</span> <span class="n">configure</span><span class="o">.</span><span class="n">sh</span><span class="o">.</span><span class="n">sig</span> <span class="o">-</span><span class="n">certfile</span> \
+    <span class="n">devcert</span><span class="o">.</span><span class="n">pem</span>  <span class="o">-</span><span class="n">CAfile</span> <span class="n">chain</span><span class="o">.</span><span class="n">txt</span> <span class="o">-</span><span class="n">out</span> <span class="n">configure</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Zur Prüfung der Authentizität vergleichen Sie bitte die Ausgabe in Ihrem Terminal mit den kursiv markierten Zeilen in folgendem Block, wobei der Hash-Code cloudspezifisch ist:</p>
+<p>| <code class="docutils literal notranslate"><span class="pre">[...]</span> <span class="pre">|</span> <span class="pre">|</span> </code>~&gt; sha256sum chain.txt
+| <em><code class="docutils literal notranslate"><span class="pre">725</span> <span class="pre">...</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">Hash</span> <span class="pre">Code</span> <span class="pre">der</span> <span class="pre">Cloud-CA-Zertifikatskette</span>&#160;&#160;&#160;&#160; <span class="pre">...</span> <span class="pre">65f</span> <span class="pre">chain.txt</span></code></em>
+| <code class="docutils literal notranslate"><span class="pre">~&gt;</span> <span class="pre">openssl</span> <span class="pre">verify</span> <span class="pre">-CAfile</span> <span class="pre">chain.txt</span> <span class="pre">devcert.pem</span></code>
+| <em><code class="docutils literal notranslate"><span class="pre">devcert.pem:</span> <span class="pre">OK</span></code></em>
+| <code class="docutils literal notranslate"><span class="pre">~&gt;</span> <span class="pre">openssl</span> <span class="pre">smime</span> <span class="pre">-verify</span> <span class="pre">-in</span> <span class="pre">configure.sh.sig</span> <span class="pre">-certfile</span> <span class="pre">\</span></code>
+| <code class="docutils literal notranslate">&#160;&#160;&#160; <span class="pre">devcert.pem</span> <span class="pre">-CAfile</span> <span class="pre">chain.txt</span> <span class="pre">-out</span> <span class="pre">configure.sh</span></code>
+| <em><code class="docutils literal notranslate"><span class="pre">Verification</span> <span class="pre">successful</span></code></em></p>
+<p><strong>Bitte benachrichtigen Sie uns (bzw. Ihren Cloud-Verwalter) unbedingt, falls bei der Prüfung Ungereimtheiten auftreten.</strong> Falls die Signaturprüfung des Konfigurationsskripts erfolgreich war, können Sie das Skript anschließend aufrufen:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">chmod</span> <span class="o">+</span><span class="n">x</span> <span class="n">configure</span><span class="o">.</span><span class="n">sh</span>
+<span class="o">./</span><span class="n">configure</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>Das Konfigurationsskript beginnt mit einer Informationsseite:</p>
+<p><img alt="Infoseite" src="../_images/config_01.png" /></p>
+<blockquote>
+<div><p><strong>Achtung:</strong> <em>Da unsere Ressourcen sehr begrenzt sind, kann das Konfigurationsskript nur eine rudimentäre Prüfung der Eingabeparameter vornehmen. Durch entsprechend bösartige Eingaben (Backquotes “`”, $-Zeichen usw.) können wahrscheinlich Datenverluste und möglicherweise auch anderweitige Schäden provoziert werden. Bitte kontaktieren Sie uns, wenn Sie eines der Zeichen `”’$ verwenden müssen.</em></p>
+</div></blockquote>
+<p>Als nächstes wird der Speicherort für die Daten der Cloud festgelegt:</p>
+<p><img alt="Speicherort" src="../_images/config_02.png" />
+Im einfachsten Fall können sie die Default-Einstellung übernehmen. Die größtmögliche Ausbaufähigkeit sichern Sie sich, wenn sie das Dateisystem als “logical volume” (LVM, ZFS, …) anlegen. Im weiteren Verlauf wird dieser Speicherort in der Variable <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE</span></code> gespeichert. Auch in der Dokumentation wird diese Variable entsprechend verwendet.  Falls das Konfigurationsskript im angegebenen Speicherort eine Konfigurationsdatei aus früheren Läufen des Skripts finden kann, werden Sie gefragt, ob Sie diese einlesen wollen:</p>
+<p><img alt="Abfrage" src="../_images/config_03.png" />
+In den allermeisten Fällen sollten Sie die Datei einlesen lassen, Sie sparen dadurch Tipparbeit. Eine kritische Prüfung aller Eingaben bleibt dennoch unerläßlich. Das Skript zeigt als nächstes den Unique Identifier des Knotens an:</p>
+<p><img alt="UUID des Knotens" src="../_images/config_04.png" />
+An diesem Wert sollten Sie nur Änderungen vornehmen, wenn Sie von uns dazu aufgefordert werden. Die nächste Frage ist eine einfache Kontrollfrage, ob Ihr System über ausreichende Ressourcen verfügt:</p>
+<p><img alt="Ressourcen" src="../_images/config_05.png" />
+Wir hoffen, Sie können diese Frage mit “Ja” beantworten. Im darauffolgenden Formular können Sie entscheiden, ob Ihr Knoten einen eigenen Proxy konfigurieren soll oder ob die Proxyfunktion von einem bereits in Ihrer Einrichtung bestehenden Proxy übernommen werden soll. Standardmäßig ist der interne Proxy aktiviert und übernimmt die Verschlüsselung des Datenverkehrs. Diese Variante ist für Sie mit dem kleinsten Aufwand verbunden, erlaubt jedoch beispielsweise nicht die Einbindung in ein Intrusion Detection System (IDS). Falls Ihre Einrichtung bereits einen Proxy (oder mehrere Proxies) betreibt, können Sie diese(n) auch für den einzurichtenden Knoten benutzen. Der Datenverkehr des Knotens erfolgt dann unverschlüsselt und erlaubt Ihnen die Anbindung an ein IDS. Die Anforderungen sind in einem separaten Abschnitt beschrieben. Sofern Sie Ihren Proxy mit einem offiziellen Zertifikat betreiben, können Sie das Feature Http Strict Transport Security (HSTS) aktivieren. Falls Sie kein offizielles Zertifikat (z.B. DFN) beantragt haben, wird diese Einstellung ignoriert.</p>
+<p><img alt="Proxy / HSTS" src="../_images/config_06.png" />
+Mittlerweile verwenden viele Linux-Distributionen SystemD als Init-System. Im Rahmen des Konfigurationsskripts wird abgefragt, für welches System der Knoten konfiguriert werden soll, damit CRIMSy nach einem Neustart des Knotens automatisch starten kann. SystemV-Init-Skripte existieren für alle anderen Distributionen und als Fallback-Lösung; es finden allerdings keine Tests statt.</p>
+<p><img alt="Init-System" src="../_images/config_07.png" />
+Ebenso ist für die Verwaltung des Knotens wichtig, ob auf dem Knoten noch andere Docker-Container ausgeführt werden. Die parallele Ausführung weiterer Container bedeutet, das beim Aufräumen von Docker-Containern, -Images und Volumes weniger aggressiv vorgegangen werden muss. Deshalb wird von der parallelen Ausführung weiterer Container auf dem Knoten dringend abgeraten.</p>
+<p><img alt="Docker" src="../_images/config_08.png" />
+Als nächstes wird der Name Ihrer Einrichtung (Ihres Instituts) abgefragt. Geben Sie bitte die vollständige offizielle deutsche Bezeichnung an (ohne Adresse). Der hier abgefragte Name wird den Nutzern der Cloud angezeigt. Der Wert dieses Feldes wird außerdem in das Formular für den Zertifikatsantrag übertragen, kann dort aber angepasst werden, wenn für den Zertifikatsantrag eine andere Schreibung (z.B. wegen Umlauten) gewünscht wird.</p>
+<p><img alt="Einrichtung" src="../_images/config_09.png" />
+Da der vollständige Name des Instituts manchmal unhandlich lang sein kann, wird im folgenden Formular eine Kurzbezeichnung abgefragt. Die Kurzbezeichnung sollte sich üblicherweise aus einer Abkürzung des Institutsnamens und dem Ort des Hauptsitzes zusammensetzen:</p>
+<p><img alt="Einrichtung" src="../_images/config_10.png" />
+Eine weitere wichtige Information ist die Emailadresse einer Kontaktperson, die für die Administration des Knotens zuständig ist. Selbstverständlich ist auch eine Sammeladresse (z.B. helpdesk&#64;somewhere.invalid) möglich.</p>
+<p><img alt="Email" src="../_images/config_11.png" />
+Sowohl für die Erstellung des Zertifikats (Subject Alternate Names) als auch für die Konfiguration des Proxy werden die Hostnamen Ihres Knotens benötigt. Dabei kann sich der Hostname im Intranet vom Hostnamen im Internet unterscheiden, weshalb beide abgefragt werden. Die Portnummer für die Kommunikation aus dem Internet ist auf 8443 festgelegt und kann nicht geändert werden.</p>
+<p><img alt="Intranet" src="../_images/config_12.png" />{ width=50%} <img alt="Internet" src="../_images/config_13.png" />{ width=50%}
+In den folgenden Schritten muss für den Knoten ein Zertifkatsrequest erstellt werden. Falls jedoch bereits ein Zertifikatsrequest ausgestellt wurde, kann dieser geprüft und gegebenenfalls wiederverwendet werden (hier nicht gezeigt).</p>
+<p><img alt="CSR not found" src="../_images/config_14.png" />{ width=50% } <img alt="CSR Wiederverwendung" src="../_images/config_21.png" />{ width=50% }
+Das Konfigurationsskript übernimmt dabei die Felder “Organisation” und “Email” aus den bislang erfassten Daten; es sind aber Änderungen möglich. Zusätzlich müssen der Staat (Vorauswahl “DE”), das Bundesland, der Ort und die Organisationseinheit (Vorauswahl ist “Verwaltung”)  eingegeben werden.</p>
+<p><img alt="CSR" src="../_images/config_15.png" />
+Nach Erfassung der Daten wird mit OpenSSL ein Zertifikatsrequest erzeugt. Auf Ihrem Terminal werden vorübergehend einige Ausgaben des Programms sichtbar sein. Im nächsten Formular sind Sie aufgefordert, die Daten des Zertifikatsrequests zu prüfen. Mit den Pfeiltasten bzw. PageUp und PageDown können Sie den Text scrollen.</p>
+<p><img alt="CSR Prüfung" src="../_images/config_16.png" />
+Falls alle Daten (auch die Hostnamen) richtig sind, können Sie dies im nächsten Formular bestätigen:</p>
+<p><img alt="CSR Bestätigung" src="../_images/config_17.png" />
+Falls Sie korrigieren möchten, kehrt das Skript zur Erfassung der (vollqualifizierten) Hostnamen zurück. Ansonsten erscheint eine Informationsseite zum Zertifikatsantrag und zur Verwendung eines “offiziellen” Zertifikats für die Nutzerkommunikation:</p>
+<p><img alt="Zertifikatsinfo" src="../_images/config_18.png" />
+Die Konfiguration ist damit abgeschlossen und das Ergebnis sollte noch abgespeichert werden:</p>
+<p><img alt="Abfrage" src="../_images/config_19.png" />
+Die abgespeicherte Konfiguration wird anschließend verschlüsselt:</p>
+<p><img alt="Verschlüsselung" src="../_images/config_20.png" />
+… und das Konfigurationsskript verabschiedet sich mit der Bitte, uns die verschlüsselte Konfiguration zukommen zu lassen (z.B. per Email).</p>
+<p>Direkt nach Abschluß des Konfigurationsskripts sollte auch das offizielle Zertifikat für den Knoten beantragt werden, das für die Kommunikation mit den Browsern der Nutzer verwendet wird. Normalerweise sollte es ausreichend sein, den unter <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/etc/lbac_cert.req</span></code> gespeicherten Zertifikatsrequest des Konfigurationsskripts bei einer CA (z.B. der DFN-PKI) einzureichen. Falls die CA nicht bereit ist, ein Zertifikat für diesen Request auszustellen, müssen Sie selbst einen passenden Request erzeugen.</p>
+<p>Das weitere Vorgehen zur Installation des offiziellen Zertifikats richtet sich danach, ob Sie (1) das Zertifikat mit dem Zertifikatsrequest des Konfigurationsskripts beantragt haben oder (2) einen unabhängigen Request erzeugt haben. Im zweiten Fall wurde nämlich ein neuer privater Schlüssel erzeugt, während im ersten Fall die privaten Schlüssel identisch sind. Entsprechendes gilt auch für die Passworte der privaten Schlüssel.</p>
+<blockquote>
+<div><p><strong>Info:</strong> <em>Das offizielle Zertifikat (und ggf. der private Schlüssel und das Passwort) müssen momentan nach der Konfiguration manuell in das Konfigurationsverzeichnis <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/etc/</span></code> kopiert werden. Die Dateinamen sind festgelegt und lauten:</em></p>
+</div></blockquote>
+<hr class="docutils" />
+<p>Datei                   Beschreibung</p>
+<hr class="docutils" />
+<p><code class="docutils literal notranslate"><span class="pre">official_cert.pem</span></code>     Das offizielle Zertifikat im PEM-Format</p>
+<p><code class="docutils literal notranslate"><span class="pre">official_cert.key</span></code>     Der private Schlüssel des offiziellen Zertifikats. Falls das offizielle Zertifikat mit dem vom Konfigurationsskript erzeugten Zertifikatsrequest beantragt wurde, muss der private Schlüssel lbac_cert.key kopiert werden. Ansonsten verwenden Sie bitte den privaten Schlüssel Ihres unabhängigen Zertifikatsrequests.</p>
+<p><code class="docutils literal notranslate"><span class="pre">official_cert.passwd</span></code>  Das Passwort für den privaten Schlüssel des offiziellen Zertifikats. Falls der private Schlüssel lbac_cert.key dupliziert wurde (s.o.), muss auch die Passwortdatei lbac_cert.passwd kopiert werden. Ansonsten hinterlegen Sie bitte das Passwort für den privaten Schlüssel in dieser Datei.</p>
+<hr class="docutils" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="03_ExternerProxy.html" class="btn btn-neutral float-right" title="Externer Proxy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="01_Vorbemerkung.html" class="btn btn-neutral float-left" title="Konfiguration und Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Frank Broda, Fabian Mauz
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

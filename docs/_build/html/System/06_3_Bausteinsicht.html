@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Webanwendung &mdash; CRIMSy 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Laufzeitsicht" href="07_Laufzeitsicht.html" />
+    <link rel="prev" title="Entwickler-PC" href="06_2_Bausteinsicht.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CRIMSy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Administration/01_Setup.html">Administrator-Handbuch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/02_Phase1.html">Phase 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/03_Phase2.html">Phase 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/01_Vorbemerkung.html">Konfiguration und Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/02_Konfiguration.html">Konfigurationsskript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/03_ExternerProxy.html">Externer Proxy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/04_Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/05_Management.html">Management des Knotens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_Intro.html">Vorwort</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_Intro.html#einfuhrung">Einführung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_Aufgaben.html">Aufgabenstellung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_Randbedingungen.html">Randbedingungen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04_Fachkontext.html">Fachlicher Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_TechnischerKontext.html">Technischer Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_1_Bausteinsicht.html">Bausteinsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="06_2_Bausteinsicht.html">Entwickler-PC</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Webanwendung</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#verwaltung-von-nutzern-und-gruppen">Verwaltung von Nutzern und Gruppen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#anbindung-von-ldap-verzeichnissen">Anbindung von LDAP-Verzeichnissen</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#verwaltung-von-berechtigungen">Verwaltung von Berechtigungen</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="07_Laufzeitsicht.html">Laufzeitsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08_Verteilungssicht.html">Verteilungssicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09_Querschnitt.html">Querschnittliche Konzepte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="10_Risikoanalyse.html">Risiken und Datenschutz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="11_TechnSchulden.html">Technische Schulden</a></li>
+<li class="toctree-l1"><a class="reference internal" href="12_Glossar.html">Glossar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="13_Lizenz.html">Lizenzierung</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CRIMSy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Webanwendung</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/System/06_3_Bausteinsicht.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="webanwendung">
+<h1>Webanwendung<a class="headerlink" href="#webanwendung" title="Permalink to this headline">¶</a></h1>
+<p>Die Webanwendung im TomEE-Container ihrerseits läßt sich wiederum in folgende Bestandteile gliedern:</p>
+<ul class="simple">
+<li><p>Konfigurationsdaten der Webanwendung (Verzeichnisse WEB-INF, META-INF, …)</p></li>
+<li><p>statische Ressourcen (Icons, CSS-Dateien, Javascript-Bibliotheken, …)</p></li>
+<li><p>Templates für das Rendering der (X)HTML-Seiten</p></li>
+<li><p>Geschäftslogik in Form von Java-Klassen</p></li>
+</ul>
+<p>Zur Buildtime kommen hierzu noch Unit-Tests zur Qualitätssicherung. Alternativ besteht die Webanwendung in folgende Funktionskomponenten:</p>
+<ul class="simple">
+<li><p>Nutzer- und Berechtigungsverwaltung</p></li>
+<li><p>Verwaltung lokaler Ressourcen (Collections, …)</p></li>
+<li><p>Cloud-weite Synchronisierung der Ressourcen</p></li>
+<li><p>Daten-Upload</p></li>
+<li><p>Verteilte Suche (Simple Search, Word Cloud Search) und Document Delivery (Downloads)</p></li>
+</ul>
+<p>Während einige Inhalte der Leibniz Bioactives Cloud innerhalb der teilnehmenden Institutionen frei zugänglich sein sollen, ist für andere Ressourcen (Dokumente, Daten, Services) eine Zugriffsbeschränkung notwendig. In jedem Fall darf die Änderung administrativer Einstellungen oder das Hochladen von Dokumenten nur für autorisierte Benutzer möglich sein. Um einerseits eine feingranulare Steuerung und andererseits eine bequeme Verwaltung zu ermöglichen, gibt es im System folgende Objekte bzw. Interfaces (für Details siehe Java-Dokumentation):</p>
+<ul class="simple">
+<li><p>Nutzer (<code class="docutils literal notranslate"><span class="pre">User</span></code>)</p></li>
+<li><p>Gruppen (<code class="docutils literal notranslate"><span class="pre">Group</span></code>); Gruppen können sowohl Nutzer als auch Gruppen als Mitglieder (<code class="docutils literal notranslate"><span class="pre">Membership</span></code>) haben.</p></li>
+<li><p>Access Controlled Objects (Interface <code class="docutils literal notranslate"><span class="pre">ACObject</span></code>); alle Objekte die Zugriffsbeschränkungen erweitern diese abstrakte Klasse</p></li>
+<li><p>Permissions (<code class="docutils literal notranslate"><span class="pre">enum</span> <span class="pre">ACPermission</span></code>) regeln die Art des erlaubten Zugriffs (Lesen, Anlegen, Ändern, Löschen, Eigentum Übertragen, …)</p></li>
+<li><p>Access Control Entries (<code class="docutils literal notranslate"><span class="pre">ACEntry</span></code>); legen die Zugriffsberechtigung für einen Nutzer bzw. eine Gruppe fest</p></li>
+<li><p>Access Control Lists (<code class="docutils literal notranslate"><span class="pre">ACList</span></code>); sammeln alle Access Control Entries für eine Access Control List.</p></li>
+</ul>
+<p>Ein Großteil der Programm-Logik zu diesem Thema ist in der Java-Package <code class="docutils literal notranslate"><span class="pre">de.ipb_halle.lbac.admission</span></code> gebündelt.</p>
+<div class="section" id="verwaltung-von-nutzern-und-gruppen">
+<h2>Verwaltung von Nutzern und Gruppen<a class="headerlink" href="#verwaltung-von-nutzern-und-gruppen" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">User</span></code> und <code class="docutils literal notranslate"><span class="pre">Group</span></code> sind konkrete Implementierungen der abstrakten Klasse <code class="docutils literal notranslate"><span class="pre">Member</span></code>. Diese Struktur wurde gewählt, damit bei der Berechtigungsprüfung nicht zwischen Berechtigungen für Nutzer und Berechtigungen für Gruppen unterschieden werden muss. Außerdem war ein Ziel, verschachtelte Mitgliedschaften (<em>nested group memberships</em>) zu ermöglichen, wie sie von LDAP / Active Directory bekannt sind.  Dies bedeutet, dass Gruppen ihrerseits Mitglieder von Gruppen sein können; die Mitgliedschaften einer Gruppe vererben sich auf ihre Mitglieder. Da die effektiven Mitgliedschaften eines Nutzers bei jeder Berechtigungsprüfung benötigt werden, muss die Bestimmung der effektiven Mitgliedschaften effizient sein. In komplexeren Szenarien kann eine verschachtelte Mitgliedschaft zudem auf verschiedenen Pfaden zustande kommen, bspw. wenn zwei Gruppen A und B Mitglied in einer Gruppe C sind. Ein Nutzer der sowohl Mitglied in Gruppe A als auch B ist, erbt die Mitgliedschaft in Gruppe C also doppelt. Eine genaue Buchführung über die effektiven Mitgliedschaften ist in solchen Fällen also unerläßlich.</p>
+<p>Bei den Nutzern und Gruppen werden dabei aktuell vier verschiedene Typen unterschieden:</p>
+<hr class="docutils" />
+<p>Typ       Beschreibung</p>
+<hr class="docutils" />
+<p><code class="docutils literal notranslate"><span class="pre">BUILTIN</span></code>   vordefinierte Nutzer und Gruppen,
+z.B. <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">Account</span></code>; keine Änderungen möglich</p>
+<p><code class="docutils literal notranslate"><span class="pre">LOCAL</span></code>     lokale Nutzer und Gruppen des Knotens</p>
+<p><code class="docutils literal notranslate"><span class="pre">LDAP</span></code>      lokale Nutzer und Gruppen aus einem LDAP-Verzeichnis</p>
+<p><code class="docutils literal notranslate"><span class="pre">REMOTE</span></code>    remote Nutzer, d.h. Nutzer eines anderen Knotens</p>
+<hr class="docutils" />
+<blockquote>
+<div><p><strong>ToDo:</strong> <em>Der Typ <code class="docutils literal notranslate"><span class="pre">REMOTE</span></code> heißt momentan noch <code class="docutils literal notranslate"><span class="pre">LBAC_REMOTE</span></code>; dies sollte durch Refactoring behoben werden.</em></p>
+</div></blockquote>
+<p>Schwierigkeiten ergeben sich daraus, dass die Verwaltung dieser Objekte nicht nur auf dem lokalen Knoten erfolgen muss, sondern dass insbesondere die Information über Nutzer und Gruppen(mitgliedschaften) auch auf anderen Knoten der Cloud vorliegen muss. Zur Sicherstellung der Konsistenz gibt es daher Regeln, zwischen welchen Nutzer- bzw. Gruppentypen Mitgliedschaften eingerichtet werden können:</p>
+<hr class="docutils" />
+<p>X Mitglied in Y?    Y=<code class="docutils literal notranslate"><span class="pre">BUILTIN</span></code>  Y=<code class="docutils literal notranslate"><span class="pre">LOCAL</span></code>  Y=<code class="docutils literal notranslate"><span class="pre">LDAP</span></code>   Y=<code class="docutils literal notranslate"><span class="pre">REMOTE</span></code></p>
+<hr class="docutils" />
+<p>X = <code class="docutils literal notranslate"><span class="pre">BUILTIN</span></code>        Auto         Nein      Nein        Nein</p>
+<p>X = <code class="docutils literal notranslate"><span class="pre">LOCAL</span></code>          Auto         Ja        Nein        Nein</p>
+<p>X = <code class="docutils literal notranslate"><span class="pre">LDAP</span></code>           Auto         Ja        Auto        Nein</p>
+<p>X = <code class="docutils literal notranslate"><span class="pre">REMOTE</span></code>         Auto         Ja        Nein        Auto</p>
+<hr class="docutils" />
+<blockquote>
+<div><p><strong>Tip:</strong> <em>Es ergibt z.B. keinen Sinn, einer LDAP-Gruppe weitere Mitglieder hinzuzufügen, da Mitgliedschaften dieser Gruppe ausschließlich im LDAP verwaltet werden sollen.</em></p>
+</div></blockquote>
+<p>Ein Administrator kann also nur zu Gruppen vom Typ LOCAL Mitglieder hinzufügen. Andere Mitgliedschaften werden entweder automatisch verwaltet oder sind prinzipiell ausgeschlossen.</p>
+<p>Zur weiteren Vereinfachung ist die Authentifizierung von Nutzern auf den lokalen Knoten beschränkt. Ein Nutzer (egal ob knoteneigener Nutzer oder LDAP) kann sich nur an seinem Heimatknoten anmelden. Die Anmeldung von Nutzern externer Knoten wird nicht unterstützt. Falls in den Systemeinstellungen nichts anderes bestimmt wurde, kann der Knoten auch ohne Anmeldung genutzt werden. In diesem Fall werden alle Aktionen mit dem <code class="docutils literal notranslate"><span class="pre">Public</span> <span class="pre">Account</span></code> durchgeführt. Mit der Anmeldung eines Nutzers erfolgt die (asynchrone) Übertragung der Nutzer- und Gruppeninformationen zu den übrigen Knoten. Knoten, von denen mehrere Cloud-Mitgliedschaften bekannt sind, werden nur einmal kontaktiert. Gruppenmitgliedschaften werden dabei “flach”, d. h. ohne Verschachtelung, übertragen. Soweit auf dem empfangenden Knoten weitere Mitgliedschaften bestehen, kann es jedoch wieder zu einer Verschachtelung kommen. Der sendende Knoten stellt sicher, dass keine sensitiven Informationen (Passworthashes) gesendet werden, der empfangende Knoten stellt sicher, dass keine lokal gemanagten Entitäten überschrieben werden. Die entsprechenden Entitäten implementieren hierzu das Interface <code class="docutils literal notranslate"><span class="pre">Obfuscatable</span></code>. Außerdem führt der empfangende Knoten eine Sicherheitsfilterung durch und akzeptiert nur Nutzer- oder Gruppenobjekte vom sendenden Knoten. Dadurch werden einerseits die Mitgliedschaftsregeln nach obiger Tabelle sichergestellt und andererseits unterbunden, dass Objekte von Drittknoten beeinflusst werden und die Komplexität der Nutzerverwaltung unbeherrschbar wird.</p>
+<p>Ein schwerwiegendes Problem stellt das Löschen von Nutzern oder Gruppen dar, da andere Objekte - auch auf entfernten Knoten - direkt oder indirekt davon abhängen (referentielle Integrität). Zudem könnte ein entfernter Knoten zum Löschzeitpunkt vorübergehend nicht erreichbar sein. Aus diesem Grund werden Objekte nicht gelöscht sondern lediglich deaktiviert und unsichtbar geschaltet. Evtl. könnte dies über ein Ablaufdatum erfolgen.</p>
+<blockquote>
+<div><p><strong>Info:</strong> <em>Die <code class="docutils literal notranslate"><span class="pre">obfuscate()</span></code>-Methode könnte entweder durch eine Annotation ersetzt werden oder als Implementierung eines Interfaces formalisiert werden. Die Nutzung der <code class="docutils literal notranslate"><span class="pre">&#64;Transient</span></code>-Annotation bzw. des <code class="docutils literal notranslate"><span class="pre">transient</span></code>-Keywords ist leider nicht zielführend. Das Problem liegt darin, dass die sensitiven Daten lokal persistiert und ggf. auch für lokale Browser / Administratoren serialisiert werden müssen, andererseits die lokale Einrichtung jedoch nicht in serialisierter Form verlassen dürfen.</em></p>
+</div></blockquote>
+<div class="section" id="anbindung-von-ldap-verzeichnissen">
+<h3>Anbindung von LDAP-Verzeichnissen<a class="headerlink" href="#anbindung-von-ldap-verzeichnissen" title="Permalink to this headline">¶</a></h3>
+<p>Ein Knoten der Cloud soll sich möglichst reibungslos in die vorhandene IT-Infrastruktur einer Betreiberinstitution integrieren. Dazu gehört die Anbindung an vorhandene Nutzerverzeichnisse (Active Directory oder andere LDAP-Server). Den lokalen Administratoren soll damit die erspart werden, eine weitere Datenbank mit Nutzerinformationen zu pflegen.</p>
+<p><img alt="../_images/ldap_settings.PNG" src="../_images/ldap_settings.PNG" />
+Die Verbindungsparameter werden über den gezeigten Dialog eingestellt. Für die Eingabefelder existieren kleine Tooltips, die kurze Hinweise zum jeweiligen Feld geben. Besonders erwähnenswert sind vor allem die Parameter <code class="docutils literal notranslate"><span class="pre">ATTR_UNIQUE_ID</span></code> und <code class="docutils literal notranslate"><span class="pre">GROUP_FILTER_DN</span></code>. Mit ersterem wird die sichere Zuordnung von Nutzern zu Ihrem Konto gewährleistet, auch wenn sich zwischenzeitlich das Login-Kennzeichen (z.B. wegen Namensänderung infolge Heirat, Scheidung, …) ändert. Der zweite Parameter sorgt dafür, dass nur ein Teil der Gruppen aus dem LDAP-Verzeichnis in der Cloud sichtbar sind, nämlich jene, welche sich unterhalb der <code class="docutils literal notranslate"><span class="pre">GROUP_FILTER_DN</span></code> befinden. Dies ist aus Sicherheits- und Datenschutzgründen erforderlich, da den Cloud-Teilnehmern ansonsten die komplette Gruppenstruktur offenbart würde.</p>
+</div>
+</div>
+<div class="section" id="verwaltung-von-berechtigungen">
+<h2>Verwaltung von Berechtigungen<a class="headerlink" href="#verwaltung-von-berechtigungen" title="Permalink to this headline">¶</a></h2>
+<p>Access Controlled Objects implementieren das Interface <code class="docutils literal notranslate"><span class="pre">ACObject</span></code>, das diesen Objekten einen Besitzer und eine Access Control List zuweist. Access Controlled Objects (z.B. Collections) werden nur zur Laufzeit ausgetauscht und nicht in der Datenbank des Systems persistiert (siehe auch Kapitel “Laufzeitsicht”). Sie stehen dem jeweils angemeldeten Nutzer im Rahmen seiner Session zur Verfügung. Damit wird die Menge der zu synchronisierenden Daten begrenzt. Eine Persistierung würde ansonsten die Synchronisierung aller verbundenen Objekte (ACLs, Nutzer, Gruppen, ggf. Mitgliedschaften) erfordern. Dies würde die Komplexität massiv erhöhen und ist deswegen nicht erwünscht. Der Abruf der Access Controlled Objects erfolgt, nachdem die Nutzerdaten übertragen wurden. Damit ist sichergestellt, dass die für den Nutzer zum aktuellen Zeitpunkt effektiven Berechtiungen angewendet werden. Im Übrigen verfolgt die Leibniz Bioactives Cloud das Konzept der eventuellen Konsistenz, d. h. Berechtigungsänderungen die während der Laufzeit einer Session vorgenommen werden, werden erst bei der nächsten Anmeldung berücksichtigt. Dies schließt ein, dass ein Nutzer Zugriff auf Ressourcen erlangt, für die Ihm der Zugriff kürzlich entzogen wurde.</p>
+<p>Access Control Lists (ACLs, <code class="docutils literal notranslate"><span class="pre">ACList</span></code>) werden von Access Controlled Objects (<code class="docutils literal notranslate"><span class="pre">interface</span> <span class="pre">ACObject</span></code>) über ihre Id referenziert. Anders als bei Dateisystem-ACLs können mehrere Objekte eine ACL referenzieren. Das System stellt sicher, dass identische ACLs nicht mehrfach im System vorkommen. Um diese Aufgabe effizient zu erledigen, werden in Analogie zu <code class="docutils literal notranslate"><span class="pre">hashCode()</span></code> für jede ACL <code class="docutils literal notranslate"><span class="pre">permCode</span></code>s gepflegt, um den Vergleichsaufwand zu minimieren. Jede ACL besteht aus einem oder mehreren Access Control Entries (<code class="docutils literal notranslate"><span class="pre">ACEntry</span></code>), die für eine Gruppe oder einen Nutzer die Berechtigungen festlegen. Es werden lediglich positive Berechtigungen verwendet, die Berechtigungen der einzelnen ACEntries wirken additiv. Eine Besonderheit ist ein <code class="docutils literal notranslate"><span class="pre">ACEntry</span></code> für den <code class="docutils literal notranslate"><span class="pre">BUILTIN</span></code>-Benutzer <code class="docutils literal notranslate"><span class="pre">Owner</span> <span class="pre">Account</span></code>: dieser gibt die Berechtigungen für den Besitzer eines Objekts an.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="07_Laufzeitsicht.html" class="btn btn-neutral float-right" title="Laufzeitsicht" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="06_2_Bausteinsicht.html" class="btn btn-neutral float-left" title="Entwickler-PC" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Frank Broda, Fabian Mauz
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

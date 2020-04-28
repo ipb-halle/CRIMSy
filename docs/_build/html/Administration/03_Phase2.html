@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Phase 2 &mdash; CRIMSy 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Konfiguration und Installation" href="../ConfigInstall/01_Vorbemerkung.html" />
+    <link rel="prev" title="Phase 1" href="02_Phase1.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CRIMSy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_Setup.html">Administrator-Handbuch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_Phase1.html">Phase 1</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Phase 2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#management">Management</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/01_Vorbemerkung.html">Konfiguration und Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/02_Konfiguration.html">Konfigurationsskript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/03_ExternerProxy.html">Externer Proxy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/04_Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ConfigInstall/05_Management.html">Management des Knotens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/01_Intro.html">Vorwort</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/01_Intro.html#einfuhrung">Einführung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/02_Aufgaben.html">Aufgabenstellung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/03_Randbedingungen.html">Randbedingungen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/04_Fachkontext.html">Fachlicher Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/05_TechnischerKontext.html">Technischer Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_1_Bausteinsicht.html">Bausteinsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_2_Bausteinsicht.html">Entwickler-PC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_3_Bausteinsicht.html">Webanwendung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/07_Laufzeitsicht.html">Laufzeitsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/08_Verteilungssicht.html">Verteilungssicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/09_Querschnitt.html">Querschnittliche Konzepte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/10_Risikoanalyse.html">Risiken und Datenschutz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/11_TechnSchulden.html">Technische Schulden</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/12_Glossar.html">Glossar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/13_Lizenz.html">Lizenzierung</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CRIMSy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Phase 2</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/Administration/03_Phase2.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="phase-2">
+<h1>Phase 2<a class="headerlink" href="#phase-2" title="Permalink to this headline">¶</a></h1>
+<p>Die zweite Phase beginnt damit, dass der Distributor den Quellcode übersetzt:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">package</span>
+</pre></div>
+</div>
+<p>Anschließend müssen einige zusätzliche Java-Bibliotheken im Verzeichnis <code class="docutils literal notranslate"><span class="pre">config/extralib/</span></code> bereitgestellt werden, damit Hibernate zusammen mit TomEE funktioniert (Näheres unter <a class="reference external" href="https://stackoverflow.com/questions/10852035/how-to-use-tomee-with-hibernate">https://stackoverflow.com/questions/10852035/how-to-use-tomee-with-hibernate</a>). Im Einzelnen handelt es sich um die Bibliotheken (ggf. in neueren Versionen):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">antlr</span><span class="o">-</span><span class="mf">2.7</span><span class="o">.</span><span class="mf">7.</span><span class="n">jar</span>
+    <span class="n">classmate</span><span class="o">-</span><span class="mf">1.3</span><span class="o">.</span><span class="mf">0.</span><span class="n">jar</span>
+    <span class="n">dom4j</span><span class="o">-</span><span class="mf">1.6</span><span class="o">.</span><span class="mf">1.</span><span class="n">jar</span>
+    <span class="n">hibernate</span><span class="o">-</span><span class="n">commons</span><span class="o">-</span><span class="n">annotations</span><span class="o">-</span><span class="mf">5.0</span><span class="o">.</span><span class="mf">1.</span><span class="n">Final</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">hibernate</span><span class="o">-</span><span class="n">core</span><span class="o">-</span><span class="mf">5.2</span><span class="o">.</span><span class="mf">6.</span><span class="n">Final</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">hibernate</span><span class="o">-</span><span class="n">jpa</span><span class="o">-</span><span class="mf">2.1</span><span class="o">-</span><span class="n">api</span><span class="o">-</span><span class="mf">1.0</span><span class="o">.</span><span class="mf">0.</span><span class="n">Final</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">hibernate</span><span class="o">-</span><span class="n">validator</span><span class="o">-</span><span class="mf">5.2</span><span class="o">.</span><span class="mf">4.</span><span class="n">Final</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">javassist</span><span class="o">-</span><span class="mf">3.20</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">GA</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">jboss</span><span class="o">-</span><span class="n">logging</span><span class="o">-</span><span class="mf">3.3</span><span class="o">.</span><span class="mf">0.</span><span class="n">Final</span><span class="o">.</span><span class="n">jar</span>
+    <span class="n">postgresql</span><span class="o">-</span><span class="mf">9.3</span><span class="o">-</span><span class="mf">1102.</span><span class="n">jdbc4</span><span class="o">.</span><span class="n">jar</span>
+</pre></div>
+</div>
+<p>Zwischenzeitlich wurden (bzw. nachfolgend werden) die verschlüsselten Konfigurationsdateien der Teilnehmerknoten empfangen und im Verzeichnis config/nodes/ abspeichert. Diese Dateien sollten zuvor einer Sichtprüfung unterzogen werden. Das Format der Konfigurationsdateien sollte folgendem Muster entsprechen:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># LBAC_INSTITUTION=IPB Demo</span>
+<span class="c1"># CERTIFICATE_ID=06:30:D8:B9:86:54:B5:69:CF:79:3F:C9:A9:BC:D4:8F:D8:94:39:78</span>
+<span class="c1"># Wed Oct 10 14:30:29 UTC 2018</span>
+<span class="c1">#</span>
+<span class="c1"># ----- SMIME ENCRYPTED CONFIG BEGIN -----</span>
+<span class="o">-----</span><span class="n">BEGIN</span> <span class="n">PKCS7</span><span class="o">-----</span>
+<span class="n">MIINnQYJKoZIhvcNAQcDoIINjjCCDYoCAQAxggLBMIICvQIBADCBpDCBnjELMAkG</span>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="n">YnVrNTz4AlCAvtlG</span><span class="o">+</span><span class="n">QDZrbaw</span><span class="o">/</span><span class="n">iwAUkaLVI</span><span class="o">+</span><span class="n">Hk</span><span class="o">/</span><span class="n">mMpB9e</span>
+<span class="o">-----</span><span class="n">END</span> <span class="n">PKCS7</span><span class="o">-----</span>
+<span class="c1"># ----- SMIME ENCRYPTED CONFIG END -----</span>
+</pre></div>
+</div>
+<p>Der entscheidende Schritt in Phase 2 ist die Festlegung des Master-Knotens und des Cloudnamens, wobei letzerer identisch mit dem Namen der Sub-CA ist. Ein Cloudname wie “TEST”, “CLOUD” oder “PRODUKTION” ist vollkommen ausreichend; es dürfen jedoch innerhalb einer Multi-Cloud keine Kollisionen des Namens vorkommen. In den oben angeführten Beispielen wurde der Cloudname “CRIMSY Test Cloud” bzw. kurz “<code class="docutils literal notranslate"><span class="pre">TEST</span></code>” verwendet.</p>
+<p>Der Masterknoten wird durch Aufruf des Scripts util/bin/package.sh festgelegt. Ohne weiteres Argument gibt das Script eine kurze Syntaxinformation aus. Ansonsten gibt es für das Script drei Einsatzszenarien:</p>
+<ol class="simple">
+<li><p>Festlegung des Masterknotens: Aufruf mit <code class="docutils literal notranslate"><span class="pre">./util/bin/package.sh</span> <span class="pre">CLOUDNAME</span> <span class="pre">MASTER</span></code></p></li>
+<li><p>Hinzufügen eines Knotens zur Cloud: Aufruf mit <code class="docutils literal notranslate"><span class="pre">./util/bin/package.sh</span> <span class="pre">CLOUDNAME</span></code></p></li>
+<li><p>Neuzusammenstellung der Installationspakete aller aus dem Verzeichnis <code class="docutils literal notranslate"><span class="pre">config/CLOUDNAME/</span></code> bekannten Knoten, z.B. bei einer neuen Software-Version: <code class="docutils literal notranslate"><span class="pre">./util/bin/package.sh</span> <span class="pre">CLOUDNAME</span> <span class="pre">AUTO</span></code></p></li>
+</ol>
+<p>Während Szenario 3 später automatisch durchläuft, öffnen sich in den Szenarien 1 und 2 die nachfolgend dargestellten Dialoge zur Auswahl eines Knotens:</p>
+<p><img alt="Knotenauswahldialog" src="../_images/package_01.png" />
+Zunächst kann aus der Liste der eingesendeten Konfigurationsdateien (<code class="docutils literal notranslate"><span class="pre">config/nodes/</span></code>) der zukünftige Master-Knoten bestimmt werden</p>
+<p><img alt="Prüfung" src="../_images/package_02.png" />
+Anschließend wird die Konfigurationsdatei geöffnet. <strong>Hier muss unbedingt gründlich geprüft werden, ob von den angezeigten Daten eine Gefahr ausgeht, da die Konfiguration anschließend im den Kontext der aktuellen Shell interpretiert wird!</strong> Gefährlich sind Aufrufe von Kommandos (pars pro toto das berüchtigte rm -f /) die sich mittels Backticks auch in Variablenzuweisungen verstecken können (konkretes Beispiel: LBAC_DATASTORE=”/home/<code class="docutils literal notranslate"><span class="pre">rm</span> <span class="pre">-rf</span> <span class="pre">/</span></code>cloud/”). Selbstverständlich sollte die angezeigte Institution auch mit der zuvor getätigten Auswahl korrespondieren.</p>
+<p><strong>Wichtig: gründlich prüfen, eine bösartige Konfigurationsdatei kann beliebig großen Schaden anrichten!</strong></p>
+<p><img alt="Sicherheitsabfrage" src="../_images/package_03.png" />
+Das Ergebnis der Prüfung wird anschließend abgefragt.</p>
+<p><img alt="Master-Knoten" src="../_images/package_04.png" />{ width=50% } <img alt="Info" src="../_images/package_05.png" />{ width=50% }
+Bei der Erstellung eines Master-Knotens erscheint der links oben angeführte Informations-Dialog, der bei regulären Knoten entfällt. Darauf folgt ein Dialog, der darüber informiert, dass die Ausstellung des Knoten-Zertifikats unmittelbar bevorsteht.</p>
+<p><img alt="Zertifikatsausstellung" src="../_images/package_06a.png" />
+Die Ausstellung des Zertifikats verläuft analog zur Ausstellung des Entwickler- oder Zertifizierungsstellenzertifikats (Sub-CA). Der Zertifikatsrequest ist in der übermittelten Konfigurationsdatei enthalten. Falls für einen Knoten bereits zu einem früheren Zeitpunkt ein Zertifikat ausgestellt wurde, wird dieses wiederverwendet, sofern es noch nicht widerrufen wurde. Ein widerrufenes Zertifikat erfordert zwingend die Einsendung einer neuen Konfigurationsdatei mit einem neu ausgestellten Zertifikatsrequest. Die Identifizierung des möglicherweise existierenden Zertifikats erfolgt über die md5-Summe des Zertifikatsrequests.</p>
+<p>Anschließend werden vom Script ohne weiteren Nutzereingriff</p>
+<ul class="simple">
+<li><p>alle Artefakte im Verzeichnis <code class="docutils literal notranslate"><span class="pre">target/dist/</span></code> gesammelt</p></li>
+<li><p>mittels <code class="docutils literal notranslate"><span class="pre">tar</span></code>, <code class="docutils literal notranslate"><span class="pre">gzip</span></code> und <code class="docutils literal notranslate"><span class="pre">uuencode</span></code> in ein komprimiertes, Base64-kodiertes Archiv gepackt und</p></li>
+<li><p>an die Datei <code class="docutils literal notranslate"><span class="pre">setup.sh</span></code> angehängt. Der entstehende Datenstrom wird</p></li>
+<li><p>mittels <code class="docutils literal notranslate"><span class="pre">openssl</span> <span class="pre">smime</span></code> mit dem öffentlichen Schlüssel des Empfängerknotens verschlüsselt</p></li>
+<li><p>und dem Entwicklerzertifikat signiert. Das fertige Installationspaket wird anschließend</p></li>
+<li><p>mittels <code class="docutils literal notranslate"><span class="pre">scp</span></code> auf den Distributionsserver hochgeladen.</p></li>
+</ul>
+<p>Für den Multi-Cloud-Betrieb wird außerdem ein kompaktes tar-Archiv ohne Software erstellt, das nur die Zertifikatskette, Truststores und Informationen über den Master-Knoten enthält. Dadurch wird es möglich, dass ein Knoten Mitglied in mehreren Clouds ist. Gleichzeitig wird durch unterschiedliche SubCAs sichergestellt, das nur Mitgliedsknoten miteinander kommunizieren können.</p>
+<p>Die Aufgaben des Distributors sind damit zunächst erledigt. Im weiteren Verlauf werden die Administratoren der einzelnen Knoten die Installation gemäß Handbuch (Konfiguration und Installation) durchführen. Zweckmäßigerweise sollte der Masterknoten als erster Knoten eingerichtet werden.</p>
+<div class="section" id="management">
+<h2>Management<a class="headerlink" href="#management" title="Permalink to this headline">¶</a></h2>
+<p>Die Managementaufgaben des Distributors umfassen neben allgemeinen Wartungsaufgaben (Überwachung der Dienste, Patch-Management, …) vor allem die Verwaltung der Zertifikate und der Konfigurationsdateien. Der Widerruf eines Zertifikats kann dabei sowohl bei Kompromittierung als auch beim Ausscheiden einer Cloud-Instanz notwendig werden. In diesem Fall dürfen für den betroffenen Knoten keine Softwarepakete mehr erstellt werden. Insbesondere muss auch sichergestellt werden, dass der Zertifikatsrequest nicht wiederverwendet wird (der private Schlüssel könnte kompromittiert sein).</p>
+<p>Trifft das Script package.sh auf eine Konfiguration mit wiederrufenem Zertifikat, wird eine Warnmeldung ausgegeben und das Skript beendet.</p>
+<p><img alt="Widerrufenes Zertifikat" src="../_images/package_07.png" />
+Die fragliche Konfigurationsdatei mit dem Zertifikatsrequest muss manuell gelöscht oder verschoben werden.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../ConfigInstall/01_Vorbemerkung.html" class="btn btn-neutral float-right" title="Konfiguration und Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="02_Phase1.html" class="btn btn-neutral float-left" title="Phase 1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Frank Broda, Fabian Mauz
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

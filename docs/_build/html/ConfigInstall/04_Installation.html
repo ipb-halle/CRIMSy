@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; CRIMSy 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Management des Knotens" href="05_Management.html" />
+    <link rel="prev" title="Externer Proxy" href="03_ExternerProxy.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> CRIMSy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../Administration/01_Setup.html">Administrator-Handbuch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/02_Phase1.html">Phase 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../Administration/03_Phase2.html">Phase 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01_Vorbemerkung.html">Konfiguration und Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02_Konfiguration.html">Konfigurationsskript</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03_ExternerProxy.html">Externer Proxy</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05_Management.html">Management des Knotens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/01_Intro.html">Vorwort</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/01_Intro.html#einfuhrung">Einführung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/02_Aufgaben.html">Aufgabenstellung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/03_Randbedingungen.html">Randbedingungen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/04_Fachkontext.html">Fachlicher Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/05_TechnischerKontext.html">Technischer Kontext</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_1_Bausteinsicht.html">Bausteinsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_2_Bausteinsicht.html">Entwickler-PC</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/06_3_Bausteinsicht.html">Webanwendung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/07_Laufzeitsicht.html">Laufzeitsicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/08_Verteilungssicht.html">Verteilungssicht</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/09_Querschnitt.html">Querschnittliche Konzepte</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/10_Risikoanalyse.html">Risiken und Datenschutz</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/11_TechnSchulden.html">Technische Schulden</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/12_Glossar.html">Glossar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../System/13_Lizenz.html">Lizenzierung</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">CRIMSy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/ConfigInstall/04_Installation.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>An die Konfiguration schließt sich die Installation an. Die Datei <code class="docutils literal notranslate"><span class="pre">$LBAC_DATASTORE/bin/install.sh</span></code> ist ein kurzes Shellskript, welches bereits bei der Konfiguration angelegt wurde. Dieses Skript lädt das eigentliche Installationspaket herunter, entschlüsselt es und überprüft die digitale Signatur, bevor die Installation ausgeführt wird. Das Installationspaket ist ein Shell-Skript mit eingebettetem, base64-codiertem tar.gz-Archiv, das alle notwendigen Bestandteile für die Installation enthält. Das Installationspaket wird für jede Einrichtung separat erzeugt und enthält neben der eigentlichen Software (WAR-Datei, Java-Bibliotheken, Docker-Konfiguration) auch Informationen über den Master-Knoten und das Zertifikat für die Cloud-interne Kommunikation. Der Dateiname des Installationspakets ergibt sich aus dem MD5-Hash des Namens der Einrichtung, z.B. <code class="docutils literal notranslate"><span class="pre">Leibniz-Institut</span> <span class="pre">fuer</span> <span class="pre">Pflanzenbiochemie</span> <span class="pre">(IPB)</span></code> → <code class="docutils literal notranslate"><span class="pre">10e8bcf6014cdd7ccc82b54ddaffdb00.asc.sig</span></code>.</p>
+<p>Das Installationsskript kann mit verschiedenen Kommandozeilenoptionen aufgerufen werden, die an das Installationspaket durchgereicht werden. Momentan kann der Installationsprozess mit folgenden Optionen modifiziert werden:</p>
+<hr class="docutils" />
+<p>Option              Erläuterung</p>
+<hr class="docutils" />
+<p><code class="docutils literal notranslate"><span class="pre">--help</span></code>            Zeigt einen Hilfetext an und beendet das Programm ohne weitere Aktionen</p>
+<p><code class="docutils literal notranslate"><span class="pre">--debug</span></code>           Öffnet die Ports der Datenbank (5432), von Solr (8983) und TomEE (8080) für direkte Zugriffe auf die Docker-Container. Damit werden insbesondere die Management-Funktionen von Solr zugänglich.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--noproxy</span></code>         Überschreibt die Einstellungen des Konfigurationsskripts und installiert einen Knoten ohne Proxy. In diesem Fall muss ein externer Proxy eingerichtet werden.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--proxy</span></code>           Überschreibt die Einstellungen des Konfigurationsskripts und installiert einen Knoten mit Proxy-Container.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--skip-preinstall</span></code> Überspringt die Prä-Installationsroutinen, in denen z.B. Backups der bisherigen Installation angelegt werden.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--standalone</span></code>      Führt eine Erstinstallation so aus, dass keine Referenz auf den Master-Knoten eingetragen wird, so dass der Knoten selbst als Master operiert. Diese Option ist hauptsächlich “zum Ausprobieren” gedacht. Ein Standalone-Knoten kann nachträglich nicht in einen normalen Knoten umgewandelt werden - hierzu ist eine Neuinstallation notwendig. Insbesondere müssen die Verzeichnisse <code class="docutils literal notranslate"><span class="pre">data/</span></code> und <code class="docutils literal notranslate"><span class="pre">dist/</span></code> gelöscht werden.  Bei späteren Installationen (Updates, …) hat diese Option keine Wirkung.</p>
+<hr class="docutils" />
+<p>Der größte Teil des Installationsskripts wird mit einem unprivilegierten Account ausgeführt. Für eine Reihe von Installationsschritten sind jedoch administrative Privilegien notwendig. Hierunter fallen</p>
+<ul class="simple">
+<li><p>die Installation der Init-Skripte</p></li>
+<li><p>die Änderung der Ordner-Eigentümer im Verzeichnis data/</p></li>
+<li><p>die Erstellung von Backups</p></li>
+<li><p>die Erstellung von Cron-Jobs</p></li>
+<li><p>die Erzeugung von Docker-Images und -Containern</p></li>
+</ul>
+<p>Hierfür wird auf das Kommando <code class="docutils literal notranslate"><span class="pre">sudo</span></code> zurückgegriffen, dessen Benutzung einmalig autorisiert werden muss. Mit Ausnahme der Passworteingabe sind für die Installation keine weiteren Nutzer-Interaktionen notwendig.</p>
+<p>Sofern das Installationsskript beim Aufruf kein offizielles Zertifikat findet, wird das Zertifikat der Leibniz Bioactives Cloud CA als Fallback-Lösung verwendet. In diesem Fall kann einfach das Installationsskript ein zweites Mal aufgerufen werden, nachdem das Zertifikat nachträglich in das Konfigurationsverzeichnis kopiert wurde.</p>
+<p>In der Regel ist der Knoten nach Durchlaufen aller Installationsschritte betriebsbereit. Eine Überprüfung kann mit dem Befehl <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">docker</span> <span class="pre">ps</span> <span class="pre">-a</span></code> erfolgen und sollte in etwa folgendes Ergebnis liefern :</p>
+<p><img alt="docker ps" src="../_images/docker_ps.png" />
+Sofern alle Container ordnungsgemäß gestartet wurden, kann der Knoten mit einem Webbrowser benutzt und weiter konfiguriert werden (s.u.).</p>
+<blockquote>
+<div><p><strong>Wichtig:</strong> <em>Insbesondere sollte als erstes das default-Passwort (admin) des lokalen Administrator-Accounts (admin) geändert werden!</em></p>
+</div></blockquote>
+<p>Durch die bei der Installation hinterlegte Adresse des Master-Knotens werden die übrigen Knoten der Cloud dem neuen Knoten in den ersten Minuten seines Betriebs bekannt. Hierzu ist ungehinderte HTTPS-Kommunikation mit externen Knoten auf Port 8443 notwendig.</p>
+<p>Leider kommt es gelegentlich vor, dass ein oder mehrere Container nicht ordentlich starten. In einigen Fällen hilft es, die beteiligten Container und Images vom Init-Script neu erstellen zu lassen:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">bash</span>
+<span class="n">systemctl</span> <span class="n">stop</span> <span class="n">lbac</span><span class="o">.</span><span class="n">service</span>
+<span class="c1"># pause for some time</span>
+<span class="n">systemctl</span> <span class="n">start</span> <span class="n">lbac</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Bei unseren Tests kam es aber auch vor, dass wir beschädigte Container, Images und Volumes mit den Kommandozeilenwerkzeugen <code class="docutils literal notranslate"><span class="pre">docker-compose</span></code> bzw. <code class="docutils literal notranslate"><span class="pre">docker</span></code> beseitigen bzw. reparieren mussten. In Einzelfällen wurde der Docker-Daemon in Mitleidenschaft gezogen, so dass wir unseren Docker-Host durchbooten mussten.</p>
+<blockquote>
+<div><p><strong>Info:</strong> Eine vollständige Dokumentation aller Eventualitäten oder gar deren automatische Behebung liegen leider jenseits unserer Möglichkeiten. Bitte kontaktieren Sie uns im Falle eines Falles.</p>
+</div></blockquote>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="05_Management.html" class="btn btn-neutral float-right" title="Management des Knotens" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="03_ExternerProxy.html" class="btn btn-neutral float-left" title="Externer Proxy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Frank Broda, Fabian Mauz
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
