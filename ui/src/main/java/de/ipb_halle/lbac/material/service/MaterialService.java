@@ -79,6 +79,7 @@ public class MaterialService implements Serializable {
     private final String SQL_GET_MOLECULE = "SELECT id,format,CAST(molecule AS VARCHAR) FROM molecules WHERE id=:mid";
     private final String SQL_DEACTIVATE_MATERIAL = "UPDATE materials SET deactivated=true WHERE materialid=:mid";
     private final String SQL_GET_SIMILAR_NAMES = "SELECT value FROM material_indices WHERE LOWER(value) LIKE LOWER(:name) AND typeid=1";
+    private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
 
     protected MaterialHistoryService materialHistoryService;
 
@@ -435,6 +436,12 @@ public class MaterialService implements Serializable {
 
     public Taxonomy saveTaxonomy(Taxonomy t) {
         this.em.persist(t.createEntity());
+        for (Taxonomy th : t.getTaxHierachy()) {
+            em.createNativeQuery(SQL_SAVE_EFFECTIVE_TAXONOMY)
+                    .setParameter("tid", t.getId())
+                    .setParameter("pid", th.getId())
+                    .executeUpdate();
+        }
 
         return t;
     }

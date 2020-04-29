@@ -416,6 +416,12 @@ public class MaterialServiceTest extends TestBase {
         t.setLevel(levels.get(0));
         instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
 
+        names = new ArrayList<>();
+        names.add(new MaterialName("red rose", "en", 1));
+        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
+        t2.getTaxHierachy().add(t);
+        t2.setLevel(levels.get(1));
+        instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>());
         cleanTaxonomyFromDb();
         cleanMaterialsFromDB();
         cleanProjectFromDB(p, false);
