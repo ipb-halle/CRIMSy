@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import javax.persistence.Query;
 
 /**
+ * Mocks the usage of pgchem plugin functionalities from the postgres database
  *
  * @author fmauz
  */

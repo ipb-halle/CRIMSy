@@ -38,10 +38,10 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.material.mocks.MaterialServiceMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.service.StructureInformationSaverMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -77,30 +77,30 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class MaterialEditSaverTest extends TestBase {
-
+    
     private CreationTools creationTools;
-
+    
     @Inject
     private ACListService acListService;
-
+    
     @Inject
-    private MaterialServiceMock materialService;
-
+    private MaterialService materialService;
+    
     @Inject
     private ProjectService projectService;
-
+    
     Project p;
     User u;
     ACList aclist;
     Material mOld;
     Material mNew;
-
+    
     String hazardStatement = "HazardStatement - Text";
     String precautionaryStatement = "PrecautionaryStatement - Text";
     String storageClassRemark = "storageClassRemark";
-
+    
     UserBeanMock userBean = new UserBeanMock();
-
+    
     @Before
     public void init() {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
@@ -116,28 +116,29 @@ public class MaterialEditSaverTest extends TestBase {
         mOld.getStorageInformation().setStorageClass(new StorageClass(1, "storageClass-1"));
         userBean.setCurrentAccount(u);
         materialService.setUserBean(userBean);
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
     }
-
+    
     @After
     public void finish() {
         cleanMaterialsFromDB();
         cleanProjectFromDB(p, false);
         cleanAcListFromDB(aclist);
     }
-
+    
     @SuppressWarnings("unchecked")
     @Test
     public void test001_saveStorageDiffs() throws Exception {
-
+        
         mOld.getStorageInformation().setLightSensitive(true);
         mOld.getStorageInformation().setKeepCool(true);
-
+        
         materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>());
         mNew = mOld.copyMaterial();
         mNew.getStorageInformation().setStorageClass(new StorageClass(2, "storageClass-2"));
         mNew.getStorageInformation().setRemarks("new storage remarks");
         mNew.getStorageInformation().setAcidSensitive(true);
-
+        
         materialService.saveEditedMaterial(mNew, mOld, aclist.getId(), u.getId());
 
         // check the new storage class and its remarks
@@ -166,9 +167,9 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 001 - One history entry in storageconditions must be found ", 1, storageConditionsHist.size());
         Assert.assertNull("Testcase 001 - Old storagecondition must be null ", storageConditionsHist.get(0)[0]);
         Assert.assertEquals("Testcase 001 - New storagecondition must be 5 ", StorageCondition.acidSensitive.getId(), storageConditionsHist.get(0)[1]);
-
+        
     }
-
+    
     @SuppressWarnings("unchecked")
     @Test
     public void test002_saveStorageConditionsDiffsWithoutStorageClassDiffs() throws Exception {
@@ -203,9 +204,9 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 002 - New storagecondition must be 3 ", StorageCondition.lightSensitive.getId(), storageConditionsHist.get(0)[1]);
         Assert.assertNull("Testcase 002 - Old storagecondition must be null", storageConditionsHist.get(1)[1]);
         Assert.assertEquals("Testcase 002 - New storagecondition must be 5 ", StorageCondition.keepCool.getId(), storageConditionsHist.get(1)[0]);
-
+        
     }
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("MaterialEditSaverTest.war")
@@ -237,7 +238,6 @@ public class MaterialEditSaverTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class)
-                .addClass(MaterialServiceMock.class);
+                .addClass(MaterialService.class);
     }
 }

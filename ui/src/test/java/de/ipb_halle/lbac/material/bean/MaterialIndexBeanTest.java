@@ -31,8 +31,8 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.service.MoleculeService;
 import de.ipb_halle.lbac.material.bean.mock.IndexServiceMock;
-import de.ipb_halle.lbac.material.mocks.MaterialServiceMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
+import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -100,16 +100,16 @@ public class MaterialIndexBeanTest extends TestBase {
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(DocumentSearchOrchestrator.class)
-                 .addClass(SystemSettings.class)
+                .addClass(SystemSettings.class)
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(MaterialIndexBean.class)
-                .addClass(IndexServiceMock.class)                
+                .addClass(IndexServiceMock.class)
                 .addClass(MaterialNameBean.class)
-                .addClass(MaterialServiceMock.class)
                 .addClass(ProjectBean.class)
+                .addClass(MaterialService.class)
                 .addClass(MaterialBean.class)
                 .addClass(IndexServiceMock.class);
     }

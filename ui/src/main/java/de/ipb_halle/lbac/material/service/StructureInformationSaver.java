@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,61 +15,45 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.mocks;
+package de.ipb_halle.lbac.material.service;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.service.MaterialHistoryService;
-import de.ipb_halle.lbac.material.service.MaterialService;
-import de.ipb_halle.lbac.material.bean.save.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.difference.MaterialComparator;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 /**
  *
  * @author fmauz
  */
-@Stateless
-public class MaterialServiceMock extends MaterialService {
+public class StructureInformationSaver {
 
-    @PersistenceContext(name = "de.ipb_halle.lbac")
+    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
     protected EntityManager em;
 
-    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule,format) VALUES(?,?,'V2000')";
-
-    @PostConstruct
-    @Override
-    public void init() {
-        comparator = new MaterialComparator();
-        materialHistoryService = new MaterialHistoryService(this);
-        editedMaterialSaver = new MaterialEditSaverMock(this);
+    public StructureInformationSaver(EntityManager em) {
+        this.em = em;
     }
 
-    @Override
-    protected void saveStructureInformation(Material m) {
-
-        int molId = (int) (Math.random() * 100000);
+    /**
+     *
+     * @param m
+     */
+    public void saveStructureInformation(Material m) {
         Structure s = (Structure) m;
         for (IndexEntry ie : s.getIndices()) {
             em.persist(ie.toDbEntity(m.getId(), 0));
         }
         if (s.getMolecule().getStructureModel() != null) {
             Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
-                    .setParameter(1, molId)
-                    .setParameter(2, s.getMolecule().getStructureModel());
+                    .setParameter("molecule", s.getMolecule().getStructureModel())
+                    .setParameter("format", s.getMolecule().getModelType().toString());
 
-            q.executeUpdate();
-
+            int molId = (int) q.getSingleResult();
             em.persist(s.createDbEntity(m.getId(), molId));
-            s.getMolecule().setId(molId);
         } else {
             em.persist(s.createDbEntity(m.getId(), null));
         }
     }
-
 }

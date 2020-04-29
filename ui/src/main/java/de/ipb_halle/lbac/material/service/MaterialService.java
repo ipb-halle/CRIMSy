@@ -69,7 +69,7 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class MaterialService implements Serializable {
 
-    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
+    protected StructureInformationSaver structureInformationSaver;
     private final String SQL_GET_MATERIAL = "SELECT materialid,materialtypeid,ctime,usergroups,ownerid,projectid,deactivated FROM materials where deactivated=false";
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
@@ -105,6 +105,7 @@ public class MaterialService implements Serializable {
         comparator = new MaterialComparator();
         materialHistoryService = new MaterialHistoryService(this);
         editedMaterialSaver = new MaterialEditSaver(this);
+        structureInformationSaver = new StructureInformationSaver(em);
     }
 
     /**
@@ -237,6 +238,19 @@ public class MaterialService implements Serializable {
         return s;
     }
 
+    public List<MaterialName> loadMaterialNamesById(int id) {
+        List<MaterialName> names = new ArrayList<>();
+        Query query = em.createNativeQuery(SQL_GET_INDICES, MaterialIndexEntryEntity.class);
+        query.setParameter("mid", id);
+        List<MaterialIndexEntryEntity> entities = query.getResultList();
+        for (MaterialIndexEntryEntity entity : entities) {
+            if (entity.getTypeid() == 1) {
+                names.add(new MaterialName(entity.getValue(), entity.getLanguage(), entity.getRank()));
+            }
+        }
+        return names;
+    }
+
     /**
      *
      * @param id
@@ -355,7 +369,7 @@ public class MaterialService implements Serializable {
         saveDetailRightsFromTemplate(m, detailTemplates);
 
         if (m.getType() == MaterialType.STRUCTURE) {
-            saveStructureInformation(m);
+            structureInformationSaver.saveStructureInformation(m);
         }
         if (m.getType() == MaterialType.TAXONOMY) {
             saveTaxonomy((Taxonomy) m);
@@ -419,31 +433,14 @@ public class MaterialService implements Serializable {
         }
     }
 
-    /**
-     *
-     * @param m
-     */
-    protected void saveStructureInformation(Material m) {
-        Structure s = (Structure) m;
-        for (IndexEntry ie : s.getIndices()) {
-            em.persist(ie.toDbEntity(m.getId(), 0));
-        }
-        if (s.getMolecule().getStructureModel() != null) {
-            Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
-                    .setParameter("molecule", s.getMolecule().getStructureModel())
-                    .setParameter("format", s.getMolecule().getModelType().toString());
-
-            int molId = (int) q.getSingleResult();
-            em.persist(s.createDbEntity(m.getId(), molId));
-        } else {
-            em.persist(s.createDbEntity(m.getId(), null));
-        }
-    }
-
     public Taxonomy saveTaxonomy(Taxonomy t) {
         this.em.persist(t.createEntity());
-        
+
         return t;
+    }
+
+    public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {
+        this.editedMaterialSaver = editedMaterialSaver;
     }
 
     /**
@@ -452,6 +449,10 @@ public class MaterialService implements Serializable {
      */
     public void setUserBean(UserBean userBean) {
         this.userBean = userBean;
+    }
+
+    public void setStructureInformationSaver(StructureInformationSaver structureInformationSaver) {
+        this.structureInformationSaver = structureInformationSaver;
     }
 
     /**

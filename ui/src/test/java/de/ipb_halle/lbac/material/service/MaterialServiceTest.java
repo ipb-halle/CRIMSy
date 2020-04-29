@@ -45,7 +45,7 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.material.mocks.MaterialServiceMock;
+import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
@@ -91,7 +91,7 @@ public class MaterialServiceTest extends TestBase {
     @Inject
     private ACListService aclistService;
     @Inject
-    private MaterialServiceMock instance;
+    private MaterialService instance;
 
     @Inject
     private ProjectService projectService;
@@ -110,6 +110,8 @@ public class MaterialServiceTest extends TestBase {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
         cleanItemsFromDb();
         cleanMaterialsFromDB();
+        instance.setStructureInformationSaver(new StructureInformationSaverMock(instance.getEm()));
+        instance.setEditedMaterialSaver(new MaterialEditSaverMock(instance));
     }
 
     @Test
@@ -410,7 +412,7 @@ public class MaterialServiceTest extends TestBase {
         names.add(new MaterialName("Rose", "de", 2));
         names.add(new MaterialName("Rosa ", "la", 3));
 
-        Taxonomy t = new Taxonomy(0, names, p.getId(), new HazardInformation(), new StorageClassInformation(),new ArrayList<>());
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
         t.setLevel(levels.get(0));
         instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
 
@@ -452,7 +454,6 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class)
-                .addClass(MaterialServiceMock.class);
+                .addClass(MaterialService.class);
     }
 }
