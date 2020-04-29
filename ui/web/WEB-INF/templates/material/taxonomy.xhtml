@@ -33,7 +33,7 @@
             <b:container>
                 <b:row>
                     <b:column span="1" offset="5">
-                        <b:commandButton value="ZurÃ¼ck"/>
+                        <b:commandButton value="ZurÃƒÂ¼ck"/>
                     </b:column>
                     <b:column span="1" >
                         History Eintrag
@@ -42,12 +42,16 @@
                         <b:commandButton value="Vor"/>
                     </b:column>
 
-                    <b:column span="1" offset="1">
-                        <b:commandButton value="Edit"/>
+                    <b:column span="1" >
+                        <b:commandButton value="XXX"/>
+                    </b:column>
+                    <b:column span="1" >
+                        <b:commandButton value="EDIT"/>
                     </b:column>
                     <b:column span="1">
                         <b:commandButton
-                            value="#{taxonomyBean.getApplyButtonText()}"
+                            value="CREATE"
+                            action="#{taxonomyBean.actionApplyButtonClick()}"
                             disabled="#{taxonomyBean.isApplyButtonDisabled()}"/>
                     </b:column>
 
@@ -61,7 +65,6 @@
                             selection="#{taxonomyBean.selectedTaxonomy}">
                             <p:ajax event="select" update="taxonomyForm" listener="#{taxonomyBean.onTaxonomySelect}" />
                             <p:treeNode >
-
                                 <h:outputText value="#{node.getFirstName()}"/>
                             </p:treeNode>              
                         </p:tree>
@@ -72,14 +75,30 @@
                         </ui:insert>
 
                     </b:column>
-
                 </b:row>
+                <b:row>
+                    <b:column span="8" offset="4">
+                        <b:selectOneMenu
+                            label="Please select taxonomy level"
+                            value="#{taxonomyBean.selectedLevel}">
+                            <f:selectItems 
+                                var="level"
+                                value="#{taxonomyBean.levels}"
+                                itemLabel="#{level.getName()}" />
+                        </b:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="8" offset="4">
+                        <h:outputText value="#{taxonomyBean.getLabelForParentTaxonomy()}"/>
+                </b:column>
+            </b:row>
 
-            </b:container>
+        </b:container>
 
 
 
-        </b:form>
-    </h:body>
+    </b:form>
+</h:body>
 
 </html>

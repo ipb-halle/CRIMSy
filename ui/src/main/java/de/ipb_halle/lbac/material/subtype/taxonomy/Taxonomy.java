@@ -37,12 +37,12 @@ public class Taxonomy extends Material {
 
     public Taxonomy(int id,
             List<MaterialName> names,
-            int projectId,
             HazardInformation hazards,
             StorageClassInformation storageInformation,
             List<Taxonomy> hierarchy) {
-        super(id, names, projectId, hazards, storageInformation);
+        super(id, names, null, hazards, storageInformation);
         this.type = MaterialType.TAXONOMY;
+        this.taxHierachy = hierarchy;
 
     }
 
@@ -62,7 +62,5 @@ public class Taxonomy extends Material {
     public void setLevel(TaxonomyLevel level) {
         this.level = level;
     }
-
-    
 
 }

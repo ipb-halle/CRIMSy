@@ -41,7 +41,8 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Singleton(name = "globalAdmissionContext")
 @Startup
@@ -83,8 +84,7 @@ public class GlobalAdmissionContext implements Serializable {
     private ACList adminOnlyACL;
     private ACList noAccessACL;
     private ACList ownerAllPermACL;
-    private ACList publicReadACL;
-    
+    private static ACList publicReadACL;
 
     private Group adminGroup;
     private Group publicGroup;
@@ -93,7 +93,7 @@ public class GlobalAdmissionContext implements Serializable {
     private User adminAccount;
     private User publicAccount;
 
-    private ConcurrentHashMap<String, LockoutInfo>   intruderLockoutMap;
+    private ConcurrentHashMap<String, LockoutInfo> intruderLockoutMap;
     private transient Logger logger;
 
     /**
@@ -102,7 +102,7 @@ public class GlobalAdmissionContext implements Serializable {
     public GlobalAdmissionContext() {
         this.logger = LogManager.getLogger(this.getClass().getName());
         this.credentialHandler = new CredentialHandler();
-        this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo> ();
+        this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo>();
     }
 
     /**
@@ -130,8 +130,8 @@ public class GlobalAdmissionContext implements Serializable {
             UUID id;
             if (adm == null) {
                 id = UUID.fromString(this.infoObjectService.save((InfoObject) new InfoObject(ADMIN_GROUP_KEY, UUID.randomUUID().toString())
-                                .setOwner(this.publicAccount).setACList(this.noAccessACL))
-                                .getValue());
+                        .setOwner(this.publicAccount).setACList(this.noAccessACL))
+                        .getValue());
             } else {
                 id = UUID.fromString(adm.getValue());
             }
@@ -176,16 +176,16 @@ public class GlobalAdmissionContext implements Serializable {
                     new ACList()
                             .setName("Owner all permissions ACL")
                             .addACE(
-                                    ownerAccount, 
+                                    ownerAccount,
                                     new ACPermission[]{
-                                    ACPermission.permREAD,
-                                    ACPermission.permEDIT,
-                                    ACPermission.permCREATE,
-                                    ACPermission.permDELETE,
-                                    ACPermission.permCHOWN,
-                                    ACPermission.permGRANT,
-                                    ACPermission.permSUPER}));
-            
+                                        ACPermission.permREAD,
+                                        ACPermission.permEDIT,
+                                        ACPermission.permCREATE,
+                                        ACPermission.permDELETE,
+                                        ACPermission.permCHOWN,
+                                        ACPermission.permGRANT,
+                                        ACPermission.permSUPER}));
+
             // infoEntities
             createInfoEntity(UserMgrBean.USERMGR_PERM_KEY, "don't care", this.adminOnlyACL);
             createInfoEntity("LDAP_ENABLE", "false", this.adminOnlyACL);
@@ -204,8 +204,8 @@ public class GlobalAdmissionContext implements Serializable {
         UUID id;
         if (adm == null) {
             id = UUID.fromString(this.infoObjectService.save((InfoObject) new InfoObject(ADMIN_ACCOUNT_KEY, UUID.randomUUID().toString())
-                            .setOwner(this.publicAccount).setACList(this.noAccessACL))
-                            .getValue());
+                    .setOwner(this.publicAccount).setACList(this.noAccessACL))
+                    .getValue());
         } else {
             id = UUID.fromString(adm.getValue());
         }
@@ -340,7 +340,6 @@ public class GlobalAdmissionContext implements Serializable {
         return ownerAllPermACL;
     }
 
-
     public User getPublicAccount() {
         return this.publicAccount;
     }
@@ -349,12 +348,13 @@ public class GlobalAdmissionContext implements Serializable {
         return this.publicGroup;
     }
 
-    public ACList getPublicReadACL() {
-        return this.publicReadACL;
+    public static ACList getPublicReadACL() {
+        return GlobalAdmissionContext.publicReadACL;
     }
 
     /**
      * prevent password brute forcing
+     *
      * @param login user name to check
      * @param ipAddress ip address of the user request
      * @return true if the account or the address is locked, false otherwise
@@ -387,12 +387,12 @@ public class GlobalAdmissionContext implements Serializable {
      */
     private void intruderLockoutExpire() {
         long time = new Date().getTime();
-        this.intruderLockoutMap.entrySet().removeIf(e -> e.getValue().expired(time)); 
+        this.intruderLockoutMap.entrySet().removeIf(e -> e.getValue().expired(time));
     }
 
     /**
-     * increment the lock record for a given user 
-     * and ip address
+     * increment the lock record for a given user and ip address
+     *
      * @param login the login of the user
      * @param ipAddress the ip address of the user request
      */
@@ -407,6 +407,7 @@ public class GlobalAdmissionContext implements Serializable {
 
     /**
      * perform a lock operation on a single record
+     *
      * @param key the record key in the intruderLockoutMap
      */
     private void intruderLockoutLockRecord(String key) {
@@ -419,19 +420,21 @@ public class GlobalAdmissionContext implements Serializable {
     }
 
     /**
-     * reset the intruder lockout 
+     * reset the intruder lockout
+     *
      * @param login the login name of the successfully logged in user
      * @param ipAddress the source ip address of the users request
      */
     public void intruderLockoutUnlock(String login, String ipAddress) {
         if (ipAddress != null) {
-                intruderLockoutUnlockRecord(ipAddress);
+            intruderLockoutUnlockRecord(ipAddress);
         }
         intruderLockoutUnlockRecord(login);
     }
 
     /**
      * perform a unlock operation on a single record
+     *
      * @param key the record key in the intruderLockoutMap
      */
     private void intruderLockoutUnlockRecord(String key) {
