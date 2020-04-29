@@ -53,7 +53,7 @@ public class TaxonomyService implements Serializable {
             + "FROM taxonomy "
             + "WHERE (level=:level OR :level=-1) "
             + "AND (id=:id OR :id=-1)";
-    private final String SQL_GET_NESTED_TAXONOMIES = "SELECT id FROM effective_taxonomy WHERE taxoid=:id";
+    private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
 
     @Inject
     private MaterialService materialService;
@@ -74,7 +74,7 @@ public class TaxonomyService implements Serializable {
         return levels;
     }
 
-    public List<Taxonomy> loadTaxonomy(Map<String, String> cmap, boolean hierarchy) {
+    public List<Taxonomy> loadTaxonomy(Map<String, Object> cmap, boolean hierarchy) {
         List<Taxonomy> taxonomies = new ArrayList<>();
         Query q = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);
         q.setParameter("level", cmap.containsKey("level") ? cmap.get("level") : -1);
@@ -82,11 +82,13 @@ public class TaxonomyService implements Serializable {
         List<TaxonomyEntity> entities = q.getResultList();
         for (TaxonomyEntity entity : entities) {
             List<Taxonomy> taxonomyHierarchy = new ArrayList<>();
+            logger.info("Hierarchy " + hierarchy);
             if (hierarchy) {
                 List<Integer> nestedTaxos = em.createNativeQuery(SQL_GET_NESTED_TAXONOMIES).setParameter("id", entity.getId()).getResultList();
+                logger.info("found " + nestedTaxos.size() + " for taxo " + entity.getId());
                 for (Integer i : nestedTaxos) {
-                    Map<String, String> cmap2 = new HashMap<>();
-                    cmap2.put("id", String.format("%d", i));
+                    Map<String, Object> cmap2 = new HashMap<>();
+                    cmap2.put("id", i);
                     taxonomyHierarchy.addAll(loadTaxonomy(cmap2, false));
                 }
             }

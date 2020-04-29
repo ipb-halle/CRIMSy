@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -57,6 +58,14 @@ public class Taxonomy extends Material {
         entity.setId(id);
         entity.setLevel(level.getId());
         return entity;
+    }
+
+    public TaxonomyLevel getLevel() {
+        return level;
+    }
+
+    public List<Taxonomy> getTaxHierachy() {
+        return taxHierachy;
     }
 
     public void setLevel(TaxonomyLevel level) {

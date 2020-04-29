@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -93,6 +94,10 @@ public class TaxonomyServiceTest extends TestBase {
         createAndSaveTaxonomies();
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
         Assert.assertEquals(3, taxonomies.size());
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("level", 2);
+        taxonomies = service.loadTaxonomy(cmap, true);
+        Assert.assertEquals(2, taxonomies.size());
         cleanTaxonomyFromDb();
     }
 

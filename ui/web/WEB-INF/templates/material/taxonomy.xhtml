@@ -33,7 +33,7 @@
             <b:container>
                 <b:row>
                     <b:column span="1" offset="5">
-                        <b:commandButton value="ZurÃƒÂ¼ck"/>
+                        <b:commandButton value="ZurÃƒÆ’Ã‚Â¼ck"/>
                     </b:column>
                     <b:column span="1" >
                         History Eintrag
@@ -63,13 +63,13 @@
                             var ="node"
                             selectionMode="single"
                             selection="#{taxonomyBean.selectedTaxonomy}">
-                            <p:ajax event="select" update="taxonomyForm" listener="#{taxonomyBean.onTaxonomySelect}" />
+                            <p:ajax event="select" update="@(.taxonomyInfos)" listener="#{taxonomyBean.onTaxonomySelect}" />
                             <p:treeNode >
                                 <h:outputText value="#{node.getFirstName()}"/>
                             </p:treeNode>              
                         </p:tree>
                     </b:column>
-                    <b:column span="8">
+                    <b:column span="8" styleClass="taxonomyInfos">
                         <ui:insert> 
                             <ui:include src="/WEB-INF/templates/material/components/taxonomyNames.xhtml"/>
                         </ui:insert>
@@ -91,14 +91,14 @@
                 <b:row>
                     <b:column span="8" offset="4">
                         <h:outputText value="#{taxonomyBean.getLabelForParentTaxonomy()}"/>
-                </b:column>
-            </b:row>
+                    </b:column>
+                </b:row>
 
-        </b:container>
+            </b:container>
 
 
 
-    </b:form>
-</h:body>
+        </b:form>
+    </h:body>
 
 </html>
