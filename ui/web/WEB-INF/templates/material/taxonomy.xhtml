@@ -32,20 +32,34 @@
 
             <b:container>
                 <b:row>
-                    <b:column span="1" offset="5">
-                        <b:commandButton value="ZurÃƒÆ’Ã‚Â¼ck"/>
+                    <b:column span="4" 
+                              styleClass="taxonomyInfos">
+                        <p:panel styleClass="taxonomyInfos">
+                            <h:outputText value="#{taxonomyBean.getCurrentAction()}"/>
+                        </p:panel>
                     </b:column>
-                    <b:column span="1" >
-                        History Eintrag
+                    <b:column span="1" offset="1"
+                              styleClass="taxonomyInfos">
+                        <b:commandButton value="Zurueck" rendered="#{taxonomyBean.isHistoryVisible()}"/>
+
                     </b:column>
-                    <b:column span="1" >
-                        <b:commandButton value="Vor"/>
+                    <b:column span="1" 
+                              styleClass="taxonomyInfos"
+                              >
+                        <h:outputText value="History Information" rendered="#{taxonomyBean.isHistoryVisible()}"/>
+
+                    </b:column>
+                    <b:column span="1"
+                              styleClass="taxonomyInfos"
+                              >
+                        <b:commandButton value="Vor" rendered="#{taxonomyBean.isHistoryVisible()}"/>
                     </b:column>
 
-                    <b:column span="1" >
+                    <b:column span="1" 
+                              >
                         <b:commandButton value="XXX"/>
                     </b:column>
-                    <b:column span="1" >
+                    <b:column span="1">
                         <b:commandButton value="EDIT"/>
                     </b:column>
                     <b:column span="1">

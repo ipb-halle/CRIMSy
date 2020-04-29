@@ -53,7 +53,7 @@ import org.primefaces.model.DefaultTreeNode;
 @Named
 public class TaxonomyBean implements Serializable {
 
-    private enum Mode {
+    protected enum Mode {
         CREATE, SHOW, EDIT, HISTORY
     }
 
@@ -80,6 +80,7 @@ public class TaxonomyBean implements Serializable {
     private Mode mode;
 
     private Taxonomy parentOfNewTaxo;
+    private Taxonomy taxonomyToEdit;
 
     @PostConstruct
     public void init() {
@@ -136,6 +137,54 @@ public class TaxonomyBean implements Serializable {
         } catch (Exception e) {
             logger.error(e);
         }
+    }
+
+    public String getCurrentAction() {
+        if (mode == Mode.SHOW || mode == Mode.HISTORY) {
+            if (selectedTaxonomy != null) {
+                Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
+                return "Detail information for " + t.getFirstName();
+            }
+        }
+        if (mode == Mode.CREATE) {
+            return "Creating a new taxonomy entry";
+        }
+        if (mode == Mode.EDIT) {
+            return "Editing taxonomy " + taxonomyToEdit.getFirstName();
+        }
+        return "";
+
+    }
+
+    public boolean isNamesVisible() {
+        boolean isVisible = true;
+        if (selectedTaxonomy == null) {
+            isVisible = false;
+        }
+        return isVisible;
+    }
+
+    public boolean isNameEditable() {
+        boolean isEditable = false;
+        if (mode == Mode.EDIT) {
+            isEditable = true;
+        }
+        if (mode == Mode.CREATE) {
+            isEditable = true;
+        }
+        return isEditable;
+    }
+
+    public boolean isHistoryVisible() {
+        boolean isVisible = false;
+
+        if (mode == Mode.SHOW && selectedTaxonomy != null) {
+            isVisible = true;
+        }
+        if (mode == Mode.HISTORY) {
+            isVisible = true;
+        }
+        return isVisible;
     }
 
     private TreeNode getTreeNodeWithTaxonomy(int id) {
