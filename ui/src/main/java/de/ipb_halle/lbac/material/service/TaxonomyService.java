@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevel;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +53,8 @@ public class TaxonomyService implements Serializable {
     private final String SQL_GET_TAXONOMY = "SELECT id,level "
             + "FROM taxonomy "
             + "WHERE (level=:level OR :level=-1) "
-            + "AND (id=:id OR :id=-1)";
+            + "AND (id=:id OR :id=-1) "
+            + "ORDER BY id";
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
 
     @Inject
@@ -92,6 +94,7 @@ public class TaxonomyService implements Serializable {
                     taxonomyHierarchy.addAll(loadTaxonomy(cmap2, false));
                 }
             }
+            Collections.sort(taxonomyHierarchy, (o1, o2) -> o1.getId() > o2.getId() ? -1 : 1);
             Taxonomy t = new Taxonomy(entity.getId(), materialService.loadMaterialNamesById(entity.getId()), new HazardInformation(), new StorageClassInformation(), taxonomyHierarchy);
             t.setLevel(new TaxonomyLevel(em.find(TaxonomyLevelEntity.class, entity.getLevel())));
             taxonomies.add(t);

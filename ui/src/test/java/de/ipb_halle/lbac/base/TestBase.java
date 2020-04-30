@@ -55,7 +55,8 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -77,8 +78,15 @@ public class TestBase implements Serializable {
     public final static UUID TEST_NODE_ID = UUID.fromString("986ad1be-9a3b-4a70-8600-c489c2a00da4");
     public final static String TESTCLOUD = "TESTCLOUD";
 
+    protected String INSERT_TAXONOMY_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
+            + "%d,"
+            + "7,"
+            + "now(),"
+            + "cast('%s' as UUID),"
+            + "cast('%s' as UUID),"
+            + "false,%d)";
 
-    @ArquillianResource 
+    @ArquillianResource
     protected URL baseUrl;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -92,7 +100,7 @@ public class TestBase implements Serializable {
 
     @Inject
     protected CloudNodeService cloudNodeService;
-    
+
     @Inject
     protected EntityManagerService entityManagerService;
 
@@ -143,11 +151,21 @@ public class TestBase implements Serializable {
     public void setUp() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
-    
-    public void cleanTaxonomyFromDb(){
+
+    public void cleanTaxonomyFromDb() {
         this.entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
         this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
+    }
+
+    protected void createTaxanomy(int id, String name, int level, String userGroups, String ownerId, Integer... parents) {
+        entityManagerService.doSqlUpdate(String.format(INSERT_TAXONOMY_MATERIAL_SQL, id, userGroups, ownerId, null));
+        entityManagerService.doSqlUpdate(String.format("INSERT INTO taxonomy  VALUES(%d ,%d)", id, level));
+        entityManagerService.doSqlUpdate(String.format("INSERT INTO storages VALUES(%d,1,'')", id));
+        entityManagerService.doSqlUpdate(String.format("INSERT INTO material_indices(materialid, typeid,value,language,rank) VALUES(%d,1,'" + name + "_de','de',0)", id));
+        for (Integer parent : parents) {
+            entityManagerService.doSqlUpdate(String.format("INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(%d,%d)", id, parent));
+        }
     }
 
     /**
@@ -290,25 +308,49 @@ public class TestBase implements Serializable {
         return acList;
     }
 
+    protected void createTaxonomyTreeInDB(String userGroups, String ownerId) {
+        createTaxanomy(1, "Leben", 1, userGroups, ownerId);
+        createTaxanomy(2, "Pilze", 2, userGroups, ownerId, 1);
+        createTaxanomy(3, "Agaricomycetes", 4, userGroups, ownerId, 1, 2);
+        createTaxanomy(4, "Champignonartige", 5, userGroups, ownerId, 1, 2, 3);
+        createTaxanomy(5, "Wulstlingsverwandte", 6, userGroups, ownerId, 1, 2, 3, 4);
+        createTaxanomy(6, "Wulstlinge", 7, userGroups, ownerId, 1, 2, 3, 4, 5);
+        createTaxanomy(7, "Schleimschirmlinge", 7, userGroups, ownerId, 1, 2, 3, 4, 5);
+        createTaxanomy(8, "Dacrymycetes", 4, userGroups, ownerId, 1, 2);
+        createTaxanomy(9, "Ohrlappenpilzverwandte", 5, userGroups, ownerId, 1, 2, 3);
+        createTaxanomy(10, "Ohrlappenpilze", 7, userGroups, ownerId, 1, 2, 3, 9);
+        createTaxanomy(11, "Gallerttränenverwandte", 6, userGroups, ownerId, 1, 2, 8);
+        createTaxanomy(12, "Hörnlinge ", 7, userGroups, ownerId, 1, 2, 8, 11);
+        createTaxanomy(13, "Gallerttränen", 7, userGroups, ownerId, 1, 2, 8, 11);
+        createTaxanomy(14, "Bakterien", 2, userGroups, ownerId, 1);
+        createTaxanomy(15, "Escherichia", 7, userGroups, ownerId, 1);
+        createTaxanomy(16, "Pflanzen", 2, userGroups, ownerId, 1);
+        createTaxanomy(17, "Seerosenartige", 5, userGroups, ownerId, 1, 16);
+        createTaxanomy(18, "Seerosengewächse", 6, userGroups, ownerId, 1, 16, 17);
+        createTaxanomy(19, "Victoria", 7, userGroups, ownerId, 1, 16, 17, 18);
+        createTaxanomy(20, "Euryale", 7, userGroups, ownerId, 1, 16, 17, 18);
+        createTaxanomy(21, "Haarnixen", 7, userGroups, ownerId, 1, 16, 17);
+    }
+
     public void resetDB(MemberService memberService) {
         List<Collection> colls = collectionService.load(new HashMap<>());
-         termVectorEntityService.deleteTermVectors();
+        termVectorEntityService.deleteTermVectors();
         for (Collection c : colls) {
             fileEntityService.delete(c);
         }
-       
+
         List<Group> groups = memberService.loadGroups(new HashMap<>());
 
         groups.stream().map((g) -> {
             return g;
         }).filter((g) -> (!g.getName().equals("Public Group") && !g.getName().equals("Admin Group"))).forEachOrdered((g) -> {
-          //  memberService.deleteGroup(g.getId());
+            //  memberService.deleteGroup(g.getId());
         });
         List<User> users = memberService.loadUsers(new HashMap<>());
         users.stream().map((u) -> {
             return u;
         }).filter((u) -> (!u.getName().equals("Public Account") && !u.getName().equals("Admin") && !u.getId().equals(UUID.fromString(GlobalAdmissionContext.OWNER_ACCOUNT_ID)))).forEachOrdered((u) -> {
-           // memberService.deleteUser(u.getId());
+            // memberService.deleteUser(u.getId());
         });
     }
 
@@ -335,7 +377,7 @@ public class TestBase implements Serializable {
     ) {
         Node newNode = new Node();
         newNode.setBaseUrl(this.baseUrl.toString());
-        
+
         newNode.setInstitution("Fake Institution");
         newNode.setLocal(false);
         return nodeService.save(newNode);
@@ -350,12 +392,12 @@ public class TestBase implements Serializable {
     protected void initializeKeyStoreFactory() {
         KeyStoreFactory.setLBAC_PROPERTIES_PATH(LBAC_PROPERTIES_PATH);
         KeyStoreFactory ksf = KeyStoreFactory
-          .getInstance()
-          .setLOCAL_KEY_ALIAS("test")
-          .init();
+                .getInstance()
+                .setLOCAL_KEY_ALIAS("test")
+                .init();
     }
-    
-     protected void cleanAllProjectsFromDb() {
+
+    protected void cleanAllProjectsFromDb() {
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
         entityManagerService.doSqlUpdate("delete from projects");

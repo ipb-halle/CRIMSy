@@ -52,41 +52,41 @@ import org.primefaces.model.DefaultTreeNode;
 @SessionScoped
 @Named
 public class TaxonomyBean implements Serializable {
-    
+
     protected enum Mode {
         CREATE, SHOW, EDIT, HISTORY
     }
-    
+
     private List<Taxonomy> shownTaxonomies;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private User currentUser;
-    
+
     private List<TaxonomyLevel> levels;
     private TaxonomyLevel selectedLevel;
     @Inject
     private TaxonomyService taxonomyService;
-    
+
     @Inject
     private MaterialService materialService;
-    
+
     private List<MaterialName> names = new ArrayList<>();
-    
+
     private TreeNode taxonomyTree;
-    
+
     private TreeNode selectedTaxonomy;
-    
+
     private Taxonomy taxonomyToCreate;
-    
+
     private Mode mode;
-    
+
     private Taxonomy parentOfNewTaxo;
     private Taxonomy taxonomyToEdit;
-    
+
     @PostConstruct
     public void init() {
-        
+
     }
-    
+
     public void actionApplyButtonClick() {
         if (mode == Mode.SHOW) {
             mode = Mode.CREATE;
@@ -101,17 +101,17 @@ public class TaxonomyBean implements Serializable {
         }
         reloadTreeNode();
     }
-    
+
     public void setCurrentAccount(@Observes LoginEvent evt) {
         mode = Mode.SHOW;
         currentUser = evt.getCurrentAccount();
         selectedTaxonomy = null;
-        
+
         levels = taxonomyService.loadTaxonomyLevel();
         selectedLevel = levels.get(0);
         reloadTreeNode();
     }
-    
+
     public void reloadTreeNode() {
         try {
             Map<String, Object> cmap = new HashMap<>();
@@ -119,26 +119,21 @@ public class TaxonomyBean implements Serializable {
             shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
             Taxonomy rootTaxo = createNewTaxonomy();
             rootTaxo.setLevel(levels.get(0));
-            Collections.sort(shownTaxonomies, (o1, o2) -> o1.getId() > o2.getId() ? 1 : -1);
-            for (Taxonomy t : shownTaxonomies) {
-                logger.info(t.getFirstName() + " -> " + t.getTaxHierachy().size());
-            }
             taxonomyTree = new DefaultTreeNode(rootTaxo, null);
             for (Taxonomy t : shownTaxonomies) {
                 if (!t.getTaxHierachy().isEmpty()) {
                     TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
-                    logger.info("Parent of " + t.getFirstName() + " is " + parent);
                     new DefaultTreeNode(t, parent);
                 } else {
                     new DefaultTreeNode(t, taxonomyTree);
                 }
-                
+
             }
         } catch (Exception e) {
             logger.error(e);
         }
     }
-    
+
     public String getCurrentAction() {
         if (mode == Mode.SHOW || mode == Mode.HISTORY) {
             if (selectedTaxonomy != null) {
@@ -153,11 +148,11 @@ public class TaxonomyBean implements Serializable {
             return "Editing taxonomy " + taxonomyToEdit.getFirstName();
         }
         return "";
-        
+
     }
-    
+
     public boolean isNamesVisible() {
-        
+
         if (mode == Mode.CREATE) {
             return true;
         }
@@ -166,7 +161,7 @@ public class TaxonomyBean implements Serializable {
         }
         return true;
     }
-    
+
     public boolean isNameEditable() {
         boolean isEditable = false;
         if (mode == Mode.EDIT) {
@@ -177,10 +172,10 @@ public class TaxonomyBean implements Serializable {
         }
         return isEditable;
     }
-    
+
     public boolean isHistoryVisible() {
         boolean isVisible = false;
-        
+
         if (mode == Mode.SHOW && selectedTaxonomy != null) {
             isVisible = true;
         }
@@ -189,7 +184,7 @@ public class TaxonomyBean implements Serializable {
         }
         return isVisible;
     }
-    
+
     private TreeNode getTreeNodeWithTaxonomy(int id) {
         for (TreeNode n : taxonomyTree.getChildren()) {
             Taxonomy t = (Taxonomy) n.getData();
@@ -199,23 +194,23 @@ public class TaxonomyBean implements Serializable {
         }
         return null;
     }
-    
+
     public List<String> getSimilarTaxonomy() {
         return new ArrayList<>();
     }
-    
+
     public void actionChangeParent(Taxonomy taxo, Taxonomy newParent) {
-        
+
     }
-    
+
     public TreeNode getTaxonomyTree() {
         return taxonomyTree;
     }
-    
+
     public void setTaxonomyTree(TreeNode taxonomyTree) {
         this.taxonomyTree = taxonomyTree;
     }
-    
+
     public List<MaterialName> getNames() {
         if (mode == Mode.CREATE) {
             return taxonomyToCreate.getNames();
@@ -227,11 +222,11 @@ public class TaxonomyBean implements Serializable {
             return new ArrayList<>();
         }
     }
-    
+
     public void setNames(List<MaterialName> names) {
         this.names = names;
     }
-    
+
     public List<String> getPossibleLanguages() {
         List<String> names = new ArrayList<>();
         names.add("de");
@@ -239,22 +234,22 @@ public class TaxonomyBean implements Serializable {
         names.add("en");
         return names;
     }
-    
+
     public TreeNode getSelectedTaxonomy() {
         return selectedTaxonomy;
     }
-    
+
     public void setSelectedTaxonomy(TreeNode selectedTaxonomy) {
         this.selectedTaxonomy = selectedTaxonomy;
     }
-    
+
     public String getApplyButtonText() {
         if (mode == Mode.CREATE) {
             return "Save";
         }
         return "Create New Taxonomy";
     }
-    
+
     public boolean isApplyButtonDisabled() {
         if (mode == Mode.HISTORY) {
             return true;
@@ -262,19 +257,19 @@ public class TaxonomyBean implements Serializable {
             return false;
         }
     }
-    
+
     public void onTaxonomySelect(NodeSelectEvent event) {
         selectedTaxonomy = event.getTreeNode();
         parentOfNewTaxo = (Taxonomy) selectedTaxonomy.getData();
-        
+
     }
-    
+
     private Taxonomy createNewTaxonomy() {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("", "en", 1));
         return new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
     }
-    
+
     private boolean saveNewTaxonomy() {
         boolean success = true;
         taxonomyToCreate.setLevel(selectedLevel);
@@ -282,29 +277,36 @@ public class TaxonomyBean implements Serializable {
             Taxonomy parent = (Taxonomy) selectedTaxonomy.getData();
             taxonomyToCreate.getTaxHierachy().add(parent);
             taxonomyToCreate.getTaxHierachy().addAll(parent.getTaxHierachy());
-            Collections.sort(taxonomyToCreate.getTaxHierachy(), (o1, o2) -> o1.getId() > o2.getId() ? 1 : -1);
         }
         materialService.saveMaterialToDB(taxonomyToCreate, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>());
-        
+
         return success;
     }
-    
+
     public TaxonomyLevel getSelectedLevel() {
         return selectedLevel;
     }
-    
+
     public void setSelectedLevel(TaxonomyLevel selectedLevel) {
         this.selectedLevel = selectedLevel;
     }
-    
+
     public List<TaxonomyLevel> getLevels() {
         return levels;
     }
-    
+
     public void setLevels(List<TaxonomyLevel> levels) {
         this.levels = levels;
     }
-    
+
+    public void setTaxonomyService(TaxonomyService taxonomyService) {
+        this.taxonomyService = taxonomyService;
+    }
+
+    public void setMaterialService(MaterialService materialService) {
+        this.materialService = materialService;
+    }
+
     public String getLabelForParentTaxonomy() {
         if (parentOfNewTaxo == null) {
             return "no parent choosen";
@@ -312,5 +314,5 @@ public class TaxonomyBean implements Serializable {
             return parentOfNewTaxo.getNames().get(0).getValue();
         }
     }
-    
+
 }

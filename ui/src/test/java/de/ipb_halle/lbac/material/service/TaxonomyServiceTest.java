@@ -66,14 +66,6 @@ public class TaxonomyServiceTest extends TestBase {
 
     private CreationTools creationTools;
 
-    String INSERT_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
-            + "%d,"
-            + "7,"
-            + "now(),"
-            + "cast('%s' as UUID),"
-            + "cast('%s' as UUID),"
-            + "false,%d)";
-
     @Before
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
@@ -91,36 +83,40 @@ public class TaxonomyServiceTest extends TestBase {
 
     @Test
     public void test002_loadTaxonomies() {
-        createAndSaveTaxonomies();
-        List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
-        Assert.assertEquals(3, taxonomies.size());
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put("level", 2);
-        taxonomies = service.loadTaxonomy(cmap, true);
-        Assert.assertEquals(2, taxonomies.size());
-        cleanTaxonomyFromDb();
-    }
-
-    private void createAndSaveTaxonomies() {
         owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         project = creationTools.createProject();
         userGroups = project.getUserGroups().getId().toString();
         ownerid = owner.getId().toString();
-        createTaxanomy(1, "Tax_1", 1);
-        createTaxanomy(2, "Tax_2.1", 2, 1);
-        createTaxanomy(3, "Tax_2.2", 2, 1);
+        createTaxonomyTreeInDB(userGroups, owner.getId().toString());
+        List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        Assert.assertEquals("test001: 21 taxonomies must be found", 21, taxonomies.size());
 
-    }
+        Taxonomy life = taxonomies.get(0);
+        Assert.assertTrue(life.getTaxHierachy().isEmpty());
+        Assert.assertEquals(1, life.getLevel().getId());
+        Assert.assertEquals("Leben_de", life.getFirstName());
 
-    private void createTaxanomy(int id, String name, int level, Integer... parents) {
-        entityManagerService.doSqlUpdate(String.format(INSERT_MATERIAL_SQL, id, userGroups, ownerid, project.getId()));
-        entityManagerService.doSqlUpdate(String.format("INSERT INTO taxonomy  VALUES(%d ,%d)", id, level));
-        entityManagerService.doSqlUpdate(String.format("INSERT INTO storages VALUES(%d,1,'')", id));
-        entityManagerService.doSqlUpdate(String.format("INSERT INTO material_indices(materialid, typeid,value,language,rank) VALUES(%d,1,'" + name + "_de','de',0)", id));
-        for (Integer parent : parents) {
-            entityManagerService.doSqlUpdate(String.format("INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(%d,%d)", id, parent));
-        }
+        Taxonomy wulstlinge = taxonomies.get(5);
+        Assert.assertEquals(7, wulstlinge.getLevel().getId());
+        Assert.assertEquals("Wulstlinge_de", wulstlinge.getFirstName());
+        Assert.assertEquals(6, wulstlinge.getId());
+        Assert.assertEquals(5, wulstlinge.getTaxHierachy().size());
+        Assert.assertEquals(5, wulstlinge.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(4, wulstlinge.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(3, wulstlinge.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(2, wulstlinge.getTaxHierachy().get(3).getId());
+        Assert.assertEquals(1, wulstlinge.getTaxHierachy().get(4).getId());
 
+        Taxonomy ohrlappenpilze = taxonomies.get(10);
+        Assert.assertEquals(6, ohrlappenpilze.getLevel().getId());
+        Assert.assertEquals("Gallerttränenverwandte_de", ohrlappenpilze.getFirstName());
+        Assert.assertEquals(11, ohrlappenpilze.getId());
+        Assert.assertEquals(3, ohrlappenpilze.getTaxHierachy().size());
+        Assert.assertEquals(8, ohrlappenpilze.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(2, ohrlappenpilze.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(1, ohrlappenpilze.getTaxHierachy().get(2).getId());
+
+        cleanTaxonomyFromDb();
     }
 
     @Deployment
