@@ -186,13 +186,24 @@ public class TaxonomyBean implements Serializable {
     }
 
     private TreeNode getTreeNodeWithTaxonomy(int id) {
-        for (TreeNode n : taxonomyTree.getChildren()) {
+        List<TreeNode> nodes = getAllChildren(taxonomyTree);
+        nodes.add(taxonomyTree);
+        for (TreeNode n : nodes) {
             Taxonomy t = (Taxonomy) n.getData();
             if (t.getId() == id) {
                 return n;
             }
         }
         return null;
+    }
+
+    private List<TreeNode> getAllChildren(TreeNode tn) {
+        List<TreeNode> children = new ArrayList<>();
+        for (TreeNode n : tn.getChildren()) {
+            children.addAll(getAllChildren(n));
+            children.add(n);
+        }
+        return children;
     }
 
     public List<String> getSimilarTaxonomy() {
