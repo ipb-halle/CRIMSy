@@ -94,12 +94,11 @@ public class TaxonomyBean implements Serializable {
             return;
         }
         if (mode == Mode.CREATE) {
-            boolean success = saveNewTaxonomy();
-            if (success) {
-                mode = Mode.SHOW;
-            }
+            saveNewTaxonomy();
+            mode = Mode.SHOW;
         }
-        reloadTreeNode();
+        reloadTreeNode(taxonomyToCreate.getId());
+
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
@@ -109,10 +108,10 @@ public class TaxonomyBean implements Serializable {
 
         levels = taxonomyService.loadTaxonomyLevel();
         selectedLevel = levels.get(0);
-        reloadTreeNode();
+        reloadTreeNode(null);
     }
 
-    public void reloadTreeNode() {
+    public void reloadTreeNode(Integer id) {
         try {
             Map<String, Object> cmap = new HashMap<>();
             //cmap.put("level", 1);
@@ -121,16 +120,29 @@ public class TaxonomyBean implements Serializable {
             rootTaxo.setLevel(levels.get(0));
             taxonomyTree = new DefaultTreeNode(rootTaxo, null);
             for (Taxonomy t : shownTaxonomies) {
+                TreeNode selectedNode;
                 if (!t.getTaxHierachy().isEmpty()) {
                     TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
-                    new DefaultTreeNode(t, parent);
+                    selectedNode = new DefaultTreeNode(t, parent);
                 } else {
-                    new DefaultTreeNode(t, taxonomyTree);
+                    selectedNode = new DefaultTreeNode(t, taxonomyTree);
+                }
+                if (id != null && t.getId() == id) {
+                    selectedNode.setSelected(true);
+                    expandNode(selectedNode);
+
                 }
 
             }
         } catch (Exception e) {
             logger.error(e);
+        }
+    }
+
+    private void expandNode(TreeNode n) {
+        n.setExpanded(true);
+        if (n.getParent() != null) {
+            expandNode(n.getParent());
         }
     }
 
@@ -281,8 +293,8 @@ public class TaxonomyBean implements Serializable {
         return new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
     }
 
-    private boolean saveNewTaxonomy() {
-        boolean success = true;
+    private void saveNewTaxonomy() {
+
         taxonomyToCreate.setLevel(selectedLevel);
         if (selectedTaxonomy != null) {
             Taxonomy parent = (Taxonomy) selectedTaxonomy.getData();
@@ -291,7 +303,6 @@ public class TaxonomyBean implements Serializable {
         }
         materialService.saveMaterialToDB(taxonomyToCreate, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>());
 
-        return success;
     }
 
     public TaxonomyLevel getSelectedLevel() {

@@ -64,7 +64,7 @@
                             value="CREATE"
                             ajax="true"
                             process="@(.taxonomyInfos)"
-                            update="@(.taxonomyInfos)"
+                            update="@(.taxonomyInfos) @(.taxonomyTree)"
                             onclick="ajax:taxonomyBean.actionApplyButtonClick();"
                             disabled="#{taxonomyBean.isApplyButtonDisabled()}"/>
                     </b:column>
@@ -102,6 +102,7 @@
                             value="#{taxonomyBean.taxonomyTree}"
                             var ="node"
                             selectionMode="single"
+                            styleClass="taxonomyTree"
                             selection="#{taxonomyBean.selectedTaxonomy}">
                             <p:ajax event="select" update="@(.taxonomyInfos)" listener="#{taxonomyBean.onTaxonomySelect}" />
                             <p:treeNode >
