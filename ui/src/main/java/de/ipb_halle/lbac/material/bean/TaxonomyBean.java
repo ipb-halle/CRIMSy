@@ -303,7 +303,13 @@ public class TaxonomyBean implements Serializable {
     }
 
     public List<TaxonomyLevel> getLevels() {
-        return levels;
+
+        if (selectedTaxonomy != null) {
+            List<TaxonomyLevel> valideLevels = new ArrayList<>();
+            return valideLevels;
+        } else {
+            return levels;
+        }
     }
 
     public void setLevels(List<TaxonomyLevel> levels) {
@@ -316,6 +322,31 @@ public class TaxonomyBean implements Serializable {
 
     public void setMaterialService(MaterialService materialService) {
         this.materialService = materialService;
+    }
+
+    public String getCategoryOfChoosenTaxo() {
+        if (selectedTaxonomy != null) {
+            Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
+            return t.getLevel().getId() + " - " + t.getLevel().getName();
+        } else {
+            return "";
+        }
+    }
+
+    public boolean isCategoryVisible() {
+        boolean isVisible = false;
+        if (mode == Mode.SHOW && selectedTaxonomy != null) {
+            isVisible = true;
+        }
+        return isVisible;
+    }
+
+    public boolean isCategorySelectionVisible() {
+        boolean isVisible = false;
+        if (mode == Mode.EDIT) {
+            isVisible = true;
+        }
+        return isVisible;
     }
 
     public String getLabelForParentTaxonomy() {

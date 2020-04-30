@@ -62,10 +62,39 @@
                     <b:column span="1">
                         <b:commandButton
                             value="CREATE"
-                            action="#{taxonomyBean.actionApplyButtonClick()}"
+                            ajax="true"
+                            process="@(.taxonomyInfos)"
+                            update="@(.taxonomyInfos)"
+                            onclick="ajax:taxonomyBean.actionApplyButtonClick();"
                             disabled="#{taxonomyBean.isApplyButtonDisabled()}"/>
                     </b:column>
 
+                </b:row>
+                <b:row>
+                    <b:column 
+                        span="8" offset="4"
+                        styleClass="taxonomyInfos">
+                        <b:inputText
+                            rendered="#{taxonomyBean.isCategoryVisible()}"
+                            disabled="true"
+                            label="Stufe"
+                            value="#{taxonomyBean.getCategoryOfChoosenTaxo()}"/>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column
+                        span="8" offset="4"
+                        styleClass="taxonomyInfos">
+                        <b:selectOneMenu
+                            label="Please select taxonomy level"
+                            rendered="#{taxonomyBean.isCategorySelectionVisible()}"
+                            value="#{taxonomyBean.selectedLevel}">
+                            <f:selectItems 
+                                var="level"
+                                value="#{taxonomyBean.levels}"
+                                itemLabel="#{level.getName()}" />
+                        </b:selectOneMenu>
+                    </b:column>
                 </b:row>
                 <b:row>
                     <b:column span="4">
@@ -87,23 +116,9 @@
 
                     </b:column>
                 </b:row>
-                <b:row>
-                    <b:column span="8" offset="4">
-                        <b:selectOneMenu
-                            label="Please select taxonomy level"
-                            value="#{taxonomyBean.selectedLevel}">
-                            <f:selectItems 
-                                var="level"
-                                value="#{taxonomyBean.levels}"
-                                itemLabel="#{level.getName()}" />
-                        </b:selectOneMenu>
-                    </b:column>
-                </b:row>
-                <b:row>
-                    <b:column span="8" offset="4">
-                        <h:outputText value="#{taxonomyBean.getLabelForParentTaxonomy()}"/>
-                    </b:column>
-                </b:row>
+
+
+
 
             </b:container>
 

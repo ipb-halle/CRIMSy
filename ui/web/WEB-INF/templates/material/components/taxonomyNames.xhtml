@@ -43,7 +43,7 @@
                         label="#{msgs.materialCreation_panelNames_tableHeader_name}">
                         <b:inputText                           
                             value="#{mName.value}"
-
+                            disabled="#{!taxonomyBean.isNameEditable()}"
                             placeholder="#{msgs.materialCreation_panelNames_placeHolder}"
                             onkeypress="if (event.keyCode === 13) {
                                         return false;
