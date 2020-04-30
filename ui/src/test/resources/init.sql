@@ -625,11 +625,24 @@ CREATE TABLE taxonomy_history(
     level_new INTEGER,
     PRIMARY KEY(actorid,mdate));
 
-INSERT INTO taxonomy_level VALUES(1,'domain',1);
-INSERT INTO taxonomy_level VALUES(2,'kingdom',2);
-INSERT INTO taxonomy_level VALUES(3,'phylum',3);
-INSERT INTO taxonomy_level VALUES(4,'class',4);
-INSERT INTO taxonomy_level VALUES(5,'order',5);
-INSERT INTO taxonomy_level VALUES(6,'family',6);
-INSERT INTO taxonomy_level VALUES(7,'genus',7);
-INSERT INTO taxonomy_level VALUES(8,'species',8);
+INSERT INTO taxonomy_level VALUES(1,'domain',100);
+INSERT INTO taxonomy_level VALUES(2,'kingdom',200);
+INSERT INTO taxonomy_level VALUES(3,'subkingdom',300);
+INSERT INTO taxonomy_level VALUES(4,'division',400);
+INSERT INTO taxonomy_level VALUES(5,'subdivision',500);
+INSERT INTO taxonomy_level VALUES(6,'class',600);
+INSERT INTO taxonomy_level VALUES(7,'subclass',700);
+INSERT INTO taxonomy_level VALUES(8,'superorder',800);
+INSERT INTO taxonomy_level VALUES(9,'order',900);
+INSERT INTO taxonomy_level VALUES(10,'suborder',1000);
+INSERT INTO taxonomy_level VALUES(11,'family',1100);
+INSERT INTO taxonomy_level VALUES(12,'subfamily',1200);
+INSERT INTO taxonomy_level VALUES(13,'tribe',1300);
+INSERT INTO taxonomy_level VALUES(14,'genus',1400);
+INSERT INTO taxonomy_level VALUES(15,'section',1500);
+INSERT INTO taxonomy_level VALUES(16,'series',1600);
+INSERT INTO taxonomy_level VALUES(17,'aggregate',1700);
+INSERT INTO taxonomy_level VALUES(18,'species',1800);
+INSERT INTO taxonomy_level VALUES(19,'subspecies',1900);
+INSERT INTO taxonomy_level VALUES(20,'variety',2000);
+INSERT INTO taxonomy_level VALUES(21,'form',2100);
