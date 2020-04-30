@@ -28,10 +28,12 @@ public class TaxonomyLevel implements DTO {
 
     private int id;
     private String name;
+    private Integer rank;
 
     public TaxonomyLevel(TaxonomyLevelEntity dbentity) {
         this.id = dbentity.getId();
         this.name = dbentity.getName();
+        this.rank = dbentity.getRank();
     }
 
     @Override
@@ -70,6 +72,10 @@ public class TaxonomyLevel implements DTO {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getRank() {
+        return rank;
     }
 
 }

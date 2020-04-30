@@ -48,7 +48,7 @@ public class TaxonomyService implements Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private final String SQL_GET_TAXONOMY_LEVELS = "SELECT id,name FROM taxonomy_level";
+    private final String SQL_GET_TAXONOMY_LEVELS = "SELECT id,name,rank FROM taxonomy_level";
 
     private final String SQL_GET_TAXONOMY = "SELECT id,level "
             + "FROM taxonomy "
@@ -84,17 +84,15 @@ public class TaxonomyService implements Serializable {
         List<TaxonomyEntity> entities = q.getResultList();
         for (TaxonomyEntity entity : entities) {
             List<Taxonomy> taxonomyHierarchy = new ArrayList<>();
-            logger.info("Hierarchy " + hierarchy);
             if (hierarchy) {
                 List<Integer> nestedTaxos = em.createNativeQuery(SQL_GET_NESTED_TAXONOMIES).setParameter("id", entity.getId()).getResultList();
-                logger.info("found " + nestedTaxos.size() + " for taxo " + entity.getId());
                 for (Integer i : nestedTaxos) {
                     Map<String, Object> cmap2 = new HashMap<>();
                     cmap2.put("id", i);
                     taxonomyHierarchy.addAll(loadTaxonomy(cmap2, false));
                 }
             }
-            Collections.sort(taxonomyHierarchy, (o1, o2) -> o1.getId() > o2.getId() ? -1 : 1);
+            Collections.sort(taxonomyHierarchy, (o1, o2) -> o1.getLevel().getRank() > o2.getLevel().getRank() ? -1 : 1);
             Taxonomy t = new Taxonomy(entity.getId(), materialService.loadMaterialNamesById(entity.getId()), new HazardInformation(), new StorageClassInformation(), taxonomyHierarchy);
             t.setLevel(new TaxonomyLevel(em.find(TaxonomyLevelEntity.class, entity.getLevel())));
             taxonomies.add(t);

@@ -306,6 +306,12 @@ public class TaxonomyBean implements Serializable {
 
         if (selectedTaxonomy != null) {
             List<TaxonomyLevel> valideLevels = new ArrayList<>();
+            Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
+            for (TaxonomyLevel l : levels) {
+                if (l.getRank() > t.getLevel().getRank()) {
+                    valideLevels.add(l);
+                }
+            }
             return valideLevels;
         } else {
             return levels;
@@ -344,6 +350,9 @@ public class TaxonomyBean implements Serializable {
     public boolean isCategorySelectionVisible() {
         boolean isVisible = false;
         if (mode == Mode.EDIT) {
+            isVisible = true;
+        }
+        if (mode == Mode.CREATE && selectedTaxonomy != null) {
             isVisible = true;
         }
         return isVisible;

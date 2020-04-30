@@ -37,6 +37,10 @@ public class TaxonomyLevelEntity implements Serializable {
     @Column
     private String name;
 
+    @Column
+    private Integer rank;
+    
+
     public Integer getId() {
         return id;
     }
@@ -51,6 +55,14 @@ public class TaxonomyLevelEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 
 }
