@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACObject;
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.entity.DTO;
 
 import java.io.Serializable;
@@ -25,7 +28,7 @@ import java.util.Date;
 /**
  * @author fbroda
  */
-public class Printer implements DTO {
+public class Printer extends ACObject implements DTO {
 
     private String name;
     private String config;
@@ -35,14 +38,30 @@ public class Printer implements DTO {
     private String place;
     private PrinterStatus status;
 
+    /**
+     * constructor
+     */
+    public Printer(PrinterEntity entity, ACList aclist, User owner) {
+        setACList(aclist);
+        setOwner(owner);
+        this.name = entity.getName();
+        this.config = entity.getConfig();
+        this.contact = entity.getContact();
+        this.driver = entity.getDriver();
+        this.model = entity.getModel();
+        this.place = entity.getPlace();
+        this.status = entity.getStatus();
+    }
 
     public PrinterEntity createEntity() {
         return new PrinterEntity()
             .setName(this.name)
+            .setACListId(this.getACList().getId())
             .setConfig(this.config)
             .setContact(this.contact)
             .setDriver(this.driver)
             .setModel(this.model)
+            .setOwnerId(getOwner().getId())
             .setPlace(this.place)
             .setStatus(this.status);
     }

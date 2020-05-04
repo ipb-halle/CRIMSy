@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.device.print;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,9 +39,6 @@ import org.apache.johnzon.mapper.JohnzonConverter;
  * <li>actual bytes to be printed</li>
  * <li>name of the destination printer</li>
  * </ul>
- *
- * Later this object may be extended to contain the 
- * owner, a date of creation, a job state etc.
  *
  * @author fbroda
  */
@@ -65,6 +64,14 @@ public class PrintJobEntity implements Serializable {
     @Column
     private String destination;
 
+    @Column
+    private UUID ownerid;
+
+    @Column
+    private Date jobdate;
+
+    @Column
+    private PrintJobStatus status;
 
     public byte[] getData() {
         return this.data;
@@ -74,8 +81,20 @@ public class PrintJobEntity implements Serializable {
         return this.destination;
     }
 
+    public Date getJobDate() {
+        return this.jobdate;
+    }
+
     public Integer getJobId() {
         return this.jobid;
+    }
+
+    public UUID getOwnerId() {
+        return this.ownerid;
+    }
+
+    public PrintJobStatus getStatus() {
+        return this.status;
     }
 
     public PrintJobEntity setData(byte[] data) { 
@@ -88,8 +107,23 @@ public class PrintJobEntity implements Serializable {
         return this;
     }
 
+    public PrintJobEntity setJobDate(Date jobdate) {
+        this.jobdate = jobdate;
+        return this;
+    }
+
     public PrintJobEntity setJobId(Integer jobid) {
         this.jobid = jobid;
+        return this;
+    }
+
+    PrintJobEntity setOwnerId(UUID ownerid) {
+        this.ownerid = ownerid;
+        return this;
+    }
+
+    public  PrintJobEntity setStatus(PrintJobStatus status) {
+        this.status = status;
         return this;
     }
 }

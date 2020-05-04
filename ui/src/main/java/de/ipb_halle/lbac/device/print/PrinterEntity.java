@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.device.print;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,36 +55,34 @@ public class PrinterEntity implements Serializable {
     @Id
     private String name;
 
-    /**
-     */
+    @Column
+    private UUID aclistid;
+
     @Column
     private String config;
 
-    /**
-     */
     @Column
     private String contact;
 
-    /**
-     */
     @Column
     private String driver;
 
-    /**
-     */
     @Column
     private String model;
 
-    /**
-     */
+    @Column
+    private UUID ownerid;
+
     @Column
     private String place;
 
-    /**
-     */
     @Column
     private PrinterStatus status;
 
+
+    public UUID getACListId() {
+        return this.aclistid;
+    }
 
     public String getConfig() {
         return this.config;
@@ -104,12 +104,21 @@ public class PrinterEntity implements Serializable {
         return this.model;
     }
 
+    public UUID getOwnerId() {
+        return this.ownerid;
+    }
+
     public String getPlace() {
         return this.place;
     }
 
     public PrinterStatus getStatus() {
         return this.status;
+    }
+
+    public PrinterEntity setACListId(UUID aclistid) {
+        this.aclistid = aclistid;
+        return this;
     }
 
     public PrinterEntity setConfig(String config) {
@@ -134,6 +143,11 @@ public class PrinterEntity implements Serializable {
 
     public PrinterEntity setModel(String model) {
         this.model = model;
+        return this;
+    }
+
+    public PrinterEntity setOwnerId(UUID ownerid) {
+        this.ownerid = ownerid;
         return this;
     }
 
