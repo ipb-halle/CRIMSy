@@ -27,16 +27,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Bean for label printing. This bean provides a list of 
- * available printers for the current user and easy access 
- * to the print driver and job submission for other 
- * (session scoped) beans.
+ * Bean for managing (and adding, removing) label printers 
+ * and managing their jobs
  * 
  * @author fbroda
  */
 @SessionScoped
 @Named
-public class PrintBean implements Serializable {
+public class PrintAdminBean implements Serializable {
 
     @Inject
     private PrintJobService printJobService;
@@ -47,34 +45,54 @@ public class PrintBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-    private String printerName;
-
-    public String getPrinterName() {
-        return this.printerName;
-    }
+    private String  driverType;
+    private Printer printer; 
 
     /**
-     * obtain the driver for the selected printer
+     * print a testpage for the selected Printer
      */
-    public PrintDriver getDriver() {
-        Printer printer = printerService.loadById(this.printerName);
-        return PrintDriverFactory.buildPrintDriver(printer);
+    public void actionPrintTestPage() {
+        PrintDriver driver = PrintDriverFactory.buildPrintDriver(this.printer);
+        driver.printBarcode(BarcodeType.INTERLEAVE25, "1234567895");
+        driver.printLine("Label printing test.");
+        submitJob(driver);
+    }
+
+    /** ToDo:   */
+    public void actionAddPrinter() {}
+
+    public void actionSelectPrinter() {}
+
+    public void actionSavePrinter() {}
+
+
+    public String getDriverType() {
+        return this.driverType;
+    }
+
+    public Printer getPrinter() {
+        return this.printer;
     }
 
     /**
+     * get a list of available Print Drivers
+     */
+    public List<String> getDrivers() {
+        return PrintDriverFactory.getDrivers();
+    }
+
+    /**
+     * get a list of available Printers
      */
     public List<Printer> getPrinters() {
-        /*
-         * ToDo: xxxxx limit accessible printers
-         */
         return printerService.load();
     }
 
     /**
-     * set the name of the currently selected printer
+     * set the currently selected driver type 
      */
-    public void setPrinterName(String name) {
-        this.printerName = name;
+    public void setDriverType(String driverType) {
+        this.driverType = driverType;
     }
 
     /**
