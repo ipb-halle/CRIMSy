@@ -37,6 +37,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class ZebraE2Driver extends AbstractPrintDriver { 
 
+    public final static String DRIVER_NAME = "Zebra E2";
+
     private int offsetX;
     private int offsetY;
 

@@ -31,15 +31,15 @@ public class PrintDriverFactory {
 
     static {
         drivers = new ArrayList<String> ();
-        drivers.add("Zebra E2");
-        drivers.add("Star LC10");
+        drivers.add(ZebraE2Driver.DRIVER_NAME); 
+        drivers.add(StarLC10Driver.DRIVER_NAME);
     }
 
     public static PrintDriver buildPrintDriver(Printer printer) {
         switch(printer.getDriver()) {
-            case "Zebra E2" :
+            case ZebraE2Driver.DRIVER_NAME :
                 return new ZebraE2Driver().setPrinter(printer);
-            case "Star LC10" :
+            case StarLC10Driver.DRIVER_NAME : 
                 return new StarLC10Driver().setPrinter(printer);
         }
         throw new IllegalArgumentException("Unknown driver");

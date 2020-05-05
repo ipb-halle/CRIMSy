@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.admission.UserBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Init;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,17 +45,20 @@ public class PrintBean implements Serializable {
 
     private String printerName;
 
-/*
-    @Init
-    public void init() {
-        // do something
-    }
-
-*/
     public String getPrinterName() {
         return this.printerName;
     }
 
+    /**
+     * obtain the driver for the selected printer
+     */
+    public PrintDriver getDriver() {
+        Printer printer = printerService.loadById(this.printerName);
+        return PrintDriverFactory.buildPrintDriver(printer);
+    }
+
+    /**
+     */
     public List<Printer> getPrinters() {
         /*
          * ToDo: xxxxx limit accessible printers
@@ -64,12 +66,19 @@ public class PrintBean implements Serializable {
         return printerService.load();
     }
 
-
-    public PrintDriver getDriver() {
-        return null;
+    /**
+     * set the name of the currently selected printer
+     */
+    public void setPrinterName(String name) {
+        this.printerName = name;
     }
 
+    /**
+     * submit a job for printing
+     */
     public void submitJob(PrintDriver driver) {
-        this.printJobService.save(driver.createJob());
+        PrintJob job = driver.createJob();
+        job.setOwner(userBean.getCurrentAccount());
+        this.printJobService.save(job); 
     }
 }
