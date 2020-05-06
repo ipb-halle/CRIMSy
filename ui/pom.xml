@@ -23,12 +23,12 @@
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.ipb_halle</groupId>
+    <groupId>de.ipb-halle</groupId>
     <artifactId>lbac-ui</artifactId>
     <version>1.3.0</version>
     <scm>
-        <connection>scm:git:http://bitbucket.ipb-halle.de/scm/lbac/lbac.git</connection>
-        <url>http://bitbucket.ipb-halle.de/scm/lbac/lbac.git</url>
+        <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
+        <url>https://github.com/ipb-halle.de/CRIMSy.git</url>
     </scm>
     <packaging>war</packaging>
 
@@ -245,6 +245,14 @@
 
 
     <dependencies>
+
+        <!-- crimsy-agency-api -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-agency-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- Provided dependencies by the server -->
         <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
         <dependency>
