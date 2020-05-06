@@ -15,26 +15,46 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.device.print;
-
-import de.ipb_halle.lbac.device.job.Job;
-
-import java.util.ArrayList;
-import java.util.List;
+package de.ipb_halle.lbac.device.job;
 
 /**
- * Interface for print drivers.
+ * This entity describes a job status:
+ * <ul>
+ * <li>PENDING</li>
+ * <li>BUSY</li>
+ * <li>FAILED</li>
+ * <li>COMPLETED</li>
+ * </ul>
  *
  * @author fbroda
  */
-public interface PrintDriver { 
+public enum JobStatus {
 
-    public PrintDriver clear();
-    public Job createJob();
+    PENDING(0),
+    BUSY(1),
+    FAILED(2),
+    COMPLETED(3);
 
-    public PrintDriver printBarcode(BarcodeType type, String data);
-    public PrintDriver printLine(String line);
+    private int typeId;
 
-    public PrintDriver setPrinter(Printer printer);
+    private JobStatus(int typeId) {
+        this.typeId = typeId;
+    }
 
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public static JobStatus getJobStatusById(int id) {
+        for (JobStatus j : JobStatus.values()) {
+            if (j.getTypeId() == id) {
+                return j;
+            }
+        }
+        return null;
+    }
 }

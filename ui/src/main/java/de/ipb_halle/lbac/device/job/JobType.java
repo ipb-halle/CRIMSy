@@ -15,28 +15,25 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.device.print;
+package de.ipb_halle.lbac.device.job;
 
 /**
- * This entity describes a printer status:
+ * This enum describes the type of a job:
  * <ul>
- * <li>PENDING</li>
- * <li>FAILED</li>
- * <li>COMPLETED</li>
+ * <li>PRINT</li>
+ * <li>COMPUTE</li>
  * </ul>
  *
  * @author fbroda
  */
-public enum PrintJobStatus {
+public enum JobType {
 
-    PENDING(0),
-    PRINTING(1),
-    FAILED(2),
-    COMPLETED(3);
+    PRINT(0),
+    COMPUTE(1);
 
     private int typeId;
 
-    private PrintJobStatus(int typeId) {
+    private JobType(int typeId) {
         this.typeId = typeId;
     }
 
@@ -48,10 +45,10 @@ public enum PrintJobStatus {
         this.typeId = typeId;
     }
 
-    public static PrintJobStatus getPrintJobStatusById(int id) {
-        for (PrintJobStatus p : PrintJobStatus.values()) {
-            if (p.getTypeId() == id) {
-                return p;
+    public static JobType getJobTypeById(int id) {
+        for (JobType t : JobType.values()) {
+            if (t.getTypeId() == id) {
+                return t;
             }
         }
         return null;

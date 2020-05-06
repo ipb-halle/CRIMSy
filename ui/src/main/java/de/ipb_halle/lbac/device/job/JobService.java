@@ -15,10 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.device.print;
+package de.ipb_halle.lbac.device.job;
 
 /**
- * PrintJobService loads, stores and deletes print jobs.
+ * JobService loads, stores and deletes jobs.
  */
 import de.ipb_halle.lbac.service.MemberService;
 
@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 @Stateless
-public class PrintJobService implements Serializable {
+public class JobService implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,12 +51,12 @@ public class PrintJobService implements Serializable {
 
     private Logger logger;
 
-    public PrintJobService() {
+    public JobService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     @PostConstruct
-    public void PrintJobServiceInit() {
+    public void JobServiceInit() {
         if (em == null) {
             logger.error("Injection failed for EntityManager. @PersistenceContext(name = \"de.ipb_halle.lbac\")");
         }
@@ -65,22 +65,23 @@ public class PrintJobService implements Serializable {
     /**
      * This needs to be complemented by means to select:
      * <ul>
-     * <li>print jobs by state (PENDING, FAILED, ...)</li>
-     * <li>print jobs by printer</li>
-     * <li>print jobs by owner?</li>
+     * <li>jobs by state (PENDING, FAILED, ...)</li>
+     * <li>jobs by queue</li>
+     * <li>jobs by owner?</li>
+     * <li>jobs by date (for job exipiration)</li>
      * </ul>
-     * @return the the complete list of PrintJobs
+     * @return the the complete list of jobs
      */
     @SuppressWarnings("unchecked")
-    public List<PrintJob> load() {
+    public List<Job> load() {
 
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
-        CriteriaQuery<PrintJobEntity> criteriaQuery = builder.createQuery(PrintJobEntity.class);
-        Root<PrintJobEntity> printerRoot = criteriaQuery.from(PrintJobEntity.class);
-        criteriaQuery.select(printerRoot);
-        List<PrintJob> result = new ArrayList<>();
-        for (PrintJobEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
-            result.add(new PrintJob(
+        CriteriaQuery<JobEntity> criteriaQuery = builder.createQuery(JobEntity.class);
+        Root<JobEntity> jobRoot = criteriaQuery.from(JobEntity.class);
+        criteriaQuery.select(jobRoot);
+        List<Job> result = new ArrayList<>();
+        for (JobEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
+            result.add(new Job(
                     e,
                     memberService.loadUserById(e.getOwnerId())));
         }
@@ -88,35 +89,35 @@ public class PrintJobService implements Serializable {
     }
 
     /**
-     * load a PrintJob by id 
+     * load a Job by id 
      *
-     * @param id PrintJob Id 
-     * @return the PrintJob object
+     * @param id Job Id 
+     * @return the Job object
      */
-    public PrintJob loadById(Integer id) {
-        PrintJobEntity entity = this.em.find(PrintJobEntity.class, id);
-        return new PrintJob(
+    public Job loadById(Integer id) {
+        JobEntity entity = this.em.find(JobEntity.class, id);
+        return new Job(
                 entity, 
                 memberService.loadUserById(entity.getOwnerId()));
     }
 
     /**
-     * remove a print job from the database
-     * @param p the print job DTO
+     * remove a job from the database
+     * @param p the job DTO
      */
-    public void remove(PrintJob p) {
-        this.em.remove(this.em.find(PrintJobEntity.class, p.getJobId()));
+    public void remove(Job j) {
+        this.em.remove(this.em.find(JobEntity.class, j.getJobId()));
     }
 
     /**
-     * save a single printer object
+     * save a single job object
      *
-     * @param p the PrintJob  to save
-     * @return the persisted PrintJob DTO
+     * @param j the Job  to save
+     * @return the persisted Job DTO
      */
-    public PrintJob save(PrintJob p) {
-        return new PrintJob(
-                this.em.merge(p.createEntity()),
-                p.getOwner());
+    public Job save(Job j) {
+        return new Job(
+                this.em.merge(j.createEntity()),
+                j.getOwner());
     }
 }

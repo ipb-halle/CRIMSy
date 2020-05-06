@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.device.print;
+package de.ipb_halle.lbac.device.job;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -32,19 +32,23 @@ import javax.persistence.TemporalType;
 import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
- * Print Job entity
- * A print job entity object collects information necessary 
- * to execute a print job outside the DMZ.
+ * Job entity
+ * A job entity object collects information necessary 
+ * to execute a job outside the DMZ.
  * <ul>
- * <li>actual bytes to be printed</li>
- * <li>name of the destination printer</li>
+ * <li>input data to the job</li>
+ * <li>output data of the job (not relevant for all types of jobs)</li>
+ * <li>name of the destination queue</li>
+ * <li>job type</li>
+ * <li>job status</li>
+ * <li>job date (for expiry)</li>
  * </ul>
  *
  * @author fbroda
  */
 @Entity
-@Table(name = "printjobs")
-public class PrintJobEntity implements Serializable {
+@Table(name = "jobs")
+public class JobEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
@@ -53,32 +57,41 @@ public class PrintJobEntity implements Serializable {
     private Integer jobid;
 
     /**
-     * The document 
+     * input data 
      */
     @Column
-    private byte[] data;
-
-    /**
-     * the name of the destination printer
-     */
-    @Column
-    private String destination;
-
-    @Column
-    private UUID ownerid;
+    private byte[] input;
 
     @Column
     private Date jobdate;
 
+
     @Column
-    private PrintJobStatus status;
+    private JobType jobtype;
 
-    public byte[] getData() {
-        return this.data;
-    }
+    /**
+     * output data (some jobs do not produce output data)
+     */
+    @Column
+    private byte[] output;
 
-    public String getDestination() {
-        return this.destination;
+    @Column
+    private UUID ownerid;
+
+    /**
+     * destination queue name 
+     */
+    @Column
+    private String queue;
+
+    @Column
+    private JobStatus status;
+
+
+
+
+    public byte[] getInput() {
+        return this.input;
     }
 
     public Date getJobDate() {
@@ -89,40 +102,62 @@ public class PrintJobEntity implements Serializable {
         return this.jobid;
     }
 
+    public JobType getJobType() {
+        return this.jobtype;
+    }
+
+    public byte[] getOutput() {
+        return this.output;
+    }
+
     public UUID getOwnerId() {
         return this.ownerid;
     }
 
-    public PrintJobStatus getStatus() {
+    public String getQueue() {
+        return this.queue;
+    }
+
+    public JobStatus getStatus() {
         return this.status;
     }
 
-    public PrintJobEntity setData(byte[] data) { 
-        this.data = data;
+    public JobEntity setInput(byte[] input) { 
+        this.input = input;
         return this;
     }
 
-    public PrintJobEntity setDestination(String destination) {
-        this.destination = destination;
-        return this;
-    }
-
-    public PrintJobEntity setJobDate(Date jobdate) {
+    public JobEntity setJobDate(Date jobdate) {
         this.jobdate = jobdate;
         return this;
     }
 
-    public PrintJobEntity setJobId(Integer jobid) {
+    public JobEntity setJobId(Integer jobid) {
         this.jobid = jobid;
         return this;
     }
 
-    PrintJobEntity setOwnerId(UUID ownerid) {
+    public JobEntity setJobType(JobType jobtype) {
+        this.jobtype = jobtype;
+        return this;
+    }
+
+    public JobEntity setOutput(byte[] output) {
+        this.output = output;
+        return this;
+    }
+
+    JobEntity setOwnerId(UUID ownerid) {
         this.ownerid = ownerid;
         return this;
     }
 
-    public  PrintJobEntity setStatus(PrintJobStatus status) {
+    public JobEntity setQueue(String queue) {
+        this.queue = queue;
+        return this;
+    }
+
+    public  JobEntity setStatus(JobStatus status) {
         this.status = status;
         return this;
     }

@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.device.print;
 
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.device.job.Job;
+import de.ipb_halle.lbac.device.job.JobService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ import javax.inject.Named;
 public class PrintBean implements Serializable {
 
     @Inject
-    private PrintJobService printJobService;
+    private JobService jobService;
 
     @Inject
     private PrinterService printerService;
@@ -81,8 +83,8 @@ public class PrintBean implements Serializable {
      * submit a job for printing
      */
     public void submitJob(PrintDriver driver) {
-        PrintJob job = driver.createJob();
+        Job job = driver.createJob();
         job.setOwner(userBean.getCurrentAccount());
-        this.printJobService.save(job); 
+        this.jobService.save(job); 
     }
 }

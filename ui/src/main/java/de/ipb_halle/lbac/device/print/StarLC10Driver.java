@@ -189,12 +189,4 @@ public class StarLC10Driver extends AbstractPrintDriver {
         append("\n".getBytes());
         return this;
     }
-
-    /**
-     *
-     */
-    @Override
-    public PrintJob createJob() {
-        return super.createJob();
-    }
 }

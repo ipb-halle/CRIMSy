@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import de.ipb_halle.lbac.device.job.Job;
+
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -81,10 +83,10 @@ public class ZebraE2Driver extends AbstractPrintDriver {
     }
 
     /**
-     *
+     * append the epilogue to the print job
      */
     @Override
-    public PrintJob createJob() {
+    public Job createJob() {
         append(getConfig("epilogue"));
         return super.createJob();
     }

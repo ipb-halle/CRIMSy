@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import de.ipb_halle.lbac.device.job.Job;
+import de.ipb_halle.lbac.device.job.JobType;
 import de.ipb_halle.lbac.util.HexUtil;
 
 import java.io.BufferedReader;
@@ -155,11 +157,12 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     /**
      * Implementations may want to override this method,
      * e.g. to append an epilogue section
-     * @return the PrintJob
+     * @return the Job
      */
-    public PrintJob createJob() {
-        return new PrintJob()
-            .setDestination(this.printer.getName())
-            .setData(this.buffer.array());
+    public Job createJob() {
+        return new Job()
+            .setJobType(JobType.PRINT)
+            .setQueue(this.printer.getName())
+            .setInput(this.buffer.array());
     }
 }
