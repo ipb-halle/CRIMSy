@@ -57,15 +57,35 @@ public class Job implements DTO {
     }
     
     public JobEntity createEntity() {
-        return new JobEntity()
+        JobEntity e = new JobEntity()
                 .setInput(this.input)
                 .setJobDate(this.jobdate)
                 .setJobId(this.jobid)
                 .setJobType(this.jobtype)
                 .setOutput(this.output)
-                .setOwnerId(this.owner.getId())
                 .setQueue(this.queue)
                 .setStatus(this.status);
+
+        if (this.owner != null) {
+            e.setOwnerId(this.owner.getId());
+        }
+        return e;
+    }
+
+    public NetJob createNetJob() {
+        NetJob j = new NetJob()
+            .setInput(this.input)
+            .setJobDate(this.jobdate)
+            .setJobId(this.jobid)
+            .setJobType(this.jobtype)
+            .setOutput(this.output)
+            .setQueue(this.queue)
+            .setStatus(this.status);
+
+        if (this.owner != null) {
+            j.setOwnerName(this.owner.getName());
+        }
+        return j;
     }
 
     public byte[] getInput() {
@@ -134,5 +154,16 @@ public class Job implements DTO {
     public Job setStatus(JobStatus status) {
         this.status = status;
         return this;
+    }
+
+    /**
+     * update this job from a <code>NetJob</code> object. Update 
+     * affects only the fields <code>status</code> and 
+     * <code>output</code>. All other fields remain unaffected.
+     * @param netjob the <code>NetJob</code> object to use for update
+     */
+    public void update(NetJob netjob) {
+        this.output = netjob.getOutput();
+        this.status = netjob.getStatus();
     }
 }

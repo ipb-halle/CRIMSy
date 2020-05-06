@@ -24,12 +24,15 @@ package de.ipb_halle.lbac.device.job;
  * <li>UPDATE (update a single job)</li>
  * </ul>
  * 
- * In query mode, the fields <code>jobid</code>, <code>queue</code> and 
- * <code>status</code> shall be evaluated by the client. The client shall 
- * return all matching <code>NetJob</code> objects in the field 
- * <code>joblist</code>.  In update mode, the client shall update 
- * the fields <code>output</code> and <code>status</code> for the job 
- * identified by <code>jobid</code>.
+ * In query mode, the fields <code>jobid</code>, <code>jobtype</code>, 
+ * <code>queue</code> and <code>status</code> shall be evaluated by the 
+ * server. If a single job is queried (by <code>jobid</code>), the server 
+ * shall return the plain <code>NetJob</code> object. Otherwise, the 
+ * server shall return all matching <code>NetJob</code> objects 
+ * in the field <code>joblist</code>.  
+ *
+ * In update mode, the server shall update the fields <code>output</code> and 
+ * <code>status</code> for the job identified by <code>jobid</code>.
  *
  * @author fbroda
  */

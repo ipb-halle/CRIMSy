@@ -24,7 +24,9 @@ import de.ipb_halle.lbac.service.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -33,6 +35,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
@@ -42,6 +45,10 @@ import org.apache.logging.log4j.LogManager;
 public class JobService implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public final static String CONDITION_JOBTYPE = "JOBTYPE";
+    public final static String CONDITION_QUEUE = "QUEUE";
+    public final static String CONDITION_STATUS = "STATUS";
 
     @Inject
     private MemberService memberService;
@@ -63,6 +70,13 @@ public class JobService implements Serializable {
     }
 
     /**
+     * simply load all jobs
+     */
+    public List<Job> load() {
+        return load(new HashMap<String, Object> ());
+    }
+
+    /**
      * This needs to be complemented by means to select:
      * <ul>
      * <li>jobs by state (PENDING, FAILED, ...)</li>
@@ -73,12 +87,28 @@ public class JobService implements Serializable {
      * @return the the complete list of jobs
      */
     @SuppressWarnings("unchecked")
-    public List<Job> load() {
+    public List<Job> load(Map<String, Object> cmap) {
 
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
         CriteriaQuery<JobEntity> criteriaQuery = builder.createQuery(JobEntity.class);
         Root<JobEntity> jobRoot = criteriaQuery.from(JobEntity.class);
         criteriaQuery.select(jobRoot);
+
+        List<Predicate> predicates = new ArrayList<Predicate> ();
+
+        if (cmap.get(CONDITION_JOBTYPE) != null) {
+            predicates.add(builder.equal(jobRoot.get("jobtype"), cmap.get(CONDITION_JOBTYPE)));
+        }
+
+        if (cmap.get(CONDITION_QUEUE) != null) {
+            predicates.add(builder.equal(jobRoot.get("jobtype"), cmap.get(CONDITION_QUEUE)));
+        }
+
+        if (cmap.get(CONDITION_STATUS) != null) {
+            predicates.add(builder.equal(jobRoot.get("jobtype"), cmap.get(CONDITION_STATUS)));
+        }
+
+        criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));
         List<Job> result = new ArrayList<>();
         for (JobEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
             result.add(new Job(

@@ -47,6 +47,7 @@ public class SystemSettings implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     public final static String SETTING_FORCE_LOGIN = "SETTING_FORCE_LOGIN";
+    public final static String SETTING_AGENCY_SECRET = "SETTING_AGENCY_SECRET";
 
     private transient Logger logger;
 
@@ -78,6 +79,7 @@ public class SystemSettings implements Serializable {
         initProperty(this.stringSettings, "SETTING_GDPR_CONTACT", "Name, Vorname");
         initProperty(this.stringSettings, "SETTING_INSTITUTION_WEB", "Homepage");
         initProperty(this.boolSettings, SETTING_FORCE_LOGIN, "True");
+        initProperty(this.stringSettings, SETTING_AGENCY_SECRET, "");
     }
 
     public Boolean getBoolean(String prop) {

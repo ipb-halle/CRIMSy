@@ -21,6 +21,12 @@ import java.io.Serializable;
 
 import java.util.List;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The NetJob class is for transmission of queries, job 
@@ -29,18 +35,25 @@ import java.util.Date;
  *
  * @author fbroda
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class NetJob {
 
     private Integer         jobid;
     private byte[]          input;
     private Date            jobdate;
-    private List<NetJob>    joblist;
     private JobType         jobtype;
     private byte[]          output;
     private String          ownername;
     private String          queue;
     private RequestType     requesttype;
     private JobStatus       status;
+    private String          token;
+
+    @XmlElementWrapper(name="joblist")
+    @XmlElements( 
+    @XmlElement(name = "job", type = NetJob.class) )
+    private List<NetJob>    joblist;
 
 
     public byte[] getInput() {
@@ -81,6 +94,10 @@ public class NetJob {
 
     public JobStatus getStatus() { 
         return this.status; 
+    }
+
+    public String getToken() {
+        return this.token;
     }
 
     public NetJob setInput(byte[] input) { 
@@ -130,6 +147,11 @@ public class NetJob {
 
     public NetJob setStatus(JobStatus status) {
         this.status = status;
+        return this;
+    }
+
+    public NetJob setToken(String token) {
+        this.token = token;
         return this;
     }
 }
