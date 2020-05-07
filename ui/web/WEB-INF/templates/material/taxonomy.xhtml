@@ -114,7 +114,14 @@
                         <ui:insert> 
                             <ui:include src="/WEB-INF/templates/material/components/taxonomyNames.xhtml"/>
                         </ui:insert>
-
+                    </b:column>
+                    <b:column span="8" offset="4"
+                              styleClass="taxonomyInfos">
+                        <b:inputText
+                            label="Parent of the new taxonomy"
+                            value="#{taxonomyBean.getParentFirstName()}"
+                            rendered="#{taxonomyBean.isParentVisible()}"
+                            disabled="true"/>
                     </b:column>
                 </b:row>
 

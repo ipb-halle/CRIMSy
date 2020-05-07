@@ -376,4 +376,21 @@ public class TaxonomyBean implements Serializable {
         }
     }
 
+    public boolean isParentVisible() {
+        if (mode == Mode.CREATE && selectedTaxonomy != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String getParentFirstName() {
+        if (selectedTaxonomy != null) {
+            Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
+            return t.getFirstName();
+        } else {
+            return "";
+        }
+    }
+
 }
