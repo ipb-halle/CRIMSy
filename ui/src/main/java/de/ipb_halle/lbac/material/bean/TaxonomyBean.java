@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.bean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
@@ -57,9 +58,9 @@ public class TaxonomyBean implements Serializable {
     }
 
     private List<Taxonomy> shownTaxonomies;
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
     private User currentUser;
-
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private List<TaxonomyLevel> levels;
     private TaxonomyLevel selectedLevel;
     @Inject
@@ -93,11 +94,43 @@ public class TaxonomyBean implements Serializable {
             return;
         }
         if (mode == Mode.CREATE) {
-            saveNewTaxonomy();
-            mode = Mode.SHOW;
+            if (checkInputValidity()) {
+                saveNewTaxonomy();
+                mode = Mode.SHOW;
+            }
         }
         reloadTreeNode(taxonomyToCreate.getId());
+    }
 
+    public boolean checkInputValidity() {
+        if (mode == Mode.CREATE) {
+            if (taxonomyToCreate != null) {
+                if (selectedTaxonomy == null) {
+                    UIMessage.warn("taxonomy_no_valide_parent");
+                    return false;
+                }
+
+                if (!isNameSet()) {
+                    UIMessage.warn("taxonomy_no_valide_input");
+                    return false;
+                } else {
+                    UIMessage.info("taxonomy_saved");
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+    private boolean isNameSet() {
+        return taxonomyToCreate.getNames().size() > 0
+                && !taxonomyToCreate.getNames()
+                        .get(0)
+                        .getValue()
+                        .trim()
+                        .equals("");
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
