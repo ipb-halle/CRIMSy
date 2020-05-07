@@ -25,9 +25,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Abstract base class for print drivers 
@@ -43,6 +47,14 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     private Printer             printer;
     private Map<String, byte[]> configMap;
 
+    private Logger logger;
+
+    /**
+     * default constructor
+     */
+    public AbstractPrintDriver() {
+        this.logger = LogManager.getLogger(this.getClass().getName());
+    }
 
     /**
      * append a byte array to the output buffer
@@ -55,7 +67,9 @@ public abstract class AbstractPrintDriver implements PrintDriver {
      * append a byte array to a ByteBuffer.
      * This method checks if data fits in remaining 
      * capacity and eventually re-allocates a new buffer.
-     * This method is for internal use (e.g. also during
+     * Capacity is doubled in each round until the data 
+     * can be appended to the buffer.
+     * This method is also for internal use (e.g. also during
      * parsing of the configuration).
      * @param buf the buffer
      * @param data the data
@@ -65,7 +79,7 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     private ByteBuffer append(ByteBuffer buf, byte[] data) {
         while (buf.remaining() < data.length) {
             ByteBuffer tmp = ByteBuffer.allocate(2 * buf.capacity());
-            tmp.put(buf);
+            tmp.put((ByteBuffer) buf.flip());
             buf = tmp;
         }
         buf.put(data);
@@ -126,7 +140,7 @@ public abstract class AbstractPrintDriver implements PrintDriver {
                 if (! line.startsWith("#")) {
                     if (! cont) {
                         if (key != null) {
-                            this.configMap.put(key, buf.array());
+                            this.configMap.put(key, Arrays.copyOf(buf.array(), buf.position()));
                             buf = ByteBuffer.allocate(INITIAL_BUFFER_SIZE); 
                         }
                         int idx = line.indexOf("=");
@@ -135,12 +149,12 @@ public abstract class AbstractPrintDriver implements PrintDriver {
                     }
                     cont = line.endsWith("\\"); 
                     buf = append(buf, 
-                            HexUtil.fromHex(pattern.matcher(line).replaceAll("")));
+                            HexUtil.fromHex(pattern.matcher(line).replaceAll(""))); 
                 }
                 line = reader.readLine();
             }
             if(key != null) {
-                this.configMap.put(key, buf.array());
+                this.configMap.put(key, Arrays.copyOf(buf.array(), buf.position()));
             }
         } catch(IOException e) {
             // ignore
@@ -163,6 +177,6 @@ public abstract class AbstractPrintDriver implements PrintDriver {
         return new Job()
             .setJobType(JobType.PRINT)
             .setQueue(this.printer.getName())
-            .setInput(this.buffer.array());
+            .setInput(Arrays.copyOf(this.buffer.array(), this.buffer.position()));
     }
 }

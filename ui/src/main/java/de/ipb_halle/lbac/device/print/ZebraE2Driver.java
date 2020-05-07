@@ -21,6 +21,9 @@ import de.ipb_halle.lbac.device.job.Job;
 
 import java.nio.charset.StandardCharsets;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
  * PrintDriver for Zebra E2 barcode printers (e.g. Zebra TLP 2844)
  *
@@ -43,6 +46,13 @@ public class ZebraE2Driver extends AbstractPrintDriver {
 
     private int offsetX;
     private int offsetY;
+
+    private Logger logger;
+
+    public ZebraE2Driver() {
+        super();
+        this.logger = LogManager.getLogger(this.getClass().getName());
+    }
 
     @Override
     public PrintDriver clear() {

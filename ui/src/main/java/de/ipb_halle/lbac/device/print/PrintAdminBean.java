@@ -25,6 +25,8 @@ import de.ipb_halle.lbac.device.job.JobService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,8 +56,10 @@ public class PrintAdminBean implements Serializable {
     private String  driverType;
     private Printer printer; 
 
-    public PrintAdminBean() {
-        this.printer = new Printer(new PrinterEntity(), 
+
+    @PostConstruct
+    private void printAdminBeanInit() {
+        this.printer = new Printer(new PrinterEntity(),
                 GlobalAdmissionContext.getPublicReadACL(),
                 globalAdmissionContext.getAdminAccount());
     }
@@ -82,7 +86,7 @@ public class PrintAdminBean implements Serializable {
         // xxxxx error handling!!!
     }
 
-    public void actionSavePrinter() {
+    public void actionSave() {
         this.printer = printerService.save(this.printer);
         // xxxxx error handling!!!
     }

@@ -94,39 +94,32 @@ public class Printer extends ACObject implements DTO {
         return this.status;
     }
 
-    public Printer setConfig(String config) {
+    public void setConfig(String config) {
         this.config = config;
-        return this;
     }
 
-    public Printer setContact(String contact) {
+    public void setContact(String contact) {
         this.contact = contact;
-        return this;
     }
 
-    public Printer setDriver(String driver) { 
+    public void setDriver(String driver) { 
         this.driver = driver; 
-        return this; 
     }
 
-    public Printer setModel(String model) {
+    public void setModel(String model) {
         this.model = model;
-        return this;
     }
 
-    public Printer setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
-    public Printer setPlace(String place) {
+    public void setPlace(String place) {
         this.place = place;
-        return this;
     }
 
-    public Printer setStatus(PrinterStatus status) {
+    public void setStatus(PrinterStatus status) {
         this.status = status;
-        return this;
     }
 
 }
