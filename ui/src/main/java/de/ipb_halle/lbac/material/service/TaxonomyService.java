@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.material.service;
 
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.difference.MaterialComparator;
+import de.ipb_halle.lbac.material.difference.MaterialDifference;
 import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity;
 import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
@@ -31,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -56,12 +59,18 @@ public class TaxonomyService implements Serializable {
             + "AND (id=:id OR :id=-1) "
             + "ORDER BY id";
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
+    protected MaterialComparator comparator;
 
     @Inject
     private MaterialService materialService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
+
+    @PostConstruct
+    public void init() {
+        comparator = new MaterialComparator();
+    }
 
     public Set<String> getSimilarTaxonomy(String name) {
         return new HashSet<>();
@@ -104,9 +113,15 @@ public class TaxonomyService implements Serializable {
     public void saveEditedTaxonomy(
             Taxonomy originalTaxo,
             Taxonomy editedTaxo) {
+        try {
+            List<MaterialDifference> diffs = comparator.compareMaterial(originalTaxo, editedTaxo);
+            //Save difference of Names
+            //Save difference on hierarchy
+            //Save difference on level
 
-       
+        } catch (Exception e) {
 
+        }
     }
 
 }

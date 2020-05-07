@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
+import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +43,28 @@ import org.apache.logging.log4j.Logger;
 public class MaterialComparator {
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    private void addTaxonomyDifference(
+            List<MaterialDifference> differences,
+            Taxonomy originalMat,
+            Taxonomy editedMat) {
+
+        TaxonomyDifference td = new TaxonomyDifference();
+        if (originalMat.getLevel().getId() != editedMat.getLevel().getId()) {
+            td.setOldLevelId(originalMat.getLevel().getId());
+            td.setNewLevelId(editedMat.getLevel().getId());
+        }
+        if (originalMat.getTaxHierachy().get(0).getId() != editedMat.getTaxHierachy().get(0).getId()) {
+            for (Taxonomy t : editedMat.getTaxHierachy()) {
+                td.getNewHierarchy().add(t.getId());
+            }
+            for (Taxonomy t : originalMat.getTaxHierachy()) {
+                td.getOldHierarchy().add(t.getId());
+            }
+        }
+        differences.add(td);
+
+    }
 
     /**
      * Compares two materials and calculates the differences.
@@ -69,6 +92,11 @@ public class MaterialComparator {
             addStructureDifferences(differences,
                     (Structure) originalMat,
                     (Structure) editedMat);
+        }
+        if (originalMat.getType() == MaterialType.TAXONOMY) {
+            addTaxonomyDifference(differences,
+                    (Taxonomy) originalMat,
+                    (Taxonomy) editedMat);
         }
 
         return differences;
