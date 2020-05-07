@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
@@ -39,6 +40,9 @@ import javax.inject.Named;
 public class PrintAdminBean implements Serializable {
 
     @Inject
+    private GlobalAdmissionContext globalAdmissionContext;
+
+    @Inject
     private JobService jobService;
 
     @Inject
@@ -49,6 +53,12 @@ public class PrintAdminBean implements Serializable {
 
     private String  driverType;
     private Printer printer; 
+
+    public PrintAdminBean() {
+        this.printer = new Printer(new PrinterEntity(), 
+                GlobalAdmissionContext.getPublicReadACL(),
+                globalAdmissionContext.getAdminAccount());
+    }
 
     /**
      * print a testpage for the selected Printer
@@ -61,11 +71,21 @@ public class PrintAdminBean implements Serializable {
     }
 
     /** ToDo:   */
-    public void actionAddPrinter() {}
+    public void actionAddPrinter() {
+        this.printer = new Printer(new PrinterEntity(),
+                GlobalAdmissionContext.getPublicReadACL(),
+                globalAdmissionContext.getAdminAccount());
+    }
 
-    public void actionSelectPrinter() {}
+    public void actionSelectPrinter(String name) {
+        this.printer = printerService.loadById(name);
+        // xxxxx error handling!!!
+    }
 
-    public void actionSavePrinter() {}
+    public void actionSavePrinter() {
+        this.printer = printerService.save(this.printer);
+        // xxxxx error handling!!!
+    }
 
 
     public String getDriverType() {

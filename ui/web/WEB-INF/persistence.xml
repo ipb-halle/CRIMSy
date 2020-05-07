@@ -52,6 +52,8 @@
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity</class>
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity</class>
+        <class>de.ipb_halle.lbac.device.job.JobEntity</class>
+        <class>de.ipb_halle.lbac.device.print.PrinterEntity</class>
         <class>de.ipb_halle.lbac.entity.ACEntryEntity</class>
         <class>de.ipb_halle.lbac.entity.ACListEntity</class>
         <class>de.ipb_halle.lbac.entity.CloudEntity</class>
@@ -65,10 +67,10 @@
         <class>de.ipb_halle.lbac.entity.NestingPathEntity</class>
         <class>de.ipb_halle.lbac.entity.NestingPathSetEntity</class>
         <class>de.ipb_halle.lbac.entity.NodeEntity</class>
+        <class>de.ipb_halle.lbac.entity.TermVectorEntity</class>
         <class>de.ipb_halle.lbac.entity.UserEntity</class>
         <class>de.ipb_halle.lbac.forum.TopicEntity</class>
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
-        <class>de.ipb_halle.lbac.entity.TermVectorEntity</class>
 
         <class>de.ipb_halle.lbac.util.hibernatePG.types.JsonType</class>
         <class>de.ipb_halle.lbac.util.hibernatePG.types.ParametrizedJsonTypes</class>
