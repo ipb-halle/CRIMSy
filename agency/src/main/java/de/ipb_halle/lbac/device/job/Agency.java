@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.device.job;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -109,8 +111,17 @@ public class Agency {
     /**
      * read a secret from file
      */
-    private void readSecret(String fileName) {
-        throw new RuntimeException("Not yet implemented");
+    private void readSecret(String fileName) throws IOException {
+        BufferedReader rd = new BufferedReader(new FileReader(fileName));
+        String line = rd.readLine();
+        while ((line != null) && (line.startsWith("#"))) {
+            line = rd.readLine();
+        }
+        if ((line == null) || (line.length() < 8)) {
+            throw new RuntimeException("Could not read password (>= 8 chars)");
+        } 
+        this.secret = line;
+        rd.close();
     }
 
     /**
