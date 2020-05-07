@@ -79,6 +79,7 @@ public class Handler {
                 NetJob netjob = new NetJob()
                     .setQueue(iter.next())
                     .setRequestType(RequestType.QUERY);
+                System.out.println("startQueues(): queue=" + netjob.getQueue());
                 start(netjob);
             }
             sleep();
@@ -123,12 +124,16 @@ public class Handler {
 
     public void start() throws IOException, InterruptedException {
         if (queues.size() > 0) {
+            System.out.println("start() --> Queues");
             startQueues();
         }
 
         if (jobtypes.size() > 0) {
+            System.out.println("start() --> JobTypes");
             startTypes();
         }
+
+        System.out.println("start() --> ALL");
         NetJob netjob = new NetJob()
             .setRequestType(RequestType.QUERY);
         while (true) {
