@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,12 +74,13 @@ public class TaxonomyServiceTest extends TestBase {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
         materialService.setUserBean(userBean);
+       
     }
 
     @Test
     public void test001_loadTaxonomyLevels() {
         List<TaxonomyLevel> levels = service.loadTaxonomyLevel();
-        Assert.assertEquals("test001: 8 levels must be found", 8, levels.size());
+        Assert.assertEquals("test001: 21 levels must be found", 21, levels.size());
     }
 
     @Test
@@ -115,8 +117,6 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(8, ohrlappenpilze.getTaxHierachy().get(0).getId());
         Assert.assertEquals(2, ohrlappenpilze.getTaxHierachy().get(1).getId());
         Assert.assertEquals(1, ohrlappenpilze.getTaxHierachy().get(2).getId());
-
-        cleanTaxonomyFromDb();
     }
 
     @Deployment

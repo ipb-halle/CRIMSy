@@ -149,6 +149,8 @@ public class TestBase implements Serializable {
 
     @Before
     public void setUp() {
+        cleanTaxonomyFromDb();
+        cleanMaterialsFromDB();
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
@@ -156,6 +158,7 @@ public class TestBase implements Serializable {
         this.entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
         this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
+
     }
 
     protected void createTaxanomy(int id, String name, int level, String userGroups, String ownerId, Integer... parents) {

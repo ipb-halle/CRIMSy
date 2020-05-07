@@ -17,7 +17,12 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LdapProperties;
+import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrUpdate;
 import de.ipb_halle.lbac.collections.CollectionBean;
 
@@ -32,6 +37,11 @@ import de.ipb_halle.lbac.file.mock.SolrTermVectorSearchMock;
 import de.ipb_halle.lbac.file.mock.SolrUpdateMock;
 import de.ipb_halle.lbac.file.mock.TermVectorEntityServiceMock;
 import de.ipb_halle.lbac.file.mock.TermVectorParserMock;
+import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.service.CollectionService;
@@ -45,12 +55,17 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import javax.servlet.AsyncContext;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author fmauz
  */
+@RunWith(Arquillian.class)
 public class FileUploadTest extends TestBase {
 
     private FileUpload instance;
@@ -103,7 +118,11 @@ public class FileUploadTest extends TestBase {
         );
         instance.setTermVectorParser(new TermVectorParserMock());
         instance.run();
+    }
 
+    @Deployment
+    public static WebArchive createDeployment() {
+        return prepareDeployment("FileUploadTest.war");
     }
 
 }
