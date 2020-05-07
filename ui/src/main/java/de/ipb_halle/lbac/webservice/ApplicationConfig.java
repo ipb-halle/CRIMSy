@@ -17,12 +17,14 @@
  */
 package de.ipb_halle.lbac.webservice;
 
-import de.ipb_halle.lbac.search.document.SearchWebService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
 import de.ipb_halle.lbac.announcement.membership.MembershipWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
+import de.ipb_halle.lbac.device.job.JobWebService;
 import de.ipb_halle.lbac.forum.postings.PostingWebService;
 import de.ipb_halle.lbac.forum.topics.TopicsWebService;
+import de.ipb_halle.lbac.search.document.SearchWebService;
+import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,6 +43,7 @@ public class ApplicationConfig extends Application {
                 WordCloudWebService.class,
                 TopicsWebService.class,
                 PostingWebService.class,
+                JobWebService.class,
                 SimpleRESTPojoExample.class));
     }
 }

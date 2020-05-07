@@ -100,6 +100,10 @@
                                               rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
                                               actionListener="#{navigator.navigate('LdapAdminProperties')}"/>
                             <b:navCommandLink iconAwesome="wrench"
+                                              value="#{msgs.PrinterSettings}"
+                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
+                                              actionListener="#{navigator.navigate('printerSettings')}"/>
+                            <b:navCommandLink iconAwesome="wrench"
                                               value="#{msgs.SystemSettings}"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
                                               actionListener="#{navigator.navigate('systemSettings')}"/>

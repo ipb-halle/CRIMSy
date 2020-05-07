@@ -20,8 +20,8 @@ package de.ipb_halle.lbac.device.print;
 /**
  * This entity describes a printer status:
  * <ul>
- * <li>READY</li>
  * <li>FAILED</li>
+ * <li>READY</li>
  * <li>DISABLED</li>
  * </ul>
  *
@@ -29,8 +29,8 @@ package de.ipb_halle.lbac.device.print;
  */
 public enum PrinterStatus {
 
-    READY(0),
-    FAILED(1),
+    FAILED(0),
+    READY(1),
     DISABLED(2);
 
     private int typeId;

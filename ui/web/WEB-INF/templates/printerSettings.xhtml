@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+>
+
+<h:body>
+    <ui:composition>
+        <b:panelGrid colSpans="9,3" size="sm">
+            <b:form id="printerSettings" horizontal="true" method="post">
+                <b:panel title="#{msgs.PrinterSettings}" collapsible="false" look="info">
+
+                   <b:inputText
+                                label="#{msgs.PrinterQueue}:"
+                                title="#{msgs.PrinterQueue_detail'}"
+                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().name" colMd="7">
+                   <b:inputText
+                                label="#{msgs.PrinterModel}:"
+                                title="#{msgs.PrinterModel_detail'}"
+                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().model}" colMd="7">
+                   <b:inputText
+                                label="#{msgs.PrinterContact}:"
+                                title="#{msgs.PrinterContact_detail'}"
+                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().cntact}" colMd="7">
+                   <b:inputText
+                                label="#{msgs.PrinterPlace}:"
+                                title="#{msgs.PrinterPlace_detail'}"
+                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().place}" colMd="7">
+
+                   <b:selectOneMenu
+                                label="#{msgs.PrinterDriver}:"
+                                title="#{msgs.PrinterDriver_detail}"
+                                value="#{printAdminBean.getPrinter().driver}">
+                       <f:selectItems 
+                           var="driver"
+                           value="#{printAdminBean.drivers}"
+                           itemLabel="#{driver}" />
+                   </b:selectOneMenu>
+
+
+                    <b:column styleClass="text-center">
+                        <b:commandButton type="submit" iconAwesome="print" style="margin-right:3px;"
+                                         action="#{printAdminBean.actionPrintTestPage}" value="#{msgs.PrinterSettingsTestPage}"/>
+                    </b:column>
+
+                    <b:column styleClass="text-center">
+                        <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
+                                         action="#{printAdminBean.actionSave}" value="#{msgs.PrinterSettingsSave}"/>
+                    </b:column>
+                </b:panel>
+            </b:form>
+        </b:panelGrid>
+    </ui:composition>
+</h:body>
+</html>
