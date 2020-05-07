@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+>
+
+<h:body>
+    <ui:composition>
+        <b:panelGrid colSpans="9,3" size="sm">
+            <b:form id="printerSettings" horizontal="true" method="post">
+                <b:panel title="#{msgs.PrinterSettings}" collapsible="false" look="info">
+
+                    <b:dataTable id="printerList"
+                                 value="#{printAdminBean.printers}"
+                                 styleClass="cloudNodeList"
+                                 striped="true"
+                                 responsive="false"
+                                 customOptions="autoWidth:true"
+                                 fixedHeader="true"
+                                 var="pl"
+                                 csv="true"
+                                 columnVisibility="true">
+                        <f:facet name="header">
+                            <tr>
+                                <th>#{msgs.PrinterQueue}</th>
+                                <th>#{msgs.PrinterModel}</th>
+                                <th>#{msgs.PrinterContact}</th>
+                                <th>#{msgs.PrinterPlace}</th>
+                                <th>#{msgs.PrinterStatus}</th>
+                                <th style="min-width:30px">#{msgs.Tools}</th>
+                            </tr>
+                        </f:facet>
+                        <b:dataTableColumn value="#{pl.name}" order="asc"/>
+                        <b:dataTableColumn value="#{pl.model}"/>
+                        <b:dataTableColumn value="#{pl.contact}"/>
+                        <b:dataTableColumn value="#{pl.place}"/>
+                        <b:dataTableColumn value="#{msgs['PrinterStatus_'.concat(pl.status)]}" />
+                        <b:dataTableColumn>
+                            <b:commandButton style="padding: 0 4px;"
+                                             icon="pencil"
+                                             look="link"
+                                             type="submit"
+                                             action="#{printAdminBean.actionSelectPrinter(pl)}" />
+                        </b:dataTableColumn>
+                    </b:dataTable>
+
+                    <b:row>
+                        <b:commandButton type="submit" iconAwesome="plus" style="margin-right:3px;"
+                                action="#{printAdminBean.actionAddPrinter}" value="#{msgs.PrinterAddPrinter}"/>
+                    </b:row>
+                </b:panel>
+            </b:form>
+        </b:panelGrid>
+    </ui:composition>
+</h:body>
+</html>

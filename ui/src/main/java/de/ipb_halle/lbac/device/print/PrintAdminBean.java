@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.device.print;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
 
@@ -41,6 +42,10 @@ import javax.inject.Named;
 @Named
 public class PrintAdminBean implements Serializable {
 
+    private final static String PRINTER_LIST = NavigationConstants.TEMPLATE_FOLDER + "print/printerList.xhtml";
+    private final static String PRINTER_DETAILS = NavigationConstants.TEMPLATE_FOLDER + "print/printerDetails.xhtml";
+    private final static String PRINTER_JOBS = NavigationConstants.TEMPLATE_FOLDER + "print/printerJobs.xhtml";
+
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
 
@@ -53,15 +58,35 @@ public class PrintAdminBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-    private String  driverType;
+    private String currentPage;
+    private String driverType;
     private Printer printer; 
 
+
+    /*
+     * default constructor
+     */
+    public PrintAdminBean() {
+        this.currentPage = PRINTER_LIST;
+    }
 
     @PostConstruct
     private void printAdminBeanInit() {
         this.printer = new Printer(new PrinterEntity(),
                 GlobalAdmissionContext.getPublicReadACL(),
                 globalAdmissionContext.getAdminAccount());
+    }
+
+
+    public void actionAddPrinter() {
+        this.printer = new Printer(new PrinterEntity(),
+                GlobalAdmissionContext.getPublicReadACL(),
+                globalAdmissionContext.getAdminAccount());
+        this.currentPage = PRINTER_DETAILS;
+    }
+
+    public void actionClose() {
+        currentPage = PRINTER_LIST;
     }
 
     /**
@@ -74,26 +99,28 @@ public class PrintAdminBean implements Serializable {
         submitJob(driver);
     }
 
-    /** ToDo:   */
-    public void actionAddPrinter() {
-        this.printer = new Printer(new PrinterEntity(),
-                GlobalAdmissionContext.getPublicReadACL(),
-                globalAdmissionContext.getAdminAccount());
-    }
-
-    public void actionSelectPrinter(String name) {
-        this.printer = printerService.loadById(name);
-        // xxxxx error handling!!!
-    }
-
     public void actionSave() {
         this.printer = printerService.save(this.printer);
         // xxxxx error handling!!!
     }
 
+    public void actionSelectPrinter(Printer printer) {
+        this.printer = printer; 
+        currentPage = PRINTER_DETAILS;
+        // xxxxx error handling!!!
+    }
+
+    public void actionShowJobs(String name) {
+        currentPage = PRINTER_JOBS;
+    }
+
 
     public String getDriverType() {
         return this.driverType;
+    }
+
+    public String getPage() {
+        return this.currentPage; 
     }
 
     public Printer getPrinter() {
@@ -112,6 +139,13 @@ public class PrintAdminBean implements Serializable {
      */
     public List<Printer> getPrinters() {
         return printerService.load();
+    }
+
+    /**
+     * get an array of available printer states
+     */
+    public PrinterStatus[] getPrinterStates() {
+        return PrinterStatus.values();
     }
 
     /**

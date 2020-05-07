@@ -29,6 +29,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import javax.validation.constraints.NotNull;
+
 import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
@@ -59,26 +62,43 @@ public class PrinterEntity implements Serializable {
     private UUID aclistid;
 
     @Column
+    @NotNull
     private String config;
 
     @Column
+    @NotNull
     private String contact;
 
     @Column
+    @NotNull
     private String driver;
 
     @Column
+    @NotNull
     private String model;
 
     @Column
     private UUID ownerid;
 
     @Column
+    @NotNull
     private String place;
 
     @Column
+    @NotNull
     private PrinterStatus status;
 
+    /*
+     * default constructor
+     */
+    public PrinterEntity() {
+        this.config = "";
+        this.contact = "";
+        this.driver = "";
+        this.model = "";
+        this.place = "";
+        this.status = PrinterStatus.DISABLED;
+    }
 
     public UUID getACListId() {
         return this.aclistid;

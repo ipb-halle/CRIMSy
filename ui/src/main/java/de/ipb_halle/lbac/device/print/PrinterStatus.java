@@ -29,9 +29,9 @@ package de.ipb_halle.lbac.device.print;
  */
 public enum PrinterStatus {
 
-    FAILED(0),
+    DISABLED(0),
     READY(1),
-    DISABLED(2);
+    FAILED(2);
 
     private int typeId;
 

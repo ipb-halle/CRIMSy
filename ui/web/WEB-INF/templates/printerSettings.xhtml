@@ -28,73 +28,11 @@
 
 <h:body>
     <ui:composition>
-        <b:panelGrid colSpans="9,3" size="sm">
-            <b:form id="printerSettings" horizontal="true" method="post">
-                <b:panel title="#{msgs.PrinterSettings}" collapsible="false" look="info">
-
-                    <b:inputText
-                                label="#{msgs.PrinterQueue}:"
-                                title="#{msgs.PrinterQueue_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().name}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
-
-                    <b:inputText
-                                label="#{msgs.PrinterModel}:"
-                                title="#{msgs.PrinterModel_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().model}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
-
-                    <b:inputText
-                                label="#{msgs.PrinterContact}:"
-                                title="#{msgs.PrinterContact_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().contact}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
-
-                    <b:inputText
-                                label="#{msgs.PrinterPlace}:"
-                                title="#{msgs.PrinterPlace_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().place}" colMd="7">
-                        <f:facet name="append">
-                            <b:iconAwesome name="th-list"/>
-                        </f:facet>
-                    </b:inputText>
-
-                    <b:selectOneMenu
-                                label="#{msgs.PrinterDriver}:"
-                                labelColMd="4" labelStyle="text-align:right;" colMd="7"
-                                title="#{msgs.PrinterDriver_detail}"
-                                value="#{printAdminBean.getPrinter().driver}">
-                        <f:selectItems 
-                            var="driver"
-                            value="#{printAdminBean.drivers}"
-                            itemLabel="#{driver}" />
-                    </b:selectOneMenu>
-
-                    <b:inputTextarea
-                                label="#{msgs.PrinterConfig}:"
-                                title="#{msgs.PrinterConfig_detail}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().config}" colMd="7">
-                    </b:inputTextarea>
-
-                    <b:row>
-                        <b:commandButton type="submit" iconAwesome="print" style="margin-right:3px;"
-                                action="#{printAdminBean.actionPrintTestPage}" value="#{msgs.PrinterSettingsTestPage}"/>
-
-                        <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
-                                action="#{printAdminBean.actionSave}" value="#{msgs.PrinterSettingsSave}"/>
-                    </b:row>
-                </b:panel>
-            </b:form>
-        </b:panelGrid>
+        <b:container class="details">
+            <ui:insert name="content">
+                <ui:include src="#{printAdminBean.page}"/>
+            </ui:insert>
+        </b:container>
     </ui:composition>
 </h:body>
 </html>
