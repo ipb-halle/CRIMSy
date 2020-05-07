@@ -24,12 +24,14 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.ipb_halle</groupId>
-    <artifactId>lbac</artifactId>
+    <groupId>de.ipb-halle</groupId>
+    <artifactId>crimsy</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
 
     <modules>
+        <module>agency-api</module>
+        <module>agency</module>
         <module>ui</module>
     </modules>
     <build>
@@ -49,7 +51,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/../config/extralib/</outputDirectory>
+                    <outputDirectory>${project.basedir}/../config/extralib/</outputDirectory>
                     <artifactItems>
                         <artifactItem>
                             <groupId>antlr</groupId>
