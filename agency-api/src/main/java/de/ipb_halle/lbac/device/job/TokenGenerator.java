@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.device.job;
 
 import java.util.Date;
 import java.security.Key;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import javax.crypto.Mac;
 import javax.crypto.SecretKeyFactory;
@@ -38,6 +39,7 @@ public class TokenGenerator {
     private final static long TIME_DELTA = 100000L;
     private final static String SEPARATOR = "#";
     private final static String MAC_ALGORITHM = "HmacSHA256";
+    private final static String DIGEST_ALGORITHM = "SHA-256";
     private final static String CIPHER_ALGORITHM = "AES";
 
     /**
@@ -47,7 +49,7 @@ public class TokenGenerator {
         try {
             String[] parts = token.split(SEPARATOR);
             long localTime = new Date().getTime();
-            long remoteTime = Long.parseLong(parts[0]);
+            long remoteTime = Long.parseLong(parts[0], 16);
             if (( remoteTime < (localTime - TIME_DELTA)) || (remoteTime > (localTime + TIME_DELTA))) {
                 // invalid token time
                 return false;
@@ -57,7 +59,6 @@ public class TokenGenerator {
             sb.append(SEPARATOR);
             sb.append(parts[1]);
             sb.append(SEPARATOR);
-            
             return token.equals(computeMac(sb, secret)); 
         } catch(Exception e) {
             // ignore
@@ -85,7 +86,9 @@ public class TokenGenerator {
     private static String computeMac(StringBuilder sb, String secret) {
         try {
             Key key = SecretKeyFactory.getInstance(CIPHER_ALGORITHM)
-                .generateSecret(new SecretKeySpec(secret.getBytes(), CIPHER_ALGORITHM));
+                .generateSecret(new SecretKeySpec(
+                    MessageDigest.getInstance(DIGEST_ALGORITHM).digest(secret.getBytes()), 
+                    CIPHER_ALGORITHM));
             Mac mac = Mac.getInstance(MAC_ALGORITHM);
             mac.init(key);
             byte[] hmac = mac.doFinal(sb.toString().getBytes());
@@ -95,6 +98,7 @@ public class TokenGenerator {
             }
             return sb.toString();
         } catch(Exception e) {
+            // e.printStackTrace();
             // ignore, will fail save
         }
         return null;
