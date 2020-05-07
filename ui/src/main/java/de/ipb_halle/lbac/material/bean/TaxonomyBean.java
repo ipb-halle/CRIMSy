@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.material.bean.manipulation.NameListOperation;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
@@ -57,6 +58,8 @@ public class TaxonomyBean implements Serializable {
         CREATE, SHOW, EDIT, HISTORY
     }
 
+    private NameListOperation nameListOperation = new NameListOperation(MESSAGE_BUNDLE);
+
     private List<Taxonomy> shownTaxonomies;
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
     private User currentUser;
@@ -81,6 +84,45 @@ public class TaxonomyBean implements Serializable {
 
     private Taxonomy parentOfNewTaxo;
     private Taxonomy taxonomyToEdit;
+
+    public void addNewName() {
+        if (mode == Mode.CREATE) {
+            nameListOperation.addNewEmptyName(taxonomyToCreate.getNames());
+        }
+    }
+
+    public void removeName(MaterialName mName) {
+        if (mode == Mode.CREATE) {
+            nameListOperation.deleteName(mName, taxonomyToCreate.getNames());
+        }
+    }
+
+    public boolean isMaterialNameOperationEnabled(
+            MaterialName mn,
+            String b) {
+
+        return isNameEditable() && nameListOperation.isEnabled(mn, b, names);
+    }
+
+    public void swapPosition(MaterialName mn, String action) {
+        NameListOperation.Button button = NameListOperation.Button.valueOf(action);
+        if (mode == Mode.CREATE) {
+            switch (button) {
+                case LOWEST:
+                    nameListOperation.setRankToLowest(mn, taxonomyToCreate.getNames());
+                    break;
+                case LOWER:
+                    nameListOperation.substractOneRank(mn, taxonomyToCreate.getNames());
+                    break;
+                case HIGHER:
+                    nameListOperation.addOneRank(mn, taxonomyToCreate.getNames());
+                    break;
+                case HIGHEST:
+                    nameListOperation.setRankToHighest(mn, taxonomyToCreate.getNames());
+                    break;
+            }
+        }
+    }
 
     @PostConstruct
     public void init() {
