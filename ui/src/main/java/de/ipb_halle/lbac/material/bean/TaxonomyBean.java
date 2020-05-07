@@ -119,6 +119,28 @@ public class TaxonomyBean implements Serializable {
         expandTree();
     }
 
+    public void actionClickSecondButton() {
+        if (mode == Mode.SHOW) {
+            mode = Mode.CREATE;
+            taxonomyToCreate = createNewTaxonomy();
+            return;
+        }
+        if (mode == Mode.CREATE) {
+            if (checkInputValidity()) {
+                saveNewTaxonomy();
+                mode = Mode.SHOW;
+            }
+        }
+        if (mode == Mode.EDIT) {
+            taxonomyToEdit.setLevel(selectedLevel);
+            taxonomyService.saveEditedTaxonomy(taxonomyBeforeEdit, taxonomyToEdit);
+            taxonomyBeforeEdit = null;
+            taxonomyToEdit = null;
+            mode = Mode.SHOW;
+        }
+        reloadTreeNode(taxonomyToCreate.getId());
+    }
+
     public String getEditButtonLabel() {
         if (mode == Mode.CREATE || mode == Mode.EDIT) {
             return "Cancel";
@@ -165,21 +187,6 @@ public class TaxonomyBean implements Serializable {
 
     }
 
-    public void actionApplyButtonClick() {
-        if (mode == Mode.SHOW) {
-            mode = Mode.CREATE;
-            taxonomyToCreate = createNewTaxonomy();
-            return;
-        }
-        if (mode == Mode.CREATE) {
-            if (checkInputValidity()) {
-                saveNewTaxonomy();
-                mode = Mode.SHOW;
-            }
-        }
-        reloadTreeNode(taxonomyToCreate.getId());
-    }
-
     public boolean checkInputValidity() {
         if (mode == Mode.CREATE) {
             if (taxonomyToCreate != null) {
@@ -221,24 +228,20 @@ public class TaxonomyBean implements Serializable {
     }
 
     public void reloadTreeNode(Integer id) {
-        try {
-            Map<String, Object> cmap = new HashMap<>();
-            //cmap.put("level", 1);
-            shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
-            Taxonomy rootTaxo = createNewTaxonomy();
-            rootTaxo.setLevel(levels.get(0));
-            taxonomyTree = new DefaultTreeNode(rootTaxo, null);
-            for (Taxonomy t : shownTaxonomies) {
-                if (!t.getTaxHierachy().isEmpty()) {
-                    TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
-                    new DefaultTreeNode(t, parent);
-                } else {
-                    new DefaultTreeNode(t, taxonomyTree);
-                }
-            }
 
-        } catch (Exception e) {
-            logger.error(e);
+        Map<String, Object> cmap = new HashMap<>();
+        //cmap.put("level", 1);
+        shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
+        Taxonomy rootTaxo = createNewTaxonomy();
+        rootTaxo.setLevel(levels.get(0));
+        taxonomyTree = new DefaultTreeNode(rootTaxo, null);
+        for (Taxonomy t : shownTaxonomies) {
+            if (!t.getTaxHierachy().isEmpty()) {
+                TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
+                new DefaultTreeNode(t, parent);
+            } else {
+                new DefaultTreeNode(t, taxonomyTree);
+            }
         }
         expandTree();
     }
@@ -361,6 +364,9 @@ public class TaxonomyBean implements Serializable {
         if (mode == Mode.CREATE) {
             return taxonomyToCreate.getNames();
         }
+        if (mode == Mode.EDIT) {
+            return taxonomyToEdit.getNames();
+        }
         if (selectedTaxonomy != null) {
             Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
             return t.getNames();
@@ -407,10 +413,6 @@ public class TaxonomyBean implements Serializable {
     public void onTaxonomySelect(NodeSelectEvent event) {
         if (mode == Mode.EDIT) {
             Taxonomy t = (Taxonomy) event.getTreeNode().getData();
-            if (t.getId() == taxonomyToEdit.getId()) {
-                UIMessage.warn("taxonomy_no_valide_parent_self");
-                return;
-            }
             taxonomyToEdit.getTaxHierachy().clear();
             taxonomyToEdit.getTaxHierachy().add(t);
             taxonomyToEdit.getTaxHierachy().addAll(t.getTaxHierachy());

@@ -101,4 +101,12 @@ public class TaxonomyService implements Serializable {
         return taxonomies;
     }
 
+    public void saveEditedTaxonomy(
+            Taxonomy originalTaxo,
+            Taxonomy editedTaxo) {
+
+       
+
+    }
+
 }
