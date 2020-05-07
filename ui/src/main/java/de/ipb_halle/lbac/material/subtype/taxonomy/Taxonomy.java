@@ -48,8 +48,13 @@ public class Taxonomy extends Material {
     }
 
     @Override
-    public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Taxonomy copyMaterial() {
+        List<MaterialName> copiedNames = new ArrayList<>();
+        for (MaterialName mn : names) {
+            copiedNames.add(new MaterialName(mn.getValue(), mn.getLanguage(), mn.getRank()));
+        }
+        return new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy);
+
     }
 
     @Override

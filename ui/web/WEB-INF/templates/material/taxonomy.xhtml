@@ -56,8 +56,14 @@
                     </b:column>
 
 
-                    <b:column span="1" offset="1">
-                        <b:commandButton value="EDIT"/>
+                    <b:column span="1" offset="1"  styleClass="taxonomyInfos">
+                        <b:commandButton 
+                            value="#{taxonomyBean.getEditButtonLabel()}"
+                            ajax="true"
+                            process="@(.taxonomyInfos)"
+                            update="@(.taxonomyInfos) @(.taxonomyTree)"
+                            onclick="ajax:taxonomyBean.actionClickFirstButton();"
+                            disabled="#{taxonomyBean.isFirstButtonDisabled()}"/>
                     </b:column>
                     <b:column span="1">
                         <b:commandButton
@@ -95,6 +101,18 @@
                                 itemLabel="#{level.getName()}" />
                         </b:selectOneMenu>
                     </b:column>
+                </b:row>
+                <b:row>
+                    <b:column
+                        span="8" offset="4"
+                        styleClass="taxonomyInfos">
+                        <b:inputText
+                            disabled="true"
+                            label="new Parent of taxonomy entry"
+                            rendered="#{taxonomyBean.isNewParentRendered()}"
+                            value="#{taxonomyBean.getParentFirstName()}"/>
+                    </b:column>
+
                 </b:row>
                 <b:row>
                     <b:column span="4">
