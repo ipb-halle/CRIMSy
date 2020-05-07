@@ -646,3 +646,26 @@ INSERT INTO taxonomy_level VALUES(18,'species',1800);
 INSERT INTO taxonomy_level VALUES(19,'subspecies',1900);
 INSERT INTO taxonomy_level VALUES(20,'variety',2000);
 INSERT INTO taxonomy_level VALUES(21,'form',2100);
+
+CREATE TABLE jobs (
+    jobid       SERIAL NOT NULL PRIMARY KEY,
+    input       BYTEA,
+    jobdate     TIMESTAMP NOT NULL DEFAULT now(),
+    jobtype     INTEGER NOT NULL,
+    output      BYTEA,
+    ownerid     UUID REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    queue       VARCHAR NOT NULL,
+    status      INTEGER NOT NULL
+);
+
+CREATE TABLE printers (
+    name        VARCHAR NOT NULL PRIMARY KEY,
+    aclistid    UUID NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    config      VARCHAR NOT NULL DEFAULT '',
+    contact     VARCHAR NOT NULL DEFAULT '',
+    driver      VARCHAR NOT NULL,
+    model       VARCHAR NOT NULL DEFAULT '',
+    ownerid     UUID NOT NULL REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    place       VARCHAR NOT NULL DEFAULT '',
+    status      INTEGER NOT NULL DEFAULT 0
+);
