@@ -422,6 +422,24 @@ public class MaterialServiceTest extends TestBase {
         t2.getTaxHierachy().add(t);
         t2.setLevel(levels.get(1));
         instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>());
+
+        names = new ArrayList<>();
+        names.add(new MaterialName("small red rose", "en", 1));
+        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
+        t3.getTaxHierachy().add(t);
+        t3.getTaxHierachy().add(t2);
+        t3.setLevel(levels.get(2));
+        instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>());
+
+        List<Integer> results = (List) entityManagerService.doSqlQuery("SELECT parentid FROM effective_taxonomy WHERE taxoid=0");
+        Assert.assertTrue(results.isEmpty());
+
+        results = (List) entityManagerService.doSqlQuery(String.format("SELECT parentid FROM effective_taxonomy WHERE taxoid=%d", t2.getId()));
+        Assert.assertEquals(1, results.size());
+
+        results = (List) entityManagerService.doSqlQuery(String.format("SELECT parentid FROM effective_taxonomy WHERE taxoid=%d", t3.getId()));
+        Assert.assertEquals(2, results.size());
+
         cleanTaxonomyFromDb();
         cleanMaterialsFromDB();
         cleanProjectFromDB(p, false);
