@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.service;
 
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.difference.MaterialComparator;
@@ -110,18 +111,6 @@ public class TaxonomyService implements Serializable {
         return taxonomies;
     }
 
-    public void saveEditedTaxonomy(
-            Taxonomy originalTaxo,
-            Taxonomy editedTaxo) {
-        try {
-            List<MaterialDifference> diffs = comparator.compareMaterial(originalTaxo, editedTaxo);
-            //Save difference of Names
-            //Save difference on hierarchy
-            //Save difference on level
-
-        } catch (Exception e) {
-
-        }
-    }
+   
 
 }

@@ -36,6 +36,12 @@ public class TaxonomyLevel implements DTO {
         this.rank = dbentity.getRank();
     }
 
+    public TaxonomyLevel(int id, String name, Integer rank) {
+        this.id = id;
+        this.name = name;
+        this.rank = rank;
+    }
+
     @Override
     public Object createEntity() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

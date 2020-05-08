@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.difference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -34,7 +35,6 @@ public class TaxonomyDifference implements MaterialDifference {
 
     private List<Integer> newHierarchy = new ArrayList<>();
     private Integer newLevelId;
-    private List<Integer> oldHierarchy = new ArrayList<>();
     private Integer oldLevelId;
 
     @Override
@@ -69,10 +69,6 @@ public class TaxonomyDifference implements MaterialDifference {
         return newLevelId;
     }
 
-    public List<Integer> getOldHierarchy() {
-        return oldHierarchy;
-    }
-
     public Integer getOldLevelId() {
         return oldLevelId;
     }
@@ -85,12 +81,20 @@ public class TaxonomyDifference implements MaterialDifference {
         this.newLevelId = newLevelId;
     }
 
-    public void setOldHierarchy(List<Integer> oldHierarchy) {
-        this.oldHierarchy = oldHierarchy;
-    }
-
     public void setOldLevelId(Integer oldLevelId) {
         this.oldLevelId = oldLevelId;
+    }
+
+    public boolean isHierarchyChanged() {
+        return !newHierarchy.isEmpty();
+    }
+
+    public boolean isLevelChanged() {
+        if (newLevelId == null || oldLevelId == null) {
+            return false;
+        } else {
+            return !Objects.equals(newLevelId, oldLevelId);
+        }
     }
 
 }

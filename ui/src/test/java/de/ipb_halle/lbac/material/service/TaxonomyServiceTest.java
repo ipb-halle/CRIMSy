@@ -26,6 +26,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevel;
@@ -73,8 +74,11 @@ public class TaxonomyServiceTest extends TestBase {
         // Initialisieng the userbean for ownership of material
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
+        owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+
+        ownerid = owner.getId().toString();
         materialService.setUserBean(userBean);
-       
+
     }
 
     @Test
@@ -85,10 +89,7 @@ public class TaxonomyServiceTest extends TestBase {
 
     @Test
     public void test002_loadTaxonomies() {
-        owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         project = creationTools.createProject();
-        userGroups = project.getUserGroups().getId().toString();
-        ownerid = owner.getId().toString();
         createTaxonomyTreeInDB(userGroups, owner.getId().toString());
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
         Assert.assertEquals("test001: 21 taxonomies must be found", 21, taxonomies.size());
@@ -117,6 +118,43 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(8, ohrlappenpilze.getTaxHierachy().get(0).getId());
         Assert.assertEquals(2, ohrlappenpilze.getTaxHierachy().get(1).getId());
         Assert.assertEquals(1, ohrlappenpilze.getTaxHierachy().get(2).getId());
+    }
+
+    @Test
+    public void test003_saveEditedTaxonomy() throws Exception {
+        List<TaxonomyLevel> levels = service.loadTaxonomyLevel();
+        project = creationTools.createProject();
+        userGroups = project.getUserGroups().getId().toString();
+        createTaxonomyTreeInDB(userGroups, owner.getId().toString());
+
+        List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        Taxonomy editedTaxonomy = taxonomies.get(20).copyMaterial();
+        editedTaxonomy.getNames().get(0).setValue("Haarnixen_de_edited");
+        editedTaxonomy.getNames().add(new MaterialName("english_name", "en", 2));
+
+        editedTaxonomy.getTaxHierachy().clear();
+        editedTaxonomy.getTaxHierachy().add(taxonomies.get(3));
+        editedTaxonomy.getTaxHierachy().addAll(taxonomies.get(3).getTaxHierachy());
+
+        editedTaxonomy.setLevel(levels.get(2));
+        materialService.saveEditedMaterial(
+                editedTaxonomy,
+                taxonomies.get(20),
+                null,
+                owner.getId());
+
+        taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        Taxonomy t = taxonomies.get(20);
+        Assert.assertEquals("Haarnixen_de_edited", t.getNames().get(0).getValue());
+        Assert.assertEquals("english_name", t.getNames().get(1).getValue());
+        Assert.assertEquals(4, t.getTaxHierachy().size());
+        Assert.assertEquals(4, t.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(3, t.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(2, t.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(1, t.getTaxHierachy().get(3).getId());
+
+        Assert.assertEquals(3, t.getLevel().getId());
+
     }
 
     @Deployment

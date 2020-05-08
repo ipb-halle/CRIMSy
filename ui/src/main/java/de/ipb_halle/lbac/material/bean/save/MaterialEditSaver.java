@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.material.difference.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.difference.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.difference.MaterialStructureDifference;
+import de.ipb_halle.lbac.material.difference.TaxonomyDifference;
 import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialHistEntity;
 import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.entity.MaterialEntity;
@@ -51,18 +52,20 @@ import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  *
  * @author fmauz
  */
 public class MaterialEditSaver {
-    
+
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
     protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_storages WHERE materialid=:mid";
-    
+    protected String SQL_DELETE_EFFECTIVE_TAXONOMY = "DELETE FROM effective_taxonomy WHERE taxoid=:taxoid";
+    protected String SQL_INSERT_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(:taxoid,:parentid)";
+    protected String SQL_UPDATE_TAXONOMY_LEVEL = "UPDATE taxonomy SET level=:level WHERE id=:id";
+
     protected MaterialService materialService;
-    
+
     protected MaterialComparator comparator;
     protected List<MaterialDifference> diffs;
     protected Material newMaterial;
@@ -70,7 +73,7 @@ public class MaterialEditSaver {
     protected UUID projectAcl;
     protected UUID actorId;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     public void init(
             MaterialComparator comparator,
             List<MaterialDifference> diffs,
@@ -85,7 +88,7 @@ public class MaterialEditSaver {
         this.projectAcl = projectAcl;
         this.actorId = actorId;
     }
-    
+
     public MaterialEditSaver(MaterialService materialService) {
         this.materialService = materialService;
     }
@@ -102,23 +105,38 @@ public class MaterialEditSaver {
             saveStorageHistoryEntries(diff);
         }
     }
-    
+
+    public void saveEditedTaxonomy() {
+        TaxonomyDifference diff = comparator.getDifferenceOfType(diffs, TaxonomyDifference.class);
+        if (diff != null) {
+            if (diff.isHierarchyChanged()) {
+                updateEffectiveTaxonomy(diff);
+            }
+            if (diff.isLevelChanged()) {
+                materialService.getEm().createNativeQuery(SQL_UPDATE_TAXONOMY_LEVEL)
+                        .setParameter("id", diff.getMaterialId())
+                        .setParameter("level", diff.getNewLevelId())
+                        .executeUpdate();
+            }
+        }
+    }
+
     protected void updateStorageConditions(MaterialStorageDifference diff) {
         if (!diff.getStorageConditionsNew().isEmpty()) {
             this.materialService.getEm()
                     .createNativeQuery(SQL_DELETE_STORAGE_CONDITIONS)
                     .setParameter("mid", diff.getMaterialID())
                     .executeUpdate();
-            
+
             for (StorageCondition sc : newMaterial.getStorageInformation().getStorageConditions()) {
                 StorageConditionStorageEntity dbEntity = new StorageConditionStorageEntity();
                 dbEntity.setId(new StorageConditionStorageId(sc.getId(), newMaterial.getId()));
                 this.materialService.getEm().persist(dbEntity);
             }
         }
-        
+
     }
-    
+
     protected void updateStorageClass(MaterialStorageDifference diff) {
         StorageEntity entity = this.materialService.getEm().find(StorageEntity.class, diff.getMaterialID());
         if (entity != null) {
@@ -127,7 +145,7 @@ public class MaterialEditSaver {
             materialService.getEm().merge(entity);
         }
     }
-    
+
     protected void saveStorageHistoryEntries(MaterialStorageDifference diff) {
         if (diff.storageClassDiffFound()) {
             StorageClassHistoryEntity storageClassEntity = new StorageClassHistoryEntity();
@@ -139,7 +157,7 @@ public class MaterialEditSaver {
             storageClassEntity.setDescription_old(diff.getDescriptionOld());
             this.materialService.getEm().persist(storageClassEntity);
         }
-        
+
         for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
             StorageConditionHistoryEntity storageConditionEntity = new StorageConditionHistoryEntity();
             storageConditionEntity.setActorid(actorId);
@@ -152,7 +170,7 @@ public class MaterialEditSaver {
             this.materialService.getEm().persist(storageConditionEntity);
         }
     }
-    
+
     public void saveEditedMaterialIndices() {
         MaterialIndexDifference diff = comparator.getDifferenceOfType(diffs, MaterialIndexDifference.class);
         if (diff != null) {
@@ -162,7 +180,7 @@ public class MaterialEditSaver {
             saveNewMaterialIndices(newMaterial);
         }
     }
-    
+
     public void saveEditedMaterialHazards() {
         MaterialHazardDifference hazardDiff = comparator.getDifferenceOfType(diffs, MaterialHazardDifference.class);
         if (hazardDiff != null) {
@@ -177,35 +195,35 @@ public class MaterialEditSaver {
             this.materialService.getEm().persist(dbEntity);
         }
     }
-    
+
     public void saveEditedMaterialStructure() {
-        Structure structure = (Structure) newMaterial;
+
         MaterialStructureDifference strucDiff = comparator.getDifferenceOfType(diffs, MaterialStructureDifference.class);
         if (strucDiff != null) {
-            
+            Structure structure = (Structure) newMaterial;
             Molecule newMol = strucDiff.getMoleculeId_new();
             Molecule oldMol = strucDiff.getMoleculeId_old();
-           
+
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
                     Query q = materialService.getEm().createNativeQuery(SQL_INSERT_MOLECULE)
                             .setParameter("molecule", newMol.getStructureModel())
                             .setParameter("format", newMol.getModelType().toString());
-                    
+
                     int molId = (int) q.getSingleResult();
                     newMol.setId(molId);
                 }
-                
+
             }
-            
+
             saveMaterialStrcutureDifferences(strucDiff);
             updateStructureOverview(structure);
         }
     }
-    
+
     protected void updateStructureOverview(Structure structure) {
         StructureEntity dbentity;
-        
+
         if (structure.getMolecule() != null) {
             dbentity = structure.createDbEntity(structure.getId(), structure.getMolecule().getId());
         } else {
@@ -213,14 +231,29 @@ public class MaterialEditSaver {
         }
         materialService.getEm().merge(dbentity);
     }
-    
+
+    protected void updateEffectiveTaxonomy(TaxonomyDifference diff) {
+        materialService.getEm()
+                .createNativeQuery(SQL_DELETE_EFFECTIVE_TAXONOMY)
+                .setParameter("taxoid", diff.getMaterialId())
+                .executeUpdate();
+
+        for (Integer parent : diff.getNewHierarchy()) {
+            materialService.getEm()
+                    .createNativeQuery(SQL_INSERT_EFFECTIVE_TAXONOMY)
+                    .setParameter("taxoid", diff.getMaterialId())
+                    .setParameter("parentid", parent)
+                    .executeUpdate();
+        }
+    }
+
     public void saveEditedMaterialOverview() {
         if (comparator.getDifferenceOfType(diffs, MaterialOverviewDifference.class) != null) {
             saveMaterialOverviewDifference(comparator.getDifferenceOfType(diffs, MaterialOverviewDifference.class));
             updateMaterialOverview(newMaterial, projectAcl, newMaterial.getOwnerID());
         }
     }
-    
+
     protected void saveMaterialOverviewDifference(MaterialOverviewDifference diff) {
         MaterialHistoryEntity entity = new MaterialHistoryEntity();
         ACList acl = null;
@@ -229,7 +262,7 @@ public class MaterialEditSaver {
             entity.setAclistid_new(acl.getId());
             entity.setAclistid_old(diff.getAcListOld().getId());
         }
-        
+
         entity.setAction(diff.getAction().toString());
         entity.setActorid(diff.getActorID());
         entity.setId(new MaterialHistoryId(diff.getMaterialID(), diff.getmDate()));
@@ -239,7 +272,7 @@ public class MaterialEditSaver {
         entity.setProjectid_old(diff.getProjectIdOld());
         materialService.getEm().persist(entity);
     }
-    
+
     protected void updateMaterialOverview(
             Material m,
             UUID projectAclId,
@@ -253,7 +286,7 @@ public class MaterialEditSaver {
         mE.setUsergroups(projectAclId);
         materialService.getEm().merge(mE);
     }
-    
+
     protected void saveMaterialIndexDifferences(
             MaterialIndexDifference diffs) {
         for (MaterialIndexHistoryEntity mihe : diffs.createDbEntities(
@@ -263,21 +296,21 @@ public class MaterialEditSaver {
             this.materialService.getEm().persist(mihe);
         }
     }
-    
+
     protected void saveNewMaterialIndices(Material newMaterial) {
         for (IndexEntry ie : newMaterial.getIndices()) {
             this.materialService.getEm().persist(ie.toDbEntity(newMaterial.getId(), 0));
         }
     }
-    
+
     protected void deleteOldMaterialIndices(Material m) {
         this.materialService.getEm().createNativeQuery("Delete from material_indices where materialid=:mid").setParameter("mid", m.getId()).executeUpdate();
     }
-    
+
     protected void deleteOldHazards(Material m) {
         this.materialService.getEm().createNativeQuery("Delete from hazards_materials where materialid=:mid").setParameter("mid", m.getId()).executeUpdate();
     }
-    
+
     protected void saveMaterialNames(Material m) {
         int rank = 0;
         for (MaterialName mn : m.getNames()) {
@@ -285,9 +318,9 @@ public class MaterialEditSaver {
             rank++;
         }
     }
-    
+
     protected void saveMaterialStrcutureDifferences(MaterialStructureDifference diff) {
         this.materialService.getEm().persist(diff.createDbInstance());
     }
-    
+
 }

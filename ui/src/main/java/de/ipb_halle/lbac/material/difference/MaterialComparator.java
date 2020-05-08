@@ -48,21 +48,24 @@ public class MaterialComparator {
             List<MaterialDifference> differences,
             Taxonomy originalMat,
             Taxonomy editedMat) {
-
+        boolean differenceFound = false;
         TaxonomyDifference td = new TaxonomyDifference();
         if (originalMat.getLevel().getId() != editedMat.getLevel().getId()) {
+            differenceFound = true;
             td.setOldLevelId(originalMat.getLevel().getId());
             td.setNewLevelId(editedMat.getLevel().getId());
+
         }
         if (originalMat.getTaxHierachy().get(0).getId() != editedMat.getTaxHierachy().get(0).getId()) {
+            differenceFound = true;
             for (Taxonomy t : editedMat.getTaxHierachy()) {
                 td.getNewHierarchy().add(t.getId());
             }
-            for (Taxonomy t : originalMat.getTaxHierachy()) {
-                td.getOldHierarchy().add(t.getId());
-            }
+            
         }
-        differences.add(td);
+        if (differenceFound) {
+            differences.add(td);
+        }
 
     }
 
@@ -82,11 +85,13 @@ public class MaterialComparator {
         if (originalMat.getType() != editedMat.getType()) {
             throw new Exception("Materials not comparable: ORIG - " + originalMat.getType() + " EDIT - " + editedMat.getType());
         }
-        addOverviewDifference(differences, originalMat, editedMat);
+        if (originalMat.getType() != MaterialType.TAXONOMY) {
+            addOverviewDifference(differences, originalMat, editedMat);
+            addIndexDifference(differences, originalMat, editedMat);
+            addHazardDifference(differences, originalMat, editedMat);
+            addStorageDifference(differences, originalMat, editedMat);
+        }
         addMaterialNameDifference(differences, originalMat, editedMat);
-        addIndexDifference(differences, originalMat, editedMat);
-        addHazardDifference(differences, originalMat, editedMat);
-        addStorageDifference(differences, originalMat, editedMat);
 
         if (originalMat.getType() == MaterialType.STRUCTURE) {
             addStructureDifferences(differences,

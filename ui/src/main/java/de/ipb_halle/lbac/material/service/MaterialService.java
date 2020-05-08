@@ -349,6 +349,7 @@ public class MaterialService implements Serializable {
         editedMaterialSaver.saveEditedMaterialStructure();
         editedMaterialSaver.saveEditedMaterialHazards();
         editedMaterialSaver.saveEditedMaterialStorage();
+        editedMaterialSaver.saveEditedTaxonomy();
 
     }
 
@@ -377,7 +378,8 @@ public class MaterialService implements Serializable {
         }
 
     }
-
+    
+    
     /**
      *
      * @param m

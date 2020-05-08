@@ -120,25 +120,29 @@ public class TaxonomyBean implements Serializable {
     }
 
     public void actionClickSecondButton() {
-        if (mode == Mode.SHOW) {
-            mode = Mode.CREATE;
-            taxonomyToCreate = createNewTaxonomy();
-            return;
-        }
-        if (mode == Mode.CREATE) {
-            if (checkInputValidity()) {
-                saveNewTaxonomy();
+        try {
+            if (mode == Mode.SHOW) {
+                mode = Mode.CREATE;
+                taxonomyToCreate = createNewTaxonomy();
+                return;
+            }
+            if (mode == Mode.CREATE) {
+                if (checkInputValidity()) {
+                    saveNewTaxonomy();
+                    mode = Mode.SHOW;
+                }
+            }
+            if (mode == Mode.EDIT) {
+                taxonomyToEdit.setLevel(selectedLevel);
+                materialService.saveEditedMaterial(taxonomyToEdit, taxonomyBeforeEdit, null, currentUser.getId());
+                taxonomyBeforeEdit = null;
+                taxonomyToEdit = null;
                 mode = Mode.SHOW;
             }
+        } catch (Exception e) {
+
         }
-        if (mode == Mode.EDIT) {
-            taxonomyToEdit.setLevel(selectedLevel);
-            taxonomyService.saveEditedTaxonomy(taxonomyBeforeEdit, taxonomyToEdit);
-            taxonomyBeforeEdit = null;
-            taxonomyToEdit = null;
-            mode = Mode.SHOW;
-        }
-        reloadTreeNode(taxonomyToCreate.getId());
+        reloadTreeNode(null);
     }
 
     public String getEditButtonLabel() {
@@ -191,15 +195,15 @@ public class TaxonomyBean implements Serializable {
         if (mode == Mode.CREATE) {
             if (taxonomyToCreate != null) {
                 if (selectedTaxonomy == null) {
-                    UIMessage.warn("taxonomy_no_valide_parent");
+                    UIMessage.warn(MESSAGE_BUNDLE, "taxonomy_no_valide_parent");
                     return false;
                 }
 
                 if (!isNameSet()) {
-                    UIMessage.warn("taxonomy_no_valide_input");
+                    UIMessage.warn(MESSAGE_BUNDLE, "taxonomy_no_valide_input");
                     return false;
                 } else {
-                    UIMessage.info("taxonomy_saved");
+                    UIMessage.info(MESSAGE_BUNDLE, "taxonomy_saved");
                     return true;
                 }
             }
