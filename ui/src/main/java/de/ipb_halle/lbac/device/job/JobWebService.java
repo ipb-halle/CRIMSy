@@ -140,7 +140,7 @@ public class JobWebService {
         }
 
         if (! TokenGenerator.checkToken(request.getToken(), secret)) {
-            this.logger.info("Invalid access token");
+            this.logger.info("Invalid access token: {}", request.getToken());
             return null;
         }
 

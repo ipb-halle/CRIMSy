@@ -227,8 +227,6 @@ CREATE TABLE files (
   collection_id UUID NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE INDEX idxTvTf ON files USING GIN(termvectors jsonb_path_ops);
-
 CREATE TABLE topics (
   id            UUID NOT NULL PRIMARY KEY,
   name          VARCHAR,

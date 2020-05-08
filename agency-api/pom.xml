@@ -27,7 +27,7 @@
  <version>1.0</version>
  <packaging>jar</packaging>
  
- <name>CRIMSy Agency</name>
+ <name>CRIMSy Agency API</name>
  <url>http://github.com/ipb-halle/CRIMSy</url>
  
  <properties>
