@@ -28,7 +28,7 @@ cat <<EOF > test/agency.sh
 #
 date >> output.txt
 echo "type: \$1 queue: \$2 data:" >> output.txt
-cat >> output.txt
+cat - >> output.txt
 echo == END DATA == >> output.txt
 EOF
 

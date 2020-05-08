@@ -117,12 +117,14 @@ public class Handler {
                 cmd[1] = job.getJobType().toString();
                 cmd[2] = job.getQueue();
                 Process proc = Runtime.getRuntime().exec(cmd);
+                // System.out.printf("input size: %d\n", job.getInput().length);
                 proc.getOutputStream().write(job.getInput());
-
+                proc.getOutputStream().close();
                 boolean procStatus = proc.waitFor(TIMEOUT, TimeUnit.SECONDS);
                 
                 job.setStatus(JobStatus.BUSY);
                 job.setRequestType(RequestType.UPDATE);
+                job.setToken(TokenGenerator.getToken(this.secret));
                 jobwebclient.processRequest(job, this.url);
             }
         }

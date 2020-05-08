@@ -64,9 +64,7 @@ public class JobWebClient {
             wc.accept(MediaType.APPLICATION_XML_TYPE);
             wc.type(MediaType.APPLICATION_XML_TYPE);
             
-            System.out.println("processRequest() pre post");
             NetJob response = wc.post(job, NetJob.class);
-            System.out.println("processRequest() post post");
             return response;
         } catch(Exception e) {
             e.printStackTrace();
