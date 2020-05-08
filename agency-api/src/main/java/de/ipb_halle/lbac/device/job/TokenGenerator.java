@@ -22,7 +22,6 @@ import java.security.Key;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import javax.crypto.Mac;
-import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -85,10 +84,9 @@ public class TokenGenerator {
      */
     private static String computeMac(StringBuilder sb, String secret) {
         try {
-            Key key = SecretKeyFactory.getInstance(CIPHER_ALGORITHM)
-                .generateSecret(new SecretKeySpec(
-                    MessageDigest.getInstance(DIGEST_ALGORITHM).digest(secret.getBytes()), 
-                    CIPHER_ALGORITHM));
+            Key key = new SecretKeySpec(
+                    MessageDigest.getInstance(DIGEST_ALGORITHM).digest(secret.getBytes()),
+                    CIPHER_ALGORITHM);
             Mac mac = Mac.getInstance(MAC_ALGORITHM);
             mac.init(key);
             byte[] hmac = mac.doFinal(sb.toString().getBytes());
@@ -98,7 +96,7 @@ public class TokenGenerator {
             }
             return sb.toString();
         } catch(Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
             // ignore, will fail save
         }
         return null;

@@ -101,11 +101,11 @@ public class JobService implements Serializable {
         }
 
         if (cmap.get(CONDITION_QUEUE) != null) {
-            predicates.add(builder.equal(jobRoot.get("jobtype"), cmap.get(CONDITION_QUEUE)));
+            predicates.add(builder.equal(jobRoot.get("queue"), cmap.get(CONDITION_QUEUE)));
         }
 
         if (cmap.get(CONDITION_STATUS) != null) {
-            predicates.add(builder.equal(jobRoot.get("jobtype"), cmap.get(CONDITION_STATUS)));
+            predicates.add(builder.equal(jobRoot.get("status"), cmap.get(CONDITION_STATUS)));
         }
 
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));

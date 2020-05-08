@@ -3,6 +3,7 @@ config
 documentation/**/*.pdf
 target
 agency/target
+agency/test
 agency-api/target
 ui/doc/diagrams/png/
 ui/doc/diagrams/svg/

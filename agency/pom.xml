@@ -207,13 +207,25 @@
    <version>3.2.0</version>
   </dependency>
 
-<!--
   <dependency>
    <groupId>org.apache.cxf</groupId>
    <artifactId>cxf-rt-transports-http</artifactId>
    <version>3.2.0</version>
   </dependency>
--->
+
+  <!-- needed on JDK 11: API, java.xml.bind module -->
+  <dependency>
+    <groupId>jakarta.xml.bind</groupId>
+    <artifactId>jakarta.xml.bind-api</artifactId>
+    <version>2.3.2</version>
+  </dependency>
+
+  <!-- needed on JDK 11: Runtime, com.sun.xml.bind module -->
+  <dependency>
+    <groupId>org.glassfish.jaxb</groupId>
+    <artifactId>jaxb-runtime</artifactId>
+    <version>2.3.2</version>
+  </dependency>
 
   <!-- SLF4J -->
   <dependency>

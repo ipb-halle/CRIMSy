@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.device.job;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 /**
  * This enum describes the type of a job:
  * <ul>
@@ -26,6 +28,7 @@ package de.ipb_halle.lbac.device.job;
  *
  * @author fbroda
  */
+@XmlEnum
 public enum JobType {
 
     PRINT(0),

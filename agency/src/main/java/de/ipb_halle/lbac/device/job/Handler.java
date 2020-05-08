@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class Handler {
 
     private final static int TIMEOUT = 3;
+    private final static int SLEEP_MILLIS = 5000;
 
     private String secret;
     private String script;
@@ -69,7 +70,11 @@ public class Handler {
     }
 
     private void sleep() {
-        // TODO: xxxxx we would like to sleep a bit
+        try {
+            Thread.sleep(SLEEP_MILLIS);
+        } catch(InterruptedException e) {
+            // ignore - we do not depend on sleeping exactly
+        }
     }
 
     private void startQueues() throws IOException, InterruptedException {
@@ -104,6 +109,7 @@ public class Handler {
         cmd[0] = this.script;
 
         netjob.setToken(TokenGenerator.getToken(this.secret));
+        System.out.printf("Token: %s\n", netjob.getToken());
         netjob.setStatus(JobStatus.PENDING);
         NetJob result = jobwebclient.processRequest(netjob, this.url);
         if (result != null) {

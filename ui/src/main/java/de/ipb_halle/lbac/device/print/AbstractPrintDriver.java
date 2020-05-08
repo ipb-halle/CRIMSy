@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.util.HexUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -79,7 +80,14 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     private ByteBuffer append(ByteBuffer buf, byte[] data) {
         while (buf.remaining() < data.length) {
             ByteBuffer tmp = ByteBuffer.allocate(2 * buf.capacity());
-            tmp.put((ByteBuffer) buf.flip());
+            /*
+             * tmp.put((ByteBuffer) buf.flip());
+             *
+             * Workaround for incompatibility when compiling under 
+             * JDK 11 and running under JDK 8. Didn't succeed to 
+             * fix this in the POM :-(.
+             */
+            tmp.put((ByteBuffer) ((Buffer) buf).flip());
             buf = tmp;
         }
         buf.put(data);

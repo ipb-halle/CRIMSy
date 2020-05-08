@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.device.job;
 
+import javax.xml.bind.annotation.XmlEnum;
+
 /**
  * This enum describes the type of a request:
  * <ul>
@@ -36,6 +38,7 @@ package de.ipb_halle.lbac.device.job;
  *
  * @author fbroda
  */
+@XmlEnum
 public enum RequestType {
 
     QUERY(0),
