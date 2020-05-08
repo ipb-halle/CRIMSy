@@ -659,7 +659,8 @@ CREATE TABLE jobs (
 );
 
 CREATE TABLE printers (
-    name        VARCHAR NOT NULL PRIMARY KEY,
+    queue       VARCHAR NOT NULL PRIMARY KEY,
+    name        VARCHAR NOT NULL,
     aclistid    UUID NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     config      VARCHAR NOT NULL DEFAULT '',
     contact     VARCHAR NOT NULL DEFAULT '',
