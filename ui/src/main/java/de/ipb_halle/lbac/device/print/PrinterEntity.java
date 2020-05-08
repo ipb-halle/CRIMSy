@@ -56,7 +56,7 @@ public class PrinterEntity implements Serializable {
     private final static long serialVersionUID = 1L;
 
     @Id
-    private String name;
+    private String queue;
 
     @Column
     private UUID aclistid;
@@ -76,6 +76,10 @@ public class PrinterEntity implements Serializable {
     @Column
     @NotNull
     private String model;
+
+    @Column
+    @NotNull
+    private String name;
 
     @Column
     private UUID ownerid;
@@ -128,6 +132,10 @@ public class PrinterEntity implements Serializable {
         return this.ownerid;
     }
 
+    public String getQueue() {
+        return this.queue;
+    }
+
     public String getPlace() {
         return this.place;
     }
@@ -168,6 +176,11 @@ public class PrinterEntity implements Serializable {
 
     public PrinterEntity setOwnerId(UUID ownerid) {
         this.ownerid = ownerid;
+        return this;
+    }
+
+    public PrinterEntity setQueue(String queue) {
+        this.queue = queue;
         return this;
     }
 

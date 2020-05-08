@@ -45,6 +45,7 @@
                         <f:facet name="header">
                             <tr>
                                 <th>#{msgs.PrinterQueue}</th>
+                                <th>#{msgs.PrinterName}</th>
                                 <th>#{msgs.PrinterModel}</th>
                                 <th>#{msgs.PrinterContact}</th>
                                 <th>#{msgs.PrinterPlace}</th>
@@ -52,7 +53,8 @@
                                 <th style="min-width:30px">#{msgs.Tools}</th>
                             </tr>
                         </f:facet>
-                        <b:dataTableColumn value="#{pl.name}" order="asc"/>
+                        <b:dataTableColumn value="#{pl.queue}" order="asc"/>
+                        <b:dataTableColumn value="#{pl.name}"/>
                         <b:dataTableColumn value="#{pl.model}"/>
                         <b:dataTableColumn value="#{pl.contact}"/>
                         <b:dataTableColumn value="#{pl.place}"/>

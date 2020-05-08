@@ -35,6 +35,15 @@
                     <b:inputText
                                 label="#{msgs.PrinterQueue}:"
                                 title="#{msgs.PrinterQueue_detail}"
+                                labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().queue}" colMd="7">
+                        <f:facet name="append">
+                            <b:iconAwesome name="th-list"/>
+                        </f:facet>
+                    </b:inputText>
+
+                    <b:inputText
+                                label="#{msgs.PrinterName}:"
+                                title="#{msgs.PrinterName_detail}"
                                 labelColMd="4" labelStyle="text-align:right;" value="#{printAdminBean.getPrinter().name}" colMd="7">
                         <f:facet name="append">
                             <b:iconAwesome name="th-list"/>

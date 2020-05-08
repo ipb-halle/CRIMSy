@@ -64,8 +64,8 @@ ALTER TABLE nodes drop column status;
 ALTER TABLE nodes drop column last_seen_at_master;
 ALTER TABLE nodes drop column last_seen_local;
 
-ALTER TABLE aclists DROP COLUMN node_id;
-ALTER TABLE aclists DROP COLUMN modified;
+ALTER TABLE aclists DROP COLUMN IF EXISTS node_id;
+ALTER TABLE aclists DROP COLUMN IF EXISTS modified;
 
 /* temporarily, we lose all nested memberships! */
 DELETE FROM memberships WHERE nested=true;

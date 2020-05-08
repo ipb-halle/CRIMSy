@@ -30,11 +30,12 @@ import java.util.Date;
  */
 public class Printer extends ACObject implements DTO {
 
-    private String name;
     private String config;
     private String contact;
     private String driver;
     private String model;
+    private String name;
+    private String queue;
     private String place;
     private PrinterStatus status;
 
@@ -44,23 +45,25 @@ public class Printer extends ACObject implements DTO {
     public Printer(PrinterEntity entity, ACList aclist, User owner) {
         setACList(aclist);
         setOwner(owner);
-        this.name = entity.getName();
         this.config = entity.getConfig();
         this.contact = entity.getContact();
         this.driver = entity.getDriver();
         this.model = entity.getModel();
+        this.name = entity.getName();
+        this.queue = entity.getQueue();
         this.place = entity.getPlace();
         this.status = entity.getStatus();
     }
 
     public PrinterEntity createEntity() {
         return new PrinterEntity()
-            .setName(this.name)
             .setACListId(this.getACList().getId())
             .setConfig(this.config)
             .setContact(this.contact)
             .setDriver(this.driver)
             .setModel(this.model)
+            .setName(this.name)
+            .setQueue(this.queue)
             .setOwnerId(getOwner().getId())
             .setPlace(this.place)
             .setStatus(this.status);
@@ -84,6 +87,10 @@ public class Printer extends ACObject implements DTO {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getQueue() {
+        return this.queue;
     }
 
     public String getPlace() {
@@ -112,6 +119,10 @@ public class Printer extends ACObject implements DTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setQueue(String queue) {
+        this.queue = queue;
     }
 
     public void setPlace(String place) {

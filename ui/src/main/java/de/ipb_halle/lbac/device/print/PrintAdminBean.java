@@ -110,7 +110,7 @@ public class PrintAdminBean implements Serializable {
         // xxxxx error handling!!!
     }
 
-    public void actionShowJobs(String name) {
+    public void actionShowJobs(String queue) {
         currentPage = PRINTER_JOBS;
     }
 

@@ -49,17 +49,17 @@ public class PrintBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-    private String printerName;
+    private String printerQueue;
 
-    public String getPrinterName() {
-        return this.printerName;
+    public String getPrinterQueue() {
+        return this.printerQueue;
     }
 
     /**
      * obtain the driver for the selected printer
      */
     public PrintDriver getDriver() {
-        Printer printer = printerService.loadById(this.printerName);
+        Printer printer = printerService.loadById(this.printerQueue);
         return PrintDriverFactory.buildPrintDriver(printer);
     }
 
@@ -73,10 +73,10 @@ public class PrintBean implements Serializable {
     }
 
     /**
-     * set the name of the currently selected printer
+     * set the queue of the currently selected printer
      */
-    public void setPrinterName(String name) {
-        this.printerName = name;
+    public void setPrinterQueue(String queue) {
+        this.printerQueue = queue;
     }
 
     /**

@@ -58,4 +58,4 @@ COMMIT TRANSACTION;
 /*
  * Actions not under transaction control
  */
-ALTER TABLE files DROP COLUMN termvectors;
+ALTER TABLE files DROP COLUMN IF EXISTS termvectors;

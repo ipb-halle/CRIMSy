@@ -176,7 +176,7 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     public Job createJob() {
         return new Job()
             .setJobType(JobType.PRINT)
-            .setQueue(this.printer.getName())
+            .setQueue(this.printer.getQueue())
             .setInput(Arrays.copyOf(this.buffer.array(), this.buffer.position()));
     }
 }
