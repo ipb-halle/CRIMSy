@@ -35,35 +35,35 @@
                     <b:column span="4" 
                               styleClass="taxonomyInfos">
                         <p:panel styleClass="taxonomyInfos">
-                            <h:outputText value="#{taxonomyBean.getCurrentAction()}"/>
+                            <h:outputText value="#{taxonomyBean.renderController.getCurrentAction()}"/>
                         </p:panel>
                     </b:column>
                     <b:column span="1" offset="1"
                               styleClass="taxonomyInfos">
-                        <b:commandButton value="Zurueck" rendered="#{taxonomyBean.isHistoryVisible()}"/>
+                        <b:commandButton value="Zurueck" rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
 
                     </b:column>
                     <b:column span="1" 
                               styleClass="taxonomyInfos"
                               >
-                        <h:outputText value="History Information" rendered="#{taxonomyBean.isHistoryVisible()}"/>
+                        <h:outputText value="History Information" rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
 
                     </b:column>
                     <b:column span="1"
                               styleClass="taxonomyInfos"
                               >
-                        <b:commandButton value="Vor" rendered="#{taxonomyBean.isHistoryVisible()}"/>
+                        <b:commandButton value="Vor" rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
                     </b:column>
 
 
                     <b:column span="1" offset="1"  styleClass="taxonomyInfos">
                         <b:commandButton 
-                            value="#{taxonomyBean.getEditButtonLabel()}"
+                            value="#{taxonomyBean.renderController.getEditButtonLabel()}"
                             ajax="true"
                             process="@(.taxonomyInfos)"
                             update="@(.taxonomyInfos) @(.taxonomyTree)"
                             onclick="ajax:taxonomyBean.actionClickFirstButton();"
-                            disabled="#{taxonomyBean.isFirstButtonDisabled()}"/>
+                            disabled="#{taxonomyBean.renderController.isFirstButtonDisabled()}"/>
                     </b:column>
                     <b:column span="1">
                         <b:commandButton
@@ -72,7 +72,7 @@
                             process="@(.taxonomyInfos)"
                             update="@(.taxonomyInfos) @(.taxonomyTree)"
                             onclick="ajax:taxonomyBean.actionClickSecondButton();"
-                            disabled="#{taxonomyBean.isApplyButtonDisabled()}">
+                            disabled="#{taxonomyBean.renderController.isApplyButtonDisabled()}">
                         </b:commandButton>
                     </b:column>
 
@@ -82,10 +82,10 @@
                         span="8" offset="4"
                         styleClass="taxonomyInfos">
                         <b:inputText
-                            rendered="#{taxonomyBean.isCategoryVisible()}"
+                            rendered="#{taxonomyBean.renderController.isCategoryVisible()}"
                             disabled="true"
                             label="Stufe"
-                            value="#{taxonomyBean.getCategoryOfChoosenTaxo()}"/>
+                            value="#{taxonomyBean.renderController.getCategoryOfChoosenTaxo()}"/>
                     </b:column>
                 </b:row>
                 <b:row>
@@ -94,11 +94,11 @@
                         styleClass="taxonomyInfos">
                         <b:selectOneMenu
                             label="Please select taxonomy level"
-                            rendered="#{taxonomyBean.isCategorySelectionVisible()}"
-                            value="#{taxonomyBean.selectedLevel}">
+                            rendered="#{taxonomyBean.renderController.isCategorySelectionVisible()}"
+                            value="#{taxonomyBean.levelController.selectedLevel}">
                             <f:selectItems 
                                 var="level"
-                                value="#{taxonomyBean.levels}"
+                                value="#{taxonomyBean.levelController.levels}"
                                 itemLabel="#{level.getName()}" />
                         </b:selectOneMenu>
                     </b:column>
@@ -110,15 +110,15 @@
                         <b:inputText
                             disabled="true"
                             label="new Parent of taxonomy entry"
-                            rendered="#{taxonomyBean.isNewParentRendered()}"
-                            value="#{taxonomyBean.getParentFirstName()}"/>
+                            rendered="#{taxonomyBean.renderController.isNewParentRendered()}"
+                            value="#{taxonomyBean.renderController.getParentFirstName()}"/>
                     </b:column>
 
                 </b:row>
                 <b:row>
                     <b:column span="4">
                         <p:tree                             
-                            value="#{taxonomyBean.taxonomyTree}"
+                            value="#{taxonomyBean.treeController.taxonomyTree}"
                             var ="node"
                             selectionMode="single"
                             styleClass="taxonomyTree"
@@ -138,19 +138,12 @@
                               styleClass="taxonomyInfos">
                         <b:inputText
                             label="Parent of the new taxonomy"
-                            value="#{taxonomyBean.getParentFirstName()}"
-                            rendered="#{taxonomyBean.isParentVisible()}"
+                            value="#{taxonomyBean.renderController.getParentFirstName()}"
+                            rendered="#{taxonomyBean.renderController.isParentVisible()}"
                             disabled="true"/>
                     </b:column>
                 </b:row>
-
-
-
-
             </b:container>
-
-
-
         </b:form>
     </h:body>
 

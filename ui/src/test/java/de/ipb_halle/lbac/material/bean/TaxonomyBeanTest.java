@@ -64,6 +64,7 @@ public class TaxonomyBeanTest extends TestBase {
 
         bean = new TaxonomyBean();
         bean.setTaxonomyService(taxonomyService);
+        bean.init();
 
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
@@ -86,7 +87,7 @@ public class TaxonomyBeanTest extends TestBase {
     public void test001_reloadTaxonomies() {
         LoginEvent event = new LoginEvent(owner);
         bean.setCurrentAccount(event);
-        bean.reloadTreeNode(null);
+        bean.getTreeController().reloadTreeNode(null);
         int i = 0;
     }
 
