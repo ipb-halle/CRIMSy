@@ -124,9 +124,22 @@ public class TaxonomyTreeController {
         List<TreeNode> nodes = getAllChildren(taxonomyTree);
         for (TreeNode n : nodes) {
             Taxonomy t = (Taxonomy) n.getData();
+
             boolean leaf = t.getLevel().getRank() == levelController.getLeastRank();
-            n.setSelectable(!leaf && t.getId() != id);
+
+            n.setSelectable(!leaf
+                    && t.getId() != id
+                    && isTaxonomyInHierarchy(id, t));
         }
+    }
+
+    private boolean isTaxonomyInHierarchy(int id, Taxonomy taxo) {
+        for (Taxonomy t : taxo.getTaxHierachy()) {
+            if (t.getId() == id) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
