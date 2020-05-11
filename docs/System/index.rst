@@ -12,8 +12,9 @@ Systemarchitektur Handbuch
    05_TechnischerKontext.md
    06_1_Bausteinsicht.md
    06_2_Bausteinsicht.md
-   06_3_Bausteinsicht.md
-   07_Laufzeitsicht.md
+   06_3_Bausteinsicht.rst
+   06_4_Bausteinsicht.rst
+   07_Laufzeitsicht.rst
    08_Verteilungssicht.md
    09_Querschnitt.md
    10_Risikoanalyse.md
