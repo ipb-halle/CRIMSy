@@ -53,8 +53,6 @@ public class TaxonomyBean implements Serializable {
         CREATE, SHOW, EDIT, HISTORY
     }
 
-
-
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
     private User currentUser;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
@@ -74,7 +72,7 @@ public class TaxonomyBean implements Serializable {
     private Mode mode;
 
     private Taxonomy parentOfNewTaxo;
-    
+
     protected TaxonomyNameController nameController;
     protected TaxonomyRenderController renderController;
     protected TaxonomyValidityController validityController;
@@ -86,22 +84,23 @@ public class TaxonomyBean implements Serializable {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         validityController = new TaxonomyValidityController(this);
-        renderController = new TaxonomyRenderController(this, nameController);
+        renderController = new TaxonomyRenderController(this, nameController,levelController);
         treeController = new TaxonomyTreeController(this, taxonomyService, levelController);
     }
 
     public void actionClickFirstButton() {
         if (mode == Mode.CREATE || mode == Mode.EDIT) {
-            taxonomyToCreate = null;
-            taxonomyToEdit = null;
             mode = Mode.SHOW;
-            treeController.reloadTreeNode(null);
+            treeController.reloadTreeNode(selectedTaxonomy);
         } else if (mode == Mode.SHOW) {
-            mode = Mode.EDIT;
-
-            taxonomyBeforeEdit = (Taxonomy) selectedTaxonomy.getData();
-            taxonomyToEdit = taxonomyBeforeEdit.copyMaterial();
-            treeController.disableTreeNodeEntries(taxonomyBeforeEdit.getId());
+            try {
+                mode = Mode.EDIT;
+                taxonomyBeforeEdit = (Taxonomy) selectedTaxonomy.getData();
+                taxonomyToEdit = taxonomyBeforeEdit.copyMaterial();
+                treeController.disableTreeNodeEntries(taxonomyBeforeEdit.getId());
+            } catch (Exception e) {
+                logger.error(e);
+            }
         }
         treeController.expandTree();
     }

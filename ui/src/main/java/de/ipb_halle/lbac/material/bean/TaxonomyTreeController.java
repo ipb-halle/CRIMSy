@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -38,6 +40,8 @@ public class TaxonomyTreeController {
     protected TaxonomyLevelController levelController;
     private TreeNode taxonomyTree;
 
+    protected final Logger logger = LogManager.getLogger(this.getClass().getName());
+
     public TaxonomyTreeController(
             TaxonomyBean taxonomyBean,
             TaxonomyService taxonomyService,
@@ -47,23 +51,26 @@ public class TaxonomyTreeController {
         this.levelController = levelController;
     }
 
-    public void reloadTreeNode(Integer id) {
-
-        Map<String, Object> cmap = new HashMap<>();
-        //cmap.put("level", 1);
-        shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
-        Taxonomy rootTaxo = taxonomyBean.createNewTaxonomy();
-        rootTaxo.setLevel(levelController.getLevels().get(0));
-        taxonomyTree = new DefaultTreeNode(rootTaxo, null);
-        for (Taxonomy t : shownTaxonomies) {
-            if (!t.getTaxHierachy().isEmpty()) {
-                TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
-                new DefaultTreeNode(t, parent);
-            } else {
-                new DefaultTreeNode(t, taxonomyTree);
+    public void reloadTreeNode(TreeNode selectedNode) {
+        try {
+            Map<String, Object> cmap = new HashMap<>();
+            shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
+            Taxonomy rootTaxo = taxonomyBean.createNewTaxonomy();
+            rootTaxo.setLevel(levelController.getLevels().get(0));
+            taxonomyTree = new DefaultTreeNode(rootTaxo, null);
+            for (Taxonomy t : shownTaxonomies) {
+                if (!t.getTaxHierachy().isEmpty()) {
+                    TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
+                    new DefaultTreeNode(t, parent);
+                } else {
+                    new DefaultTreeNode(t, taxonomyTree);
+                }
             }
+            expandTree();
+        } catch (Exception e) {
+            logger.error(e);
         }
-        expandTree();
+
     }
 
     private TreeNode getTreeNodeWithTaxonomy(int id) {
@@ -99,12 +106,14 @@ public class TaxonomyTreeController {
         if (taxonomyBean.getSelectedTaxonomy() == null) {
             return;
         }
+        Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
         expandNode(taxonomyBean.getSelectedTaxonomy());
-        taxonomyBean.getSelectedTaxonomy().setSelected(true);
-
+        getTreeNodeWithTaxonomy(t.getId()).setSelected(true);
     }
 
     private void expandNode(TreeNode n) {
+        Taxonomy t = (Taxonomy) n.getData();
+        n = getTreeNodeWithTaxonomy(t.getId());
         n.setExpanded(true);
         if (n.getParent() != null) {
             expandNode(n.getParent());
@@ -115,8 +124,7 @@ public class TaxonomyTreeController {
         List<TreeNode> nodes = getAllChildren(taxonomyTree);
         for (TreeNode n : nodes) {
             Taxonomy t = (Taxonomy) n.getData();
-
-            boolean leaf = t.getLevel().getRank() == levelController.getLevels().get(levelController.getLevels().size() - 1).getRank();
+            boolean leaf = t.getLevel().getRank() == levelController.getLeastRank();
             n.setSelectable(!leaf && t.getId() != id);
         }
     }

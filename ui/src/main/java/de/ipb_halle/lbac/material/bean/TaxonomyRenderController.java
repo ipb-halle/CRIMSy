@@ -29,16 +29,23 @@ public class TaxonomyRenderController {
 
     protected TaxonomyBean taxonomyBean;
     protected TaxonomyNameController nameController;
+    TaxonomyLevelController levelController;
 
-    public TaxonomyRenderController(TaxonomyBean taxonomyBean, TaxonomyNameController nameController) {
+    public TaxonomyRenderController(
+            TaxonomyBean taxonomyBean,
+            TaxonomyNameController nameController,
+            TaxonomyLevelController levelController) {
         this.taxonomyBean = taxonomyBean;
         this.nameController = nameController;
+        this.levelController = levelController;
     }
 
     public boolean isFirstButtonDisabled() {
 
         if (taxonomyBean.getMode() == TaxonomyBean.Mode.SHOW && taxonomyBean.getSelectedTaxonomy() != null) {
-            return false;
+            Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
+            return t.getLevel().getRank() == levelController.getHighestRank();
+
         }
         if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
             return false;

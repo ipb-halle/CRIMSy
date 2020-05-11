@@ -79,14 +79,19 @@ public class TaxonomyNameController {
     }
 
     public List<MaterialName> getNames() {
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE
-                || taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
-            return getTargetTaxonomy().getNames();
-        }
-        if (taxonomyBean.getSelectedTaxonomy() != null) {
-            Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-            return t.getNames();
-        } else {
+        try {
+            if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE
+                    || taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
+                return getTargetTaxonomy().getNames();
+            }
+            if (taxonomyBean.getSelectedTaxonomy() != null) {
+                Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
+                return t.getNames();
+            } else {
+                return new ArrayList<>();
+            }
+        } catch (Exception e) {
+            logger.info("Error at fetching names");
             return new ArrayList<>();
         }
     }

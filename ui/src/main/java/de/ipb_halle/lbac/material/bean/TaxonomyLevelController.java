@@ -65,6 +65,13 @@ public class TaxonomyLevelController {
         this.selectedLevel = selectedLevel;
     }
 
+    public int getLeastRank(){
+       return levels.get(levels.size()-1).getRank();
+    }
+    public int getHighestRank(){
+        return levels.get(0).getRank();
+    }
+    
     public void setLevels(List<TaxonomyLevel> levels) {
         this.levels = levels;
     }
