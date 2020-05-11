@@ -84,7 +84,7 @@ public class TaxonomyBean implements Serializable {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         validityController = new TaxonomyValidityController(this);
-        renderController = new TaxonomyRenderController(this, nameController,levelController);
+        renderController = new TaxonomyRenderController(this, nameController, levelController);
         treeController = new TaxonomyTreeController(this, taxonomyService, levelController);
     }
 
@@ -97,7 +97,7 @@ public class TaxonomyBean implements Serializable {
                 mode = Mode.EDIT;
                 taxonomyBeforeEdit = (Taxonomy) selectedTaxonomy.getData();
                 taxonomyToEdit = taxonomyBeforeEdit.copyMaterial();
-                treeController.disableTreeNodeEntries(taxonomyBeforeEdit.getId());
+                treeController.disableTreeNodeEntries(taxonomyBeforeEdit);
             } catch (Exception e) {
                 logger.error(e);
             }

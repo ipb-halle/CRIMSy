@@ -120,16 +120,18 @@ public class TaxonomyTreeController {
         }
     }
 
-    public void disableTreeNodeEntries(int id) {
+    public void disableTreeNodeEntries(Taxonomy taxoToEdit) {
         List<TreeNode> nodes = getAllChildren(taxonomyTree);
         for (TreeNode n : nodes) {
             Taxonomy t = (Taxonomy) n.getData();
 
             boolean leaf = t.getLevel().getRank() == levelController.getLeastRank();
+            boolean targetGotLowerRank = taxoToEdit.getLevel().getRank() > t.getLevel().getRank();
 
             n.setSelectable(!leaf
-                    && t.getId() != id
-                    && isTaxonomyInHierarchy(id, t));
+                    && t.getId() != taxoToEdit.getId()
+                    && targetGotLowerRank
+                    && isTaxonomyInHierarchy(taxoToEdit.getId(), t));
         }
     }
 

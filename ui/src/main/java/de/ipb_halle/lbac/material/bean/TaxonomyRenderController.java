@@ -106,7 +106,7 @@ public class TaxonomyRenderController {
         if (taxonomyBean.getMode() == Mode.SHOW || taxonomyBean.getMode() == Mode.HISTORY) {
             if (taxonomyBean.getSelectedTaxonomy() != null) {
                 Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-                return "Detail information for " + t.getFirstName();
+                return "Detail information for " + t.getFirstName()+ " ("+t.getId()+")";
             }
         }
         if (taxonomyBean.getMode() == Mode.CREATE) {
