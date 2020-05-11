@@ -465,6 +465,20 @@ select.selCollection {
     width:400px !important;
 }
 
+.ui-treenode-content:not(.ui-tree-selectable) .ui-treenode-label{
+    color:#cacaca !important;
+    cursor: not-allowed !important;
+}
+
+.taxonomy-top-row{
+    margin-top: 10px;
+}
+
+.taxonomy-save-button{
+    position: absolute;
+    left: 1px;
+    width: 180px;
+}
 
 
 

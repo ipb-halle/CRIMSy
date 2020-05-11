@@ -31,7 +31,7 @@
             id="taxonomyForm">
 
             <b:container>
-                <b:row>
+                <b:row style-class="taxonomy-top-row">
                     <b:column span="4" 
                               styleClass="taxonomyInfos">
                         <p:panel styleClass="taxonomyInfos">
@@ -58,16 +58,21 @@
 
                     <b:column span="1" offset="1"  styleClass="taxonomyInfos">
                         <b:commandButton 
+                            type="button"
                             value="#{taxonomyBean.renderController.getEditButtonLabel()}"
                             ajax="true"
+                            look="default"
                             process="@(.taxonomyInfos)"
                             update="@(.taxonomyInfos) @(.taxonomyTree)"
                             onclick="ajax:taxonomyBean.actionClickFirstButton();"
                             disabled="#{taxonomyBean.renderController.isFirstButtonDisabled()}"/>
                     </b:column>
-                    <b:column span="1">
+                    <b:column span="1"  styleClass="taxonomyInfos">
                         <b:commandButton
-                            value="CREATE"
+                            value="#{taxonomyBean.renderController.getSecondButtonLabel()}"
+                            styleClass="taxonomy-save-button"
+                            type="button"
+                            look="primary"
                             ajax="true"
                             process="@(.taxonomyInfos)"
                             update="@(.taxonomyInfos) @(.taxonomyTree)"
@@ -117,7 +122,8 @@
                 </b:row>
                 <b:row>
                     <b:column span="4">
-                        <p:tree                             
+                        <p:tree     
+
                             value="#{taxonomyBean.treeController.taxonomyTree}"
                             var ="node"
                             selectionMode="single"

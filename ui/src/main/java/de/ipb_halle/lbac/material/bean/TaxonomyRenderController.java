@@ -62,6 +62,14 @@ public class TaxonomyRenderController {
         }
     }
 
+    public String getSecondButtonLabel() {
+        if (taxonomyBean.getMode() == Mode.SHOW) {
+            return "Add new taxonomy entry";
+        } else {
+            return "Save";
+        }
+    }
+
     public boolean isMaterialNameOperationEnabled(
             MaterialName mn,
             String b) {
@@ -106,7 +114,7 @@ public class TaxonomyRenderController {
         if (taxonomyBean.getMode() == Mode.SHOW || taxonomyBean.getMode() == Mode.HISTORY) {
             if (taxonomyBean.getSelectedTaxonomy() != null) {
                 Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-                return "Detail information for " + t.getFirstName()+ " ("+t.getId()+")";
+                return "Detail information for " + t.getFirstName() + " (" + t.getId() + ")";
             }
         }
         if (taxonomyBean.getMode() == Mode.CREATE) {
