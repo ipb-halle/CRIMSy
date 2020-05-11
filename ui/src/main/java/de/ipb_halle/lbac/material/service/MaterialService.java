@@ -70,7 +70,7 @@ import org.apache.logging.log4j.Logger;
 public class MaterialService implements Serializable {
 
     protected StructureInformationSaver structureInformationSaver;
-    private final String SQL_GET_MATERIAL = "SELECT materialid,materialtypeid,ctime,usergroups,ownerid,projectid,deactivated FROM materials where deactivated=false";
+    private final String SQL_GET_MATERIAL = "SELECT materialid,materialtypeid,ctime,usergroups,ownerid,projectid,deactivated FROM materials where deactivated=false AND materialtypeid <> 7 ";
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
     private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM hazards_materials WHERE materialid=:mid";
