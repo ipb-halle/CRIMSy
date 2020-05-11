@@ -22,6 +22,8 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -29,6 +31,7 @@ import java.util.List;
  */
 public class TaxonomyNameController {
 
+    protected final Logger logger = LogManager.getLogger(this.getClass().getName());
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     protected TaxonomyBean taxonomyBean;
     private NameListOperation nameListOperation = new NameListOperation(MESSAGE_BUNDLE);
@@ -43,8 +46,9 @@ public class TaxonomyNameController {
     }
 
     public void removeName(MaterialName mName) {
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
-            nameListOperation.deleteName(mName, taxonomyBean.getTaxonomyToCreate().getNames());
+        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE
+                || taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
+            nameListOperation.deleteName(mName, getTargetTaxonomy().getNames());
         }
     }
 
@@ -57,30 +61,27 @@ public class TaxonomyNameController {
 
     public void swapPosition(MaterialName mn, String action) {
         NameListOperation.Button button = NameListOperation.Button.valueOf(action);
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
-            switch (button) {
-                case LOWEST:
-                    nameListOperation.setRankToLowest(mn, taxonomyBean.getTaxonomyToCreate().getNames());
-                    break;
-                case LOWER:
-                    nameListOperation.substractOneRank(mn, taxonomyBean.getTaxonomyToCreate().getNames());
-                    break;
-                case HIGHER:
-                    nameListOperation.addOneRank(mn, taxonomyBean.getTaxonomyToCreate().getNames());
-                    break;
-                case HIGHEST:
-                    nameListOperation.setRankToHighest(mn, taxonomyBean.getTaxonomyToCreate().getNames());
-                    break;
-            }
+        switch (button) {
+            case LOWEST:
+                nameListOperation.setRankToLowest(mn, getTargetTaxonomy().getNames());
+                break;
+            case LOWER:
+                nameListOperation.substractOneRank(mn, getTargetTaxonomy().getNames());
+                break;
+            case HIGHER:
+                nameListOperation.addOneRank(mn, getTargetTaxonomy().getNames());
+                break;
+            case HIGHEST:
+                nameListOperation.setRankToHighest(mn, getTargetTaxonomy().getNames());
+                break;
         }
+
     }
 
     public List<MaterialName> getNames() {
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
-            return taxonomyBean.getTaxonomyToCreate().getNames();
-        }
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
-            return taxonomyBean.getTaxonomyToEdit().getNames();
+        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE
+                || taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
+            return getTargetTaxonomy().getNames();
         }
         if (taxonomyBean.getSelectedTaxonomy() != null) {
             Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
@@ -103,11 +104,18 @@ public class TaxonomyNameController {
     }
 
     public void addNewName() {
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
+        if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE
+                || taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
             addNewEmptyName(getNames());
         }
     }
 
-   
+    private Taxonomy getTargetTaxonomy() {
+        if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
+            return taxonomyBean.getTaxonomyToEdit();
+        } else {
+            return taxonomyBean.getTaxonomyToCreate();
+        }
+    }
 
 }
