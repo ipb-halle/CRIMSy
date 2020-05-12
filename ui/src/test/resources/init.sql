@@ -670,3 +670,8 @@ CREATE TABLE printers (
     place       VARCHAR NOT NULL DEFAULT '',
     status      INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE tissues(
+  id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
+  taxoid INTEGER NOT NULL REFERENCES taxonomy(id)
+);

@@ -50,6 +50,7 @@
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity</class>
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.tissue.TissueEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ContainerEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ContainerNestingEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ContainerTypeEntity</class>

@@ -449,6 +449,11 @@ CREATE TABLE taxonomy_history(
     level_new INTEGER,
     PRIMARY KEY(actorid,mdate));
 
+CREATE TABLE tissues(
+  id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
+  taxoid INTEGER NOT NULL REFERENCES taxonomy(id)
+);
+
 INSERT INTO taxonomy_level VALUES(1,'domain',100);
 INSERT INTO taxonomy_level VALUES(2,'kingdom',200);
 INSERT INTO taxonomy_level VALUES(3,'subkingdom',300);

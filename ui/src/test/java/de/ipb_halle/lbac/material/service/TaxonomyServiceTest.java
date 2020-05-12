@@ -34,7 +34,6 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -78,7 +77,12 @@ public class TaxonomyServiceTest extends TestBase {
 
         ownerid = owner.getId().toString();
         materialService.setUserBean(userBean);
+    }
 
+    @After
+    public void finish() {
+        cleanTaxonomyFromDb();
+        cleanMaterialsFromDB();
     }
 
     @Test
@@ -90,7 +94,7 @@ public class TaxonomyServiceTest extends TestBase {
     @Test
     public void test002_loadTaxonomies() {
         project = creationTools.createProject();
-        createTaxonomyTreeInDB(userGroups, owner.getId().toString());
+        createTaxonomyTreeInDB(project.getUserGroups().getId().toString(), owner.getId().toString());
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
         Assert.assertEquals("test001: 21 taxonomies must be found", 21, taxonomies.size());
 

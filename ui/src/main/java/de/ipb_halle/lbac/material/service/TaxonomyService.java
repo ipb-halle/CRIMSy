@@ -17,11 +17,9 @@
  */
 package de.ipb_halle.lbac.material.service;
 
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.difference.MaterialComparator;
-import de.ipb_halle.lbac.material.difference.MaterialDifference;
 import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity;
 import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;

@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.material.difference.MaterialDifference;
 import de.ipb_halle.lbac.material.difference.MaterialComparator;
 import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.entity.MaterialEntity;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACList;
@@ -41,8 +40,10 @@ import de.ipb_halle.lbac.material.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageConditionStorageEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.entity.structure.StructureEntity;
+import de.ipb_halle.lbac.material.entity.tissue.TissueEntity;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -376,10 +377,12 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.TAXONOMY) {
             saveTaxonomy((Taxonomy) m);
         }
+        if (m.getType() == MaterialType.TISSUE) {
+            saveTissue((Tissue) m);
+        }
 
     }
-    
-    
+
     /**
      *
      * @param m
@@ -445,6 +448,13 @@ public class MaterialService implements Serializable {
                     .executeUpdate();
         }
 
+        return t;
+    }
+
+    public Tissue saveTissue(Tissue t) {
+        TissueEntity entity = t.createEntity();
+        this.em.persist(entity);
+        t.setId(entity.getId());
         return t;
     }
 

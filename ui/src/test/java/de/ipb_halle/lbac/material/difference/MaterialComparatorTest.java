@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.subtype.BioMaterial;
+import de.ipb_halle.lbac.material.subtype.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import java.util.ArrayList;
 import java.util.List;

@@ -155,6 +155,7 @@ public class TestBase implements Serializable {
     }
 
     public void cleanTaxonomyFromDb() {
+        this.entityManagerService.doSqlUpdate("DELETE FROM tissues");
         this.entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
         this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
