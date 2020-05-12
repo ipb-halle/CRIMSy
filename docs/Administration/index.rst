@@ -5,6 +5,6 @@ Administrationshandbuch
    :maxdepth: 2
    :caption: Contents:
 
-   01_Setup.md
-   02_Phase1.md
-   03_Phase2.md
+   01_Setup.rst
+   02_Phase1.rst
+   03_Phase2.rst

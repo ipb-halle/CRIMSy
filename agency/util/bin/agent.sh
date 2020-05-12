@@ -22,9 +22,9 @@
 # -----
 # This template illustrates, how the CRIMSy Agency could be used 
 # to process different types of jobs (e.g. PRINT jobs, COMPUTE jobs, 
-# etc.). The script will receive the job type as first argument,
-# the queue as second argument and input data on STDIN. Results 
-# are expected via STDOUT. 
+# etc.). The script will receive the JOB TYPE as first argument,
+# the QUEUE as second argument, JOB ID as third argument and input 
+# data on STDIN. Results are expected via STDOUT. 
 #
 # Administrators are expected to modify and extend this script to 
 # their needs. The script is not intended for manual calling although
@@ -33,12 +33,12 @@
 #====================================================================
 #
 function compute {
-    echo "Scheduling compute job for queue $1"
+    echo "Scheduling compute job #$2 for queue $1"
     cat - | md5sum
 }
 
 function print {
-    lp -d $1
+    lp -d $1 -t $2 -- -
 }
 #
 #====================================================================
@@ -46,10 +46,10 @@ function print {
     case $1 in
 
         PRINT)
-            print $2
+            print $2 $3
             ;;
 
         COMPUTE)
-            compute $2
+            compute $2 $3
             ;;
     esac

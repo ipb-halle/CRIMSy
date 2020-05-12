@@ -105,7 +105,7 @@ public class Handler {
     }
 
     private void start(NetJob netjob) throws IOException, InterruptedException {
-        String[] cmd = new String[3];
+        String[] cmd = new String[4];
         cmd[0] = this.script;
 
         netjob.setToken(TokenGenerator.getToken(this.secret));
@@ -116,6 +116,7 @@ public class Handler {
             for (NetJob job : result.getJobList()) {
                 cmd[1] = job.getJobType().toString();
                 cmd[2] = job.getQueue();
+                cmd[3] = job.getJobId().toString();
                 Process proc = Runtime.getRuntime().exec(cmd);
                 // System.out.printf("input size: %d\n", job.getInput().length);
                 proc.getOutputStream().write(job.getInput());

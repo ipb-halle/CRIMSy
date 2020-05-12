@@ -1,5 +1,6 @@
 META-INF
 config
+docs/_build
 documentation/**/*.pdf
 target
 agency/target

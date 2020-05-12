@@ -20,7 +20,7 @@ Viele Funktionen der Cloud werden über Zertifikate abgesichert. Mit dem Skript 
 
 Einige Funktionen des Scripts können interaktiv über Menü genutzt werden:
 
-![Hauptmenü](img/camgr_01.PNG)
+![Hauptmenü](img/camgr_01.png)
 Einige Funktionen (z.B. die Erzeugung von Zertifikaten für die Maschine-zu-Maschine-Kommunikation) sind auch über Kommandozeile zugänglich. Das Skript stellt dabei im wesentlichen einen Wrapper für OpenSSL dar und legt bestimmte Konfigurationsparameter für OpenSSL fest (z.B. Schlüssellänge, Digest-Algorithmus, Gültigkeitszeitraum, Key Usage usw.).
 
 #### On Disk Layout
