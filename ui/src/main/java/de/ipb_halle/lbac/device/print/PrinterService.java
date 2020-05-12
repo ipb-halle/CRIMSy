@@ -112,7 +112,7 @@ public class PrinterService implements Serializable {
      */
     public void delete(Printer p) {
         PrinterEntity entity = this.em.find(PrinterEntity.class, p.getQueue());
-        this.em.remove(entity); 
+        this.em.remove(entity);
     }
 
     /**

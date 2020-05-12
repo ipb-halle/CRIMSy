@@ -44,7 +44,8 @@ public class TokenGenerator {
     private final static String DIGEST_ALGORITHM = "SHA-256";
     private final static String CIPHER_ALGORITHM = "AES";
 
-    private static Logger logger = LoggerFactory.getLogger(TokenGenerator.class); 
+    private static Logger logger = LoggerFactory.getLogger(TokenGenerator.class);
+
     /**
      * check a given token against current time and a the shared secret
      */

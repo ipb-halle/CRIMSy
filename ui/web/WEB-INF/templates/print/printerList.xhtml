@@ -71,8 +71,8 @@
                                              icon="fa fa-trash"
                                              action="#{printAdminBean.actionDelete(pl)}"
                                              update="printerSettings">
-                                <p:confirm header="Confirmation" 
-                                                    message="#{msgs.PrinterConfirmDelete_detail}" 
+                                <p:confirm header="#{msgs.PrinterConfirmDelete}" 
+                                                    message="#{msgs.PrinterConfirmDelete_detail}"
                                                     icon="fa fa-warning" />
                             </p:commandButton>
                         </b:dataTableColumn>
@@ -89,7 +89,7 @@
         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
             <p:commandButton value="#{msgs.Ok}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
             <p:commandButton value="#{msgs.Cancel}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
-        </p:confirmDialog>      
+        </p:confirmDialog>
 
     </ui:composition>
 </h:body>
