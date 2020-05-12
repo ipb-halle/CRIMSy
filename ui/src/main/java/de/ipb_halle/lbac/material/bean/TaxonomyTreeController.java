@@ -126,7 +126,7 @@ public class TaxonomyTreeController {
             Taxonomy t = (Taxonomy) n.getData();
 
             boolean leaf = t.getLevel().getRank() == levelController.getLeastRank();
-            boolean targetGotLowerRank = taxoToEdit.getLevel().getRank() > t.getLevel().getRank();
+            boolean targetGotLowerRank = taxoToEdit.getLevel().getRank() >= t.getLevel().getRank();
 
             n.setSelectable(!leaf
                     && t.getId() != taxoToEdit.getId()

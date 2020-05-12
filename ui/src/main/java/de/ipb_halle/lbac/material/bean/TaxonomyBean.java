@@ -145,7 +145,7 @@ public class TaxonomyBean implements Serializable {
         levelController.setLevels(taxonomyService.loadTaxonomyLevel());
         levelController.setSelectedLevel(levelController.getLevels().get(0));
         treeController.reloadTreeNode(null);
-        //selectedTaxonomy = taxonomyTree.getChildren().get(0);
+        selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
     }
 
     public TreeNode getSelectedTaxonomy() {

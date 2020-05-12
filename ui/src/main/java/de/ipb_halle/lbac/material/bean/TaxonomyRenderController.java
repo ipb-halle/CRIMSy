@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.bean;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
@@ -30,6 +31,7 @@ public class TaxonomyRenderController {
     protected TaxonomyBean taxonomyBean;
     protected TaxonomyNameController nameController;
     TaxonomyLevelController levelController;
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     public TaxonomyRenderController(
             TaxonomyBean taxonomyBean,
@@ -40,14 +42,19 @@ public class TaxonomyRenderController {
         this.levelController = levelController;
     }
 
+    /**
+     * Calculates if the first button (EDIT or CANCEL) is disabled.
+     *
+     * @return
+     */
     public boolean isFirstButtonDisabled() {
-
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.SHOW && taxonomyBean.getSelectedTaxonomy() != null) {
+        if (taxonomyBean.getMode() == TaxonomyBean.Mode.SHOW
+                && taxonomyBean.getSelectedTaxonomy() != null) {
             Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
             return t.getLevel().getRank() == levelController.getHighestRank();
-
         }
-        if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT) {
+        if (taxonomyBean.getMode() == TaxonomyBean.Mode.EDIT
+                || taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
             return false;
         } else {
             return true;
@@ -56,17 +63,18 @@ public class TaxonomyRenderController {
 
     public String getEditButtonLabel() {
         if (taxonomyBean.getMode() == Mode.CREATE || taxonomyBean.getMode() == Mode.EDIT) {
-            return "Cancel";
+
+            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_cancel", null);
         } else {
-            return "Edit";
+            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_edit", null);
         }
     }
 
     public String getSecondButtonLabel() {
         if (taxonomyBean.getMode() == Mode.SHOW) {
-            return "Add new taxonomy entry";
+            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_add", null);
         } else {
-            return "Save";
+            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_save", null);
         }
     }
 
@@ -126,14 +134,7 @@ public class TaxonomyRenderController {
         return "";
     }
 
-    public String getApplyButtonText() {
-        if (taxonomyBean.getMode() == Mode.CREATE) {
-            return "Save";
-        }
-        return "Create New Taxonomy";
-    }
-
-    public boolean isApplyButtonDisabled() {
+    public boolean isSecondButtonDisabled() {
         if (taxonomyBean.getMode() == Mode.HISTORY) {
             return true;
         } else {

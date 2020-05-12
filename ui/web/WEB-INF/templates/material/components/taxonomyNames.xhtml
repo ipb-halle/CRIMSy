@@ -28,8 +28,9 @@
     <h:body>
         <ui:composition>
             <b:panel
+                collapsible="false"
                 rendered="#{taxonomyBean.renderController.isNamesVisible()}"
-                styleClass="taxonomyInfos" 
+                styleClass="taxonomyInfos taxonomy-name-table" 
                 title="#{msgs.materialCreation_panelNames_name}">
                 <b:dataTable
                     id="materialNameTable"
@@ -40,7 +41,7 @@
                     var="mName">
                     <b:dataTableColumn
                         orderable="false"
-                        label="#{msgs.materialCreation_panelNames_tableHeader_name}">
+                        label="#{msgs.taxonomy_names_panel_title}">
                         <b:inputText                           
                             value="#{mName.value}"
                             disabled="#{!taxonomyBean.renderController.isNameEditable()}"
