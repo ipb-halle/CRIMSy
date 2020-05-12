@@ -152,18 +152,10 @@
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/storageClasses.xhtml"/>
                     </ui:insert>
-                    <b:panel 
-                        title="Taxonomie"
-                        rendered="#{materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
-                        <b:container
-                            styleClass="materialDetailPanel">
-                            <b:row>
-                                <b:column>
-
-                                </b:column>
-                            </b:row>
-                        </b:container>
-                    </b:panel>
+                     <ui:insert> 
+                        <ui:include src="/WEB-INF/templates/material/components/biodata.xhtml"/>
+                    </ui:insert>
+                    
                 </b:accordion>
             </b:panel>
 

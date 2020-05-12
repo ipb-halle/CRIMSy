@@ -21,7 +21,10 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.entity.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
+import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
 import java.util.List;
 
 /**
@@ -30,14 +33,21 @@ import java.util.List;
  */
 public class BioMaterial extends Material {
 
+    private Taxonomy taxonomy;
+    private Tissue tissue;
+
     public BioMaterial(
             int id,
             List<MaterialName> names,
             int projectId,
             HazardInformation hazards,
-            StorageClassInformation storageInfos) {
+            StorageClassInformation storageInfos,
+            Taxonomy taxonomy,
+            Tissue tissue) {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.BIOMATERIAL;
+        this.tissue = tissue;
+        this.taxonomy = taxonomy;
     }
 
     @Override
@@ -51,8 +61,14 @@ public class BioMaterial extends Material {
     }
 
     @Override
-    public Object createEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public BioMaterialEntity createEntity() {
+        BioMaterialEntity entity = new BioMaterialEntity();
+        entity.setId(id);
+        entity.setTaxoid(taxonomy.getId());
+        if (tissue != null) {
+            entity.setTissueid(tissue.getId());
+        }
+        return entity;
     }
 
 }

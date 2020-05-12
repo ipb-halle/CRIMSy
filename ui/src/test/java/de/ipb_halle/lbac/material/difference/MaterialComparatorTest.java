@@ -56,7 +56,8 @@ public class MaterialComparatorTest {
                         new ArrayList<>(),
                         1,
                         new HazardInformation(),
-                        new StorageClassInformation())
+                        new StorageClassInformation(),
+                        null, null)
         );
     }
 

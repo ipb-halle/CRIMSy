@@ -20,18 +20,22 @@ package de.ipb_halle.lbac.material.bean.save;
 import de.ipb_halle.lbac.material.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.subtype.structure.Molecule;
 import de.ipb_halle.lbac.material.subtype.structure.MoleculeStructureModel;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.subtype.structure.StructureInformation;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.subtype.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
+import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
 import de.ipb_halle.lbac.project.Project;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  *
@@ -53,7 +57,7 @@ public class MaterialCreationSaver {
         this.materialService = materialService;
     }
 
-    public void saveNewMaterial(
+    public void saveNewStructure(
             boolean calculateFormulaAndMassesByDb,
             MoleculeStructureModel moleculeModel,
             StructureInformation structureInfos,
@@ -96,6 +100,24 @@ public class MaterialCreationSaver {
                 project.getUserGroups().getId(),
                 project.getDetailTemplates()
         );
+    }
+
+    public void saveNewBioMaterial(
+            Project project,
+            List<IndexEntry> indices,
+            Taxonomy taxonomy,
+            Tissue tissue,
+            HazardInformation hazards,
+            StorageClassInformation storageInfos) {
+
+        List<MaterialName> names = new ArrayList<>();
+        for (IndexEntry ie : indices) {
+            if (ie instanceof MaterialName) {
+                names.add((MaterialName) ie);
+            }
+        }
+        BioMaterial bm = new BioMaterial(0, names, project.getId(), hazards, storageInfos, taxonomy, tissue);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), project.getDetailTemplates());
 
     }
 }

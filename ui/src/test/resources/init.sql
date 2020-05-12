@@ -672,6 +672,12 @@ CREATE TABLE printers (
 );
 
 CREATE TABLE tissues(
-  id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
-  taxoid INTEGER NOT NULL REFERENCES taxonomy(id)
+    id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
+    taxoid INTEGER NOT NULL REFERENCES taxonomy(id)
+);
+
+CREATE TABLE biomaterial(
+    id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
+    taxoid INTEGER NOT NULL REFERENCES taxonomy(id),
+    tissueid INTEGER REFERENCES tissues(id)
 );

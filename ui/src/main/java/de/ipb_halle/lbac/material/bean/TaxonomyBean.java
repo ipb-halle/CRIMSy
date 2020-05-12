@@ -25,16 +25,11 @@ import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyNameController;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.TaxonomyService;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -90,7 +85,7 @@ public class TaxonomyBean implements Serializable {
         levelController = new TaxonomyLevelController(this);
         validityController = new TaxonomyValidityController(this);
         renderController = new TaxonomyRenderController(this, nameController, levelController);
-        treeController = new TaxonomyTreeController(this, taxonomyService, levelController);
+        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
     }
 
     public void actionClickFirstButton() {
@@ -114,7 +109,7 @@ public class TaxonomyBean implements Serializable {
         try {
             if (mode == Mode.SHOW) {
                 mode = Mode.CREATE;
-                taxonomyToCreate = createNewTaxonomy();
+                taxonomyToCreate = treeController.createNewTaxonomy();
                 return;
             }
             if (mode == Mode.CREATE) {
@@ -172,12 +167,6 @@ public class TaxonomyBean implements Serializable {
             parentOfNewTaxo = (Taxonomy) selectedTaxonomy.getData();
         }
 
-    }
-
-    public Taxonomy createNewTaxonomy() {
-        List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName("", "en", 1));
-        return new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
     }
 
     private void saveNewTaxonomy() {

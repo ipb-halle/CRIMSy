@@ -35,6 +35,7 @@
         <class>de.ipb_halle.lbac.exp.Experiment</class>
         <class>de.ipb_halle.lbac.exp.ExpRecord</class>
         <class>de.ipb_halle.lbac.exp.SOP</class>
+        <class>de.ipb_halle.lbac.material.entity.biomaterial.BioMaterialEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialHistoryEntity</class>

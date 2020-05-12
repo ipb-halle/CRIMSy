@@ -454,6 +454,12 @@ CREATE TABLE tissues(
   taxoid INTEGER NOT NULL REFERENCES taxonomy(id)
 );
 
+CREATE TABLE biomaterial(
+    id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
+    taxoid INTEGER NOT NULL REFERENCES taxonomy(id),
+    tissueid INTEGER REFERENCES tissues(id)
+);
+
 INSERT INTO taxonomy_level VALUES(1,'domain',100);
 INSERT INTO taxonomy_level VALUES(2,'kingdom',200);
 INSERT INTO taxonomy_level VALUES(3,'subkingdom',300);

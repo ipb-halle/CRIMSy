@@ -17,9 +17,10 @@
  */
 package de.ipb_halle.lbac.material.subtype.taxonomy;
 
-import de.ipb_halle.lbac.material.bean.TaxonomyBean;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.service.TaxonomyService;
-import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ import org.primefaces.model.TreeNode;
  */
 public class TaxonomyTreeController {
 
-    protected TaxonomyBean taxonomyBean;
+    protected TreeNode selectedTaxonomy;
     private List<Taxonomy> shownTaxonomies;
     protected TaxonomyService taxonomyService;
     protected TaxonomyLevelController levelController;
@@ -44,19 +45,20 @@ public class TaxonomyTreeController {
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public TaxonomyTreeController(
-            TaxonomyBean taxonomyBean,
+            TreeNode selectedTaxonomy,
             TaxonomyService taxonomyService,
             TaxonomyLevelController levelController) {
-        this.taxonomyBean = taxonomyBean;
+        this.selectedTaxonomy = selectedTaxonomy;
         this.taxonomyService = taxonomyService;
         this.levelController = levelController;
+        reloadTreeNode(null);
     }
 
     public void reloadTreeNode(TreeNode selectedNode) {
         try {
             Map<String, Object> cmap = new HashMap<>();
             shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
-            Taxonomy rootTaxo = taxonomyBean.createNewTaxonomy();
+            Taxonomy rootTaxo = createNewTaxonomy();
             rootTaxo.setLevel(levelController.getLevels().get(0));
             taxonomyTree = new DefaultTreeNode(rootTaxo, null);
             for (Taxonomy t : shownTaxonomies) {
@@ -104,11 +106,11 @@ public class TaxonomyTreeController {
     }
 
     public void expandTree() {
-        if (taxonomyBean.getSelectedTaxonomy() == null) {
+        if (selectedTaxonomy == null) {
             return;
         }
-        Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-        expandNode(taxonomyBean.getSelectedTaxonomy());
+        Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
+        expandNode(selectedTaxonomy);
         getTreeNodeWithTaxonomy(t.getId()).setSelected(true);
     }
 
@@ -143,6 +145,12 @@ public class TaxonomyTreeController {
             }
         }
         return true;
+    }
+
+    public Taxonomy createNewTaxonomy() {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("", "en", 1));
+        return new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
     }
 
 }

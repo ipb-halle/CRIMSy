@@ -26,8 +26,6 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
@@ -38,8 +36,12 @@ import de.ipb_halle.lbac.material.subtype.structure.V2000;
 import static de.ipb_halle.lbac.material.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.subtype.structure.StructureInformation;
+import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.material.service.TissueService;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
+import de.ipb_halle.lbac.material.subtype.structure.StructureInformation;
+import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
@@ -58,7 +60,6 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  * Bean for interacting with the ui to present and manipulate a single material
  *
@@ -76,7 +77,7 @@ public class MaterialBean implements Serializable {
 
     @Inject
     protected MaterialService materialService;
-    
+
     @Inject
     protected ProjectBean projectBean;
 
@@ -95,7 +96,13 @@ public class MaterialBean implements Serializable {
     @Inject
     protected MaterialIndexBean materialIndexBean;
 
-    protected Logger  logger = LogManager.getLogger(this.getClass().getName());
+    @Inject
+    protected TaxonomyService taxonomyService;
+
+    @Inject
+    protected TissueService tissueService;
+
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     protected MaterialType currentMaterialType = null;
 
@@ -121,6 +128,8 @@ public class MaterialBean implements Serializable {
     private MaterialCreationSaver creationSaver;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
+    TaxonomySelectionController taxonomyController;
+
     public enum Mode {
         CREATE, EDIT, HISTORY
     };
@@ -131,6 +140,7 @@ public class MaterialBean implements Serializable {
         strcutureModel = new V2000();
         initStorageClassNames();
         permission = new MaterialEditPermission(this);
+        taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService);
 
     }
 
@@ -192,8 +202,8 @@ public class MaterialBean implements Serializable {
         structureInfos = new StructureInformation();
         materialNameBean.init();
         materialIndexBean.init();
-        currentMaterialType=MaterialType.CONSUMABLE;
-        
+        currentMaterialType = MaterialType.CONSUMABLE;
+
         creationSaver = new MaterialCreationSaver(
                 moleculeService,
                 materialNameBean,
@@ -214,11 +224,11 @@ public class MaterialBean implements Serializable {
         }
         return new ArrayList<>();
     }
-    
-    public String getCreateButtonText(){
-        if(mode==Mode.CREATE){
+
+    public String getCreateButtonText() {
+        if (mode == Mode.CREATE) {
             return Messages.getString(MESSAGE_BUNDLE, "materialCreation_buttonText_create", null);
-        }else{
+        } else {
             return Messages.getString(MESSAGE_BUNDLE, "materialCreation_buttonText_save", null);
         }
     }
@@ -270,14 +280,29 @@ public class MaterialBean implements Serializable {
 
     public void saveNewMaterial() {
         if (checkInputValidity()) {
-            creationSaver.saveNewMaterial(
-                    calculateFormulaAndMassesByDb,
-                    strcutureModel,
-                    structureInfos,
-                    materialEditState.getCurrentProject(),
-                    hazards,
-                    storageClassInformation,
-                    materialIndexBean.getIndices());
+            if (currentMaterialType == MaterialType.STRUCTURE) {
+                creationSaver.saveNewStructure(
+                        calculateFormulaAndMassesByDb,
+                        strcutureModel,
+                        structureInfos,
+                        materialEditState.getCurrentProject(),
+                        hazards,
+                        storageClassInformation,
+                        materialIndexBean.getIndices());
+            }
+            if (currentMaterialType == MaterialType.BIOMATERIAL) {
+                Taxonomy t = (Taxonomy) taxonomyController.selectedTaxonomy.getData();
+                
+                 
+         
+                creationSaver.saveNewBioMaterial(
+                        materialEditState.getCurrentProject(),
+                        materialIndexBean.getIndices(),
+                        t,
+                        taxonomyController.selectedTissue,
+                        hazards,
+                        storageClassInformation);
+            }
         }
     }
 
@@ -478,6 +503,10 @@ public class MaterialBean implements Serializable {
 
     public UserBean getUserBean() {
         return userBean;
+    }
+
+    public TaxonomySelectionController getTaxonomyController() {
+        return taxonomyController;
     }
 
 }
