@@ -48,6 +48,11 @@ public class TissueService {
     private EntityManager em;
 
     private final String SQL_LOAD_TISSUES = "SELECT id,taxoid FROM tissues";
+    private final String SQL_LOAD_TISSUES_CONTRAINED
+            = "SELECT DISTINCT t.id,t.taxoid "
+            + "FROM tissues t "
+            + "JOIN effective_taxonomy et ON et.parentid=t.taxoid "
+            + "WHERE et.taxoid=:taxoid OR et.parentid=:taxoid";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public List<Tissue> loadTissues() {
@@ -66,7 +71,21 @@ public class TissueService {
         return tissues;
     }
 
-    public List<Tissue> loadTissues(Taxonomy t) {
-        return new ArrayList<>();
+    public List<Tissue> loadTissues(Taxonomy targetTaxo) {
+        List<Tissue> tissues = new ArrayList<>();
+        List<TissueEntity> entities = this.em.createNativeQuery(SQL_LOAD_TISSUES_CONTRAINED, TissueEntity.class)
+                .setParameter("taxoid", targetTaxo.getId())
+                .getResultList();
+        for (TissueEntity entity : entities) {
+            Map<String, Object> cmap = new HashMap<>();
+            cmap.put("id", entity.getTaxoid());
+            Taxonomy t = taxonomyService.loadTaxonomy(cmap, true).get(0);
+            tissues.add(
+                    new Tissue(entity.getId(),
+                            materialService.loadMaterialNamesById(entity.getId()),
+                            t)
+            );
+        }
+        return tissues;
     }
 }

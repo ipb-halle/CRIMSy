@@ -105,11 +105,25 @@ public class TissueServiceTest extends TestBase {
         names.add(new MaterialName("flocci, hyphae", "la", 2));
         taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(1);
         tissue = new Tissue(100, names, taxo);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
 
+        names = new ArrayList<>();
+        names.add(new MaterialName("Blüte", "de", 1));
+        Taxonomy seerose = taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(17);
+        tissue = new Tissue(100, names, seerose);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+
+        names = new ArrayList<>();
+        names.add(new MaterialName("Stützrippe", "de", 1));
+        taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(18);
+        tissue = new Tissue(100, names, taxo);
         materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
 
         List<Tissue> loadedTissues = tissueService.loadTissues();
-        Assert.assertEquals(2, loadedTissues.size());
+        Assert.assertEquals(4, loadedTissues.size());
+
+        List<Tissue> contrainedTissues = tissueService.loadTissues(seerose);
+        Assert.assertEquals(2, contrainedTissues.size());
     }
 
     @Deployment
