@@ -15,19 +15,15 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.service;
+package de.ipb_halle.lbac.exp.assay;
 
 /**
  * AssayService handles the specific demands for 
  * storing and retrieving assay data.
  */
-import de.ipb_halle.lbac.exp.records.Assay;
-import de.ipb_halle.lbac.exp.records.AssayRecord;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExpRecord;
-import de.ipb_halle.lbac.exp.entity.AssayEntity;
-import de.ipb_halle.lbac.exp.entity.AssayRecordEntity;
-import de.ipb_halle.lbac.exp.entity.ExpRecordEntity;
+import de.ipb_halle.lbac.exp.ExpRecordEntity;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.service.MaterialService;
 

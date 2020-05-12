@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.entity;
+package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.message.LocalUUIDConverter;

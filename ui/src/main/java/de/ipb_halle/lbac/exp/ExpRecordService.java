@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.service;
+package de.ipb_halle.lbac.exp;
 
 /**
  * ExpRecordService provides service to load, save, update experiment 
@@ -26,10 +26,7 @@ package de.ipb_halle.lbac.exp.service;
  * The current implementation is rather a mock implementation as many 
  * important aspects (permissions, history, filtering, ...) are missing.
  */
-import de.ipb_halle.lbac.exp.Experiment;
-import de.ipb_halle.lbac.exp.ExpRecord;
-import de.ipb_halle.lbac.exp.ExpRecordType;
-import de.ipb_halle.lbac.exp.entity.ExpRecordEntity;
+import de.ipb_halle.lbac.exp.assay.AssayService;
 
 import java.io.Serializable;
 import java.util.ArrayList;

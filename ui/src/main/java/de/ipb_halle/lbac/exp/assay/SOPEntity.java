@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.entity;
+package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import java.io.Serializable;
@@ -32,71 +32,61 @@ import javax.persistence.TemporalType;
 import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
+ * First draft of an experiment. Access and permission 
+ * management as well as history have been postponed so far. 
+ * An experiment is a container for a collection of 
+ * experiment records and can be characterized by a
+ * unique code.
+ *
  * @author fbroda
  */
 @Entity
-@Table(name = "experiments")
-public class ExperimentEntity implements Serializable {
+@Table(name = "exp_sops")
+public class SOPEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer experimentid;
+    private Integer sopid;
 
+    /**
+     * The SOP document (FileObjectEntity; usually a PDF)
+     */
     @Column
-    private String code;
+    private UUID documentid;
 
+    /**
+     * a short description for this SOP. 
+     */
     @Column
     private String description;
 
-    @Column
-    private UUID ownerid;
-
-    @Column
-    private UUID usergroups;
-
-    public String getCode() {
-        return this.code;
-    }
 
     public String getDescription() {
         return this.description;
     }
 
-    public Integer getExperimentId() {
-        return this.experimentid;
+    public UUID getDocumentId() { 
+        return this.documentid; 
     }
 
-    public UUID getOwnerid() {
-        return ownerid;
+    public Integer getSopId() {
+        return this.sopid;
     }
 
-    public UUID getUsergroups() {
-        return usergroups;
-    }
-
-    public ExperimentEntity setCode(String code) {
-        this.code = code;
-        return this;
-    }
-
-    public ExperimentEntity setDescription(String description) {
+    public SOPEntity setDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public ExperimentEntity setExperimentId(Integer experimentid) {
-        this.experimentid = experimentid;
+    public SOPEntity setDocumentId(UUID documentid) { 
+        this.documentid = documentid; 
+        return this; 
+    }
+
+    public SOPEntity setSopId(Integer sopid) {
+        this.sopid = sopid;
         return this;
     }
-
-    public void setOwnerid(UUID ownerid) {
-        this.ownerid = ownerid;
-    }
-
-    public void setUsergroups(UUID usergroups) {
-        this.usergroups = usergroups;
-    }
-
 }

@@ -15,11 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp;
+package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.entity.FileObject;
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.exp.entity.SOPEntity;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -15,18 +15,16 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.service;
+package de.ipb_halle.lbac.exp.assay;
 
 /**
- * ExperimentService provides service to load, save, update experiment entities.
- *
- * The current implementation is rather a mock implementation as many important
- * aspects (permissions, history, filtering, ...) are missing.
+ * SOPService provides service to load, save, update experiment entities.
+ * 
+ * The current implementation is rather a mock implementation as many 
+ * important aspects (permissions, history, filtering, ...) are missing.
  */
-import de.ipb_halle.lbac.exp.Experiment;
-import de.ipb_halle.lbac.exp.entity.ExperimentEntity;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.entity.FileObject;
+import de.ipb_halle.lbac.file.FileEntityService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,6 +34,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -44,50 +43,45 @@ import javax.persistence.criteria.Root;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-// import javax.persistence.Persistence;
 @Stateless
-public class ExperimentService implements Serializable {
+public class SOPService implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @Inject
-    private ACListService aclistService;
-
-    @Inject
-    private MemberService memberService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
+    @Inject
+    private FileEntityService fileEntityService;
+
     private Logger logger;
 
-    public ExperimentService() {
+    public SOPService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     @PostConstruct
-    public void ExperimentServiceInit() {
+    public void SOPServiceInit() {
         if (em == null) {
             logger.error("Injection failed for EntityManager. @PersistenceContext(name = \"de.ipb_halle.lbac\")");
         }
     }
 
     /**
-     * @return the the complete list of experiments
+     * @return the the complete list of standard operating procedures
      */
     @SuppressWarnings("unchecked")
-    public List<Experiment> load() {
+    public List<SOP> load() {
 
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
-        CriteriaQuery<ExperimentEntity> criteriaQuery = builder.createQuery(ExperimentEntity.class);
-        Root<ExperimentEntity> experimentRoot = criteriaQuery.from(ExperimentEntity.class);
-        criteriaQuery.select(experimentRoot);
-        List<Experiment> result = new ArrayList<>();
-        for (ExperimentEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
-            result.add(new Experiment(
-                    e,
-                    aclistService.loadById(e.getUsergroups()),
-                    memberService.loadUserById(e.getOwnerid())));
+        CriteriaQuery<SOPEntity> criteriaQuery = builder.createQuery(SOPEntity.class);
+        Root<SOPEntity> sopRoot = criteriaQuery.from(SOPEntity.class);
+        criteriaQuery.select(sopRoot);
+
+        List<SOP> result = new ArrayList<SOP> ();
+        for(SOPEntity e :  this.em.createQuery(criteriaQuery).getResultList()) {
+            FileObject document = this.fileEntityService.getFileEntity(e.getDocumentId());
+            result.add(new SOP(e, document));
         }
         return result;
     }
@@ -96,25 +90,23 @@ public class ExperimentService implements Serializable {
      * load an experiment by id
      *
      * @param id experiment Id
-     * @return the Experiment object
+     * @return the SOP object
      */
-    public Experiment loadById(Integer id) {
-        ExperimentEntity entity = this.em.find(ExperimentEntity.class, id);
-        return new Experiment(
-                entity, aclistService.loadById(entity.getUsergroups()),
-                memberService.loadUserById(entity.getOwnerid()));
+    public SOP loadById(Integer id) {
+        SOPEntity entity = this.em.find(SOPEntity.class, id);
+        FileObject document = this.fileEntityService.getFileEntity(entity.getDocumentId());
+        return new SOP(entity, document);
     }
 
     /**
      * save a single experiment object
      *
      * @param c the experiment to save
-     * @return the persisted Experiment DTO
+     * @return the persisted SOP DTO
      */
-    public Experiment save(Experiment c) {
-        return new Experiment(
-                this.em.merge(c.createEntity()),
-                c.getAcList(),
-                c.getOwner());
+    public SOP save(SOP c) {
+        SOPEntity entity = this.em.merge(c.createEntity());
+        FileObject document = this.fileEntityService.getFileEntity(entity.getDocumentId());
+        return new SOP(entity, document);
     }
 }

@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.exp.entity.ExpRecordEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
