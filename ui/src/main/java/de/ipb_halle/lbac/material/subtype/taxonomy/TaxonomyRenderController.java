@@ -15,9 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.bean;
+package de.ipb_halle.lbac.material.subtype.taxonomy;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.material.bean.TaxonomyBean;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;

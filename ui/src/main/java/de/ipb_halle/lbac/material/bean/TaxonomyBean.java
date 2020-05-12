@@ -17,6 +17,11 @@
  */
 package de.ipb_halle.lbac.material.bean;
 
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevelController;
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyRenderController;
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyValidityController;
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyTreeController;
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyNameController;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
@@ -49,7 +54,7 @@ import org.primefaces.event.NodeSelectEvent;
 @Named
 public class TaxonomyBean implements Serializable {
 
-    protected enum Mode {
+    public enum Mode {
         CREATE, SHOW, EDIT, HISTORY
     }
 

@@ -15,9 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.bean;
+package de.ipb_halle.lbac.material.subtype.taxonomy;
 
 import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.material.bean.TaxonomyBean;
 
 /**
  *
