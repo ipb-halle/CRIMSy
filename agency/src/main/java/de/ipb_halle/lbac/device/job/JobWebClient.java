@@ -24,6 +24,10 @@ import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class represents the client side of the job processing 
  * machinery.
@@ -33,6 +37,14 @@ public class JobWebClient {
     private static final Integer CONNECTION_TIMEOUT_IN_MS = 10 * 1000;
     private static final Integer READ_TIMEOUT_IN_MS = 30 * 1000;
 
+    private Logger logger;
+
+    /**
+     * default constructor
+     */
+    public JobWebClient() {
+        this.logger = LoggerFactory.getLogger(this.getClass().getName());
+    }
 
     /**
      * Create a WebClient
@@ -42,7 +54,7 @@ public class JobWebClient {
      * use certificate based authentication. Instead an access token is sent 
      * as part of the request.
      */
-    public static WebClient createWebClient(String url) {
+    public WebClient createWebClient(String url) {
 
         WebClient wc = WebClient.create(url); 
 
@@ -67,7 +79,7 @@ public class JobWebClient {
             NetJob response = wc.post(job, NetJob.class);
             return response;
         } catch(Exception e) {
-            e.printStackTrace();
+            this.logger.warn("processRequest() caught an exception: ", (Throwable) e);
         }
         return null;
     }

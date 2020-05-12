@@ -32,6 +32,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
 /**
  * Bean for managing (and adding, removing) label printers 
  * and managing their jobs
@@ -61,6 +64,7 @@ public class PrintAdminBean implements Serializable {
     private String currentPage;
     private String driverType;
     private Printer printer; 
+    private Logger logger;
 
 
     /*
@@ -68,6 +72,7 @@ public class PrintAdminBean implements Serializable {
      */
     public PrintAdminBean() {
         this.currentPage = PRINTER_LIST;
+        this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     @PostConstruct
@@ -87,6 +92,11 @@ public class PrintAdminBean implements Serializable {
 
     public void actionClose() {
         currentPage = PRINTER_LIST;
+    }
+
+    public void actionDelete(Printer printer) {
+        this.logger.info("actionDelete(): {}", printer.getQueue());
+        printerService.delete(printer);
     }
 
     /**

@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  */
 public class Handler {
@@ -36,12 +39,14 @@ public class Handler {
     private String url;
 
     private JobWebClient jobwebclient;
+    private Logger logger;
 
     /** 
      * default constructor
      */
     public Handler() {
         this.jobwebclient = new JobWebClient();
+        this.logger = LoggerFactory.getLogger(this.getClass().getName());
     }
 
     public Handler setJobTypes(List<JobType> jobtypes) {
@@ -84,7 +89,7 @@ public class Handler {
                 NetJob netjob = new NetJob()
                     .setQueue(iter.next())
                     .setRequestType(RequestType.QUERY);
-                System.out.println("startQueues(): queue=" + netjob.getQueue());
+                // this.logger.info("startQueues(): queue={}",  netjob.getQueue());
                 start(netjob);
             }
             sleep();
@@ -109,7 +114,7 @@ public class Handler {
         cmd[0] = this.script;
 
         netjob.setToken(TokenGenerator.getToken(this.secret));
-        System.out.printf("Token: %s\n", netjob.getToken());
+        // this.logger.info("Token: {}", netjob.getToken());
         netjob.setStatus(JobStatus.PENDING);
         NetJob result = jobwebclient.processRequest(netjob, this.url);
         if (result != null) {
@@ -118,7 +123,7 @@ public class Handler {
                 cmd[2] = job.getQueue();
                 cmd[3] = job.getJobId().toString();
                 Process proc = Runtime.getRuntime().exec(cmd);
-                // System.out.printf("input size: %d\n", job.getInput().length);
+                // this.logger.info("input size: {}", job.getInput().length);
                 proc.getOutputStream().write(job.getInput());
                 proc.getOutputStream().close();
                 boolean procStatus = proc.waitFor(TIMEOUT, TimeUnit.SECONDS);
@@ -133,16 +138,16 @@ public class Handler {
 
     public void start() throws IOException, InterruptedException {
         if (queues.size() > 0) {
-            System.out.println("start() --> Queues");
+            this.logger.info("start() --> Queues");
             startQueues();
         }
 
         if (jobtypes.size() > 0) {
-            System.out.println("start() --> JobTypes");
+            this.logger.info("start() --> JobTypes");
             startTypes();
         }
 
-        System.out.println("start() --> ALL");
+        this.logger.info("start() --> ALL");
         NetJob netjob = new NetJob()
             .setRequestType(RequestType.QUERY);
         while (true) {

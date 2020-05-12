@@ -24,6 +24,9 @@ import java.security.SecureRandom;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Tokengenerator generates a HMAC based access token 
  * from a shared secret. This access token must be transmitted 
@@ -41,6 +44,7 @@ public class TokenGenerator {
     private final static String DIGEST_ALGORITHM = "SHA-256";
     private final static String CIPHER_ALGORITHM = "AES";
 
+    private static Logger logger = LoggerFactory.getLogger(TokenGenerator.class); 
     /**
      * check a given token against current time and a the shared secret
      */
@@ -50,7 +54,7 @@ public class TokenGenerator {
             long localTime = new Date().getTime();
             long remoteTime = Long.parseLong(parts[0], 16);
             if (( remoteTime < (localTime - TIME_DELTA)) || (remoteTime > (localTime + TIME_DELTA))) {
-                // invalid token time
+                logger.info("checkToken() token time mismatch");
                 return false;
             }
             StringBuilder sb = new StringBuilder();
@@ -60,7 +64,7 @@ public class TokenGenerator {
             sb.append(SEPARATOR);
             return token.equals(computeMac(sb, secret)); 
         } catch(Exception e) {
-            // ignore
+            logger.warn("checkToken() caught an exception: ", (Throwable) e);
         }
         return false;
     }
@@ -96,8 +100,7 @@ public class TokenGenerator {
             }
             return sb.toString();
         } catch(Exception e) {
-            e.printStackTrace();
-            // ignore, will fail save
+            logger.warn("computeMac() caught an exception: ", (Throwable) e);
         }
         return null;
     }

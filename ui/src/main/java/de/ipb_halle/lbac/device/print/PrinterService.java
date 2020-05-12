@@ -96,14 +96,23 @@ public class PrinterService implements Serializable {
     /**
      * load a Printer by name
      *
-     * @param name Printer name
+     * @param queue Printer queue
      * @return the Printer object
      */
-    public Printer loadById(String name) {
-        PrinterEntity entity = this.em.find(PrinterEntity.class, name);
+    public Printer loadById(String queue) {
+        PrinterEntity entity = this.em.find(PrinterEntity.class, queue);
         return new Printer(
                 entity, aclistService.loadById(entity.getACListId()),
                 memberService.loadUserById(entity.getOwnerId()));
+    }
+
+    /**
+     * delete a Printer from the system
+     * @param p the printer to be deleted
+     */
+    public void delete(Printer p) {
+        PrinterEntity entity = this.em.find(PrinterEntity.class, p.getQueue());
+        this.em.remove(entity); 
     }
 
     /**

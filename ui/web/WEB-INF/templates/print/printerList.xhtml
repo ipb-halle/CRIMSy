@@ -23,6 +23,7 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
 >
 
@@ -65,6 +66,15 @@
                                              look="link"
                                              type="submit"
                                              action="#{printAdminBean.actionSelectPrinter(pl)}" />
+                            <p:commandButton style="padding: 0 4px;"
+                                             styleClass="btn btn-link"
+                                             icon="fa fa-trash"
+                                             action="#{printAdminBean.actionDelete(pl)}"
+                                             update="printerSettings">
+                                <p:confirm header="Confirmation" 
+                                                    message="#{msgs.PrinterConfirmDelete_detail}" 
+                                                    icon="fa fa-warning" />
+                            </p:commandButton>
                         </b:dataTableColumn>
                     </b:dataTable>
 
@@ -75,6 +85,12 @@
                 </b:panel>
             </b:form>
         </b:panelGrid>
+
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="#{msgs.Ok}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+            <p:commandButton value="#{msgs.Cancel}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+        </p:confirmDialog>      
+
     </ui:composition>
 </h:body>
 </html>
