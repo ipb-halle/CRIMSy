@@ -9,4 +9,4 @@ Konfiguration und Installation
    02_Konfiguration.md
    03_ExternerProxy.md
    04_Installation.md
-   05_Management.md
+   05_Management.rst
