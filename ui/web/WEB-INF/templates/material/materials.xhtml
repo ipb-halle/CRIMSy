@@ -48,11 +48,10 @@
                     value="#{material.id}">
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    label="#{msgs.materialOverview_tableheader_name}"
-                    value="#{material.getFirstName()}">
-                    <b:badge tooltip="#{material.getPrintableNames()}"
-                             style="margin-right:4px;background-color: #4e6aca;"
-                             value="i"/>
+                    label="#{msgs.materialOverview_tableheader_name}">
+                    <h:outputText
+                        escape="false"
+                        value="#{material.getPrintableNames()}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn
                     label="#{msgs.materialOverview_tableheader_type}"
@@ -204,7 +203,7 @@
                                      ajax="true"
                                      update="@form"
                                      onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"
-                                    tooltip="#{msgs.materialOverview_actions_deactivate}"
+                                     tooltip="#{msgs.materialOverview_actions_deactivate}"
                                      />
                 </b:dataTableColumn>
             </b:dataTable>
