@@ -279,6 +279,7 @@ public class MaterialBean implements Serializable {
     }
 
     public void saveNewMaterial() {
+        
         if (checkInputValidity()) {
             if (currentMaterialType == MaterialType.STRUCTURE) {
                 creationSaver.saveNewStructure(
@@ -294,7 +295,7 @@ public class MaterialBean implements Serializable {
                 Taxonomy t = (Taxonomy) taxonomyController.selectedTaxonomy.getData();                
                 creationSaver.saveNewBioMaterial(
                         materialEditState.getCurrentProject(),
-                        materialIndexBean.getIndices(),
+                        materialNameBean.getNames(),
                         t,
                         taxonomyController.selectedTissue,
                         hazards,

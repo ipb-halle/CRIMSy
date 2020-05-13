@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
 import de.ipb_halle.lbac.project.Project;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -104,7 +103,7 @@ public class MaterialCreationSaver {
 
     public void saveNewBioMaterial(
             Project project,
-            List<IndexEntry> indices,
+            List<MaterialName> names,
             Taxonomy taxonomy,
             Tissue tissue,
             HazardInformation hazards,
@@ -112,19 +111,13 @@ public class MaterialCreationSaver {
         if (storageInfos == null) {
             storageInfos = new StorageClassInformation();
         }
-        if(storageInfos.getStorageClass()==null){
+        if (storageInfos.getStorageClass() == null) {
             storageInfos.setStorageClass(storageInfos.getPossibleStorageClasses().get(0));
         }
         if (hazards == null) {
             hazards = new HazardInformation();
         }
 
-        List<MaterialName> names = new ArrayList<>();
-        for (IndexEntry ie : indices) {
-            if (ie instanceof MaterialName) {
-                names.add((MaterialName) ie);
-            }
-        }
         BioMaterial bm = new BioMaterial(0, names, project.getId(), hazards, storageInfos, taxonomy, tissue);
         materialService.saveMaterialToDB(bm, project.getUserGroups().getId(), project.getDetailTemplates());
 
