@@ -136,7 +136,6 @@ public class ItemService {
         List<ItemEntity> entities = q.getResultList();
 
         for (ItemEntity entity : entities) {
-
             Item i = new Item(entity,
                     entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
                     entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),

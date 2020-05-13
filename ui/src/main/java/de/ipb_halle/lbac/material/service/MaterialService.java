@@ -343,6 +343,9 @@ public class MaterialService implements Serializable {
         if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.STRUCTURE) {
             material = getStructure(entity);
         }
+        if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.BIOMATERIAL) {
+            material = getBioMaterial(entity);
+        }
         return material;
     }
 
