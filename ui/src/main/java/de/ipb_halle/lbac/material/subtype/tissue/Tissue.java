@@ -25,6 +25,8 @@ import de.ipb_halle.lbac.material.entity.tissue.TissueEntity;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -33,6 +35,7 @@ import java.util.List;
 public class Tissue extends Material {
 
     protected Taxonomy taxonomy;
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public Tissue(
             int id,
@@ -50,8 +53,17 @@ public class Tissue extends Material {
     }
 
     @Override
-    public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Tissue copyMaterial() {
+        getCopiedNames();
+        try {
+            return new Tissue(
+                    id,
+                    getCopiedNames(),
+                    taxonomy == null ? null : taxonomy.copyMaterial());
+        } catch (Exception e) {
+            logger.info("Error at copiing tissue");
+        }
+        return null;
     }
 
     @Override

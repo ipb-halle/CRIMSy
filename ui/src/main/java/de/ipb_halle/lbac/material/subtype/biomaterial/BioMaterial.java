@@ -26,6 +26,8 @@ import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -35,6 +37,7 @@ public class BioMaterial extends Material {
 
     private Taxonomy taxonomy;
     private Tissue tissue;
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public BioMaterial(
             int id,
@@ -56,8 +59,18 @@ public class BioMaterial extends Material {
     }
 
     @Override
-    public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public BioMaterial copyMaterial() {
+        BioMaterial b = new BioMaterial(
+                id,
+                getCopiedNames(),
+                projectId,
+                hazards.copy(),
+                storageInformation.copy(),
+                taxonomy.copyMaterial(),
+                tissue == null ? null : tissue.copyMaterial());
+        b.setAcList(acList);
+        b.setOwnerID(ownerID);
+        return b;
     }
 
     @Override
@@ -69,6 +82,10 @@ public class BioMaterial extends Material {
             entity.setTissueid(tissue.getId());
         }
         return entity;
+    }
+
+    public Taxonomy getTaxonomy() {
+        return taxonomy;
     }
 
 }

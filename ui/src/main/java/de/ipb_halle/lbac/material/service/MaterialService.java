@@ -195,7 +195,7 @@ public class MaterialService implements Serializable {
         if (entity.getTissueid() != null) {
             tissue = tissueService.loadTissueById(entity.getTissueid());
         }
-        return new BioMaterial(
+        BioMaterial b = new BioMaterial(
                 me.getMaterialid(),
                 loadMaterialNamesById(me.getMaterialid()),
                 me.getProjectid(),
@@ -204,6 +204,9 @@ public class MaterialService implements Serializable {
                 taxonomyService.loadTaxonomyById(entity.getTaxoid()),
                 tissue
         );
+        b.setAcList(aclService.loadById(me.getUsergroups()));
+        b.setOwnerID(me.getOwnerid());
+        return b;
 
     }
 

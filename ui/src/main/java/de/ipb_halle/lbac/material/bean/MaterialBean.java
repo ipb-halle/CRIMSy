@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.service.TaxonomyService;
 import de.ipb_halle.lbac.material.service.TissueService;
+import de.ipb_halle.lbac.material.subtype.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.material.subtype.structure.StructureInformation;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
@@ -188,6 +189,10 @@ public class MaterialBean implements Serializable {
                 structureInfos.setSumFormula(struc.getSumFormula());
                 structureInfos.setStructureModel(struc.getMolecule().getStructureModel());
             }
+            if (m.getType() == MaterialType.BIOMATERIAL) {
+                BioMaterial bm = (BioMaterial) m;
+                taxonomyController.setSelectedTaxonomy(bm.getTaxonomy());
+            }
             historyOperation = new HistoryOperation(materialEditState, projectBean, materialNameBean, materialIndexBean, structureInfos, storageClassInformation);
             mode = Mode.EDIT;
         } catch (Exception e) {
@@ -249,7 +254,6 @@ public class MaterialBean implements Serializable {
         try {
             this.materialEditState.setCurrentProject(currentProject);
             currentMaterialType = currentProject.getProjectType().getMaterialTypes().get(0);
-            logger.info("neuer Materialtyp: " + currentMaterialType);
 
         } catch (Exception e) {
             logger.info("Error in setCurrentProject(): " + currentProject.getName());
@@ -279,7 +283,7 @@ public class MaterialBean implements Serializable {
     }
 
     public void saveNewMaterial() {
-        
+
         if (checkInputValidity()) {
             if (currentMaterialType == MaterialType.STRUCTURE) {
                 creationSaver.saveNewStructure(
@@ -292,7 +296,7 @@ public class MaterialBean implements Serializable {
                         materialIndexBean.getIndices());
             }
             if (currentMaterialType == MaterialType.BIOMATERIAL) {
-                Taxonomy t = (Taxonomy) taxonomyController.selectedTaxonomy.getData();                
+                Taxonomy t = (Taxonomy) taxonomyController.selectedTaxonomy.getData();
                 creationSaver.saveNewBioMaterial(
                         materialEditState.getCurrentProject(),
                         materialNameBean.getNames(),

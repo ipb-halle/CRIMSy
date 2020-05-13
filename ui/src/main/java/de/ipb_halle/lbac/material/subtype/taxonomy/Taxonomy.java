@@ -25,12 +25,16 @@ import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author fmauz
  */
 public class Taxonomy extends Material {
+
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private TaxonomyLevel level;
     private List<Taxonomy> taxHierachy = new ArrayList<>();

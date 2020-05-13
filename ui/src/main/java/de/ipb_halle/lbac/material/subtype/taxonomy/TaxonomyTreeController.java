@@ -87,6 +87,16 @@ public class TaxonomyTreeController {
         }
         return null;
     }
+    
+    public void selectTaxonomy(Taxonomy t){
+        for(TreeNode n:getAllChildren(taxonomyTree)){
+            Taxonomy ta=(Taxonomy)n.getData();
+            if(ta.getId()==t.getId()){
+                n.setSelected(true);
+                expandTree();
+            }
+        }
+    }
 
     private List<TreeNode> getAllChildren(TreeNode tn) {
         List<TreeNode> children = new ArrayList<>();

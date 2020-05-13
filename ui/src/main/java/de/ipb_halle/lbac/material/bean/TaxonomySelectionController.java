@@ -66,6 +66,10 @@ public class TaxonomySelectionController {
 
         this.selectedTaxonomy = selectedTaxonomy;
     }
+    
+    public void setSelectedTaxonomy(Taxonomy t){
+        treeController.selectTaxonomy(t);
+    }
 
     public String getSelectedTaxonomyName() {
         if (selectedTaxonomy == null) {
