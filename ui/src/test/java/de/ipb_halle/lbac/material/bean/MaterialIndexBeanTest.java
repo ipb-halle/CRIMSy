@@ -33,6 +33,8 @@ import de.ipb_halle.lbac.material.service.MoleculeService;
 import de.ipb_halle.lbac.material.bean.mock.IndexServiceMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.material.service.TissueService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -111,6 +113,8 @@ public class MaterialIndexBeanTest extends TestBase {
                 .addClass(ProjectBean.class)
                 .addClass(MaterialService.class)
                 .addClass(MaterialBean.class)
+                .addClass(TissueService.class)
+                .addClass(TaxonomyService.class)
                 .addClass(IndexServiceMock.class);
     }
 

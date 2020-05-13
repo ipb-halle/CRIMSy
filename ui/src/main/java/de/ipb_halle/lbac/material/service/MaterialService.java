@@ -398,18 +398,31 @@ public class MaterialService implements Serializable {
      * @return
      */
     protected Material saveMaterialOverview(Material m, UUID projectAclId) {
+        logger.info("1");
         MaterialEntity mE = new MaterialEntity();
+        logger.info("2");
         mE.setCtime(new Date());
+        logger.info("3");
         mE.setMaterialtypeid(m.getType().getId());
+        logger.info("4");
         mE.setOwnerid(userBean.getCurrentAccount().getId());
+        logger.info("5");
         mE.setProjectid(m.getProjectId());
+        logger.info("6");
         mE.setUsergroups(projectAclId);
+        logger.info("7");
         mE.setDeactivated(false);
+        logger.info("8");
         em.persist(mE);
+        logger.info("9");
         m.setId(mE.getMaterialid());
+        logger.info("10");
         m.setAcList(aclService.loadById(projectAclId));
+        logger.info("11");
         m.setOwnerID(userBean.getCurrentAccount().getId());
+        logger.info("12");
         m.setCreationTime(mE.getCtime());
+        logger.info("13");
         return m;
     }
 

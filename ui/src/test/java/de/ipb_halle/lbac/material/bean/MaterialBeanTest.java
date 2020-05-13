@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.bean;
 
-import de.ipb_halle.lbac.material.bean.MaterialBean;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
@@ -36,14 +35,14 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.bean.mock.MateriaBeanMock;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.service.IndexService;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.material.service.TissueService;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
@@ -138,7 +137,7 @@ public class MaterialBeanTest extends TestBase {
     public void finish() {
         cleanMaterialsFromDB();
         cleanProjectFromDB(project, false);
-       // cleanUserFromDB(customUser);
+        // cleanUserFromDB(customUser);
 
     }
 
@@ -184,10 +183,12 @@ public class MaterialBeanTest extends TestBase {
                 .addClass(MaterialIndexBean.class)
                 .addClass(LdapProperties.class)
                 .addClass(ProjectService.class)
-                 .addClass(SystemSettings.class)
+                .addClass(SystemSettings.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(Updater.class)
+                .addClass(TissueService.class)
+                .addClass(TaxonomyService.class)
                 .addClass(Navigator.class)
                 .addClass(WordCloudBean.class)
                 .addClass(ACListService.class)

@@ -26,12 +26,16 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
+import de.ipb_halle.lbac.material.subtype.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
-import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevel;
+import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +44,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,9 +84,9 @@ public class BiomaterialServiceTest extends TestBase {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
         owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-
         ownerid = owner.getId().toString();
         materialService.setUserBean(userBean);
+        project = creationTools.createProject();
     }
 
     @After
@@ -93,13 +96,27 @@ public class BiomaterialServiceTest extends TestBase {
     }
 
     @Test
-    public void test001_loadTaxonomyLevels() {
+    public void test001_saveAndLoadBioMaterials() {
+        createTaxonomyTreeInDB(project.getUserGroups().getId().toString(), owner.getId().toString());
+
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("Wurzel", "de", 1));
+        names.add(new MaterialName("Root", "en", 2));
+        names.add(new MaterialName("Radix", "la", 3));
+        Taxonomy taxo = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(15);
+        Tissue tissue = new Tissue(100, names, taxo);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+
+        names = new ArrayList<>();
+        names.add(new MaterialName("Löwnzahn", "de", 1));
+        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>());
 
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("TaxonomyServiceTest.war")
+        return prepareDeployment("BiomaterialServiceTest.war")
                 .addClass(ProjectService.class)
                 .addClass(GlobalAdmissionContext.class)
                 .addClass(MaterialService.class)

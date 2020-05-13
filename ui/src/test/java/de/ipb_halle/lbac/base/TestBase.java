@@ -155,10 +155,6 @@ public class TestBase implements Serializable {
     }
 
     public void cleanTaxonomyFromDb() {
-        this.entityManagerService.doSqlUpdate("DELETE FROM tissues");
-        this.entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
-        this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
-        this.entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
 
     }
 
@@ -426,6 +422,12 @@ public class TestBase implements Serializable {
     }
 
     protected void cleanMaterialsFromDB() {
+        entityManagerService.doSqlUpdate("delete from biomaterial");
+        entityManagerService.doSqlUpdate("DELETE FROM tissues");
+        entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
+        entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
+        entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
+
         entityManagerService.doSqlUpdate("delete from storagesconditions_storages_hist");
         entityManagerService.doSqlUpdate("delete from hazards_materials_hist");
         entityManagerService.doSqlUpdate("delete from storages_hist");
