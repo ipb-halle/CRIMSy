@@ -483,9 +483,7 @@ public class MaterialService implements Serializable {
      * @param m
      */
     protected void saveStorageConditions(Material m) {
-        logger.info("Storage with id " + m.getId());
         em.persist(m.getStorageInformation().createStorageDBInstance(m.getId()));
-        logger.info("After save");
         for (StorageConditionStorageEntity scsE : m.getStorageInformation().createDBInstances(m.getId())) {
             em.persist(scsE);
         }
