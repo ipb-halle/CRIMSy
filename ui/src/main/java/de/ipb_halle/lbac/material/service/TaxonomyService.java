@@ -109,6 +109,15 @@ public class TaxonomyService implements Serializable {
         return taxonomies;
     }
 
-   
+    public Taxonomy loadTaxonomyById(Integer id) {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("id", id);
+        List<Taxonomy> results = loadTaxonomy(cmap, true);
+        if (results.size() == 1) {
+            return results.get(0);
+        } else {
+            return null;
+        }
+    }
 
 }

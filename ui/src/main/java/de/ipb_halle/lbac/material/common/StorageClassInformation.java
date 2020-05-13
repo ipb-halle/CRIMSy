@@ -45,7 +45,6 @@ public class StorageClassInformation {
     public StorageClassInformation() {
         init();
         storageClass = possibleStorageClasses.get(0);
-
     }
 
     public StorageClassInformation(List<String> storageClassNames) {

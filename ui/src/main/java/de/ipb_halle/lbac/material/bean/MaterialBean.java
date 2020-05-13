@@ -291,10 +291,7 @@ public class MaterialBean implements Serializable {
                         materialIndexBean.getIndices());
             }
             if (currentMaterialType == MaterialType.BIOMATERIAL) {
-                Taxonomy t = (Taxonomy) taxonomyController.selectedTaxonomy.getData();
-                
-                 
-         
+                Taxonomy t = (Taxonomy) taxonomyController.selectedTaxonomy.getData();                
                 creationSaver.saveNewBioMaterial(
                         materialEditState.getCurrentProject(),
                         materialIndexBean.getIndices(),

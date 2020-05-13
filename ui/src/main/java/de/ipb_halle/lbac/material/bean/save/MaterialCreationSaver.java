@@ -109,6 +109,15 @@ public class MaterialCreationSaver {
             Tissue tissue,
             HazardInformation hazards,
             StorageClassInformation storageInfos) {
+        if (storageInfos == null) {
+            storageInfos = new StorageClassInformation();
+        }
+        if(storageInfos.getStorageClass()==null){
+            storageInfos.setStorageClass(storageInfos.getPossibleStorageClasses().get(0));
+        }
+        if (hazards == null) {
+            hazards = new HazardInformation();
+        }
 
         List<MaterialName> names = new ArrayList<>();
         for (IndexEntry ie : indices) {
@@ -117,7 +126,7 @@ public class MaterialCreationSaver {
             }
         }
         BioMaterial bm = new BioMaterial(0, names, project.getId(), hazards, storageInfos, taxonomy, tissue);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), project.getDetailTemplates());
+        materialService.saveMaterialToDB(bm, project.getUserGroups().getId(), project.getDetailTemplates());
 
     }
 }

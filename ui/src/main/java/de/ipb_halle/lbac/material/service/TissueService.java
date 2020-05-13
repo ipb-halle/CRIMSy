@@ -59,13 +59,10 @@ public class TissueService {
         List<Tissue> tissues = new ArrayList<>();
         List<TissueEntity> entities = this.em.createNativeQuery(SQL_LOAD_TISSUES, TissueEntity.class).getResultList();
         for (TissueEntity entity : entities) {
-            Map<String, Object> cmap = new HashMap<>();
-            cmap.put("id", entity.getTaxoid());
-            Taxonomy t = taxonomyService.loadTaxonomy(cmap, true).get(0);
             tissues.add(
                     new Tissue(entity.getId(),
                             materialService.loadMaterialNamesById(entity.getId()),
-                            t)
+                            taxonomyService.loadTaxonomyById(entity.getId()))
             );
         }
         return tissues;
@@ -87,5 +84,18 @@ public class TissueService {
             );
         }
         return tissues;
+    }
+
+    public Tissue loadTissueById(int id) {
+        TissueEntity entity = this.em.find(TissueEntity.class, id);
+
+        Tissue t = new Tissue(
+                entity.getId(),
+                materialService.loadMaterialNamesById(entity.getId()),
+                taxonomyService.loadTaxonomyById(entity.getId())
+        );
+
+        return t;
+
     }
 }
