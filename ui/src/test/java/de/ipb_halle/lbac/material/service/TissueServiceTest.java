@@ -83,12 +83,6 @@ public class TissueServiceTest extends TestBase {
         project = creationTools.createProject();
     }
 
-    @After
-    public void finish() {
-        cleanTaxonomyFromDb();
-        cleanMaterialsFromDB();
-    }
-
     @Test
     public void test001_saveAndloadTissues() {
         createTaxonomyTreeInDB(project.getUserGroups().getId().toString(), owner.getId().toString());

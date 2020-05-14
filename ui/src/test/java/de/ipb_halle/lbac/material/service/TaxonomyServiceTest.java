@@ -79,11 +79,7 @@ public class TaxonomyServiceTest extends TestBase {
         materialService.setUserBean(userBean);
     }
 
-    @After
-    public void finish() {
-        cleanTaxonomyFromDb();
-        cleanMaterialsFromDB();
-    }
+   
 
     @Test
     public void test001_loadTaxonomyLevels() {

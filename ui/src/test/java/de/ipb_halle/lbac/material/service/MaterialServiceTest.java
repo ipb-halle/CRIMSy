@@ -441,7 +441,6 @@ public class MaterialServiceTest extends TestBase {
         results = (List) entityManagerService.doSqlQuery(String.format("SELECT parentid FROM effective_taxonomy WHERE taxoid=%d", t3.getId()));
         Assert.assertEquals(2, results.size());
 
-        cleanTaxonomyFromDb();
         cleanMaterialsFromDB();
         cleanProjectFromDB(p, false);
     }

@@ -91,7 +91,6 @@ public class BiomaterialServiceTest extends TestBase {
 
     @After
     public void finish() {
-        cleanTaxonomyFromDb();
         cleanMaterialsFromDB();
     }
 
