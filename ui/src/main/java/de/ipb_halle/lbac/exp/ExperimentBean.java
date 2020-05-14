@@ -41,6 +41,12 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ExperimentBean implements Serializable {
 
+    @Inject 
+    private ExperimentService experimentService;
+
+    @Inject
+    private ExpRecordService expRecordService;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
@@ -48,7 +54,6 @@ public class ExperimentBean implements Serializable {
      */
     public ExperimentBean() {
     }
-
 
     /**
      *
@@ -58,6 +63,13 @@ public class ExperimentBean implements Serializable {
     }
 
     public List<Experiment> getExperiments() {
-        return null;
+        // xxxxx restrict search
+        return experimentService.load();
     }
+
+    public List<ExpRecord> getExpRecords() {
+        // xxxxx restrict search
+        return expRecordService.load();
+    }
+
 }

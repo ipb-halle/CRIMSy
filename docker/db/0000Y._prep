@@ -61,7 +61,7 @@ CREATE TABLE exp_sops (
  */
 CREATE TABLE exp_assay_records (
     recordid        BIGSERIAL NOT NULL PRIMARY KEY,
-    exprecordid     BIGINTEGER NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     materialid      INTEGER NOT NULL /* REFERENCES material(materialid) ON UPDATE CASCADE ON DELETE CASCADE */,
     outcome         JSONB
 );
@@ -73,7 +73,7 @@ CREATE TABLE exp_assay_records (
  */
 
 CREATE TABLE exp_assays (
-    exprecordid     BIGINTEGER NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     sopid           INTEGER NOT NULL REFERENCES exp_sops(sopid) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

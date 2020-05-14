@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Leibniz Bioactives Cloud
+  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition>
+
+        <b:dataTable id="experimentList"
+                     value="#{experimentBean.experiments}"
+                     styleClass="cloudNodeList"
+                     striped="true"
+                     responsive="false"
+                     customOptions="autoWidth:true"
+                     fixedHeader="true"
+                     var="exp"
+                     csv="true"
+                     columnVisibility="true">
+            <f:facet name="header">
+                <tr>
+                    <th>#{msgs.ExperimentCode}</th>
+                    <th style="min-width:30px">#{msgs.Tools}</th>
+                </tr>
+            </f:facet>
+            <b:dataTableColumn value="#{exp.code}" tooltip="#{exp.description}" order="asc"/>
+            <b:dataTableColumn>
+                <b:commandButton style="padding: 0 4px;"
+                                 icon="pencil"
+                                 look="link"
+                                 type="submit"
+                                 action="#{experimentBean.actionSelectExperiment(exp)}" />
+            </b:dataTableColumn>
+        </b:dataTable>
+
+    </ui:composition>
+</html>

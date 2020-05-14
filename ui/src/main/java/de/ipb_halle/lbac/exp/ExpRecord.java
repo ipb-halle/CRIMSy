@@ -75,6 +75,11 @@ public abstract class ExpRecord implements DTO {
     }
 
     /**
+     * name of the component for rendering
+     */
+    public abstract String getFacelet();
+
+    /**
      * update the current object from the entity
      */
     public ExpRecord setExpRecordEntity(ExpRecordEntity entity) {

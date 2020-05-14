@@ -23,16 +23,14 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
->
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<h:body>
     <ui:composition>
-        <b:container class="details">
-            <ui:insert name="printerSettings">
-                <ui:include src="#{printAdminBean.page}"/>
-            </ui:insert>
-        </b:container>
+        <ui:repeat value="#{experimentsBean.experimentRecords}" var="expRecord">
+            #{expRecord.creationTime}
+            <ui:param name="expRecord" value="#{expRecord}" />
+            <ui:include src="#{expRecord.facelet}"/>
+        </ui:repeat>
     </ui:composition>
-</h:body>
 </html>

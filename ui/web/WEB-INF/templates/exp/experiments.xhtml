@@ -59,13 +59,17 @@
                     <b:row>
                         <b:column span="3">
                             <b:panel collapsible="false" title="experiments">
-                                no entry found    
+                                <ui:insert name="experiments">
+                                    <ui:include src="experimentList.xhtml"/>
+                                </ui:insert>
                             </b:panel>
 
                         </b:column> 
                         <b:column span="7">
                             <b:panel collapsible="false" title="experiment records">
-                                Please select an experiment
+                                <ui:insert name="expRecords">
+                                    <ui:include src="expRecordList.xhtml"/>
+                                </ui:insert>
                             </b:panel>
                         </b:column>
                     </b:row>

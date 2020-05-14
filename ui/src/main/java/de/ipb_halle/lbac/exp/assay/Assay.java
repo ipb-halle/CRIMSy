@@ -43,6 +43,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class Assay extends ExpRecord implements DTO {
 
+    private final static String FACELET="assay.xhtml";
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private SOP                 sop;
@@ -61,6 +63,10 @@ public class Assay extends ExpRecord implements DTO {
         return new AssayEntity()
             .setExpRecordId(getExpRecordId())
             .setSopId(this.sop.getSopId());
+    }
+
+    public String getFacelet() {
+        return FACELET;
     }
 
     public List<AssayRecord> getRecords() {
