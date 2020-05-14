@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
+import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
@@ -443,7 +444,38 @@ public class MaterialServiceTest extends TestBase {
         cleanTaxonomyFromDb();
         cleanMaterialsFromDB();
         cleanProjectFromDB(p, false);
+    }
 
+    @Test
+    public void test006_getReadableMaterials() {
+        User testUser = createUser("testUser", "testUser", nodeService.getLocalNode(), memberService, membershipService);
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(testUser);
+
+        instance.setUserBean(userBean);
+        creationTools = new CreationTools("", "", "", memberService, projectService);
+        Project p = creationTools.createProject();
+
+        //List<Object >o=entityManagerService.doSqlQuery("Select cast(id as VARCHAR) from aclists WHERE name='Public Readable ACL'");
+        //aclistService.l(1);
+        //Create a structure
+        Structure struture1 = creationTools.createDefaultMaterial(p);
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), p.getDetailTemplates());
+
+        //Create a structure which is not readable
+        userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
+        ACList noRightsAcl = new ACList();
+        noRightsAcl = aclistService.save(noRightsAcl);
+        Structure struture2 = creationTools.createDefaultMaterial(p);
+        instance.saveMaterialToDB(struture2, noRightsAcl.getId(), p.getDetailTemplates());
+        //Create a biomaterial
+
+        //Load the materials
+        userBean.setCurrentAccount(testUser);
+        List<Material> loadedMaterials = instance.getReadableMaterials();
+        Assert.assertEquals(1, loadedMaterials.size());
+        Material loadedMaterial = loadedMaterials.get(0);
+        Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
     }
 
     @Deployment
@@ -475,6 +507,7 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
                 .addClass(TaxonomyService.class)
+                .addClass(TissueService.class)
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(MaterialIndexHistoryEntity.class)

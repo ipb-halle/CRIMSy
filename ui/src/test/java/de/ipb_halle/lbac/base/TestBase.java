@@ -149,13 +149,12 @@ public class TestBase implements Serializable {
 
     @Before
     public void setUp() {
-        cleanTaxonomyFromDb();
+        this.entityManagerService.doSqlUpdate("Delete from nested_containers");
+        cleanItemsFromDb();
+
+        this.entityManagerService.doSqlUpdate("Delete from containers");
         cleanMaterialsFromDB();
         this.logger = LogManager.getLogger(this.getClass().getName());
-    }
-
-    public void cleanTaxonomyFromDb() {
-
     }
 
     protected void createTaxanomy(int id, String name, int level, String userGroups, String ownerId, Integer... parents) {

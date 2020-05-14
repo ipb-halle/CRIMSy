@@ -32,6 +32,8 @@ import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
 import de.ipb_halle.lbac.material.service.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.material.service.TissueService;
+import de.ipb_halle.lbac.project.ProjectService;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -102,6 +104,9 @@ public class TaxonomyBeanTest extends TestBase {
                 .addClass(KeyManager.class)
                 .addClass(GlobalAdmissionContext.class)
                 .addClass(MoleculeService.class)
+                .addClass(TaxonomyService.class)
+                .addClass(ProjectService.class)
+                .addClass(TissueService.class)
                 .addClass(MaterialService.class);
     }
 }

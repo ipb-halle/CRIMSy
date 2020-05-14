@@ -35,6 +35,8 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.material.service.TissueService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
@@ -122,8 +124,7 @@ public class ContainerServiceTest extends TestBase {
     public void finish() {
 
         super.cleanItemsFromDb();
-        this.entityManagerService.doSqlUpdate("Delete from nested_containers");
-        this.entityManagerService.doSqlUpdate("Delete from containers");
+       
     }
 
     @Test
@@ -274,6 +275,8 @@ public class ContainerServiceTest extends TestBase {
                 .addClass(SystemSettings.class)
                 .addClass(ItemService.class)
                 .addClass(MaterialService.class)
+                .addClass(TaxonomyService.class)
+                .addClass(TissueService.class)
                 .addClass(ArticleService.class)
                 .addClass(KeyManager.class)
                 .addClass(UserBean.class)

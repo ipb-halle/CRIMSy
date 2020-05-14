@@ -172,6 +172,7 @@ public class TaxonomyServiceTest extends TestBase {
                 .addClass(MoleculeService.class)
                 .addClass(LdapProperties.class)
                 .addClass(KeyManager.class)
+                .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);
     }
 }

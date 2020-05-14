@@ -75,7 +75,22 @@ import org.apache.logging.log4j.Logger;
 public class MaterialService implements Serializable {
 
     protected StructureInformationSaver structureInformationSaver;
-    private final String SQL_GET_MATERIAL = "SELECT materialid,materialtypeid,ctime,usergroups,ownerid,projectid,deactivated FROM materials where deactivated=false AND materialtypeid NOT IN (7) ";
+    private final String SQL_GET_MATERIAL
+            = "SELECT DISTINCT m.materialid, "
+            + "m.materialtypeid, "
+            + "m.ctime, "
+            + "m.usergroups, "
+            + "m.ownerid, "
+            + "m.projectid, "
+            + "m.deactivated "
+            + "FROM materials m "
+            + "JOIN acentries ace ON ace.aclist_id=m.usergroups "
+            + "JOIN memberships me ON ace.member_id=me.group_id "
+            + "WHERE deactivated=false "
+            + "AND (CAST(:userid AS UUID)=me.member_id "
+            + "AND ace.permread=true "
+            + "OR m.ownerid=CAST(:userid AS UUID)) "
+            + "AND materialtypeid NOT IN (6,7) ";
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
     private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM hazards_materials WHERE materialid=:mid";
@@ -169,6 +184,7 @@ public class MaterialService implements Serializable {
         Query q = em.createNativeQuery(SQL_GET_MATERIAL, MaterialEntity.class);
         q.setFirstResult(0);
         q.setMaxResults(25);
+        q.setParameter("userid", userBean.getCurrentAccount().getId());
         List<MaterialEntity> ies = q.getResultList();
         List<Material> back = new ArrayList<>();
         for (MaterialEntity me : ies) {

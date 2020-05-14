@@ -35,6 +35,8 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.material.service.TissueService;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -65,7 +67,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ItemServiceTest extends TestBase {
 
-    private Container c0, c1,c2;
+    private Container c0, c1, c2;
     @Inject
     private ItemService instance;
 
@@ -116,8 +118,8 @@ public class ItemServiceTest extends TestBase {
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90));
-        
-         c2 = new Container();
+
+        c2 = new Container();
         c2.setBarCode("43753456");
         c2.setDimension(null);
         c2.setFireSection(c1.getFireSection());
@@ -252,6 +254,8 @@ public class ItemServiceTest extends TestBase {
                 .addClass(MoleculeService.class)
                 .addClass(ArticleService.class)
                 .addClass(MembershipOrchestrator.class)
+                .addClass(TaxonomyService.class)
+                .addClass(TissueService.class)
                 .addClass(UserBean.class)
                 .addClass(ItemService.class);
     }

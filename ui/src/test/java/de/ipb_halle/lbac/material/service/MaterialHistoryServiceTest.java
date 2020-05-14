@@ -17,9 +17,6 @@
  */
 package de.ipb_halle.lbac.material.service;
 
-import de.ipb_halle.lbac.material.service.MaterialHistoryService;
-import de.ipb_halle.lbac.material.service.MoleculeService;
-import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.LdapProperties;
 import de.ipb_halle.lbac.admission.SystemSettings;
@@ -100,6 +97,8 @@ public class MaterialHistoryServiceTest extends TestBase {
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(SystemSettings.class)
+                .addClass(TaxonomyService.class)
+                .addClass(TissueService.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);
     }
