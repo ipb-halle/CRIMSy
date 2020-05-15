@@ -38,6 +38,8 @@ import javax.inject.Named;
 import org.primefaces.model.TreeNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.event.NodeCollapseEvent;
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 
 /**
@@ -83,6 +85,7 @@ public class TaxonomyBean implements Serializable {
     public void init() {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
+        levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
         validityController = new TaxonomyValidityController(this);
         renderController = new TaxonomyRenderController(this, nameController, levelController);
         treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
@@ -91,7 +94,7 @@ public class TaxonomyBean implements Serializable {
     public void actionClickFirstButton() {
         if (mode == Mode.CREATE || mode == Mode.EDIT) {
             mode = Mode.SHOW;
-            treeController.reloadTreeNode(selectedTaxonomy);
+            treeController.reloadTreeNode();
         } else if (mode == Mode.SHOW) {
             try {
                 mode = Mode.EDIT;
@@ -128,7 +131,7 @@ public class TaxonomyBean implements Serializable {
         } catch (Exception e) {
 
         }
-        treeController.reloadTreeNode(null);
+        treeController.reloadTreeNode();
     }
 
     public Taxonomy getTaxonomyToCreate() {
@@ -144,7 +147,7 @@ public class TaxonomyBean implements Serializable {
         currentUser = evt.getCurrentAccount();
         levelController.setLevels(taxonomyService.loadTaxonomyLevel());
         levelController.setSelectedLevel(levelController.getLevels().get(0));
-        treeController.reloadTreeNode(null);
+        treeController.reloadTreeNode();
         selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
     }
 
@@ -255,6 +258,14 @@ public class TaxonomyBean implements Serializable {
 
     public void setLevelController(TaxonomyLevelController levelController) {
         this.levelController = levelController;
+    }
+
+    public void onTaxonomyExpand(NodeExpandEvent event) {
+        event.getTreeNode().setExpanded(true);
+    }
+
+    public void onTaxonomyCollapse(NodeCollapseEvent event) {
+        event.getTreeNode().setExpanded(false);
     }
 
 }

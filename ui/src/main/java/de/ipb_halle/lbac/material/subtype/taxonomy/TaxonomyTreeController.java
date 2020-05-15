@@ -23,8 +23,10 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.service.TaxonomyService;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -37,10 +39,12 @@ import org.primefaces.model.TreeNode;
 public class TaxonomyTreeController {
 
     protected TreeNode selectedTaxonomy;
-    private List<Taxonomy> shownTaxonomies;
+    private List<Taxonomy> shownTaxonomies = new ArrayList<>();
     protected TaxonomyService taxonomyService;
     protected TaxonomyLevelController levelController;
     private TreeNode taxonomyTree;
+    private Set<Integer> expandedTreeNodes = new HashSet<>();
+    private Integer idOfSelectedTaxonomy;
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -51,26 +55,52 @@ public class TaxonomyTreeController {
         this.selectedTaxonomy = selectedTaxonomy;
         this.taxonomyService = taxonomyService;
         this.levelController = levelController;
-        reloadTreeNode(null);
+        reloadTreeNode();
     }
 
-    public void reloadTreeNode(TreeNode selectedNode) {
+    private void saveExpandedAndSelectedTreeNodes() {
+        expandedTreeNodes.clear();
+        idOfSelectedTaxonomy = null;
+        for (TreeNode tn : getAllChildren(taxonomyTree)) {
+            Taxonomy t = (Taxonomy) tn.getData();
+            if (tn.isExpanded()) {
+                expandedTreeNodes.add(t.getId());
+            }
+            if (tn.isSelected()) {
+                idOfSelectedTaxonomy = t.getId();
+            }
+        }
+    }
+
+    public void reloadTreeNode() {
+
         try {
+            saveExpandedAndSelectedTreeNodes();
             Map<String, Object> cmap = new HashMap<>();
             shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
             Taxonomy rootTaxo = createNewTaxonomy();
             rootTaxo.setLevel(levelController.getLevels().get(0));
             taxonomyTree = new DefaultTreeNode(rootTaxo, null);
             for (Taxonomy t : shownTaxonomies) {
+
+                TreeNode newNode = null;
                 if (!t.getTaxHierachy().isEmpty()) {
                     TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
-                    new DefaultTreeNode(t, parent);
+                    newNode = new DefaultTreeNode(t, parent);
                 } else {
-                    new DefaultTreeNode(t, taxonomyTree);
+                    newNode = new DefaultTreeNode(t, taxonomyTree);
                 }
+                if (idOfSelectedTaxonomy != null && t.getId() == idOfSelectedTaxonomy) {
+                    selectedTaxonomy = newNode;
+                }
+
             }
             expandTree();
         } catch (Exception e) {
+            for (StackTraceElement el : e.getStackTrace()) {
+                logger.info(el.getFileName() + ":" + el.getMethodName() + ":" + el.getLineNumber());
+
+            }
             logger.error(e);
         }
 
@@ -87,11 +117,11 @@ public class TaxonomyTreeController {
         }
         return null;
     }
-    
-    public void selectTaxonomy(Taxonomy t){
-        for(TreeNode n:getAllChildren(taxonomyTree)){
-            Taxonomy ta=(Taxonomy)n.getData();
-            if(ta.getId()==t.getId()){
+
+    public void selectTaxonomy(Taxonomy t) {
+        for (TreeNode n : getAllChildren(taxonomyTree)) {
+            Taxonomy ta = (Taxonomy) n.getData();
+            if (ta.getId() == t.getId()) {
                 n.setSelected(true);
                 expandTree();
             }
@@ -99,6 +129,9 @@ public class TaxonomyTreeController {
     }
 
     private List<TreeNode> getAllChildren(TreeNode tn) {
+        if (tn == null) {
+            return new ArrayList<>();
+        }
         List<TreeNode> children = new ArrayList<>();
         for (TreeNode n : tn.getChildren()) {
             children.addAll(getAllChildren(n));
@@ -116,30 +149,25 @@ public class TaxonomyTreeController {
     }
 
     public void expandTree() {
-        if (selectedTaxonomy == null) {
-            return;
-        }
-        Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
-        expandNode(selectedTaxonomy);
-        getTreeNodeWithTaxonomy(t.getId()).setSelected(true);
-    }
-
-    private void expandNode(TreeNode n) {
-        Taxonomy t = (Taxonomy) n.getData();
-        n = getTreeNodeWithTaxonomy(t.getId());
-        n.setExpanded(true);
-        if (n.getParent() != null) {
-            expandNode(n.getParent());
+        for (TreeNode tn : getAllChildren(taxonomyTree)) {
+            Taxonomy t = (Taxonomy) tn.getData();
+            if (expandedTreeNodes.contains(t.getId())) {
+                tn.setExpanded(true);
+            }
+            if (idOfSelectedTaxonomy != null && idOfSelectedTaxonomy == t.getId()) {
+                tn.setSelected(true);
+            }
         }
     }
 
     public void disableTreeNodeEntries(Taxonomy taxoToEdit) {
+        reloadTreeNode();
         List<TreeNode> nodes = getAllChildren(taxonomyTree);
         for (TreeNode n : nodes) {
             Taxonomy t = (Taxonomy) n.getData();
 
             boolean leaf = t.getLevel().getRank() == levelController.getLeastRank();
-            boolean targetGotLowerRank = taxoToEdit.getLevel().getRank() >= t.getLevel().getRank();
+            boolean targetGotLowerRank = taxoToEdit.getLevel().getRank() > t.getLevel().getRank();
 
             n.setSelectable(!leaf
                     && t.getId() != taxoToEdit.getId()

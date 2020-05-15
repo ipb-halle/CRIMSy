@@ -43,6 +43,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.primefaces.model.TreeNode;
 
 /**
  *
@@ -89,7 +90,11 @@ public class TaxonomyBeanTest extends TestBase {
     public void test001_reloadTaxonomies() {
         LoginEvent event = new LoginEvent(owner);
         bean.setCurrentAccount(event);
-        bean.getTreeController().reloadTreeNode(null);
+        bean.getTreeController().reloadTreeNode();
+        TreeNode tree=bean.getTreeController().getTaxonomyTree();
+       
+       
+        
         int i = 0;
     }
 
