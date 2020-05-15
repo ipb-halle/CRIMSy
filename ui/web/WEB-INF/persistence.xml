@@ -36,6 +36,7 @@
         <class>de.ipb_halle.lbac.exp.assay.AssayEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.AssayRecordEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.SOPEntity</class>
+        <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
         <class>de.ipb_halle.lbac.material.entity.biomaterial.BioMaterialEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialDetailRightEntity</class>

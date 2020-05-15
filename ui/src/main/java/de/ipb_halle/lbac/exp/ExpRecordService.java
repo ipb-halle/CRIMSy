@@ -27,6 +27,7 @@ package de.ipb_halle.lbac.exp;
  * important aspects (permissions, history, filtering, ...) are missing.
  */
 import de.ipb_halle.lbac.exp.assay.AssayService;
+import de.ipb_halle.lbac.exp.text.TextService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,6 +59,9 @@ public class ExpRecordService implements Serializable {
 
     @Inject
     private AssayService assayService;
+
+    @Inject
+    private TextService textService;
 
     private Logger logger;
 
@@ -97,6 +101,9 @@ public class ExpRecordService implements Serializable {
                 case ASSAY :
                     result.add(this.assayService.loadAssayById(experiment, e)); 
                     break;
+                case TEXT :
+                    result.add(this.textService.loadTextById(experiment, e));
+                    break;
                 default : 
                     throw new UnsupportedOperationException("load(): invalid ExpRecord.type");
             }
@@ -120,6 +127,8 @@ public class ExpRecordService implements Serializable {
         switch(e.getType()) {
             case ASSAY :
                 return this.assayService.loadAssayById(experiment, e); 
+            case TEXT :
+                return this.textService.loadTextById(experiment, e);
         }
         throw new UnsupportedOperationException("loadById(): invalid ExpRecord.type");
     }
@@ -137,6 +146,8 @@ public class ExpRecordService implements Serializable {
         switch(e.getType()) {
             case ASSAY :
                 return this.assayService.saveAssay(record);
+            case TEXT :
+                return this.textService.saveText(record);
         } 
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }
