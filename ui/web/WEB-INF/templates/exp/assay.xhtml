@@ -27,8 +27,10 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
-        <div>Assay<br/>
-SOP: #{expRecord.SOP.sopId} #{expRecord.SOP.description}<br/> 
+        <div>Assay<br/>SOP: #{expRecord.SOP.sopId} #{expRecord.SOP.description}<br/> 
+        <ui:repeat value="#{expRecord.records}" var="assayRec">
+            Material #{assayRec.material.id} | Outcome #{assayRec.outcome}<br/>
+        </ui:repeat>
         </div>
     </ui:composition>
 </html>
