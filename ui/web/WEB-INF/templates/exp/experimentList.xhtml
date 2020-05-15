@@ -28,31 +28,15 @@
 
     <ui:composition>
 
-        <b:dataTable id="experimentList"
-                     value="#{experimentBean.experiments}"
-                     styleClass="cloudNodeList"
-                     striped="true"
-                     responsive="false"
-                     customOptions="autoWidth:true"
-                     fixedHeader="true"
-                     var="exp"
-                     csv="true"
-                     columnVisibility="true">
-            <f:facet name="header">
-                <tr>
-                    <th>#{msgs.ExperimentCode}</th>
-                    <th style="min-width:30px">#{msgs.Tools}</th>
-                </tr>
-            </f:facet>
-            <b:dataTableColumn value="#{exp.code}" tooltip="#{exp.description}" order="asc"/>
-            <b:dataTableColumn>
-                <b:commandButton style="padding: 0 4px;"
-                                 icon="pencil"
+        <ui:repeat value="#{experimentBean.experiments}" var="experiment">
+            <div title="#{experiment.description}">
+            <b:commandButton style="padding: 0 4px;"
+                                 icon="search"
                                  look="link"
                                  type="submit"
-                                 action="#{experimentBean.actionSelectExperiment(exp)}" />
-            </b:dataTableColumn>
-        </b:dataTable>
-
+                                 action="#{experimentBean.actionSelectExperiment(experiment)}" />
+            #{experiment.code}<br/>
+            </div>
+        </ui:repeat>
     </ui:composition>
 </html>

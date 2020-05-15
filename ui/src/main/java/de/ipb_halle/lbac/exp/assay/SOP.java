@@ -58,7 +58,7 @@ public class SOP implements DTO {
     public SOPEntity createEntity() {
         return new SOPEntity()
                 .setDescription(this.description)
-                .setDocumentId(this.document.getId())
+                .setDocumentId((this.document != null) ? this.document.getId() : null)
                 .setSopId(this.sopid);
     }
 

@@ -47,12 +47,21 @@ public class ExperimentBean implements Serializable {
     @Inject
     private ExpRecordService expRecordService;
 
+    private Experiment experiment; 
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    /**
-     * default constructor
-     */
-    public ExperimentBean() {
+
+    @PostConstruct
+    public void experimentBeanInit() {
+        this.experiment = new Experiment(
+            null,               // experiment id
+            "code",             // code
+            "description",      // description
+            null,               // aclist
+            null,               // owner
+            new Date()          // creation time
+            );
     }
 
     /**
@@ -62,6 +71,10 @@ public class ExperimentBean implements Serializable {
 
     }
 
+    public void actionSelectExperiment(Experiment exp) {
+        this.experiment = experiment;
+    }
+
     public List<Experiment> getExperiments() {
         // xxxxx restrict search
         return experimentService.load();
@@ -69,7 +82,12 @@ public class ExperimentBean implements Serializable {
 
     public List<ExpRecord> getExpRecords() {
         // xxxxx restrict search
-        return expRecordService.load();
+        try {
+            this.logger.info("geExpRecords() got called");
+            return expRecordService.load();
+        } catch(Exception e) {
+            this.logger.warn("getExpRecords() caught an exception: ", (Throwable) e);
+        }
+        return new ArrayList<ExpRecord> ();
     }
-
 }

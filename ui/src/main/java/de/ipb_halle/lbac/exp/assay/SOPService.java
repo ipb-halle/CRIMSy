@@ -80,7 +80,9 @@ public class SOPService implements Serializable {
 
         List<SOP> result = new ArrayList<SOP> ();
         for(SOPEntity e :  this.em.createQuery(criteriaQuery).getResultList()) {
-            FileObject document = this.fileEntityService.getFileEntity(e.getDocumentId());
+            FileObject document = (e.getDocumentId() != null) ? 
+                    this.fileEntityService.getFileEntity(e.getDocumentId()) :
+                    null;
             result.add(new SOP(e, document));
         }
         return result;
@@ -93,9 +95,11 @@ public class SOPService implements Serializable {
      * @return the SOP object
      */
     public SOP loadById(Integer id) {
-        SOPEntity entity = this.em.find(SOPEntity.class, id);
-        FileObject document = this.fileEntityService.getFileEntity(entity.getDocumentId());
-        return new SOP(entity, document);
+        SOPEntity e = this.em.find(SOPEntity.class, id);
+        FileObject document = (e.getDocumentId() != null) ?
+                    this.fileEntityService.getFileEntity(e.getDocumentId()) :
+                    null;
+        return new SOP(e, document);
     }
 
     /**

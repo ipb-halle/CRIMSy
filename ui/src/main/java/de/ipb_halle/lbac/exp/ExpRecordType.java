@@ -31,10 +31,33 @@ package de.ipb_halle.lbac.exp;
  * @author fbroda
  */
 public enum ExpRecordType {
-    ASSAY,
-    ATTACHMENT,
-    COMPOUND_DATA,
-    REACTION,
-    TEXT
+    ASSAY(0),
+    ATTACHMENT(1),
+    COMPOUND_DATA(2),
+    REACTION(3),
+    TEXT(4);
+
+    private int typeId;
+
+    private ExpRecordType(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public static ExpRecordType getExpRecordTypeById(int id) {
+        for (ExpRecordType t : ExpRecordType.values()) {
+            if (t.getTypeId() == id) {
+                return t;
+            }
+        }
+        return null;
+    }
 }
 
