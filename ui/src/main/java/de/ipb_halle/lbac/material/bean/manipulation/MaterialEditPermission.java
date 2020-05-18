@@ -53,7 +53,7 @@ public class MaterialEditPermission {
         MaterialDetailType type = MaterialDetailType.valueOf(typeString);
         boolean isCreate = bean.getMode() == MaterialBean.Mode.CREATE;
         boolean isHistory = bean.getMode() == MaterialBean.Mode.HISTORY;
-        return (isCreate||isOwnerOrPermitted(type, permEDIT)) && !isHistory;
+        return (isCreate || isOwnerOrPermitted(type, permEDIT)) && !isHistory;
     }
 
     public boolean isForwardButtonEnabled() {
@@ -75,8 +75,14 @@ public class MaterialEditPermission {
         return userIsOwner || userHasEditRight;
     }
 
+    /**
+     * Checks if a panel with some informationsub types (e.g. names, taxonomy,
+     * ...) is visible to the user logged in .
+     *
+     * @param typeName name of the enum
+     * @return
+     */
     public boolean isDetailPanelVisible(String typeName) {
-
         if (bean.getCurrentMaterialType() == null) {
             return false;
         }
@@ -85,41 +91,59 @@ public class MaterialEditPermission {
             MaterialDetailType type = MaterialDetailType.valueOf(typeName);
             boolean materialGotDetail = bean.getCurrentMaterialType().getPossibleDetailTypes().contains(type);
 
-            if (bean.getMode() == MaterialBean.Mode.CREATE) {
-                return materialGotDetail;
-            }
-
-            ACList acl = getAcListOfDetailRight(type, bean.getMaterialEditState());
-            if (bean.getMaterialEditState().getMaterialToEdit().getOwnerID().equals(bean.getUserBean().getCurrentAccount().getId())) {
-                return true;
-            }
-
-            if (acl == null) {
-                return false;
-            }
-
             boolean userHasRight = bean.getAcListService().isPermitted(
                     ACPermission.permREAD,
-                    acl,
+                    getAcListOfDetailRight(type, bean.getMaterialEditState()),
                     bean.getUserBean().getCurrentAccount());
-            return materialGotDetail && userHasRight;
+
+            return materialGotDetail
+                    && (isOwner()
+                    || userHasRight
+                    || bean.getMode() == MaterialBean.Mode.CREATE);
+
         } catch (Exception e) {
             logger.info("Error in isVisible(): " + typeName);
             logger.info("Current MaterialType: " + bean.getCurrentMaterialType());
             logger.error(e);
-
         }
         return false;
     }
 
     protected ACList getAcListOfDetailRight(MaterialDetailType type, MaterialEditState state) {
-        List<MaterialDetailRight> rights = bean.getMaterialEditState().getMaterialToEdit().getDetailRights();
-        for (MaterialDetailRight mdr : rights) {
-            if (mdr.getType() == type) {
-                return mdr.getAcList();
+        if (bean.getMaterialEditState() == null
+                || bean.getMaterialEditState().getMaterialToEdit() == null) {
+            return null;
+        }
+        try {
+            List<MaterialDetailRight> rights = bean.getMaterialEditState().getMaterialToEdit().getDetailRights();
+            for (MaterialDetailRight mdr : rights) {
+                if (mdr.getType() == type) {
+                    return mdr.getAcList();
+                }
             }
+        } catch (Exception e) {
+            logger.error(e);
         }
         return null;
     }
 
+    private boolean isOwner() {
+        if (bean.getMaterialEditState() == null
+                || bean.getMaterialEditState().getMaterialToEdit() == null
+                || bean.getMaterialEditState().getMaterialToEdit().getOwnerID() == null) {
+            return false;
+        }
+        try {
+            return bean.getMaterialEditState() != null
+                    && bean.getMaterialEditState()
+                            .getMaterialToEdit()
+                            .getOwnerID()
+                            .equals(bean.getUserBean()
+                                    .getCurrentAccount()
+                                    .getId());
+        } catch (Exception e) {
+            logger.error(e);
+            return false;
+        }
+    }
 }

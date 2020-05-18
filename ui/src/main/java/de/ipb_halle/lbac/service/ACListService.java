@@ -57,7 +57,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class ACListService implements Serializable {
@@ -114,6 +115,7 @@ public class ACListService implements Serializable {
 
     /**
      * check if User u is permitted to perform action perm under ACList acl.
+     * Returns false if user or acl parameter is null.
      *
      * @param perm
      * @param acl
@@ -121,6 +123,9 @@ public class ACListService implements Serializable {
      * @return true if action is permitted
      */
     public boolean isPermitted(ACPermission perm, ACList acl, User u) {
+        if (acl == null || u == null) {
+            return false;
+        }
         Iterator<Membership> iter = this.membershipService.loadMemberOf(u).iterator();
         while (iter.hasNext()) {
             if (acl.getPerm(perm, iter.next().getGroup())) {
@@ -160,8 +165,8 @@ public class ACListService implements Serializable {
     }
 
     /**
-     * load the list of ACEntryEntries from the database
-     * for a given ACList.
+     * load the list of ACEntryEntries from the database for a given ACList.
+     *
      * @param ae the id of the ACList
      */
     public List<ACEntry> loadACEntries(ACList acl) {
@@ -172,13 +177,13 @@ public class ACListService implements Serializable {
         criteriaQuery.select(acEntryRoot);
         Predicate predicate = builder.equal(acEntryRoot.get("id").get("aclist_id"), acl.getId());
         criteriaQuery.where(predicate);
-        List<ACEntry> l = new ArrayList<ACEntry> ();
-        for(ACEntryEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
+        List<ACEntry> l = new ArrayList<ACEntry>();
+        for (ACEntryEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
             l.add(new ACEntry(e, acl, this.memberService.loadMemberById(e.getId().getMemberId())));
         }
         return l;
     }
-    
+
     /**
      * load an already persisted ACList based on the permEquals() method or
      * return null
@@ -235,7 +240,7 @@ public class ACListService implements Serializable {
         if (r == null) {
             ACListEntity entity = acl.createEntity();
             this.em.merge(entity);
-            for(ACEntry ae: acl.getACEntries().values()) {
+            for (ACEntry ae : acl.getACEntries().values()) {
                 this.em.merge(ae.createEntity());
             }
             return acl;
