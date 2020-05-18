@@ -72,6 +72,13 @@ public class TaxonomyTreeController {
         }
     }
 
+    public void setSelectedTaxonomy(TreeNode selectedTaxonomy) {
+        this.selectedTaxonomy = selectedTaxonomy;
+        if (selectedTaxonomy != null) {
+            saveExpandedAndSelectedTreeNodes();
+        }
+    }
+
     public void reloadTreeNode() {
 
         try {
@@ -97,10 +104,6 @@ public class TaxonomyTreeController {
             }
             expandTree();
         } catch (Exception e) {
-            for (StackTraceElement el : e.getStackTrace()) {
-                logger.info(el.getFileName() + ":" + el.getMethodName() + ":" + el.getLineNumber());
-
-            }
             logger.error(e);
         }
 
