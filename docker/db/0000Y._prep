@@ -77,6 +77,12 @@ CREATE TABLE exp_assays (
     sopid           INTEGER NOT NULL REFERENCES exp_sops(sopid) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+/* ToDo: xxxxx create fulltext index on exp_texts! */
+CREATE TABLE exp_texts (
+    exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    text            VARCHAR 
+);
+
 /**
  * - Agency: job scheduling
  * - barcode printing

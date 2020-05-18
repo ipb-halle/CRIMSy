@@ -27,28 +27,6 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
-        <ui:repeat value="#{experimentBean.expRecords}" var="rec">
-            #{rec.expRecordId} -- #{rec.creationTime} 
-
-            <ui:fragment rendered="#{rec.facelet eq 'ASSAY'}">
-                <ui:insert name="assayPanel">
-                    <ui:include src="assay.xhtml">
-                        <ui:param name="expRecord" value="#{rec}" />
-                    </ui:include>
-                </ui:insert>
-            </ui:fragment>
-
-            <ui:fragment rendered="#{rec.facelet eq 'TEXT'}">
-                <ui:insert name="textPanel">
-                    <ui:include src="text.xhtml">
-                        <ui:param name="expRecord" value="#{rec}" />
-                    </ui:include>
-                </ui:insert>
-            </ui:fragment>
-
-
-
-            <br/>
-        </ui:repeat>
+        <div>#{expRecord.text}</div>
     </ui:composition>
 </html>
