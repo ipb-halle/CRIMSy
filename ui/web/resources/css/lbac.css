@@ -497,5 +497,21 @@ select.selCollection {
     visibility: hidden;
 }
 
+.itemNavigationButton{
+    width: 19px !important;
+    height: 16px !important;
+}
+
+.itemNavigationButton i{
+    font-size: 12px;
+    position: absolute;
+    top: 6px;
+    left: 22px;
+}
+
+.itemNavigationColumn{
+    width:10px  !important;
+}
+
 
 

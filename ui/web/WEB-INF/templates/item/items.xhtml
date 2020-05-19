@@ -180,35 +180,48 @@
                                         </b:dataTableColumn>
                                     </b:dataTable>
                                 </b:column> 
-                                <b:column> 
+                            </b:row>
+                            <b:row>
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
                                     <b:commandButton 
+                                        styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isBackDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionFirstItems();"
+                                        icon-awesome="fa-fast-backward"
                                         ajax="true"
                                         update="itemForm"
                                         />
+                                </b:column>
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
                                     <b:commandButton 
+                                        styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isBackDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionLastItems();"
                                         ajax="true"
                                         update="itemForm"
-
-                                        />
-
+                                        icon-awesome="fa-backward"/>
+                                </b:column> 
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
                                     <b:commandButton 
+                                        styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isForwardDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionNextItems();"
                                         ajax="true"
                                         update="itemForm"
+                                        icon-awesome="fa-forward"
                                         />
+                                </b:column> 
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
                                     <b:commandButton 
+                                        styleClass="itemNavigationButton"
                                         disabled="#{itemOverviewBean.isForwardDeactivated()}"
                                         onclick="ajax:itemOverviewBean.actionEndItems();"
                                         ajax="true"
                                         update="itemForm"
+                                        icon-awesome="fa-fast-forward"
                                         />
                                 </b:column> 
-                                <b:column offset="2"> 
+                                <b:column span="2" offset="1"> 
                                     <h:outputText value="#{itemOverviewBean.getItemNavigationInfo()}"/>
                                 </b:column> 
                             </b:row>
