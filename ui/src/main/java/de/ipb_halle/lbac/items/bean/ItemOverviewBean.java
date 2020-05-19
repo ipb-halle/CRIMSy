@@ -158,11 +158,7 @@ public class ItemOverviewBean implements Serializable {
     }
 
     public String getLocationOfItem(Item i) {
-        if (i.getContainer() == null) {
-            return "n.A.";
-        } else {
-            return i.getContainer().getLocation();
-        }
+        return i.getNestedLocation();
     }
 
     public String getDatesOfItem(Item i) {
