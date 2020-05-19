@@ -36,95 +36,122 @@
                         <b:container>
                             <b:row>
                                 <b:column>
-                                    <h:outputText value="Suche"/>
+                                    <h:outputText value="Suchfilter"
+                                                  styleClass="itemFilterHeader"/>
                                 </b:column>
                             </b:row>    
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="Materialname"/>
+                                    <h:outputText value="Materialname"
+                                                  />
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <p:autoComplete value="#{itemOverviewBean.materialSearchName}"
                                                     maxResults="10"
-                                                    completeMethod="#{itemOverviewBean.getSimilarMaterialNames}"/>
+                                                    completeMethod="#{itemOverviewBean.getSimilarMaterialNames}"
+                                                    styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <h:outputText value="Gebindenummer"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <b:inputText value="#{itemOverviewBean.itemSearchId}"/>
+                                    <b:inputText
+                                        value="#{itemOverviewBean.itemSearchId}"
+                                        styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <h:outputText value="User"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <p:autoComplete value="#{itemOverviewBean.searchUserName}"
                                                     maxResults="10"
-                                                    completeMethod="#{itemOverviewBean.getSimilarUserNames}"/>
+                                                    completeMethod="#{itemOverviewBean.getSimilarUserNames}"
+                                                    styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <h:outputText value="Project"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
 
                                 <b:column span="2">
                                     <p:autoComplete value="#{itemOverviewBean.searchProject}"
                                                     maxResults="10"
-                                                    completeMethod="#{itemOverviewBean.getSimilarProjectNames}"/>
+                                                    completeMethod="#{itemOverviewBean.getSimilarProjectNames}"
+                                                    styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <h:outputText value="Standort"/>
                                 </b:column>
                             </b:row>  
-                            <b:row>  
+                            <b:row
+                                styleClass="itemFilterRow">  
                                 <b:column span="2">
                                     <p:autoComplete value="#{itemOverviewBean.searchLocation}"
                                                     maxResults="10"
-                                                    completeMethod="#{itemOverviewBean.getSimilarContainerNames}"/>
+                                                    completeMethod="#{itemOverviewBean.getSimilarContainerNames}"
+                                                    styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>                           
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <h:outputText value="Bemerkungen"/>
                                 </b:column>
                             </b:row>
-                            <b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <b:inputText value="#{itemOverviewBean.searchDescription}"/>
+                                    <b:inputText value="#{itemOverviewBean.searchDescription}"
+                                                 styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>
                             <b:row>
-                                <b:column span="2">
-                                    <b:commandButton value="Clear"
-                                                     ajax="true"
-                                                     update="itemForm"
-                                                     onclick="ajax:itemOverviewBean.actionClearSearchFilter();"/>
-                                    <b:commandButton value="Search"
-                                                     update="itemForm"
-                                                     ajax="true"
-                                                     onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
+                                <b:column
+                                    span="1" 
+                                    styleClass="itemFilterButtonColumn">
+                                    <b:commandButton 
+                                        styleClass="itemFilterButton"
+                                        value="Clear"
+                                        ajax="true"
+                                        update="itemForm"
+                                        onclick="ajax:itemOverviewBean.actionClearSearchFilter();"/>
+                                </b:column>
+                                <b:column
+                                    span="1"
+                                    styleClass="itemFilterButtonColumn itemFilterButtonRight">
+                                    <b:commandButton 
+                                        styleClass="itemFilterButton"
+                                        value="Search"
+                                        update="itemForm"
+                                        ajax="true"
+                                        onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
                                 </b:column>
                             </b:row>
-
-
                         </b:container>
-
-
                     </b:column>    
                     <b:column span="10">  
                         <b:container>
@@ -225,7 +252,6 @@
                                     <h:outputText value="#{itemOverviewBean.getItemNavigationInfo()}"/>
                                 </b:column> 
                             </b:row>
-
                         </b:container>
                     </b:column> 
                 </b:row>

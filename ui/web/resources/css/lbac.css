@@ -512,6 +512,34 @@ select.selCollection {
 .itemNavigationColumn{
     width:10px  !important;
 }
+.itemFilterInputfield{
+    width:165px  !important;
+    height: 30px !important;
+}
+.itemFilterInputfield input{
+    width:165px  !important;
+    height: 30px !important;
+}
 
+.itemFilterHeader{
+    font-size: 16px;
+    font-weight: bold;
+}
 
+.itemFilterRow div{
+    margin-bottom: 3px !important;
+}
+.itemFilterButton {
+    width: 80px !important;
+    height: 35px !important;
+    margin-left: 10px !important;
+}
+.itemFilterButtonColumn {
+    margin-top: 15px;
+    padding-left: 5px !important;   
+}
+
+.itemFilterButtonRight{
+    left: -13px !important;
+}
 
