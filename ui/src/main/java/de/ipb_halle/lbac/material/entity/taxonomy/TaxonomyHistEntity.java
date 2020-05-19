@@ -38,10 +38,19 @@ public class TaxonomyHistEntity implements Serializable {
     private String digest;
 
     @Column
+    private String action;
+
+    @Column
     private Integer level_old;
 
     @Column
     private Integer level_new;
+
+    @Column
+    private Integer parentid_old;
+
+    @Column
+    private Integer parentid_new;
 
     public String getDigest() {
         return digest;
@@ -73,6 +82,30 @@ public class TaxonomyHistEntity implements Serializable {
 
     public void setLevel_new(Integer level_new) {
         this.level_new = level_new;
+    }
+
+    public Integer getParentid_old() {
+        return parentid_old;
+    }
+
+    public void setParentid_old(Integer parentid_old) {
+        this.parentid_old = parentid_old;
+    }
+
+    public Integer getParentid_new() {
+        return parentid_new;
+    }
+
+    public void setParentid_new(Integer parentid_new) {
+        this.parentid_new = parentid_new;
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 
 }

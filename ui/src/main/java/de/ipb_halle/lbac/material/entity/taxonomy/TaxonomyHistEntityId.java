@@ -29,13 +29,15 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TaxonomyHistEntityId implements Serializable {
 
+    private Integer taxonomyId;
     private Date mdate;
     private UUID actorid;
 
     public TaxonomyHistEntityId() {
     }
 
-    public TaxonomyHistEntityId(Date mtime, UUID actorid) {
+    public TaxonomyHistEntityId(Integer id, Date mtime, UUID actorid) {
+        this.taxonomyId = id;
         this.mdate = mtime;
         this.actorid = actorid;
     }
@@ -54,6 +56,14 @@ public class TaxonomyHistEntityId implements Serializable {
 
     public void setActorid(UUID actorid) {
         this.actorid = actorid;
+    }
+
+    public Integer getTaxonomyId() {
+        return taxonomyId;
+    }
+
+    public void setTaxonomyId(Integer taxonomyId) {
+        this.taxonomyId = taxonomyId;
     }
 
 }

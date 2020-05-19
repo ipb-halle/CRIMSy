@@ -29,12 +29,14 @@ import java.util.Date;
  */
 public class TaxonomyHistory implements DTO {
 
+    private Integer taxonomyId;
     private User actor;
     private Date mdate;
     private Integer level_old;
     private Integer level_new;
 
     public TaxonomyHistory(TaxonomyHistEntity entity, User actor) {
+        taxonomyId = entity.getId().getTaxonomyId();
         this.actor = actor;
         this.mdate = entity.getId().getMdate();
         this.level_new = entity.getLevel_new();
@@ -44,7 +46,7 @@ public class TaxonomyHistory implements DTO {
     @Override
     public TaxonomyHistEntity createEntity() {
         TaxonomyHistEntity entity = new TaxonomyHistEntity();
-        entity.setId(new TaxonomyHistEntityId(mdate, actor.getId()));
+        entity.setId(new TaxonomyHistEntityId(taxonomyId, mdate, actor.getId()));
         entity.setLevel_new(level_new);
         entity.setLevel_old(level_old);
         return entity;

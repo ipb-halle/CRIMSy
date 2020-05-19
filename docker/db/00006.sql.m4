@@ -441,13 +441,16 @@ CREATE TABLE effective_taxonomy(
     parentid INTEGER NOT NULL REFERENCES taxonomy(id));
 
 CREATE TABLE taxonomy_history(
+    taxonomyid INTEGER NOT NULL REFERENCES materials(materialid),
     actorid UUID NOT NULL REFERENCES usersgroups(id),
     mdate TIMESTAMP NOT NULL,
     action VARCHAR NOT NULL,
-    digest VARCHAR NOT NULL,
+    digest VARCHAR,
     level_old INTEGER,
     level_new INTEGER,
-    PRIMARY KEY(actorid,mdate));
+    parentid_old INTEGER,
+    parentid_new INTEGER,
+    PRIMARY KEY(taxonomyid,actorid,mdate));
 
 CREATE TABLE tissues(
   id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
