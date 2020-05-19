@@ -493,6 +493,9 @@ select.selCollection {
     height:400px !important;
 }
 
+.itemDataTable .dataTables_info{
+    visibility: hidden;
+}
 
 
 
