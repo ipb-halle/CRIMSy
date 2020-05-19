@@ -99,10 +99,15 @@ public class MaterialService implements Serializable {
     private final String SQL_GET_MOLECULE = "SELECT id,format,CAST(molecule AS VARCHAR) FROM molecules WHERE id=:mid";
     private final String SQL_DEACTIVATE_MATERIAL = "UPDATE materials SET deactivated=true WHERE materialid=:mid";
     private final String SQL_GET_SIMILAR_NAMES
-            = "SELECT mi.value "
+            = "SELECT DISTINCT(mi.value) "
             + "FROM material_indices mi "
             + "JOIN materials m ON m.materialid=mi.materialid "
+            + "JOIN acentries ace ON ace.aclist_id=m.usergroups "
+            + "JOIN memberships me ON ace.member_id=me.group_id "
             + "WHERE LOWER(mi.value) LIKE LOWER(:name) "
+            + "AND (CAST(:userid AS UUID)=me.member_id "
+            + "AND ace.permread=true "
+            + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
     private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
@@ -243,6 +248,7 @@ public class MaterialService implements Serializable {
     public List<String> getSimilarMaterialNames(String name, User user) {
         return this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("name", "%" + name + "%")
+                .setParameter("userid", userBean.getCurrentAccount().getId())
                 .getResultList();
     }
 
