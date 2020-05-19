@@ -377,6 +377,9 @@ public class MaterialService implements Serializable {
         if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.BIOMATERIAL) {
             material = getBioMaterial(entity);
         }
+        if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.TAXONOMY) {
+            material = taxonomyService.loadTaxonomyById(id);
+        }
         return material;
     }
 

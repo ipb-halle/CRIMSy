@@ -90,20 +90,10 @@ public enum MaterialType {
      * @return the found materialtype. Null if no type was found.
      */
     public static MaterialType getTypeById(int id) {
-        if (id == 1) {
-            return STRUCTURE;
-        }
-        if (id == 2) {
-            return COMPOSITION;
-        }
-        if (id == 3) {
-            return BIOMATERIAL;
-        }
-        if (id == 4) {
-            return CONSUMABLE;
-        }
-        if (id == 5) {
-            return SEQUENCE;
+        for (MaterialType t : MaterialType.values()) {
+            if (t.getId() == id) {
+                return t;
+            }
         }
         return null;
     }

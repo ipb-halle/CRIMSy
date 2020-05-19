@@ -103,8 +103,9 @@ public class TaxonomyService implements Serializable {
             Collections.sort(taxonomyHierarchy, (o1, o2) -> o1.getLevel().getRank() > o2.getLevel().getRank() ? -1 : 1);
             Taxonomy t = new Taxonomy(entity.getId(), materialService.loadMaterialNamesById(entity.getId()), new HazardInformation(), new StorageClassInformation(), taxonomyHierarchy);
             t.setLevel(new TaxonomyLevel(em.find(TaxonomyLevelEntity.class, entity.getLevel())));
-            taxonomies.add(t);
 
+            t.setHistory(materialService.loadHistoryOfMaterial(entity.getId()));
+            taxonomies.add(t);
         }
         return taxonomies;
     }

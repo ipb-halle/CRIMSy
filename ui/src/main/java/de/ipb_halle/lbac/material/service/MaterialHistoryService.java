@@ -25,11 +25,14 @@ import de.ipb_halle.lbac.material.difference.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.difference.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.difference.MaterialStructureDifference;
+import de.ipb_halle.lbac.material.difference.TaxonomyDifference;
 import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialHistEntity;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageClassHistoryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageConditionHistoryEntity;
 import de.ipb_halle.lbac.material.entity.structure.StructureHistEntity;
+import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -106,6 +109,10 @@ public class MaterialHistoryService {
             + " FROM hazards_materials_hist"
             + " WHERE materialid=:mid";
 
+    private final String SQL_GET_TAXONOMY_HISTORY
+            = "SELECT taxonomyid,actorid,mdate,action,digest,level_old,level_new,parentid_old,parentid_new "
+            + "FROM taxonomy_history "
+            + "WHERE taxonomyid=:taxoid";
     private final String SQL_GET_MOLECULE = "SELECT "
             + "id,"
             + "format,"
@@ -133,6 +140,7 @@ public class MaterialHistoryService {
             loadStructureHistory(materialId, history);
             loadHazardHistory(materialId, history);
             loadStorageHistory(materialId, history);
+            loadTaxonomyHistory(materialId, history);
         } catch (Exception e) {
             StackTraceElement t = e.getStackTrace()[0];
             logger.info(t.getClassName() + ":" + t.getMethodName() + ":" + t.getLineNumber());
@@ -177,6 +185,28 @@ public class MaterialHistoryService {
         } catch (Exception e) {
             logger.error(e);
         }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public void loadTaxonomyHistory(int materialId, MaterialHistory history) {
+        List<TaxonomyHistEntity> hists = materialService.getEm()
+                .createNativeQuery(SQL_GET_TAXONOMY_HISTORY, TaxonomyHistEntity.class)
+                .setParameter("taxoid", materialId)
+                .getResultList();
+
+        for (TaxonomyHistEntity hist : hists) {
+            TaxonomyDifference diff = new TaxonomyDifference();
+            diff.setNewLevelId(hist.getLevel_new());
+            diff.setOldLevelId(hist.getLevel_old());
+            diff.setNewHierarchy(new ArrayList<>());
+            if (hist.getParentid_new() != null) {
+                diff.getNewHierarchy().add(hist.getParentid_new());
+            }
+            diff.initialise(materialId, hist.getId().getActorid(), hist.getId().getMdate());
+
+        }
+        int i = 0;
 
     }
 

@@ -26,6 +26,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
@@ -39,7 +40,6 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,8 +78,6 @@ public class TaxonomyServiceTest extends TestBase {
         ownerid = owner.getId().toString();
         materialService.setUserBean(userBean);
     }
-
-   
 
     @Test
     public void test001_loadTaxonomyLevels() {
@@ -154,6 +152,9 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(1, t.getTaxHierachy().get(3).getId());
 
         Assert.assertEquals(3, t.getLevel().getId());
+
+        Material loadedMaterial = materialService.loadMaterialById(editedTaxonomy.getId());
+        Assert.assertEquals(1, loadedMaterial.getHistory().getChanges().size());
 
     }
 
