@@ -42,7 +42,8 @@
                               styleClass="taxonomyInfos">
                         <b:commandButton 
                             value="#{msgs.taxonomy_history_back}"
-                            rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
+                            rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
+                            disabled="#{taxonomyBean.renderController.historyBackButtonDisabled}"/>
 
                     </b:column>
                     <b:column span="1" 
@@ -55,7 +56,8 @@
                               styleClass="taxonomyInfos">
                         <b:commandButton
                             value="#{msgs.taxonomy_history_forward}"
-                            rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
+                            rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
+                            disabled="#{taxonomyBean.renderController.historyForwardButtonDisabled}"/>
                     </b:column>
 
 

@@ -26,7 +26,6 @@ import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  * Collection of all edits of the material.
  *
@@ -107,10 +106,18 @@ public class MaterialHistory {
         }
     }
 
+    public Date getMostFarVersion() {
+        if (changes.isEmpty()) {
+            return null;
+        } else {
+            return changes.firstKey();
+        }
+    }
+
     public SortedMap<Date, List<MaterialDifference>> getChanges() {
         return changes;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T getDifferenceOfTypeAtDate(Class T, Date d) {
         if (changes.get(d) == null) {

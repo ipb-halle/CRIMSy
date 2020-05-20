@@ -201,4 +201,18 @@ public class TaxonomyRenderController {
             return "";
         }
     }
+
+    public boolean isHistoryBackButtonDisabled() {
+        Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
+        boolean noHistory = t.getHistory().getChanges().isEmpty();
+        boolean atMostFarDate = taxonomyBean.getHistoryController().getDateOfShownHistory() == t.getHistory().getMostFarVersion();
+        return noHistory || atMostFarDate;
+    }
+
+    public boolean isHistoryForwardButtonDisabled() {
+        Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
+        boolean noHistory = t.getHistory().getChanges().isEmpty();
+        boolean atMostRecentDate = taxonomyBean.getHistoryController().getDateOfShownHistory() == null;
+        return noHistory || atMostRecentDate;
+    }
 }
