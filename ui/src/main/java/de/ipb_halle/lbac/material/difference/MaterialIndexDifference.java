@@ -17,15 +17,14 @@
  */
 package de.ipb_halle.lbac.material.difference;
 
-import com.google.common.base.Objects;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  *
@@ -66,6 +65,11 @@ public class MaterialIndexDifference implements MaterialDifference {
             rankNew.add(dbe.getRank_new());
         }
 
+    }
+
+    @Override
+    public UUID getUserId() {
+        return actorID;
     }
 
     @Override
@@ -146,9 +150,9 @@ public class MaterialIndexDifference implements MaterialDifference {
 
     public void clearRedundantEntries() {
         for (int j = getEntries() - 1; j >= 0; j--) {
-            boolean sameRank = Objects.equal(rankOld.get(j), (rankNew.get(j)));
-            boolean sameLanguage = Objects.equal(languageOld.get(j), (languageNew.get(j)));
-            boolean sameValue = Objects.equal(valuesOld.get(j), (valuesNew.get(j)));
+            boolean sameRank = Objects.equals(rankOld.get(j), (rankNew.get(j)));
+            boolean sameLanguage = Objects.equals(languageOld.get(j), (languageNew.get(j)));
+            boolean sameValue = Objects.equals(valuesOld.get(j), (valuesNew.get(j)));
             if (sameLanguage && sameRank && sameValue) {
                 rankOld.remove(j);
                 rankNew.remove(j);

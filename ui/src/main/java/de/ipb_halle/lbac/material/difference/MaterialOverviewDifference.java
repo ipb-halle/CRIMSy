@@ -26,7 +26,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  *
  * @author fmauz
@@ -67,6 +66,11 @@ public class MaterialOverviewDifference implements MaterialDifference {
 
     public int getMaterialID() {
         return materialID;
+    }
+
+    @Override
+    public UUID getUserId() {
+        return actorID;
     }
 
     public void setMaterialID(int materialID) {

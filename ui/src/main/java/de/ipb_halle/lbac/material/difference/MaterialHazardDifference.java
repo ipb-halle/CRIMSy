@@ -178,5 +178,10 @@ public class MaterialHazardDifference implements MaterialDifference {
         remarksOld.add(null);
         remarksNew.add(null);
     }
+
+    @Override
+    public UUID getUserId() {
+        return actorID;
+    }
     
 }

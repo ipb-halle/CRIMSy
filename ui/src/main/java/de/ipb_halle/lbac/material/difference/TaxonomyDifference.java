@@ -45,6 +45,11 @@ public class TaxonomyDifference implements MaterialDifference {
     }
 
     @Override
+    public UUID getUserId() {
+        return actorId;
+    }
+
+    @Override
     public Date getModificationDate() {
         return mDate;
     }

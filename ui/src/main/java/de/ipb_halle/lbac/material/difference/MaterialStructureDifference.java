@@ -27,7 +27,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  *
  * @author fmauz
@@ -88,6 +87,11 @@ public class MaterialStructureDifference implements MaterialDifference {
         dbentity.setSumformula_new(sumFormula_new);
         dbentity.setSumformula_old(sumFormula_old);
         return dbentity;
+    }
+
+    @Override
+    public UUID getUserId() {
+        return actorId;
     }
 
     public Date getModificationTime() {

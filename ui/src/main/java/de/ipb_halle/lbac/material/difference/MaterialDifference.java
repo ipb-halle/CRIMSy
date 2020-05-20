@@ -26,6 +26,8 @@ import java.util.UUID;
  */
 public interface MaterialDifference {
 
+    public UUID getUserId();
+
     public void initialise(int materialId, UUID actorID, Date mDate);
 
     public Date getModificationDate();

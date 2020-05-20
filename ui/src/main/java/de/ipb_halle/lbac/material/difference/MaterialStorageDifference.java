@@ -84,6 +84,11 @@ public class MaterialStorageDifference implements MaterialDifference {
     }
 
     @Override
+    public UUID getUserId() {
+        return actorID;
+    }
+
+    @Override
     public void initialise(int materialId, UUID actorID, Date mDate) {
         this.materialID = materialId;
         this.actorID = actorID;
