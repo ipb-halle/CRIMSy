@@ -87,7 +87,7 @@ public class TaxonomyBean implements Serializable {
     public void init() {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
-        historyController = new TaxonomyHistoryController(this);
+        historyController = new TaxonomyHistoryController(this, nameController);
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
         validityController = new TaxonomyValidityController(this);
         renderController = new TaxonomyRenderController(this, nameController, levelController);

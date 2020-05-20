@@ -38,24 +38,32 @@
                             <h:outputText value="#{taxonomyBean.renderController.getCurrentAction()}"/>
                         </p:panel>
                     </b:column>
-                    <b:column span="1" offset="1"
+                    <b:column span="1"
                               styleClass="taxonomyInfos">
                         <b:commandButton 
-                            value="#{msgs.taxonomy_history_back}"
+                            icon-awesome="fa-backward"
+                            ajax="true"
+                            update="@(.taxonomyInfos)"
+                            onclick="ajax:taxonomyBean.historyController.actionSwitchToEarlierVersion();"
                             rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
                             disabled="#{taxonomyBean.renderController.historyBackButtonDisabled}"/>
-
                     </b:column>
-                    <b:column span="1" 
+                    <b:column span="2" 
                               styleClass="taxonomyInfos"
                               >
-                        <h:outputText value="" rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
+                        <h:outputText 
+                            escape="false"
+                            value="#{taxonomyBean.historyController.getHistoryText()}"
+                            rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
 
                     </b:column>
                     <b:column span="1"
                               styleClass="taxonomyInfos">
                         <b:commandButton
-                            value="#{msgs.taxonomy_history_forward}"
+                            icon-awesome="fa-forward"
+                            ajax="true"
+                            update="@(.taxonomyInfos)"
+                            onclick="ajax:taxonomyBean.historyController.actionSwitchToLaterVersion();"
                             rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
                             disabled="#{taxonomyBean.renderController.historyForwardButtonDisabled}"/>
                     </b:column>
