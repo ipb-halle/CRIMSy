@@ -186,9 +186,9 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertEquals("Three containers must be found", 3, result.size());
         Assert.assertNull("testcase 002: First container must have no parent", result.get(0).getParentContainer());
         Assert.assertNotNull("testcase 002: Second container must have a parent", result.get(1).getParentContainer());
-        Assert.assertEquals("testcase 002: Second container must be container 1", 1, result.get(1).getParentContainer().getId());
+        Assert.assertEquals("testcase 002: Second container must be container 1", c0.getId(), result.get(1).getParentContainer().getId());
         Assert.assertNotNull("testcase 003: Third container must have a parent", result.get(2).getParentContainer());
-        Assert.assertEquals("testcase 003: Third container must be container 2", 2, result.get(2).getParentContainer().getId());
+        Assert.assertEquals("testcase 003: Third container must be container 2", c1.getId(), result.get(2).getParentContainer().getId());
         Assert.assertNull("testcase 003: Third container must be have a container hirarchy of max 1 level", result.get(2).getParentContainer().getParentContainer());
     }
 
@@ -249,11 +249,6 @@ public class ContainerServiceTest extends TestBase {
                 }
             }
         }
-    }
-
-    @Test
-    public void test004_nestedContainers() {
-
     }
 
     @Test
