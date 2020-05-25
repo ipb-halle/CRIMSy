@@ -397,7 +397,8 @@ public class MaterialServiceTest extends TestBase {
         nameSuggestions = instance.getSimilarMaterialNames("Test-Structure", userBean.getCurrentAccount());
         Assert.assertEquals(1, nameSuggestions.size());
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Test
     public void test005_saveTaxonomy() {
         UserBeanMock userBean = new UserBeanMock();

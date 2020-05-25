@@ -46,7 +46,6 @@ import de.ipb_halle.lbac.material.subtype.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
-import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
@@ -252,6 +251,7 @@ public class MaterialService implements Serializable {
                 .getResultList();
     }
 
+    @SuppressWarnings("unchecked")
     private StorageClassInformation loadStorageClassInformation(int materialId) {
         Query q = em.createNativeQuery(SQL_GET_STORAGE, StorageEntity.class);
         Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionStorageEntity.class);
@@ -264,7 +264,8 @@ public class MaterialService implements Serializable {
         );
         return storageInfos;
     }
-
+    
+    @SuppressWarnings("unchecked")
     private HazardInformation loadHazardInformation(int materialId) {
         Query q3 = em.createNativeQuery(SQL_GET_HAZARDS, HazardsMaterialsEntity.class);
         q3.setParameter("mid", materialId);
@@ -314,7 +315,8 @@ public class MaterialService implements Serializable {
 
         return s;
     }
-
+    
+    @SuppressWarnings("unchecked")
     public List<MaterialName> loadMaterialNamesById(int id) {
         List<MaterialName> names = new ArrayList<>();
         Query query = em.createNativeQuery(SQL_GET_INDICES, MaterialIndexEntryEntity.class);

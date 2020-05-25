@@ -75,6 +75,7 @@ public class TaxonomyService implements Serializable {
         return new HashSet<>();
     }
 
+    @SuppressWarnings("unchecked")
     public List<TaxonomyLevel> loadTaxonomyLevel() {
         List<TaxonomyLevel> levels = new ArrayList<>();
         List<TaxonomyLevelEntity> dbentities = this.em.createNativeQuery(SQL_GET_TAXONOMY_LEVELS, TaxonomyLevelEntity.class).getResultList();
@@ -84,6 +85,7 @@ public class TaxonomyService implements Serializable {
         return levels;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Taxonomy> loadTaxonomy(Map<String, Object> cmap, boolean hierarchy) {
         List<Taxonomy> taxonomies = new ArrayList<>();
         Query q = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);

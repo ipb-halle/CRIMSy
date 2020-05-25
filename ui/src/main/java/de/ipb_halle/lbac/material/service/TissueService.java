@@ -55,6 +55,7 @@ public class TissueService {
             + "WHERE et.taxoid=:taxoid OR et.parentid=:taxoid";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
+    @SuppressWarnings("unchecked")
     public List<Tissue> loadTissues() {
         List<Tissue> tissues = new ArrayList<>();
         List<TissueEntity> entities = this.em.createNativeQuery(SQL_LOAD_TISSUES, TissueEntity.class).getResultList();
@@ -68,6 +69,7 @@ public class TissueService {
         return tissues;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Tissue> loadTissues(Taxonomy targetTaxo) {
         List<Tissue> tissues = new ArrayList<>();
         List<TissueEntity> entities = this.em.createNativeQuery(SQL_LOAD_TISSUES_CONTRAINED, TissueEntity.class)
