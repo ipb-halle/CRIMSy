@@ -204,9 +204,8 @@ public class MaterialHistoryService {
                 diff.getNewHierarchy().add(hist.getParentid_new());
             }
             diff.initialise(materialId, hist.getId().getActorid(), hist.getId().getMdate());
-
+            history.addDifference(diff);
         }
-        int i = 0;
 
     }
 

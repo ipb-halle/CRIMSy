@@ -83,15 +83,16 @@ public class TaxonomyHistoryController {
     public void actionSwitchToEarlierVersion() {
         taxonomyBean.setMode(Mode.HISTORY);
         Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-        dateOfShownHistory = t.getHistory().getFollowingKey(dateOfShownHistory);
         applyNegativeDiff();
+        dateOfShownHistory = t.getHistory().getPreviousKey(dateOfShownHistory);
 
     }
 
     public void actionSwitchToLaterVersion() {
         Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
+
+        dateOfShownHistory = t.getHistory().getFollowingKey(dateOfShownHistory);
         applyPositiveDiff();
-        dateOfShownHistory = t.getHistory().getPreviousKey(dateOfShownHistory);
         if (dateOfShownHistory == null) {
             taxonomyBean.setMode(Mode.SHOW);
         }

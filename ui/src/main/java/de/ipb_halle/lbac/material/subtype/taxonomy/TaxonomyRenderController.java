@@ -21,6 +21,8 @@ import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -32,6 +34,7 @@ public class TaxonomyRenderController {
     protected TaxonomyNameController nameController;
     TaxonomyLevelController levelController;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public TaxonomyRenderController(
             TaxonomyBean taxonomyBean,
@@ -207,14 +210,14 @@ public class TaxonomyRenderController {
     public boolean isHistoryBackButtonDisabled() {
         Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
         boolean noHistory = t.getHistory().getChanges().isEmpty();
-        boolean atMostFarDate = taxonomyBean.getHistoryController().getDateOfShownHistory() == t.getHistory().getMostFarVersion();
+        boolean atMostFarDate = taxonomyBean.getHistoryController().getDateOfShownHistory() == null;
         return noHistory || atMostFarDate;
     }
 
     public boolean isHistoryForwardButtonDisabled() {
         Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
         boolean noHistory = t.getHistory().getChanges().isEmpty();
-        boolean atMostRecentDate = taxonomyBean.getHistoryController().getDateOfShownHistory() == null;
+        boolean atMostRecentDate = t.getHistory().isMostRecentVersion(taxonomyBean.getHistoryController().getDateOfShownHistory());
         return noHistory || atMostRecentDate;
     }
 }
