@@ -144,7 +144,9 @@ public class TaxonomyRenderController {
 
     public boolean isCategoryVisible() {
         boolean isVisible = false;
-        if (taxonomyBean.getMode() == Mode.SHOW && taxonomyBean.getSelectedTaxonomy() != null) {
+        if ((taxonomyBean.getMode() == Mode.SHOW
+                || taxonomyBean.getMode() == Mode.HISTORY)
+                && taxonomyBean.getSelectedTaxonomy() != null) {
             isVisible = true;
         }
         return isVisible;

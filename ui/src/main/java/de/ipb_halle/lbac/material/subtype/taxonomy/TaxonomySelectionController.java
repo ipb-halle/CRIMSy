@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.bean;
+package de.ipb_halle.lbac.material.subtype.taxonomy;
 
 import de.ipb_halle.lbac.material.service.TaxonomyService;
 import de.ipb_halle.lbac.material.service.TissueService;

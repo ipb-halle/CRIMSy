@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.difference.MaterialDifference;
 import de.ipb_halle.lbac.material.difference.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.difference.TaxonomyDifference;
+import de.ipb_halle.lbac.material.service.TaxonomyService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
@@ -41,10 +42,15 @@ public class TaxonomyHistoryController {
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private TaxonomyNameController nameController;
+    private TaxonomyService taxonomyService;
 
-    public TaxonomyHistoryController(TaxonomyBean taxonomyBean, TaxonomyNameController nameController) {
+    public TaxonomyHistoryController(
+            TaxonomyBean taxonomyBean,
+            TaxonomyNameController nameController,
+            TaxonomyService taxonomyService) {
         this.taxonomyBean = taxonomyBean;
         this.nameController = nameController;
+        this.taxonomyService = taxonomyService;
     }
 
     public Date getDateOfShownHistory() {
@@ -93,7 +99,15 @@ public class TaxonomyHistoryController {
 
     private String getVersionBasicLabel(TaxonomyDifference diffTaxonomy, MaterialIndexDifference diffNames) {
         MaterialDifference diff = diffTaxonomy != null ? diffTaxonomy : diffNames;
-        return SDF.format(diff.getModificationDate()) + "<br> by user: " + diff.getUserId().toString() + "<br><br>";
+        try {
+            return SDF.format(diff.getModificationDate()) + "<br> by user: " + diff.getUserId().toString() + "<br><br>";
+        } catch (Exception e) {
+            logger.info("Error in Creating label for history");
+            logger.info(diff);
+            logger.info(diff.getModificationDate());
+            logger.info(diff.getUserId());
+            return "Error";
+        }
     }
 
     private void applyPositiveDiff() {
@@ -126,6 +140,12 @@ public class TaxonomyHistoryController {
                 }
             }
         }
+        TaxonomyDifference taxoDiff = t.getHistory().getDifferenceOfTypeAtDate(TaxonomyDifference.class, dateOfShownHistory);
+        if (taxoDiff != null) {
+            if (taxoDiff.getNewLevelId() != null && taxoDiff.getOldLevelId() != null) {
+                t.setLevel(taxonomyService.loadTaxonomyLevelById(taxoDiff.getNewLevelId()));
+            }
+        }
     }
 
     private void applyNegativeDiff() {
@@ -134,7 +154,6 @@ public class TaxonomyHistoryController {
         if (indexDiff != null) {
             int originalNameSize = nameController.getNames().size();
             for (int i = 0; i < indexDiff.getEntries(); i++) {
-
                 for (int j = originalNameSize - 1; j >= 0; j--) {
                     MaterialName mn = nameController.getNames().get(j);
                     String oldLan = indexDiff.getLanguageOld().get(i);
@@ -160,6 +179,12 @@ public class TaxonomyHistoryController {
                         break;
                     }
                 }
+            }
+        }
+        TaxonomyDifference taxoDiff = t.getHistory().getDifferenceOfTypeAtDate(TaxonomyDifference.class, dateOfShownHistory);
+        if (taxoDiff != null) {
+            if (taxoDiff.getNewLevelId() != null && taxoDiff.getOldLevelId() != null) {
+                t.setLevel(taxonomyService.loadTaxonomyLevelById(taxoDiff.getOldLevelId()));
             }
         }
     }

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.bean;
 
+import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.bean.manipulation.MaterialEditPermission;
 import de.ipb_halle.lbac.material.bean.manipulation.MaterialEditState;
 import de.ipb_halle.lbac.material.bean.save.MaterialCreationSaver;
@@ -296,12 +297,12 @@ public class MaterialBean implements Serializable {
                         materialIndexBean.getIndices());
             }
             if (currentMaterialType == MaterialType.BIOMATERIAL) {
-                Taxonomy t = (Taxonomy) taxonomyController.selectedTaxonomy.getData();
+                Taxonomy t = (Taxonomy) taxonomyController.getSelectedTaxonomy().getData();
                 creationSaver.saveNewBioMaterial(
                         materialEditState.getCurrentProject(),
                         materialNameBean.getNames(),
                         t,
-                        taxonomyController.selectedTissue,
+                        taxonomyController.getSelectedTissue(),
                         hazards,
                         storageClassInformation);
             }

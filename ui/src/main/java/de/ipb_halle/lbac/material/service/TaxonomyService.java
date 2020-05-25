@@ -86,6 +86,11 @@ public class TaxonomyService implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
+    public TaxonomyLevel loadTaxonomyLevelById(Integer id) {
+        return new TaxonomyLevel(this.em.find(TaxonomyLevelEntity.class, id));
+    }
+
+    @SuppressWarnings("unchecked")
     public List<Taxonomy> loadTaxonomy(Map<String, Object> cmap, boolean hierarchy) {
         List<Taxonomy> taxonomies = new ArrayList<>();
         Query q = this.em.createNativeQuery(SQL_GET_TAXONOMY, TaxonomyEntity.class);
