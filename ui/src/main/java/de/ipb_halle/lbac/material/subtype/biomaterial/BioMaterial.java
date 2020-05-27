@@ -87,5 +87,13 @@ public class BioMaterial extends Material {
     public Taxonomy getTaxonomy() {
         return taxonomy;
     }
+    
+    public String getTissueName(){
+        if(tissue!=null){
+            return tissue.getFirstName();
+        }else{
+            return "";
+        }
+    }
 
 }
