@@ -22,10 +22,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:body>
         <b:form 
             id="materialForm">
@@ -60,114 +58,20 @@
                 <b:dataTableColumn
                     styleClass="div-container-hazard"
                     label="#{msgs.materialOverview_tableheader_hazards}">
-                    <b:container
-                        styleClass="div-container-hazard">
-                        <b:row>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isExplosive()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS01.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_explosive}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isHighlyFlammable()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS02.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_flammable}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isOxidizing()}"
-                                      tooltip="#{msgs.materialOverview_tooltip_oxidating}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS03.png"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards(). isCompressedGas()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS04.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_compressedGas}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isCorrosive()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS05.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_corrosive}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isPoisonous()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS06.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_poisonous}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isIrritant()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS07.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_irritant}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isUnhealthy()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS08.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_unhealthy}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isEnvironmentallyHazardous()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS09.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_environmentHazard}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isDanger()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS07.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_danger}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                            <b:column span="1"
-                                      rendered="#{material.getHazards().isAttention()}"
-                                      styleClass="div-col-hazard">
-                                <b:image value="/resources/img/hazards/GHS07.png"
-                                         tooltip="#{msgs.materialOverview_tooltip_attention}"
-                                         styleClass="img-hazard"/>
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="2">
-                                <h:outputText
-                                    value="#{msgs.materialOverview_tableheader_hStatements}">
-                                </h:outputText>
-                            </b:column>
-                            <b:column span="10">
-                                <h:outputText
-                                    value="#{material.getHazards().hazardStatements}">
-                                </h:outputText>
-                            </b:column>
-                        </b:row>
-                        <b:row>
-                            <b:column span="2">
-                                <h:outputText
-                                    value="#{msgs.materialOverview_tableheader_pStatements}">
-                                </h:outputText>
-                            </b:column>
-                            <b:column span="10">
-                                <h:outputText
-                                    value="#{material.getHazards().precautionaryStatements}">
-                                </h:outputText>
-                            </b:column>
-                        </b:row>
-
-                    </b:container>
+                    <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('BIOMATERIAL', material)}">
+                        <ui:insert name="biomaterialPanel">
+                            <ui:include src="/WEB-INF/templates/material/components/detail/biodata.xhtml">
+                                <ui:param name="material" value="#{material}" />
+                            </ui:include>
+                        </ui:insert>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('STRUCTURE', material)}">
+                        <ui:insert name="structurePanel">
+                            <ui:include src="/WEB-INF/templates/material/components/detail/structure.xhtml">
+                                <ui:param name="material" value="#{material}" />
+                            </ui:include>
+                        </ui:insert>
+                    </ui:fragment>
                 </b:dataTableColumn>
                 <b:dataTableColumn
                     label="#{msgs.materialOverview_tableheader_actions}">
@@ -208,7 +112,6 @@
                                      />
                 </b:dataTableColumn>
             </b:dataTable>
-
         </b:form>
     </h:body>
 

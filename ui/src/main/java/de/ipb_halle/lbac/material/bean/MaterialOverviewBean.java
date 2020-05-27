@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,63 +42,68 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class MaterialOverviewBean implements Serializable {
-
+    
     private List<Material> materials = new ArrayList<>();
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-
+    
     @Inject
     private MaterialBean materialEditBean;
-
+    
     @Inject
     private MaterialService materialService;
-
+    
     @Inject
     private Navigator navigator;
-
+    
     @Inject
     private UserBean userBean;
     
-    @Inject ItemBean itemBean;
-
+    @Inject
+    ItemBean itemBean;
+    
     @PostConstruct
     public void init() {
-
+        
     }
-
+    
     public List<Material> getReadableMaterials() {
-
+        logger.info("Amount of shown materials " + materialService.getReadableMaterials().size());
         return materialService.getReadableMaterials();
     }
-
+    
+    public boolean isDetailSubComponentVisisble(String type, Material mat) {
+        return MaterialType.valueOf(type) == mat.getType();
+    }
+    
     public boolean isNotAllowed(Material m, String action) {
         return false;
     }
-
+    
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
         navigator.navigate("material/materialsEdit");
     }
-
+    
     public void actionEditMaterial(Material m) {
         try {
             m.setHistory(materialService.loadHistoryOfMaterial(m.getId()));
-
+            
             materialEditBean.startMaterialEdit(m);
         } catch (Exception e) {
             logger.error(e);
         }
         navigator.navigate("material/materialsEdit");
     }
-
+    
     public void actionDeactivateMaterial(Material m) {
         materialService.deactivateMaterial(
                 m.getId(),
                 userBean.getCurrentAccount());
     }
     
-    public void actionCreateNewItem(Material m){
+    public void actionCreateNewItem(Material m) {
         itemBean.actionStartItemCreation(m);
-         navigator.navigate("item/itemEdit");
+        navigator.navigate("item/itemEdit");
     }
-
+    
 }
