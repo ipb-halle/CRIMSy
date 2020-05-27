@@ -24,7 +24,9 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,8 +45,12 @@ public class Taxonomy extends Material {
             List<MaterialName> names,
             HazardInformation hazards,
             StorageClassInformation storageInformation,
-            List<Taxonomy> hierarchy) {
+            List<Taxonomy> hierarchy,
+            UUID ownerID,
+            Date creationDate) {
         super(id, names, null, hazards, storageInformation);
+        this.ownerID = ownerID;
+        this.creationTime = creationDate;
         this.type = MaterialType.TAXONOMY;
         this.taxHierachy = hierarchy;
 
@@ -56,7 +62,7 @@ public class Taxonomy extends Material {
         for (MaterialName mn : names) {
             copiedNames.add(new MaterialName(mn.getValue(), mn.getLanguage(), mn.getRank()));
         }
-        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy);
+        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy, ownerID, creationTime);
         copiedTaxonomy.setTaxHierachy(new ArrayList<>());
         for (Taxonomy t : taxHierachy) {
             copiedTaxonomy.getTaxHierachy().add(t);

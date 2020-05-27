@@ -76,7 +76,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("name_1", "de", 0));
         names.add(new MaterialName("name_2", "en", 1));
-        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(),null,null);
         bean = new TaxonomyBean();
         TreeNode node = new DefaultTreeNode(t);
         bean.setSelectedTaxonomy(node);
@@ -105,9 +105,9 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         t.getHistory().addDifference(taxoDiff);
 
         TaxonomyNameController nameController = new TaxonomyNameController(bean);
-        historyController = new TaxonomyHistoryController(bean, nameController, taxonomyService);
+        historyController = new TaxonomyHistoryController(bean, nameController, taxonomyService, memberService);
         levelController = new TaxonomyLevelController(bean);
-        renderController = new TaxonomyRenderController(bean, nameController, levelController);
+        renderController = new TaxonomyRenderController(bean, nameController, levelController,memberService);
         TaxonomyTreeController tc = new TaxonomyTreeController(node, taxonomyService, levelController);
 
         bean.setHistoryController(historyController);

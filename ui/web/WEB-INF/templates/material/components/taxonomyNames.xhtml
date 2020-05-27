@@ -31,7 +31,7 @@
                 collapsible="false"
                 rendered="#{taxonomyBean.renderController.isNamesVisible()}"
                 styleClass="taxonomyInfos taxonomy-name-table" 
-                title="#{msgs.materialCreation_panelNames_name}">
+                title="#{msgs.taxonomy_label_names}">
                 <b:dataTable
                     id="materialNameTable"
                     styleClass="materialNameTableClass"
@@ -54,17 +54,13 @@
                     <b:dataTableColumn
                         orderable="false"
                         label="#{msgs.materialCreation_panelNames_tableHeader_language}">
-
-                        <b:selectOneMenu                           
+                        <b:selectOneMenu
                             value="#{mName.language}"
                             disabled="#{!taxonomyBean.renderController.isNameEditable()}">
                             <f:selectItems 
                                 value="#{taxonomyBean.nameController.getPossibleLanguages()}"/>
                         </b:selectOneMenu>
-
-
                     </b:dataTableColumn>
-
                     <b:dataTableColumn
                         orderable="false"
                         label="#{msgs.materialCreation_panelNames_tableHeader_action}">
@@ -132,5 +128,4 @@
             </b:panel>
         </ui:composition>
     </h:body>
-
 </html>

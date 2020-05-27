@@ -470,29 +470,6 @@ select.selCollection {
     cursor: not-allowed !important;
 }
 
-.taxonomy-top-row{
-    margin-top: 10px;
-}
-
-.taxonomy-save-button{
-    position: absolute;
-    left: 1px;
-    width: 180px;
-}
-.taxonomy-edit-button{
-    width: 90px !important;
-    position: absolute !important;
-    left: 0px;
-}
-.taxonomyTree{
-    height:400px !important;
-    width:360px !important;
-}
-
-.taxonomy-name-table{
-    height:400px !important;
-}
-
 .itemDataTable .dataTables_info{
     visibility: hidden;
 }

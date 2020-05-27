@@ -21,6 +21,8 @@ import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.service.MemberService;
+import java.text.SimpleDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,14 +37,18 @@ public class TaxonomyRenderController {
     TaxonomyLevelController levelController;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private MemberService memberService;
+    private SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public TaxonomyRenderController(
             TaxonomyBean taxonomyBean,
             TaxonomyNameController nameController,
-            TaxonomyLevelController levelController) {
+            TaxonomyLevelController levelController,
+            MemberService memberService) {
         this.taxonomyBean = taxonomyBean;
         this.nameController = nameController;
         this.levelController = levelController;
+        this.memberService = memberService;
     }
 
     /**
@@ -122,17 +128,28 @@ public class TaxonomyRenderController {
     }
 
     public String getCurrentAction() {
+        String back = "";
         if (taxonomyBean.getMode() == Mode.SHOW || taxonomyBean.getMode() == Mode.HISTORY) {
             if (taxonomyBean.getSelectedTaxonomy() != null) {
                 Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-                return "Detail information for " + t.getFirstName() + " (" + t.getId() + ")";
+                back = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_detail", null)+"<br>";
+                back+=t.getFirstName();
+                back += "<br><br>";
+                back += "ID " + t.getId() + "<br>";
+                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_created", null) + " " + SDF.format(t.getCreationTime()) + "<br>";
+                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_by", null) + " " + memberService.loadUserById(t.getOwnerID()).getName() + "<br>";
+                return back;
             }
         }
         if (taxonomyBean.getMode() == Mode.CREATE) {
-            return "Creating a new taxonomy entry";
+            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_new", null);
         }
         if (taxonomyBean.getMode() == Mode.EDIT) {
-            return "Editing taxonomy " + taxonomyBean.getTaxonomyToEdit().getFirstName();
+            back = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit", null);
+            back += "<br><br>";
+            Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy();
+            back += "ID " + t.getId();
+            return back;
         }
         return "";
     }

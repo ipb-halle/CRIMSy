@@ -32,11 +32,14 @@
 
             <b:container>
                 <b:row style-class="taxonomy-top-row">
-                    <b:column span="4" 
+                    <b:column span="3" 
                               styleClass="taxonomyInfos">
-                        <p:panel styleClass="taxonomyInfos">
-                            <h:outputText value="#{taxonomyBean.renderController.getCurrentAction()}"/>
-                        </p:panel>
+
+                        <h:outputText 
+                            escape="false"
+                            value="#{taxonomyBean.renderController.getCurrentAction()}"
+                            styleClass="taxonomyInfos taxonomy-action-panel"/>
+
                     </b:column>
                     <b:column span="1"
                               styleClass="taxonomyInfos">
@@ -48,8 +51,8 @@
                             rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
                             disabled="#{taxonomyBean.renderController.historyBackButtonDisabled}"/>
                     </b:column>
-                    <b:column span="2" 
-                              styleClass="taxonomyInfos"
+                    <b:column span="4" 
+                              styleClass="taxonomyInfos historyInfoPanel"
                               >
                         <h:outputText 
                             escape="false"
@@ -101,7 +104,7 @@
                               styleClass="taxonomyInfos"
                               rendered="#{taxonomyBean.renderController.isParentVisible()}">
                         <b:inputText
-                            label="Parent of the new taxonomy"
+                            label="#{msgs.taxonomy_label_new_level}"
                             value="#{taxonomyBean.renderController.getParentFirstName()}"
 
                             disabled="true"/>
@@ -113,7 +116,7 @@
                         styleClass="taxonomyInfos">
                         <b:inputText
                             disabled="true"
-                            label="new Parent of taxonomy entry"
+                            label="#{msgs.taxonomy_label_new_parent}"
                             value="#{taxonomyBean.renderController.getParentFirstName()}"/>
                     </b:column>
                     <b:column 
@@ -130,7 +133,7 @@
                         rendered="#{taxonomyBean.renderController.isCategorySelectionVisible()}"
                         styleClass="taxonomyInfos">
                         <b:selectOneMenu
-                            label="Please select taxonomy level"
+                            label="#{msgs.taxonomy_label_new_level}"
                             value="#{taxonomyBean.levelController.selectedLevel}">
                             <f:selectItems 
                                 var="level"
@@ -140,13 +143,10 @@
                     </b:column>
                 </b:row>
                 <b:row>
-
-
                 </b:row>
                 <b:row>
                     <b:column span="4">
-                        <p:tree     
-
+                        <p:tree
                             value="#{taxonomyBean.treeController.taxonomyTree}"
                             var ="node"
                             selectionMode="single"

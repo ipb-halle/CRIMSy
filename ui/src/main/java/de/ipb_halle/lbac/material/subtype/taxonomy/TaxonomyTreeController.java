@@ -37,7 +37,7 @@ import org.primefaces.model.TreeNode;
  * @author fmauz
  */
 public class TaxonomyTreeController {
-    
+
     protected TreeNode selectedTaxonomy;
     private List<Taxonomy> shownTaxonomies = new ArrayList<>();
     protected TaxonomyService taxonomyService;
@@ -45,9 +45,9 @@ public class TaxonomyTreeController {
     private TreeNode taxonomyTree;
     private Set<Integer> expandedTreeNodes = new HashSet<>();
     private Integer idOfSelectedTaxonomy;
-    
+
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     public TaxonomyTreeController(
             TreeNode selectedTaxonomy,
             TaxonomyService taxonomyService,
@@ -57,7 +57,7 @@ public class TaxonomyTreeController {
         this.levelController = levelController;
         reloadTreeNode();
     }
-    
+
     private void saveExpandedAndSelectedTreeNodes() {
         expandedTreeNodes.clear();
         idOfSelectedTaxonomy = null;
@@ -71,16 +71,16 @@ public class TaxonomyTreeController {
             }
         }
     }
-    
+
     public void setSelectedTaxonomy(TreeNode selectedTaxonomy) {
         this.selectedTaxonomy = selectedTaxonomy;
         selectedTaxonomy.setExpanded(true);
         selectedTaxonomy.setSelected(true);
         saveExpandedAndSelectedTreeNodes();
     }
-    
+
     public void reloadTreeNode() {
-        
+
         try {
             saveExpandedAndSelectedTreeNodes();
             Map<String, Object> cmap = new HashMap<>();
@@ -89,7 +89,7 @@ public class TaxonomyTreeController {
             rootTaxo.setLevel(levelController.getLevels().get(0));
             taxonomyTree = new DefaultTreeNode(rootTaxo, null);
             for (Taxonomy t : shownTaxonomies) {
-                
+
                 TreeNode newNode = null;
                 if (!t.getTaxHierachy().isEmpty()) {
                     TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
@@ -100,15 +100,15 @@ public class TaxonomyTreeController {
                 if (idOfSelectedTaxonomy != null && t.getId() == idOfSelectedTaxonomy) {
                     selectedTaxonomy = newNode;
                 }
-                
+
             }
             expandTree();
         } catch (Exception e) {
             logger.error(e);
         }
-        
+
     }
-    
+
     private TreeNode getTreeNodeWithTaxonomy(int id) {
         List<TreeNode> nodes = getAllChildren(taxonomyTree);
         nodes.add(taxonomyTree);
@@ -120,7 +120,7 @@ public class TaxonomyTreeController {
         }
         return null;
     }
-    
+
     public void selectTaxonomy(Taxonomy t) {
         for (TreeNode n : getAllChildren(taxonomyTree)) {
             Taxonomy ta = (Taxonomy) n.getData();
@@ -132,7 +132,7 @@ public class TaxonomyTreeController {
             }
         }
     }
-    
+
     private List<TreeNode> getAllChildren(TreeNode tn) {
         if (tn == null) {
             return new ArrayList<>();
@@ -144,19 +144,19 @@ public class TaxonomyTreeController {
         }
         return children;
     }
-    
+
     public void initialise() {
         setSelectedTaxonomy(taxonomyTree.getChildren().get(0));
     }
-    
+
     public TreeNode getTaxonomyTree() {
         return taxonomyTree;
     }
-    
+
     public void setTaxonomyTree(TreeNode taxonomyTree) {
         this.taxonomyTree = taxonomyTree;
     }
-    
+
     public void expandTree() {
         for (TreeNode tn : getAllChildren(taxonomyTree)) {
             Taxonomy t = (Taxonomy) tn.getData();
@@ -168,23 +168,23 @@ public class TaxonomyTreeController {
             }
         }
     }
-    
+
     public void disableTreeNodeEntries(Taxonomy taxoToEdit) {
         reloadTreeNode();
         List<TreeNode> nodes = getAllChildren(taxonomyTree);
         for (TreeNode n : nodes) {
             Taxonomy t = (Taxonomy) n.getData();
-            
+
             boolean leaf = t.getLevel().getRank() == levelController.getLeastRank();
             boolean targetGotLowerRank = taxoToEdit.getLevel().getRank() > t.getLevel().getRank();
-            
+
             n.setSelectable(!leaf
                     && t.getId() != taxoToEdit.getId()
                     && targetGotLowerRank
                     && isTaxonomyInHierarchy(taxoToEdit.getId(), t));
         }
     }
-    
+
     private boolean isTaxonomyInHierarchy(int id, Taxonomy taxo) {
         for (Taxonomy t : taxo.getTaxHierachy()) {
             if (t.getId() == id) {
@@ -193,11 +193,11 @@ public class TaxonomyTreeController {
         }
         return true;
     }
-    
+
     public Taxonomy createNewTaxonomy() {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("", "en", 1));
-        return new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
+        return new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), null, null);
     }
-    
+
 }

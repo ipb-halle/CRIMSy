@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.subtype.taxonomy;
 
+import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean;
 import de.ipb_halle.lbac.material.bean.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -24,6 +26,7 @@ import de.ipb_halle.lbac.material.difference.MaterialDifference;
 import de.ipb_halle.lbac.material.difference.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.difference.TaxonomyDifference;
 import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.service.MemberService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +39,7 @@ import org.apache.logging.log4j.Logger;
 public class TaxonomyHistoryController {
 
     private SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private final String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     private Date dateOfShownHistory = null;
     private TaxonomyBean taxonomyBean;
@@ -43,14 +47,17 @@ public class TaxonomyHistoryController {
 
     private TaxonomyNameController nameController;
     private TaxonomyService taxonomyService;
+    private MemberService memberService;
 
     public TaxonomyHistoryController(
             TaxonomyBean taxonomyBean,
             TaxonomyNameController nameController,
-            TaxonomyService taxonomyService) {
+            TaxonomyService taxonomyService,
+            MemberService memberService) {
         this.taxonomyBean = taxonomyBean;
         this.nameController = nameController;
         this.taxonomyService = taxonomyService;
+        this.memberService = memberService;
     }
 
     public Date getDateOfShownHistory() {
@@ -63,17 +70,19 @@ public class TaxonomyHistoryController {
 
     public String getHistoryText() {
         if (dateOfShownHistory == null) {
-            return "Current Version";
+            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_originalEntry", null);
         } else {
             Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
             TaxonomyDifference diffTaxonomy = t.getHistory().getDifferenceOfTypeAtDate(TaxonomyDifference.class, dateOfShownHistory);
             MaterialIndexDifference diffNames = t.getHistory().getDifferenceOfTypeAtDate(MaterialIndexDifference.class, dateOfShownHistory);
             String back = getVersionBasicLabel(diffTaxonomy, diffNames);
+            back += "<br><br>";
             if (diffTaxonomy != null) {
-                back = "Taxonomy Values edited<br>";
+                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_taxonomyEdit", null);
+                back += "<br>";
             }
             if (diffNames != null) {
-                back += "Names edited";
+                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_nameEdit", null);
             }
             return back;
 
@@ -90,23 +99,22 @@ public class TaxonomyHistoryController {
 
     public void actionSwitchToLaterVersion() {
         Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-
         dateOfShownHistory = t.getHistory().getFollowingKey(dateOfShownHistory);
         applyPositiveDiff();
-        if (dateOfShownHistory == null) {
+        if (t.getHistory().isMostRecentVersion(dateOfShownHistory)) {
             taxonomyBean.setMode(Mode.SHOW);
         }
     }
 
     private String getVersionBasicLabel(TaxonomyDifference diffTaxonomy, MaterialIndexDifference diffNames) {
-        MaterialDifference diff = diffTaxonomy != null ? diffTaxonomy : diffNames;
         try {
-            return SDF.format(diff.getModificationDate()) + "<br> by user: " + diff.getUserId().toString() + "<br><br>";
+            MaterialDifference diff = diffTaxonomy != null ? diffTaxonomy : diffNames;
+            User user = memberService.loadUserById(diff.getUserId());
+            String historyText = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_at", null) + " " + SDF.format(diff.getModificationDate()) + "<br>";
+            historyText += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_by", null) + " " + user.getName();
+            return historyText;
         } catch (Exception e) {
-            logger.info("Error in Creating label for history");
-            logger.info(diff);
-            logger.info(diff.getModificationDate());
-            logger.info(diff.getUserId());
+            logger.error("Error at generating history infos", e);
             return "Error";
         }
     }
