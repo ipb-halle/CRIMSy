@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.container.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
@@ -28,5 +30,61 @@ import javax.inject.Named;
 @SessionScoped
 @Named
 public class ContainerSearchMaskBean implements Serializable {
+
+    private String containerSearchName;
+    private String containerSearchId;
+    private String searchProject;
+    private String searchLocation;
+
+    public void actionClearSearchFilter() {
+        containerSearchName = null;
+        containerSearchId = null;
+        searchProject = null;
+        searchLocation = null;
+    }
+
+    public void actionApplySearchFilter() {
+
+    }
+
+    public List<String> getSimilarContainerNames(String pattern) {
+        return new ArrayList<>();
+    }
+
+    public List<String> getSimilarProjectNames(String pattern) {
+        return new ArrayList<>();
+    }
+
+    public String getContainerSearchName() {
+        return containerSearchName;
+    }
+
+    public void setContainerSearchName(String containerSearchName) {
+        this.containerSearchName = containerSearchName;
+    }
+
+    public String getContainerSearchId() {
+        return containerSearchId;
+    }
+
+    public void setContainerSearchId(String containerSearchId) {
+        this.containerSearchId = containerSearchId;
+    }
+
+    public String getSearchProject() {
+        return searchProject;
+    }
+
+    public void setSearchProject(String searchProject) {
+        this.searchProject = searchProject;
+    }
+
+    public String getSearchLocation() {
+        return searchLocation;
+    }
+
+    public void setSearchLocation(String searchLocation) {
+        this.searchLocation = searchLocation;
+    }
 
 }

@@ -19,24 +19,32 @@ limitations under the License.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:body>
-        <b:form 
-            id="containerForm">
-            <b:container>
-                <b:row>
-                    <b:column span="2"> 
-
-                    </b:column>
-
-                    <b:column span="5">  
-
-                    </b:column> 
-                    <b:column span="5">  
-
-                    </b:column> 
-                </b:row>
-            </b:container>
-        </b:form>
+        <ui:composition>
+            <b:form 
+                id="containerForm">
+                <b:container>
+                    <b:row>
+                        <b:column span="2"> 
+                            <ui:insert> 
+                                <ui:include src="/WEB-INF/templates/container/components/containerSearchMask.xhtml"/>
+                            </ui:insert>
+                        </b:column>
+                        <b:column span="5">  
+                            <ui:insert> 
+                                <ui:include src="/WEB-INF/templates/container/components/containerOverviewTable.xhtml"/>
+                            </ui:insert>
+                        </b:column> 
+                        <b:column span="5">  
+                            <ui:insert> 
+                                <ui:include src="/WEB-INF/templates/container/components/containerEditView.xhtml"/>
+                            </ui:insert>
+                        </b:column> 
+                    </b:row>
+                </b:container>
+            </b:form>
+        </ui:composition>
     </h:body>
 </html>

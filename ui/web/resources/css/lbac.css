@@ -498,10 +498,7 @@ select.selCollection {
     height: 30px !important;
 }
 
-.itemFilterHeader{
-    font-size: 16px;
-    font-weight: bold;
-}
+
 
 .itemFilterRow div{
     margin-bottom: 3px !important;

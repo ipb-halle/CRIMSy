@@ -21,7 +21,38 @@
 
 */
 
+.containerFilterHeader{
+    font-size: 16px;
+    font-weight: bold;
+}
 
+.containerFilterRow div{
+    margin-bottom: 3px !important;
+}
+
+.containerFilterInputfield{
+    width:165px  !important;
+    height: 30px !important;
+}
+
+.containerFilterInputfield input{
+    width:165px  !important;
+    height: 30px !important;
+}
+
+.containerFilterButton {
+    width: 80px !important;
+    height: 35px !important;
+    margin-left: 10px !important;
+}
+.containerFilterButtonColumn {
+    margin-top: 15px;
+    padding-left: 5px !important;   
+}
+
+.containerFilterButtonRight{
+    left: -13px !important;
+}
 
 /** format info box test results in ldpap check **/
 
