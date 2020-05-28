@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -114,6 +115,46 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     }
 
     /**
+     * @param key the key
+     * @param defaultValue the hex encoded default value
+     * @return the corresponding configuration value or the 
+     * provided default value (converted ty bytes)
+     */
+    public byte[] getConfig(String key, String defaultValue) {
+        byte[] result = this.configMap.get(key);
+        return (result != null) ? result : HexUtil.fromHex(defaultValue);
+    }
+
+    /**
+     * @param key the key
+     * @param defaultValue the int default value
+     * @return the corresponding configuration value or the 
+     * provided default value 
+     */
+    public int getConfigInt(String key, int defaultValue) {
+        byte[] result = this.configMap.get(key);
+        if (result == null) {
+            return defaultValue;
+        }
+        return Integer.parseInt(new String(result, StandardCharsets.UTF_8));
+    }
+
+    /**
+     * @param key the key
+     * @param defaultValue the double default value
+     * @return the corresponding configuration value or the 
+     * provided default value 
+     */
+    public double getConfigDouble(String key, double defaultValue) {
+        byte[] result = this.configMap.get(key);
+        if (result == null) {
+            return defaultValue;
+        }
+        return Double.parseDouble(new String(result, StandardCharsets.UTF_8));
+    }
+
+
+    /**
      * parse printer configuration
      * Printer configuration is expected in KEY=VALUE format
      * with one key=value pair per line. VALUE is expected as 
@@ -182,9 +223,24 @@ public abstract class AbstractPrintDriver implements PrintDriver {
      * @return the Job
      */
     public Job createJob() {
+        transform();
         return new Job()
             .setJobType(JobType.PRINT)
             .setQueue(this.printer.getQueue())
             .setInput(Arrays.copyOf(this.buffer.array(), this.buffer.position()));
     }
+
+    /**
+     * compute the pixel coordinate from a length in 
+     * millimeters and a resolution in pixels per inch (dpi)
+     * @param coord the coordinate in mm
+     * @param dpi the resolution (dots per inch)
+     * @return the pixel value
+     */
+    public int getPixels(double coord, int dpi) {
+        return Double.valueOf(Math.floor(coord * dpi / 25.4)).intValue();
+    }
+
+    protected abstract void transform();
+
 }
