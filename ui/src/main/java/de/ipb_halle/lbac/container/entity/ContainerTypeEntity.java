@@ -15,44 +15,42 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.entity;
+package de.ipb_halle.lbac.container.entity;
 
 import java.io.Serializable;
-import java.util.UUID;
-import javax.persistence.Embeddable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author fmauz
  */
-@Embeddable
-public class ContainerNestingId implements Serializable {
+@Entity
+@Table(name = "containertypes")
+public class ContainerTypeEntity implements Serializable {
 
-    private int sourceid;
-    private int targetid;
+    @Id
+    private String name;
 
-    public ContainerNestingId() {
+    @Column
+    private Integer rank;
+
+    public String getName() {
+        return name;
     }
 
-    public ContainerNestingId(int sourceid, int targetid) {
-        this.sourceid = sourceid;
-        this.targetid = targetid;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getSourceid() {
-        return sourceid;
+    public Integer getRank() {
+        return rank;
     }
 
-    public void setSourceid(int sourceid) {
-        this.sourceid = sourceid;
-    }
-
-    public int getTargetid() {
-        return targetid;
-    }
-
-    public void setTargetid(int targetid) {
-        this.targetid = targetid;
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 
 }

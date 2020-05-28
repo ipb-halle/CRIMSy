@@ -15,45 +15,18 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.entity;
+package de.ipb_halle.lbac.container.bean;
 
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
 /**
  *
  * @author fmauz
  */
-@Entity
-@Table(name = "nested_containers")
-public class ContainerNestingEntity implements Serializable {
-
-    @EmbeddedId
-    private ContainerNestingId id;
-
-    @Column
-    private boolean nested;
-
-    public ContainerNestingEntity() {
-    }
-
-    public ContainerNestingId getId() {
-        return id;
-    }
-
-    public void setId(ContainerNestingId id) {
-        this.id = id;
-    }
-
-    public boolean isNested() {
-        return nested;
-    }
-
-    public void setNested(boolean nested) {
-        this.nested = nested;
-    }
+@SessionScoped
+@Named
+public class ContainerEditBean implements Serializable {
 
 }

@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.entity;
+package de.ipb_halle.lbac.container.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;

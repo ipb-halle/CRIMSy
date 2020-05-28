@@ -52,9 +52,9 @@
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.material.entity.tissue.TissueEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ContainerEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ContainerNestingEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ContainerTypeEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerNestingEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerTypeEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ItemEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ItemHistoryEntity</class>
         <class>de.ipb_halle.lbac.device.job.JobEntity</class>

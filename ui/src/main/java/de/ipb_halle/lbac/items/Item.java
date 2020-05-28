@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.items;
 
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.entity.ItemEntity;

@@ -15,10 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.components;
+package de.ipb_halle.lbac.container.components;
 
-import de.ipb_halle.lbac.items.Container;
-import de.ipb_halle.lbac.items.ContainerType;
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

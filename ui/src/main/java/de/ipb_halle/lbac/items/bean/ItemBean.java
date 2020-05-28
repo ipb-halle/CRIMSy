@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.items.bean;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.items.Container;
-import de.ipb_halle.lbac.items.ContainerType;
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;

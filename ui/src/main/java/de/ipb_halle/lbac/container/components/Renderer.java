@@ -15,42 +15,18 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.entity;
+package de.ipb_halle.lbac.container.components;
 
-import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import de.ipb_halle.lbac.container.Container;
+import java.io.IOException;
+import javax.faces.component.UIComponentBase;
+import javax.faces.context.ResponseWriter;
 
 /**
  *
  * @author fmauz
  */
-@Entity
-@Table(name = "containertypes")
-public class ContainerTypeEntity implements Serializable {
+public interface Renderer {
 
-    @Id
-    private String name;
-
-    @Column
-    private Integer rank;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getRank() {
-        return rank;
-    }
-
-    public void setRank(Integer rank) {
-        this.rank = rank;
-    }
-
+    public void render(ResponseWriter responseWriter, Container container, UIComponentBase component) throws IOException;
 }

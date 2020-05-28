@@ -75,18 +75,16 @@
         <class>de.ipb_halle.lbac.entity.UserEntity</class>
         <class>de.ipb_halle.lbac.forum.TopicEntity</class>
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
-
         <class>de.ipb_halle.lbac.util.hibernatePG.types.JsonType</class>
         <class>de.ipb_halle.lbac.util.hibernatePG.types.ParametrizedJsonTypes</class>
         <class>de.ipb_halle.lbac.util.hibernatePG.types.RawJsonType</class>
-        
+        <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerNestingEntity</class>
+        <class>de.ipb_halle.lbac.container.entity.ContainerTypeEntity</class>
         <class>de.ipb_halle.lbac.material.entity.StorageConditionHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.entity.StorageConditionStorageEntity</class>
         <class>de.ipb_halle.lbac.material.entity.StorageClassHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.entity.StorageEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ContainerEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ContainerNestingEntity</class>
-        <class>de.ipb_halle.lbac.items.entity.ContainerTypeEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ItemEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ItemHistoryEntity</class>
 

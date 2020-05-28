@@ -15,11 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items;
+package de.ipb_halle.lbac.container;
 
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.items.entity.ContainerNestingEntity;
-import de.ipb_halle.lbac.items.entity.ContainerNestingId;
+import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
+import de.ipb_halle.lbac.container.entity.ContainerNestingId;
 
 /**
  *

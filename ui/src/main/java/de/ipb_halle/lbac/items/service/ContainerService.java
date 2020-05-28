@@ -18,12 +18,12 @@
 package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.items.Container;
-import de.ipb_halle.lbac.items.ContainerNesting;
-import de.ipb_halle.lbac.items.ContainerType;
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerNesting;
+import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.items.entity.ContainerEntity;
-import de.ipb_halle.lbac.items.entity.ContainerTypeEntity;
+import de.ipb_halle.lbac.container.entity.ContainerEntity;
+import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;

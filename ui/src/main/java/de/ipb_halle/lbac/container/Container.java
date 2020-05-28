@@ -15,9 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items;
+package de.ipb_halle.lbac.container;
 
-import de.ipb_halle.lbac.items.entity.ContainerEntity;
+import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.project.Project;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

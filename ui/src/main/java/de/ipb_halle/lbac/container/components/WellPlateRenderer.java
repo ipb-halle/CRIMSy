@@ -15,9 +15,9 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.components;
+package de.ipb_halle.lbac.container.components;
 
-import de.ipb_halle.lbac.items.Container;
+import de.ipb_halle.lbac.container.Container;
 import java.io.IOException;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.ResponseWriter;

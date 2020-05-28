@@ -15,9 +15,9 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items;
+package de.ipb_halle.lbac.container;
 
-import de.ipb_halle.lbac.items.entity.ContainerTypeEntity;
+import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
 import java.util.Objects;
 
 /**
