@@ -56,4 +56,12 @@ public class ContainerOverviewBean implements Serializable {
         readableContainer = containerService.loadContainers(currentUser);
     }
 
+    public void actionCancel() {
+
+    }
+
+    public void actionStartCreation() {
+
+    }
+
 }

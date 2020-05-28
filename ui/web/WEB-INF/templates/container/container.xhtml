@@ -27,17 +27,31 @@ limitations under the License.
                 id="containerForm">
                 <b:container>
                     <b:row>
+                        <b:column span="1" offset="10">
+                            <b:commandButton
+                                action="#{containerOverviewBean.actionCancel()}"
+                                value="Cancel"
+                                />
+                        </b:column>
+                        <b:column span="1">
+                            <b:commandButton
+                                action="#{containerOverviewBean.actionStartCreation()}"
+                                value="Neuer Container"
+                                />
+                        </b:column>
+                    </b:row>
+                    <b:row>
                         <b:column span="2"> 
                             <ui:insert> 
                                 <ui:include src="/WEB-INF/templates/container/components/containerSearchMask.xhtml"/>
                             </ui:insert>
                         </b:column>
-                        <b:column span="5">  
+                        <b:column span="8">  
                             <ui:insert> 
                                 <ui:include src="/WEB-INF/templates/container/components/containerOverviewTable.xhtml"/>
                             </ui:insert>
                         </b:column> 
-                        <b:column span="5">  
+                        <b:column span="2">  
                             <ui:insert> 
                                 <ui:include src="/WEB-INF/templates/container/components/containerEditView.xhtml"/>
                             </ui:insert>

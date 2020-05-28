@@ -20,8 +20,90 @@ limitations under the License.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
     <h:body>
-        Edit view
+        <b:container>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <h:outputText value="Name"
+                                  />
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <b:inputText
+                        value="#{containerEditBean.containerName}"
+                        styleClass="containerFilterInputfield"/>
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <h:outputText value="Project"
+                                  />
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <p:autoComplete value="#{containerEditBean.containerSearchProject}"
+                                    maxResults="10"
+                                    completeMethod="#{containerEditBean.getSimilarProjectNames}"
+                                    styleClass="containerFilterInputfield"/>
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <h:outputText value="Type"
+                                  />
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <b:selectOneMenu>
+
+
+                    </b:selectOneMenu>
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <h:outputText value="Ort"
+                                  />
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <p:autoComplete value="#{containerEditBean.containerSearchLocation}"
+                                    maxResults="10"
+                                    completeMethod="#{containerEditBean.getSimilarLocationNames}"
+                                    styleClass="containerFilterInputfield"/>
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="2">
+                    <h:outputText value="Größe"/>
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="containerFilterRow">
+                <b:column span="1">
+                    <b:inputText
+                        label="Breite"/>
+                </b:column>
+                <b:column span="1">
+                    <b:inputText
+                        label="Höhe"/>
+                </b:column>
+            </b:row>
+        </b:container>
     </h:body>
 </html>
