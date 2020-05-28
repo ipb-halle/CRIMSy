@@ -17,8 +17,16 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
+import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.items.service.ContainerService;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -28,5 +36,24 @@ import javax.inject.Named;
 @SessionScoped
 @Named
 public class ContainerOverviewBean implements Serializable {
+
+    private User currentUser;
+    private List<Container> readableContainer = new ArrayList<>();
+
+    @Inject
+    private ContainerService containerService;
+
+    public List<Container> getReadableContainer() {
+        return readableContainer;
+    }
+
+    public void setReadableContainer(List<Container> readableContainer) {
+        this.readableContainer = readableContainer;
+    }
+
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+        readableContainer = containerService.loadContainers(currentUser);
+    }
 
 }

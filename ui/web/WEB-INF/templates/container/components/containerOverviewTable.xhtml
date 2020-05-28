@@ -19,9 +19,40 @@ limitations under the License.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:h="http://java.sun.com/jsf/html">
     <h:body>
-     Overview Table
+        <b:dataTable
+            paginated="false"
+            value="#{containerOverviewBean.readableContainer}"
+            searching="false"
+            var="container">
+
+            <b:dataTableColumn
+                label="Nummer">
+                <h:outputText
+                    title="Nummer"
+                    value="#{container.id}"/>
+            </b:dataTableColumn>
+            <b:dataTableColumn 
+                label="Label">
+                <h:outputText
+                    value="#{container.label}"/>
+            </b:dataTableColumn>
+            <b:dataTableColumn
+                label="Typ">
+                <h:outputText
+                    value="#{container.type.getLocalizedName()}"/>
+            </b:dataTableColumn>
+            <b:dataTableColumn
+                label="Ort">
+                <h:outputText
+                    value="#{container. getLocation(false)}"/>
+            </b:dataTableColumn>
+            <b:dataTableColumn
+                label="Domension">
+                <h:outputText
+                    value="#{container. getLocation(false)}"/>
+            </b:dataTableColumn>
+        </b:dataTable>
     </h:body>
 </html>

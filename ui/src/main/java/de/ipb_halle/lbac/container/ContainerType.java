@@ -37,11 +37,13 @@ public class ContainerType {
     public ContainerType(ContainerTypeEntity entity) {
         this.name = entity.getName();
         this.rank = entity.getRank();
+        this.localizedName=name;
     }
 
     public ContainerType(String name, int rank) {
         this.name = name;
         this.rank = rank;
+        this.localizedName=name;
     }
 
     public String getName() {

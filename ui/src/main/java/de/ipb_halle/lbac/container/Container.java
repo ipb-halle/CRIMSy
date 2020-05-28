@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Container {
 
-    private Logger  logger = LogManager.getLogger(this.getClass().getName());
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private int id;
     private Container parentContainer;
@@ -168,11 +168,15 @@ public class Container {
         this.barCode = barCode;
     }
 
-    public String getLocation() {
+    public String getLocation(boolean inclusiveItsself) {
         if (parentContainer == null) {
             return label;
         } else {
-            return parentContainer.getLocation() + "." + label;
+            if (inclusiveItsself) {
+                return parentContainer.getLocation(false) + "." + label;
+            } else {
+                return parentContainer.getLocation(false);
+            }
         }
     }
 

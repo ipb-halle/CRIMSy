@@ -177,7 +177,7 @@ public class ItemBean implements Serializable {
         state = new ItemState(i);
         this.material = i.getMaterial();
         container = i.getContainer();
-        historyOperation=new HistoryOperation(state);
+        historyOperation = new HistoryOperation(state);
     }
 
     public void actionStartItemCreation(Material m) {
@@ -338,10 +338,10 @@ public class ItemBean implements Serializable {
         if (container == null) {
             return "";
         } else {
-            if (container.getLocation() == null) {
+            if (container.getLocation(true) == null) {
                 return "unknown";
             } else {
-                return container.getLocation();
+                return container.getLocation(true);
             }
         }
     }
@@ -479,7 +479,7 @@ public class ItemBean implements Serializable {
         purityUnit = units.get(0);
         solvent = "";
         amount = null;
-        
+
         amountUnit = units.get(0);
         purity = purities.get(0);
     }
@@ -521,15 +521,16 @@ public class ItemBean implements Serializable {
             return Messages.getString(MESSAGE_BUNDLE, "itemEdit_materialPanel_saveEdited", null);
         }
     }
-    
-    public boolean isPreviousVersionButtonDisabled(){
-        if(state.getEditedItem().getHistory().isEmpty()){
+
+    public boolean isPreviousVersionButtonDisabled() {
+        if (state.getEditedItem().getHistory().isEmpty()) {
             return true;
         }
         return state.getEditedItem().getHistory().firstKey().equals(state.getCurrentHistoryDate());
     }
-     public boolean isNextVersionButtonDisabled(){
-         return state.getEditedItem().getHistory().isEmpty()||state.getCurrentHistoryDate()==null;
 
-     }
+    public boolean isNextVersionButtonDisabled() {
+        return state.getEditedItem().getHistory().isEmpty() || state.getCurrentHistoryDate() == null;
+
+    }
 }

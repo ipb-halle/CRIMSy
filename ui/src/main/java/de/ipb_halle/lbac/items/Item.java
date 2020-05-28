@@ -259,10 +259,10 @@ public class Item implements DTO, Serializable {
         }
         String location = "";
         for (Container c : nestedContainer) {
-            location += c.getLocation() + ".";
+            location += c.getLocation(true) + ".";
         }
 
-        return location + container.getLocation();
+        return location + container.getLocation(true);
     }
 
 }
