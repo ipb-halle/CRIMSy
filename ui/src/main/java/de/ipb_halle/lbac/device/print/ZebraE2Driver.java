@@ -101,6 +101,12 @@ public class ZebraE2Driver extends AbstractPrintDriver {
         return super.createJob();
     }
 
+    /** 
+     * for future use
+     */
+    protected void transform() {
+    }
+
 	/**
 	 * @return a string properly escaped for Zebra label printers
 	 */

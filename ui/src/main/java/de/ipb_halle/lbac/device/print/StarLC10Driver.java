@@ -17,19 +17,41 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * PrintDriver for Star LC10 printer
- * This driver is absolutely incomplete!
+ * This driver is experimental and incomplete!
  *
+ * Parameters:
+ * - prologue
+ * - height (in millimeters, double)
+ * - width (in millimeters, double)
+ * - hdpi (horizontal dots per inch, integer)
+ * - vdpi (vertical dots per inch, integer)
  *
  * @author fbroda
  */
 public class StarLC10Driver extends AbstractPrintDriver { 
 
     public final static String DRIVER_NAME = "Star LC10";
+    private final static double JAVA_DEFAULT_DPI = 72.0;
 
+    private BufferedImage image;
+    private int pixelWidth;
+    private int pixelHeight;
+    private int hdpi;
+    private int vdpi;
+
+    private Logger logger;
 
 /*
     Weight  1       2       4       8       16      
@@ -57,13 +79,93 @@ public class StarLC10Driver extends AbstractPrintDriver {
     private int offsetX;
     private int offsetY;
 
+    protected StarLC10Driver() {
+        super();
+        this.logger = LogManager.getLogger(this.getClass().getName());
+    }
+
+
 
     @Override
     public PrintDriver clear() {
         super.clear();
         append(getConfig("prologue"));
+        double width = getConfigDouble("width", 80.0);
+        double height = getConfigDouble("height", 40.0);
+        this.hdpi = getConfigInt("hdpi", 120);
+        this.vdpi = getConfigInt("vdpi", 72);
+        this.pixelWidth = getPixels(width, this.hdpi);
+        this.pixelHeight = getPixels(height, this.vdpi); 
+/*
+        this.logger.info(String.format("clear(): Millimeter: w=%f, h=%f, hdpi=%d, vdpi=%d", width, height, hdpi, vdpi)); 
+        this.logger.info(String.format("clear(): Pixel:      w=%d, h=%d", pixelWidth, pixelHeight));
+*/
+        this.image = new BufferedImage(this.pixelWidth, 
+                this.pixelHeight,
+                BufferedImage.TYPE_BYTE_BINARY);
         return this;
     }
+
+
+/* xxxxx NEW driver xxxxx */
+    public Font adjustFontDPI(Font font) {
+        double dy = this.vdpi / JAVA_DEFAULT_DPI;
+        double dx = dy * (double) this.hdpi / (double) this.vdpi;
+        AffineTransform transform = new AffineTransform(
+            dx, 0.0,
+            0.0, dy,
+            0.0, 0.0);
+        return font.deriveFont(transform);
+    }
+
+    public void printLine(double x, double y, String text) {
+        Graphics2D graphics = this.image.createGraphics();
+        graphics.setColor(Color.BLACK);
+        graphics.setXORMode(Color.WHITE);
+        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 24);
+        font = adjustFontDPI(font);
+        graphics.setFont(font); 
+        graphics.drawString(
+                text,
+                getPixels(x, this.hdpi), 
+                getPixels(y, this.vdpi));
+    }
+
+    protected void transform() {
+        append(lineFeed8);
+        int[] pixels = this.image.getData().getPixels(0,0, 
+                this.pixelWidth, this.pixelHeight, 
+                new int[this.pixelWidth * this.pixelHeight]);
+
+        byte[] cmd = Arrays.copyOf(graphicMode, graphicMode.length);
+        cmd[3] = (byte) (this.pixelWidth % 256);
+        cmd[4] = (byte) (this.pixelWidth / 256);
+
+        int y = 0;
+        int line = 0;
+        while (y < this.pixelHeight) {
+            byte[] buf = new byte[this.pixelWidth];
+            int h = 0;
+            while ((h < 8) && (y < this.pixelHeight)) {
+                int v = (1 << (7 - h));
+                for (int i=0; i<this.pixelWidth; i++) {
+                    buf[i] += (pixels[line + i] != 0) ? v : 0;
+                }
+                h++;
+                y++;
+                line += this.pixelWidth;
+            }
+            append(cmd);
+            append(buf);
+            append("\n".getBytes());
+        }
+        append(lineFeed12);
+        append(getConfig("epilogue", ""));
+    }
+
+/* xxxxx NEW driver end xxxxx */
+
+
 
     /**
      * add an Interleave 2 of 5 symbol (black or white bar; either narrow 
@@ -163,6 +265,7 @@ public class StarLC10Driver extends AbstractPrintDriver {
         for (int i=0; i<interleaveRepeat; i++) {
             append(cmd);
             append(buf);
+            append("\n".getBytes());
         }
 
         append(lineFeed12);
@@ -173,20 +276,26 @@ public class StarLC10Driver extends AbstractPrintDriver {
      * print a barcode 
      */
     public PrintDriver printBarcode(BarcodeType type, String data) {
+/*
         switch(type) {
             case INTERLEAVE25 :
                 printItf(data);
                 return this;
         }
         throw new IllegalArgumentException("Unsupported barcode type");
+*/
+        return this;
     }
 
     /**
      * print a line of text
      */
     public PrintDriver printLine(String line) {
+        printLine(5.0, 20.0, "Hallo Welt");
+/*
         append(line.getBytes());
         append("\n".getBytes());
+*/
         return this;
     }
 }
