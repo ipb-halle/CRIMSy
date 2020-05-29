@@ -20,6 +20,8 @@ package de.ipb_halle.lbac.container;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.project.Project;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +43,7 @@ public class Container {
     private String gvoClass;
     private String barCode;
     private Item[][][] items;
+    List<Container> containerHierarchy = new ArrayList<>();
 
     public Container() {
 
@@ -169,15 +172,17 @@ public class Container {
     }
 
     public String getLocation(boolean inclusiveItsself) {
-        if (parentContainer == null) {
+
+        if (containerHierarchy.isEmpty()) {
             return label;
         } else {
-            if (inclusiveItsself) {
-                return parentContainer.getLocation(false) + "." + label;
-            } else {
-                return parentContainer.getLocation(false);
+            String back = "";
+            for (Container c : containerHierarchy) {
+                back += c.getLabel();
             }
+            return back;
         }
+
     }
 
     public int[] getDimensionIndex() {
@@ -198,6 +203,10 @@ public class Container {
             }
         }
         return null;
+    }
+
+    public List<Container> getContainerHierarchy() {
+        return containerHierarchy;
     }
 
 }

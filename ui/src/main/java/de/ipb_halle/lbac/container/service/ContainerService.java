@@ -69,6 +69,40 @@ public class ContainerService implements Serializable {
     private final String SQL_NESTED_TARGETS = "SELECT targetid FROM nested_containers WHERE sourceid=:source";
     private final String SQL_GET_SIMILAR_NAMES = "SELECT label FROM containers WHERE LOWER(label) LIKE LOWER(:label)";
 
+    private final String SQL_LOAD_CONTAINERS = "SELECT DISTINCT "
+            + "c.id, "
+            + "c.parentcontainer, "
+            + "c.label, "
+            + "c.projectid, "
+            + "c.dimension, "
+            + "c.type, "
+            + "c.firesection, "
+            + "c.gvo_class, "
+            + "c.barcode "
+            + "FROM containers c "
+            + "LEFT JOIN projects p ON p.id=c.projectid "
+            + "LEFT JOIN acentries ace ON ace.aclist_id=p.usergroups "
+            + "LEFT JOIN memberships ms ON ms.group_id=ace.member_id "
+            + "WHERE (ace.permread=true OR c.projectid IS NULL) "
+            + "AND (CAST(ace.member_id AS VARCHAR)=:userid  OR c.projectid IS NULL) "
+            + "ORDER BY c.id";
+
+    private final String SQL_LOAD_NESTED_CONTAINER = "SELECT  "
+            + "c.id, "
+            + "c.parentcontainer, "
+            + "c.label, "
+            + "c.projectid, "
+            + "c.dimension, "
+            + "c.type, "
+            + "c.firesection, "
+            + "c.gvo_class, "
+            + "c.barcode  "
+            + "FROM nested_containers nc "
+            + "JOIN containers c ON c.id=nc.targetid "
+            + "JOIN containertypes ct ON ct.name=c.type "
+            + "WHERE nc.sourceid=:cid "
+            + "ORDER BY ct.rank";
+
     /**
      * Gets all containersnames which matches the pattern %name%
      *
@@ -131,9 +165,7 @@ public class ContainerService implements Serializable {
     }
 
     /**
-     * Lazy loading of containers. This means the parent container is only
-     * loaded for one hierarchy, all container further in the hierachy must be
-     * loaded manually.
+     * Loading of containers with ist full hierarchy.
      *
      * @param u
      * @return
@@ -142,18 +174,23 @@ public class ContainerService implements Serializable {
         List<Project> projects
                 = projectService.loadReadableProjectsOfUser(u);
 
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<ContainerEntity> cq = cb.createQuery(ContainerEntity.class);
-        Root<ContainerEntity> rootEntry = cq.from(ContainerEntity.class);
-        CriteriaQuery<ContainerEntity> all = cq.select(rootEntry);
+        List<ContainerEntity> dbEntities
+                = em.createNativeQuery(SQL_LOAD_CONTAINERS, ContainerEntity.class)
+                        .setParameter("userid", u.getId().toString())
+                        .getResultList();
 
-        TypedQuery<ContainerEntity> allQuery = em.createQuery(all);
-
-        List<ContainerEntity> dbEntities = allQuery.getResultList();
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<ContainerEntity> cq = cb.createQuery(ContainerEntity.class);
+//        Root<ContainerEntity> rootEntry = cq.from(ContainerEntity.class);
+//        CriteriaQuery<ContainerEntity> all = cq.select(rootEntry);
+//
+//        TypedQuery<ContainerEntity> allQuery = em.createQuery(all);
+//
+//        List<ContainerEntity> dbEntities = allQuery.getResultList();
         List<Container> result = new ArrayList<>();
 
         for (ContainerEntity dbe : dbEntities) {
-            Container container = null;
+            Container container = loadContainerById(dbe.getId());
             if (dbe.getProjectid() == null) {
                 container = loadContainerById(dbe.getId());
                 result.add(container);
@@ -166,6 +203,14 @@ public class ContainerService implements Serializable {
             if (container != null && dbe.getParentcontainer() != null) {
                 container.setParentContainer(loadContainerById(dbe.getParentcontainer()));
             }
+            List<ContainerEntity> nestedContainers = this.em
+                    .createNativeQuery(SQL_LOAD_NESTED_CONTAINER, ContainerEntity.class)
+                    .setParameter("cid", dbe.getId())
+                    .getResultList();
+            for (ContainerEntity nce : nestedContainers) {
+                container.getContainerHierarchy().add(loadContainerById(nce.getId()));
+            }
+
         }
         return result;
 

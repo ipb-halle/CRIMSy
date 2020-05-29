@@ -282,8 +282,8 @@ public class ContainerServiceTest extends TestBase {
         User user = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         ACList noUserAcl = new ACList();
         noUserAcl = acListService.save(noUserAcl);
-        
-        User testUser=createUser("testUser","testUser");
+
+        User testUser = createUser("testUser", "testUser");
 
         project.setName("Container Test Project");
         project.setOwner(user);
@@ -297,8 +297,9 @@ public class ContainerServiceTest extends TestBase {
         instance.saveContainer(c2);
         instance.saveContainer(c3);
 
-        List<Container> loadedContainer = instance.loadContainers(user);
+        List<Container> loadedContainer = instance.loadContainers(testUser);
 
+        Assert.assertEquals(3, loadedContainer.size());
         Map<String, Object> cmap = new HashMap<>();
     }
 
