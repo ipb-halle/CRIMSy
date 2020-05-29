@@ -17,10 +17,21 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobType;
 import de.ipb_halle.lbac.util.HexUtil;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -38,16 +49,40 @@ import org.apache.logging.log4j.LogManager;
 /**
  * Abstract base class for print drivers 
  *
+ * This class defines several configurables:
+ * - hdpi (horizontal dots per inch)
+ * - vdpi (vertical dots per inch)
+ * - width (label width in millimeters)
+ * - height (label height in millimeters)
+ *
  * @author fbroda
  */
 public abstract class AbstractPrintDriver implements PrintDriver { 
 
-    /* xxxxxx rediculously small initial buffer size; increase to 256 or larger */
-    private final static int INITIAL_BUFFER_SIZE = 16;
+    private final static int INITIAL_BUFFER_SIZE = 256;
+    public final static int JAVA_DEFAULT_DPI = 72;
+
+    /* font styles */
+    public final static int BOLD = Font.BOLD;
+    public final static int ITALIC = Font.ITALIC;
+    public final static int PLAIN = Font.PLAIN;
+
+    /* font types */
+    public final static String MONOSPACED = Font.MONOSPACED;
+    public final static String SANS_SERIF = Font.SANS_SERIF;
+    public final static String SERIF = Font.SERIF;
 
     private ByteBuffer          buffer;
     private Printer             printer;
     private Map<String, byte[]> configMap;
+
+    private BufferedImage image;
+    private Font defaultFont;
+    private int pixelWidth;
+    private int pixelHeight;
+    private int hdpi;
+    private int vdpi;
+
 
     private Logger logger;
 
@@ -56,7 +91,23 @@ public abstract class AbstractPrintDriver implements PrintDriver {
      */
     public AbstractPrintDriver() {
         this.logger = LogManager.getLogger(this.getClass().getName());
+        this.defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
     }
+
+    /**
+     * adjust font metrics, especially for printers with 
+     * unequal horizontal and vertical resolution 
+     */
+    public Font adjustFontDPI(Font font) {
+        double dy = (double) this.vdpi / JAVA_DEFAULT_DPI;
+        double dx = dy * (double) this.hdpi / (double) this.vdpi;
+        AffineTransform transform = new AffineTransform(
+            dx, 0.0,
+            0.0, dy,
+            0.0, 0.0);
+        return font.deriveFont(transform);
+    }
+
 
     /**
      * append a byte array to the output buffer
@@ -96,14 +147,51 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     }
 
     /**
+     * apply the default values for a print driver. Must 
+     * supply defaults for hdpi, vdpi, height, width 
+     * (and maybe other values in the future).
+     */
+    protected abstract void applyDefaults(); 
+
+    /**
      * Allocate a new buffer. Implementations might want to 
      * override this method to add the prologue section to 
      * the buffer.
      * @return the driver object
      */
     public PrintDriver clear() {
+        this.configMap = new HashMap<String, byte[]> ();
+        applyDefaults();
+        parseConfig((printer == null) ? "" : printer.getConfig());
         this.buffer = ByteBuffer.allocate(INITIAL_BUFFER_SIZE);
+
+        this.hdpi = getConfigInt("hdpi");
+        this.vdpi = getConfigInt("vdpi");
+        double width = getConfigDouble("width");
+        double height = getConfigDouble("height");
+        this.pixelWidth = getPixels(width, this.hdpi);
+        this.pixelHeight = getPixels(height, this.vdpi);
+
+/*
+        this.logger.info(String.format("clear(): Millimeter: w=%f, h=%f, hdpi=%d, vdpi=%d", width, height, hdpi, vdpi)); 
+        this.logger.info(String.format("clear(): Pixel:      w=%d, h=%d", pixelWidth, pixelHeight));
+*/
+        this.image = new BufferedImage(this.pixelWidth,
+                this.pixelHeight,
+                BufferedImage.TYPE_BYTE_BINARY);
         return this;
+    }
+
+    /**
+     * calls the transform() method and creates a print job.
+     * @return the Job
+     */
+    public Job createJob() {
+        transform();
+        return new Job()
+            .setJobType(JobType.PRINT)
+            .setQueue(this.printer.getQueue())
+            .setInput(Arrays.copyOf(this.buffer.array(), this.buffer.position()));
     }
 
     /**
@@ -127,32 +215,46 @@ public abstract class AbstractPrintDriver implements PrintDriver {
 
     /**
      * @param key the key
-     * @param defaultValue the int default value
-     * @return the corresponding configuration value or the 
-     * provided default value 
+     * @return the corresponding configuration value 
      */
-    public int getConfigInt(String key, int defaultValue) {
+    public int getConfigInt(String key) {
         byte[] result = this.configMap.get(key);
-        if (result == null) {
-            return defaultValue;
-        }
         return Integer.parseInt(new String(result, StandardCharsets.UTF_8));
     }
 
     /**
      * @param key the key
-     * @param defaultValue the double default value
-     * @return the corresponding configuration value or the 
-     * provided default value 
+     * @return the corresponding configuration value 
      */
-    public double getConfigDouble(String key, double defaultValue) {
+    public double getConfigDouble(String key) {
         byte[] result = this.configMap.get(key);
-        if (result == null) {
-            return defaultValue;
-        }
         return Double.parseDouble(new String(result, StandardCharsets.UTF_8));
     }
 
+    /**
+     * compute the pixel coordinate from a length in 
+     * millimeters and a resolution in pixels per inch (dpi)
+     * @param coord the coordinate in mm
+     * @param dpi the resolution (dots per inch)
+     * @return the pixel value
+     */
+    public int getPixels(double coord, int dpi) {
+        return Double.valueOf(Math.floor(coord * dpi / 25.4)).intValue();
+    }
+
+    public int[] getPixelArray() {
+        return this.image.getData().getPixels(0,0,
+                pixelWidth, pixelHeight,
+                new int[pixelWidth * pixelHeight]);
+    }
+
+    public int getPixelHeight() {
+        return this.pixelHeight;
+    }
+
+    public int getPixelWidth() {
+        return this.pixelWidth;
+    }
 
     /**
      * parse printer configuration
@@ -177,7 +279,6 @@ public abstract class AbstractPrintDriver implements PrintDriver {
      * @param config the config string
      */
     private void parseConfig(String config) {
-        this.configMap = new HashMap<String, byte[]> ();
         Pattern pattern = Pattern.compile("[^0-9a-fA-F]");
         ByteBuffer buf = ByteBuffer.allocate(INITIAL_BUFFER_SIZE);
         String key = null; 
@@ -210,35 +311,105 @@ public abstract class AbstractPrintDriver implements PrintDriver {
         }
     }
 
-    public PrintDriver setPrinter(Printer printer) {
-        this.printer = printer;
-        parseConfig(printer.getConfig());
-        clear();
+    /**
+     * print a barcode 
+     * at position x,y in size w,h. All values in millimeters
+     */
+    public PrintDriver printBarcode(double x, double y, double w, double h, BarcodeType type, String data) {
+
+        MultiFormatWriter writer = new MultiFormatWriter();
+        BitMatrix barcode;
+        int width = getPixels(w, this.hdpi);
+        int height = getPixels(h, this.vdpi);
+
+        try {
+            switch(type) {
+                case INTERLEAVE25 :
+                    barcode = writer.encode(data, BarcodeFormat.ITF,  width, height);
+                    break;
+                case CODE39 :
+                    barcode = writer.encode(data, BarcodeFormat.CODE_39, width, height);
+                    break;
+                case CODE128 :
+                    barcode = writer.encode(data, BarcodeFormat.CODE_128, width, height);
+                    break;
+                case QR :
+                    barcode = writer.encode(data, BarcodeFormat.QR_CODE, width, height);
+                    break;
+                case DATAMATRIX :
+                    barcode = writer.encode(data, BarcodeFormat.DATA_MATRIX, width, height);
+                    break;
+                default :
+                    throw new IllegalArgumentException("Unsupported barcode type");
+            }
+        } catch(WriterException e) {
+            this.logger.warn("printBarcode() caught an exception", (Throwable) e);
+            return this;
+        }
+
+        WritableRaster raster = this.image.getSubimage(
+                getPixels(x, this.hdpi),
+                getPixels(y, this.vdpi),
+                width, height).getRaster();
+        for (int i=0; i<width; i++) {
+            for (int j=0; j<height; j++) {
+                raster.setSample(i, j, 0, barcode.get(i,j) ? 255 : 0);
+            }
+        }
+
         return this;
     }
 
     /**
-     * Implementations may want to override this method,
-     * e.g. to append an epilogue section
-     * @return the Job
+     * Print a line of text
+     * @param x horizontal offset from upper left corner in millimeters
+     * @param y vertical offset from upper left corner in millimeters
+     * @param text the text to be printed
      */
-    public Job createJob() {
-        transform();
-        return new Job()
-            .setJobType(JobType.PRINT)
-            .setQueue(this.printer.getQueue())
-            .setInput(Arrays.copyOf(this.buffer.array(), this.buffer.position()));
+    public PrintDriver printLine(double x, double y, String text) {
+        return printLine(x, y, this.defaultFont, text);
+    }
+
+    public PrintDriver printLine(double x, double y, int size, String text) {
+        Font font = new Font(Font.SANS_SERIF, Font.PLAIN, size);
+        return printLine(x, y, font, text);
+    }
+
+    public PrintDriver printLine(double x, double y, String fontName, int fontStyle, int fontSize, String text) {
+        Font font = new Font(fontName, fontStyle, fontSize);
+        return printLine(x, y, text);
+    }
+
+    public PrintDriver printLine(double x, double y, Font font, String text) {
+        Graphics2D graphics = this.image.createGraphics();
+        graphics.setColor(Color.BLACK);
+        graphics.setXORMode(Color.WHITE);
+        graphics.setFont(adjustFontDPI(font)); 
+        graphics.drawString(
+                text,
+                getPixels(x, this.hdpi),
+                getPixels(y, this.vdpi));
+        return this;
     }
 
     /**
-     * compute the pixel coordinate from a length in 
-     * millimeters and a resolution in pixels per inch (dpi)
-     * @param coord the coordinate in mm
-     * @param dpi the resolution (dots per inch)
-     * @return the pixel value
+     * set the default values for a printer
      */
-    public int getPixels(double coord, int dpi) {
-        return Double.valueOf(Math.floor(coord * dpi / 25.4)).intValue();
+    protected void setDefault(String key, String data) {
+        this.configMap.put(key, data.getBytes());
+    }
+
+    /**
+     * set the printer for this driver. The printer comes 
+     * with configuration data and is also needed for
+     * Job creation.
+     * @param printer the Printer instance
+     * @return this
+     */
+    public PrintDriver setPrinter(Printer printer) {
+        this.printer = printer;
+        clear();
+        return this;
     }
 
     protected abstract void transform();

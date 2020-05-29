@@ -32,8 +32,8 @@ public interface PrintDriver {
     public PrintDriver clear();
     public Job createJob();
 
-    public PrintDriver printBarcode(BarcodeType type, String data);
-    public PrintDriver printLine(String line);
+    public PrintDriver printBarcode(double x, double y, double w, double h, BarcodeType type, String data);
+    public PrintDriver printLine(double x, double y, String line);
 
     public PrintDriver setPrinter(Printer printer);
 

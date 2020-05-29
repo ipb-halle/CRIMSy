@@ -256,6 +256,13 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- barcoding: Google ZXing -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
         <!-- Provided dependencies by the server -->
         <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
         <dependency>

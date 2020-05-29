@@ -32,11 +32,35 @@ import org.apache.logging.log4j.LogManager;
  * hardcoded into the driver.
  *
  * Sample Configuration:
- *      prologue=4f0a4e0a4431350a53310a4f43310a71\
- *               3530300a49382c412c3034390a
+ *      #
+ *      # Thermotransfer Labels 50.8 mm x 25.4 mm
+ *      # with gaps on TLP 2844
+ *      #
+ *      prologue=49382c412c3030310a513230332c3032\
+ *               340a713530360a724e0a53310a443135\
+ *               0a5a540a4a460a4f440a4f43310a5232\
+ *               32302c300a6639300a4e0a 
  *      epilogue=50310a
- *      offsetX=313430
- *      offsetY=3230
+ *      offsetX=30
+ *      offsetY=30
+ *
+ * Prologue:
+ *          I8,A,001
+ *          Q203,024
+ *          q506
+ *          rN
+ *          S1
+ *          D15
+ *          ZT
+ *          JF
+ *          OD
+ *          OC1
+ *          R220,0
+ *          f90
+ *          N
+ *
+ * Epilogue:
+ *          P1
  *
  * @author fbroda
  */
@@ -54,6 +78,13 @@ public class ZebraE2Driver extends AbstractPrintDriver {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
+    public void applyDefaults() {
+        setDefault("width", "50.0");
+        setDefault("height", "25.0");
+        setDefault("hdpi", "203");
+        setDefault("vdpi", "203");
+    }
+
     @Override
     public PrintDriver clear() {
         super.clear();
@@ -63,56 +94,38 @@ public class ZebraE2Driver extends AbstractPrintDriver {
         return this;
     }
 
-    /**
-     * print a barcode 
-     */
-    public PrintDriver printBarcode(BarcodeType type, String data) {
-        switch(type) {
-            case INTERLEAVE25 :
-                append(String.format("B%d,%d,0,2,2,4,50,B,\"%s\"\n",
-                    this.offsetX, 
-                    this.offsetY, 
-                    data).getBytes());
-                this.offsetY += 90;
-                return this;
-            default :
-                throw new IllegalArgumentException("Unsupported barcode type");
-        }
-    }
-
-    /**
-     * print a line of text
-     */
-    public PrintDriver printLine(String line) {
-        append(String.format("A%d,%d,0,1,1,1,N,\"%s\"\n",
-            this.offsetX, 
-            this.offsetY, 
-            zebraEscape(line)).getBytes());
-        this.offsetY += 20;
-        return this;
-    }
-
-    /**
-     * append the epilogue to the print job
-     */
-    @Override
-    public Job createJob() {
-        append(getConfig("epilogue"));
-        return super.createJob();
-    }
-
     /** 
      * for future use
      */
     protected void transform() {
+        int pixelWidth = getPixelWidth();
+        int pixelHeight = getPixelHeight();
+        int[] pixels = getPixelArray();
+
+        // make linewidth a multiple of 8 pixels
+        int lineWidth = ((pixelWidth & 7) == 0) ? pixelWidth / 8 :  1 + (pixelWidth / 8); 
+
+        this.logger.info("transform(): width={}, lineWidth={}, height={}", pixelWidth, lineWidth, pixelHeight);
+        this.logger.info("transform(): offsetX={}, offsetY={}", offsetX, offsetY);
+
+        append(String.format("GW%d,%d,%d,%d,",
+            this.offsetX,
+            this.offsetY,
+            lineWidth,
+            pixelHeight).getBytes());
+
+        int line = 0;
+        for (int y=0; y<pixelHeight; y++) {
+            byte[] buf = new byte[lineWidth];
+            for (int x=0; x<pixelWidth; x++) {
+                int v = (1 << (7 - (x & 7)));   // set bits, MSB=pixel_0, LSB=pixel_7
+                buf[x >> 3] += (pixels[line + x] != 0) ? 0 : v;
+            }
+            line += pixelWidth;
+            append(buf);
+        }
+        append("\n".getBytes());
+        append(getConfig("epilogue", ""));
     }
 
-	/**
-	 * @return a string properly escaped for Zebra label printers
-	 */
-    private String zebraEscape(String s) {
-        String t = s.replace("\\","\\\\");
-        t = t.replace("\"", "\\\"");
-        return t;
-    }
 }

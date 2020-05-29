@@ -104,8 +104,8 @@ public class PrintAdminBean implements Serializable {
      */
     public void actionPrintTestPage() {
         PrintDriver driver = PrintDriverFactory.buildPrintDriver(this.printer);
-        driver.printBarcode(BarcodeType.INTERLEAVE25, "1234567895");
-        driver.printLine("Label printing test.");
+        driver.printBarcode(2.0, 2.0, 38.0, 6.0, BarcodeType.INTERLEAVE25, "1234567895");
+        driver.printLine(3.0, 16.0, "Label printing test.");
         submitJob(driver);
     }
 
