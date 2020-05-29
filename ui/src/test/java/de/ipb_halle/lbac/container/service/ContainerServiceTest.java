@@ -280,14 +280,15 @@ public class ContainerServiceTest extends TestBase {
     public void test006_loadContainersWithCmap() {
         Project project = new Project();
         User user = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        ACList noUserAcl = new ACList();
-        noUserAcl = acListService.save(noUserAcl);
+        ACList oneUserAcl = new ACList();
+        oneUserAcl.addACE(user, new ACPermission[]{ACPermission.permREAD});
+        oneUserAcl = acListService.save(oneUserAcl);
 
         User testUser = createUser("testUser", "testUser");
 
         project.setName("Container Test Project");
         project.setOwner(user);
-        project.setUserGroups(noUserAcl);
+        project.setUserGroups(oneUserAcl);
         project.setProjectType(ProjectType.IT_PROJECT);
 
         projectService.saveProjectToDb(project);
@@ -301,6 +302,26 @@ public class ContainerServiceTest extends TestBase {
 
         Assert.assertEquals(3, loadedContainer.size());
         Map<String, Object> cmap = new HashMap<>();
+        cmap.put("id", c0.getId());
+        loadedContainer = instance.loadContainers(testUser, cmap);
+        Assert.assertEquals(1, loadedContainer.size());
+
+        cmap.clear();
+        cmap.put("project", "Container Test Project");
+        loadedContainer = instance.loadContainers(testUser, cmap);
+        Assert.assertEquals(0, loadedContainer.size());
+        loadedContainer = instance.loadContainers(user, cmap);
+        Assert.assertEquals(1, loadedContainer.size());
+
+        cmap.clear();
+        cmap.put("label", "R302");
+        loadedContainer = instance.loadContainers(testUser, cmap);
+        Assert.assertEquals(1, loadedContainer.size());
+        
+        cmap.clear();
+        cmap.put("location", "R302");
+        loadedContainer = instance.loadContainers(testUser, cmap);
+        Assert.assertEquals(2, loadedContainer.size());
     }
 
     @Deployment

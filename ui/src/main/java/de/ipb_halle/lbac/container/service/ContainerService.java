@@ -83,8 +83,14 @@ public class ContainerService implements Serializable {
             + "LEFT JOIN projects p ON p.id=c.projectid "
             + "LEFT JOIN acentries ace ON ace.aclist_id=p.usergroups "
             + "LEFT JOIN memberships ms ON ms.group_id=ace.member_id "
-            + "WHERE (ace.permread=true OR c.projectid IS NULL) "
+            + "LEFT JOIN nested_containers nc ON nc.sourceid=c.id "
+            + "LEFT JOIN containers c2 ON c2.id=nc.targetid "
+            + "WHERE (ace.permread=true OR c.projectid IS NULL OR CAST(p.ownerid AS VARCHAR)=:userid) "
+            + "AND (c.id=:id OR :id=-1) "
             + "AND (CAST(ace.member_id AS VARCHAR)=:userid  OR c.projectid IS NULL) "
+            + "AND (p.name=:project OR :project is null) "
+            + "AND (c.label=:label OR :label is null) "
+            + "AND (c2.label=:location OR :location is null) "
             + "ORDER BY c.id";
 
     private final String SQL_LOAD_NESTED_CONTAINER = "SELECT  "
@@ -102,6 +108,24 @@ public class ContainerService implements Serializable {
             + "JOIN containertypes ct ON ct.name=c.type "
             + "WHERE nc.sourceid=:cid "
             + "ORDER BY ct.rank";
+
+    String SQL_LOAD_ITEMS_OF_CONTAINER = "SELECT "
+            + "itemid,"
+            + "col,"
+            + "row "
+            + "FROM item_positions "
+            + "WHERE containerId=:containerId";
+
+    String SQL_SAVE_ITEM_IN_CONTAINER = "INSERT INTO item_positions ("
+            + "itemid,"
+            + "containerid,"
+            + "row,"
+            + "col) "
+            + "VALUES("
+            + ":itemid,"
+            + ":containerid,"
+            + ":posY,"
+            + ":posX)";
 
     /**
      * Gets all containersnames which matches the pattern %name%
@@ -154,39 +178,33 @@ public class ContainerService implements Serializable {
         return c;
     }
 
-    public List<Container> loadContainerHierarchy(Container container) {
-        ArrayList<Container> containerHierarchy = new ArrayList<>();
-        if (container.getParentContainer() != null) {
-            return new ArrayList<>();
-        } else {
-
-        }
-        return containerHierarchy;
+    public List<Container> loadContainers(
+            User u) {
+        return loadContainers(u, new HashMap<>());
     }
 
     /**
      * Loading of containers with ist full hierarchy.
      *
      * @param u
+     * @param cmap
      * @return
      */
-    public List<Container> loadContainers(User u) {
+    public List<Container> loadContainers(
+            User u,
+            Map<String, Object> cmap) {
         List<Project> projects
                 = projectService.loadReadableProjectsOfUser(u);
 
         List<ContainerEntity> dbEntities
                 = em.createNativeQuery(SQL_LOAD_CONTAINERS, ContainerEntity.class)
                         .setParameter("userid", u.getId().toString())
+                        .setParameter("id", cmap.containsKey("id") ? cmap.get("id") : "-1")
+                        .setParameter("project", cmap.containsKey("project") ? cmap.get("project") : null)
+                        .setParameter("label", cmap.containsKey("label") ? cmap.get("label") : null)
+                        .setParameter("location", cmap.containsKey("location") ? cmap.get("location") : null)
                         .getResultList();
 
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<ContainerEntity> cq = cb.createQuery(ContainerEntity.class);
-//        Root<ContainerEntity> rootEntry = cq.from(ContainerEntity.class);
-//        CriteriaQuery<ContainerEntity> all = cq.select(rootEntry);
-//
-//        TypedQuery<ContainerEntity> allQuery = em.createQuery(all);
-//
-//        List<ContainerEntity> dbEntities = allQuery.getResultList();
         List<Container> result = new ArrayList<>();
 
         for (ContainerEntity dbe : dbEntities) {
@@ -200,6 +218,7 @@ public class ContainerService implements Serializable {
                     result.add(container);
                 }
             }
+            //I think that is no more neccessary
             if (container != null && dbe.getParentcontainer() != null) {
                 container.setParentContainer(loadContainerById(dbe.getParentcontainer()));
             }
@@ -254,13 +273,8 @@ public class ContainerService implements Serializable {
             return null;
         }
         Item[][][] items = new Item[dimSize[0]][dimSize[1]][dimSize[2]];
-        String sql = "SELECT "
-                + "itemid,"
-                + "col,"
-                + "row "
-                + "FROM item_positions "
-                + "WHERE containerId=:containerId";
-        List<Object[]> results = this.em.createNativeQuery(sql)
+
+        List<Object[]> results = this.em.createNativeQuery(SQL_LOAD_ITEMS_OF_CONTAINER)
                 .setParameter("containerId", c.getId())
                 .getResultList();
 
@@ -378,18 +392,7 @@ public class ContainerService implements Serializable {
     }
 
     public void saveItemInContainer(int itemid, int containerid, int posX, int posY) {
-        String sql = "INSERT INTO item_positions ("
-                + "itemid,"
-                + "containerid,"
-                + "row,"
-                + "col) "
-                + "VALUES("
-                + ":itemid,"
-                + ":containerid,"
-                + ":posY,"
-                + ":posX)";
-
-        this.em.createNativeQuery(sql)
+        this.em.createNativeQuery(SQL_SAVE_ITEM_IN_CONTAINER)
                 .setParameter("itemid", itemid)
                 .setParameter("containerid", containerid)
                 .setParameter("posX", posX)
