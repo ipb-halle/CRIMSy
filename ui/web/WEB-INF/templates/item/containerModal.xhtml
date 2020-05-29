@@ -33,7 +33,7 @@
 
                 title="XXX-Container-XXX"
                 size="modal-lg">
-               
+
                 <b:dataTable
                     value="#{containerModalBean.container}"
                     select="true"    
@@ -43,12 +43,12 @@
                     var ="container">
                     <b:dataTableColumn value="#{container.id}" />
                     <b:dataTableColumn value="#{container.label}" />
-                    <b:dataTableColumn value="#{container.location.toString()}" />
+                    <b:dataTableColumn value="#{container.getLocation(false)}" />
                     <b:dataTableColumn value="#{container.type}" />
                     <b:dataTableColumn value="#{containerModalBean.getDimensionString(container)}" />
 
                 </b:dataTable>
-                
+
             </b:modal>
         </ui:composition>
     </h:body>
