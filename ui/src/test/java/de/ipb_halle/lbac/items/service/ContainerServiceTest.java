@@ -256,7 +256,7 @@ public class ContainerServiceTest extends TestBase {
         instance.saveContainer(c0);
         instance.saveContainer(c1);
         instance.saveContainer(c2);
-        Set<String> names = instance.getSimilarMaterialNames("kart", publicUser);
+        Set<String> names = instance.getSimilarContainerNames("kart", publicUser);
         Assert.assertEquals(1, names.size());
         Assert.assertEquals("Karton3", names.iterator().next());
 

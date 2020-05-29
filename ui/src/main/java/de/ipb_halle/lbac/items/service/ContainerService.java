@@ -76,7 +76,7 @@ public class ContainerService implements Serializable {
      * @return List of matching materialnames
      */
     @SuppressWarnings("unchecked")
-    public Set<String> getSimilarMaterialNames(String name, User user) {
+    public Set<String> getSimilarContainerNames(String name, User user) {
         List l = this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("label", "%" + name + "%")
                 .getResultList();

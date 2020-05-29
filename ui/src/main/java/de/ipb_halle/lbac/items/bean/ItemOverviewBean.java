@@ -245,7 +245,7 @@ public class ItemOverviewBean implements Serializable {
     }
 
     public List<String> getSimilarContainerNames(String input) {
-        return new ArrayList<>(containerService.getSimilarMaterialNames(input, currentUser));
+        return new ArrayList<>(containerService.getSimilarContainerNames(input, currentUser));
     }
 
     public String getItemSearchId() {

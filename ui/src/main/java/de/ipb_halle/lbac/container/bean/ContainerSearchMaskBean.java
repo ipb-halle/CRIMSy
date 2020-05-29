@@ -17,11 +17,20 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
+import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.items.service.ContainerService;
+import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -35,6 +44,15 @@ public class ContainerSearchMaskBean implements Serializable {
     private String containerSearchId;
     private String searchProject;
     private String searchLocation;
+    private User currentUser;
+
+    Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    @Inject
+    private ContainerService containerService;
+
+    @Inject
+    private ProjectService projectService;
 
     public void actionClearSearchFilter() {
         containerSearchName = null;
@@ -48,11 +66,12 @@ public class ContainerSearchMaskBean implements Serializable {
     }
 
     public List<String> getSimilarContainerNames(String pattern) {
-        return new ArrayList<>();
+        Set<String> suggestions = containerService.getSimilarContainerNames(pattern, currentUser);
+        return new ArrayList<>(suggestions);
     }
 
     public List<String> getSimilarProjectNames(String pattern) {
-        return new ArrayList<>();
+        return projectService.getSimilarProjectNames(pattern, currentUser);
     }
 
     public String getContainerSearchName() {
@@ -85,6 +104,11 @@ public class ContainerSearchMaskBean implements Serializable {
 
     public void setSearchLocation(String searchLocation) {
         this.searchLocation = searchLocation;
+    }
+
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+
     }
 
 }
