@@ -112,7 +112,8 @@ public class InfoObjectServiceTest extends TestBase {
                 .addClass(MembershipOrchestrator.class);
     }
     
-    private User createUser(String login, String name) {
+    @Override
+    public User createUser(String login, String name) {
         User u = new User();
         u.setLogin(login);
         u.setName(name);

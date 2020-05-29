@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.service;
+package de.ipb_halle.lbac.container.service;
 
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
@@ -32,6 +32,8 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.service.ArticleService;
+import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
@@ -41,7 +43,9 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.service.ACListService;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -64,6 +68,7 @@ public class ContainerServiceTest extends TestBase {
     Container c0;
     Container c1;
     Container c2;
+    Container c3;
 
     private CreationTools creationTools;
     private User publicUser;
@@ -118,13 +123,22 @@ public class ContainerServiceTest extends TestBase {
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
         c2.setType(new ContainerType("CARTON", 90));
+
+        c3 = new Container();
+        c3.setBarCode("43753456");
+        c3.setDimension(null);
+        c3.setFireSection(c1.getFireSection());
+        c3.setGvoClass(c1.getGvoClass());
+        c3.setLabel("Karton5");
+        c3.setParentContainer(c1);
+        c3.setType(new ContainerType("CARTON", 90));
     }
 
     @After
     public void finish() {
 
         super.cleanItemsFromDb();
-       
+
     }
 
     @Test
@@ -155,7 +169,7 @@ public class ContainerServiceTest extends TestBase {
     @Test
     public void test002_loadContainer() {
 
-        User secondUser = createUser("testUser", "testUser", nodeService.getLocalNode(), memberService, membershipService);
+        User secondUser = createUser("testUser", "testUser");
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "testproject");
         p.setOwner(secondUser);
         ACList priviligedAcl = new ACList();
@@ -260,6 +274,32 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertEquals(1, names.size());
         Assert.assertEquals("Karton3", names.iterator().next());
 
+    }
+
+    @Test
+    public void test006_loadContainersWithCmap() {
+        Project project = new Project();
+        User user = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        ACList noUserAcl = new ACList();
+        noUserAcl = acListService.save(noUserAcl);
+        
+        User testUser=createUser("testUser","testUser");
+
+        project.setName("Container Test Project");
+        project.setOwner(user);
+        project.setUserGroups(noUserAcl);
+        project.setProjectType(ProjectType.IT_PROJECT);
+
+        projectService.saveProjectToDb(project);
+        c1.setProject(project);
+        instance.saveContainer(c0);
+        instance.saveContainer(c1);
+        instance.saveContainer(c2);
+        instance.saveContainer(c3);
+
+        List<Container> loadedContainer = instance.loadContainers(user);
+
+        Map<String, Object> cmap = new HashMap<>();
     }
 
     @Deployment

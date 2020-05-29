@@ -109,10 +109,7 @@ public class CollectionOperationTest extends TestBase {
         String collName = "test001_testColl";
         User u = createUser(
                 "testuser",
-                "testuser",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         //Try to create a collection with reserved name
         Collection coll = new Collection();
@@ -154,10 +151,7 @@ public class CollectionOperationTest extends TestBase {
         String collName = "deleteCollectionTest_collection";
         User u = createUser(
                 "testuser",
-                "testuser",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         Collection coll = new Collection();
         coll.setOwner(u);
@@ -184,10 +178,7 @@ public class CollectionOperationTest extends TestBase {
         String collName = "testColl";
         User u = createUser(
                 "testuser",
-                "testuser",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         Collection coll = new Collection();
 

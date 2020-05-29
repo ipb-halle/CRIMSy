@@ -107,7 +107,7 @@ public class MaterialBeanTest extends TestBase {
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
         publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         acl = new ACList();
-        customUser = createUser("testUser", "testUser", nodeService.getLocalNode(), memberService, membershipService);
+        customUser = createUser("testUser", "testUser");
         acl.addACE(customUser, new ACPermission[]{ACPermission.permEDIT});
         acl = aclistService.save(acl);
         project.setOwner(publicUser);

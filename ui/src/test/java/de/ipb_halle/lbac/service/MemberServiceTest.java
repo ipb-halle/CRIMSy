@@ -99,7 +99,7 @@ public class MemberServiceTest extends TestBase {
     public void testMemberService() {
         String name = "John Doe";
 
-        User u = createUser("jdoe", name, nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("jdoe", name);
         UUID id = u.getId();
 
         User v = this.memberService.loadUserById(id);
@@ -113,7 +113,7 @@ public class MemberServiceTest extends TestBase {
      */
     @Test
     public void testMembershipService() {
-        User u = createUser("joe", "Joe", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("joe", "Joe");
 
         this.membershipService.addMembership(u, u);
 
@@ -155,7 +155,7 @@ public class MemberServiceTest extends TestBase {
      */
     @Test
     public void testNestedGroups() {
-        User u = createUser("njoe", "Nested Joe", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("njoe", "Nested Joe");
         this.membershipService.addMembership(u, u);
 
         Group[] g = new Group[10];

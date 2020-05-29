@@ -181,7 +181,7 @@ public class CollectionWebClientTest extends TestBase {
     public void testCollectionWebClient() throws IOException {
         resetCollectionsInDb(collectionService);
 
-        User u = createUser("test", "testName", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("test", "testName");
 
         createLocalCollections(
                 createAcList(u, true),

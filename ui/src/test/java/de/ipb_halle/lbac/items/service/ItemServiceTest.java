@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.service;
 
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
@@ -210,7 +211,7 @@ public class ItemServiceTest extends TestBase {
         history3.setAction("EDIT");
         instance.saveItemHistory(history3);
         Thread.sleep(100);
-        User user2 = createUser("itemServiceTestUser", "itemServiceTestUser", nodeService.getLocalNode(), memberService, membershipService);
+        User user2 = createUser("itemServiceTestUser", "itemServiceTestUser");
         ItemHistory history4 = new ItemHistory();
         history4.setActor(owner);
         history4.setItem(item);

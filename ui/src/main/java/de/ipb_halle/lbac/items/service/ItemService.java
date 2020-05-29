@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.service;
 
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;

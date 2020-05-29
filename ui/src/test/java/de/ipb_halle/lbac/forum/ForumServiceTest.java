@@ -125,10 +125,7 @@ public class ForumServiceTest extends TestBase {
         User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         User idOfUser2 = createUser(
                 "forumuser1",
-                "forumuser1",
-                nodeService.getLocalNode(),
-                memberService,
-                memberShipService);
+                "forumuser1");
 
         Cloud cloud = cloudService.load().get(0);
         Topic topic2 = instance.createNewTopic(

@@ -79,10 +79,7 @@ public class FileEntityServiceTest extends TestBase {
 
         User u = createUser(
                 "testuser",
-                "testuser",
-                this.nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         ACList acl = new ACList();
         acl.setName("test");

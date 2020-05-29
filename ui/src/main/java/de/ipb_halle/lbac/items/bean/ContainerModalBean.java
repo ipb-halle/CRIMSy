@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
-import de.ipb_halle.lbac.items.service.ContainerService;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

@@ -97,7 +97,7 @@ public class ProjectServiceTest extends TestBase {
         List<Project> projectsOfPublicUser = instance.loadReadableProjectsOfUser(u);
         Assert.assertEquals("Only 1 project should be found", 1, projectsOfPublicUser.size());
 
-        User user2 = createUser("UserWithoutPermission", "no name", nodeService.getLocalNode(), memberService, membershipService);
+        User user2 = createUser("UserWithoutPermission", "no name");
         List<Project> projectsOfUser2 = instance.loadReadableProjectsOfUser(user2);
         Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
 

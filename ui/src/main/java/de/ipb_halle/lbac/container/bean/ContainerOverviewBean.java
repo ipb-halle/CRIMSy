@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.container.bean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.items.service.ContainerService;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +41,15 @@ public class ContainerOverviewBean implements Serializable {
     private List<Container> readableContainer = new ArrayList<>();
 
     @Inject
+    private ContainerSearchMaskBean searchMask;
+
+    @Inject
     private ContainerService containerService;
 
+    public void reloadContainer(){
+        
+    }
+    
     public List<Container> getReadableContainer() {
         return readableContainer;
     }

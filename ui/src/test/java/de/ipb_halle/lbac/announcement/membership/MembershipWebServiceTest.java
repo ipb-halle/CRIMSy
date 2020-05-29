@@ -165,7 +165,7 @@ public class MembershipWebServiceTest extends TestBase {
         testCloudNode.setPublicKey(Base64.getEncoder().encodeToString(keymanager.getLocalPublicKey(TESTCLOUD).getEncoded()));
         testCloudNode = cloudNodeService.save(testCloudNode);
 
-        User u = createUser("testUser", "testUser", n, memberService, membershipService);
+        User u = createUser("testUser", "testUser");
 
         Group group1 = createGroup("group1", n, memberService, membershipService);
         membershipService.addMembership(group1,u);
@@ -191,7 +191,7 @@ public class MembershipWebServiceTest extends TestBase {
 
         LbacWebClient client = new LbacWebClient();
         WebRequestSignature signature = client.createWebRequestSignature(keymanager.getLocalPrivateKey(TESTCLOUD));
-
+        u.setNode(n);
         MembershipWebRequest webRequest = new MembershipWebRequest();
         webRequest.setUser(u);
         webRequest.setCloudName(TESTCLOUD);

@@ -269,7 +269,7 @@ public class MaterialServiceTest extends TestBase {
         editedMaterial.setMolecule(new Molecule("molecule-model after edit", 1));
 
         //Change the owner and project
-        User u2 = createUser("user2", "user2", nodeService.getLocalNode(), memberService, membershipService);
+        User u2 = createUser("user2", "user2");
         editedMaterial.setOwnerID(u2.getId());
         editedMaterial.setProjectId(p2.getId());
 
@@ -448,7 +448,7 @@ public class MaterialServiceTest extends TestBase {
 
     @Test
     public void test006_getReadableMaterials() {
-        User testUser = createUser("testUser", "testUser", nodeService.getLocalNode(), memberService, membershipService);
+        User testUser = createUser("testUser", "testUser");
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(testUser);
 

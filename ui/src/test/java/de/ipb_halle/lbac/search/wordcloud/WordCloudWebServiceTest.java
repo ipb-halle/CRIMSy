@@ -124,9 +124,7 @@ public class WordCloudWebServiceTest extends TestBase {
 
         User user1 = createUser(
                 "testUser",
-                "testUser", nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testUser");
 
         ACList acl = createAcList(user1, true);
 

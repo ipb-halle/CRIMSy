@@ -120,9 +120,9 @@ public class PermissionEditBeanTest extends TestBase {
     @Test
     public void getACEntriesOfGroupsTest() {
 
-        User u = createUser("testuser", "testuser", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("testuser", "testuser");
         //Creates a second user which creates a second group. This group is not in the acList of the following collection
-        User u2 = createUser("testuser2", "testuser2", nodeService.getLocalNode(), memberService, membershipService);
+        User u2 = createUser("testuser2", "testuser2");
         ACList acList = createAcList(u, true);
 
         // Sets Permissionrights of the two build-in groups and the group of the user

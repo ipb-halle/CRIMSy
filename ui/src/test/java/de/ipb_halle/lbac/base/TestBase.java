@@ -150,7 +150,7 @@ public class TestBase implements Serializable {
     @Before
     public void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
-        
+
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
         this.entityManagerService.doSqlUpdate("Delete from containers");
@@ -174,34 +174,28 @@ public class TestBase implements Serializable {
      *
      * @param login
      * @param name
-     * @param localNode
-     * @param memberService
-     * @param memberShipService
      * @return
      */
     protected User createUser(
             String login,
-            String name,
-            Node localNode,
-            MemberService memberService,
-            MembershipService memberShipService) {
+            String name) {
         User u = new User();
         u.setLogin(login);
         u.setName(name);
-        u.setNode(localNode);
+        u.setNode(nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
         memberService.save(u);
 
         Group g = new Group();
         g.setId(UUID.randomUUID());
         g.setName("Group of user " + u.getLogin());
-        g.setNode(localNode);
+        g.setNode(nodeService.getLocalNode());
         g.setSubSystemData("L");
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
         memberService.save(g);
 
-        memberShipService.addMembership(u, u);
-        memberShipService.addMembership(g, u);
+        membershipService.addMembership(u, u);
+        membershipService.addMembership(g, u);
 
         return u;
     }

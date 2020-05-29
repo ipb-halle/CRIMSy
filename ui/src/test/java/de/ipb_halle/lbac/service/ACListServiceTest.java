@@ -126,11 +126,11 @@ public class ACListServiceTest extends TestBase {
     private void createPeople() {
         Node localNode = nodeService.getLocalNode();
         User[] u = new User[6];
-        u[0] = createUser("acl_admin", "ACL Admin", localNode, memberService, membershipService);
-        u[1] = createUser("acl_alice", "ACL Alice", localNode, memberService, membershipService);
-        u[2] = createUser("acl_bob", "ACL Bob", localNode, memberService, membershipService);
-        u[3] = createUser("acl_carol", "ACL Carol", localNode, memberService, membershipService);
-        u[4] = createUser("acl_eve", "ACL Eve", localNode, memberService, membershipService);
+        u[0] = createUser("acl_admin", "ACL Admin");
+        u[1] = createUser("acl_alice", "ACL Alice");
+        u[2] = createUser("acl_bob", "ACL Bob");
+        u[3] = createUser("acl_carol", "ACL Carol");
+        u[4] = createUser("acl_eve", "ACL Eve");
 
         Group[] g = new Group[9];
         g[0] = createGroup("ACL_public", localNode, memberService, membershipService);
@@ -194,7 +194,7 @@ public class ACListServiceTest extends TestBase {
         String ACL_NAME = "acl_someone";
 
         // basic ACL creation; grants READ permission to someone
-        User someone = createUser(USER_NAME, USER_DESCRIPTION, nodeService.getLocalNode(), memberService, membershipService);
+        User someone = createUser(USER_NAME, USER_DESCRIPTION);
 
         ACList acl = new ACList().addACE(someone, new ACPermission[]{
             ACPermission.permREAD});

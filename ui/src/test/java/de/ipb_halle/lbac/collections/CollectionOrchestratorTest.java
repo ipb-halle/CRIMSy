@@ -115,16 +115,10 @@ public class CollectionOrchestratorTest extends TestBase {
 
         User u = createUser(
                 "test",
-                "testName",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testName");
         User u2 = createUser(
                 "test2",
-                "testName2",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testName2");
 
         createLocalCollections(
                 createAcList(u, true), nodeService.getLocalNode(),

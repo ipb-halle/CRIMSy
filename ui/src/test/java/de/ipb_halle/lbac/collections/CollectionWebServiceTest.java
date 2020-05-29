@@ -121,8 +121,8 @@ public class CollectionWebServiceTest
 
         Assert.assertNotNull("Could not initialize WebService", collectionWebService);
 
-        User u = createUser("test", "testName", nodeService.getLocalNode(), memberService, membershipService);
-        User u2 = createUser("test2", "testName2", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("test", "testName");
+        User u2 = createUser("test2", "testName2");
 
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
         cn.setPublicKey(Base64.getEncoder().encodeToString(keyManager.getLocalPublicKey(TESTCLOUD).getEncoded()));

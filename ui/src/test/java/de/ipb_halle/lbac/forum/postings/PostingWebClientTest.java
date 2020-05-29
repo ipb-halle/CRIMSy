@@ -79,9 +79,7 @@ public class PostingWebClientTest extends TestBase {
         Cloud cloud = cloudService.load().get(0);
         User u = createUser(
                 "test",
-                "testName",
-                nodeService.getLocalNode(),
-                memberService, membershipService);
+                "testName");
         Topic t = forumService.createNewTopic("TestTopic", TopicCategory.OTHER, u, cloud.getName());
         client.announcePostingToRemoteNode(t, u, cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID));
     }

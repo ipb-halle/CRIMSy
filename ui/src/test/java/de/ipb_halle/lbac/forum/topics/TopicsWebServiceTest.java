@@ -91,9 +91,7 @@ public class TopicsWebServiceTest extends TestBase {
 
         User u = createUser(
                 "test",
-                "testName",
-                nodeService.getLocalNode(),
-                memberService, membershipService);
+                "testName");
 
         TopicsWebRequest webRequest = createWebRequest(u);
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);

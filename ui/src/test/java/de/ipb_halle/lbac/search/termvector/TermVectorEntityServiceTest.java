@@ -83,10 +83,7 @@ public class TermVectorEntityServiceTest extends TestBase {
 
         User u = createUser(
                 "testuser",
-                "testuser",
-                this.nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
        
 

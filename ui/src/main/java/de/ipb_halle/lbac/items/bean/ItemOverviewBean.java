@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.items.service.ContainerService;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.service.MaterialService;

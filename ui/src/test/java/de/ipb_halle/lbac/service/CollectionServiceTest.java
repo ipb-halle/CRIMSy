@@ -102,7 +102,7 @@ public class CollectionServiceTest extends TestBase {
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(MembershipOrchestrator.class);
     }
-    
+
     /**
      * Test the collection service
      */
@@ -111,10 +111,7 @@ public class CollectionServiceTest extends TestBase {
 
         User u = createUser(
                 "testuser",
-                "testuser",
-                this.nodeService.getLocalNode(),
-                memberService,
-                memberShipService);
+                "testuser");
 
         ACList acl = new ACList();
         acl.setName("test");
@@ -134,7 +131,7 @@ public class CollectionServiceTest extends TestBase {
         HashMap<String, Object> crits = new HashMap<>();
         crits.put("name", "Test_Collection1");
         List<Collection> loadedCols = collectionService.load(crits);
-        Assert.assertTrue("Size of loaded collections must greater than one", loadedCols.size()>=1);
+        Assert.assertTrue("Size of loaded collections must greater than one", loadedCols.size() >= 1);
 
         assertTrue(col.getACList().getPerm(ACPermission.permREAD, u));
     }

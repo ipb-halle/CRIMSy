@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
-import de.ipb_halle.lbac.items.service.ContainerService;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.Material;
 

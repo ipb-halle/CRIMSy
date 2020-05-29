@@ -127,8 +127,8 @@ public class CollectionPermissionAnalyserTest extends TestBase {
 
         instance = new CollectionPermissionAnalyser("public", acListService);
 
-        User u = createUser("ownerOfColl", "ownerOfColl", nodeService.getLocalNode(), memberService, membershipService);
-        User u2 = createUser("testuser", "testuser", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("ownerOfColl", "ownerOfColl");
+        User u2 = createUser("testuser", "testuser");
         ACList acList = createAcList(u, true);
         List<Collection> colls = createLocalCollections(
                 acList,
