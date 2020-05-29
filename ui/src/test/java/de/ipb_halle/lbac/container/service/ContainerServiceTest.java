@@ -317,11 +317,15 @@ public class ContainerServiceTest extends TestBase {
         cmap.put("label", "R302");
         loadedContainer = instance.loadContainers(testUser, cmap);
         Assert.assertEquals(1, loadedContainer.size());
-        
+
         cmap.clear();
         cmap.put("location", "R302");
         loadedContainer = instance.loadContainers(testUser, cmap);
         Assert.assertEquals(2, loadedContainer.size());
+        this.entityManagerService.doSqlUpdate("Delete from nested_containers");
+        cleanItemsFromDb();
+        this.entityManagerService.doSqlUpdate("Delete from containers");
+        cleanProjectFromDB(project, true);
     }
 
     @Deployment
