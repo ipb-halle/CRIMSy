@@ -33,10 +33,13 @@ public class PrintDriverFactory {
         drivers = new ArrayList<String> ();
         drivers.add(ZebraE2Driver.DRIVER_NAME); 
         drivers.add(StarLC10Driver.DRIVER_NAME);
+        drivers.add(BrotherPT_P710BT_Driver.DRIVER_NAME);
     }
 
     public static PrintDriver buildPrintDriver(Printer printer) {
         switch(printer.getDriver()) {
+            case BrotherPT_P710BT_Driver.DRIVER_NAME :
+                return new BrotherPT_P710BT_Driver().setPrinter(printer);
             case ZebraE2Driver.DRIVER_NAME :
                 return new ZebraE2Driver().setPrinter(printer);
             case StarLC10Driver.DRIVER_NAME : 
