@@ -132,8 +132,8 @@ public class TaxonomyRenderController {
         if (taxonomyBean.getMode() == Mode.SHOW || taxonomyBean.getMode() == Mode.HISTORY) {
             if (taxonomyBean.getSelectedTaxonomy() != null) {
                 Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-                back = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_detail", null)+"<br>";
-                back+=t.getFirstName();
+                back = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_detail", null) + "<br>";
+                back += t.getFirstName();
                 back += "<br><br>";
                 back += "ID " + t.getId() + "<br>";
                 back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_created", null) + " " + SDF.format(t.getCreationTime()) + "<br>";
@@ -147,7 +147,7 @@ public class TaxonomyRenderController {
         if (taxonomyBean.getMode() == Mode.EDIT) {
             back = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit", null);
             back += "<br><br>";
-            Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy();
+            Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
             back += "ID " + t.getId();
             return back;
         }
