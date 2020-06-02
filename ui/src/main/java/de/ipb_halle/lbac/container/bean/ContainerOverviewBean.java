@@ -23,11 +23,15 @@ import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -36,6 +40,8 @@ import javax.inject.Named;
 @SessionScoped
 @Named
 public class ContainerOverviewBean implements Serializable {
+
+    Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private User currentUser;
     private List<Container> readableContainer = new ArrayList<>();
@@ -46,10 +52,13 @@ public class ContainerOverviewBean implements Serializable {
     @Inject
     private ContainerService containerService;
 
-    public void reloadContainer(){
-        
+    @Inject
+    private ContainerSearchMaskBean searchMaskBean;
+
+    public void reloadContainer() {
+
     }
-    
+
     public List<Container> getReadableContainer() {
         return readableContainer;
     }
@@ -69,6 +78,25 @@ public class ContainerOverviewBean implements Serializable {
 
     public void actionStartCreation() {
 
+    }
+
+    public void actionStartFilteredSearch() {
+
+        Map<String, Object> cmap = new HashMap<>();
+        if (searchMaskBean.getContainerSearchName() != null && !searchMaskBean.getContainerSearchName().trim().isEmpty()) {
+            cmap.put("label", searchMaskBean.getContainerSearchName());
+        }
+        if (searchMaskBean.getContainerSearchId() != null && !searchMaskBean.getContainerSearchId().trim().isEmpty()) {
+            cmap.put("id", Integer.valueOf(searchMaskBean.getContainerSearchId()));
+        }
+        if (searchMaskBean.getSearchProject() != null && !searchMaskBean.getSearchProject().trim().isEmpty()) {
+            cmap.put("project", searchMaskBean.getSearchProject());
+        }
+        if (searchMaskBean.getSearchLocation() != null && !searchMaskBean.getSearchLocation().trim().isEmpty()) {
+            cmap.put("location", searchMaskBean.getSearchLocation());
+        }
+
+        readableContainer = containerService.loadContainers(currentUser, cmap);
     }
 
 }

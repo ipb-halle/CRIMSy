@@ -52,23 +52,23 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class ContainerService implements Serializable {
-
+    
     Logger logger = LogManager.getLogger(this.getClass().getName());
     @Inject
     private ProjectService projectService;
-
+    
     @Inject
     private ACListService aclistService;
-
+    
     @Inject
     ItemService itemService;
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
-
+    
     private final String SQL_NESTED_TARGETS = "SELECT targetid FROM nested_containers WHERE sourceid=:source";
     private final String SQL_GET_SIMILAR_NAMES = "SELECT label FROM containers WHERE LOWER(label) LIKE LOWER(:label)";
-
+    
     private final String SQL_LOAD_CONTAINERS = "SELECT DISTINCT "
             + "c.id, "
             + "c.parentcontainer, "
@@ -87,12 +87,12 @@ public class ContainerService implements Serializable {
             + "LEFT JOIN containers c2 ON c2.id=nc.targetid "
             + "WHERE (ace.permread=true OR c.projectid IS NULL OR CAST(p.ownerid AS VARCHAR)=:userid) "
             + "AND (c.id=:id OR :id=-1) "
-            + "AND (CAST(ace.member_id AS VARCHAR)=:userid  OR c.projectid IS NULL) "
-            + "AND (p.name=:project OR :project is null) "
-            + "AND (c.label=:label OR :label is null) "
-            + "AND (c2.label=:location OR :location is null) "
+            + "AND (CAST(ms.member_id AS VARCHAR)=:userid  OR c.projectid IS NULL) "
+            + "AND (p.name=CAST(:project AS VARCHAR) OR CAST(:project AS VARCHAR) ='no_project') "
+            + "AND (c.label=:label OR :label = 'no_label') "
+            + "AND (c2.label=:location OR :location ='no_location') "
             + "ORDER BY c.id";
-
+    
     private final String SQL_LOAD_NESTED_CONTAINER = "SELECT  "
             + "c.id, "
             + "c.parentcontainer, "
@@ -108,14 +108,14 @@ public class ContainerService implements Serializable {
             + "JOIN containertypes ct ON ct.name=c.type "
             + "WHERE nc.sourceid=:cid "
             + "ORDER BY ct.rank";
-
+    
     String SQL_LOAD_ITEMS_OF_CONTAINER = "SELECT "
             + "itemid,"
             + "col,"
             + "row "
             + "FROM item_positions "
             + "WHERE containerId=:containerId";
-
+    
     String SQL_SAVE_ITEM_IN_CONTAINER = "INSERT INTO item_positions ("
             + "itemid,"
             + "containerid,"
@@ -141,20 +141,20 @@ public class ContainerService implements Serializable {
                 .getResultList();
         return new HashSet<>(l);
     }
-
+    
     public Container loadContainerById(int id) {
         ContainerEntity entity = this.em.find(ContainerEntity.class, id);
         Container container = new Container(entity);
         container.setType(loadContainerTypeByName(entity.getType()));
         container.setItems(loadItemsOfContainer(container));
         return container;
-
+        
     }
-
+    
     public List<Container> loadContainerHierarchy(Item item) {
         return new ArrayList<>();
     }
-
+    
     public Container saveContainer(Container c) {
         ContainerEntity dbe = new ContainerEntity();
         if (c.getParentContainer() != null) {
@@ -177,7 +177,7 @@ public class ContainerService implements Serializable {
         c.setId(dbe.getId());
         return c;
     }
-
+    
     public List<Container> loadContainers(
             User u) {
         return loadContainers(u, new HashMap<>());
@@ -195,16 +195,16 @@ public class ContainerService implements Serializable {
             Map<String, Object> cmap) {
         List<Project> projects
                 = projectService.loadReadableProjectsOfUser(u);
-
+        
         List<ContainerEntity> dbEntities
                 = em.createNativeQuery(SQL_LOAD_CONTAINERS, ContainerEntity.class)
                         .setParameter("userid", u.getId().toString())
-                        .setParameter("id", cmap.containsKey("id") ? cmap.get("id") : "-1")
-                        .setParameter("project", cmap.containsKey("project") ? cmap.get("project") : null)
-                        .setParameter("label", cmap.containsKey("label") ? cmap.get("label") : null)
-                        .setParameter("location", cmap.containsKey("location") ? cmap.get("location") : null)
+                        .setParameter("id", cmap.containsKey("id") ? cmap.get("id") : -1)
+                        .setParameter("project", cmap.containsKey("project") ? cmap.get("project") : "no_project")
+                        .setParameter("label", cmap.containsKey("label") ? cmap.get("label") : "no_label")
+                        .setParameter("location", cmap.containsKey("location") ? cmap.get("location") : "no_location")
                         .getResultList();
-
+        
         List<Container> result = new ArrayList<>();
 
         for (ContainerEntity dbe : dbEntities) {
@@ -229,12 +229,12 @@ public class ContainerService implements Serializable {
             for (ContainerEntity nce : nestedContainers) {
                 container.getContainerHierarchy().add(loadContainerById(nce.getId()));
             }
-
+            
         }
         return result;
-
+        
     }
-
+    
     public List<ContainerType> loadContainerTypes() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ContainerTypeEntity> cq = cb.createQuery(ContainerTypeEntity.class);
@@ -248,7 +248,7 @@ public class ContainerService implements Serializable {
         }
         return result;
     }
-
+    
     private Project getProjectById(Integer id, List<Project> project) {
         for (Project p : project) {
             if (p.getId() == id) {
@@ -257,7 +257,7 @@ public class ContainerService implements Serializable {
         }
         return null;
     }
-
+    
     public Integer getRankOfContainerType(String type) {
         ContainerTypeEntity entity = em.find(ContainerTypeEntity.class, type);
         if (entity != null) {
@@ -265,7 +265,7 @@ public class ContainerService implements Serializable {
         }
         return null;
     }
-
+    
     @SuppressWarnings("unchecked")
     public Item[][][] loadItemsOfContainer(Container c) {
         int[] dimSize = c.getDimensionIndex();
@@ -273,20 +273,20 @@ public class ContainerService implements Serializable {
             return null;
         }
         Item[][][] items = new Item[dimSize[0]][dimSize[1]][dimSize[2]];
-
+        
         List<Object[]> results = this.em.createNativeQuery(SQL_LOAD_ITEMS_OF_CONTAINER)
                 .setParameter("containerId", c.getId())
                 .getResultList();
-
+        
         for (Object[] entity : results) {
             Integer itemid = (Integer) entity[0];
             Integer x = (Integer) entity[1];
             Integer y = (Integer) entity[2];
             Item i = itemService.loadItemByIdWithoutContainer(itemid);
             items[x][y][0] = i;
-
+            
         }
-
+        
         return items;
     }
 
@@ -357,7 +357,7 @@ public class ContainerService implements Serializable {
         }
         List<Integer> parentContainer = loadNestedTargets(id);
         List<Container> nestedContainer = new ArrayList<>();
-
+        
         Map<Integer, List<Integer>> l = new HashMap<>();
         //Load all targets for every container in chain 
         for (int i : parentContainer) {
@@ -375,7 +375,7 @@ public class ContainerService implements Serializable {
 
         return nestedContainer;
     }
-
+    
     private int getChainWithLeastElements(Map<Integer, List<Integer>> l) {
         int leastElementsId = -1;
         for (int key : l.keySet()) {
@@ -385,12 +385,12 @@ public class ContainerService implements Serializable {
         }
         return leastElementsId;
     }
-
+    
     public ContainerType loadContainerTypeByName(String name) {
         ContainerTypeEntity entity = em.find(ContainerTypeEntity.class, name);
         return new ContainerType(entity.getName(), entity.getRank());
     }
-
+    
     public void saveItemInContainer(int itemid, int containerid, int posX, int posY) {
         this.em.createNativeQuery(SQL_SAVE_ITEM_IN_CONTAINER)
                 .setParameter("itemid", itemid)

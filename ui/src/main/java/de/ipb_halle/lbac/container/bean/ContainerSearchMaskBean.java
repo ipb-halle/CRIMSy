@@ -61,10 +61,6 @@ public class ContainerSearchMaskBean implements Serializable {
         searchLocation = null;
     }
 
-    public void actionApplySearchFilter() {
-
-    }
-
     public List<String> getSimilarContainerNames(String pattern) {
         Set<String> suggestions = containerService.getSimilarContainerNames(pattern, currentUser);
         return new ArrayList<>(suggestions);
