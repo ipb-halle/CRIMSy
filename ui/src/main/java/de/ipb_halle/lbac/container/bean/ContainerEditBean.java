@@ -17,10 +17,19 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
+import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
@@ -31,32 +40,104 @@ import javax.inject.Named;
 @Named
 public class ContainerEditBean implements Serializable {
 
-    private String containerName;
-    private String containerSearchProject;
+    @Inject
+    private ContainerOverviewBean overviewBean;
+
+    @Inject
+    private ContainerService containerService;
+
+    @Inject
+    private ProjectService projectService;
+
+    private Container containerToCreate;
+    private Container originalContainer;
+    private Container containerToEdit;
+    private List<ContainerType> containerTypes;
+    List<Project> possibleProjects = new ArrayList<>();
+    private User currentUser;
     private String containerSearchLocation;
 
+    public void startNewContainerCreation() {
+        containerTypes = containerService.loadContainerTypes();
+        containerToCreate = new Container();
+        containerToCreate.setType(containerTypes.get(0));
+
+    }
+
+    public List<ContainerType> getContainerTypes() {
+        return containerTypes;
+    }
+
+    public ContainerType getContainerType() {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            return containerToCreate.getType();
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            return containerToEdit.getType();
+        }
+        return null;
+    }
+
+    public void setContainerType(ContainerType t) {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            containerToCreate.setType(t);
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            containerToEdit.setType(t);
+        }
+    }
+
+    public void setContainerProject(String p) {
+        for (Project project : possibleProjects) {
+            if (p.equals(project.getName())) {
+                if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+                    containerToCreate.setProject(project);
+                }
+                if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+                    containerToEdit.setProject(project);
+                }
+            }
+        }
+
+    }
+
+    public String getContainerProject() {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            if (containerToCreate.getProject() != null) {
+                return containerToCreate.getProject().getName();
+            }
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            if (containerToEdit.getProject() != null) {
+                return containerToEdit.getProject().getName();
+            }
+        }
+
+        return "";
+    }
+
     public String getContainerName() {
-        return containerName;
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            return containerToCreate.getLabel();
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            return containerToEdit.getLabel();
+        }
+        return "";
     }
 
     public void setContainerName(String containerName) {
-        this.containerName = containerName;
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            containerToCreate.setLabel(containerName);
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            containerToEdit.setLabel(containerName);
+        }
     }
 
-    public String getContainerSearchProject() {
-        return containerSearchProject;
-    }
-
-    public void setContainerSearchProject(String containerSearchProject) {
-        this.containerSearchProject = containerSearchProject;
-    }
-
-    public List<String> getSimilarProjectNames(String input) {
-        return Arrays.asList("Funktionen von IQD Proteinen", "Struktur-Funktionsanalysen", "Entwicklung von bioinformatischen Tools");
-    }
-
-    public List<String> getSimilarLocationNames(String s) {
-        return Arrays.asList("Chemikalienlager NWC", "R302", "R301");
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+        projectService.loadReadableProjectsOfUser(currentUser);
     }
 
     public String getContainerSearchLocation() {
@@ -65,6 +146,11 @@ public class ContainerEditBean implements Serializable {
 
     public void setContainerSearchLocation(String containerSearchLocation) {
         this.containerSearchLocation = containerSearchLocation;
+    }
+
+    public boolean isEditPanelVisible() {
+        return overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE
+                || overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT;
     }
 
 }

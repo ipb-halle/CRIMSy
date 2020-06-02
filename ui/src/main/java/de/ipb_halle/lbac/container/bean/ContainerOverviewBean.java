@@ -41,74 +41,76 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class ContainerOverviewBean implements Serializable {
-    
+
     public enum Mode {
         SHOW, EDIT, CREATE
     }
-    
+
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-    
+
     Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     private User currentUser;
     private List<Container> readableContainer = new ArrayList<>();
-    
+
     @Inject
     private ContainerSearchMaskBean searchMask;
-    
+
     @Inject
     private ContainerService containerService;
-    
+
     @Inject
     private ContainerSearchMaskBean searchMaskBean;
-    
+
+    @Inject
+    private ContainerEditBean editBean;
+
     private Mode mode;
-    
+
     public List<Container> getReadableContainer() {
         return readableContainer;
     }
-    
+
     public void setReadableContainer(List<Container> readableContainer) {
         this.readableContainer = readableContainer;
     }
-    
+
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         readableContainer = containerService.loadContainers(currentUser);
         mode = Mode.SHOW;
     }
-    
+
     public void actionCancel() {
-        
+
     }
-    
+
     public void actionSecondButtonClick() {
         if (mode == Mode.SHOW) {
+            editBean.startNewContainerCreation();
             mode = Mode.CREATE;
-        }
-        else if (mode == Mode.CREATE) {
+        } else if (mode == Mode.CREATE) {
             mode = Mode.SHOW;
             saveNewContainer();
-            
-        }
-        else if (mode == Mode.EDIT) {
+
+        } else if (mode == Mode.EDIT) {
             mode = Mode.SHOW;
             saveEditedContainer();
         }
         logger.info("Mode " + mode);
-        
+
     }
-    
+
     private void saveNewContainer() {
         actionStartFilteredSearch();
     }
-    
+
     private void saveEditedContainer() {
         actionStartFilteredSearch();
     }
-    
+
     public void actionStartFilteredSearch() {
-        
+
         Map<String, Object> cmap = new HashMap<>();
         if (searchMaskBean.getContainerSearchName() != null && !searchMaskBean.getContainerSearchName().trim().isEmpty()) {
             cmap.put("label", searchMaskBean.getContainerSearchName());
@@ -124,11 +126,11 @@ public class ContainerOverviewBean implements Serializable {
         }
         readableContainer = containerService.loadContainers(currentUser, cmap);
     }
-    
+
     public boolean isFirstButtonVisible() {
         return mode != Mode.SHOW;
     }
-    
+
     public String getSecondButtonLabel() {
         if (mode == Mode.SHOW) {
             return Messages.getString(MESSAGE_BUNDLE, "container_button_create", null);
@@ -136,5 +138,9 @@ public class ContainerOverviewBean implements Serializable {
             return Messages.getString(MESSAGE_BUNDLE, "container_button_save", null);
         }
     }
-    
+
+    public Mode getMode() {
+        return mode;
+    }
+
 }

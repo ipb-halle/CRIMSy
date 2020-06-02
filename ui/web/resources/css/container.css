@@ -53,6 +53,32 @@
 .containerFilterButtonRight{
     left: -13px !important;
 }
+.containerEditPanel{
+    width: 25%;
+}
+
+.containerEditInputfield{
+    width: 200px  !important;
+    height: 30px !important;
+}
+
+.containerEditInputfield input{
+    width: 200px  !important;
+    height: 30px !important;
+}
+
+.containerEditDimesionField{
+    width: 50px;
+}
+
+.containerTopRow{
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.containerEdit{
+    padding: 0px;
+}
 
 /** format info box test results in ldpap check **/
 
