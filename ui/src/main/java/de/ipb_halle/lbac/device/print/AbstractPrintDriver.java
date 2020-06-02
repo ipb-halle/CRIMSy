@@ -72,6 +72,8 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     public final static String SANS_SERIF = Font.SANS_SERIF;
     public final static String SERIF = Font.SERIF;
 
+    private final static int NORMAL_FONT_SIZE = 10;
+
     private ByteBuffer          buffer;
     private Printer             printer;
     private Map<String, byte[]> configMap;
@@ -91,7 +93,7 @@ public abstract class AbstractPrintDriver implements PrintDriver {
      */
     public AbstractPrintDriver() {
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+        this.defaultFont = new Font(Font.SANS_SERIF, Font.PLAIN, NORMAL_FONT_SIZE);
     }
 
     /**
@@ -171,7 +173,6 @@ public abstract class AbstractPrintDriver implements PrintDriver {
         double height = getConfigDouble("height");
         this.pixelWidth = getPixels(width, this.hdpi);
         this.pixelHeight = getPixels(height, this.vdpi);
-
 /*
         this.logger.info(String.format("clear(): Millimeter: w=%f, h=%f, hdpi=%d, vdpi=%d", width, height, hdpi, vdpi)); 
         this.logger.info(String.format("clear(): Pixel:      w=%d, h=%d", pixelWidth, pixelHeight));
