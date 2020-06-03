@@ -50,21 +50,38 @@ limitations under the License.
                     <h:outputText
                         value="#{container. getLocation(false)}"/>
                 </b:dataTableColumn>
+                 <b:dataTableColumn
+                    label="Projekt">
+                    <h:outputText
+                        value="#{containerOverviewBean.getProjectName(container)}"/>
+                </b:dataTableColumn>
+                 <b:dataTableColumn
+                    label="Sicherheitsstufe">
+                    <h:outputText
+                        value="#{container.getSecuritylevel()}"/>
+                </b:dataTableColumn>
+                 <b:dataTableColumn
+                    label="Feuersektion">
+                    <h:outputText
+                        value="#{container.getFireSection()}"/>
+                </b:dataTableColumn>
                 <b:dataTableColumn
                     label="Tools">
                     <b:commandButton style="padding: 0 4px;"
                                      icon="pencil"
                                      look="link"
                                      type="submit"
-                                     ajax="false"
-                                     action="#{containerOverviewBean.actionContainerItemEdit(container)}"
+                                     ajax="true"
+                                     update="@(.containerDataTable)"
+                                     action="#{containerOverviewBean.actionContainerEdit(container)}"
                                      />
                     <b:commandButton style="padding: 0 4px;"
                                      icon="trash"
                                      look="link"
                                      type="submit"
-                                     ajax="false"
-                                     action="#{containerOverviewBean.actionContainerItemEdit(container)}"
+                                     ajax="true"
+                                     update="@(.containerDataTable)"
+                                     action="#{containerOverviewBean.actionContainerDeactivate(container)}"
                                      />
 
                 </b:dataTableColumn>

@@ -94,7 +94,7 @@ public class ContainerService implements Serializable {
             + "AND (c.id=:id OR :id=-1) "
             + "AND (CAST(ms.member_id AS VARCHAR)=:userid  OR c.projectid IS NULL) "
             + "AND (p.name=CAST(:project AS VARCHAR) OR CAST(:project AS VARCHAR) ='no_project') "
-            + "AND (c.label=:label OR :label = 'no_label') "
+            + "AND (LOWER(c.label) LIKE LOWER(:label) OR :label = 'no_label') "
             + "AND (c2.label=:location OR :location ='no_location') "
             + "AND c.deactivated =FALSE "
             + "ORDER BY c.id";
@@ -214,7 +214,7 @@ public class ContainerService implements Serializable {
                         .setParameter("userid", u.getId().toString())
                         .setParameter("id", cmap.containsKey("id") ? cmap.get("id") : -1)
                         .setParameter("project", cmap.containsKey("project") ? cmap.get("project") : "no_project")
-                        .setParameter("label", cmap.containsKey("label") ? cmap.get("label") : "no_label")
+                        .setParameter("label", cmap.containsKey("label") ? "%" + cmap.get("label") + "%" : "no_label")
                         .setParameter("location", cmap.containsKey("location") ? cmap.get("location") : "no_location")
                         .getResultList();
 
@@ -226,10 +226,9 @@ public class ContainerService implements Serializable {
                 container = loadContainerById(dbe.getId());
                 result.add(container);
             } else {
-                if (getProjectById(dbe.getProjectid(), projects) != null) {
-                    container = loadContainerById(dbe.getId());
-                    result.add(container);
-                }
+                container = loadContainerById(dbe.getId());
+                container.setProject(projectService.loadProjectById(dbe.getProjectid()));
+                result.add(container);
             }
             //I think that is no more neccessary
             if (container != null && dbe.getParentcontainer() != null) {
@@ -426,5 +425,10 @@ public class ContainerService implements Serializable {
         } else {
             return loadContainerById(entities.get(0).getId());
         }
+    }
+
+    public void deactivateContainer(Container c) {
+        c.setDeactivated(true);
+        this.em.merge(c.createEntity());
     }
 }
