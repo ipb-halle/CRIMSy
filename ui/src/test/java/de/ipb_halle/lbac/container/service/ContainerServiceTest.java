@@ -328,6 +328,16 @@ public class ContainerServiceTest extends TestBase {
         cleanProjectFromDB(project, true);
     }
 
+    @Test
+    public void test007_containerNameAvailability() {
+        instance.saveContainer(c0);
+        Assert.assertTrue(instance.isContainerNameAlreadyUsed("R302"));
+        Assert.assertTrue(instance.isContainerNameAlreadyUsed("r302"));
+        Assert.assertFalse(instance.isContainerNameAlreadyUsed("R30"));
+        Assert.assertFalse(instance.isContainerNameAlreadyUsed(""));
+
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("ContainerServiceTest.war")

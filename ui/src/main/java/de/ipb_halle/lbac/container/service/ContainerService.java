@@ -127,6 +127,11 @@ public class ContainerService implements Serializable {
             + ":posY,"
             + ":posX)";
 
+    private final String SQL_CONTAINERNAME
+            = "SELECT label "
+            + "FROM containers "
+            + "WHERE UPPER(label)=UPPER(:label)";
+
     /**
      * Gets all containersnames which matches the pattern %name%
      *
@@ -135,6 +140,7 @@ public class ContainerService implements Serializable {
      * @return List of matching materialnames
      */
     @SuppressWarnings("unchecked")
+
     public Set<String> getSimilarContainerNames(String name, User user) {
         List l = this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("label", "%" + name + "%")
@@ -398,5 +404,12 @@ public class ContainerService implements Serializable {
                 .setParameter("posX", posX)
                 .setParameter("posY", posY)
                 .executeUpdate();
+    }
+
+    public boolean isContainerNameAlreadyUsed(String containerName) {
+        return this.em
+                .createNativeQuery(SQL_CONTAINERNAME)
+                .setParameter("label", containerName)
+                .getResultList().size() > 0;
     }
 }
