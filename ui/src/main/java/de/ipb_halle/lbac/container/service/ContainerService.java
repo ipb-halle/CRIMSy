@@ -67,7 +67,11 @@ public class ContainerService implements Serializable {
     protected EntityManager em;
 
     private final String SQL_NESTED_TARGETS = "SELECT targetid FROM nested_containers WHERE sourceid=:source";
-    private final String SQL_GET_SIMILAR_NAMES = "SELECT label FROM containers WHERE LOWER(label) LIKE LOWER(:label)";
+    private final String SQL_GET_SIMILAR_NAMES
+            = "SELECT label "
+            + "FROM containers "
+            + "WHERE LOWER(label) LIKE LOWER(:label) "
+            + "AND deactivated =FALSE";
 
     private final String SQL_LOAD_CONTAINERS = "SELECT DISTINCT "
             + "c.id, "
@@ -78,7 +82,8 @@ public class ContainerService implements Serializable {
             + "c.type, "
             + "c.firesection, "
             + "c.securitylevel, "
-            + "c.barcode "
+            + "c.barcode,"
+            + "c.deactivated "
             + "FROM containers c "
             + "LEFT JOIN projects p ON p.id=c.projectid "
             + "LEFT JOIN acentries ace ON ace.aclist_id=p.usergroups "
@@ -91,6 +96,7 @@ public class ContainerService implements Serializable {
             + "AND (p.name=CAST(:project AS VARCHAR) OR CAST(:project AS VARCHAR) ='no_project') "
             + "AND (c.label=:label OR :label = 'no_label') "
             + "AND (c2.label=:location OR :location ='no_location') "
+            + "AND c.deactivated =FALSE "
             + "ORDER BY c.id";
 
     private final String SQL_LOAD_NESTED_CONTAINER
@@ -103,7 +109,8 @@ public class ContainerService implements Serializable {
             + "c.type, "
             + "c.firesection, "
             + "c.securitylevel, "
-            + "c.barcode  "
+            + "c.barcode,"
+            + "c.deactivated  "
             + "FROM nested_containers nc "
             + "JOIN containers c ON c.id=nc.targetid "
             + "JOIN containertypes ct ON ct.name=c.type "
@@ -138,9 +145,11 @@ public class ContainerService implements Serializable {
             + "c.type, "
             + "c.firesection, "
             + "c.securitylevel, "
-            + "c.barcode  "
+            + "c.barcode,"
+            + "c.deactivated  "
             + "FROM containers c "
-            + "WHERE UPPER(label)=UPPER(:label)";
+            + "WHERE UPPER(label)=UPPER(:label) "
+            + "AND c.deactivated =FALSE";
 
     /**
      * Gets all containersnames which matches the pattern %name%
@@ -172,19 +181,7 @@ public class ContainerService implements Serializable {
     }
 
     public Container saveContainer(Container c) {
-        ContainerEntity dbe = new ContainerEntity();
-        if (c.getParentContainer() != null) {
-            dbe.setParentcontainer(c.getParentContainer().getId());
-        }
-        dbe.setLabel(c.getLabel());
-        if (c.getProject() != null) {
-            dbe.setProjectid(c.getProject().getId());
-        }
-        dbe.setDimension(c.getDimension());
-        dbe.setType(c.getType().getName());
-        dbe.setFiresection(c.getFireSection());
-        dbe.setSecurityLevel(c.getSecuritylevel());
-        dbe.setBarcode(c.getBarCode());
+        ContainerEntity dbe = c.createEntity();
         em.persist(dbe);
         c.setId(dbe.getId());
         if (c.getParentContainer() != null) {

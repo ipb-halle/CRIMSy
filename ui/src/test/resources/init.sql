@@ -516,7 +516,8 @@ CREATE TABLE containers(
     type VARCHAR NOT NULL REFERENCES containertypes(name),
     firesection VARCHAR,
     securitylevel VARCHAR,
-    barcode VARCHAR);
+    barcode VARCHAR,
+    deactivated BOOLEAN NOT NULL DEFAULT false);
 
 CREATE TABLE nested_containers(
     sourceid INTEGER NOT NULL REFERENCES containers(id),

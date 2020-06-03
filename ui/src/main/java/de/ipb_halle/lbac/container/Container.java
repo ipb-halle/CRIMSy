@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.container;
 
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
+import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.project.Project;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Container {
+public class Container implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -44,9 +45,10 @@ public class Container {
     private String barCode;
     private Item[][][] items;
     List<Container> containerHierarchy = new ArrayList<>();
+    private boolean deactivated;
 
     public Container() {
-
+        deactivated = false;
     }
 
     public Container(
@@ -61,6 +63,7 @@ public class Container {
         this.fireSection = dbentity.getFiresection();
         this.securitylevel = dbentity.getSecurityLevel();
         this.barCode = dbentity.getBarcode();
+        this.deactivated = dbentity.isDeactivated();
         if (dimension != null) {
             String[] size = dimension.split(";");
             if (size.length > 2) {
@@ -89,6 +92,7 @@ public class Container {
         this.fireSection = dbentity.getFiresection();
         this.securitylevel = dbentity.getSecurityLevel();
         this.barCode = dbentity.getBarcode();
+        this.deactivated = dbentity.isDeactivated();
 
     }
 
@@ -155,8 +159,6 @@ public class Container {
         this.fireSection = fireSection;
     }
 
-    
-
     public String getBarCode() {
         return barCode;
     }
@@ -209,6 +211,33 @@ public class Container {
 
     public void setSecuritylevel(String securitylevel) {
         this.securitylevel = securitylevel;
+    }
+
+    public boolean isDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+
+    @Override
+    public ContainerEntity createEntity() {
+        ContainerEntity dbe = new ContainerEntity();
+        if (this.getParentContainer() != null) {
+            dbe.setParentcontainer(this.getParentContainer().getId());
+        }
+        dbe.setLabel(this.getLabel());
+        if (this.getProject() != null) {
+            dbe.setProjectid(this.getProject().getId());
+        }
+        dbe.setDimension(this.getDimension());
+        dbe.setType(this.getType().getName());
+        dbe.setFiresection(this.getFireSection());
+        dbe.setSecurityLevel(this.getSecuritylevel());
+        dbe.setBarcode(this.getBarCode());
+        dbe.setDeactivated(this.isDeactivated());
+        return dbe;
     }
 
 }

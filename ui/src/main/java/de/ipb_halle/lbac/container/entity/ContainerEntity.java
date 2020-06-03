@@ -63,6 +63,9 @@ public class ContainerEntity implements Serializable {
     @Column
     private String barcode;
 
+    @Column
+    private boolean deactivated;
+
     public Integer getId() {
         return id;
     }
@@ -127,14 +130,20 @@ public class ContainerEntity implements Serializable {
         this.securitylevel = securityLevel;
     }
 
-   
-
     public String getBarcode() {
         return barcode;
     }
 
     public void setBarcode(String barcode) {
         this.barcode = barcode;
+    }
+
+    public boolean isDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(boolean deactivated) {
+        this.deactivated = deactivated;
     }
 
 }
