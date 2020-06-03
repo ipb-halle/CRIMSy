@@ -40,7 +40,7 @@ public class Container {
     private String dimension;
     private ContainerType type;
     private String fireSection;
-    private String gvoClass;
+    private String securitylevel;
     private String barCode;
     private Item[][][] items;
     List<Container> containerHierarchy = new ArrayList<>();
@@ -59,7 +59,7 @@ public class Container {
         this.project = p;
         this.dimension = dbentity.getDimension();
         this.fireSection = dbentity.getFiresection();
-        this.gvoClass = dbentity.getGvo_class();
+        this.securitylevel = dbentity.getSecurityLevel();
         this.barCode = dbentity.getBarcode();
         if (dimension != null) {
             String[] size = dimension.split(";");
@@ -87,7 +87,7 @@ public class Container {
         this.label = dbentity.getLabel();
         this.dimension = dbentity.getDimension();
         this.fireSection = dbentity.getFiresection();
-        this.gvoClass = dbentity.getGvo_class();
+        this.securitylevel = dbentity.getSecurityLevel();
         this.barCode = dbentity.getBarcode();
 
     }
@@ -155,13 +155,7 @@ public class Container {
         this.fireSection = fireSection;
     }
 
-    public String getGvoClass() {
-        return gvoClass;
-    }
-
-    public void setGvoClass(String gvoClass) {
-        this.gvoClass = gvoClass;
-    }
+    
 
     public String getBarCode() {
         return barCode;
@@ -207,6 +201,14 @@ public class Container {
 
     public List<Container> getContainerHierarchy() {
         return containerHierarchy;
+    }
+
+    public String getSecuritylevel() {
+        return securitylevel;
+    }
+
+    public void setSecuritylevel(String securitylevel) {
+        this.securitylevel = securitylevel;
     }
 
 }

@@ -58,7 +58,7 @@ public class ContainerEntity implements Serializable {
     private String firesection;
 
     @Column
-    private String gvo_class;
+    private String securitylevel;
 
     @Column
     private String barcode;
@@ -119,13 +119,15 @@ public class ContainerEntity implements Serializable {
         this.firesection = firesection;
     }
 
-    public String getGvo_class() {
-        return gvo_class;
+    public String getSecurityLevel() {
+        return securitylevel;
     }
 
-    public void setGvo_class(String gvo_class) {
-        this.gvo_class = gvo_class;
+    public void setSecurityLevel(String securityLevel) {
+        this.securitylevel = securityLevel;
     }
+
+   
 
     public String getBarcode() {
         return barcode;

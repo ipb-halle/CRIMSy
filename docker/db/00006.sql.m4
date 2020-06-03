@@ -339,7 +339,7 @@ CREATE TABLE containers(
     dimension VARCHAR,
     type VARCHAR NOT NULL REFERENCES containertypes(name),
     firesection VARCHAR,
-    gvo_class VARCHAR,
+    securitylevel VARCHAR,
     barcode VARCHAR);
 
 CREATE TABLE nested_containers(
