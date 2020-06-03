@@ -21,51 +21,54 @@ limitations under the License.
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html">
     <h:body>
-        <b:dataTable
-            paginated="false"
-            value="#{containerOverviewBean.readableContainer}"
-            searching="false"
-            var="container">
+        <b:form>
+            <b:dataTable
+                styleClass="containerDataTable"
+                paginated="false"
+                value="#{containerOverviewBean.readableContainer}"
+                searching="false"
+                var="container">
 
-            <b:dataTableColumn
-                label="Nummer">
-                <h:outputText
-                    title="Nummer"
-                    value="#{container.id}"/>
-            </b:dataTableColumn>
-            <b:dataTableColumn 
-                label="Label">
-                <h:outputText
-                    value="#{container.label}"/>
-            </b:dataTableColumn>
-            <b:dataTableColumn
-                label="Typ">
-                <h:outputText
-                    value="#{container.type.getLocalizedName()}"/>
-            </b:dataTableColumn>
-            <b:dataTableColumn
-                label="Ort">
-                <h:outputText
-                    value="#{container. getLocation(false)}"/>
-            </b:dataTableColumn>
-            <b:dataTableColumn
-                label="Tools">
-                <b:commandButton style="padding: 0 4px;"
-                                 icon="pencil"
-                                 look="link"
-                                 type="submit"
-                                 ajax="false"
-                                 action="#{containerOverviewBean.actionContainerItemEdit(container)}"
-                                 />
-                <b:commandButton style="padding: 0 4px;"
-                                 icon="trash"
-                                 look="link"
-                                 type="submit"
-                                 ajax="false"
-                                 action="#{containerOverviewBean.actionContainerItemEdit(container)}"
-                                 />
+                <b:dataTableColumn
+                    label="Nummer">
+                    <h:outputText
+                        title="Nummer"
+                        value="#{container.id}"/>
+                </b:dataTableColumn>
+                <b:dataTableColumn 
+                    label="Label">
+                    <h:outputText
+                        value="#{container.label}"/>
+                </b:dataTableColumn>
+                <b:dataTableColumn
+                    label="Typ">
+                    <h:outputText
+                        value="#{container.type.getLocalizedName()}"/>
+                </b:dataTableColumn>
+                <b:dataTableColumn
+                    label="Ort">
+                    <h:outputText
+                        value="#{container. getLocation(false)}"/>
+                </b:dataTableColumn>
+                <b:dataTableColumn
+                    label="Tools">
+                    <b:commandButton style="padding: 0 4px;"
+                                     icon="pencil"
+                                     look="link"
+                                     type="submit"
+                                     ajax="false"
+                                     action="#{containerOverviewBean.actionContainerItemEdit(container)}"
+                                     />
+                    <b:commandButton style="padding: 0 4px;"
+                                     icon="trash"
+                                     look="link"
+                                     type="submit"
+                                     ajax="false"
+                                     action="#{containerOverviewBean.actionContainerItemEdit(container)}"
+                                     />
 
-            </b:dataTableColumn>
-        </b:dataTable>
+                </b:dataTableColumn>
+            </b:dataTable>
+        </b:form>
     </h:body>
 </html>

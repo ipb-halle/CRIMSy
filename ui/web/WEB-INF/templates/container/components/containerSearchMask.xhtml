@@ -23,97 +23,99 @@ limitations under the License.
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
-        <b:container>
-            <b:row>
-                <b:column>
-                    <h:outputText value="Suchfilter"
-                                  styleClass="containerFilterHeader"/>
-                </b:column>
-            </b:row>    
-            <b:row
-                styleClass="containerFilterRow">
-                <b:column span="2">
-                    <h:outputText value="Name"
-                                  />
-                </b:column>
-            </b:row>
-            <b:row
-                styleClass="containerFilterRow">
-                <b:column span="2">
-                    <p:autoComplete value="#{containerSearchMaskBean.containerSearchName}"
-                                    maxResults="10"
-                                    completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
-                                    styleClass="containerFilterInputfield"/>
-                </b:column>
-            </b:row>
-            <b:row
-                styleClass="containerFilterRow">
-                <b:column span="2">
-                    <h:outputText value="Containernummer"/>
-                </b:column>
-            </b:row>
-            <b:row
-                styleClass="containerFilterRow">
-                <b:column span="2">
-                    <b:inputText
-                        value="#{containerSearchMaskBean.containerSearchId}"
-                        styleClass="containerFilterInputfield"/>
-                </b:column>
-            </b:row>
-            <b:row
-                styleClass="containerFilterRow">
-                <b:column span="2">
-                    <h:outputText value="Project"/>
-                </b:column>
-            </b:row>
-            <b:row
-                styleClass="containerFilterRow">
+        <b:form id="searchMaskForm">
+            <b:container>
+                <b:row>
+                    <b:column>
+                        <h:outputText value="Suchfilter"
+                                      styleClass="containerFilterHeader"/>
+                    </b:column>
+                </b:row>    
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="Name"
+                                      />
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
+                        <p:autoComplete value="#{containerSearchMaskBean.containerSearchName}"
+                                        maxResults="10"
+                                        completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
+                                        styleClass="containerFilterInputfield"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="Containernummer"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
+                        <b:inputText
+                            value="#{containerSearchMaskBean.containerSearchId}"
+                            styleClass="containerFilterInputfield"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="Project"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
 
-                <b:column span="2">
-                    <p:autoComplete value="#{containerSearchMaskBean.searchProject}"
-                                    maxResults="10"
-                                    completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
-                                    styleClass="containerFilterInputfield"/>
-                </b:column>
-            </b:row>
-            <b:row
-                styleClass="containerFilterRow">
-                <b:column span="2">
-                    <h:outputText value="Standort"/>
-                </b:column>
-            </b:row>  
-            <b:row
-                styleClass="containerFilterRow">  
-                <b:column span="2">
-                    <p:autoComplete value="#{containerSearchMaskBean.searchLocation}"
-                                    maxResults="10"
-                                    completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
-                                    styleClass="containerFilterInputfield"/>
-                </b:column>
-            </b:row>
+                    <b:column span="2">
+                        <p:autoComplete value="#{containerSearchMaskBean.searchProject}"
+                                        maxResults="10"
+                                        completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
+                                        styleClass="containerFilterInputfield"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="Standort"/>
+                    </b:column>
+                </b:row>  
+                <b:row
+                    styleClass="containerFilterRow">  
+                    <b:column span="2">
+                        <p:autoComplete value="#{containerSearchMaskBean.searchLocation}"
+                                        maxResults="10"
+                                        completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
+                                        styleClass="containerFilterInputfield"/>
+                    </b:column>
+                </b:row>
 
-            <b:row>
-                <b:column
-                    span="1" 
-                    styleClass="containerFilterButtonColumn">
-                    <b:commandButton 
-                        styleClass="containerFilterButton"
-                        value="Clear"
-                        ajax="true"
-                        update="containerForm"
-                        onclick="ajax:containerSearchMaskBean.actionClearSearchFilter();"/>
-                </b:column>
-                <b:column
-                    span="1"
-                    styleClass="containerFilterButtonColumn containerFilterButtonRight">
-                    <b:commandButton 
-                        styleClass="containerFilterButton"
-                        value="Search"
-                        update="containerForm"
-                        ajax="true"
-                        onclick="ajax:containerOverviewBean.actionStartFilteredSearch();"/>
-                </b:column>
-            </b:row>
-        </b:container>
+                <b:row>
+                    <b:column
+                        span="1" 
+                        styleClass="containerFilterButtonColumn">
+                        <b:commandButton 
+                            styleClass="containerFilterButton"
+                            value="Clear"
+                            ajax="true"
+                            update="searchMaskForm @(.containerDataTable)"
+                            onclick="ajax:containerSearchMaskBean.actionClearSearchFilter();"/>
+                    </b:column>
+                    <b:column
+                        span="1"
+                        styleClass="containerFilterButtonColumn containerFilterButtonRight">
+                        <b:commandButton 
+                            styleClass="containerFilterButton"
+                            value="Search"
+                            ajax="true"
+                            update="searchMaskForm @(.containerDataTable)"
+                            onclick="ajax:containerOverviewBean.actionStartFilteredSearch();"/>
+                    </b:column>
+                </b:row>
+            </b:container>
+        </b:form>
     </h:body>
 </html>

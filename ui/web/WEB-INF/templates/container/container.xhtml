@@ -23,44 +23,36 @@ limitations under the License.
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:body>
         <ui:composition>
-            <b:form 
-                id="containerForm">
-                <b:container>
-                    <b:row
-                        styleClass="containerTopRow">
-                        <b:column span="1" offset="10">
-                            <b:commandButton
-                                action="#{containerOverviewBean.actionCancel()}"
-                                rendered="#{containerOverviewBean.isFirstButtonVisible()}"
-                                value="#{msgs.container_button_cancel}"
-                                />
-                        </b:column>
-                        <b:column span="1">
+            <b:container>
+                <b:row
+                    styleClass="containerTopRow">
+                    <b:column span="1" offset="11">
+                        <b:form>
                             <b:commandButton
                                 action="#{containerOverviewBean.actionSecondButtonClick()}"
                                 value="#{containerOverviewBean.getSecondButtonLabel()}"
                                 />
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:column span="2"> 
-                            <ui:insert> 
-                                <ui:include src="/WEB-INF/templates/container/components/containerSearchMask.xhtml"/>
-                            </ui:insert>
-                        </b:column>
-                        <b:column span="8">  
-                            <ui:insert> 
-                                <ui:include src="/WEB-INF/templates/container/components/containerOverviewTable.xhtml"/>
-                            </ui:insert>
-                        </b:column> 
-                        <b:column span="2">  
-                            <ui:insert> 
-                                <ui:include src="/WEB-INF/templates/container/components/containerEditView.xhtml"/>
-                            </ui:insert>
-                        </b:column> 
-                    </b:row>
-                </b:container>
-            </b:form>
+                        </b:form>
+                    </b:column>
+                </b:row>
+                <b:row>
+                    <b:column span="2"> 
+                        <ui:insert> 
+                            <ui:include src="/WEB-INF/templates/container/components/containerSearchMask.xhtml"/>
+                        </ui:insert>
+                    </b:column>
+                    <b:column span="8">  
+                        <ui:insert> 
+                            <ui:include src="/WEB-INF/templates/container/components/containerOverviewTable.xhtml"/>
+                        </ui:insert>
+                    </b:column> 
+                    <b:column span="2">  
+                        <ui:insert> 
+                            <ui:include src="/WEB-INF/templates/container/components/containerEditView.xhtml"/>
+                        </ui:insert>
+                    </b:column> 
+                </b:row>
+            </b:container>
         </ui:composition>
     </h:body>
 </html>
