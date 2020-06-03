@@ -52,6 +52,23 @@
                         </b:column>
                     </b:row>
                 </b:container>
+            </b:panel>
+            <b:panel title="Experiment data">
+                <b:container>
+                    <b:row>
+                        <b:column span="1">
+                            <b:inputText label="Code" value="#{experimentBean.getExperiment().code}" />
+                        </b:column>
+                        <b:column span="4">
+                            <b:inputText label="Description" value="#{experimentBean.getExperiment().description}"/>
+                        </b:column>
+                        <b:column span="1" >
+                            <b:commandButton value="save" action="#{experimentBean.actionSaveExperiment}" />
+                        </b:column>
+                    </b:row>
+                </b:container>
+            </b:panel>
+            <b:panel title="Record Data">
                 <b:container>
                     <b:row>
                         <b:column span="3">

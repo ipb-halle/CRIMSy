@@ -84,8 +84,8 @@ public class ExperimentService implements Serializable {
         for (ExperimentEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
             result.add(new Experiment(
                     e,
-                    aclistService.loadById(e.getUsergroups()),
-                    memberService.loadUserById(e.getOwnerid())));
+                    aclistService.loadById(e.getACListId()),
+                    memberService.loadUserById(e.getOwnerId())));
         }
         return result;
     }
@@ -99,20 +99,20 @@ public class ExperimentService implements Serializable {
     public Experiment loadById(Integer id) {
         ExperimentEntity entity = this.em.find(ExperimentEntity.class, id);
         return new Experiment(
-                entity, aclistService.loadById(entity.getUsergroups()),
-                memberService.loadUserById(entity.getOwnerid()));
+                entity, aclistService.loadById(entity.getACListId()),
+                memberService.loadUserById(entity.getOwnerId()));
     }
 
     /**
      * save a single experiment object
      *
-     * @param c the experiment to save
+     * @param e the experiment to save
      * @return the persisted Experiment DTO
      */
-    public Experiment save(Experiment c) {
+    public Experiment save(Experiment e) {
         return new Experiment(
-                this.em.merge(c.createEntity()),
-                c.getAcList(),
-                c.getOwner());
+                this.em.merge(e.createEntity()),
+                e.getACList(),
+                e.getOwner());
     }
 }

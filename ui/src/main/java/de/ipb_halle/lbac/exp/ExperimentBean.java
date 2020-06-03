@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.exp.Experiment;
 
 import java.io.Serializable;
@@ -41,6 +42,9 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ExperimentBean implements Serializable {
 
+    @Inject
+    private GlobalAdmissionContext globalAdmissionContext;
+
     @Inject 
     private ExperimentService experimentService;
 
@@ -53,14 +57,17 @@ public class ExperimentBean implements Serializable {
 
 
     @PostConstruct
-    public void experimentBeanInit() {
+    private void experimentBeanInit() {
+        /*
+         * ToDo: create an experiment with real user and ACL
+         */
         this.experiment = new Experiment(
-            null,               // experiment id
-            "code",             // code
-            "description",      // description
-            null,               // aclist
-            null,               // owner
-            new Date()          // creation time
+            null,                                               // experiment id
+            "code",                                             // code
+            "description",                                      // description
+            this.globalAdmissionContext.getPublicReadACL(),     // aclist
+            this.globalAdmissionContext.getPublicAccount(),     // owner
+            new Date()                                          // creation time
             );
     }
 
@@ -71,8 +78,20 @@ public class ExperimentBean implements Serializable {
 
     }
 
+    public void actionNewExperiment() {
+        experimentBeanInit();
+    }
+
+    public void actionSaveExperiment() {
+        this.experimentService.save(this.experiment);
+    }
+
     public void actionSelectExperiment(Experiment exp) {
         this.experiment = experiment;
+    }
+
+    public Experiment getExperiment() {
+        return this.experiment;
     }
 
     public List<Experiment> getExperiments() {
@@ -81,13 +100,20 @@ public class ExperimentBean implements Serializable {
     }
 
     public List<ExpRecord> getExpRecords() {
-        // xxxxx restrict search
         try {
-            this.logger.info("geExpRecords() got called");
-            return expRecordService.load();
+            if (this.experiment.getExperimentId() != null) {
+                this.logger.info("geExpRecords() got called");
+
+                // xxxxx restrict search
+                return expRecordService.load();
+            } 
         } catch(Exception e) {
             this.logger.warn("getExpRecords() caught an exception: ", (Throwable) e);
         }
         return new ArrayList<ExpRecord> ();
+    }
+
+    public void setExperiment(Experiment experiment) {
+        this.experiment = experiment;
     }
 }

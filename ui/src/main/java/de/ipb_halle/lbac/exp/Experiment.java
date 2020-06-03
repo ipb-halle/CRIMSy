@@ -66,7 +66,7 @@ public class Experiment implements DTO {
      * @param experimentid
      * @param code
      * @param description
-     * @param userRights
+     * @param acList
      * @param owner
      * @param creationTime
      */
@@ -74,13 +74,13 @@ public class Experiment implements DTO {
             Integer experimentid,
             String code,
             String description,
-            ACList userRights,
+            ACList acList,
             User owner,
             Date creationTime) {
         this.experimentid = experimentid;
         this.code = code;
         this.description = description;
-        this.acList = userRights;
+        this.acList = acList;
         this.owner = owner;
         this.creationTime = creationTime;
     }
@@ -89,16 +89,16 @@ public class Experiment implements DTO {
      * constructor
      *
      * @param e ExperimentEntity to construct from
-     * @param userRights
+     * @param acList 
      * @param owner
      */
     public Experiment(ExperimentEntity e,
-            ACList userRights,
+            ACList acList,
             User owner) {
         this.experimentid = e.getExperimentId();
         this.code = e.getCode();
         this.description = e.getDescription();
-        this.acList = userRights;
+        this.acList = acList;
         this.owner = owner;
 
     }
@@ -108,10 +108,12 @@ public class Experiment implements DTO {
         return new ExperimentEntity()
                 .setExperimentId(this.experimentid)
                 .setCode(this.code)
-                .setDescription(this.description);
+                .setDescription(this.description)
+                .setACListId(this.acList.getId())
+                .setOwnerId(this.owner.getId());
     }
 
-    public ACList getAcList() {
+    public ACList getACList() {
         return acList;
     }
 
@@ -131,19 +133,23 @@ public class Experiment implements DTO {
         return owner;
     }
 
-    public Experiment setCode(String code) {
+    public void setACList(ACList acList) { 
+        this.acList = acList; 
+    }
+
+    public void setCode(String code) {
         this.code = code;
-        return this;
     }
 
-    public Experiment setDescription(String description) {
+    public void setExperimentId(Integer experimentid) { 
+        this.experimentid = experimentid; 
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
-        return this;
     }
-
-    public Experiment setExperimentId(Integer experimentid) {
-        this.experimentid = experimentid;
-        return this;
-    }
-
 }

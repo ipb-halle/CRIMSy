@@ -68,11 +68,11 @@ public class ExperimentEntity implements Serializable {
         return this.experimentid;
     }
 
-    public UUID getOwnerid() {
+    public UUID getOwnerId() {
         return ownerid;
     }
 
-    public UUID getUsergroups() {
+    public UUID getACListId() {
         return usergroups;
     }
 
@@ -91,12 +91,14 @@ public class ExperimentEntity implements Serializable {
         return this;
     }
 
-    public void setOwnerid(UUID ownerid) {
+    public ExperimentEntity setOwnerId(UUID ownerid) {
         this.ownerid = ownerid;
+        return this;
     }
 
-    public void setUsergroups(UUID usergroups) {
+    public ExperimentEntity setACListId(UUID usergroups) {
         this.usergroups = usergroups;
+        return this;
     }
 
 }
