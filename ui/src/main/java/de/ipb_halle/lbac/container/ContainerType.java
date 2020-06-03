@@ -30,6 +30,8 @@ public class ContainerType {
     private int rank;
 
     private String localizedName;
+    
+    public final static int HIGHEST_RANK=100;
 
     public ContainerType() {
     }

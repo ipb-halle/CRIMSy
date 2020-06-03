@@ -93,7 +93,8 @@ public class ContainerService implements Serializable {
             + "AND (c2.label=:location OR :location ='no_location') "
             + "ORDER BY c.id";
 
-    private final String SQL_LOAD_NESTED_CONTAINER = "SELECT  "
+    private final String SQL_LOAD_NESTED_CONTAINER
+            = "SELECT  "
             + "c.id, "
             + "c.parentcontainer, "
             + "c.label, "
@@ -127,9 +128,18 @@ public class ContainerService implements Serializable {
             + ":posY,"
             + ":posX)";
 
-    private final String SQL_CONTAINERNAME
-            = "SELECT label "
-            + "FROM containers "
+    private final String SQL_LOAD_BY_CONTAINERNAME
+            = "SELECT  "
+            + "c.id, "
+            + "c.parentcontainer, "
+            + "c.label, "
+            + "c.projectid, "
+            + "c.dimension, "
+            + "c.type, "
+            + "c.firesection, "
+            + "c.securitylevel, "
+            + "c.barcode  "
+            + "FROM containers c "
             + "WHERE UPPER(label)=UPPER(:label)";
 
     /**
@@ -406,10 +416,18 @@ public class ContainerService implements Serializable {
                 .executeUpdate();
     }
 
-    public boolean isContainerNameAlreadyUsed(String containerName) {
-        return this.em
-                .createNativeQuery(SQL_CONTAINERNAME)
+    public Container loadContainerByName(String containerName) {
+        if (containerName == null) {
+            return null;
+        }
+        List<ContainerEntity> entities = this.em
+                .createNativeQuery(SQL_LOAD_BY_CONTAINERNAME, ContainerEntity.class)
                 .setParameter("label", containerName)
-                .getResultList().size() > 0;
+                .getResultList();
+        if (entities.isEmpty()) {
+            return null;
+        } else {
+            return loadContainerById(entities.get(0).getId());
+        }
     }
 }

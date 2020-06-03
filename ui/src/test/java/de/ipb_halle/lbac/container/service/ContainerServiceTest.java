@@ -329,13 +329,12 @@ public class ContainerServiceTest extends TestBase {
     }
 
     @Test
-    public void test007_containerNameAvailability() {
+    public void test007_loadContainerByName() {
         instance.saveContainer(c0);
-        Assert.assertTrue(instance.isContainerNameAlreadyUsed("R302"));
-        Assert.assertTrue(instance.isContainerNameAlreadyUsed("r302"));
-        Assert.assertFalse(instance.isContainerNameAlreadyUsed("R30"));
-        Assert.assertFalse(instance.isContainerNameAlreadyUsed(""));
-
+        Assert.assertNotNull(instance.loadContainerByName("R302"));
+        Assert.assertNotNull(instance.loadContainerByName("r302"));
+        Assert.assertNull(instance.loadContainerByName("R30"));
+        Assert.assertNull(instance.loadContainerByName(""));
     }
 
     @Deployment

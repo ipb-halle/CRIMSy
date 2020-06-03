@@ -31,6 +31,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -55,7 +58,11 @@ public class ContainerEditBean implements Serializable {
     private List<ContainerType> containerTypes;
     List<Project> possibleProjects = new ArrayList<>();
     private User currentUser;
-    private String containerSearchLocation;
+    private String containerLocation;
+    private String gvoClass;
+    private List<String> possibleSecuritylevel = new ArrayList<>();
+    Logger logger = LogManager.getLogger(this.getClass().getName());
+    
 
     public void startNewContainerCreation() {
         containerTypes = containerService.loadContainerTypes();
@@ -65,7 +72,13 @@ public class ContainerEditBean implements Serializable {
     }
 
     public List<ContainerType> getContainerTypes() {
-        return containerTypes;
+        List<ContainerType> filteredContainerTypes = new ArrayList<>();
+        for (ContainerType t : containerTypes) {
+            if (t.getRank() > 0) {
+                filteredContainerTypes.add(t);
+            }
+        }
+        return filteredContainerTypes;
     }
 
     public ContainerType getContainerType() {
@@ -76,6 +89,10 @@ public class ContainerEditBean implements Serializable {
             return containerToEdit.getType();
         }
         return null;
+    }
+
+    public Container getContainerToCreate() {
+        return containerToCreate;
     }
 
     public void setContainerType(ContainerType t) {
@@ -138,19 +155,113 @@ public class ContainerEditBean implements Serializable {
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         projectService.loadReadableProjectsOfUser(currentUser);
+        possibleSecuritylevel.add("keine");
+        possibleSecuritylevel.add("S1");
+        possibleSecuritylevel.add("S2");
+        possibleSecuritylevel.add("S3");
+        possibleSecuritylevel.add("S4");
     }
 
-    public String getContainerSearchLocation() {
-        return containerSearchLocation;
+    public String getContainerLocation() {
+        return containerLocation;
     }
 
-    public void setContainerSearchLocation(String containerSearchLocation) {
-        this.containerSearchLocation = containerSearchLocation;
+    public void setContainerLocation(String containerLocation) {
+        this.containerLocation = containerLocation;
     }
+
+   
 
     public boolean isEditPanelVisible() {
         return overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE
                 || overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT;
     }
 
+    public String getGvoClass() {
+        return gvoClass;
+    }
+
+    public void setGvoClass(String gvoClass) {
+        this.gvoClass = gvoClass;
+    }
+
+    public List<String> getGvoClasses() {
+        return possibleSecuritylevel;
+    }
+
+    public void setSecurityLevel(String securityLevel) {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            containerToCreate.setSecuritylevel(securityLevel);
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            containerToEdit.setSecuritylevel(securityLevel);
+        }
+    }
+
+    public String getSecurityLevel() {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            return containerToCreate.getSecuritylevel();
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            return containerToEdit.getSecuritylevel();
+        }
+        return "";
+    }
+
+    public void setFireSection(String fireSection) {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            containerToCreate.setFireSection(fireSection);
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            containerToEdit.setFireSection(fireSection);
+        }
+    }
+
+    public String getFireSection() {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            return containerToCreate.getFireSection();
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            return containerToEdit.getFireSection();
+        }
+        return "";
+    }
+
+    public boolean isSecurityLevelVisible() {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            return containerToEdit.getType().getRank() == ContainerType.HIGHEST_RANK;
+
+        }
+        return false;
+    }
+
+    public boolean isDimensionVisible() {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
+        }
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
+            return containerToEdit.getType().getRank() != ContainerType.HIGHEST_RANK;
+
+        }
+        return false;
+    }
+
+    public boolean isInputValide() {
+        boolean isNameUsed = containerService.loadContainerByName(getContainerInFocus().getLabel()) == null;
+        return isNameUsed;
+    }
+
+    private Container getContainerInFocus() {
+        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
+            return containerToCreate;
+        } else {
+            return containerToEdit;
+        }
+    }
+
+   
+    
 }

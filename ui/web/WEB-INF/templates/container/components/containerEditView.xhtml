@@ -33,6 +33,30 @@ limitations under the License.
                 <b:row
                     styleClass="containerFilterRow">
                     <b:column span="2">
+                        <h:outputText value="Type"
+                                      />
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
+                        <b:selectOneMenu 
+                            value="#{containerEditBean.containerType}" 
+                            ajax="true"
+                            update="@(.containerFilterRow)"
+                            styleClass="containerEditInputfield">
+                            <f:selectItems
+                                var="type"
+                                value="#{containerEditBean.containerTypes}" 
+                                noSelectionValue="true"
+                                itemLabel="#{type.getLocalizedName()}"/>
+
+                        </b:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2">
                         <h:outputText value="Name"
                                       />
                     </b:column>
@@ -41,6 +65,7 @@ limitations under the License.
                     styleClass="containerFilterRow">
                     <b:column span="2">
                         <b:inputText
+                            required="true"
                             value="#{containerEditBean.containerName}"
                             styleClass="containerEditInputfield"/>
                     </b:column>
@@ -61,28 +86,7 @@ limitations under the License.
                                         styleClass="containerEditInputfield"/>
                     </b:column>
                 </b:row>
-                <b:row
-                    styleClass="containerFilterRow">
-                    <b:column span="2">
-                        <h:outputText value="Type"
-                                      />
-                    </b:column>
-                </b:row>
-                <b:row
-                    styleClass="containerFilterRow">
-                    <b:column span="2">
-                        <b:selectOneMenu 
-                            value="#{containerEditBean.containerType}" 
-                            styleClass="containerEditInputfield">
-                            <f:selectItems
-                                var="type"
-                                value="#{containerEditBean.containerTypes}" 
-                                noSelectionValue="true"
-                                itemLabel="#{type.getLocalizedName()}"/>
 
-                        </b:selectOneMenu>
-                    </b:column>
-                </b:row>
                 <b:row
                     styleClass="containerFilterRow">
                     <b:column span="2">
@@ -93,29 +97,74 @@ limitations under the License.
                 <b:row
                     styleClass="containerFilterRow">
                     <b:column span="2">
-                        <p:autoComplete value="#{containerEditBean.containerSearchLocation}"
+                        <p:autoComplete value="#{containerEditBean.containerLocation}"
                                         maxResults="10"
-                                        completeMethod="#{containerSearchMaskBean.getSimilarLocationNames}"
+                                        completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
                                         styleClass="containerEditInputfield"/>
                     </b:column>
                 </b:row>
                 <b:row
                     styleClass="containerFilterRow">
-                    <b:column span="2">
+                    <b:column
+                        span="2"
+                        rendered="#{containerEditBean.isDimensionVisible()}">
                         <h:outputText value="Groesse"/>
                     </b:column>
                 </b:row>
                 <b:row
                     styleClass="containerFilterRow">
-                    <b:column span="1">
+                    <b:column 
+                        span="1"
+                        rendered="#{containerEditBean.isDimensionVisible()}">
                         <b:inputText
                             styleClass="containerEditDimesionField"
                             label="Breite"/>
                     </b:column>
-                    <b:column offset="2" span="1">
+                    <b:column
+                        offset="2"
+                        span="1"
+                        rendered="#{containerEditBean.isDimensionVisible()}">
                         <b:inputText
                             styleClass="containerEditDimesionField"
                             label="Hoehe"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2"
+                              rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                        <h:outputText value="Sicherheitsstufe"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column span="2"
+                              >
+                        <b:selectOneMenu 
+                            value="#{containerEditBean.securityLevel}" 
+                            styleClass="containerEditInputfield"
+                            rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                            <f:selectItems
+                                value="#{containerEditBean.getGvoClasses()}"/>
+                        </b:selectOneMenu>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column
+                        span="2" 
+                        rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                        <h:outputText value="Feuerbereich"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="containerFilterRow">
+                    <b:column 
+                        span="2"
+                        rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                        <b:inputText
+                            value="#{containerEditBean.fireSection}"
+                            styleClass="containerEditInputfield"/>
                     </b:column>
                 </b:row>
             </p:panel>
