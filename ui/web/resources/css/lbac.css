@@ -517,3 +517,8 @@ select.selCollection {
     left: -13px !important;
 }
 
+/* positioning of buttons together with labeled text input elements inside b:row */
+.rowButtonLabel {
+    height: 1.3em;
+    margin-bottom: 5px;
+}

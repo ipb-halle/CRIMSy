@@ -44,13 +44,23 @@ public class AssayRecordEntity implements Serializable {
     private Long exprecordid;
 
     @Column
+    private Integer itemid;
+
+    @Column
     private Integer materialid;
+
+    @Column
+    private AssayOutcomeType type;
 
     @Type(type = "RawJsonb")
     private String outcome;
 
     public Long getExpRecordId() {
         return this.exprecordid;
+    }
+
+    public Integer getItemId() {
+        return this.itemid;
     }
 
     public Integer getMaterialId() {
@@ -65,8 +75,17 @@ public class AssayRecordEntity implements Serializable {
         return this.recordid;
     }
 
+    public AssayOutcomeType getType() {
+        return this.type;
+    }
+
     public AssayRecordEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
+        return this;
+    }
+
+    public AssayRecordEntity setItemId(Integer itemid) {
+        this.itemid = itemid;
         return this;
     }
 
@@ -82,6 +101,11 @@ public class AssayRecordEntity implements Serializable {
 
     public AssayRecordEntity setRecordId(Long recordid) {
         this.recordid = recordid;
+        return this;
+    }
+
+    public AssayRecordEntity setType(AssayOutcomeType type) {
+        this.type = type;
         return this;
     }
 

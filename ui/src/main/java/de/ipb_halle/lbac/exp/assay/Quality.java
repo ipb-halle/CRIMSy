@@ -17,25 +17,22 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
-import com.google.gson.Gson;
+
 
 /**
+ * Physical quality of units of measurement
+ *
  * @author fbroda
  */
-public abstract class AssayOutcome {
-
-    public static AssayOutcome fromString(AssayOutcomeType type, String outcome) {
-        Gson gson = new Gson();
-        switch(type) {
-            case SINGLE_POINT : return gson.fromJson(outcome, SinglePointOutcome.class);
-        }
-        throw new IllegalArgumentException("fromString() illegal arguments");
-    }
-
-    public abstract AssayOutcomeType getType(); 
-
-    public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
-    }
+public enum Quality {
+    PIECES,
+    LENGTH,
+    AREA,
+    VOLUME,
+    MASS,
+    DENSITY,
+    AMOUNT_OF_SUBSTANCE,
+    MOLAR_MASS,
+    MOLAR_CONCENTRATION,
+    PERCENT_CONCENTRATION
 }

@@ -17,25 +17,38 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
-import com.google.gson.Gson;
+
 
 /**
+ * Record types for assay outcomes
+ *
  * @author fbroda
  */
-public abstract class AssayOutcome {
+public enum AssayOutcomeType {
+    SINGLE_POINT(0),
+    MULTI_POINT(1);
 
-    public static AssayOutcome fromString(AssayOutcomeType type, String outcome) {
-        Gson gson = new Gson();
-        switch(type) {
-            case SINGLE_POINT : return gson.fromJson(outcome, SinglePointOutcome.class);
-        }
-        throw new IllegalArgumentException("fromString() illegal arguments");
+    private int typeId;
+
+    private AssayOutcomeType(int typeId) {
+        this.typeId = typeId;
     }
 
-    public abstract AssayOutcomeType getType(); 
+    public int getTypeId() {
+        return typeId;
+    }
 
-    public String toString() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public static AssayOutcomeType getAssayOutcomeTypeById(int id) {
+        for (AssayOutcomeType t : AssayOutcomeType.values()) {
+            if (t.getTypeId() == id) {
+                return t;
+            }
+        }
+        return null;
     }
 }
+

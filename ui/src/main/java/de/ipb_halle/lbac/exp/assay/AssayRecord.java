@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.exp.assay;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 
 import java.util.ArrayList;
@@ -34,32 +35,52 @@ import org.apache.logging.log4j.Logger;
 public class AssayRecord implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private Long            recordid;
-    private Assay           assay;
-    private Material        material;
-    private AssayOutcome    outcome;
+    private Long                recordid;
+    private Assay               assay;
+    private Material            material;
+    private Item                item;
+    private AssayOutcomeType    type;
+    private AssayOutcome        outcome;
 
 
     /**
      * constructor
      */
-    public AssayRecord(AssayRecordEntity entity, Assay assay, Material material) {
+    public AssayRecord(AssayRecordEntity entity, Assay assay, Material material, Item item) {
         this.assay = assay;
         this.material = material;
+        this.item = item;
         this.recordid = entity.getRecordId();
-        // this.outcome = AssayOutcome.fromString(entity.getOutcome());
+        this.type = entity.getType();
+        this.outcome = AssayOutcome.fromString(this.type, entity.getOutcome());
     }
 
     public AssayRecordEntity createEntity() {
-        return new AssayRecordEntity()
+        AssayRecordEntity entity = new AssayRecordEntity()
             .setExpRecordId(this.assay.getExpRecordId())
             .setRecordId(this.recordid)
-            .setMaterialId(this.material.getId())
+            .setType(this.outcome.getType())
             .setOutcome(this.outcome.toString());
+
+        if (this.item != null) {
+            entity.setItemId(this.item.getId());
+        }
+        if (this.material != null) {
+            entity.setMaterialId(this.material.getId());
+        }
+        return entity;
     }
 
     public Assay getAssay() {
         return this.assay;
+    }
+
+    public String getFacelet() {
+        return this.type.toString();
+    }
+
+    public Item getItem() {
+        return this.item;
     }
 
     public Material getMaterial() {
@@ -79,6 +100,11 @@ public class AssayRecord implements DTO {
         return this;
     }
 
+    public AssayRecord setItem(Item item) {
+        this.item = item;
+        return this;
+    }
+
     public AssayRecord setMaterial(Material material) {
         this.material = material;
         return this;
@@ -86,6 +112,7 @@ public class AssayRecord implements DTO {
 
     public AssayRecord setOutcome(AssayOutcome outcome) {
         this.outcome = outcome;
+        this.type = outcome.getType();
         return this;
     }
 

@@ -55,14 +55,17 @@ CREATE TABLE exp_sops (
 );
 
 /*
- * ToDo: see below
- * - xxxxx referential integrity for material!
- * - xxxxx additional indexing for outcome column (example see below)
+ * Note: either materialid or itemid must be set
+ *
+ * ToDo: xxxxx additional indexing for outcome column (example see below)
  */
 CREATE TABLE exp_assay_records (
     recordid        BIGSERIAL NOT NULL PRIMARY KEY,
     exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
-    materialid      INTEGER NOT NULL /* REFERENCES material(materialid) ON UPDATE CASCADE ON DELETE CASCADE */,
+    materialid      INTEGER REFERENCES materials(materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    itemid          INTEGER CHECK (COALESCE(materialid, itemid) IS NOT NULL)
+                    REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    type            INTEGER NOT NULL,
     outcome         JSONB
 );
 

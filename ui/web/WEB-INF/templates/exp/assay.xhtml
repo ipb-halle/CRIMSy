@@ -28,9 +28,30 @@
 
     <ui:composition>
         <div>Assay<br/>SOP: #{expRecord.SOP.sopId} #{expRecord.SOP.description}<br/> 
+        <table>
+            <tr><th>Material</th><th>Gebinde</th><th>Value</th><th>Unit</th></tr>
         <ui:repeat value="#{expRecord.records}" var="assayRec">
-            Material #{assayRec.material.id} | Outcome #{assayRec.outcome}<br/>
+            <tr>
+                <td>
+                    <ui:fragment rendered="#{assayRec.material != null}">
+                        <ui:insert name="matPanel">
+                            <ui:include src="mat.xhtml">
+                                <ui:param name="material" value="#{assayRec.material}" />
+                            </ui:include>
+                        </ui:insert>
+                    </ui:fragment>
+                </td>
+                <td>Item omitted</td>
+                <ui:fragment rendered="#{assayRec.facelet eq 'SINGLE_POINT'}">
+                    <ui:insert name="singlePointOutcomePanel">
+                        <ui:include src="singlepoint.xhtml">
+                            <ui:param name="outcome" value="#{assayRec.outcome}" />
+                        </ui:include>
+                    </ui:insert>
+                </ui:fragment>
+            </tr>
         </ui:repeat>
+        </table>
         </div>
     </ui:composition>
 </html>

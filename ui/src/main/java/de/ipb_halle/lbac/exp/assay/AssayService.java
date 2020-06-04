@@ -26,6 +26,8 @@ import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.service.ItemService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -56,6 +58,9 @@ public class AssayService implements Serializable {
     private SOPService sopService;
 
     @Inject
+    private ItemService itemService;
+
+    @Inject
     private MaterialService materialService;
 
     /**
@@ -75,8 +80,15 @@ public class AssayService implements Serializable {
         List<AssayRecord> result = new ArrayList<AssayRecord> ();
         for(AssayRecordEntity e :  this.em.createQuery(criteriaQuery).getResultList()) {
 
-            Material mat = this.materialService.loadMaterialById(e.getMaterialId()); 
-            result.add(new AssayRecord(e, assay,  mat)); 
+            Material mat = null;
+            Item item = null;
+            if (e.getMaterialId() != null) {
+                mat = this.materialService.loadMaterialById(e.getMaterialId()); 
+            }
+            if (e.getItemId() != null) {
+                item = this.itemService.loadItemById(e.getItemId());
+            }
+            result.add(new AssayRecord(e, assay,  mat, item)); 
         }
         return result;
     }
@@ -115,7 +127,7 @@ public class AssayService implements Serializable {
         List <AssayRecord> records = new ArrayList<AssayRecord> ();
         for (AssayRecord ar : assay.getRecords()) {
             AssayRecordEntity e = this.em.merge(ar.createEntity());
-            records.add(new AssayRecord(e, assay, ar.getMaterial())); 
+            records.add(new AssayRecord(e, assay, ar.getMaterial(), ar.getItem())); 
         }
         return records;
     }

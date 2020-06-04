@@ -86,7 +86,7 @@ public class ExperimentBean implements Serializable {
         this.experimentService.save(this.experiment);
     }
 
-    public void actionSelectExperiment(Experiment exp) {
+    public void actionSelectExperiment(Experiment experiment) {
         this.experiment = experiment;
     }
 
@@ -102,7 +102,7 @@ public class ExperimentBean implements Serializable {
     public List<ExpRecord> getExpRecords() {
         try {
             if (this.experiment.getExperimentId() != null) {
-                this.logger.info("geExpRecords() got called");
+                this.logger.info("getExpRecords() loading records ...");
 
                 // xxxxx restrict search
                 return expRecordService.load();

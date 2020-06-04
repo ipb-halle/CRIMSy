@@ -48,6 +48,7 @@
                             <b:inputText label="target"/>
                         </b:column>
                         <b:column span="1" >
+                            <div class="rowButtonLabel"> </div>
                             <b:commandButton value="search"/>
                         </b:column>
                     </b:row>
@@ -63,6 +64,7 @@
                             <b:inputText label="Description" value="#{experimentBean.getExperiment().description}"/>
                         </b:column>
                         <b:column span="1" >
+                            <div class="rowButtonLabel"> </div>
                             <b:commandButton value="save" action="#{experimentBean.actionSaveExperiment}" />
                         </b:column>
                     </b:row>
@@ -79,7 +81,7 @@
                             </b:panel>
 
                         </b:column> 
-                        <b:column span="7">
+                        <b:column span="8">
                             <b:panel collapsible="false" title="experiment records">
                                 <ui:insert name="expRecords">
                                     <ui:include src="expRecordList.xhtml"/>
