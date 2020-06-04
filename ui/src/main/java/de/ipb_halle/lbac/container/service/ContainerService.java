@@ -159,7 +159,6 @@ public class ContainerService implements Serializable {
      * @return List of matching materialnames
      */
     @SuppressWarnings("unchecked")
-
     public Set<String> getSimilarContainerNames(String name, User user) {
         List l = this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("label", "%" + name + "%")
@@ -203,6 +202,7 @@ public class ContainerService implements Serializable {
      * @param cmap
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<Container> loadContainers(
             User u,
             Map<String, Object> cmap) {
@@ -402,6 +402,7 @@ public class ContainerService implements Serializable {
                 .executeUpdate();
     }
 
+    @SuppressWarnings("unchecked")
     public Container loadContainerByName(String containerName) {
         if (containerName == null) {
             return null;
