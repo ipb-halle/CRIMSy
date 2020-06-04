@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import de.ipb_halle.lbac.util.Unit;
+
 import java.util.ArrayList;
 import java.util.List;
 /**

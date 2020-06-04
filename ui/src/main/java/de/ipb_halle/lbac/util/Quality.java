@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.assay;
+package de.ipb_halle.lbac.util;
 
 
 
