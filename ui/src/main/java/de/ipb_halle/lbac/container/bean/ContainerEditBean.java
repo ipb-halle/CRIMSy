@@ -191,19 +191,19 @@ public class ContainerEditBean implements Serializable {
 
     public void setSecurityLevel(String securityLevel) {
         if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            containerToCreate.setSecuritylevel(securityLevel);
+            containerToCreate.setGmosavety(securityLevel);
         }
         if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            containerToEdit.setSecuritylevel(securityLevel);
+            containerToEdit.setGmosavety(securityLevel);
         }
     }
 
     public String getSecurityLevel() {
         if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate.getSecuritylevel();
+            return containerToCreate.getGmosavety();
         }
         if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            return containerToEdit.getSecuritylevel();
+            return containerToEdit.getGmosavety();
         }
         return "";
     }

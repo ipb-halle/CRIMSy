@@ -41,7 +41,7 @@ public class Container implements DTO {
     private String dimension;
     private ContainerType type;
     private String fireSection;
-    private String securitylevel;
+    private String gmosavety;
     private String barCode;
     private Item[][][] items;
     List<Container> containerHierarchy = new ArrayList<>();
@@ -61,7 +61,7 @@ public class Container implements DTO {
         this.project = p;
         this.dimension = dbentity.getDimension();
         this.fireSection = dbentity.getFiresection();
-        this.securitylevel = dbentity.getSecurityLevel();
+        this.gmosavety = dbentity.getGmosavety();
         this.barCode = dbentity.getBarcode();
         this.deactivated = dbentity.isDeactivated();
         if (dimension != null) {
@@ -90,7 +90,7 @@ public class Container implements DTO {
         this.label = dbentity.getLabel();
         this.dimension = dbentity.getDimension();
         this.fireSection = dbentity.getFiresection();
-        this.securitylevel = dbentity.getSecurityLevel();
+        this.gmosavety = dbentity.getGmosavety();
         this.barCode = dbentity.getBarcode();
         this.deactivated = dbentity.isDeactivated();
 
@@ -205,12 +205,12 @@ public class Container implements DTO {
         return containerHierarchy;
     }
 
-    public String getSecuritylevel() {
-        return securitylevel;
+    public String getGmosavety() {
+        return gmosavety;
     }
 
-    public void setSecuritylevel(String securitylevel) {
-        this.securitylevel = securitylevel;
+    public void setGmosavety(String securitylevel) {
+        this.gmosavety = securitylevel;
     }
 
     public boolean isDeactivated() {
@@ -234,7 +234,7 @@ public class Container implements DTO {
         dbe.setDimension(this.getDimension());
         dbe.setType(this.getType().getName());
         dbe.setFiresection(this.getFireSection());
-        dbe.setSecurityLevel(this.getSecuritylevel());
+        dbe.setGmosavety(this.getGmosavety());
         dbe.setBarcode(this.getBarCode());
         dbe.setDeactivated(this.isDeactivated());
         return dbe;

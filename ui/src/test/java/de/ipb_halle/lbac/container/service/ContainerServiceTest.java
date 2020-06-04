@@ -102,7 +102,7 @@ public class ContainerServiceTest extends TestBase {
         c0.setBarCode(null);
         c0.setDimension("3;3;1");
         c0.setFireSection("F1");
-        c0.setSecuritylevel("S0");
+        c0.setGmosavety("S0");
         c0.setLabel("R302");
         c0.setType(new ContainerType("ROOM", 90));
 
@@ -110,7 +110,7 @@ public class ContainerServiceTest extends TestBase {
         c1.setBarCode("9845893457");
         c1.setDimension("2;2;1");
         c1.setFireSection(c0.getFireSection());
-        c1.setSecuritylevel(c0.getSecuritylevel());
+        c1.setGmosavety(c0.getGmosavety());
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90));
@@ -119,7 +119,7 @@ public class ContainerServiceTest extends TestBase {
         c2.setBarCode("43753456");
         c2.setDimension(null);
         c2.setFireSection(c1.getFireSection());
-        c2.setSecuritylevel(c1.getSecuritylevel());
+        c2.setGmosavety(c1.getGmosavety());
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
         c2.setType(new ContainerType("CARTON", 90));
@@ -128,7 +128,7 @@ public class ContainerServiceTest extends TestBase {
         c3.setBarCode("43753456");
         c3.setDimension(null);
         c3.setFireSection(c1.getFireSection());
-        c3.setSecuritylevel(c1.getSecuritylevel());
+        c3.setGmosavety(c1.getGmosavety());
         c3.setLabel("Karton5");
         c3.setParentContainer(c1);
         c3.setType(new ContainerType("CARTON", 90));
@@ -189,7 +189,7 @@ public class ContainerServiceTest extends TestBase {
         c4.setBarCode("3840955");
         c4.setDimension(null);
         c4.setFireSection(c1.getFireSection());
-        c4.setSecuritylevel(c1.getSecuritylevel());
+        c4.setGmosavety(c1.getGmosavety());
         c4.setLabel("Karton3");
         c4.setProject(p);
         c4.setParentContainer(null);
@@ -297,6 +297,7 @@ public class ContainerServiceTest extends TestBase {
         instance.saveContainer(c1);
         instance.saveContainer(c2);
         instance.saveContainer(c3);
+        instance.deactivateContainer(c0);
 
         List<Container> loadedContainer = instance.loadContainers(testUser);
 

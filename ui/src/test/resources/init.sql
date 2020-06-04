@@ -515,7 +515,7 @@ CREATE TABLE containers(
     dimension VARCHAR,
     type VARCHAR NOT NULL REFERENCES containertypes(name),
     firesection VARCHAR,
-    securitylevel VARCHAR,
+    gmosafety VARCHAR,
     barcode VARCHAR,
     deactivated BOOLEAN NOT NULL DEFAULT false);
 

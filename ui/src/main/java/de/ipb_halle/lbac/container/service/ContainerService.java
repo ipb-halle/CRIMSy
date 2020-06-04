@@ -81,7 +81,7 @@ public class ContainerService implements Serializable {
             + "c.dimension, "
             + "c.type, "
             + "c.firesection, "
-            + "c.securitylevel, "
+            + "c.gmosafety, "
             + "c.barcode,"
             + "c.deactivated "
             + "FROM containers c "
@@ -108,7 +108,7 @@ public class ContainerService implements Serializable {
             + "c.dimension, "
             + "c.type, "
             + "c.firesection, "
-            + "c.securitylevel, "
+            + "c.gmosafety, "
             + "c.barcode,"
             + "c.deactivated  "
             + "FROM nested_containers nc "
@@ -144,7 +144,7 @@ public class ContainerService implements Serializable {
             + "c.dimension, "
             + "c.type, "
             + "c.firesection, "
-            + "c.securitylevel, "
+            + "c.gmosafety, "
             + "c.barcode,"
             + "c.deactivated  "
             + "FROM containers c "
@@ -327,16 +327,6 @@ public class ContainerService implements Serializable {
      * @return list of ids which are positioned in the container
      */
     public List<Integer> loadNestedSources(int id) {
-        throw new RuntimeException("Not Yet implemented!");
-    }
-
-    /**
-     * Removes a container from another container and removes all direct and
-     * indirect relationships.
-     *
-     * @param cn
-     */
-    public void removeContainerWithNesting(ContainerNesting cn) {
         throw new RuntimeException("Not Yet implemented!");
     }
 
