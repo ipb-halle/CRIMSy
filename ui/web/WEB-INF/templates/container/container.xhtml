@@ -29,6 +29,7 @@ limitations under the License.
                     <b:column span="1" offset="11">
                         <b:form>
                             <b:commandButton
+                                rendered="#{containerOverviewBean.isSecongButtonVisible()}"
                                 action="#{containerOverviewBean.actionSecondButtonClick()}"
                                 value="#{containerOverviewBean.getSecondButtonLabel()}"
                                 />

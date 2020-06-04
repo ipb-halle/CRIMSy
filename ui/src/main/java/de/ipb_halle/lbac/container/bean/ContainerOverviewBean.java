@@ -82,7 +82,7 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     public void actionCancel() {
-
+        mode = Mode.SHOW;
     }
 
     public void actionSecondButtonClick() {
@@ -167,6 +167,10 @@ public class ContainerOverviewBean implements Serializable {
 
     public void actionContainerEdit(Container c) {
 
+    }
+
+    public boolean isSecongButtonVisible() {
+        return mode == Mode.SHOW;
     }
 
 }

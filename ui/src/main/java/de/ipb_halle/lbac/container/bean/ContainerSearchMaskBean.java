@@ -46,6 +46,9 @@ public class ContainerSearchMaskBean implements Serializable {
     private String searchLocation;
     private User currentUser;
 
+    @Inject
+    private ContainerOverviewBean overviewBean;
+
     Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Inject
@@ -59,6 +62,7 @@ public class ContainerSearchMaskBean implements Serializable {
         containerSearchId = null;
         searchProject = null;
         searchLocation = null;
+        overviewBean.actionStartFilteredSearch();
     }
 
     public List<String> getSimilarContainerNames(String pattern) {
@@ -105,7 +109,5 @@ public class ContainerSearchMaskBean implements Serializable {
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
     }
-    
-    
 
 }
