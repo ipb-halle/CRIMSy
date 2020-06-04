@@ -224,6 +224,9 @@ public class Container implements DTO {
     @Override
     public ContainerEntity createEntity() {
         ContainerEntity dbe = new ContainerEntity();
+        if (id > 0) {
+            dbe.setId(id);
+        }
         if (this.getParentContainer() != null) {
             dbe.setParentcontainer(this.getParentContainer().getId());
         }
