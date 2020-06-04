@@ -1,5 +1,5 @@
 /*
- * Clour Resource & Information Management System
+ * Cloud Resource & Information Management System (CRIMSy)
  * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,5 +1,5 @@
 /*
- * Clour Resource & Information Management System
+ * Cloud Resource & Information Management System (CRIMSy)
  * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This class will provide some test cases for the HexUtil class 
@@ -45,7 +46,22 @@ public class HexUtilTest {
             "4352494d53792032303230", HexUtil.toHex("CRIMSy 2020".getBytes()).toLowerCase());
 
         assertEquals("fromHex(): conversion error ",
-            "CRIMSy", new String(HexUtil.fromHex("4352494d5379")));
+            "/CRIMSy/", new String(HexUtil.fromHex("2f4352494d53792F")));
+
+        assertEquals("fromHex(): zero length argument ", 0, HexUtil.fromHex("").length);
+
+        assertNull("fromHex(): null argument ", HexUtil.fromHex(null));
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testHexUtilOdd() {
+        HexUtil.fromHex("5");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testHexUtilInvalidChar() {
+        HexUtil.fromHex("2g");
     }
 
 }
