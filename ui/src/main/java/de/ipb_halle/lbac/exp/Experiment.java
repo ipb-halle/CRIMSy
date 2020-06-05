@@ -39,6 +39,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Experiment implements DTO {
 
+    private final static DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private Integer experimentid;

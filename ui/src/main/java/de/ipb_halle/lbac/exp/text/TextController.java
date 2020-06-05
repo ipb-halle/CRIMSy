@@ -17,43 +17,40 @@
  */
 package de.ipb_halle.lbac.exp.text;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
-import de.ipb_halle.lbac.exp.ExpRecordType;
+import de.ipb_halle.lbac.exp.ExpRecordController;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
+ * interface for experiment record controllers
+ *
  * @author fbroda
  */
-public class Text extends ExpRecord implements DTO {
+public class TextController implements ExpRecordController {
 
+    private Text expRecord;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private String text;
 
-    /**
-     * default constructor
-     */
-    public Text() {
-        super();
-        setType(ExpRecordType.TEXT);
+    public void actionSaveRecord() {
+        this.logger.info("actionSaveRecord()");
     }
 
-    public TextEntity createEntity() {
-        return new TextEntity()
-            .setExpRecordId(getExpRecordId())
-            .setText(this.text);
+    public ExpRecord getNewRecord() {
+        this.expRecord = new Text();
+        this.expRecord.setEdit(true);
+        return this.expRecord;
     }
 
-    public String getText() {
-        return this.text;
+    public ExpRecord getRecord() {
+        return this.expRecord;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public ExpRecordController setExpRecord(ExpRecord expRecord) {
+        this.expRecord = (Text) expRecord;
+        return this;
     }
+
 }

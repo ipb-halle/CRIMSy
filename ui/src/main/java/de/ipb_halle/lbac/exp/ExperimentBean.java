@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.exp.Experiment;
+import de.ipb_halle.lbac.exp.text.Text;
+import de.ipb_halle.lbac.exp.text.TextController;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -53,6 +55,10 @@ public class ExperimentBean implements Serializable {
 
     private Experiment experiment; 
 
+    private List<ExpRecord> expRecords;
+
+    private ExpRecordController expRecordController;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
 
@@ -61,6 +67,8 @@ public class ExperimentBean implements Serializable {
         /*
          * ToDo: create an experiment with real user and ACL
          */
+        this.expRecords = new ArrayList<ExpRecord> ();
+
         this.experiment = new Experiment(
             null,                                               // experiment id
             "code",                                             // code
@@ -69,6 +77,26 @@ public class ExperimentBean implements Serializable {
             this.globalAdmissionContext.getPublicAccount(),     // owner
             new Date()                                          // creation time
             );
+    }
+
+
+    /**
+     * ToDo: xxxxx support additional record types
+     */
+    public void actionAddRecord() {
+        this.expRecordController = new TextController();
+        ExpRecord record = this.expRecordController.getNewRecord();
+        
+        record.setExperiment(this.experiment);
+        this.expRecords.add(record);
+    }
+
+    /**
+     * ToDo: xxxxx validation and restrict search
+     */
+    public void actionSaveRecord() {
+        this.expRecordService.save(this.expRecordController.getRecord());
+        this.expRecordService.load();
     }
 
     /**
@@ -86,8 +114,17 @@ public class ExperimentBean implements Serializable {
         this.experimentService.save(this.experiment);
     }
 
+    /**
+     * ToDo: xxxxx restrict search
+     */
     public void actionSelectExperiment(Experiment experiment) {
         this.experiment = experiment;
+        try {
+            this.expRecords = expRecordService.load();
+        } catch(Exception e) {
+            this.logger.warn("actionSelectExperiment() caught an exception: ", (Throwable) e);
+            this.expRecords = new ArrayList<ExpRecord> ();
+        }
     }
 
     public Experiment getExperiment() {
@@ -99,18 +136,12 @@ public class ExperimentBean implements Serializable {
         return experimentService.load();
     }
 
-    public List<ExpRecord> getExpRecords() {
-        try {
-            if (this.experiment.getExperimentId() != null) {
-                this.logger.info("getExpRecords() loading records ...");
+    public ExpRecordController getExpRecordController() {
+        return this.expRecordController;
+    }
 
-                // xxxxx restrict search
-                return expRecordService.load();
-            } 
-        } catch(Exception e) {
-            this.logger.warn("getExpRecords() caught an exception: ", (Throwable) e);
-        }
-        return new ArrayList<ExpRecord> ();
+    public List<ExpRecord> getExpRecords() {
+        return this.expRecords;
     }
 
     public void setExperiment(Experiment experiment) {

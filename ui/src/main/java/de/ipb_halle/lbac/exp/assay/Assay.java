@@ -53,6 +53,7 @@ public class Assay extends ExpRecord implements DTO {
      * default constructor
      */
     public Assay() {
+        super();
         setType(ExpRecordType.ASSAY);
         this.records = new ArrayList<AssayRecord> ();
     }

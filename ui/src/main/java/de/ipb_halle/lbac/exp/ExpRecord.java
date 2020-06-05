@@ -52,6 +52,12 @@ public abstract class ExpRecord implements DTO {
     private ExpRecordType   type;
     private Date            creationtime;
     private Date            changetime;
+    private transient boolean edit = false;
+
+    protected ExpRecord() {
+        this.creationtime = new Date();
+        this.changetime = new Date();
+    }
 
     public ExpRecordEntity createExpRecordEntity() {
         return new ExpRecordEntity()
@@ -68,6 +74,10 @@ public abstract class ExpRecord implements DTO {
 
     public Date getCreationTime() {
         return this.creationtime;
+    }
+
+    public boolean getEdit() {
+        return this.edit;
     }
 
     public Experiment getExperiment() { 
@@ -107,6 +117,11 @@ public abstract class ExpRecord implements DTO {
 
     public ExpRecord setCreationTime(Date creationtime) {
         this.creationtime = creationtime;
+        return this;
+    }
+
+    public ExpRecord setEdit(boolean edit) {
+        this.edit = edit;
         return this;
     }
 

@@ -28,7 +28,7 @@
 
     <ui:composition>
         <ui:repeat value="#{experimentBean.expRecords}" var="rec">
-            #{rec.expRecordId} -- #{rec.creationTime} 
+            #{rec.expRecordId} -- #{rec.creationTime} <br/>
 
             <ui:fragment rendered="#{rec.facelet eq 'ASSAY'}">
                 <ui:insert name="assayPanel">
@@ -46,9 +46,6 @@
                 </ui:insert>
             </ui:fragment>
 
-
-
-            <br/>
         </ui:repeat>
     </ui:composition>
 </html>
