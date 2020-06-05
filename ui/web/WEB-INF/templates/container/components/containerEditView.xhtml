@@ -66,7 +66,6 @@ limitations under the License.
                         styleClass="containerFilterRow">
                         <b:column span="2">
                             <b:inputText
-                                required="true"
                                 value="#{containerEditBean.containerName}"
                                 styleClass="containerEditInputfield"/>
                         </b:column>
@@ -84,7 +83,8 @@ limitations under the License.
                             <p:autoComplete value="#{containerEditBean.containerProject}"
                                             maxResults="10"
                                             completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
-                                            styleClass="containerEditInputfield"/>
+                                            styleClass="containerEditInputfield">
+                            </p:autoComplete>
                         </b:column>
                     </b:row>
 
@@ -118,16 +118,22 @@ limitations under the License.
                             span="1"
                             rendered="#{containerEditBean.isDimensionVisible()}">
                             <b:inputText
+                                id="height"
+                                value="#{containerEditBean.containerWidth}"
                                 styleClass="containerEditDimesionField"
-                                label="Breite"/>
+                                label="Breite">
+                            </b:inputText>
+
                         </b:column>
                         <b:column
                             offset="2"
                             span="1"
                             rendered="#{containerEditBean.isDimensionVisible()}">
                             <b:inputText
+                                value="#{containerEditBean.containerHeight}"
                                 styleClass="containerEditDimesionField"
-                                label="Hoehe"/>
+                                label="Hoehe">
+                            </b:inputText>
                         </b:column>
                     </b:row>
                     <b:row

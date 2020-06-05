@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -52,6 +51,8 @@ public class ContainerEditBean implements Serializable {
     @Inject
     private ProjectService projectService;
 
+    private Integer containerHeight;
+    private Integer containerWidth;
     private Container containerToCreate;
     private Container originalContainer;
     private Container containerToEdit;
@@ -60,9 +61,9 @@ public class ContainerEditBean implements Serializable {
     private User currentUser;
     private String containerLocation;
     private String gvoClass;
-    private List<String> possibleSecuritylevel = new ArrayList<>();
+    private final List<String> possibleSecuritylevel = new ArrayList<>();
+    private String preferredProjectName;
     Logger logger = LogManager.getLogger(this.getClass().getName());
-    
 
     public void startNewContainerCreation() {
         containerTypes = containerService.loadContainerTypes();
@@ -105,6 +106,7 @@ public class ContainerEditBean implements Serializable {
     }
 
     public void setContainerProject(String p) {
+        preferredProjectName = p;
         for (Project project : possibleProjects) {
             if (p.equals(project.getName())) {
                 if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
@@ -169,8 +171,6 @@ public class ContainerEditBean implements Serializable {
     public void setContainerLocation(String containerLocation) {
         this.containerLocation = containerLocation;
     }
-
-   
 
     public boolean isEditPanelVisible() {
         return overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE
@@ -262,6 +262,24 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-   
-    
+    public String getPreferredProjectName() {
+        return preferredProjectName;
+    }
+
+    public Integer getContainerHeight() {
+        return containerHeight;
+    }
+
+    public void setContainerHeight(Integer containerHeight) {
+        this.containerHeight = containerHeight;
+    }
+
+    public Integer getContainerWidth() {
+        return containerWidth;
+    }
+
+    public void setContainerWidth(Integer containerWidth) {
+        this.containerWidth = containerWidth;
+    }
+
 }

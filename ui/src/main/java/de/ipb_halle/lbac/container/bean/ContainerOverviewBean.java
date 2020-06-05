@@ -42,6 +42,9 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ContainerOverviewBean implements Serializable {
 
+    @Inject
+    private InputValidator validator;
+
     public enum Mode {
         SHOW, EDIT, CREATE
     }
@@ -90,8 +93,10 @@ public class ContainerOverviewBean implements Serializable {
             editBean.startNewContainerCreation();
             mode = Mode.CREATE;
         } else if (mode == Mode.CREATE) {
-            mode = Mode.SHOW;
-            saveNewContainer();
+
+            if (saveNewContainer()) {
+                mode = Mode.SHOW;
+            }
 
         } else if (mode == Mode.EDIT) {
             mode = Mode.SHOW;
@@ -99,8 +104,14 @@ public class ContainerOverviewBean implements Serializable {
         }
     }
 
-    private void saveNewContainer() {
-        logger.info("Try to save container packed into " + editBean.getContainerLocation());
+    private boolean saveNewContainer() {
+
+        if (editBean.getPreferredProjectName() != null
+                && editBean.getPreferredProjectName().trim().isEmpty()
+                && editBean.getContainerToCreate().getProject() == null) {
+
+        }
+
         if (editBean.getContainerLocation() != null) {
             editBean.getContainerToCreate()
                     .setParentContainer(
@@ -109,8 +120,26 @@ public class ContainerOverviewBean implements Serializable {
                             ));
         }
 
-        containerService.saveContainer(editBean.getContainerToCreate());
-        actionStartFilteredSearch();
+        boolean valide = validator.isInputValideForCreation(
+                editBean.getContainerToCreate(),
+                editBean.getPreferredProjectName(),
+                editBean.getContainerLocation(),
+                editBean.getContainerHeight(),
+                editBean.getContainerWidth()
+        );
+
+        if (valide) {
+            if (editBean.isDimensionVisible()) {
+                Integer height = Math.max(1, editBean.getContainerHeight() == null ? 0 : editBean.getContainerHeight());
+                Integer width = Math.max(1, editBean.getContainerWidth() == null ? 0 : editBean.getContainerWidth());
+                editBean.getContainerToCreate().setDimension(String.format("%d;%d;1", height, width));
+
+            }
+
+            containerService.saveContainer(editBean.getContainerToCreate());
+            actionStartFilteredSearch();
+        }
+        return valide;
     }
 
     private void saveEditedContainer() {
