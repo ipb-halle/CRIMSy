@@ -30,14 +30,14 @@
     <h:body>
         <b:form 
             id="itemForm">
-            <b:container>
+            <b:container styleClass="itemOverviewContainer">
                 <b:row>
                     <b:column span="2"> 
                         <b:container>
                             <b:row>
                                 <b:column>
                                     <h:outputText value="Suchfilter"
-                                                  styleClass="itemFilterHeader"/>
+                                                  styleClass="searchFilterHeader"/>
                                 </b:column>
                             </b:row>    
                             <b:row
@@ -154,7 +154,7 @@
                         </b:container>
                     </b:column>    
                     <b:column span="10">  
-                        <b:container>
+                        <b:container styleClass="itemOverviewTableContainer">
                             <b:row>
                                 <b:column span="12"
                                           styleClass="itemDataTable">

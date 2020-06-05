@@ -27,91 +27,106 @@
     <h:body>
         <b:form 
             id="materialForm">
-            <b:container>
+            <b:container
+                styleClass="materialOverviewTableContainer">
                 <b:row>
-                    <b:column span="1">
-                        <b:commandButton
-                            action="#{materialOverviewBean.actionCreateNewMaterial()}"
-                            value="#{msgs.materials_createNew}"
-                            />
+                    <b:column span="2">
+                        Placeholder for search mask
+                    </b:column>
+                    <b:column span="10">
+                        <b:container>
+                            <b:row>
+                                <b:column span="1">
+                                    <b:commandButton
+                                        action="#{materialOverviewBean.actionCreateNewMaterial()}"
+                                        value="#{msgs.materials_createNew}"
+                                        />
+                                </b:column>
+                            </b:row>
+                        </b:container>
+                        <b:dataTable
+                            paginated="false"
+                            value="#{materialOverviewBean.readableMaterials}"
+                            searching="false"
+                            var="material">
+                            <b:dataTableColumn
+                                value="#{material.id}">
+                            </b:dataTableColumn>
+                            <b:dataTableColumn
+                                label="#{msgs.materialOverview_tableheader_name}">
+                                <h:outputText
+                                    escape="false"
+                                    value="#{material.getPrintableNames()}"/>
+                            </b:dataTableColumn>
+                            <b:dataTableColumn
+                                label="#{msgs.materialOverview_tableheader_type}"
+                                value="#{material.type}">
+                            </b:dataTableColumn>
+                            <b:dataTableColumn
+                                styleClass="div-container-hazard"
+                                label="#{msgs.materialOverview_tableheader_detailInfos}">
+                                <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('BIOMATERIAL', material)}">
+                                    <ui:insert name="biomaterialPanel">
+                                        <ui:include src="/WEB-INF/templates/material/components/detail/biodata.xhtml">
+                                            <ui:param name="material" value="#{material}" />
+                                        </ui:include>
+                                    </ui:insert>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('STRUCTURE', material)}">
+                                    <ui:insert name="structurePanel">
+                                        <ui:include src="/WEB-INF/templates/material/components/detail/structure.xhtml">
+                                            <ui:param name="material" value="#{material}" />
+                                        </ui:include>
+                                    </ui:insert>
+                                </ui:fragment>
+                            </b:dataTableColumn>
+                            <b:dataTableColumn
+                                label="#{msgs.materialOverview_tableheader_actions}">
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon="pencil"
+                                                 look="link"
+                                                 type="submit"
+                                                 ajax="false"
+                                                 action="#{materialOverviewBean.actionEditMaterial(material)}"
+                                                 oncomplete="addStateSaveBehavior()"
+                                                 tooltip="#{msgs.materialOverview_actions_edit}"
+                                                 />
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon-awesome="fa-eyedropper"
+                                                 look="link"
+                                                 type="submit"
+                                                 ajax="false"
+                                                 action="#{materialOverviewBean.actionCreateNewItem(material)}"
+                                                 tooltip="#{msgs.materialOverview_actions_createItem}"
+                                                 />
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon="glyphicon glyphicon-user"
+                                                 look="link"
+                                                 ajax="true"
+                                                 process="@this"
+                                                 type="button"
+                                                 disabled="true"
+                                                 tooltip="#{msgs.materialOverview_actions_changeRights}"
+                                                 />
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon="trash"
+                                                 look="link"
+                                                 type="button"
+                                                 ajax="true"
+                                                 update="@form"
+                                                 onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"
+                                                 tooltip="#{msgs.materialOverview_actions_deactivate}"
+                                                 />
+                            </b:dataTableColumn>
+                        </b:dataTable>
                     </b:column>
                 </b:row>
+
+
             </b:container>
-            <b:dataTable
-                paginated="false"
-                value="#{materialOverviewBean.readableMaterials}"
-                searching="false"
-                var="material">
-                <b:dataTableColumn
-                    value="#{material.id}">
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.materialOverview_tableheader_name}">
-                    <h:outputText
-                        escape="false"
-                        value="#{material.getPrintableNames()}"/>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.materialOverview_tableheader_type}"
-                    value="#{material.type}">
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    styleClass="div-container-hazard"
-                    label="#{msgs.materialOverview_tableheader_detailInfos}">
-                    <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('BIOMATERIAL', material)}">
-                        <ui:insert name="biomaterialPanel">
-                            <ui:include src="/WEB-INF/templates/material/components/detail/biodata.xhtml">
-                                <ui:param name="material" value="#{material}" />
-                            </ui:include>
-                        </ui:insert>
-                    </ui:fragment>
-                    <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('STRUCTURE', material)}">
-                        <ui:insert name="structurePanel">
-                            <ui:include src="/WEB-INF/templates/material/components/detail/structure.xhtml">
-                                <ui:param name="material" value="#{material}" />
-                            </ui:include>
-                        </ui:insert>
-                    </ui:fragment>
-                </b:dataTableColumn>
-                <b:dataTableColumn
-                    label="#{msgs.materialOverview_tableheader_actions}">
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="pencil"
-                                     look="link"
-                                     type="submit"
-                                     ajax="false"
-                                     action="#{materialOverviewBean.actionEditMaterial(material)}"
-                                     oncomplete="addStateSaveBehavior()"
-                                     tooltip="#{msgs.materialOverview_actions_edit}"
-                                     />
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon-awesome="fa-eyedropper"
-                                     look="link"
-                                     type="submit"
-                                     ajax="false"
-                                     action="#{materialOverviewBean.actionCreateNewItem(material)}"
-                                     tooltip="#{msgs.materialOverview_actions_createItem}"
-                                     />
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="glyphicon glyphicon-user"
-                                     look="link"
-                                     ajax="true"
-                                     process="@this"
-                                     type="button"
-                                     disabled="true"
-                                     tooltip="#{msgs.materialOverview_actions_changeRights}"
-                                     />
-                    <b:commandButton style="padding: 0 4px;"
-                                     icon="trash"
-                                     look="link"
-                                     type="button"
-                                     ajax="true"
-                                     update="@form"
-                                     onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"
-                                     tooltip="#{msgs.materialOverview_actions_deactivate}"
-                                     />
-                </b:dataTableColumn>
-            </b:dataTable>
+
+
+
         </b:form>
     </h:body>
 

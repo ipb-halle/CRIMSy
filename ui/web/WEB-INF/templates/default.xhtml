@@ -26,19 +26,21 @@
 
 
     <h:body>
+
+
         <ui:composition>
             <ui:insert name="fileupload">
                 <ui:include src="/WEB-INF/templates/fileupload.xhtml"/>
             </ui:insert>
 
-            <b:jumbotron id="jumboHeader">
+            <b:jumbotron id="jumboHeader" styleClass="defaultFormat">
                 <b:row id="lbac_logo">
                     <b:image value="/resources/img/cloudlogo.svg"
                              id="cloudlogo"
                              styleClass="img-responsive,centerPanel"/>
                 </b:row>
             </b:jumbotron>
-            <b:row>
+            <b:row styleClass="defaultFormat">
                 <b:column colMd="10"
                           offsetMd="1" 
                           colXs="10" 
@@ -88,12 +90,12 @@
                               icon-size="2x"
                               look="info"
                               onclick="$('tbody.files').find('tr').remove();
-                                      $('.modalFileUpload').modal()"
+                                          $('.modalFileUpload').modal()"
                               style="margin-top:10px" 
                               rendered="#{userBean.hasUploadPermission()}"/>
                 </b:column>
             </b:row>
-            <b:row>
+            <b:row  styleClass="defaultFormat">
                 <b:form id="frmDocumentSearchResults">
                     <b:dataTable id="documentList"
                                  value="#{documentSearchBean.getFoundDocuments()}"
@@ -117,7 +119,7 @@
                     </b:dataTable>
                 </b:form>
             </b:row>
-            <b:row>
+            <b:row  styleClass="defaultFormat">
                 <b:column span="10">
 
                 </b:column>
@@ -150,10 +152,7 @@
                         </b:commandButton>
                     </b:form>
                 </b:column>
-
             </b:row>
-
-
         </ui:composition>
     </h:body>
 </html>

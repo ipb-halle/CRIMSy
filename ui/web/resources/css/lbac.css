@@ -470,55 +470,24 @@ select.selCollection {
     cursor: not-allowed !important;
 }
 
-.itemDataTable .dataTables_info{
-    visibility: hidden;
-}
 
-.itemNavigationButton{
-    width: 19px !important;
-    height: 16px !important;
-}
-
-.itemNavigationButton i{
-    font-size: 12px;
-    position: absolute;
-    top: 6px;
-    left: 22px;
-}
-
-.itemNavigationColumn{
-    width:10px  !important;
-}
-.itemFilterInputfield{
-    width:165px  !important;
-    height: 30px !important;
-}
-.itemFilterInputfield input{
-    width:165px  !important;
-    height: 30px !important;
-}
-
-
-
-.itemFilterRow div{
-    margin-bottom: 3px !important;
-}
-.itemFilterButton {
-    width: 80px !important;
-    height: 35px !important;
-    margin-left: 10px !important;
-}
-.itemFilterButtonColumn {
-    margin-top: 15px;
-    padding-left: 5px !important;   
-}
-
-.itemFilterButtonRight{
-    left: -13px !important;
-}
 
 /* positioning of buttons together with labeled text input elements inside b:row */
 .rowButtonLabel {
     height: 1.3em;
     margin-bottom: 5px;
 }
+
+.simplesearch{
+    width:90% !important;
+}
+
+.defaultFormat{
+    margin: auto !important;
+    width:1170px !important;
+}
+
+.centerPanel{
+    margin: auto;
+}
+

@@ -1,6 +1,7 @@
 /*
+ *
  * Leibniz Bioactives Cloud
- * Copyright 2019 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,74 +16,65 @@
  * limitations under the License.
  *
  */
-
-/*
-   customer styles
-
-*/
-
-.containerFilterHeader{
-    font-size: 16px;
-    font-weight: bold;
+.itemDataTable .dataTables_info{
+    visibility: hidden;
 }
 
-.containerFilterRow div{
+.itemNavigationButton{
+    width: 19px !important;
+    height: 16px !important;
+}
+
+.itemNavigationButton i{
+    font-size: 12px;
+    position: absolute;
+    top: 6px;
+    left: 22px;
+}
+
+.itemNavigationColumn{
+    width:10px  !important;
+}
+.itemFilterInputfield{
+    width:165px  !important;
+    height: 30px !important;
+}
+.itemFilterInputfield input{
+    width:165px  !important;
+    height: 30px !important;
+}
+
+
+
+.itemFilterRow div{
     margin-bottom: 3px !important;
 }
-
-.containerFilterInputfield{
-    width:165px  !important;
-    height: 30px !important;
-}
-
-.containerFilterInputfield input{
-    width:165px  !important;
-    height: 30px !important;
-}
-
-.containerFilterButton {
+.itemFilterButton {
     width: 80px !important;
     height: 35px !important;
     margin-left: 10px !important;
 }
-.containerFilterButtonColumn {
+.itemFilterButtonColumn {
     margin-top: 15px;
     padding-left: 5px !important;   
 }
 
-.containerFilterButtonRight{
+.itemFilterButtonRight{
     left: -13px !important;
 }
-.containerEditPanel{
-    width: 25%;
+
+.itemOverviewContainer{
+    width:100% !important;
 }
 
-.containerEditInputfield{
-    width: 200px  !important;
-    height: 30px !important;
+.itemOverviewTableContainer{
+    width: 100% !important;
 }
 
-.containerEditInputfield input{
-    width: 200px  !important;
-    height: 30px !important;
+.searchFilterHeader{
+    margin: 25px;
+    font-size: 19px;
+    font-weight: bold;
 }
 
-.containerEditDimesionField{
-    width: 50px;
-}
-
-.containerTopRow{
-    margin-top: 10px;
-    margin-bottom: 15px;
-}
-
-.containerEdit{
-    padding: 0px;
-}
-
-.containerOverviewContainer{
-    width:100%;
-}
-
-/** format info box test results in ldpap check **/
 
