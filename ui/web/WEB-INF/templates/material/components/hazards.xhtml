@@ -24,12 +24,11 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:body>
         <ui:composition>
             <b:panel 
-                 styleClass="hazardsPanelClass"
+                styleClass="hazardsPanelClass"
                 title="#{msgs.materialCreation_panelHazard_name}"
                 rendered="#{materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
                 <h:outputText 
@@ -77,11 +76,15 @@
                 <b:inputText
                     disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
                     value="#{materialBean.hazards.hazardStatements}"
-                    label="#{msgs.materialCreation_panelHazard_hazard}"/>
+                    label="#{msgs.materialCreation_panelHazard_hazard}">
+                    <f:converter converterId="InputConverter" />
+                </b:inputText>
                 <b:inputText
                     disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
                     value="#{materialBean.hazards.precautionaryStatements}"
-                    label="#{msgs.materialCreation_panelHazard_precautionary}"/>
+                    label="#{msgs.materialCreation_panelHazard_precautionary}">
+                    <f:converter converterId="InputConverter" />
+                </b:inputText>
             </b:panel>
 
         </ui:composition>

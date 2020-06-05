@@ -67,7 +67,9 @@ limitations under the License.
                         <b:column span="2">
                             <b:inputText
                                 value="#{containerEditBean.containerName}"
-                                styleClass="containerEditInputfield"/>
+                                styleClass="containerEditInputfield">
+                                <f:converter converterId="InputConverter" />
+                            </b:inputText>
                         </b:column>
                     </b:row>
                     <b:row
@@ -122,6 +124,7 @@ limitations under the License.
                                 value="#{containerEditBean.containerWidth}"
                                 styleClass="containerEditDimesionField"
                                 label="Breite">
+                                <f:converter converterId="InputConverter" />
                             </b:inputText>
 
                         </b:column>
@@ -133,6 +136,7 @@ limitations under the License.
                                 value="#{containerEditBean.containerHeight}"
                                 styleClass="containerEditDimesionField"
                                 label="Hoehe">
+                                <f:converter converterId="InputConverter" />
                             </b:inputText>
                         </b:column>
                     </b:row>
@@ -171,7 +175,9 @@ limitations under the License.
                             rendered="#{containerEditBean.isSecurityLevelVisible()}">
                             <b:inputText
                                 value="#{containerEditBean.fireSection}"
-                                styleClass="containerEditInputfield"/>
+                                styleClass="containerEditInputfield">
+                                <f:converter converterId="InputConverter" />
+                            </b:inputText>
                         </b:column>
                     </b:row>
                     <b:row>

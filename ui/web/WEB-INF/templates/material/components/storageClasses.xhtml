@@ -55,7 +55,9 @@
                 <b:inputText
                     disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
                     label="#{msgs.materialCreation_panelStorage_remarks}"
-                    value="#{materialBean.storageClassInformation.remarks}"/>
+                    value="#{materialBean.storageClassInformation.remarks}">
+                    <f:converter converterId="InputConverter" />
+                </b:inputText>
                 <h:outputText 
                     value="#{msgs.materialCreation_panelStorage_additionalStorageProperties}"/>
                 <b:selectBooleanCheckbox

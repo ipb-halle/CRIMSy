@@ -106,8 +106,9 @@
                         <b:inputText
                             label="#{msgs.taxonomy_label_new_level}"
                             value="#{taxonomyBean.renderController.getParentFirstName()}"
-
-                            disabled="true"/>
+                            disabled="true">
+                            <f:converter converterId="InputConverter" />
+                        </b:inputText>
                     </b:column>
                     <b:column
                         offset="4"
@@ -117,7 +118,9 @@
                         <b:inputText
                             disabled="true"
                             label="#{msgs.taxonomy_label_new_parent}"
-                            value="#{taxonomyBean.renderController.getParentFirstName()}"/>
+                            value="#{taxonomyBean.renderController.getParentFirstName()}">
+                            <f:converter converterId="InputConverter" />
+                        </b:inputText>
                     </b:column>
                     <b:column 
                         span="4" offset="8"
@@ -126,7 +129,9 @@
                         <b:inputText
                             disabled="true"
                             label="Stufe"
-                            value="#{taxonomyBean.renderController.getCategoryOfChoosenTaxo()}"/>
+                            value="#{taxonomyBean.renderController.getCategoryOfChoosenTaxo()}">
+                            <f:converter converterId="InputConverter" />
+                        </b:inputText>
                     </b:column>
                     <b:column
                         span="4" 

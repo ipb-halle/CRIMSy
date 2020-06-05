@@ -31,10 +31,10 @@
             <b:panel
                 styleClass="materialNamesPanelClass" 
                 title="#{msgs.materialCreation_panelNames_name}"
-               
+
                 rendered="#{materialBean.permission.isDetailPanelVisible('COMMON_INFORMATION')}">
-               
-              
+
+
 
                 <b:dataTable
                     id="materialNameTable"
@@ -43,7 +43,7 @@
                     value="#{materialBean.materialNameBean.names}"
                     searching="false"
                     var="mName">
-                  
+
 
                     <b:dataTableColumn
                         orderable="false"
@@ -56,7 +56,7 @@
                             onkeypress="if (event.keyCode === 13) {
                                         return false;
                                     }">
-
+                            <f:converter converterId="InputConverter" />
                         </b:inputText>
 
                     </b:dataTableColumn>

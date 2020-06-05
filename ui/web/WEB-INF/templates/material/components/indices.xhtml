@@ -84,7 +84,9 @@
                                     label="#{msgs.materialCreation_panelIndices_tableHeader_value}">
                                     <b:inputText 
                                         disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                        value="#{index.value}"/>
+                                        value="#{index.value}">
+                                        <f:converter converterId="InputConverter" />
+                                    </b:inputText>
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
                                     orderable="false"

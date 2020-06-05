@@ -29,6 +29,7 @@ public class IndexEntry {
     protected String value;
     protected int typeId;
     protected String language;
+    
 
     public IndexEntry(
             int typeId,

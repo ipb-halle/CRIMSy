@@ -67,7 +67,6 @@ public class MaterialOverviewBean implements Serializable {
     }
     
     public List<Material> getReadableMaterials() {
-        logger.info("Amount of shown materials " + materialService.getReadableMaterials().size());
         return materialService.getReadableMaterials();
     }
     

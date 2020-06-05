@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.bean;
 
+import de.ipb_halle.lbac.forum.HTMLInputFilter;
 import de.ipb_halle.lbac.material.bean.manipulation.NameListOperation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.bean.manipulation.NameListOperation.Button;
@@ -39,6 +40,7 @@ public class MaterialNameBean implements Serializable {
     protected List<MaterialName> names = new ArrayList<>();
     protected NameListOperation nameListOperation;
     protected List<String> possibleLanguages = new ArrayList<>();
+  
 
     @Inject
     private MaterialBean materialEditBean;

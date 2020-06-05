@@ -134,7 +134,9 @@
                                 <b:inputText label='Item ID'
                                              disabled="true"
                                              rendered="#{itemBean.isIdVisible()}"
-                                             value="#{itemBean.state.editedItem.id}"/>
+                                             value="#{itemBean.state.editedItem.id}">
+                                    <f:converter converterId="InputConverter" />
+                                </b:inputText>
                             </b:column>
                             <b:column span="1">
                                 <b:selectBooleanCheckbox
@@ -151,6 +153,7 @@
                                     required="true"
                                     required-message="#{msgs.itemEdit_itemPanel_amount_requiredtext}"
                                     label="#{msgs.itemEdit_itemPanel_container_size}">
+                                    <f:converter converterId="InputConverter" />
                                     <f:validateDoubleRange minimum="0" for="containerSize"/>
                                 </b:inputText>
                             </b:column>
@@ -195,6 +198,7 @@
                                     label="#{msgs.itemEdit_itemPanel_concentration}"
                                     value="#{itemBean.state.editedItem.concentration}"
                                     >
+                                    <f:converter converterId="InputConverter" />
                                     <f:validateDoubleRange minimum="0" for="concentration"/>
                                 </b:inputText>
                             </b:column>
@@ -229,6 +233,7 @@
                                     value="#{itemBean.state.editedItem.amount}"
                                     label="#{msgs.itemEdit_itemPanel_amount}">
                                     <f:validateDoubleRange minimum="0" for="amount"/>
+                                    <f:converter converterId="InputConverter" />
                                 </b:inputText>
                             </b:column>
                             <b:column span="4">
@@ -247,6 +252,7 @@
                                     label="#{msgs.itemEdit_itemPanel_description}"
                                     value="#{itemBean.state.editedItem.description}"
                                     placeholder="#{msgs.itemEdit_itemPanel_description_placeholder}">
+                                    <f:converter converterId="InputConverter" />
                                 </b:inputTextarea>
                             </b:column>
                         </b:row>

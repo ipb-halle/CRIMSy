@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.forum.HTMLInputFilter;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
@@ -56,6 +57,7 @@ public abstract class Material implements DTO {
     protected List<IndexEntry> indices = new ArrayList<>();
     protected List<MaterialDetailRight> detailRights = new ArrayList<>();
     protected MaterialHistory history = new MaterialHistory();
+     protected HTMLInputFilter vFilter;
 
     public Material(
             int id,
@@ -68,6 +70,7 @@ public abstract class Material implements DTO {
         this.projectId = projectId;
         this.hazards = hazards;
         this.storageInformation = storageInformation;
+        vFilter=new HTMLInputFilter(false, true);
     }
 
     public void setId(int id) {
@@ -109,9 +112,10 @@ public abstract class Material implements DTO {
     }
 
     public String getPrintableNames() {
+        
         String back = "";
         for (MaterialName s : names) {
-            back += s.getValue() + "<br>";
+            back += vFilter.filter(s.getValue()) + "<br>";
         }
         return back;
     }
