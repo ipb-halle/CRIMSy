@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.container.mock;
 
 import de.ipb_halle.lbac.container.bean.ErrorMessagePresenter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -25,8 +27,10 @@ import de.ipb_halle.lbac.container.bean.ErrorMessagePresenter;
  */
 public class ErrorMessagePresenterMock extends ErrorMessagePresenter {
 
+    public List<String> errorMessages = new ArrayList<>();
+
     @Override
     public void presentErrorMessage(String content, Object... args) {
-        System.out.println(content);
+        errorMessages.add(content);
     }
 }

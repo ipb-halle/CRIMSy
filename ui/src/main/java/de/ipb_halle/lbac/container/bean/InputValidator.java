@@ -57,26 +57,34 @@ public class InputValidator implements Serializable {
         this.preferredProjectName = preferredProjectName;
         this.preferredLocationName = containerLocation;
 
-        boolean valide = checkProjectValidity();
-        if (!checkProjectValidity()) {
-            errorMessagePresenter.presentErrorMessage("container_input_project_invalide");
-        }
-        valide = valide & isLabelValide();
-        if (!isLabelValide()) {
+        boolean valide = isLabelValide();
+        if (!valide) {
+            logger.info("Name validity failed");
             errorMessagePresenter.presentErrorMessage("container_input_name_invalide");
         }
-        valide = valide & isLocationAvailable();
-        if (!isLocationAvailable()) {
+
+        if (valide && !checkProjectValidity()) {
+            logger.info("Project validity failed");
+            errorMessagePresenter.presentErrorMessage("container_input_project_invalide");
+        }
+        valide = valide && checkProjectValidity();
+
+        if (valide && !isLocationAvailable()) {
+            logger.info("Location validity failed");
             errorMessagePresenter.presentErrorMessage("container_input_location_invalide");
         }
-        valide = valide & isLocationBiggerThan();
-        if (!isLocationBiggerThan()) {
+        valide = valide && isLocationAvailable();
+
+        if (valide && !isLocationBiggerThan()) {
+            logger.info("Size validity failed");
             errorMessagePresenter.presentErrorMessage("container_input_location_to_small");
         }
-        if (!isDimensionsValide()) {
+        valide = valide && isLocationBiggerThan();
+        if (valide && !isDimensionsValide()) {
+            logger.info("Dimesion validity failed");
             errorMessagePresenter.presentErrorMessage("container_input_dimensions");
         }
-        valide = valide & isDimensionsValide();
+        valide = valide && isDimensionsValide();
 
         return valide;
     }
@@ -95,11 +103,13 @@ public class InputValidator implements Serializable {
     }
 
     private boolean isLabelValide() {
+        if (containerToCheck.getLabel() == null || containerToCheck.getLabel().trim().isEmpty()) {
+            return false;
+        }
         return containerService.loadContainerByName(containerToCheck.getLabel()) == null;
     }
 
     private boolean isLocationAvailable() {
-
         boolean isLocationSet = preferredLocationName != null && !preferredLocationName.trim().isEmpty();
         if (isLocationSet) {
             if (containerToCheck.getParentContainer() == null) {
