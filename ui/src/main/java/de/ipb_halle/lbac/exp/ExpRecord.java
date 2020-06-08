@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.exp;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,11 +54,17 @@ public abstract class ExpRecord implements DTO {
     private ExpRecordType   type;
     private Date            creationtime;
     private Date            changetime;
-    private transient boolean edit = false;
+    private Long            next;
+    private int             revision;
+    private SimpleDateFormat dateFormatter;
+    private transient boolean   edit = false;
+    private transient int       index;
 
     protected ExpRecord() {
         this.creationtime = new Date();
         this.changetime = new Date();
+        this.revision = 0;
+        this.dateFormatter = new SimpleDateFormat(DATE_FORMAT);
     }
 
     public ExpRecordEntity createExpRecordEntity() {
@@ -66,6 +73,8 @@ public abstract class ExpRecord implements DTO {
             .setCreationTime(this.creationtime)
             .setExpRecordId(this.exprecordid)
             .setExperimentId(this.experiment.getExperimentId())
+            .setNext(this.next)
+            .setRevision(this.revision)
             .setType(this.type);
     }
 
@@ -85,11 +94,41 @@ public abstract class ExpRecord implements DTO {
         return this.experiment; 
     }
 
+    public String getExpRecordDetails() {
+        // Messages.getString(MESSAGE_BUNDLE, "expBean_ChangeTime", null);
+        return "Changed: " + this.dateFormatter.format(this.changetime);
+    }
+
+    public String getExpRecordInfo() {
+        StringBuilder sb = new StringBuilder();
+        // Messages.getString(MESSAGE_BUNDLE, "expBean_New", null);
+        sb.append((this.exprecordid == null) ? "#" : this.exprecordid.toString());
+        sb.append(" -- ");
+        sb.append(this.dateFormatter.format(this.creationtime));
+        return sb.toString();
+    }
+
     /**
      * name of the component for rendering
      */
     public String getFacelet() {
         return this.type.toString();
+    }
+
+    /**
+     * the index in a list of ExpRecords
+     */
+    public int getIndex() {
+        return this.index;
+    }
+
+    /**
+     * increment the revision of this record and update 
+     * the changetime.
+     */
+    public void incrementRevision() {
+        this.changetime = new Date();
+        this.revision += 1;
     }
 
     /**
@@ -99,12 +138,22 @@ public abstract class ExpRecord implements DTO {
         this.changetime = entity.getChangeTime();
         this.creationtime = entity.getCreationTime();
         this.exprecordid = entity.getExpRecordId();
+        this.next = entity.getNext();
+        this.revision = entity.getRevision();
         this.type = entity.getType();
         return this;
     }
 
     public Long getExpRecordId() {
         return this.exprecordid;
+    }
+
+    public Long getNext() {
+        return this.next;
+    }
+
+    public int getRevision() {
+        return this.revision;
     }
 
     public ExpRecordType getType() {
@@ -133,6 +182,21 @@ public abstract class ExpRecord implements DTO {
 
     public ExpRecord setExpRecordId(Long exprecordid) { 
         this.exprecordid = exprecordid; 
+        return this;
+    }
+
+    public ExpRecord setIndex(int index) {
+        this.index = index;
+        return this;
+    }
+
+    public ExpRecord setNext(Long next) {
+        this.next = next;
+        return this;
+    }
+
+    public ExpRecord setRevision(int revision) {
+        this.revision = revision;
         return this;
     }
 

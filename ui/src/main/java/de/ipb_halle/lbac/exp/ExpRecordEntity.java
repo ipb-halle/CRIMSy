@@ -57,7 +57,14 @@ public class ExpRecordEntity implements Serializable {
     private Integer experimentid;
 
     @Column
+    private Long next;
+
+    @Column
+    private int revision;
+
+    @Column
     private ExpRecordType type;
+
 
     public Integer getExperimentId() { 
         return this.experimentid; 
@@ -73,6 +80,13 @@ public class ExpRecordEntity implements Serializable {
 
     public Date getCreationTime() {
         return this.creationtime;
+    }
+    public Long getNext() {
+        return this.next;
+    }
+
+    public int getRevision() {
+        return this.revision;
     }
 
     public ExpRecordType getType() {
@@ -96,6 +110,16 @@ public class ExpRecordEntity implements Serializable {
 
     public ExpRecordEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
+        return this;
+    }
+
+    public ExpRecordEntity setNext(Long next) {
+        this.next = next;
+        return this;
+    }
+
+    public ExpRecordEntity setRevision(int revision) {
+        this.revision = revision;
         return this;
     }
 

@@ -46,6 +46,8 @@ CREATE TABLE exp_records (
     changetime      TIMESTAMP,
     creationtime    TIMESTAMP,
     type            INTEGER
+    revision        INTEGER NOT NULL DEFAULT 1,
+    next            BIGINT DEFAULT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 CREATE TABLE exp_sops (

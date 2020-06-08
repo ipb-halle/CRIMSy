@@ -31,7 +31,10 @@ import de.ipb_halle.lbac.exp.text.TextService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -39,6 +42,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -50,6 +54,15 @@ import org.apache.logging.log4j.LogManager;
 public class ExpRecordService implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public final static String EXPERIMENT_ID = "EXPERIMENT_ID";
+
+    private final static String SQL_LOAD = "SELECT DISTINCT "
+        + "r.exprecordid, r.experimentid, r.changetime, r.creationtime, r.next, r.revision, r.type "
+        + "FROM exp_records AS r WHERE "
+        + "(r.experimentid = :EXPERIMENT_ID OR :EXPERIMENT_ID = -1) "
+        + "ORDER BY r.exprecordid";
+
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -77,25 +90,36 @@ public class ExpRecordService implements Serializable {
     }
 
     /**
-     * NOTE: This method must be enhanced to filter the list of results. This 
-     * will change the method signature!
-     *
+     * build
+     */
+    public Query createExpRecordQuery(String rawSql, Map<String, Object> cmap, Class targetClass) {
+        Query q;
+        if (targetClass == null) {
+            q = this.em.createNativeQuery(rawSql);
+        } else {
+            q = this.em.createNativeQuery(rawSql, targetClass);
+        }
+
+        return q.setParameter(EXPERIMENT_ID, cmap.getOrDefault(EXPERIMENT_ID, Integer.valueOf(-1)));
+    }
+
+    /**
+     * load a list of records according to the query criteria
+     * @param cmap map of query criteria
      * @return the list of ExpRecords
      */
     @SuppressWarnings("unchecked")
-    public List<ExpRecord> load() {
-
-        CriteriaBuilder builder = this.em.getCriteriaBuilder();
-        CriteriaQuery<ExpRecordEntity> criteriaQuery = builder.createQuery(ExpRecordEntity.class);
-        Root<ExpRecordEntity> expRecordRoot = criteriaQuery.from(ExpRecordEntity.class);
-        criteriaQuery.select(expRecordRoot);
-
-        /*
-         * add filter criteria 
-         */
-
+    public List<ExpRecord> load(Map<String, Object> cmap) {
         List<ExpRecord> result = new ArrayList<ExpRecord> ();
-        for(ExpRecordEntity e :  this.em.createQuery(criteriaQuery).getResultList()) {
+
+        Query q = createExpRecordQuery(SQL_LOAD,
+                (cmap == null) ? new HashMap<String, Object> () : cmap, 
+                ExpRecordEntity.class);
+        // q.setParameter("USERID", xxxxx);
+        // q.setFirstResult();
+        // q.setMaxResults();
+
+        for(ExpRecordEntity e : (List<ExpRecordEntity>) q.getResultList()) {
             Experiment experiment = this.experimentService.loadById(e.getExperimentId());
             switch(e.getType()) {
                 case ASSAY :
@@ -134,16 +158,61 @@ public class ExpRecordService implements Serializable {
     }
 
     /**
-     * save a single experiment object
+     * order the list of records according to their next field
+     */
+    public List<ExpRecord> orderList(List<ExpRecord> records) {
+
+        if (records.size() < 2) {
+            return records;
+        }
+
+        ArrayList<ExpRecord> result = new ArrayList<ExpRecord> ();
+        ExpRecord first = null;
+        ExpRecord last = null;
+
+        boolean changed = true;
+        while (changed && (records.size() > 0)) {
+            ListIterator<ExpRecord> iter = records.listIterator();
+            changed = false;
+            while (iter.hasNext()) {
+                ExpRecord record = iter.next();
+                if ((last == null) ||
+                  (record.getExpRecordId().equals(last.getNext()))) {
+                    // append to the top of the list
+                    result.add(record);
+                    last = record;
+                    iter.remove();
+                    changed = true;
+                    if (first == null) {
+                        first = record;
+                    }
+                } else {
+                    if (first.getExpRecordId().equals(record.getNext())) {
+                        // append to the bottom of the list
+                        result.add(0, record);
+                        first = record;
+                        iter.remove();
+                        changed = true;
+                    }
+                }
+            }
+        }
+        if (! changed) {
+            this.logger.info("orderList() contains multiple record chains; adding remaining ExpRecords");
+            result.addAll(records);
+        }
+        return result;
+    }
+
+    /**
+     * save a single experiment record object
      *
-     * @param r the experiment to save
+     * @param record the experiment record to save
      * @return the persisted Experiment DTO
      */
     public ExpRecord save(ExpRecord record) {
-        ExpRecordEntity e = this.em.merge(record.createExpRecordEntity());
-        record.setExpRecordEntity(e);
-        record.setExperiment(this.experimentService.save(record.getExperiment()));
-        switch(e.getType()) {
+        record = saveOnly(record);
+        switch(record.getType()) {
             case ASSAY :
                 return this.assayService.saveAssay(record);
             case TEXT :
@@ -151,4 +220,21 @@ public class ExpRecordService implements Serializable {
         } 
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }
+
+    /**
+     * save a only single experiment object (i.e. do not update 
+     * the type specific data. Used i.e. for updating record 
+     * ordering.
+     *
+     * @param r the experiment to save
+     * @return the persisted Experiment DTO
+     */
+    public ExpRecord saveOnly(ExpRecord record) {
+        record.incrementRevision();
+        record.setExperiment(this.experimentService.save(record.getExperiment()));
+        ExpRecordEntity e = this.em.merge(record.createExpRecordEntity());
+        record.setExpRecordEntity(e);
+        return record;
+    }
+
 }

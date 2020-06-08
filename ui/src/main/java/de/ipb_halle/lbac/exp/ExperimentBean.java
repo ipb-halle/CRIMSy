@@ -19,13 +19,16 @@ package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.exp.Experiment;
-import de.ipb_halle.lbac.exp.text.Text;
+import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.text.TextController;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -59,6 +62,8 @@ public class ExperimentBean implements Serializable {
 
     private ExpRecordController expRecordController;
 
+    private String newRecordType;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
 
@@ -83,20 +88,38 @@ public class ExperimentBean implements Serializable {
     /**
      * ToDo: xxxxx support additional record types
      */
-    public void actionAddRecord() {
-        this.expRecordController = new TextController();
-        ExpRecord record = this.expRecordController.getNewRecord();
-        
-        record.setExperiment(this.experiment);
-        this.expRecords.add(record);
-    }
+    public void actionAppendRecord(long id) {
 
-    /**
-     * ToDo: xxxxx validation and restrict search
-     */
-    public void actionSaveRecord() {
-        this.expRecordService.save(this.expRecordController.getRecord());
-        this.expRecordService.load();
+        if (this.experiment == null) {
+            this.logger.info("actionAppendRecord(): experiment not set");
+            return;
+        }
+
+        createExpRecordController(this.newRecordType);
+        if (this.expRecordController != null) {
+            ExpRecord record = this.expRecordController.getNewRecord();
+            record.setExperiment(this.experiment);
+
+            // where to insert?
+            int index = this.expRecords.size();
+            if (id != 0) {
+                index = getIndexOfExpRecord(Long.valueOf(id));
+                if (index < 0) {
+                    this.logger.info("actionAppendRecord() invalid insert position");
+                    return;
+                }
+                index++;
+            }  
+
+            if (index < (this.expRecords.size() - 1)) {
+                // link to the following record
+                record.setNext(this.expRecords.get(index + 1).getExpRecordId());
+            }
+
+            // remember index (initially id is null)
+            record.setIndex(index);
+            this.expRecords.add(index, record);
+        }
     }
 
     /**
@@ -104,6 +127,21 @@ public class ExperimentBean implements Serializable {
      */
     public void actionCancel() {
 
+    }
+
+    /**
+     * select a record for editing
+     */
+    public void actionEditRecord(Long id) {
+        int index = getIndexOfExpRecord(Long.valueOf(id));
+        if (index > -1) {
+            this.logger.info("actionEditRecord(): ExpRecordId = {}", id);
+            ExpRecord record = this.expRecords.get(index);
+            record.setIndex(index);
+            record.setEdit(true);
+            createExpRecordController(record.getType().toString());
+            this.expRecordController.setExpRecord(record);
+        }
     }
 
     public void actionNewExperiment() {
@@ -120,10 +158,42 @@ public class ExperimentBean implements Serializable {
     public void actionSelectExperiment(Experiment experiment) {
         this.experiment = experiment;
         try {
-            this.expRecords = expRecordService.load();
+            loadExpRecords();
         } catch(Exception e) {
             this.logger.warn("actionSelectExperiment() caught an exception: ", (Throwable) e);
             this.expRecords = new ArrayList<ExpRecord> ();
+        }
+    }
+
+    /** 
+     * maintain the proper chaining of ExpRecords
+     */
+    public void adjustOrder(ExpRecord record) {
+        int index = record.getIndex();
+        if (index > 0) {
+            ExpRecord rec = this.expRecords.get(index - 1);
+            rec.setNext(record.getExpRecordId());
+            this.expRecordService.saveOnly(rec);
+        }
+    }
+
+    /**
+     */
+    public void cleanup() {
+        this.expRecordController = null;
+        this.newRecordType = "";
+    }
+
+    public void createExpRecordController(String recordType) {
+        switch(recordType) {
+            case "ASSAY" :
+                this.expRecordController = new AssayController(this);
+                break;
+            case "TEXT" :
+                this.expRecordController = new TextController(this);
+                break;
+            default :
+                this.expRecordController = null;
         }
     }
 
@@ -144,7 +214,53 @@ public class ExperimentBean implements Serializable {
         return this.expRecords;
     }
 
+    /**
+     * obtain the list index of a record with a specific
+     * expRecordId.
+     */
+    public int getIndexOfExpRecord(Long expRecordId) {
+        int index = -1;
+        if (this.expRecords == null) {
+            return index;
+        }
+        ListIterator<ExpRecord> iter = this.expRecords.listIterator();
+        while (iter.hasNext()) {
+            index++;
+            if (iter.next().getExpRecordId().equals(expRecordId)) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    public String getNewRecordType() {
+        return "";
+    }
+
+    /**
+     * load experiment records 
+     */
+    public void loadExpRecords() {
+        Map<String, Object> cmap = new HashMap<String, Object> ();
+        if ((this.experiment != null) && (this.experiment.getExperimentId() != null)) {
+            cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
+        }
+        this.expRecords = this.expRecordService.orderList(
+                this.expRecordService.load(cmap));
+    }
+
+    /**
+     * save experiment record; to be called by ExpRecordController
+     */
+    public ExpRecord saveExpRecord(ExpRecord record) {
+        return this.expRecordService.save(record);
+    }
+
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
+    }
+
+    public void setNewRecordType(String newRecordType) {
+        this.newRecordType = newRecordType;
     }
 }

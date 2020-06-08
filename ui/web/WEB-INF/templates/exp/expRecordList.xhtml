@@ -28,7 +28,22 @@
 
     <ui:composition>
         <ui:repeat value="#{experimentBean.expRecords}" var="rec">
-            #{rec.expRecordId} -- #{rec.creationTime} <br/>
+            <div title="#{rec.expRecordDetails}">#{rec.expRecordInfo}
+
+                <p:commandButton type="button" icon="pi pi-cog" title="Action" onclick="PF('dlg_#{rec.expRecordId}').show();" />
+                <p:dialog header="Record Actions" widgetVar="dlg_#{rec.expRecordId}" modal="true" height="100">
+                    <h:panelGrid columns="1">
+                        <p:selectOneMenu value="#{experimentBean.newRecordType}" >
+                            <f:selectItem itemLabel="Append record ..." itemValue="" />
+                            <f:selectItem itemLabel="Text" itemValue="TEXT" />
+                            <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
+                            <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(rec.expRecordId)}" 
+                                oncomplete="PF('dlg_#{rec.expRecordId}').hide();" update="@form" />
+                        </p:selectOneMenu>
+                        <p:commandButton value="Edit ..." action="#{experimentBean.actionEditRecord(rec.expRecordId)}" onclick="PF('dlg_#{rec.expRecordId}').hide();" />
+                    </h:panelGrid>
+                </p:dialog> 
+                <br/></div>
 
             <ui:fragment rendered="#{rec.facelet eq 'ASSAY'}">
                 <ui:insert name="assayPanel">
@@ -44,6 +59,10 @@
                         <ui:param name="expRecord" value="#{rec}" />
                     </ui:include>
                 </ui:insert>
+            </ui:fragment>
+
+            <ui:fragment rendered="#{rec.edit}">
+                <b:commandButton value="Save Record" action="#{experimentBean.expRecordController.actionSaveRecord}" />
             </ui:fragment>
 
         </ui:repeat>

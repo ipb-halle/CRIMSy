@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.text;
+package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
@@ -25,31 +25,28 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * interface for experiment record controllers
+ * controller for experiment records of subtype Assay
  *
  * @author fbroda
  */
-public class TextController implements ExpRecordController {
+public class AssayController implements ExpRecordController {
 
     private ExperimentBean bean;
-    private Text expRecord;
+    private Assay expRecord;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    public TextController(ExperimentBean bean) {
+    public AssayController(ExperimentBean bean) {
         this.bean = bean;
     }
 
     public void actionSaveRecord() {
         this.logger.info("actionSaveRecord()");
-        this.expRecord = (Text) this.bean.saveExpRecord(this.expRecord);
-        this.bean.adjustOrder(this.expRecord);
+        bean.saveExpRecord(this.expRecord);
         this.expRecord.setEdit(false);
-        this.logger.info("actionSaveRecord() completed");
-        this.bean.cleanup();
     }
 
     public ExpRecord getNewRecord() {
-        this.expRecord = new Text();
+        this.expRecord = new Assay();
         this.expRecord.setEdit(true);
         return this.expRecord;
     }
@@ -59,8 +56,7 @@ public class TextController implements ExpRecordController {
     }
 
     public ExpRecordController setExpRecord(ExpRecord expRecord) {
-        this.expRecord = (Text) expRecord;
+        this.expRecord = (Assay) expRecord;
         return this;
     }
-
 }
