@@ -116,6 +116,14 @@ public class ProjectService {
         return loadDetailInfosOfProject(entity);
     }
 
+    /**
+     * TO DO: only projects which are accessable by user should be loaded
+     *
+     * @param u
+     * @param projectName
+     * @return
+     */
+    @SuppressWarnings("unchecked")
     public Project loadProjectByName(User u, String projectName) {
         if (projectName.trim().isEmpty()) {
             return null;

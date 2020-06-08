@@ -20,95 +20,124 @@ package de.ipb_halle.lbac.container.bean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
+ * Checks input values of a container for validity
  *
  * @author fmauz
  */
-@SessionScoped
-@Named
 public class InputValidator implements Serializable {
 
-    private Container containerToCheck;
+    private ErrorMessagePresenter errorMessagePresenter = new ErrorMessagePresenter();
+    private Integer height;
+    private final int MAX_WIDTH = 1000;
+    private final int MAX_HEIGHT = 1000;
     private String preferredProjectName;
     private String preferredLocationName;
-    private Integer height;
-    private Integer width;
-
-    @Inject
     private ContainerService containerService;
+    private Container containerToCheck;
+    private Integer width;
+    private final String ERROR_MESSAGE_DIMENSION_INVALIDE = "container_input_dimensions";
+    private final String ERROR_MESSAGE_LOCATION_INVALIDE = "container_input_location_invalide";
+    private final String ERROR_MESSAGE_LOCATION_TO_SMALL = "container_input_location_to_small";
+    private final String ERROR_MESSAGE_NAME_INVALIDE = "container_input_name_invalide";
+    private final String ERROR_MESSAGE_PROJECT_INVALIDE = "container_input_project_invalide";
 
-    Logger logger = LogManager.getLogger(this.getClass().getName());
-    private ErrorMessagePresenter errorMessagePresenter = new ErrorMessagePresenter();
+    public InputValidator(ContainerService containerService) {
+        this.containerService = containerService;
+    }
 
+    /**
+     * Checks the name, project,dimension and location of the container for
+     * validity.If a contraint is violated a FacesMessage will be presented to
+     * the user.
+     *
+     * @param container
+     * @param preferredProjectName
+     * @param containerLocation
+     * @param height
+     * @param width
+     * @param allowDublicateNames
+     * @return
+     */
     public boolean isInputValideForCreation(
             Container container,
             String preferredProjectName,
             String containerLocation,
-            Integer height, Integer width) {
+            Integer height,
+            Integer width,
+            boolean allowDublicateNames) {
         this.height = height;
         this.width = width;
         this.containerToCheck = container;
         this.preferredProjectName = preferredProjectName;
         this.preferredLocationName = containerLocation;
 
-        boolean valide = isLabelValide();
+        boolean valide = isLabelValide(allowDublicateNames);
         if (!valide) {
-            logger.info("Name validity failed");
-            errorMessagePresenter.presentErrorMessage("container_input_name_invalide");
+            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_NAME_INVALIDE);
         }
 
-        if (valide && !checkProjectValidity()) {
-            logger.info("Project validity failed");
-            errorMessagePresenter.presentErrorMessage("container_input_project_invalide");
+        if (valide && !isProjectValide()) {
+            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_PROJECT_INVALIDE);
         }
-        valide = valide && checkProjectValidity();
+        valide = valide && isProjectValide();
 
         if (valide && !isLocationAvailable()) {
-            logger.info("Location validity failed");
-            errorMessagePresenter.presentErrorMessage("container_input_location_invalide");
+            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_INVALIDE);
         }
         valide = valide && isLocationAvailable();
 
         if (valide && !isLocationBiggerThan()) {
-            logger.info("Size validity failed");
-            errorMessagePresenter.presentErrorMessage("container_input_location_to_small");
+            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_TO_SMALL);
         }
         valide = valide && isLocationBiggerThan();
         if (valide && !isDimensionsValide()) {
-            logger.info("Dimesion validity failed");
-            errorMessagePresenter.presentErrorMessage("container_input_dimensions");
+            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_DIMENSION_INVALIDE);
         }
         valide = valide && isDimensionsValide();
 
         return valide;
     }
 
+    /**
+     * Width and height must be positive, integer and lower than the max values
+     *
+     * @return
+     */
     private boolean isDimensionsValide() {
         boolean valide = true;
         boolean noWidthEntry = width == null || width == 0;
         boolean noHeightEntry = height == null || height == 0;
         if (!noHeightEntry) {
-            valide = valide && height <= 1000 && height >= 0 && Math.floor(height) == height;
+            valide = valide && height <= MAX_HEIGHT && height >= 0 && Math.floor(height) == height;
         }
         if (!noWidthEntry) {
-            valide = valide && width <= 1000 && width >= 0 && Math.floor(width) == width;
+            valide = valide && width <= MAX_WIDTH && width >= 0 && Math.floor(width) == width;
         }
         return valide;
     }
 
-    private boolean isLabelValide() {
+    /**
+     * Checks the containerlabel for existance and if toggled for unique
+     *
+     * @param allowDublicateNames
+     * @return
+     */
+    private boolean isLabelValide(boolean allowDublicateNames) {
         if (containerToCheck.getLabel() == null || containerToCheck.getLabel().trim().isEmpty()) {
             return false;
         }
-        return containerService.loadContainerByName(containerToCheck.getLabel()) == null;
+
+        return allowDublicateNames || containerService.loadContainerByName(containerToCheck.getLabel()) == null;
     }
 
+    /**
+     * Checks if the location of the container is valide and matching the
+     * expected name.
+     *
+     * @return
+     */
     private boolean isLocationAvailable() {
         boolean isLocationSet = preferredLocationName != null && !preferredLocationName.trim().isEmpty();
         if (isLocationSet) {
@@ -127,6 +156,12 @@ public class InputValidator implements Serializable {
 
     }
 
+    /**
+     * Checks if the container fits into its location by comparing the rank of
+     * the containertype (must be lower for fitting)
+     *
+     * @return
+     */
     private boolean isLocationBiggerThan() {
         if (containerToCheck.getParentContainer() == null) {
             return true;
@@ -135,7 +170,13 @@ public class InputValidator implements Serializable {
 
     }
 
-    private boolean checkProjectValidity() {
+    /**
+     * Checks if the project of the container is valide and matching the
+     * expected one by comparing its name
+     *
+     * @return
+     */
+    private boolean isProjectValide() {
         boolean valide;
         boolean preferedProjectSet = preferredProjectName != null
                 && !preferredProjectName.trim().isEmpty();
@@ -149,7 +190,6 @@ public class InputValidator implements Serializable {
         } else {
             valide = containerToCheck.getProject() == null;
         }
-
         return valide;
     }
 
@@ -157,12 +197,12 @@ public class InputValidator implements Serializable {
         return errorMessagePresenter;
     }
 
-    public void setErrorMessagePresenter(ErrorMessagePresenter errorMessagePresenter) {
-        this.errorMessagePresenter = errorMessagePresenter;
-    }
-
     public void setContainerService(ContainerService containerService) {
         this.containerService = containerService;
+    }
+
+    public void setErrorMessagePresenter(ErrorMessagePresenter errorMessagePresenter) {
+        this.errorMessagePresenter = errorMessagePresenter;
     }
 
 }
