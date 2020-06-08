@@ -69,6 +69,8 @@ public class ContainerEditBean implements Serializable {
         containerTypes = containerService.loadContainerTypes();
         containerToCreate = new Container();
         containerToCreate.setType(containerTypes.get(0));
+        preferredProjectName = "";
+        containerLocation = "";
 
     }
 

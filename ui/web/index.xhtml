@@ -67,7 +67,7 @@
         <h:outputStylesheet name="css/itemEdit.css"/>
         <h:outputStylesheet name="css/itemOverview.css"/>
         <h:outputStylesheet name="css/materialsOverview.css"/>
-        
+
         <h:outputScript name="fine-uploader/jquery.fine-uploader.js" target="body" position="last"/>
         <h:outputScript name="js/lbac_fineUploaderMulti.js" target="body" position="last"/>
         <h:outputScript name="js/colorCloudTerms.js"/>
@@ -86,9 +86,16 @@
     <h:body>
 
 
-        <b:growl id="growlMsg" globalOnly="true" placementFrom="bottom"
-                 show-detail="true" show-summary="false" allowDismiss="true"
-                 delay="10000" escape="true"/>
+        <b:growl
+            styleClass="growlMessages"
+            id="growlMsg"
+            globalOnly="true"
+            placementFrom="bottom"
+            show-detail="true" 
+            show-summary="false"
+            allowDismiss="true"
+            delay="10000"
+            escape="true"/>
 
         <b:modal id="modalError" title="Fehler" styleClass="modalError">
             <b:column id="modalErrorBody" styleClass="modalErrorBody"> a error message</b:column>
