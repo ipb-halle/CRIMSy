@@ -22,11 +22,13 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -43,7 +45,9 @@ import org.apache.logging.log4j.Logger;
 public class ContainerOverviewBean implements Serializable {
 
     @Inject
+    private ProjectService projectService;
     private InputValidator validator;
+    private boolean allowDuplicateContainerNames;
 
     public enum Mode {
         SHOW, EDIT, CREATE
@@ -69,6 +73,12 @@ public class ContainerOverviewBean implements Serializable {
     private ContainerEditBean editBean;
 
     private Mode mode;
+
+    @PostConstruct
+    public void init() {
+        validator = new InputValidator(containerService);
+        allowDuplicateContainerNames = false;
+    }
 
     public List<Container> getReadableContainer() {
         return readableContainer;
@@ -107,9 +117,14 @@ public class ContainerOverviewBean implements Serializable {
     private boolean saveNewContainer() {
 
         if (editBean.getPreferredProjectName() != null
-                && editBean.getPreferredProjectName().trim().isEmpty()
-                && editBean.getContainerToCreate().getProject() == null) {
-
+                && !editBean.getPreferredProjectName().trim().isEmpty()) {
+            editBean.getContainerToCreate()
+                    .setProject(projectService
+                            .loadProjectByName(
+                                    currentUser,
+                                    editBean.getPreferredProjectName().trim()
+                            )
+                    );
         }
 
         if (editBean.getContainerLocation() != null) {
@@ -125,7 +140,8 @@ public class ContainerOverviewBean implements Serializable {
                 editBean.getPreferredProjectName(),
                 editBean.getContainerLocation(),
                 editBean.getContainerHeight(),
-                editBean.getContainerWidth()
+                editBean.getContainerWidth(),
+                allowDuplicateContainerNames
         );
 
         if (valide) {
