@@ -105,36 +105,6 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    public void setContainerProject(String p) {
-        preferredProjectName = p;
-        for (Project project : possibleProjects) {
-            if (p.equals(project.getName())) {
-                if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-                    containerToCreate.setProject(project);
-                }
-                if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-                    containerToEdit.setProject(project);
-                }
-            }
-        }
-
-    }
-
-    public String getContainerProject() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            if (containerToCreate.getProject() != null) {
-                return containerToCreate.getProject().getName();
-            }
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            if (containerToEdit.getProject() != null) {
-                return containerToEdit.getProject().getName();
-            }
-        }
-
-        return "";
-    }
-
     public String getContainerName() {
         if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
             return containerToCreate.getLabel();
@@ -260,6 +230,10 @@ public class ContainerEditBean implements Serializable {
         } else {
             return containerToEdit;
         }
+    }
+
+    public void setPreferredProjectName(String preferredProjectName) {
+        this.preferredProjectName = preferredProjectName;
     }
 
     public String getPreferredProjectName() {
