@@ -46,6 +46,10 @@ public class ProjectService {
 
     private final String SQL_PROJECT_TEMPLATES = "SELECT id,materialdetailtypeid,aclistid,projectid FROM projecttemplates WHERE projectid=:pid";
     private final String SQL_GET_SIMILAR_NAMES = "SELECT name FROM projects WHERE LOWER(name) LIKE LOWER(:name)";
+    private final String SQL_LOAD_PROJECT_BY_NAME
+            = "SELECT id "
+            + "FROM projects "
+            + "WHERE name=:projectname";
 
     @Inject
     private MemberService memberService;
@@ -110,6 +114,22 @@ public class ProjectService {
     public Project loadProjectById(int id) {
         ProjectEntity entity = em.find(ProjectEntity.class, id);
         return loadDetailInfosOfProject(entity);
+    }
+
+    public Project loadProjectByName(User u, String projectName) {
+        if (projectName.trim().isEmpty()) {
+            return null;
+        }
+        List<Object> ids = this.em
+                .createNativeQuery(SQL_LOAD_PROJECT_BY_NAME)
+                .setParameter("projectname", projectName)
+                .getResultList();
+
+        if (!ids.isEmpty()) {
+            return loadProjectById((Integer) ids.get(0));
+        } else {
+            return null;
+        }
     }
 
     /**

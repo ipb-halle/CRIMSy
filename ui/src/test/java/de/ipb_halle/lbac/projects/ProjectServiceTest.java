@@ -52,13 +52,13 @@ public class ProjectServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("ProjectServiceTest.war")
-                 .addClass(SystemSettings.class)
+                .addClass(SystemSettings.class)
                 .addClass(ProjectService.class);
 
     }
 
     @Test
-    public void test01_saveLoadProject() {
+    public void test001_saveLoadProject() {
         cleanMaterialsFromDB();
         cleanAllProjectsFromDb();
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "biochemical-test-project");
@@ -100,6 +100,10 @@ public class ProjectServiceTest extends TestBase {
         User user2 = createUser("UserWithoutPermission", "no name");
         List<Project> projectsOfUser2 = instance.loadReadableProjectsOfUser(user2);
         Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
+
+        Project loadedByName = instance.loadProjectByName(u, "biochemical-test-project");
+        Assert.assertNotNull("test001: loaded by name should not be null ", loadedByName);
+        Assert.assertEquals("test001: loaded by name wrong project loaded", p.getId(), loadedByName.getId());
 
         // Clean up the database to ensure idempotence
         entityManagerService.doSqlUpdate("delete from projecttemplates");
