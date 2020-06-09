@@ -472,8 +472,8 @@ public class ContainerServiceTest extends TestBase {
         entityManagerService.doSqlUpdate(sql);
     }
 
+    @SuppressWarnings("unchecked")
     private void test008_testPostcondition(int[][] expectation) {
-
         List<Object[]> nested = (List) entityManagerService.doSqlQuery("SELECT CAST(sourceid AS INTEGER),CAST(targetid AS INTEGER) from nested_containers order by sourceid DESC,targetid DESC");
         Assert.assertEquals(expectation.length, nested.size());
         for (int i = 0; i < expectation.length; i++) {
@@ -484,6 +484,7 @@ public class ContainerServiceTest extends TestBase {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void test008_testPrecondition(Container[] container) {
 
         int[][] expectation = new int[][]{
