@@ -62,7 +62,7 @@ public class ContainerNestingService {
      * @param cid
      * @param path list of ids of path
      */
-    protected void addNewPath(int cid, Set<Integer> path) {
+    public void addNewPath(int cid, Set<Integer> path) {
         Integer parentid = loadParentIdOfContainer(cid);
         for (Integer pe : path) {
             this.em.createNativeQuery(SQL_BUILD_PATH)
@@ -78,7 +78,7 @@ public class ContainerNestingService {
      *
      * @param cid
      */
-    protected void deletePathForContainer(int cid) {
+    public void deletePathForContainer(int cid) {
         this.em.createNativeQuery(SQL_DELETE_PATH).setParameter("containerid", cid).executeUpdate();
     }
 
@@ -89,7 +89,7 @@ public class ContainerNestingService {
      * @param cid
      * @return subcontainer ids (unordered)
      */
-    protected Set<Integer> loadAllSubContainer(int cid) {
+    public Set<Integer> loadAllSubContainer(int cid) {
         Set<Integer> ids = new HashSet<>();
         List results = em.createNativeQuery(SQL_LOAD_SUB_CONTAINER).
                 setParameter("containerid", cid)
@@ -107,7 +107,7 @@ public class ContainerNestingService {
      * @param cid
      * @return container ids of path (unordered)
      */
-    protected Set<Integer> loadNestedInContainers(int cid) {
+    public Set<Integer> loadNestedInContainers(int cid) {
         Set<Integer> ids = new HashSet<>();
         List results = em.createNativeQuery(SQL_LOAD_NESTED_CONTAINER).
                 setParameter("containerid", cid)
@@ -124,7 +124,7 @@ public class ContainerNestingService {
      * @param cid
      * @return id or null if none exists
      */
-    protected Integer loadParentIdOfContainer(int cid) {
+    public Integer loadParentIdOfContainer(int cid) {
         List resultId = this.em.createNativeQuery(SQL_LOAD_PARENT_OF_CONTAINER).
                 setParameter("containerid", cid).
                 getResultList();
@@ -138,7 +138,7 @@ public class ContainerNestingService {
      * @param to
      * @return ids of container which are between x and y
      */
-    protected Set<Integer> loadSubpath(int from, int to) {
+    public Set<Integer> loadSubpath(int from, int to) {
         Set<Integer> fromPath = loadNestedInContainers(from);
         Set<Integer> toPath = loadNestedInContainers(to);
         fromPath.removeAll(toPath);
