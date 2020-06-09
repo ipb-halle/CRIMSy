@@ -64,44 +64,44 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ContainerServiceTest extends TestBase {
-    
+
     Container c0;
     Container c1;
     Container c2;
     Container c3;
-    
+
     @Inject
     private ContainerNestingService nestingController;
-    
+
     private CreationTools creationTools;
     private User publicUser;
-    
+
     @Inject
     private ContainerService instance;
-    
+
     @Inject
     private ACListService acListService;
-    
+
     @Inject
     private EntityManagerService entityService;
-    
+
     @Inject
     private ProjectService projectService;
-    
+
     @Before
     @Override
     public void setUp() {
         super.setUp();
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        
+
         creationTools = new CreationTools("", "", "", memberService, projectService);
-        
+
         publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         entityService.doSqlUpdate("delete from item_positions");
         entityService.doSqlUpdate("delete from items");
         entityService.doSqlUpdate("delete from containers");
-        
+
         c0 = new Container();
         c0.setBarCode(null);
         c0.setDimension("3;3;1");
@@ -109,7 +109,7 @@ public class ContainerServiceTest extends TestBase {
         c0.setGmosavety("S0");
         c0.setLabel("R302");
         c0.setType(new ContainerType("ROOM", 90));
-        
+
         c1 = new Container();
         c1.setBarCode("9845893457");
         c1.setDimension("2;2;1");
@@ -118,7 +118,7 @@ public class ContainerServiceTest extends TestBase {
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90));
-        
+
         c2 = new Container();
         c2.setBarCode("43753456");
         c2.setDimension(null);
@@ -127,7 +127,7 @@ public class ContainerServiceTest extends TestBase {
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
         c2.setType(new ContainerType("CARTON", 90));
-        
+
         c3 = new Container();
         c3.setBarCode("43753456");
         c3.setDimension(null);
@@ -137,26 +137,26 @@ public class ContainerServiceTest extends TestBase {
         c3.setParentContainer(c1);
         c3.setType(new ContainerType("CARTON", 90));
     }
-    
+
     @After
     public void finish() {
-        
+
         super.cleanItemsFromDb();
-        
+
     }
-    
+
     @Test
     public void test001_saveContainer() {
-        
+
         instance.saveContainer(c0);
         instance.saveContainer(c1);
         instance.saveContainer(c2);
-        
+
         Assert.assertNotNull(c0.getId());
         Assert.assertNotNull(c1.getId());
         Assert.assertNotNull(c2.getId());
         Assert.assertEquals(3, (int) entityService.doSqlQuery("select * from containers").size());
-        
+
         List<Object> nestedContainer = entityService.doSqlQuery("select sourceid,targetid,nested from nested_containers order by sourceid,targetid");
         Assert.assertEquals(3, (int) nestedContainer.size());
         int[] targetSources = new int[]{c1.getId(), c2.getId(), c2.getId()};
@@ -169,20 +169,20 @@ public class ContainerServiceTest extends TestBase {
             Assert.assertEquals(targetNested[i], (boolean) nc[2]);
         }
     }
-    
+
     @Test
     public void test002_loadContainer() {
-        
+
         User secondUser = createUser("testUser", "testUser");
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "testproject");
         p.setOwner(secondUser);
         ACList priviligedAcl = new ACList();
         priviligedAcl.addACE(secondUser, new ACPermission[]{ACPermission.permREAD});
         acListService.save(priviligedAcl);
-        
+
         p.setUserGroups(priviligedAcl);
         projectService.saveProjectToDb(p);
-        
+
         instance.saveContainer(c0);
         instance.saveContainer(c1);
         instance.saveContainer(c2);
@@ -199,7 +199,7 @@ public class ContainerServiceTest extends TestBase {
         c4.setParentContainer(null);
         c4.setType(new ContainerType("CARTON", 190));
         instance.saveContainer(c4);
-        
+
         List<Container> result = instance.loadContainers(publicUser);
         Assert.assertEquals("Three containers must be found", 3, result.size());
         Assert.assertNull("testcase 002: First container must have no parent", result.get(0).getParentContainer());
@@ -229,17 +229,17 @@ public class ContainerServiceTest extends TestBase {
         String userGroups = p.getUserGroups().getId().toString();
         String ownerid = owner.getId().toString();
         createMaterial(userGroups, ownerid, p.getId());
-        
+
         c0 = instance.saveContainer(c0);
         c1 = instance.saveContainer(c1);
-        
+
         createItems(ownerid);
 
         //Add the items to the container
         instance.saveItemInContainer(1, c0.getId(), 0, 0);
         instance.saveItemInContainer(2, c0.getId(), 1, 2);
         instance.saveItemInContainer(3, c1.getId(), 0, 1);
-        
+
         List<Object> o = entityManagerService.doSqlQuery("Select * from item_positions");
         Assert.assertEquals("Three items must be in container one and two", 3, o.size());
 
@@ -268,7 +268,7 @@ public class ContainerServiceTest extends TestBase {
             }
         }
     }
-    
+
     @Test
     public void test005_similarContainerLabels() {
         instance.saveContainer(c0);
@@ -277,9 +277,9 @@ public class ContainerServiceTest extends TestBase {
         Set<String> names = instance.getSimilarContainerNames("kart", publicUser);
         Assert.assertEquals(1, names.size());
         Assert.assertEquals("Karton3", names.iterator().next());
-        
+
     }
-    
+
     @Test
     public void test006_loadContainersWithCmap() {
         Project project = new Project();
@@ -287,14 +287,14 @@ public class ContainerServiceTest extends TestBase {
         ACList oneUserAcl = new ACList();
         oneUserAcl.addACE(user, new ACPermission[]{ACPermission.permREAD});
         oneUserAcl = acListService.save(oneUserAcl);
-        
+
         User testUser = createUser("testUser", "testUser");
-        
+
         project.setName("Container Test Project");
         project.setOwner(user);
         project.setUserGroups(oneUserAcl);
         project.setProjectType(ProjectType.IT_PROJECT);
-        
+
         projectService.saveProjectToDb(project);
         c1.setProject(project);
         instance.saveContainer(c0);
@@ -302,30 +302,30 @@ public class ContainerServiceTest extends TestBase {
         instance.saveContainer(c2);
         instance.saveContainer(c3);
         instance.deactivateContainer(c0);
-        
+
         List<Object> en = entityManagerService.doSqlQuery("SELECT * from containers");
-        
+
         List<Container> loadedContainer = instance.loadContainers(testUser);
-        
+
         entityManagerService.doSqlUpdate("UPDATE  containers SET deactivated=false");
         Assert.assertEquals(2, loadedContainer.size());
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", c0.getId());
         loadedContainer = instance.loadContainers(testUser, cmap);
         Assert.assertEquals(1, loadedContainer.size());
-        
+
         cmap.clear();
         cmap.put("project", "Container Test Project");
         loadedContainer = instance.loadContainers(testUser, cmap);
         Assert.assertEquals(0, loadedContainer.size());
         loadedContainer = instance.loadContainers(user, cmap);
         Assert.assertEquals(1, loadedContainer.size());
-        
+
         cmap.clear();
         cmap.put("label", "R302");
         loadedContainer = instance.loadContainers(testUser, cmap);
         Assert.assertEquals(1, loadedContainer.size());
-        
+
         cmap.clear();
         cmap.put("location", "R302");
         loadedContainer = instance.loadContainers(testUser, cmap);
@@ -335,7 +335,7 @@ public class ContainerServiceTest extends TestBase {
         this.entityManagerService.doSqlUpdate("Delete from containers");
         cleanProjectFromDB(project, true);
     }
-    
+
     @Test
     public void test007_loadContainerByName() {
         instance.saveContainer(c0);
@@ -344,17 +344,34 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(instance.loadContainerByName("R30"));
         Assert.assertNull(instance.loadContainerByName(""));
     }
-    
+
     @Test
     public void test008_editContainer() {
         Container[] container = test008_initializeContainer();
         test008_testPrecondition(container);
         container[2].setParentContainer(container[3]);
         instance.saveEditedContainer(container[2]);
-        test008_testPostcondition(container);
-        
+        int[][] expectation = new int[][]{
+            {container[0].getId(), container[1].getId()},
+            {container[0].getId(), container[2].getId()},
+            {container[0].getId(), container[3].getId()},
+            {container[1].getId(), container[2].getId()},
+            {container[1].getId(), container[3].getId()},
+            {container[2].getId(), container[3].getId()},
+            {container[4].getId(), container[5].getId()}};
+        test008_testPostcondition(expectation);
+
+        container[2].setParentContainer(null);
+        instance.saveEditedContainer(container[2]);
+        expectation = new int[][]{
+            {container[0].getId(), container[1].getId()},
+            {container[0].getId(), container[2].getId()},
+            {container[1].getId(), container[2].getId()},
+            {container[4].getId(), container[5].getId()}};
+        test008_testPostcondition(expectation);
+
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("ContainerServiceTest.war")
@@ -374,7 +391,7 @@ public class ContainerServiceTest extends TestBase {
                 .addClass(ContainerNestingService.class)
                 .addClass(ProjectService.class);
     }
-    
+
     private void checkItem1(Item i, String testDesc) {
         Assert.assertNotNull(i);
         Assert.assertEquals(testDesc + "ID must be 1", 1d, i.getId(), 0);
@@ -392,7 +409,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
         Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
     }
-    
+
     private void checkItem2(Item i, String testDesc) {
         Assert.assertNotNull(i);
         Assert.assertEquals(testDesc + "ID must be 2", 2d, i.getId(), 0);
@@ -410,7 +427,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
         Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
     }
-    
+
     private void checkItem3(Item i, String testDesc) {
         Assert.assertNotNull(i);
         Assert.assertEquals(testDesc + "ID must be 3", 3d, i.getId(), 0);
@@ -428,7 +445,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
         Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
     }
-    
+
     private void createMaterial(String userGroups, String ownerid, int projectid) {
         String sql = "INSERT INTO MATERIALS VALUES("
                 + "1,"
@@ -438,14 +455,14 @@ public class ContainerServiceTest extends TestBase {
                 + "cast('" + ownerid + "' as UUID),"
                 + "false,"
                 + projectid + ")";
-        
+
         entityManagerService.doSqlUpdate(sql);
         entityManagerService.doSqlUpdate("INSERT INTO structures  VALUES(1,'',0,0,null)");
         entityManagerService.doSqlUpdate("INSERT INTO storages VALUES(1,1,'')");
         entityManagerService.doSqlUpdate("INSERT INTO material_indices VALUES(1,1,1,'TESTMATERIAL','de',0)");
         entityManagerService.doSqlUpdate("INSERT INTO material_indices VALUES(2,1,1,'TESTMATERIA2','en',0)");
     }
-    
+
     private void createItems(String ownerid) {
         String sql = "INSERT INTO items values(1,1,10,null,null,0,'kg','unknown',null,'item 1',cast('" + ownerid + "' as UUID),null,null," + c0.getId() + ",now())";
         entityManagerService.doSqlUpdate(sql);
@@ -454,16 +471,9 @@ public class ContainerServiceTest extends TestBase {
         sql = "INSERT INTO items values(3,1,11,null,null,0,'mg','xxx',null,'item 3',cast('" + ownerid + "' as UUID),null,null," + c1.getId() + ",now())";
         entityManagerService.doSqlUpdate(sql);
     }
-    
-    private void test008_testPostcondition(Container[] ids) {
-        int[][] expectation = new int[][]{
-            {ids[0].getId(), ids[1].getId()},
-            {ids[0].getId(), ids[2].getId()},
-            {ids[0].getId(), ids[3].getId()},
-            {ids[1].getId(), ids[2].getId()},
-            {ids[1].getId(), ids[3].getId()},
-            {ids[2].getId(), ids[3].getId()},
-            {ids[4].getId(), ids[5].getId()}};
+
+    private void test008_testPostcondition(int[][] expectation) {
+
         List<Object[]> nested = (List) entityManagerService.doSqlQuery("SELECT CAST(sourceid AS INTEGER),CAST(targetid AS INTEGER) from nested_containers order by sourceid DESC,targetid DESC");
         Assert.assertEquals(expectation.length, nested.size());
         for (int i = 0; i < expectation.length; i++) {
@@ -473,9 +483,9 @@ public class ContainerServiceTest extends TestBase {
             Assert.assertTrue("test008(postcondition): unexpected target at index " + i, expectation[i][1] == targetid);
         }
     }
-    
+
     private void test008_testPrecondition(Container[] container) {
-        
+
         int[][] expectation = new int[][]{
             {container[0].getId(), container[1].getId()},
             {container[0].getId(), container[2].getId()},
@@ -496,7 +506,7 @@ public class ContainerServiceTest extends TestBase {
             Assert.assertTrue("test008(precondition): unexpected target at index " + i, expectation[i][1] == targetid);
         }
     }
-    
+
     private Container[] test008_initializeContainer() {
         Container c0 = new Container();
         c0.setType(new ContainerType("ROOM", 100));
@@ -526,7 +536,7 @@ public class ContainerServiceTest extends TestBase {
         c5.setLabel("C5");
         c5.setParentContainer(c4);
         instance.saveContainer(c5);
-        
+
         return new Container[]{c5, c4, c3, c2, c1, c0};
     }
 }
