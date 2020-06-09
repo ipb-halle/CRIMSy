@@ -70,6 +70,9 @@ public class ContainerServiceTest extends TestBase {
     Container c2;
     Container c3;
     
+    @Inject
+    private ContainerNestingService nestingController;
+    
     private CreationTools creationTools;
     private User publicUser;
     
@@ -91,6 +94,7 @@ public class ContainerServiceTest extends TestBase {
         super.setUp();
         cleanItemsFromDb();
         cleanMaterialsFromDB();
+        
         creationTools = new CreationTools("", "", "", memberService, projectService);
         
         publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
@@ -341,6 +345,16 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(instance.loadContainerByName(""));
     }
     
+    @Test
+    public void test008_editContainer() {
+        Container[] container = test008_initializeContainer();
+        test008_testPrecondition(container);
+        container[2].setParentContainer(container[3]);
+        instance.saveEditedContainer(container[2]);
+        test008_testPostcondition(container);
+        
+    }
+    
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("ContainerServiceTest.war")
@@ -357,6 +371,7 @@ public class ContainerServiceTest extends TestBase {
                 .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
                 .addClass(LdapProperties.class)
+                .addClass(ContainerNestingService.class)
                 .addClass(ProjectService.class);
     }
     
@@ -438,6 +453,80 @@ public class ContainerServiceTest extends TestBase {
         entityManagerService.doSqlUpdate(sql);
         sql = "INSERT INTO items values(3,1,11,null,null,0,'mg','xxx',null,'item 3',cast('" + ownerid + "' as UUID),null,null," + c1.getId() + ",now())";
         entityManagerService.doSqlUpdate(sql);
+    }
+    
+    private void test008_testPostcondition(Container[] ids) {
+        int[][] expectation = new int[][]{
+            {ids[0].getId(), ids[1].getId()},
+            {ids[0].getId(), ids[2].getId()},
+            {ids[0].getId(), ids[3].getId()},
+            {ids[1].getId(), ids[2].getId()},
+            {ids[1].getId(), ids[3].getId()},
+            {ids[2].getId(), ids[3].getId()},
+            {ids[4].getId(), ids[5].getId()}};
+        List<Object[]> nested = (List) entityManagerService.doSqlQuery("SELECT CAST(sourceid AS INTEGER),CAST(targetid AS INTEGER) from nested_containers order by sourceid DESC,targetid DESC");
+        Assert.assertEquals(expectation.length, nested.size());
+        for (int i = 0; i < expectation.length; i++) {
+            int sourceid = (Integer) nested.get(i)[0];
+            int targetid = (Integer) nested.get(i)[1];
+            Assert.assertTrue("test008(postcondition): unexpected source at index " + i, expectation[i][0] == sourceid);
+            Assert.assertTrue("test008(postcondition): unexpected target at index " + i, expectation[i][1] == targetid);
+        }
+    }
+    
+    private void test008_testPrecondition(Container[] container) {
         
+        int[][] expectation = new int[][]{
+            {container[0].getId(), container[1].getId()},
+            {container[0].getId(), container[2].getId()},
+            {container[0].getId(), container[4].getId()},
+            {container[0].getId(), container[5].getId()},
+            {container[1].getId(), container[2].getId()},
+            {container[1].getId(), container[4].getId()},
+            {container[1].getId(), container[5].getId()},
+            {container[2].getId(), container[4].getId()},
+            {container[2].getId(), container[5].getId()},
+            {container[4].getId(), container[5].getId()}};
+        List<Object[]> nested = (List) entityManagerService.doSqlQuery("SELECT CAST(sourceid AS INTEGER),CAST(targetid AS INTEGER) from nested_containers order by sourceid DESC,targetid DESC");
+        Assert.assertEquals(10, nested.size());
+        for (int i = 0; i < 10; i++) {
+            int sourceid = (Integer) nested.get(i)[0];
+            int targetid = (Integer) nested.get(i)[1];
+            Assert.assertTrue("test008(precondition): unexpected source at index " + i, expectation[i][0] == sourceid);
+            Assert.assertTrue("test008(precondition): unexpected target at index " + i, expectation[i][1] == targetid);
+        }
+    }
+    
+    private Container[] test008_initializeContainer() {
+        Container c0 = new Container();
+        c0.setType(new ContainerType("ROOM", 100));
+        c0.setLabel("C0");
+        instance.saveContainer(c0);
+        Container c1 = new Container();
+        c1.setType(new ContainerType("ROOM", 99));
+        c1.setLabel("C1");
+        c1.setParentContainer(c0);
+        instance.saveContainer(c1);
+        Container c2 = new Container();
+        c2.setType(new ContainerType("ROOM", 99));
+        c2.setLabel("C2");
+        instance.saveContainer(c2);
+        Container c3 = new Container();
+        c3.setType(new ContainerType("ROOM", 98));
+        c3.setLabel("C3");
+        c3.setParentContainer(c1);
+        instance.saveContainer(c3);
+        Container c4 = new Container();
+        c4.setType(new ContainerType("ROOM", 97));
+        c4.setLabel("C4");
+        c4.setParentContainer(c3);
+        instance.saveContainer(c4);
+        Container c5 = new Container();
+        c5.setType(new ContainerType("ROOM", 96));
+        c5.setLabel("C5");
+        c5.setParentContainer(c4);
+        instance.saveContainer(c5);
+        
+        return new Container[]{c5, c4, c3, c2, c1, c0};
     }
 }

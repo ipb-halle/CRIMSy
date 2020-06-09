@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.container.service.ContainerNestingService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.material.CreationTools;
@@ -257,6 +258,7 @@ public class ItemServiceTest extends TestBase {
                 .addClass(MembershipOrchestrator.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
+                .addClass(ContainerNestingService.class)
                 .addClass(UserBean.class)
                 .addClass(ItemService.class);
     }

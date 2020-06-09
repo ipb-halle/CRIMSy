@@ -26,6 +26,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.mock.ErrorMessagePresenterMock;
+import de.ipb_halle.lbac.container.service.ContainerNestingService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.service.ArticleService;
@@ -51,7 +52,7 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class InputBValidatorTest extends TestBase {
+public class InputValidatorTest extends TestBase {
 
     @Inject
     private ContainerService containerService;
@@ -202,6 +203,7 @@ public class InputBValidatorTest extends TestBase {
                 .addClass(TissueService.class)
                 .addClass(ArticleService.class)
                 .addClass(KeyManager.class)
+                .addClass(ContainerNestingService.class)
                 .addClass(UserBean.class)
                 .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)

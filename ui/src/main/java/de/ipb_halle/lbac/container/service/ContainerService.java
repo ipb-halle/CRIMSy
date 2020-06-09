@@ -63,10 +63,16 @@ public class ContainerService implements Serializable {
     @Inject
     ItemService itemService;
 
+    @Inject
+    private ContainerNestingService nestingService;
+
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
-    private final String SQL_NESTED_TARGETS = "SELECT targetid FROM nested_containers WHERE sourceid=:source";
+    private final String SQL_NESTED_TARGETS
+            = "SELECT targetid "
+            + " FROM nested_containers "
+            + "WHERE sourceid=:source";
     private final String SQL_GET_SIMILAR_NAMES
             = "SELECT label "
             + "FROM containers "
@@ -151,6 +157,11 @@ public class ContainerService implements Serializable {
             + "WHERE UPPER(label)=UPPER(:label) "
             + "AND c.deactivated =FALSE";
 
+    private final String SQL_DELETE_NESTING
+            = "DELETE "
+            + "FROM nested_containers "
+            + "WHERE sourceid=:containerid ";
+
     /**
      * Gets all containersnames which matches the pattern %name%
      *
@@ -193,6 +204,14 @@ public class ContainerService implements Serializable {
     public List<Container> loadContainers(
             User u) {
         return loadContainers(u, new HashMap<>());
+    }
+
+    public void saveEditedContainer(Container c) {
+        em.merge(c.createEntity());
+        nestingService.updateNestedContainerFor(
+                c.getId(),
+                c.getParentContainer() == null ? null : c.getParentContainer().getId()
+        );
     }
 
     /**
@@ -259,15 +278,6 @@ public class ContainerService implements Serializable {
             result.add(new ContainerType(dbe.getName(), dbe.getRank()));
         }
         return result;
-    }
-
-    private Project getProjectById(Integer id, List<Project> project) {
-        for (Project p : project) {
-            if (p.getId() == id) {
-                return p;
-            }
-        }
-        return null;
     }
 
     public Integer getRankOfContainerType(String type) {
@@ -422,4 +432,5 @@ public class ContainerService implements Serializable {
         c.setDeactivated(true);
         this.em.merge(c.createEntity());
     }
+
 }
