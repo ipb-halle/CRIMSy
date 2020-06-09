@@ -111,9 +111,9 @@ public class ExperimentBean implements Serializable {
                 index++;
             }  
 
-            if (index < (this.expRecords.size() - 1)) {
+            if (index < (this.expRecords.size())) {
                 // link to the following record
-                record.setNext(this.expRecords.get(index + 1).getExpRecordId());
+                record.setNext(this.expRecords.get(index).getExpRecordId());
             }
 
             // remember index (initially id is null)
@@ -153,15 +153,23 @@ public class ExperimentBean implements Serializable {
     }
 
     /**
+     * toggle the currently active experiment
      * ToDo: xxxxx restrict search
      */
-    public void actionSelectExperiment(Experiment experiment) {
-        this.experiment = experiment;
-        try {
-            loadExpRecords();
-        } catch(Exception e) {
-            this.logger.warn("actionSelectExperiment() caught an exception: ", (Throwable) e);
-            this.expRecords = new ArrayList<ExpRecord> ();
+    public void actionToggleExperiment(Experiment exp) {
+        if ((exp != null) && (exp.getExperimentId() != null)) {
+            if (exp.getExperimentId().equals(this.experiment.getExperimentId())) {
+                experimentBeanInit();
+                return;
+            } 
+
+            this.experiment = exp;
+            try {
+                loadExpRecords();
+            } catch(Exception e) {
+                this.logger.warn("actionToggleExperiment() caught an exception: ", (Throwable) e);
+                this.expRecords = new ArrayList<ExpRecord> ();
+            }
         }
     }
 
@@ -235,6 +243,14 @@ public class ExperimentBean implements Serializable {
 
     public String getNewRecordType() {
         return "";
+    }
+
+    /**
+     * load a specific record by id
+     * e.g. for canceling edits
+     */
+    public ExpRecord loadExpRecordById(Long id) {
+        return this.expRecordService.loadById(id);
     }
 
     /**

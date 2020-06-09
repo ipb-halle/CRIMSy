@@ -134,8 +134,9 @@
         <param-value>bootstrap</param-value>
     </context-param>
     <context-param>
+        <!-- primefaces.FONT_AWESOME must be 'false' for FontAwesome 5 -->
         <param-name>primefaces.FONT_AWESOME</param-name>
-        <param-value>true</param-value>
+        <param-value>false</param-value>
     </context-param>
     <!-- add new mime types for bootstrap fonts and javascript extensions -->
     <mime-mapping>

@@ -39,13 +39,25 @@ public class TextController implements ExpRecordController {
         this.bean = bean;
     }
 
+    public void actionCancel() {
+        expRecord.setEdit(false);
+        if (this.expRecord.getExpRecordId() == null) {
+            this.bean.getExpRecords().remove(this.expRecord.getIndex());
+        } else {
+            this.bean.getExpRecords().set(
+                    this.expRecord.getIndex(), 
+                    this.bean.loadExpRecordById(this.expRecord.getExpRecordId()));
+        }
+        bean.cleanup();
+        this.logger.info("actionCancel() completed");
+    }
+
     public void actionSaveRecord() {
-        this.logger.info("actionSaveRecord()");
         this.expRecord = (Text) this.bean.saveExpRecord(this.expRecord);
         this.bean.adjustOrder(this.expRecord);
         this.expRecord.setEdit(false);
-        this.logger.info("actionSaveRecord() completed");
         this.bean.cleanup();
+        this.logger.info("actionSave() completed");
     }
 
     public ExpRecord getNewRecord() {

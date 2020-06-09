@@ -320,11 +320,18 @@
             <scope>compile</scope>
         </dependency>
         
-        <!-- Ui Library for jsf-->
+        <!-- PrimeFaces Ui Library for jsf-->
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>6.1</version>
+            <version>6.2</version>
+        </dependency>
+
+        <!-- PrimeFaces FontAwesome 5.x -->
+        <dependency>
+             <groupId>org.webjars</groupId>
+             <artifactId>font-awesome</artifactId>
+             <version>5.12.0</version>
         </dependency>
         
         <!-- PrimeFaces Bootstrap Theme. Has its own repository -->

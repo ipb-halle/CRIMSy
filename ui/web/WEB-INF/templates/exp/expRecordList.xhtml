@@ -30,18 +30,27 @@
         <ui:repeat value="#{experimentBean.expRecords}" var="rec">
             <div title="#{rec.expRecordDetails}">#{rec.expRecordInfo}
 
-                <p:commandButton type="button" icon="pi pi-cog" title="Action" onclick="PF('dlg_#{rec.expRecordId}').show();" />
+                <p:commandLink title="Action" 
+                    rendered="#{! rec.edit}"
+                    onclick="PF('dlg_#{rec.expRecordId}').show();"><span class="fa fa-cog"> </span></p:commandLink>
                 <p:dialog header="Record Actions" widgetVar="dlg_#{rec.expRecordId}" modal="true" height="100">
-                    <h:panelGrid columns="1">
-                        <p:selectOneMenu value="#{experimentBean.newRecordType}" >
-                            <f:selectItem itemLabel="Append record ..." itemValue="" />
-                            <f:selectItem itemLabel="Text" itemValue="TEXT" />
-                            <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
-                            <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(rec.expRecordId)}" 
-                                oncomplete="PF('dlg_#{rec.expRecordId}').hide();" update="@form" />
-                        </p:selectOneMenu>
-                        <p:commandButton value="Edit ..." action="#{experimentBean.actionEditRecord(rec.expRecordId)}" onclick="PF('dlg_#{rec.expRecordId}').hide();" />
-                    </h:panelGrid>
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p:selectOneMenu value="#{experimentBean.newRecordType}" >
+                                <f:selectItem itemLabel="Append record ..." itemValue="" />
+                                <f:selectItem itemLabel="Text" itemValue="TEXT" />
+                                <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
+                                <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(rec.expRecordId)}" 
+                                    oncomplete="PF('dlg_#{rec.expRecordId}').hide();" update="@form" />
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="ui-g-12">
+                            <p:commandButton value="Edit ..." 
+                                    action="#{experimentBean.actionEditRecord(rec.expRecordId)}" 
+                                    onclick="PF('dlg_#{rec.expRecordId}').hide();" 
+                                    update="@form" />
+                        </div>
+                    </div>
                 </p:dialog> 
                 <br/></div>
 
@@ -62,7 +71,8 @@
             </ui:fragment>
 
             <ui:fragment rendered="#{rec.edit}">
-                <b:commandButton value="Save Record" action="#{experimentBean.expRecordController.actionSaveRecord}" />
+                <p:commandButton value="Cancel" action="#{experimentBean.expRecordController.actionCancel}" update="@form" />
+                <p:commandButton value="Save Record" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@form" />
             </ui:fragment>
 
         </ui:repeat>

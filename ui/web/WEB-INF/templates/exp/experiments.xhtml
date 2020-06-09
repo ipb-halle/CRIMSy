@@ -24,59 +24,21 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
-        <b:form 
-            id="experimentForm">
-<!-- <p:panel>Hallo</p:panel> -->
+        <b:form id="experimentForm">
 
-            <b:panel title="Search">
-                <b:container>
-                    <b:row>
-                        <b:column span="1">
-                            <b:inputText label="id"/>
-                        </b:column>
-                        <b:column span="1">
-                            <b:inputText label="user"/>
-                        </b:column>
-                        <b:column span="1">
-                            <b:inputText label="project"/>
-                        </b:column>
-                        <b:column span="2" offset="1">
-                            <b:inputText label="compound"/>
-                        </b:column>
-                        <b:column span="2">
-                            <b:inputText label="sop"/>
-                        </b:column>
-                        <b:column span="2">
-                            <b:inputText label="target"/>
-                        </b:column>
-                        <b:column span="1" >
-                            <div class="rowButtonLabel"> </div>
-                            <b:commandButton value="search"/>
-                        </b:column>
-                    </b:row>
-                </b:container>
-            </b:panel>
-            <b:panel title="Experiment data">
-                <b:container>
-                    <b:row>
-                        <b:column span="1">
-                            <b:inputText label="Code" value="#{experimentBean.getExperiment().code}" />
-                        </b:column>
-                        <b:column span="4">
-                            <b:inputText label="Description" value="#{experimentBean.getExperiment().description}"/>
-                        </b:column>
-                        <b:column span="1" >
-                            <div class="rowButtonLabel"> </div>
-                            <b:commandButton value="save" action="#{experimentBean.actionSaveExperiment}" />
-                        </b:column>
-                    </b:row>
-                </b:container>
-            </b:panel>
             <b:panel title="Record Data">
                 <p:outputPanel deferred="false">
-                <!-- <b:container> -->
+
                     <b:row>
                         <b:column span="3">
+
+                            <ui:insert naem="expData">
+                                <ui:include src="expData.xhtml" />
+                            </ui:insert>
+                            <ui:insert name="expSearch">
+                                <ui:include src="expSearch.xhtml" />
+                            </ui:insert>
+
                             <b:panel collapsible="false" title="experiments">
                                 <ui:insert name="experiments">
                                     <ui:include src="experimentList.xhtml"/>
@@ -90,7 +52,7 @@
                                     <ui:include src="expRecordList.xhtml"/>
                                 </ui:insert>
                             </b:panel>
-                            <b:panel title="Record Actions">
+                            <b:panel title="Record Actions" rendered="#{experimentBean.getExperiment().experimentId != null}" >
                                 <b:container>
                                     <b:row>
                                         <p:selectOneMenu value="#{experimentBean.newRecordType}" >
@@ -106,7 +68,6 @@
                         </b:column>
                     </b:row>
 
-                <!-- </b:container> -->
                 </p:outputPanel>
             </b:panel>
 
