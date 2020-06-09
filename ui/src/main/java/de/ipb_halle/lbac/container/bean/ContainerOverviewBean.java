@@ -114,8 +114,12 @@ public class ContainerOverviewBean implements Serializable {
         }
     }
 
-    private boolean saveNewContainer() {
+    public void actionContainerEdit(Container c) {
+        editBean.startContainerEdit(c);
+        mode = Mode.EDIT;
+    }
 
+    private boolean saveNewContainer() {
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
@@ -159,6 +163,35 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     private void saveEditedContainer() {
+        if (editBean.getPreferredProjectName() != null
+                && !editBean.getPreferredProjectName().trim().isEmpty()) {
+            editBean.getContainerToCreate()
+                    .setProject(projectService
+                            .loadProjectByName(
+                                    currentUser,
+                                    editBean.getPreferredProjectName().trim()
+                            )
+                    );
+        }
+
+        if (editBean.getContainerLocation() != null) {
+            editBean.getContainerToCreate()
+                    .setParentContainer(
+                            containerService.loadContainerByName(
+                                    editBean.getContainerLocation()
+                            ));
+        }
+//        boolean valide = validator.isInputValideForCreation(
+//                editBean.getContainerToCreate(),
+//                editBean.getPreferredProjectName(),
+//                editBean.getContainerLocation(),
+//                editBean.getContainerHeight(),
+//                editBean.getContainerWidth(),
+//                allowDuplicateContainerNames
+//        );
+
+        containerService.saveEditedContainer(editBean.getContainerToCreate());
+
         actionStartFilteredSearch();
     }
 
@@ -207,10 +240,6 @@ public class ContainerOverviewBean implements Serializable {
     public void actionContainerDeactivate(Container c) {
         containerService.deactivateContainer(c);
         actionStartFilteredSearch();
-
-    }
-
-    public void actionContainerEdit(Container c) {
 
     }
 

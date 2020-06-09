@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.project.Project;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -112,6 +113,9 @@ public class Container implements DTO {
     }
 
     public Container getParentContainer() {
+        if (parentContainer == null && containerHierarchy.size() > 0) {
+            return containerHierarchy.get(0);
+        }
         return parentContainer;
     }
 
@@ -168,15 +172,14 @@ public class Container implements DTO {
     }
 
     public String getLocation(boolean inclusiveItsself) {
-
         if (containerHierarchy.isEmpty()) {
             return label;
         } else {
-            String back = "";
-            for (Container c : containerHierarchy) {
-                back += c.getLabel();
-            }
-            return back;
+            return containerHierarchy
+                    .stream()
+                    .map(r -> r.getLabel())
+                    .collect(Collectors.joining("<br>"));
+
         }
 
     }
@@ -241,6 +244,23 @@ public class Container implements DTO {
         dbe.setBarcode(this.getBarCode());
         dbe.setDeactivated(this.isDeactivated());
         return dbe;
+    }
+
+    public Container copy() {
+        Container c = new Container();
+        c.setBarCode(barCode);
+        c.setDeactivated(deactivated);
+        c.setDimension(dimension);
+        c.setFireSection(fireSection);
+        c.setGmosavety(gmosavety);
+        c.setId(id);
+        c.setItems(items);
+        c.setLabel(label);
+        c.setParentContainer(parentContainer);
+        c.setProject(project);
+        c.setType(type);
+        c.getContainerHierarchy().addAll(containerHierarchy);
+        return c;
     }
 
 }

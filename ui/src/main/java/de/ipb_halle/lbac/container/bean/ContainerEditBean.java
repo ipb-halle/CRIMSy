@@ -55,7 +55,6 @@ public class ContainerEditBean implements Serializable {
     private Integer containerWidth;
     private Container containerToCreate;
     private Container originalContainer;
-    private Container containerToEdit;
     private List<ContainerType> containerTypes;
     List<Project> possibleProjects = new ArrayList<>();
     private User currentUser;
@@ -71,7 +70,18 @@ public class ContainerEditBean implements Serializable {
         containerToCreate.setType(containerTypes.get(0));
         preferredProjectName = "";
         containerLocation = "";
+    }
 
+    public void startContainerEdit(Container c) {
+        containerTypes = containerService.loadContainerTypes();
+        originalContainer = c;
+        containerToCreate = c.copy();
+        if (c.getProject() != null) {
+            preferredProjectName = c.getProject().getName();
+        }
+        if (c.getParentContainer() != null) {
+            containerLocation = c.getParentContainer().getLabel();
+        }
     }
 
     public List<ContainerType> getContainerTypes() {
@@ -85,13 +95,9 @@ public class ContainerEditBean implements Serializable {
     }
 
     public ContainerType getContainerType() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate.getType();
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            return containerToEdit.getType();
-        }
-        return null;
+
+        return containerToCreate.getType();
+
     }
 
     public Container getContainerToCreate() {
@@ -99,31 +105,17 @@ public class ContainerEditBean implements Serializable {
     }
 
     public void setContainerType(ContainerType t) {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            containerToCreate.setType(t);
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            containerToEdit.setType(t);
-        }
+
+        containerToCreate.setType(t);
+
     }
 
     public String getContainerName() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate.getLabel();
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            return containerToEdit.getLabel();
-        }
-        return "";
+        return containerToCreate.getLabel();
     }
 
     public void setContainerName(String containerName) {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            containerToCreate.setLabel(containerName);
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            containerToEdit.setLabel(containerName);
-        }
+        containerToCreate.setLabel(containerName);
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
@@ -162,76 +154,44 @@ public class ContainerEditBean implements Serializable {
     }
 
     public void setSecurityLevel(String securityLevel) {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            containerToCreate.setGmosavety(securityLevel);
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            containerToEdit.setGmosavety(securityLevel);
-        }
+
+        containerToCreate.setGmosavety(securityLevel);
+
     }
 
     public String getSecurityLevel() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate.getGmosavety();
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            return containerToEdit.getGmosavety();
-        }
-        return "";
+
+        return containerToCreate.getGmosavety();
+
     }
 
     public void setFireSection(String fireSection) {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            containerToCreate.setFireSection(fireSection);
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            containerToEdit.setFireSection(fireSection);
-        }
+
+        containerToCreate.setFireSection(fireSection);
+
     }
 
     public String getFireSection() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate.getFireSection();
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            return containerToEdit.getFireSection();
-        }
-        return "";
+
+        return containerToCreate.getFireSection();
+
     }
 
     public boolean isSecurityLevelVisible() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            return containerToEdit.getType().getRank() == ContainerType.HIGHEST_RANK;
 
-        }
-        return false;
+        return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
+
     }
 
     public boolean isDimensionVisible() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
-        }
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT) {
-            return containerToEdit.getType().getRank() != ContainerType.HIGHEST_RANK;
 
-        }
-        return false;
+        return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
+
     }
 
     public boolean isInputValide() {
-        boolean isNameUsed = containerService.loadContainerByName(getContainerInFocus().getLabel()) == null;
+        boolean isNameUsed = containerService.loadContainerByName(containerToCreate.getLabel()) == null;
         return isNameUsed;
-    }
-
-    private Container getContainerInFocus() {
-        if (overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE) {
-            return containerToCreate;
-        } else {
-            return containerToEdit;
-        }
     }
 
     public void setPreferredProjectName(String preferredProjectName) {

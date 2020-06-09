@@ -48,19 +48,20 @@ limitations under the License.
                 <b:dataTableColumn
                     label="Ort">
                     <h:outputText
-                        value="#{container. getLocation(false)}"/>
+                        escape="false"
+                        value="#{container.getLocation(false)}"/>
                 </b:dataTableColumn>
-                 <b:dataTableColumn
+                <b:dataTableColumn
                     label="Projekt">
                     <h:outputText
                         value="#{containerOverviewBean.getProjectName(container)}"/>
                 </b:dataTableColumn>
-                 <b:dataTableColumn
+                <b:dataTableColumn
                     label="Sicherheitsstufe">
                     <h:outputText
                         value="#{container.getGmosavety()}"/>
                 </b:dataTableColumn>
-                 <b:dataTableColumn
+                <b:dataTableColumn
                     label="Feuersektion">
                     <h:outputText
                         value="#{container.getFireSection()}"/>
@@ -71,8 +72,6 @@ limitations under the License.
                                      icon="pencil"
                                      look="link"
                                      type="submit"
-                                     ajax="true"
-                                     update="@(.containerDataTable)"
                                      action="#{containerOverviewBean.actionContainerEdit(container)}"
                                      />
                     <b:commandButton style="padding: 0 4px;"
