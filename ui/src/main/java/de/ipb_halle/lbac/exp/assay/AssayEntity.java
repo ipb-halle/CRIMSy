@@ -36,10 +36,17 @@ public class AssayEntity implements Serializable {
     private Long exprecordid;
 
     @Column
+    private AssayOutcomeType outcomeType;
+
+    @Column
     private Integer sopid;
    
     public Long getExpRecordId() {
         return this.exprecordid;
+    }
+
+    public AssayOutcomeType getOutcomeType() {
+        return this.outcomeType;
     }
 
     public Integer getSopId() {
@@ -48,6 +55,11 @@ public class AssayEntity implements Serializable {
 
     public AssayEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
+        return this;
+    }
+
+    public AssayEntity setOutcomeType(AssayOutcomeType outcomeType) {
+        this.outcomeType = outcomeType;
         return this;
     }
 

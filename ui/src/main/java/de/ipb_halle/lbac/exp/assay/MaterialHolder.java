@@ -1,5 +1,5 @@
 /*
- * Cloud Research & Information Management System (CRIMSy)
+ * CRIMSy 
  * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +15,19 @@
  * limitations under the License.
  *
  */
+package de.ipb_halle.lbac.exp.assay;
 
-.assayTableHeader {
-    padding: 3px;
-}
+import de.ipb_halle.lbac.material.Material;
 
-.assayTableCell {
-    padding: 3px;
-}
+/**
+ * Interface for classes holding a single material and 
+ * having that material assigned / changed by a MaterialController
+ *
+ * @author fbroda
+ */
+public interface MaterialHolder {
 
-.expSelectedEntry {
-    background-color: #229;
-    color: #fcfcfc;
-}
+    public Material getMaterial();
+    public void setMaterial(Material material);
 
-.expNormalEntry {
-    background-color: #fcfcfc;
-    color: 222;
 }

@@ -29,19 +29,32 @@
     <ui:composition>
         <div>Assay<br/>SOP: #{expRecord.SOP.sopId} #{expRecord.SOP.description}<br/> 
         <table>
-            <tr><th>Material</th><th>Gebinde</th><th>Value</th><th>Unit</th></tr>
+            <tr><th class="assayTableHeader">Material</th>
+                <th class="assayTableHeader">Gebinde</th>
+                <th class="assayTableHeader">Value</th>
+                <th class="assayTableHeader">Unit</th>
+                <th class="assayTableHeader"> </th></tr>
         <ui:repeat value="#{expRecord.records}" var="assayRec">
             <tr>
                 <td>
                     <ui:fragment rendered="#{assayRec.material != null}">
-                        <ui:insert name="matPanel">
-                            <ui:include src="mat.xhtml">
+                        <ui:insert name="matViewPanel">
+                            <ui:include src="materialView.xhtml">
                                 <ui:param name="material" value="#{assayRec.material}" />
                             </ui:include>
                         </ui:insert>
                     </ui:fragment>
+                    <ui:fragment rendered="#{assayRec.edit == true}">
+                        <ui:insert name="matEditPanel">
+                            <ui:param name="materialHolder" value="#{experimentBean.getExpRecordController()}" />
+                            <ui:include src="materialEdit.xhtml" />
+                        </ui:insert>
+                    </ui:fragment>
+
                 </td>
-                <td>Item omitted</td>
+
+                <td class="assayTableCell">Item currently omitted</td>
+
                 <ui:fragment rendered="#{assayRec.facelet eq 'SINGLE_POINT'}">
                     <ui:insert name="singlePointOutcomePanel">
                         <ui:include src="singlepoint.xhtml">
@@ -49,6 +62,15 @@
                         </ui:include>
                     </ui:insert>
                 </ui:fragment>
+
+                <td class="assayTableCell">
+                    <p:commandLink 
+                        rendered="#{expRecord.edit}"
+                        update="@form"
+                        action="#{experimentBean.getExpRecordController().actionEditAssayRecord(assayRec.rank)}" >
+                        <span class="fa fa-cog"> </span></p:commandLink>
+                </td>
+
             </tr>
         </ui:repeat>
         </table>

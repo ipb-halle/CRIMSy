@@ -50,6 +50,9 @@ public class AssayRecordEntity implements Serializable {
     private Integer materialid;
 
     @Column
+    private int rank;
+
+    @Column
     private AssayOutcomeType type;
 
     @Type(type = "RawJsonb")
@@ -69,6 +72,10 @@ public class AssayRecordEntity implements Serializable {
 
     public String getOutcome() {
         return this.outcome;
+    }
+
+    public int getRank() {
+        return this.rank;
     }
 
     public Long getRecordId() {
@@ -96,6 +103,11 @@ public class AssayRecordEntity implements Serializable {
 
     public AssayRecordEntity setOutcome(String outcome) {
         this.outcome = outcome;
+        return this;
+    }
+
+    public AssayRecordEntity setRank(int rank) {
+        this.rank = rank;
         return this;
     }
 

@@ -47,6 +47,13 @@ public class Assay extends ExpRecord implements DTO {
 
     private SOP                 sop;
 
+    /**
+     * outcometype limits the type of outcome this assay object accepts.
+     * This is done becaus rendering multiple outcome types in the same 
+     * table might prove difficult.
+     */
+    private AssayOutcomeType    outcomeType;
+
     private List<AssayRecord>   records;
 
     /**
@@ -61,7 +68,12 @@ public class Assay extends ExpRecord implements DTO {
     public AssayEntity createEntity() {
         return new AssayEntity()
             .setExpRecordId(getExpRecordId())
+            .setOutcomeType(this.outcomeType)
             .setSopId(this.sop.getSopId());
+    }
+
+    public AssayOutcomeType getOutcomeType() {
+        return this.outcomeType;
     }
 
     public List<AssayRecord> getRecords() {
@@ -70,6 +82,10 @@ public class Assay extends ExpRecord implements DTO {
 
     public SOP getSOP() {
         return this.sop;
+    }
+
+    public void setOutcomeType(AssayOutcomeType outcomeType) {
+        this.outcomeType = outcomeType;
     }
 
     public Assay setRecords(List<AssayRecord> records) {

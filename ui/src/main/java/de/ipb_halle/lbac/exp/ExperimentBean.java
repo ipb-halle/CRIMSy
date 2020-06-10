@@ -195,7 +195,7 @@ public class ExperimentBean implements Serializable {
     public void createExpRecordController(String recordType) {
         switch(recordType) {
             case "ASSAY" :
-                this.expRecordController = new AssayController(this);
+                this.expRecordController = new AssayController(this); 
                 break;
             case "TEXT" :
                 this.expRecordController = new TextController(this);

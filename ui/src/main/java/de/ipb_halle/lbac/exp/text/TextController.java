@@ -40,7 +40,6 @@ public class TextController implements ExpRecordController {
     }
 
     public void actionCancel() {
-        expRecord.setEdit(false);
         if (this.expRecord.getExpRecordId() == null) {
             this.bean.getExpRecords().remove(this.expRecord.getIndex());
         } else {

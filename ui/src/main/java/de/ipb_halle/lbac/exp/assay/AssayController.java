@@ -20,6 +20,9 @@ package de.ipb_halle.lbac.exp.assay;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
+import de.ipb_halle.lbac.material.Material;
+
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,20 +32,73 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public class AssayController implements ExpRecordController {
+public class AssayController implements ExpRecordController, MaterialHolder {
 
     private ExperimentBean bean;
     private Assay expRecord;
+    private AssayRecord assayRecord;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
+    /**
+     * constructor
+     */
     public AssayController(ExperimentBean bean) {
         this.bean = bean;
     }
 
+    public void actionAppendAssayRecord() {
+        List<AssayRecord> records = this.expRecord.getRecords();
+        int rank = records.size();
+        this.assayRecord = new AssayRecord(this.expRecord, rank);
+        records.add(this.assayRecord);
+        actionEditAssayRecord(rank);    // disable edit on all other records
+    }
+
+    public void actionCancel() {
+        if (this.expRecord.getExpRecordId() == null) {
+            this.bean.getExpRecords().remove(this.expRecord.getIndex());
+        } else {
+            this.bean.getExpRecords().set(
+                    this.expRecord.getIndex(), 
+                    this.bean.loadExpRecordById(this.expRecord.getExpRecordId()));
+        }
+        bean.cleanup();
+        this.logger.info("actionCancel() completed");
+    }
+
+    /**
+     * set record 
+     */
+    public void actionEditAssayRecord(int rank) {
+        List<AssayRecord> records = this.expRecord.getRecords();
+        for (AssayRecord rec : records) {
+            if (rec.getRank() == rank) {
+                rec.setEdit(true);
+                this.assayRecord = rec;
+            } else {
+                rec.setEdit(false);
+            }
+        }
+    }
+
     public void actionSaveRecord() {
-        this.logger.info("actionSaveRecord()");
-        bean.saveExpRecord(this.expRecord);
+        this.expRecord = (Assay) this.bean.saveExpRecord(this.expRecord);
+        this.bean.adjustOrder(this.expRecord);
+        actionEditAssayRecord(-1);
         this.expRecord.setEdit(false);
+        this.bean.cleanup();
+        this.logger.info("actionSave() completed");
+    }
+
+    public AssayRecord getAssayRecord() {
+        return this.assayRecord;
+    }
+
+    public Material getMaterial() {
+        if (this.assayRecord != null) {
+            return this.assayRecord.getMaterial();
+        }
+        return null;
     }
 
     public ExpRecord getNewRecord() {
@@ -59,4 +115,11 @@ public class AssayController implements ExpRecordController {
         this.expRecord = (Assay) expRecord;
         return this;
     }
+
+    public void setMaterial(Material material) {
+        if (this.assayRecord != null) {
+            this.assayRecord.setMaterial(material);
+        }
+    }
+
 }

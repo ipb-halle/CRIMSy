@@ -30,6 +30,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * A record object holding an outcome (either single valued or 
+ * multivalued) for a specific material or item. The records 
+ * are ordered by rank, counting from zero. Reordering of records 
+ * is deemed unnecessary and _currently_ not planned.
+ *
  * @author fbroda
  */
 public class AssayRecord implements DTO {
@@ -37,19 +42,33 @@ public class AssayRecord implements DTO {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Long                recordid;
     private Assay               assay;
+    private transient boolean   edit;
     private Material            material;
     private Item                item;
-    private AssayOutcomeType    type;
+    private int                 rank;
     private AssayOutcome        outcome;
+    private AssayOutcomeType    type;   // may become transient later on!
 
+    /**
+     * constructor
+     */
+    public AssayRecord(Assay assay, int rank) {
+        this.assay = assay;
+        this.edit = true;
+        this.type = assay.getOutcomeType();
+        this.rank = rank;
+        this.outcome = AssayOutcome.fromString(this.type, "");
+    }
 
     /**
      * constructor
      */
     public AssayRecord(AssayRecordEntity entity, Assay assay, Material material, Item item) {
         this.assay = assay;
+        this.edit = false;
         this.material = material;
         this.item = item;
+        this.rank = entity.getRank();
         this.recordid = entity.getRecordId();
         this.type = entity.getType();
         this.outcome = AssayOutcome.fromString(this.type, entity.getOutcome());
@@ -58,6 +77,7 @@ public class AssayRecord implements DTO {
     public AssayRecordEntity createEntity() {
         AssayRecordEntity entity = new AssayRecordEntity()
             .setExpRecordId(this.assay.getExpRecordId())
+            .setRank(this.rank)
             .setRecordId(this.recordid)
             .setType(this.outcome.getType())
             .setOutcome(this.outcome.toString());
@@ -73,6 +93,10 @@ public class AssayRecord implements DTO {
 
     public Assay getAssay() {
         return this.assay;
+    }
+
+    public boolean getEdit() {
+        return this.edit;
     }
 
     public String getFacelet() {
@@ -91,12 +115,21 @@ public class AssayRecord implements DTO {
         return this.outcome;
     }
 
+    public int getRank() {
+        return this.rank;
+    }
+
     public Long getRecordId() { 
         return this.recordid; 
     }
 
     public AssayRecord setAssay(Assay assay) {
         this.assay = assay;
+        return this;
+    }
+
+    public AssayRecord setEdit(boolean edit) {
+        this.edit = edit;
         return this;
     }
 
@@ -113,6 +146,11 @@ public class AssayRecord implements DTO {
     public AssayRecord setOutcome(AssayOutcome outcome) {
         this.outcome = outcome;
         this.type = outcome.getType();
+        return this;
+    }
+
+    public AssayRecord setRank(int rank) {
+        this.rank = rank;
         return this;
     }
 
