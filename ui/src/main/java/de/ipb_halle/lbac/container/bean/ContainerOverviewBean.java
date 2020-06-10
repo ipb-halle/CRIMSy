@@ -98,19 +98,10 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     public void actionSecondButtonClick() {
-        if (mode == Mode.SHOW) {
-            editBean.startNewContainerCreation();
-            mode = Mode.CREATE;
-        } else if (mode == Mode.CREATE) {
 
-            if (saveNewContainer()) {
-                mode = Mode.SHOW;
-            }
+        editBean.startNewContainerCreation();
+        mode = Mode.CREATE;
 
-        } else if (mode == Mode.EDIT) {
-            mode = Mode.SHOW;
-            saveEditedContainer();
-        }
     }
 
     public void actionContainerEdit(Container c) {
@@ -118,7 +109,7 @@ public class ContainerOverviewBean implements Serializable {
         mode = Mode.EDIT;
     }
 
-    private boolean saveNewContainer() {
+    public boolean actionSaveNewContainer() {
         validator = new InputValidator(containerService);
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
@@ -155,7 +146,7 @@ public class ContainerOverviewBean implements Serializable {
                 editBean.getContainerToCreate().setDimension(String.format("%d;%d;1", height, width));
 
             }
-
+            mode = Mode.SHOW;
             containerService.saveContainer(editBean.getContainerToCreate());
             actionStartFilteredSearch();
         }
@@ -191,6 +182,7 @@ public class ContainerOverviewBean implements Serializable {
                 allowDuplicateContainerNames
         );
         if (valide) {
+            mode = Mode.SHOW;
             containerService.saveEditedContainer(editBean.getContainerToCreate());
         }
 
@@ -245,7 +237,7 @@ public class ContainerOverviewBean implements Serializable {
 
     }
 
-    public boolean isSecongButtonVisible() {
+    public boolean isSecondButtonVisible() {
         return mode == Mode.SHOW;
     }
 

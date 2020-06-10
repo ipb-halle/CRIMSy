@@ -26,12 +26,15 @@ limitations under the License.
             <b:container styleClass="containerOverviewContainer">
                 <b:row
                     styleClass="containerTopRow">
-                    <b:column span="1" offset="11">
+                    <b:column span="1" offset="11"
+                              >
                         <b:form>
                             <b:commandButton
-                                rendered="#{containerOverviewBean.isSecongButtonVisible()}"
-                                action="#{containerOverviewBean.actionSecondButtonClick()}"
+                                disabled ="#{!containerOverviewBean.isSecondButtonVisible()}"
+                                onclick="alert('Vor');ajax:containerOverviewBean.actionSecondButtonClick();"
                                 value="#{containerOverviewBean.getSecondButtonLabel()}"
+                                ajax="true"
+                                update="@(.containerEdit) @(.containerTopRow)"
                                 />
                         </b:form>
                     </b:column>
