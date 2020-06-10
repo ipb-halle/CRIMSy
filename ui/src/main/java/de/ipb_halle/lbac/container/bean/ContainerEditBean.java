@@ -189,11 +189,6 @@ public class ContainerEditBean implements Serializable {
 
     }
 
-    public boolean isInputValide() {
-        boolean isNameUsed = containerService.loadContainerByName(containerToCreate.getLabel()) == null;
-        return isNameUsed;
-    }
-
     public void setPreferredProjectName(String preferredProjectName) {
         this.preferredProjectName = preferredProjectName;
     }

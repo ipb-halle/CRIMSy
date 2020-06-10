@@ -76,7 +76,6 @@ public class ContainerOverviewBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        validator = new InputValidator(containerService);
         allowDuplicateContainerNames = false;
     }
 
@@ -120,6 +119,7 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     private boolean saveNewContainer() {
+        validator = new InputValidator(containerService);
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
@@ -163,6 +163,7 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     private void saveEditedContainer() {
+        validator = new EditInputValidator(containerService);
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
@@ -181,16 +182,17 @@ public class ContainerOverviewBean implements Serializable {
                                     editBean.getContainerLocation()
                             ));
         }
-//        boolean valide = validator.isInputValideForCreation(
-//                editBean.getContainerToCreate(),
-//                editBean.getPreferredProjectName(),
-//                editBean.getContainerLocation(),
-//                editBean.getContainerHeight(),
-//                editBean.getContainerWidth(),
-//                allowDuplicateContainerNames
-//        );
-
-        containerService.saveEditedContainer(editBean.getContainerToCreate());
+        boolean valide = validator.isInputValideForCreation(
+                editBean.getContainerToCreate(),
+                editBean.getPreferredProjectName(),
+                editBean.getContainerLocation(),
+                editBean.getContainerHeight(),
+                editBean.getContainerWidth(),
+                allowDuplicateContainerNames
+        );
+        if (valide) {
+            containerService.saveEditedContainer(editBean.getContainerToCreate());
+        }
 
         actionStartFilteredSearch();
     }

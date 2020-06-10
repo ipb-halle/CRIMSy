@@ -20,6 +20,9 @@ package de.ipb_halle.lbac.container.bean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Checks input values of a container for validity
@@ -28,20 +31,23 @@ import java.io.Serializable;
  */
 public class InputValidator implements Serializable {
 
-    private ErrorMessagePresenter errorMessagePresenter = new ErrorMessagePresenter();
-    private Integer height;
-    private final int MAX_WIDTH = 1000;
-    private final int MAX_HEIGHT = 1000;
-    private String preferredProjectName;
-    private String preferredLocationName;
-    private ContainerService containerService;
-    private Container containerToCheck;
-    private Integer width;
-    private final String ERROR_MESSAGE_DIMENSION_INVALIDE = "container_input_dimensions";
-    private final String ERROR_MESSAGE_LOCATION_INVALIDE = "container_input_location_invalide";
-    private final String ERROR_MESSAGE_LOCATION_TO_SMALL = "container_input_location_to_small";
-    private final String ERROR_MESSAGE_NAME_INVALIDE = "container_input_name_invalide";
-    private final String ERROR_MESSAGE_PROJECT_INVALIDE = "container_input_project_invalide";
+   
+    protected ErrorMessagePresenter errorMessagePresenter = new ErrorMessagePresenter();
+    protected Integer height;
+    protected final int MAX_WIDTH = 1000;
+    protected final int MAX_HEIGHT = 1000;
+    protected String preferredProjectName;
+    protected String preferredLocationName;
+    protected ContainerService containerService;
+    protected Container containerToCheck;
+    protected Integer width;
+    protected final String ERROR_MESSAGE_DIMENSION_INVALIDE = "container_input_dimensions";
+    protected final String ERROR_MESSAGE_LOCATION_INVALIDE = "container_input_location_invalide";
+    protected final String ERROR_MESSAGE_LOCATION_TO_SMALL = "container_input_location_to_small";
+    protected final String ERROR_MESSAGE_NAME_INVALIDE = "container_input_name_invalide";
+    protected final String ERROR_MESSAGE_PROJECT_INVALIDE = "container_input_project_invalide";
+
+   
 
     public InputValidator(ContainerService containerService) {
         this.containerService = containerService;
@@ -105,7 +111,7 @@ public class InputValidator implements Serializable {
      *
      * @return
      */
-    private boolean isDimensionsValide() {
+    protected boolean isDimensionsValide() {
         boolean valide = true;
         boolean noWidthEntry = width == null || width == 0;
         boolean noHeightEntry = height == null || height == 0;
@@ -124,7 +130,7 @@ public class InputValidator implements Serializable {
      * @param allowDublicateNames
      * @return
      */
-    private boolean isLabelValide(boolean allowDublicateNames) {
+    protected boolean isLabelValide(boolean allowDublicateNames) {
         if (containerToCheck.getLabel() == null || containerToCheck.getLabel().trim().isEmpty()) {
             return false;
         }
@@ -138,7 +144,7 @@ public class InputValidator implements Serializable {
      *
      * @return
      */
-    private boolean isLocationAvailable() {
+    protected boolean isLocationAvailable() {
         boolean isLocationSet = preferredLocationName != null && !preferredLocationName.trim().isEmpty();
         if (isLocationSet) {
             if (containerToCheck.getParentContainer() == null) {
@@ -162,7 +168,7 @@ public class InputValidator implements Serializable {
      *
      * @return
      */
-    private boolean isLocationBiggerThan() {
+    protected boolean isLocationBiggerThan() {
         if (containerToCheck.getParentContainer() == null) {
             return true;
         }
@@ -176,7 +182,7 @@ public class InputValidator implements Serializable {
      *
      * @return
      */
-    private boolean isProjectValide() {
+    protected boolean isProjectValide() {
         boolean valide;
         boolean preferedProjectSet = preferredProjectName != null
                 && !preferredProjectName.trim().isEmpty();
