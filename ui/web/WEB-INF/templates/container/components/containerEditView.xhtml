@@ -186,11 +186,15 @@ limitations under the License.
                             immediate="true"
                             rendered="#{containerOverviewBean.isFirstButtonVisible()}"
                             value="#{msgs.container_button_cancel}"
+                            ajax="true"
+                            update="growlMsg @(.containerOverviewContainer)"
                             />
 
                         <b:commandButton
-                            action="#{containerOverviewBean.actionSecondButtonClick()}"
+                            onclick="ajax:containerOverviewBean.actionSecondButtonClick();"
                             value="#{containerOverviewBean.getSecondButtonLabel()}"
+                            ajax="true"
+                            update="growlMsg @(.containerOverviewContainer)"
                             />
                     </b:row>
                 </p:panel>
