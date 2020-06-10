@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.entity.MaterialEntity;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.globals.SqlStringEnchanter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
@@ -83,11 +84,8 @@ public class MaterialService implements Serializable {
             + "m.projectid, "
             + "m.deactivated "
             + "FROM materials m "
-            + "JOIN acentries ace ON ace.aclist_id=m.usergroups "
-            + "JOIN memberships me ON ace.member_id=me.group_id "
             + "WHERE deactivated=false "
             + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "AND ace.permread=true "
             + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "AND materialtypeid NOT IN (6,7) ";
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
@@ -101,11 +99,8 @@ public class MaterialService implements Serializable {
             = "SELECT DISTINCT(mi.value) "
             + "FROM material_indices mi "
             + "JOIN materials m ON m.materialid=mi.materialid "
-            + "JOIN acentries ace ON ace.aclist_id=m.usergroups "
-            + "JOIN memberships me ON ace.member_id=me.group_id "
             + "WHERE LOWER(mi.value) LIKE LOWER(:name) "
             + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "AND ace.permread=true "
             + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
@@ -191,7 +186,7 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<Material> getReadableMaterials() {
-        Query q = em.createNativeQuery(SQL_GET_MATERIAL, MaterialEntity.class);
+        Query q = em.createNativeQuery(SqlStringEnchanter.aclEnchanter(SQL_GET_MATERIAL,"m.usergroups",true), MaterialEntity.class);
         q.setFirstResult(0);
         q.setMaxResults(25);
         q.setParameter("userid", userBean.getCurrentAccount().getId());
@@ -245,7 +240,7 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarMaterialNames(String name, User user) {
-        return this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
+        return this.em.createNativeQuery(SqlStringEnchanter.aclEnchanter(SQL_GET_SIMILAR_NAMES,"m.usergroups",true))
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", userBean.getCurrentAccount().getId())
                 .getResultList();
