@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.globals.SqlStringEnchanter;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.ItemComparator;
@@ -94,8 +95,6 @@ public class ItemService {
             + "JOIN usersgroups u on u.id=i.owner "
             + "JOIN projects p on p.id=i.projectid "
             + "JOIN materials m ON m.materialid=mi.materialid "
-            + "JOIN acentries ace ON ace.aclist_id=m.usergroups "
-            + "JOIN memberships me ON ace.member_id=me.group_id "
             + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
             + "LEFT JOIN containers c ON nc.targetid=c.id "
             + "LEFT JOIN containers c2 ON i.containerid=c2.id "
@@ -106,7 +105,6 @@ public class ItemService {
             + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "AND ace.permread=true "
             + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "ORDER BY i.id";
 
@@ -116,8 +114,6 @@ public class ItemService {
             + "JOIN usersgroups u on u.id=i.owner "
             + "JOIN projects p on p.id=i.projectid "
             + "JOIN materials m ON m.materialid=mi.materialid "
-            + "JOIN acentries ace ON ace.aclist_id=m.usergroups "
-            + "JOIN memberships me ON ace.member_id=me.group_id "
             + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
             + "LEFT JOIN containers c ON nc.targetid=c.id "
             + "LEFT JOIN containers c2 ON i.containerid=c2.id "
@@ -127,7 +123,6 @@ public class ItemService {
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
             + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "AND ace.permread=true "
             + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1)";
 
@@ -142,7 +137,8 @@ public class ItemService {
     @SuppressWarnings("unchecked")
     public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
         List<Item> result = new ArrayList<>();
-        Query q = createItemQuery(SQL_LOAD_ITEMS, cmap, ItemEntity.class);
+
+        Query q = createItemQuery(SqlStringEnchanter.aclEnchanter(SQL_LOAD_ITEMS, "m.usergroups", true), cmap, ItemEntity.class);
         q.setParameter("userid", u.getId());
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
@@ -164,7 +160,7 @@ public class ItemService {
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SQL_LOAD_ITEMS_AMOUNT, cmap, null);
+        Query q = createItemQuery(SqlStringEnchanter.aclEnchanter(SQL_LOAD_ITEMS_AMOUNT, "m.usergroups", true), cmap, null);
         q.setParameter("userid", u.getId());
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();
