@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.globals;
 
+import de.ipb_halle.lbac.entity.ACPermission;
+
 /**
  *
  * @author fmauz
  */
-public class SqlStringEnchanter {
+public class SqlStringWrapper {
 
     public static String[] splitSqlAtKeyword(String sql, String keyword) {
         int lastIndex = sql.toLowerCase().lastIndexOf(keyword.toLowerCase());
@@ -33,22 +35,23 @@ public class SqlStringEnchanter {
         return new String[]{firstPart, lastPart};
     }
 
-    public static String aclEnchanter(String originalSql, String aclColumn, boolean read) {
-
+    public static String aclEnchanter(String originalSql, String aclColumn, ACPermission... permissions) {
         String[] splittedBeforeWhere = splitSqlAtKeyword(originalSql, "where");
         switch (splittedBeforeWhere.length) {
             case 2:
-                return splittedBeforeWhere[0]
+                return (splittedBeforeWhere[0]
                         + aclTableJoin(aclColumn)
-                        + aclPermissionConditionWithWhere(read)
-                        + splittedBeforeWhere[1].substring(5, splittedBeforeWhere[1].length());
+                        + aclPermissionConditionWithWhere(permissions)
+                        + splittedBeforeWhere[1].substring(5, splittedBeforeWhere[1].length())).replace("  ", " ");
             case 1:
                 String[] splittedBeforeGroupBy = splitSqlAtKeyword(originalSql, "group by");
                 switch (splittedBeforeGroupBy.length) {
                     case 1:
-                        return splittedBeforeGroupBy[0] + aclTableJoin(aclColumn) + aclPermissionConditionWithoutWhere(read);
+                        return (splittedBeforeGroupBy[0] + aclTableJoin(aclColumn) + aclPermissionConditionWithoutWhere(permissions)).replace("  ", " ");
+
                     case 2:
-                        return splittedBeforeGroupBy[0] + aclTableJoin(aclColumn) + aclPermissionConditionWithoutWhere(read) + splittedBeforeGroupBy[1];
+                        return (splittedBeforeGroupBy[0] + aclTableJoin(aclColumn) + aclPermissionConditionWithoutWhere(permissions) + splittedBeforeGroupBy[1]).replace("  ", " ");
+
                     default:
                         throw new RuntimeException("Strings with multiple where clauses(e.g. union) are not supported");
                 }
@@ -64,18 +67,18 @@ public class SqlStringEnchanter {
                 aclColumn);
     }
 
-    public static String aclPermissionConditionWithWhere(boolean read) {
-        String back = " WHERE";
-        if (read) {
-            back += " ace.permread=true ";
-        }
-        return back + " AND ";
+    public static String aclPermissionConditionWithWhere(ACPermission... permissions) {
+        return aclPermissionConditionWithoutWhere(permissions) + " AND ";
+
     }
 
-    public static String aclPermissionConditionWithoutWhere(boolean read) {
+    public static String aclPermissionConditionWithoutWhere(ACPermission... permissions) {
         String back = " WHERE";
-        if (read) {
-            back += " ace.permread=true ";
+        for (int i = 0; i < permissions.length; i++) {
+            back += String.format(" ace.%s=true ", permissions[i].toString().toLowerCase());
+            if (i < permissions.length - 1) {
+                back += " AND ";
+            }
         }
         return back;
     }

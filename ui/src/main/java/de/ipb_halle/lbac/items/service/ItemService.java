@@ -18,8 +18,9 @@
 package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.SqlStringEnchanter;
+import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.ItemComparator;
@@ -138,7 +139,7 @@ public class ItemService {
     public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
         List<Item> result = new ArrayList<>();
 
-        Query q = createItemQuery(SqlStringEnchanter.aclEnchanter(SQL_LOAD_ITEMS, "m.usergroups", true), cmap, ItemEntity.class);
+        Query q = createItemQuery(SqlStringWrapper.aclEnchanter(SQL_LOAD_ITEMS, "m.usergroups", ACPermission.permREAD), cmap, ItemEntity.class);
         q.setParameter("userid", u.getId());
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
@@ -160,7 +161,7 @@ public class ItemService {
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SqlStringEnchanter.aclEnchanter(SQL_LOAD_ITEMS_AMOUNT, "m.usergroups", true), cmap, null);
+        Query q = createItemQuery(SqlStringWrapper.aclEnchanter(SQL_LOAD_ITEMS_AMOUNT, "m.usergroups", ACPermission.permREAD), cmap, null);
         q.setParameter("userid", u.getId());
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();

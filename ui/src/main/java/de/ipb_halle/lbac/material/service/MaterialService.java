@@ -24,8 +24,9 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.entity.MaterialEntity;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.SqlStringEnchanter;
+import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
@@ -186,7 +187,7 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<Material> getReadableMaterials() {
-        Query q = em.createNativeQuery(SqlStringEnchanter.aclEnchanter(SQL_GET_MATERIAL,"m.usergroups",true), MaterialEntity.class);
+        Query q = em.createNativeQuery(SqlStringWrapper.aclEnchanter(SQL_GET_MATERIAL,"m.usergroups",ACPermission.permREAD), MaterialEntity.class);
         q.setFirstResult(0);
         q.setMaxResults(25);
         q.setParameter("userid", userBean.getCurrentAccount().getId());
@@ -240,7 +241,7 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarMaterialNames(String name, User user) {
-        return this.em.createNativeQuery(SqlStringEnchanter.aclEnchanter(SQL_GET_SIMILAR_NAMES,"m.usergroups",true))
+        return this.em.createNativeQuery(SqlStringWrapper.aclEnchanter(SQL_GET_SIMILAR_NAMES,"m.usergroups",ACPermission.permREAD))
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", userBean.getCurrentAccount().getId())
                 .getResultList();

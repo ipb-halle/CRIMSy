@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.globals;
 
+import de.ipb_halle.lbac.entity.ACPermission;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,53 +25,54 @@ import org.junit.Test;
  *
  * @author fmauz
  */
-public class SqlStringEnchanterTest {
+public class SqlStringWrapperTest {
 
     @Test
     public void test001_aclTableJoin() {
         String originalString = "SELECT a.a,a.b FROM columns a WHERE a.id=0";
 
-        String enchantedString = SqlStringEnchanter.aclEnchanter(originalString, "a.aclistid", true);
+        String enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD);
 
         Assert.assertEquals(
-                "SELECT a.a,a.b"
-                + " FROM columns a"
-                + "  JOIN acentries ace ON ace.aclist_id=a.aclistid"
-                + "  JOIN memberships me ON ace.member_id=me.group_id"
-                + "  WHERE ace.permread=true "
-                + " AND  a.id=0", enchantedString);
+                "SELECT a.a,a.b "
+                + "FROM columns a "
+                + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
+                + "JOIN memberships me ON ace.member_id=me.group_id "
+                + "WHERE ace.permread=true "
+                + "AND a.id=0", enchantedString);
 
         originalString = "SELECT a.a,a.b FROM columns a";
-        enchantedString = SqlStringEnchanter.aclEnchanter(originalString, "a.aclistid", true);
+        enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD);
         Assert.assertEquals(enchantedString.trim(),
                 "SELECT a.a,a.b "
                 + "FROM columns a "
-                + "JOIN acentries ace ON ace.aclist_id=a.aclistid  "
-                + "JOIN memberships me ON ace.member_id=me.group_id  "
+                + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
+                + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true"
         );
 
         originalString = "SELECT a.a,a.b FROM columns a GROUP BY a.x";
-        enchantedString = SqlStringEnchanter.aclEnchanter(originalString, "a.aclistid", true);
+        enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD);
         Assert.assertEquals(
                 "SELECT a.a,a.b "
-                + "FROM columns a  "
+                + "FROM columns a "
                 + "JOIN acentries ace "
-                + "ON ace.aclist_id=a.aclistid  "
-                + "JOIN memberships me ON ace.member_id=me.group_id  "
+                + "ON ace.aclist_id=a.aclistid "
+                + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
                 + "GROUP BY a.x", enchantedString);
 
         originalString = "SELECT a.a,a.b FROM columns a WHERE a=0 GROUP BY a.x";
-        enchantedString = SqlStringEnchanter.aclEnchanter(originalString, "a.aclistid", true);
+        enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD, ACPermission.permEDIT);
         Assert.assertEquals(
                 "SELECT a.a,a.b "
-                + "FROM columns a  "
-                + "JOIN acentries ace ON ace.aclist_id=a.aclistid  "
-                + "JOIN memberships me ON ace.member_id=me.group_id  "
-                + "WHERE ace.permread=true  "
-                + "AND  a=0 "
+                + "FROM columns a "
+                + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
+                + "JOIN memberships me ON ace.member_id=me.group_id "
+                + "WHERE ace.permread=true "
+                + "AND ace.permedit=true "
+                + "AND a=0 "
                 + "GROUP BY a.x", enchantedString);
-        int i = 0;
+       
     }
 }
