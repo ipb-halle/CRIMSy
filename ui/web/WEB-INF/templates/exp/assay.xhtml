@@ -68,7 +68,7 @@
                 <td class="assayTableCell">
                     <p:commandLink 
                         rendered="#{expAssayRecord.edit}"
-                        update="@form"
+                        update="@all"
                         action="#{experimentBean.getExpRecordController().actionEditAssayRecord(assayRec.rank)}" >
                         <span class="fa fa-cog"> </span></p:commandLink>
                 </td>
@@ -84,7 +84,7 @@
                 <td></td>
                 <td>
                     <p:commandLink 
-                        update="@form"
+                        ajax="false"
                         action="#{experimentBean.getExpRecordController().actionAppendAssayRecord()}" >
                         <span class="fa fa-plus"> </span>
                     </p:commandLink>

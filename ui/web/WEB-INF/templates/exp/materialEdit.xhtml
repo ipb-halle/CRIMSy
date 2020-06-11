@@ -32,7 +32,7 @@
 
     <ui:composition>
         <p:commandLink title="Action" 
-            update="materialEdit#{dlg_materialEdit_Id}" >
+            update="@parent" >
                 <f:setPropertyActionListener target="#{materialAgent.materialHolder}" value="#{materialHolder}" />
                 <span class="fa fa-pencil"> </span>
                 <p:ajax oncomplete="PF('dlg_materialEdit#{dlg_materialEdit_Id}').show();" />
@@ -51,7 +51,7 @@
                     <div class="ui-g-12">
                         <p:commandButton value="Select" 
                             action="#{materialAgent.actionSetMaterial}" 
-                            update="@form" >
+                            ajax="false" >
                             <f:setPropertyActionListener target="#{materialAgent.materialHolder}" value="#{materialHolder}" />
                             <p:ajax oncomplete="PF('dlg_materialEdit#{dlg_materialEdit_Id}').hide();" />
                         </p:commandButton>
