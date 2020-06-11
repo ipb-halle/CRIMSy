@@ -154,6 +154,8 @@ public class CreationTools {
         p.setDetailTemplates(detailTemplates);
 
         m.getIndices().add(new IndexEntry(2, "Gestis Number", null));
+        m.getIndices().add(new IndexEntry(3, "cas Number", null));
+        m.getIndices().add(new IndexEntry(4, "crs Number", null));
 
         m.getNames().add(new MaterialName("Test-Struktur", "de", 0));
         m.getNames().add(new MaterialName("Test-Structure", "en", 1));

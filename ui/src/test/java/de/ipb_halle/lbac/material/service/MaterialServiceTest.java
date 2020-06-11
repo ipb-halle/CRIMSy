@@ -48,6 +48,7 @@ import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
+import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
 import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomyLevel;
@@ -71,12 +72,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -456,8 +457,6 @@ public class MaterialServiceTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         Project p = creationTools.createProject();
 
-        //List<Object >o=entityManagerService.doSqlQuery("Select cast(id as VARCHAR) from aclists WHERE name='Public Readable ACL'");
-        //aclistService.l(1);
         //Create a structure
         Structure struture1 = creationTools.createDefaultMaterial(p);
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), p.getDetailTemplates());
@@ -476,6 +475,59 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, loadedMaterials.size());
         Material loadedMaterial = loadedMaterials.get(0);
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
+
+        Map<String, Object> cmap = new HashMap<>();
+
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser));
+        cmap.put("PROJECT_NAME", "%biochemical%");
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.put("PROJECT_NAME", "%biohazard%");
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+        cmap.clear();
+        cmap.put("TYPE", MaterialType.STRUCTURE.getId());
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+        cmap.put("TYPE", MaterialType.BIOMATERIAL.getId());
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+        cmap.clear();
+        cmap.put("NAME", "%Test-Struc%");
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.put("NAME", "%Test-Fail%");
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.clear();
+        cmap.put("ID", struture1.getId());
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.put("ID", struture2.getId());
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.clear();
+        cmap.put("USER", "%User%");
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.put("USER", "%publ%");
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.clear();
+        cmap.put("INDEX_GESTIS", "%Gestis%");
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+        cmap.put("INDEX_GESTIS", "%GestisXX%");
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.clear();
+        cmap.put("INDEX_CRS", "%crs%");
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+        cmap.put("INDEX_CRS", "%XX%");
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+
+        cmap.clear();
+        cmap.put("INDEX_CAS", "%cas%");
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+        cmap.put("INDEX_CAS", "%XX%");
+        Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
+
     }
 
     @Deployment

@@ -51,8 +51,10 @@ import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -89,9 +91,20 @@ public class MaterialService implements Serializable {
             + "AND materialtypeid NOT IN (6,7) ";
 
     private final String SQL_LOAD_MATERIAL_AMOUNT
-            = "SELECT DISTINCT COUNT(m.materialid), "
+            = "SELECT COUNT(DISTINCT(m.materialid)) "
             + "FROM materials m "
+            + "JOIN projects p ON p.id=m.projectid "
+            + "JOIN material_indices mi ON mi.materialid=m.materialid "
+            + "JOIN usersgroups u ON u.id=m.ownerid "
             + "WHERE deactivated=false "
+            + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CAS)) AND mi.typeid=3) OR :INDEX_CAS='no_cas_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CRS)) AND mi.typeid=4) OR :INDEX_CRS='no_crs_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_GESTIS)) AND mi.typeid=2) OR :INDEX_GESTIS='no_gestis_filter') "
+            + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
+            + "AND (m.materialid=:ID OR :ID=-1) "
+            + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
             + "AND materialtypeid NOT IN (6,7) ";
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
@@ -106,8 +119,6 @@ public class MaterialService implements Serializable {
             + "FROM material_indices mi "
             + "JOIN materials m ON m.materialid=mi.materialid "
             + "WHERE LOWER(mi.value) LIKE LOWER(:name) "
-            + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
     private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
@@ -188,6 +199,33 @@ public class MaterialService implements Serializable {
      */
     public EntityManager getEm() {
         return em;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Material> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
+        return new ArrayList<>();
+    }
+
+    public int loadMaterialAmount(User u) {
+        return loadMaterialAmount(u, new HashMap<>());
+    }
+
+    public int loadMaterialAmount(User u, Map<String, Object> cmap) {
+
+        Query q = em.createNativeQuery(
+                SqlStringWrapper.aclWrapper(SQL_LOAD_MATERIAL_AMOUNT, "m.usergroups", ACPermission.permREAD)
+        );
+        q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
+        q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
+        q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
+        q.setParameter("userid", u.getId());
+        q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
+        q.setParameter("ID", cmap.getOrDefault("ID", -1));
+        q.setParameter("INDEX_CAS", cmap.getOrDefault("INDEX_CAS", "no_cas_filter"));
+        q.setParameter("INDEX_GESTIS", cmap.getOrDefault("INDEX_GESTIS", "no_gestis_filter"));
+        q.setParameter("INDEX_CRS", cmap.getOrDefault("INDEX_CRS", "no_crs_filter"));
+        return ((BigInteger) q.getResultList().get(0)).intValue();
+
     }
 
     @SuppressWarnings("unchecked")
