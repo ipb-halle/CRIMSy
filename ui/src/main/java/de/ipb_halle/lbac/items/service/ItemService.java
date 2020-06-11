@@ -105,8 +105,6 @@ public class ItemService {
             + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
             + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
-            + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "ORDER BY i.id";
 
     private final String SQL_LOAD_ITEMS_AMOUNT = "Select COUNT(DISTINCT(i.id)) "
@@ -123,8 +121,6 @@ public class ItemService {
             + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
-            + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1)";
 
     /**
@@ -139,7 +135,7 @@ public class ItemService {
     public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
         List<Item> result = new ArrayList<>();
 
-        Query q = createItemQuery(SqlStringWrapper.aclEnchanter(SQL_LOAD_ITEMS, "m.usergroups", ACPermission.permREAD), cmap, ItemEntity.class);
+        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS, "m.usergroups", ACPermission.permREAD), cmap, ItemEntity.class);
         q.setParameter("userid", u.getId());
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
@@ -161,7 +157,7 @@ public class ItemService {
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SqlStringWrapper.aclEnchanter(SQL_LOAD_ITEMS_AMOUNT, "m.usergroups", ACPermission.permREAD), cmap, null);
+        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS_AMOUNT, "m.usergroups", ACPermission.permREAD), cmap, null);
         q.setParameter("userid", u.getId());
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();

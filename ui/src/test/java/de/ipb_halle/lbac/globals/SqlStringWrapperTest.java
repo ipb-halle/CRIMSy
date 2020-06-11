@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.entity.ACPermission;
+import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,9 +30,10 @@ public class SqlStringWrapperTest {
 
     @Test
     public void test001_aclTableJoin() {
+
         String originalString = "SELECT a.a,a.b FROM columns a WHERE a.id=0";
 
-        String enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD);
+        String enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD);
 
         Assert.assertEquals(
                 "SELECT a.a,a.b "
@@ -39,20 +41,22 @@ public class SqlStringWrapperTest {
                 + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
+                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
                 + "AND a.id=0", enchantedString);
 
         originalString = "SELECT a.a,a.b FROM columns a";
-        enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD);
+        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD);
         Assert.assertEquals(enchantedString.trim(),
                 "SELECT a.a,a.b "
                 + "FROM columns a "
                 + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
                 + "JOIN memberships me ON ace.member_id=me.group_id "
-                + "WHERE ace.permread=true"
+                + "WHERE ace.permread=true "
+                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID))"
         );
 
         originalString = "SELECT a.a,a.b FROM columns a GROUP BY a.x";
-        enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD);
+        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD);
         Assert.assertEquals(
                 "SELECT a.a,a.b "
                 + "FROM columns a "
@@ -60,10 +64,11 @@ public class SqlStringWrapperTest {
                 + "ON ace.aclist_id=a.aclistid "
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
+                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
                 + "GROUP BY a.x", enchantedString);
 
         originalString = "SELECT a.a,a.b FROM columns a WHERE a=0 GROUP BY a.x";
-        enchantedString = SqlStringWrapper.aclEnchanter(originalString, "a.aclistid", ACPermission.permREAD, ACPermission.permEDIT);
+        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD, ACPermission.permEDIT);
         Assert.assertEquals(
                 "SELECT a.a,a.b "
                 + "FROM columns a "
@@ -71,8 +76,9 @@ public class SqlStringWrapperTest {
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
                 + "AND ace.permedit=true "
+                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
                 + "AND a=0 "
                 + "GROUP BY a.x", enchantedString);
-       
+
     }
 }

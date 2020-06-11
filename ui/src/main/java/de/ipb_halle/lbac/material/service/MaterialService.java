@@ -86,9 +86,14 @@ public class MaterialService implements Serializable {
             + "m.deactivated "
             + "FROM materials m "
             + "WHERE deactivated=false "
-            + "AND (CAST(:userid AS UUID)=me.member_id "
-            + "OR m.ownerid=CAST(:userid AS UUID)) "
             + "AND materialtypeid NOT IN (6,7) ";
+
+    private final String SQL_LOAD_MATERIAL_AMOUNT
+            = "SELECT DISTINCT COUNT(m.materialid), "
+            + "FROM materials m "
+            + "WHERE deactivated=false "
+            + "AND materialtypeid NOT IN (6,7) ";
+
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
     private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM hazards_materials WHERE materialid=:mid";
@@ -187,7 +192,7 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<Material> getReadableMaterials() {
-        Query q = em.createNativeQuery(SqlStringWrapper.aclEnchanter(SQL_GET_MATERIAL,"m.usergroups",ACPermission.permREAD), MaterialEntity.class);
+        Query q = em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL, "m.usergroups", ACPermission.permREAD), MaterialEntity.class);
         q.setFirstResult(0);
         q.setMaxResults(25);
         q.setParameter("userid", userBean.getCurrentAccount().getId());
@@ -241,7 +246,7 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarMaterialNames(String name, User user) {
-        return this.em.createNativeQuery(SqlStringWrapper.aclEnchanter(SQL_GET_SIMILAR_NAMES,"m.usergroups",ACPermission.permREAD))
+        return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.usergroups", ACPermission.permREAD))
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", userBean.getCurrentAccount().getId())
                 .getResultList();
@@ -260,7 +265,7 @@ public class MaterialService implements Serializable {
         );
         return storageInfos;
     }
-    
+
     @SuppressWarnings("unchecked")
     private HazardInformation loadHazardInformation(int materialId) {
         Query q3 = em.createNativeQuery(SQL_GET_HAZARDS, HazardsMaterialsEntity.class);
@@ -311,7 +316,7 @@ public class MaterialService implements Serializable {
 
         return s;
     }
-    
+
     @SuppressWarnings("unchecked")
     public List<MaterialName> loadMaterialNamesById(int id) {
         List<MaterialName> names = new ArrayList<>();

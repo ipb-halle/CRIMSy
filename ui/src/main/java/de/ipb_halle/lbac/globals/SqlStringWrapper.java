@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.entity.ACPermission;
+import java.util.UUID;
 
 /**
  *
@@ -35,7 +36,10 @@ public class SqlStringWrapper {
         return new String[]{firstPart, lastPart};
     }
 
-    public static String aclEnchanter(String originalSql, String aclColumn, ACPermission... permissions) {
+    public static String aclWrapper(
+            String originalSql,
+            String aclColumn,
+            ACPermission... permissions) {
         String[] splittedBeforeWhere = splitSqlAtKeyword(originalSql, "where");
         switch (splittedBeforeWhere.length) {
             case 2:
@@ -73,13 +77,15 @@ public class SqlStringWrapper {
     }
 
     public static String aclPermissionConditionWithoutWhere(ACPermission... permissions) {
+
         String back = " WHERE";
         for (int i = 0; i < permissions.length; i++) {
             back += String.format(" ace.%s=true ", permissions[i].toString().toLowerCase());
-            if (i < permissions.length - 1) {
-                back += " AND ";
-            }
+            back += " AND ";
         }
+
+        back += "(CAST(:userid AS UUID)=me.member_id "
+                + "OR m.ownerid=CAST(:userid AS UUID)) ";
         return back;
     }
 }
