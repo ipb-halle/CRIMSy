@@ -471,10 +471,114 @@ public class MaterialServiceTest extends TestBase {
 
         //Load the materials
         userBean.setCurrentAccount(testUser);
-        List<Material> loadedMaterials = instance.getReadableMaterials();
+        Map<String, Object> cmap = new HashMap<>();
+        List<Material> loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
         Assert.assertEquals(1, loadedMaterials.size());
         Material loadedMaterial = loadedMaterials.get(0);
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
+
+        cmap.put("PROJECT_NAME", "%biochemical%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+        cmap.put("PROJECT_NAME", "%biohazard%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertTrue(loadedMaterials.isEmpty());
+
+        cmap.clear();
+        cmap.put("TYPE", MaterialType.STRUCTURE.getId());
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+        cmap.put("TYPE", MaterialType.BIOMATERIAL.getId());
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertTrue(loadedMaterials.isEmpty());
+
+        cmap.clear();
+        cmap.put("NAME", "%Test-Struc%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+        cmap.put("NAME", "%Test-Fail%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertTrue(loadedMaterials.isEmpty());
+
+        cmap.clear();
+        cmap.put("ID", struture1.getId());
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+        cmap.put("ID", struture2.getId());
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertTrue(loadedMaterials.isEmpty());
+
+        cmap.clear();
+        cmap.put("USER", "%User%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+        cmap.put("USER", "%publ%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertTrue(loadedMaterials.isEmpty());
+
+        cmap.clear();
+        cmap.put("INDEX_GESTIS", "%Gestis%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        cmap.put("INDEX_GESTIS", "%GestisXX%");
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+        cmap.clear();
+        cmap.put("INDEX_CRS", "%crs%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        cmap.put("INDEX_CRS", "%XX%");
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+        cmap.clear();
+        cmap.put("INDEX_CAS", "%cas%");
+        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        cmap.put("INDEX_CAS", "%XX%");
+        Assert.assertEquals(1, loadedMaterials.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+
+    }
+
+    @Test
+    public void test007_loadMaterialAmount() {
+        User testUser = createUser("testUser", "testUser");
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(testUser);
+
+        instance.setUserBean(userBean);
+        creationTools = new CreationTools("", "", "", memberService, projectService);
+        Project p = creationTools.createProject();
+
+        //Create a structure
+        Structure struture1 = creationTools.createDefaultMaterial(p);
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), p.getDetailTemplates());
+
+        //Create a structure which is not readable
+        userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
+        ACList noRightsAcl = new ACList();
+        noRightsAcl = aclistService.save(noRightsAcl);
+        Structure struture2 = creationTools.createDefaultMaterial(p);
+        instance.saveMaterialToDB(struture2, noRightsAcl.getId(), p.getDetailTemplates());
+        //Create a biomaterial
+
+        //Load the materials
+        userBean.setCurrentAccount(testUser);
 
         Map<String, Object> cmap = new HashMap<>();
 
@@ -527,7 +631,6 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
         cmap.put("INDEX_CAS", "%XX%");
         Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
-
     }
 
     @Deployment

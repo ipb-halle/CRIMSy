@@ -87,7 +87,18 @@ public class MaterialService implements Serializable {
             + "m.projectid, "
             + "m.deactivated "
             + "FROM materials m "
+            + "JOIN projects p ON p.id=m.projectid "
+            + "JOIN material_indices mi ON mi.materialid=m.materialid "
+            + "JOIN usersgroups u ON u.id=m.ownerid "
             + "WHERE deactivated=false "
+            + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CAS)) AND mi.typeid=3) OR :INDEX_CAS='no_cas_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CRS)) AND mi.typeid=4) OR :INDEX_CRS='no_crs_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_GESTIS)) AND mi.typeid=2) OR :INDEX_GESTIS='no_gestis_filter') "
+            + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
+            + "AND (m.materialid=:ID OR :ID=-1) "
+            + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
             + "AND materialtypeid NOT IN (6,7) ";
 
     private final String SQL_LOAD_MATERIAL_AMOUNT
@@ -229,11 +240,20 @@ public class MaterialService implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Material> getReadableMaterials() {
+    public List<Material> getReadableMaterials(User u, Map<String, Object> cmap, int firstResult, int maxResults) {
         Query q = em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL, "m.usergroups", ACPermission.permREAD), MaterialEntity.class);
-        q.setFirstResult(0);
-        q.setMaxResults(25);
-        q.setParameter("userid", userBean.getCurrentAccount().getId());
+
+        q.setFirstResult(firstResult);
+        q.setMaxResults(maxResults);
+        q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
+        q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
+        q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
+        q.setParameter("userid", u.getId());
+        q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
+        q.setParameter("ID", cmap.getOrDefault("ID", -1));
+        q.setParameter("INDEX_CAS", cmap.getOrDefault("INDEX_CAS", "no_cas_filter"));
+        q.setParameter("INDEX_GESTIS", cmap.getOrDefault("INDEX_GESTIS", "no_gestis_filter"));
+        q.setParameter("INDEX_CRS", cmap.getOrDefault("INDEX_CRS", "no_crs_filter"));
         List<MaterialEntity> ies = q.getResultList();
         List<Material> back = new ArrayList<>();
         for (MaterialEntity me : ies) {
