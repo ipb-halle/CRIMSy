@@ -47,11 +47,16 @@ public class AssayController implements ExpRecordController, MaterialHolder {
     }
 
     public void actionAppendAssayRecord() {
-        List<AssayRecord> records = this.expRecord.getRecords();
-        int rank = records.size();
-        this.assayRecord = new AssayRecord(this.expRecord, rank);
-        records.add(this.assayRecord);
-        actionEditAssayRecord(rank);    // disable edit on all other records
+        this.logger.info("actionAppendAssayRecord()");
+        try {
+            List<AssayRecord> records = this.expRecord.getRecords();
+            int rank = records.size();
+            this.assayRecord = new AssayRecord(this.expRecord, rank);
+            records.add(this.assayRecord);
+            actionEditAssayRecord(rank);    // select this record for edit
+        } catch (Exception e) {
+            this.logger.info("actionAppendAssayRecord() caught an exception" , (Throwable) e); 
+        }
     }
 
     public void actionCancel() {
@@ -75,6 +80,7 @@ public class AssayController implements ExpRecordController, MaterialHolder {
             if (rec.getRank() == rank) {
                 rec.setEdit(true);
                 this.assayRecord = rec;
+                this.logger.info("actionEditAssayRecord({})", rank);
             } else {
                 rec.setEdit(false);
             }

@@ -27,14 +27,15 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
-        <div>Assay<br/>SOP: #{expRecord.SOP.sopId} #{expRecord.SOP.description}<br/> 
+        <div>Assay<br/>SOP: #{expAssayRecord.SOP.sopId} #{expAssayRecord.SOP.description}<br/> 
         <table>
             <tr><th class="assayTableHeader">Material</th>
                 <th class="assayTableHeader">Gebinde</th>
                 <th class="assayTableHeader">Value</th>
                 <th class="assayTableHeader">Unit</th>
                 <th class="assayTableHeader"> </th></tr>
-        <ui:repeat value="#{expRecord.records}" var="assayRec">
+
+        <ui:repeat value="#{expAssayRecord.records}" var="assayRec">
             <tr>
                 <td>
                     <ui:fragment rendered="#{assayRec.material != null}">
@@ -47,6 +48,7 @@
                     <ui:fragment rendered="#{assayRec.edit == true}">
                         <ui:insert name="matEditPanel">
                             <ui:param name="materialHolder" value="#{experimentBean.getExpRecordController()}" />
+                            <ui:param name="dlg_materialEdit_Id" value="#{assayRec.rank}" />
                             <ui:include src="materialEdit.xhtml" />
                         </ui:insert>
                     </ui:fragment>
@@ -65,7 +67,7 @@
 
                 <td class="assayTableCell">
                     <p:commandLink 
-                        rendered="#{expRecord.edit}"
+                        rendered="#{expAssayRecord.edit}"
                         update="@form"
                         action="#{experimentBean.getExpRecordController().actionEditAssayRecord(assayRec.rank)}" >
                         <span class="fa fa-cog"> </span></p:commandLink>
@@ -73,6 +75,23 @@
 
             </tr>
         </ui:repeat>
+
+        <ui:fragment rendered="#{expAssayRecord.edit}">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <p:commandLink 
+                        update="@form"
+                        action="#{experimentBean.getExpRecordController().actionAppendAssayRecord()}" >
+                        <span class="fa fa-plus"> </span>
+                    </p:commandLink>
+                </td>
+            </tr>
+        </ui:fragment>
+
         </table>
         </div>
     </ui:composition>

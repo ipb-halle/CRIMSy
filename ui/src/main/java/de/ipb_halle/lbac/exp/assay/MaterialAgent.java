@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.service.MaterialService;
 
 import java.io.Serializable;
@@ -53,7 +54,7 @@ public class MaterialAgent {
     @Inject 
     private MaterialService materialService;
 
-    @ManagedProperty(value="#{materialHolder}")
+    // @ManagedProperty(value="#{materialHolder}")
     private MaterialHolder materialHolder;
 
     private int materialId;
@@ -66,11 +67,18 @@ public class MaterialAgent {
 
     public void actionSetMaterial() {
         this.logger.info("actionSetMaterial() materialId = {}", materialId);
-        if ((this.materialId == 1) ||
-          (this.materialId == 2)) {
-            this.materialHolder.setMaterial(
-                this.materialService.loadMaterialById(this.materialId));
+        if (this.materialHolder != null) {
+
+            // do the actual work
+            if ((this.materialId == 1) ||
+              (this.materialId == 2)) {
+                this.materialHolder.setMaterial(
+                    this.materialService.loadMaterialById(this.materialId));
             }
+
+        } else {
+            this.logger.info("actionSetMaterial(): materialHolder not set");
+        }
     }
 
     public int getMaterialId() {
@@ -78,8 +86,10 @@ public class MaterialAgent {
     }
 
     public void setMaterialHolder(MaterialHolder materialHolder) {
+        this.logger.info("setMaterialHolder() {}", materialHolder);
         this.materialHolder = materialHolder;
     }
+
     public void setMaterialId(int materialId) {
         this.materialId = materialId;
     }

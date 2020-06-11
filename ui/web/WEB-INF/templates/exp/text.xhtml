@@ -27,11 +27,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
-        <ui:fragment rendered="#{! expRecord.edit}">
-            <h:outputText value="#{expRecord.text}" escape="false"/> 
+        <ui:fragment rendered="#{! expTextRecord.edit}">
+            <h:outputText value="#{expTextRecord.text}" escape="false"/> 
         </ui:fragment>
-        <ui:fragment rendered="#{expRecord.edit}">
-            <p:textEditor widgetVar="textEditor" value="#{expRecord.text}" height="300" style="margin-bottom:10px">
+        <ui:fragment rendered="#{expTextRecord.edit}">
+            <p:textEditor widgetVar="textEditor" value="#{expTextRecord.text}" height="300" style="margin-bottom:10px">
                 <f:facet name="toolbar">
                     <span class="ql-formats">
                         <button class="ql-bold"></button>

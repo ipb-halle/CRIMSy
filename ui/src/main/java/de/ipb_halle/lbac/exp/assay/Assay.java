@@ -60,9 +60,16 @@ public class Assay extends ExpRecord implements DTO {
      * default constructor
      */
     public Assay() {
+        this(null);
+    }
+
+    public Assay(AssayEntity entity) {
         super();
         setType(ExpRecordType.ASSAY);
         this.records = new ArrayList<AssayRecord> ();
+        if (entity != null) {
+            this.outcomeType = entity.getOutcomeType();
+        }
     }
 
     public AssayEntity createEntity() {

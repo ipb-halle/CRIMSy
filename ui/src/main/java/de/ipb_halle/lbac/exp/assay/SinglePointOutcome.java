@@ -31,6 +31,9 @@ public class SinglePointOutcome extends AssayOutcome {
     private String              unit;
     private String              remarks;
 
+    public SinglePointOutcome() {
+        this.unit = "mM";
+    }
 
     public String getRemarks() {
         return this.remarks;

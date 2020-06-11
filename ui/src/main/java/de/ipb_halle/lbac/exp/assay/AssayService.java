@@ -101,7 +101,7 @@ public class AssayService implements Serializable {
      */
     public Assay loadAssayById(Experiment experiment, ExpRecordEntity expRecordEntity) {
         AssayEntity e = this.em.find(AssayEntity.class, expRecordEntity.getExpRecordId());
-        Assay assay = new Assay();
+        Assay assay = new Assay(e);
         assay.setExperiment(experiment);
         assay.setExpRecordEntity(expRecordEntity);
 

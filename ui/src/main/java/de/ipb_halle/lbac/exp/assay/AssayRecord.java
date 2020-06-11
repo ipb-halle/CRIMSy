@@ -47,7 +47,7 @@ public class AssayRecord implements DTO {
     private Item                item;
     private int                 rank;
     private AssayOutcome        outcome;
-    private AssayOutcomeType    type;   // may become transient later on!
+    private transient AssayOutcomeType    outcomeType;   
 
     /**
      * constructor
@@ -55,9 +55,9 @@ public class AssayRecord implements DTO {
     public AssayRecord(Assay assay, int rank) {
         this.assay = assay;
         this.edit = true;
-        this.type = assay.getOutcomeType();
+        this.outcomeType = assay.getOutcomeType();
         this.rank = rank;
-        this.outcome = AssayOutcome.fromString(this.type, "");
+        this.outcome = new SinglePointOutcome();
     }
 
     /**
@@ -70,8 +70,8 @@ public class AssayRecord implements DTO {
         this.item = item;
         this.rank = entity.getRank();
         this.recordid = entity.getRecordId();
-        this.type = entity.getType();
-        this.outcome = AssayOutcome.fromString(this.type, entity.getOutcome());
+        this.outcomeType = assay.getOutcomeType();
+        this.outcome = AssayOutcome.fromString(this.outcomeType, entity.getOutcome());
     }
 
     public AssayRecordEntity createEntity() {
@@ -79,8 +79,8 @@ public class AssayRecord implements DTO {
             .setExpRecordId(this.assay.getExpRecordId())
             .setRank(this.rank)
             .setRecordId(this.recordid)
-            .setType(this.outcome.getType())
             .setOutcome(this.outcome.toString());
+            // .setType(this.outcome.getType())
 
         if (this.item != null) {
             entity.setItemId(this.item.getId());
@@ -100,7 +100,7 @@ public class AssayRecord implements DTO {
     }
 
     public String getFacelet() {
-        return this.type.toString();
+        return this.outcomeType.toString();
     }
 
     public Item getItem() {
@@ -145,7 +145,7 @@ public class AssayRecord implements DTO {
 
     public AssayRecord setOutcome(AssayOutcome outcome) {
         this.outcome = outcome;
-        this.type = outcome.getType();
+        // this.outcomeType = outcome.getType();
         return this;
     }
 
