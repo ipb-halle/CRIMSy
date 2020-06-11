@@ -17,7 +17,8 @@
  */
 package de.ipb_halle.lbac.material.bean;
 
-import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.service.MaterialService;
@@ -25,11 +26,13 @@ import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -55,8 +58,8 @@ public class MaterialOverviewBean implements Serializable {
     @Inject
     private Navigator navigator;
     
-    @Inject
-    private UserBean userBean;
+    
+    private User currentUser;
     
     @Inject
     ItemBean itemBean;
@@ -66,8 +69,13 @@ public class MaterialOverviewBean implements Serializable {
         
     }
     
+     public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+       
+    }
+    
     public List<Material> getReadableMaterials() {
-        return materialService.getReadableMaterials();
+        return materialService.getReadableMaterials(currentUser,new HashMap<>(),0,10);
     }
     
     public boolean isDetailSubComponentVisisble(String type, Material mat) {
@@ -97,7 +105,7 @@ public class MaterialOverviewBean implements Serializable {
     public void actionDeactivateMaterial(Material m) {
         materialService.deactivateMaterial(
                 m.getId(),
-                userBean.getCurrentAccount());
+                currentUser);
     }
     
     public void actionCreateNewItem(Material m) {
