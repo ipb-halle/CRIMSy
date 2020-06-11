@@ -27,10 +27,12 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
-        <ui:repeat value="#{experimentBean.expRecords}" var="rec">
+        <b:dataTable value="#{experimentBean.expRecords}" var="rec">
+            <b:dataTableColumn>
             <div title="#{rec.expRecordDetails}">#{rec.expRecordInfo}
 
                 <p:commandLink title="Action" 
+                    update="@none"
                     rendered="#{! rec.edit}"
                     onclick="PF('dlg_#{rec.expRecordId}').show();"><span class="fa fa-cog"> </span></p:commandLink>
                 <p:dialog header="Record Actions" widgetVar="dlg_#{rec.expRecordId}" modal="true" height="100">
@@ -41,14 +43,14 @@
                                 <f:selectItem itemLabel="Text" itemValue="TEXT" />
                                 <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
                                 <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(rec.expRecordId)}" 
-                                    oncomplete="PF('dlg_#{rec.expRecordId}').hide();" update="@form" />
+                                    oncomplete="PF('dlg_#{rec.expRecordId}').hide();" update="@all" />
                             </p:selectOneMenu>
                         </div>
                         <div class="ui-g-12">
                             <p:commandButton value="Edit ..." 
                                     action="#{experimentBean.actionEditRecord(rec.expRecordId)}" 
                                     onclick="PF('dlg_#{rec.expRecordId}').hide();" 
-                                    update="@form" />
+                                    update="@all" />
                         </div>
                     </div>
                 </p:dialog> 
@@ -71,10 +73,11 @@
             </ui:fragment>
 
             <ui:fragment rendered="#{rec.edit}">
-                <p:commandButton value="Cancel" action="#{experimentBean.expRecordController.actionCancel}" update="@form" />
-                <p:commandButton value="Save Record" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@form" />
+                <p:commandButton value="Cancel" action="#{experimentBean.expRecordController.actionCancel}" update="@all" />
+                <p:commandButton value="Save Record" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@all" />
             </ui:fragment>
 
-        </ui:repeat>
+            </b:dataTableColumn>
+        </b:dataTable>
     </ui:composition>
 </html>
