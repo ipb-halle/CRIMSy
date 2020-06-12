@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.bean;
+package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.forum.HTMLInputFilter;
 import javax.faces.component.UIComponent;
