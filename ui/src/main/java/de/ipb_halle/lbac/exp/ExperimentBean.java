@@ -127,10 +127,21 @@ public class ExperimentBean implements Serializable {
     }
 
     /**
-     *
+     * cancel everything and reset this bean to 
+     * clean state. This is especially important 
+     * when changing from Template to Experiment mode.
      */
     public void actionCancel() {
+        if (this.expRecordController != null) {
+            this.expRecordController.actionCancel();
+        }
+        experimentBeanInit();
+    }
 
+    /**
+     * make an experiment from the current template
+     */
+    public void actionCopyTemplate() {
     }
 
     /**
@@ -148,6 +159,9 @@ public class ExperimentBean implements Serializable {
         }
     }
 
+    /**
+     * creates a new Experiment or a new template
+     */
     public void actionNewExperiment() {
         experimentBeanInit();
     }

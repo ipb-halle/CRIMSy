@@ -61,7 +61,7 @@
                                             <f:selectItem itemLabel="Append record ..." itemValue="" />
                                             <f:selectItem itemLabel="Text" itemValue="TEXT" />
                                             <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
-                                            <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(0)}" update="@form" />
+                                            <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(0)}" update="@all" />
                                         </p:selectOneMenu>
                                     </b:row>
                                 </b:container>

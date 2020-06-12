@@ -50,6 +50,7 @@
                     <div class="ui-g-12">
                         <p:commandButton value="Save" 
                             action="#{experimentBean.actionSaveExperiment}" 
+                            update="@all"
                             onclick="PF('dlg_experimentData').hide();" />
                     </div>
                 </div> 
@@ -57,6 +58,8 @@
 
             </p:dialog>
         </div>
-        <p:inputSwitch value="#{experimentBean.templateMode}" onLabel="Template" offLabel="Experiment" />
+        <p:inputSwitch value="#{experimentBean.templateMode}" onLabel="Template" offLabel="Experiment" >
+            <p:ajax event="change" listener="#{experimentBean.actionCancel}" update="@all" />
+        </p:inputSwitch>
     </ui:composition>
 </html>
