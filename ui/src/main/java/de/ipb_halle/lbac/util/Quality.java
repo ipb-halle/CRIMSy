@@ -25,14 +25,24 @@ package de.ipb_halle.lbac.util;
  * @author fbroda
  */
 public enum Quality {
-    PIECES,
-    LENGTH,
-    AREA,
-    VOLUME,
-    MASS,
-    DENSITY,
-    AMOUNT_OF_SUBSTANCE,
-    MOLAR_MASS,
-    MOLAR_CONCENTRATION,
-    PERCENT_CONCENTRATION
+    PIECES("ea"),
+    LENGTH("m"),
+    AREA("m^2"),
+    VOLUME("m^3"),
+    MASS("kg"),
+    DENSITY("kg/m^3"),
+    AMOUNT_OF_SUBSTANCE("mol"),
+    MOLAR_MASS("g/mol"),
+    MOLAR_CONCENTRATION("M"),
+    PERCENT_CONCENTRATION("[1]");
+
+    private String baseUnit;
+
+    private Quality(String baseUnit) {
+        this.baseUnit = baseUnit;
+    }
+
+    public Unit getBaseUnit() {
+        return Unit.getUnit(this.baseUnit);
+    }
 }

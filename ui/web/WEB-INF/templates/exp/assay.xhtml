@@ -43,7 +43,10 @@
             <tr>
                 <th class="assayTableCell">Material</th>
                 <th class="assayTableCell">Item</th>
-                <th class="assayTableCell">Value</th>
+                <th class="assayTableCell">
+                    <p:commandLink update="@none" process="@none" onclick="PF('dlg_BarChart').show();">
+                        <span class="fa fa-search"> Value</span>
+                    </p:commandLink></th>
                 <th class="assayTableCell">Unit</th>
                 <th class="assayTableCell"> </th>
             </tr>

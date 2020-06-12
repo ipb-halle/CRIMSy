@@ -87,7 +87,7 @@ public class Unit {
         addUnit(new Unit(Quality.MOLAR_CONCENTRATION, "nM", 1.0e-9));
         addUnit(new Unit(Quality.MOLAR_CONCENTRATION, "pM", 1.0e-12));
 
-        addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "1", 1.0));
+        addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "[1]", 1.0));
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "%", 1.0e-2));
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "ppm", 1.0e-6));
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "ppb", 1.0e-9));

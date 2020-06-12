@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.util.Unit;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,10 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
 
 /**
  * Assays provide information about effects which can be induced in a 
@@ -83,7 +88,7 @@ public class Assay extends ExpRecord implements DTO {
         super();
         setType(ExpRecordType.ASSAY);
         this.remarks = "";
-        this.units = "mM, , nM";
+        this.units = "mM, µM, nM";
         this.records = new ArrayList<AssayRecord> ();
         this.outcomeType = AssayOutcomeType.SINGLE_POINT;
     }
@@ -107,6 +112,76 @@ public class Assay extends ExpRecord implements DTO {
             .setRemarks(this.remarks)
             .setTargetId(this.target.getId())
             .setUnits(this.units);
+    }
+
+    public BarChartModel computeSinglePointBarChart() {
+        double min = 0.0;
+        double max = 0.0;
+        double logMin = 1000.0;
+        double logMax = -1000.0;
+        List<Double> values = new ArrayList<Double> ();
+        List<Double> logValues = new ArrayList<Double> ();
+
+        for (AssayRecord r : this.records) {
+            double v = ((SinglePointOutcome) r.getOutcome()).getValue();
+            Unit u = Unit.getUnit(((SinglePointOutcome) r.getOutcome()).getUnit());
+            v *= u.getFactor();
+
+            min = Double.min(min, v);
+            max = Double.max(max, v);
+            values.add(Double.valueOf(v));
+
+            v = (v > 0.0) ? Math.log10(v) : 0.0;
+            logMin = Double.min(logMin, v);
+            logMax = Double.max(logMax, v);
+            logValues.add(Double.valueOf(v));
+
+        }
+
+        String axisLabel = "Linear";
+        double faktor = 1.0;
+        if ((logMax - logMin) > 2.2) {
+            values = logValues;
+            min = logMin;
+            max = logMax;
+            axisLabel = "Log10";
+            if ((min < -1) && (max < 1)) {
+                faktor = -1.0;
+                double x = min * faktor;
+                min = max * faktor;
+                max = x;
+                axisLabel = "Neg. Log10";
+            }
+        }
+
+        int i = 1;
+        BarChartModel model = new BarChartModel();
+        ChartSeries data = new ChartSeries();
+        data.setLabel("Activity");
+        for (Double d : values) {
+            data.set(Integer.toString(i++), Double.valueOf(faktor * d.doubleValue()));
+        }
+ 
+        model.setTitle("Assay");
+        model.setLegendPosition("ne");
+ 
+        Axis xAxis = model.getAxis(AxisType.X);
+        xAxis.setLabel("Sample");
+ 
+        Axis yAxis = model.getAxis(AxisType.Y);
+        yAxis.setLabel(axisLabel);
+        yAxis.setMin(min * 1.1);
+        yAxis.setMax(max * 1.1);
+
+        model.addSeries(data);
+        return model;
+    }
+
+    public BarChartModel getBarChart() {
+        switch (this.outcomeType) {
+            case SINGLE_POINT : return computeSinglePointBarChart();
+        }
+        return null;
     }
 
     public AssayOutcomeType getOutcomeType() {

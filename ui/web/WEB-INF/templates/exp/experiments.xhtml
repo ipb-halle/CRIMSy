@@ -81,6 +81,13 @@
                 </ui:include>
             </ui:insert>
 
+
+            <ui:insert name="barChartPanel">
+                <ui:include src="barChart.xhtml" >
+                    <ui:param name="chartController" value="#{experimentBean.expRecordController}" />
+                </ui:include>
+            </ui:insert>
+
         </h:form>
     </h:body>
 
