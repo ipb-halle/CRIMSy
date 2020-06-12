@@ -22,10 +22,40 @@
     width: 100% !important;
 }
 
-.searchFilterHeader{
+.materialFilterRow div{
+    margin-bottom: 3px !important;
+
+}
+
+.materialFilterInputfield{
+    width:165px  !important;
+    height: 30px !important;
+}
+
+.materialFilterInputfield input{
+    width:165px  !important;
+    height: 30px !important;
+}
+
+
+.materialFilterHeader{
     margin: 25px;
     font-size: 19px;
     font-weight: bold;
+}
+
+.materialFilterButton {
+    width: 80px !important;
+    height: 35px !important;
+    margin-left: 10px !important;
+}
+.materialFilterButtonColumn {
+    margin-top: 15px;
+    padding-left: 5px !important;   
+}
+
+.materialFilterButtonRight{
+    left: -13px !important;
 }
 
 

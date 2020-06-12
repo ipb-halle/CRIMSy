@@ -25,15 +25,18 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:body>
-        <b:form 
-            id="materialForm">
-            <b:container
-                styleClass="materialOverviewTableContainer">
-                <b:row>
-                    <b:column span="2">
-                        Placeholder for search mask
-                    </b:column>
-                    <b:column span="10">
+
+        <b:container
+            styleClass="materialOverviewTableContainer">
+            <b:row>
+                <b:column span="2">
+                    <ui:insert> 
+                        <ui:include src="materialSearchMask.xhtml"/>
+                    </ui:insert>
+                </b:column>
+                <b:column span="10">
+                    <b:form 
+                        id="materialForm">
                         <b:container>
                             <b:row>
                                 <b:column span="1">
@@ -119,15 +122,16 @@
                                                  />
                             </b:dataTableColumn>
                         </b:dataTable>
-                    </b:column>
-                </b:row>
+                    </b:form>
+                </b:column>
+            </b:row>
 
 
-            </b:container>
+        </b:container>
 
 
 
-        </b:form>
+
     </h:body>
 
 </html>

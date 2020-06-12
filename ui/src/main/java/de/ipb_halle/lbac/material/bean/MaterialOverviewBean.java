@@ -45,72 +45,86 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class MaterialOverviewBean implements Serializable {
-    
+
     private List<Material> materials = new ArrayList<>();
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+    private MaterialTableController tableController;
+
     @Inject
     private MaterialBean materialEditBean;
-    
+
     @Inject
     private MaterialService materialService;
-    
+
     @Inject
     private Navigator navigator;
-    
-    
+
     private User currentUser;
-    
+
+    private MaterialSearchMaskController searchController;
+
     @Inject
     ItemBean itemBean;
-    
+
     @PostConstruct
     public void init() {
-        
+        tableController = new MaterialTableController(materialService);
+        this.searchController = new MaterialSearchMaskController(this, tableController, new HashMap<>(), materialService);
+
     }
-    
-     public void setCurrentAccount(@Observes LoginEvent evt) {
+
+    public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
-       
+        tableController.reloadShownMaterial(currentUser, new HashMap<>());
+
     }
-    
+
     public List<Material> getReadableMaterials() {
-        return materialService.getReadableMaterials(currentUser,new HashMap<>(),0,10);
+        return tableController.getShownMaterials();
+
     }
-    
+
     public boolean isDetailSubComponentVisisble(String type, Material mat) {
         return MaterialType.valueOf(type) == mat.getType();
     }
-    
+
     public boolean isNotAllowed(Material m, String action) {
         return false;
     }
-    
+
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
         navigator.navigate("material/materialsEdit");
     }
-    
+
     public void actionEditMaterial(Material m) {
         try {
             m.setHistory(materialService.loadHistoryOfMaterial(m.getId()));
-            
+
             materialEditBean.startMaterialEdit(m);
         } catch (Exception e) {
             logger.error(e);
         }
         navigator.navigate("material/materialsEdit");
     }
-    
+
     public void actionDeactivateMaterial(Material m) {
         materialService.deactivateMaterial(
                 m.getId(),
                 currentUser);
     }
-    
+
     public void actionCreateNewItem(Material m) {
         itemBean.actionStartItemCreation(m);
         navigator.navigate("item/itemEdit");
     }
-    
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public MaterialSearchMaskController getSearchController() {
+        return searchController;
+    }
+
 }

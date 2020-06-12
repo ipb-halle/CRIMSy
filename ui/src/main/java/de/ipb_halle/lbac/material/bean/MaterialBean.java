@@ -147,7 +147,7 @@ public class MaterialBean implements Serializable {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
-
+        
     }
 
     public void startMaterialCreation() {
