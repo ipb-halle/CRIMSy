@@ -187,14 +187,14 @@ limitations under the License.
                             rendered="#{containerOverviewBean.isFirstButtonVisible()}"
                             value="#{msgs.container_button_cancel}"
                             ajax="true"
-                            update="@(.containerEdit) @(.containerTopRow)"
+                            update="@(.containerEdit) @(.containerTopRow) topLevelRowForm editForm"
                             />
 
                         <b:commandButton
                             onclick="ajax:containerOverviewBean.actionSaveNewContainer();"
                             value="#{containerOverviewBean.getSecondButtonLabel()}"
                             ajax="true"
-                            update="growlMsg @(.containerOverviewContainer)"
+                            update="growlMsg @(.containerOverviewContainer) topLevelRowForm editForm"
                             />
                     </b:row>
                 </p:panel>

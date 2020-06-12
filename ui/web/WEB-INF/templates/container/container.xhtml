@@ -28,13 +28,13 @@ limitations under the License.
                     styleClass="containerTopRow">
                     <b:column span="1" offset="11"
                               >
-                        <b:form>
+                        <b:form id="topLevelRowForm">
                             <b:commandButton
                                 disabled ="#{!containerOverviewBean.isSecondButtonVisible()}"
-                                onclick="alert('Vor');ajax:containerOverviewBean.actionSecondButtonClick();"
+                                onclick="ajax:containerOverviewBean.actionSecondButtonClick();"
                                 value="#{containerOverviewBean.getSecondButtonLabel()}"
                                 ajax="true"
-                                update="@(.containerEdit) @(.containerTopRow)"
+                                update="@(.containerEdit) @(.containerTopRow) topLevelRowForm editForm"
                                 />
                         </b:form>
                     </b:column>
