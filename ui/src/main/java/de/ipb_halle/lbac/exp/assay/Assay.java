@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
+import de.ipb_halle.lbac.material.Material;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,11 +34,14 @@ import org.apache.logging.log4j.Logger;
 /**
  * Assays provide information about effects which can be induced in a 
  * certain target by e.g. compounds. The target and the whole test 
- * system is specified by a standard operation procedure (SOP). An  
- * assay stores a collection of tripels (<code>Material, SOP, outcome</code>).
+ * system is specified by a standard operation procedure (which is 
+ * stored in the experiment template). Assay stores a the target,
+ * additional conditions and remarks, acceptable units etc. and a 
+ * collection of tupels <code>material, outcome</code>).
  * 
  * The outcome will be diverse (boolean, single numbers, numbers with error, 
- * (multi-dimensional) arrays).
+ * (multi-dimensional) arrays). In a first stage, only single point
+ * results (numbers) will be implemented.
  *
  * @author fbroda
  */
@@ -45,7 +49,20 @@ public class Assay extends ExpRecord implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private SOP                 sop;
+    /**
+     * remarks and conditions
+     */
+    private String remarks;
+
+    /*
+     * the target material (an enzyme, organ, organism etc.)
+     */
+    private Material target;
+
+    /**
+     * comma separated list of acceptable units
+     */
+    private String units;
 
     /**
      * outcometype limits the type of outcome this assay object accepts.
@@ -54,29 +71,42 @@ public class Assay extends ExpRecord implements DTO {
      */
     private AssayOutcomeType    outcomeType;
 
+    /**
+     * the tupels (material, outcome)
+     */
     private List<AssayRecord>   records;
 
     /**
      * default constructor
      */
     public Assay() {
-        this(null);
-    }
-
-    public Assay(AssayEntity entity) {
         super();
         setType(ExpRecordType.ASSAY);
+        this.remarks = "";
+        this.units = "mM, , nM";
+        this.records = new ArrayList<AssayRecord> ();
+        this.outcomeType = AssayOutcomeType.SINGLE_POINT;
+    }
+
+    public Assay(AssayEntity entity, Material target) {
+        super();
+        setType(ExpRecordType.ASSAY);
+        this.remarks = entity.getRemarks();
+        this.target = target;
+        this.units = entity.getUnits();
         this.records = new ArrayList<AssayRecord> ();
         if (entity != null) {
             this.outcomeType = entity.getOutcomeType();
-        }
+        } 
     }
 
     public AssayEntity createEntity() {
         return new AssayEntity()
             .setExpRecordId(getExpRecordId())
             .setOutcomeType(this.outcomeType)
-            .setSopId(this.sop.getSopId());
+            .setRemarks(this.remarks)
+            .setTargetId(this.target.getId())
+            .setUnits(this.units);
     }
 
     public AssayOutcomeType getOutcomeType() {
@@ -87,8 +117,16 @@ public class Assay extends ExpRecord implements DTO {
         return this.records;
     }
 
-    public SOP getSOP() {
-        return this.sop;
+    public String getRemarks() {
+        return this.remarks;
+    }
+
+    public Material getTarget() {
+        return this.target;
+    }
+
+    public String getUnits() {
+        return this.units;
     }
 
     public void setOutcomeType(AssayOutcomeType outcomeType) {
@@ -100,8 +138,15 @@ public class Assay extends ExpRecord implements DTO {
         return this;
     }
 
-    public Assay setSOP(SOP sop) {
-        this.sop = sop;
-        return this;
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public void setTarget(Material target) {
+        this.target = target;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
     }
 }

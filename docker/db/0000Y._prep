@@ -36,6 +36,7 @@ CREATE TABLE experiments (
     experimentid    SERIAL NOT NULL PRIMARY KEY,
     code            VARCHAR,
     description     VARCHAR,
+    template        BOOLEAN NOT NULL DEFAULT FALSE,
     usergroups      UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     ownerid         UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -81,7 +82,9 @@ CREATE TABLE exp_assay_records (
 CREATE TABLE exp_assays (
     exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     outcometype     INTEGER NOT NULL,
-    sopid           INTEGER NOT NULL REFERENCES exp_sops(sopid) ON UPDATE CASCADE ON DELETE CASCADE
+    remarks         VARCHAR,
+    targetid        INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE SET NULL,
+    units           VARCHAR
 );
 
 /* ToDo: xxxxx create fulltext index on exp_texts! */

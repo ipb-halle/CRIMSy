@@ -55,6 +55,13 @@ public class Experiment implements DTO {
      */
     private String description;
 
+    /**
+     * template flag
+     * templates hold no experiment data but can be cloned (copied)
+     * to save users from repetitions
+     */
+    private boolean template;
+
     protected int projectId;
     protected ACList acList;
     protected User owner;
@@ -74,12 +81,14 @@ public class Experiment implements DTO {
             Integer experimentid,
             String code,
             String description,
+            boolean template,
             ACList acList,
             User owner,
             Date creationTime) {
         this.experimentid = experimentid;
         this.code = code;
         this.description = description;
+        this.template = template;
         this.acList = acList;
         this.owner = owner;
         this.creationTime = creationTime;
@@ -98,6 +107,7 @@ public class Experiment implements DTO {
         this.experimentid = e.getExperimentId();
         this.code = e.getCode();
         this.description = e.getDescription();
+        this.template = e.getTemplate();
         this.acList = acList;
         this.owner = owner;
 
@@ -109,6 +119,7 @@ public class Experiment implements DTO {
                 .setExperimentId(this.experimentid)
                 .setCode(this.code)
                 .setDescription(this.description)
+                .setTemplate(this.template)
                 .setACListId(this.acList.getId())
                 .setOwnerId(this.owner.getId());
     }
@@ -123,6 +134,10 @@ public class Experiment implements DTO {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public boolean getTemplate() {
+        return this.template;
     }
 
     public Integer getExperimentId() {
@@ -151,5 +166,9 @@ public class Experiment implements DTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setTemplate(boolean template) {
+        this.template = template;
     }
 }

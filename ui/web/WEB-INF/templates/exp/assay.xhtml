@@ -27,7 +27,17 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
-        <div>Assay<br/>SOP: #{expAssayRecord.SOP.sopId} #{expAssayRecord.SOP.description}<br/> 
+        <div>Assay<br/>
+        <h:panelGrid columns="1">
+            <p:inputText label="Remarks" value="#{expAssayRecord.remarks}" />
+            <p:inputText label="Units" value="#{expAssayRecord.units}" rendered="#{expAssayRecord.experiment.template}"/>
+            <h:outputText value="Units: #{expAssayRecord.units}" rendered="#{! expAssayRecord.experiment.template}"/>
+            <ui:insert name="targetPanel">
+                <ui:include src="materialView.xhtml">
+                    <ui:param name="material" value="#{expAssayRecord.target}" />
+                </ui:include>
+            </ui:insert>
+        </h:panelGrid>
 
         <table>
             <tr>

@@ -39,7 +39,13 @@ public class AssayEntity implements Serializable {
     private AssayOutcomeType outcomeType;
 
     @Column
-    private Integer sopid;
+    private String remarks;
+
+    @Column
+    private Integer targetid;
+
+    @Column
+    private String units;
    
     public Long getExpRecordId() {
         return this.exprecordid;
@@ -49,8 +55,16 @@ public class AssayEntity implements Serializable {
         return this.outcomeType;
     }
 
-    public Integer getSopId() {
-        return this.sopid;
+    public String getRemarks() {
+        return this.remarks;
+    }
+
+    public Integer getTargetId() {
+        return this.targetid;
+    }
+
+    public String getUnits() {
+        return this.units;
     }
 
     public AssayEntity setExpRecordId(Long exprecordid) {
@@ -63,8 +77,18 @@ public class AssayEntity implements Serializable {
         return this;
     }
 
-    public AssayEntity setSopId(Integer sopid) {
-        this.sopid = sopid;
+    public AssayEntity setRemarks(String remarks) {
+        this.remarks = remarks;
+        return this;
+    }
+
+    public AssayEntity setTargetId(Integer targetid) {
+        this.targetid = targetid;
+        return this;
+    }
+
+    public AssayEntity setUnits(String units) {
+        this.units = units;
         return this;
     }
 }

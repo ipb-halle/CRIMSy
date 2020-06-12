@@ -28,13 +28,16 @@ import de.ipb_halle.lbac.service.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -47,6 +50,13 @@ import org.apache.logging.log4j.LogManager;
 public class ExperimentService implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public final static String TEMPLATE_FLAG = "TEMPLATE_FLAG";
+
+    private final static String SQL_LOAD = "SELECT e.experimentid, e.code, e.description, "
+        + "e.template, e.usergroups, e.ownerid FROM experiments AS e "
+        + "WHERE (e.template = :TEMPLATE_FLAG OR :TEMPLATE_FLAG IS NULL) "
+        + "ORDER BY e.code";
 
     @Inject
     private ACListService aclistService;
@@ -70,18 +80,35 @@ public class ExperimentService implements Serializable {
         }
     }
 
+   /**
+     * build
+     */
+    public Query createExperimentQuery(String rawSql, Map<String, Object> cmap, Class targetClass) {
+        Query q;
+        if (targetClass == null) {
+            q = this.em.createNativeQuery(rawSql);
+        } else {
+            q = this.em.createNativeQuery(rawSql, targetClass);
+        }
+
+        return q.setParameter(TEMPLATE_FLAG, cmap.getOrDefault(TEMPLATE_FLAG, null)); 
+    }
+
     /**
-     * @return the the complete list of experiments
+     * @param cmap map of query criteria
+     * @return the list of experiments
      */
     @SuppressWarnings("unchecked")
-    public List<Experiment> load() {
-
-        CriteriaBuilder builder = this.em.getCriteriaBuilder();
-        CriteriaQuery<ExperimentEntity> criteriaQuery = builder.createQuery(ExperimentEntity.class);
-        Root<ExperimentEntity> experimentRoot = criteriaQuery.from(ExperimentEntity.class);
-        criteriaQuery.select(experimentRoot);
+    public List<Experiment> load(Map<String, Object> cmap) {
         List<Experiment> result = new ArrayList<>();
-        for (ExperimentEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
+        Query q = createExperimentQuery(SQL_LOAD,
+                (cmap == null) ? new HashMap<String, Object> () : cmap,
+                ExperimentEntity.class);
+        // q.setParameter("USERID", xxxxx);
+        // q.setFirstResult();
+        // q.setMaxResults();
+
+        for (ExperimentEntity e : (List<ExperimentEntity>) q.getResultList()) {
             result.add(new Experiment(
                     e,
                     aclistService.loadById(e.getACListId()),

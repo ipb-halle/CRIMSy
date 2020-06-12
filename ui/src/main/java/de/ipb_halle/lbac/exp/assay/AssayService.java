@@ -55,9 +55,6 @@ public class AssayService implements Serializable {
     private EntityManager em;
 
     @Inject
-    private SOPService sopService;
-
-    @Inject
     private ItemService itemService;
 
     @Inject
@@ -80,15 +77,15 @@ public class AssayService implements Serializable {
         List<AssayRecord> result = new ArrayList<AssayRecord> ();
         for(AssayRecordEntity e :  this.em.createQuery(criteriaQuery).getResultList()) {
 
-            Material mat = null;
+            Material material = null;
             Item item = null;
             if (e.getMaterialId() != null) {
-                mat = this.materialService.loadMaterialById(e.getMaterialId()); 
+                material = this.materialService.loadMaterialById(e.getMaterialId()); 
             }
             if (e.getItemId() != null) {
                 item = this.itemService.loadItemById(e.getItemId());
             }
-            result.add(new AssayRecord(e, assay,  mat, item)); 
+            result.add(new AssayRecord(e, assay,  material, item)); 
         }
         return result;
     }
@@ -101,12 +98,15 @@ public class AssayService implements Serializable {
      */
     public Assay loadAssayById(Experiment experiment, ExpRecordEntity expRecordEntity) {
         AssayEntity e = this.em.find(AssayEntity.class, expRecordEntity.getExpRecordId());
-        Assay assay = new Assay(e);
+        Material material = null;
+        if ( e.getTargetId() != null) {
+            material = materialService.loadMaterialById(e.getTargetId());
+        }
+        Assay assay = new Assay(e, material);
         assay.setExperiment(experiment);
         assay.setExpRecordEntity(expRecordEntity);
 
-        return assay.setSOP(sopService.loadById(e.getSopId()))
-                        .setRecords(loadAssayRecords(assay));
+        return assay.setRecords(loadAssayRecords(assay));
     }
 
     /**
@@ -118,7 +118,6 @@ public class AssayService implements Serializable {
     public Assay saveAssay(ExpRecord rec) {
         Assay assay = (Assay) rec;
         AssayEntity e = this.em.merge(assay.createEntity());
-        assay.setSOP(sopService.save(assay.getSOP()));
         assay.setRecords(saveAssayRecords(assay));
         return assay;
     }

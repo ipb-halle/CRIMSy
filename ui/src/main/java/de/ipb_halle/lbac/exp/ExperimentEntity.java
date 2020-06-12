@@ -56,6 +56,9 @@ public class ExperimentEntity implements Serializable {
     @Column
     private UUID usergroups;
 
+    @Column
+    private boolean template;
+
     public String getCode() {
         return this.code;
     }
@@ -74,6 +77,10 @@ public class ExperimentEntity implements Serializable {
 
     public UUID getACListId() {
         return usergroups;
+    }
+
+    public boolean getTemplate() {
+        return this.template;
     }
 
     public ExperimentEntity setCode(String code) {
@@ -101,4 +108,8 @@ public class ExperimentEntity implements Serializable {
         return this;
     }
 
+    public ExperimentEntity setTemplate(boolean template) {
+        this.template = template;
+        return this;
+    }
 }

@@ -64,6 +64,8 @@ public class ExperimentBean implements Serializable {
 
     private String newRecordType;
 
+    private boolean templateMode = false;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
 
@@ -79,6 +81,7 @@ public class ExperimentBean implements Serializable {
             null,                                               // experiment id
             "code",                                             // code
             "description",                                      // description
+            templateMode,                                       // template or experiment
             this.globalAdmissionContext.getPublicReadACL(),     // aclist
             this.globalAdmissionContext.getPublicAccount(),     // owner
             new Date()                                          // creation time
@@ -211,8 +214,10 @@ public class ExperimentBean implements Serializable {
     }
 
     public List<Experiment> getExperiments() {
-        // xxxxx restrict search
-        return experimentService.load();
+        Map<String, Object> cmap = new HashMap<String, Object> ();
+        cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
+
+        return experimentService.load(cmap);
     }
 
     public ExpRecordController getExpRecordController() {
@@ -246,6 +251,10 @@ public class ExperimentBean implements Serializable {
         return "";
     }
 
+    public boolean getTemplateMode() {
+        return this.templateMode;
+    }
+
     /**
      * load a specific record by id
      * e.g. for canceling edits
@@ -262,6 +271,7 @@ public class ExperimentBean implements Serializable {
         if ((this.experiment != null) && (this.experiment.getExperimentId() != null)) {
             cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
         }
+        cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
         this.expRecords = this.expRecordService.orderList(
                 this.expRecordService.load(cmap));
     }
@@ -291,5 +301,9 @@ public class ExperimentBean implements Serializable {
 
     public void setNewRecordType(String newRecordType) {
         this.newRecordType = newRecordType;
+    }
+
+    public void setTemplateMode(boolean templateMode) {
+        this.templateMode = templateMode;
     }
 }

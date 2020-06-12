@@ -28,32 +28,35 @@
 
 
     <ui:composition>
+        <div>
+            <p:commandButton type="button" 
+                        value="#{experimentBean.getExperiment().experimentId == null ? 'New ...' : 'Edit ...'}"
+                        class="experimentActionButton"
+                        onclick="PF('dlg_experimentData').show();" />
+            <p:dialog header="#{experimentBean.getExperiment().experimentId == null ? 'New Experiment' : 'Edit Experiment'}" 
+                              widgetVar="dlg_experimentData" modal="true" height="300">
 
-          <p:commandButton type="button" 
-                    value="#{experimentBean.getExperiment().experimentId == null ? 'New ...' : 'Edit ...'}"
-                    class="experimentActionButton"
-                    onclick="PF('dlg_experimentData').show();" />
-          <p:dialog header="#{experimentBean.getExperiment().experimentId == null ? 'New Experiment' : 'Edit Experiment'}" 
-                          widgetVar="dlg_experimentData" modal="true" height="300">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <p:inputText label="Code" value="#{experimentBean.getExperiment().code}" />
+                    </div>
+                    <div class="ui-g-12">
+                        <p:inputText label="Description" value="#{experimentBean.getExperiment().description}"/>
+                    </div>
+                    <div class="ui-g-12">
+                        <p:inputText label="Project" value="not implemented" />
+                    </div>
 
-            <div class="ui-g">
-                <div class="ui-g-12">
-                    <p:inputText label="Code" value="#{experimentBean.getExperiment().code}" />
-                </div>
-                <div class="ui-g-12">
-                    <p:inputText label="Description" value="#{experimentBean.getExperiment().description}"/>
-                </div>
-                <div class="ui-g-12">
-                    <p:inputText label="Project" value="not implemented" />
-                </div>
+                    <div class="ui-g-12">
+                        <p:commandButton value="Save" 
+                            action="#{experimentBean.actionSaveExperiment}" 
+                            onclick="PF('dlg_experimentData').hide();" />
+                    </div>
+                </div> 
 
-                <div class="ui-g-12">
-                    <p:commandButton value="Save" 
-                        action="#{experimentBean.actionSaveExperiment}" 
-                        onclick="PF('dlg_experimentData').hide();" />
-                </div>
-            </div> 
 
-        </p:dialog>
+            </p:dialog>
+        </div>
+        <p:inputSwitch value="#{experimentBean.templateMode}" onLabel="Template" offLabel="Experiment" />
     </ui:composition>
 </html>
