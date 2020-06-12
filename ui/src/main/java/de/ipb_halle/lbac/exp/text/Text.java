@@ -17,6 +17,10 @@
  */
 package de.ipb_halle.lbac.exp.text;
 
+import de.ipb_halle.lbac.exp.assay.AssayRecord;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
@@ -42,6 +46,14 @@ public class Text extends ExpRecord implements DTO {
         super();
         setType(ExpRecordType.TEXT);
     }
+
+
+    public List<AssayRecord> getRecords() {
+        this.logger.info("TextController().getRecords(index=={})", this.getIndex());
+        return new ArrayList<AssayRecord> ();
+    }
+
+
 
     public TextEntity createEntity() {
         return new TextEntity()

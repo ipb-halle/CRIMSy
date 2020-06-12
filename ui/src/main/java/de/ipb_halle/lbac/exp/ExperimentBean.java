@@ -72,6 +72,7 @@ public class ExperimentBean implements Serializable {
         /*
          * ToDo: create an experiment with real user and ACL
          */
+        cleanup();
         this.expRecords = new ArrayList<ExpRecord> ();
 
         this.experiment = new Experiment(
@@ -263,6 +264,18 @@ public class ExperimentBean implements Serializable {
         }
         this.expRecords = this.expRecordService.orderList(
                 this.expRecordService.load(cmap));
+    }
+
+    /**
+     * re-index all records (and clear edit flag)
+     */
+    public void reIndex() {
+        int i = 0;
+        for (ExpRecord rec : this.expRecords) {
+            rec.setEdit(false);
+            rec.setIndex(i);
+            i++;
+        }
     }
 
     /**

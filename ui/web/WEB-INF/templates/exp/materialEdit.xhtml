@@ -31,18 +31,11 @@
 -->
 
     <ui:composition>
-        <p:commandLink title="Action" 
-            update="@parent" >
-                <f:setPropertyActionListener target="#{materialAgent.materialHolder}" value="#{materialHolder}" />
-                <span class="fa fa-pencil"> </span>
-                <p:ajax oncomplete="PF('dlg_materialEdit#{dlg_materialEdit_Id}').show();" />
-        </p:commandLink>
-
         <p:dialog header="Select Material" 
-                widgetVar="dlg_materialEdit#{dlg_materialEdit_Id}" 
+                widgetVar="dlg_materialEdit"
                 modal="true" 
                 height="300">
-            <p:panel id="materialEdit#{dlg_materialEdit_Id}">
+            <p:panel id="materialEdit">
                 <div class="ui-g">
                     Please note: this is a mock dialog! It is only possible to choose among Id==1 and Id==2.<br/>
                     <div class="ui-g-12">
@@ -53,7 +46,7 @@
                             action="#{materialAgent.actionSetMaterial}" 
                             ajax="false" >
                             <f:setPropertyActionListener target="#{materialAgent.materialHolder}" value="#{materialHolder}" />
-                            <p:ajax oncomplete="PF('dlg_materialEdit#{dlg_materialEdit_Id}').hide();" />
+                            <p:ajax oncomplete="PF('dlg_materialEdit').hide();" />
                         </p:commandButton>
                     </div>
                 </div> 

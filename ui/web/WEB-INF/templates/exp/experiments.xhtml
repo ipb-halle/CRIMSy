@@ -49,7 +49,9 @@
                         <b:column span="8">
                             <b:panel collapsible="false" title="experiment records">
                                 <ui:insert name="expRecords">
-                                    <ui:include src="expRecordList.xhtml"/>
+                                    <ui:include src="expRecordList.xhtml">
+                                        <ui:param name="controller" value="#{experimentBean.expRecordController}" />
+                                    </ui:include>
                                 </ui:insert>
                             </b:panel>
                             <b:panel title="Record Actions" rendered="#{experimentBean.getExperiment().experimentId != null}" >
@@ -70,6 +72,14 @@
 
                 </p:outputPanel>
             </b:panel>
+
+
+            <!-- plugin modules -->
+            <ui:insert name="matEditPanel">
+                <ui:include src="materialEdit.xhtml" >
+                    <ui:param name="materialHolder" value="#{experimentBean.expRecordController}" />
+                </ui:include>
+            </ui:insert>
 
         </h:form>
     </h:body>

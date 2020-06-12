@@ -29,43 +29,22 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public class TextController implements ExpRecordController {
+public class TextController extends ExpRecordController {
 
-    private ExperimentBean bean;
     private Text expRecord;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public TextController(ExperimentBean bean) {
-        this.bean = bean;
+        super(bean);
     }
 
-    public void actionCancel() {
-        if (this.expRecord.getExpRecordId() == null) {
-            this.bean.getExpRecords().remove(this.expRecord.getIndex());
-        } else {
-            this.bean.getExpRecords().set(
-                    this.expRecord.getIndex(), 
-                    this.bean.loadExpRecordById(this.expRecord.getExpRecordId()));
-        }
-        bean.cleanup();
-        this.logger.info("actionCancel() completed");
-    }
-
-    public void actionSaveRecord() {
-        this.expRecord = (Text) this.bean.saveExpRecord(this.expRecord);
-        this.bean.adjustOrder(this.expRecord);
-        this.expRecord.setEdit(false);
-        this.bean.cleanup();
-        this.logger.info("actionSave() completed");
+    public ExpRecord getExpRecord() {
+        return this.expRecord;
     }
 
     public ExpRecord getNewRecord() {
         this.expRecord = new Text();
         this.expRecord.setEdit(true);
-        return this.expRecord;
-    }
-
-    public ExpRecord getRecord() {
         return this.expRecord;
     }
 

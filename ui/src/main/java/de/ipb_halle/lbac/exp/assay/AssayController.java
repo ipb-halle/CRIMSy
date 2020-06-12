@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public class AssayController implements ExpRecordController, MaterialHolder {
+public class AssayController extends ExpRecordController implements MaterialHolder {
 
     private ExperimentBean bean;
     private Assay expRecord;
@@ -43,7 +43,7 @@ public class AssayController implements ExpRecordController, MaterialHolder {
      * constructor
      */
     public AssayController(ExperimentBean bean) {
-        this.bean = bean;
+        super(bean);
     }
 
     public void actionAppendAssayRecord() {
@@ -57,18 +57,6 @@ public class AssayController implements ExpRecordController, MaterialHolder {
         } catch (Exception e) {
             this.logger.info("actionAppendAssayRecord() caught an exception" , (Throwable) e); 
         }
-    }
-
-    public void actionCancel() {
-        if (this.expRecord.getExpRecordId() == null) {
-            this.bean.getExpRecords().remove(this.expRecord.getIndex());
-        } else {
-            this.bean.getExpRecords().set(
-                    this.expRecord.getIndex(), 
-                    this.bean.loadExpRecordById(this.expRecord.getExpRecordId()));
-        }
-        bean.cleanup();
-        this.logger.info("actionCancel() completed");
     }
 
     /**
@@ -87,15 +75,6 @@ public class AssayController implements ExpRecordController, MaterialHolder {
         }
     }
 
-    public void actionSaveRecord() {
-        this.expRecord = (Assay) this.bean.saveExpRecord(this.expRecord);
-        this.bean.adjustOrder(this.expRecord);
-        actionEditAssayRecord(-1);
-        this.expRecord.setEdit(false);
-        this.bean.cleanup();
-        this.logger.info("actionSave() completed");
-    }
-
     public AssayRecord getAssayRecord() {
         return this.assayRecord;
     }
@@ -107,13 +86,13 @@ public class AssayController implements ExpRecordController, MaterialHolder {
         return null;
     }
 
-    public ExpRecord getNewRecord() {
-        this.expRecord = new Assay();
-        this.expRecord.setEdit(true);
+    public ExpRecord getExpRecord() {
         return this.expRecord;
     }
 
-    public ExpRecord getRecord() {
+    public ExpRecord getNewRecord() {
+        this.expRecord = new Assay();
+        this.expRecord.setEdit(true);
         return this.expRecord;
     }
 
