@@ -240,9 +240,7 @@ public class MaterialService implements Serializable {
         q.setParameter("userid", u.getId());
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
         q.setParameter("ID", cmap.getOrDefault("ID", -1));
-        q.setParameter("INDEX_CAS", cmap.getOrDefault("INDEX_CAS", "no_cas_filter"));
-        q.setParameter("INDEX_GESTIS", cmap.getOrDefault("INDEX_GESTIS", "no_gestis_filter"));
-        q.setParameter("INDEX_CRS", cmap.getOrDefault("INDEX_CRS", "no_crs_filter"));
+        q.setParameter("INDEX", cmap.getOrDefault("INDEX", "no_index_filter"));
         List<MaterialEntity> ies = q.getResultList();
         List<Material> back = new ArrayList<>();
         for (MaterialEntity me : ies) {
