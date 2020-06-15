@@ -21,7 +21,8 @@ limitations under the License.
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <b:form id="materialSearchMaskForm">
             <b:container>
@@ -38,7 +39,7 @@ limitations under the License.
                                       />
                     </b:column>
                 </b:row>
-                
+
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
@@ -48,14 +49,14 @@ limitations under the License.
                                         styleClass="materialFilterInputfield"/>
                     </b:column>
                 </b:row>  
-                
+
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
                         <h:outputText value="ID"/>
                     </b:column>
                 </b:row>
-                 <b:row
+                <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
                         <b:inputText
@@ -66,11 +67,28 @@ limitations under the License.
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
+                        <h:outputText value="Nutzer"
+                                      />
+                    </b:column>
+                </b:row>
+
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <p:autoComplete value="#{materialOverviewBean.searchController.userName}"
+                                        maxResults="10"
+                                        completeMethod="#{materialOverviewBean.searchController.getSimmilarUserNames}"
+                                        styleClass="materialFilterInputfield"/>
+                    </b:column>
+                </b:row>  
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
                         <h:outputText value="Projekt"
                                       />
                     </b:column>
                 </b:row>
-                
+
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
@@ -80,24 +98,56 @@ limitations under the License.
                                         styleClass="materialFilterInputfield"/>
                     </b:column>
                 </b:row>  
-                
+
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
-                        <h:outputText value="GESTIS"/>
+                        <h:outputText value="Index (GESTIS,CAS,...)"/>
                     </b:column>
                 </b:row>
-                 <b:row
+                <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
                         <b:inputText
-                            value="#{materialOverviewBean.searchController.gestisNumber}"
+                            value="#{materialOverviewBean.searchController.index}"
                             styleClass="materialFilterInputfield"/>
                     </b:column>
                 </b:row>
-                
-                
-                
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="MaterialTyp"
+                                      />
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column>
+                        <b:selectOneMenu
+                            styleClass="materialFilterInputfield"
+                            value="#{materialOverviewBean.searchController.materialType}"
+                            >
+                            <f:selectItem
+                                noSelectionOption="true"
+                                itemValue=""
+                                itemLabel="#{materialOverviewBean.searchController.getLocalizedMaterialTypeName(null)}"
+                                >
+                                
+                            </f:selectItem>
+                            <f:selectItems
+                                value="#{materialOverviewBean.searchController.materialTypes}"
+                                var="mt"
+                                itemValue="#{mt}"
+                                itemLabel="#{materialOverviewBean.searchController.getLocalizedMaterialTypeName(mt)}"
+                                />
+
+                        </b:selectOneMenu>
+
+                    </b:column>
+                </b:row>
+
+
+
                 <b:row>
                     <b:column
                         span="1" 

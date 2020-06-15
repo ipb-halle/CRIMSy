@@ -25,8 +25,10 @@ import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -65,6 +67,9 @@ public class MaterialOverviewBean implements Serializable {
     @Inject
     private ProjectService projectService;
 
+    @Inject
+    private MemberService memberService;
+
     private MaterialSearchMaskController searchController;
 
     @Inject
@@ -73,7 +78,18 @@ public class MaterialOverviewBean implements Serializable {
     @PostConstruct
     public void init() {
         tableController = new MaterialTableController(materialService);
-        this.searchController = new MaterialSearchMaskController(this, tableController, new HashMap<>(), materialService, projectService);
+        this.searchController = new MaterialSearchMaskController(
+                this,
+                tableController,
+                materialService,
+                projectService,
+                memberService,
+                Arrays.asList(
+                        MaterialType.COMPOSITION,
+                        MaterialType.BIOMATERIAL,
+                        MaterialType.CONSUMABLE,
+                        MaterialType.SEQUENCE,
+                        MaterialType.STRUCTURE));
 
     }
 

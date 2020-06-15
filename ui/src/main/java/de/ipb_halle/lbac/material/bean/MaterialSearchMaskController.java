@@ -20,10 +20,13 @@ package de.ipb_halle.lbac.material.bean;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.service.MemberService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -32,9 +35,7 @@ import java.util.Map;
 public class MaterialSearchMaskController {
 
     private String id;
-    private Map<Integer, String> indexTypes;
     private String indexTypeName;
-    private List<String> indexTypeNames;
     private boolean isIndexActive;
     private boolean isMaterialTypeActive;
     private MaterialTableController tableController;
@@ -45,29 +46,49 @@ public class MaterialSearchMaskController {
     private String userName;
     private MaterialService materialService;
     private ProjectService projectService;
-    private String gestisNumber;
+    private String index;
+    private MemberService memberService;
+    private List<MaterialType> materialTypes;
+    
+    protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public MaterialSearchMaskController(
             MaterialOverviewBean overviewBean,
             MaterialTableController tableController,
-            Map<Integer, String> indexCategories,
             MaterialService materialService,
-            ProjectService projectService) {
-        this.indexTypes = indexCategories;
-        this.indexTypeNames = new ArrayList<>(indexCategories.values());
+            ProjectService projectService,
+            MemberService memberService,
+            List<MaterialType> materialTypes) {
         this.overviewBean = overviewBean;
         this.tableController = tableController;
         this.materialService = materialService;
         this.projectService = projectService;
+        this.memberService = memberService;
+        this.materialTypes = materialTypes;
 
     }
 
-    public String getGestisNumber() {
-        return gestisNumber;
+    public List<MaterialType> getMaterialTypes() {
+        return materialTypes;
     }
 
-    public void setGestisNumber(String gestisNumber) {
-        this.gestisNumber = gestisNumber;
+    public void setMaterialTypes(List<MaterialType> materialTypes) {
+        this.materialTypes = materialTypes;
+    }
+
+    public String getLocalizedMaterialTypeName(MaterialType mt) {
+        if (mt == null) {
+            return "Alle";
+        }
+        return mt.toString();
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 
     public void actionClearSearchFilter() {
@@ -83,6 +104,8 @@ public class MaterialSearchMaskController {
         name = null;
         projectName = null;
         userName = null;
+        index = null;
+        materialType=null;
     }
 
     public void actionStartMaterialSearch() {
@@ -92,17 +115,25 @@ public class MaterialSearchMaskController {
     private Map<String, Object> generateCmap() {
         Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {
-            cmap.put("NAME", name);
+            cmap.put("NAME", "%" + name.trim() + "%");
         }
         if (id != null && !id.trim().isEmpty()) {
             cmap.put("ID", Integer.parseInt(id));
         }
         if (projectName != null && !projectName.trim().isEmpty()) {
-            cmap.put("PROJECT_NAME", projectName);
+            cmap.put("PROJECT_NAME", "%" + projectName.trim() + "%");
         }
-        if (gestisNumber != null && !gestisNumber.trim().isEmpty()) {
-            cmap.put("INDEX", 2);
+        if (index != null && !index.trim().isEmpty()) {
+            cmap.put("INDEX", "%" + index.trim() + "%");
         }
+        if (userName != null && !userName.trim().isEmpty()) {
+            cmap.put("USER", "%" + userName.trim() + "%");
+        }
+        logger.info("TYPE "+materialType);
+        if (materialType != null) {
+            cmap.put("TYPE", materialType.getId());
+        }
+        
         return cmap;
     }
 
@@ -111,7 +142,7 @@ public class MaterialSearchMaskController {
     }
 
     public List<String> getSimmilarUserNames(String pattern) {
-        return new ArrayList<>();
+        return new ArrayList<>(memberService.loadSimilarUserNames(pattern));
     }
 
     public List<String> getSimmilarProjectNames(String pattern) {
@@ -128,10 +159,6 @@ public class MaterialSearchMaskController {
 
     public String getId() {
         return id;
-    }
-
-    public List<String> getIndexTypeNames() {
-        return indexTypeNames;
     }
 
     public String getIndexTypeName() {
