@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.file.mock.TermVectorParserMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.service.MoleculeService;
-import de.ipb_halle.lbac.material.service.TaxonomyService;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;

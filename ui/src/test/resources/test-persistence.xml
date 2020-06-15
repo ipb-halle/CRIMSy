@@ -33,7 +33,11 @@
         <!--    <class>de.ipb_halle.lbac.api.ACObject</class> -->
         <class>de.ipb_halle.lbac.project.ProjectEntity</class>
         <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.biomaterial.BioMaterialEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TissueEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialHistoryEntity</class>
@@ -48,10 +52,6 @@
         <class>de.ipb_halle.lbac.material.entity.storage.StorageEntity</class>    
         <class>de.ipb_halle.lbac.material.entity.structure.StructureEntity</class>
         <class>de.ipb_halle.lbac.material.entity.structure.StructureHistEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.tissue.TissueEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerNestingEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerTypeEntity</class>

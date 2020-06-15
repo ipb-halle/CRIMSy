@@ -37,7 +37,11 @@
         <class>de.ipb_halle.lbac.exp.assay.AssayRecordEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.SOPEntity</class>
         <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.biomaterial.BioMaterialEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.TissueEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.entity.MaterialHistoryEntity</class>
@@ -52,10 +56,7 @@
         <class>de.ipb_halle.lbac.material.entity.storage.StorageEntity</class>    
         <class>de.ipb_halle.lbac.material.entity.structure.StructureEntity</class>
         <class>de.ipb_halle.lbac.material.entity.structure.StructureHistEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyLevelEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.tissue.TissueEntity</class>
+
         <class>de.ipb_halle.lbac.device.job.JobEntity</class>
         <class>de.ipb_halle.lbac.device.print.PrinterEntity</class>
         <class>de.ipb_halle.lbac.entity.ACEntryEntity</class>

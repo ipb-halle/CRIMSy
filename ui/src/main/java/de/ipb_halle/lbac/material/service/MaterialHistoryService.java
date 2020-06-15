@@ -25,13 +25,13 @@ import de.ipb_halle.lbac.material.difference.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.difference.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.difference.MaterialStructureDifference;
-import de.ipb_halle.lbac.material.difference.TaxonomyDifference;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
 import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialHistEntity;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageClassHistoryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageConditionHistoryEntity;
 import de.ipb_halle.lbac.material.entity.structure.StructureHistEntity;
-import de.ipb_halle.lbac.material.entity.taxonomy.TaxonomyHistEntity;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity;
 
 import java.util.ArrayList;
 import java.util.Date;

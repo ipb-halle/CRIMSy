@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.bean;
 
-import de.ipb_halle.lbac.material.subtype.taxonomy.TaxonomySelectionController;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.bean.manipulation.MaterialEditPermission;
 import de.ipb_halle.lbac.material.bean.manipulation.MaterialEditState;
 import de.ipb_halle.lbac.material.bean.save.MaterialCreationSaver;
@@ -37,12 +37,12 @@ import de.ipb_halle.lbac.material.subtype.structure.V2000;
 import static de.ipb_halle.lbac.material.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.service.TaxonomyService;
-import de.ipb_halle.lbac.material.service.TissueService;
-import de.ipb_halle.lbac.material.subtype.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import de.ipb_halle.lbac.material.subtype.structure.StructureInformation;
-import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;

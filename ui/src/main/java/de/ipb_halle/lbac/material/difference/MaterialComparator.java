@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.difference;
 
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.material.bean.ModificationType;
@@ -27,7 +28,7 @@ import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
-import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

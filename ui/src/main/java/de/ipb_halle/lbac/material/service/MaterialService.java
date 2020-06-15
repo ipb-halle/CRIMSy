@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.service;
 
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.difference.MaterialDifference;
 import de.ipb_halle.lbac.material.difference.MaterialComparator;
 import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
@@ -38,16 +40,16 @@ import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.entity.MaterialHistoryEntity;
 import de.ipb_halle.lbac.material.entity.MaterialHistoryId;
-import de.ipb_halle.lbac.material.entity.biomaterial.BioMaterialEntity;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageConditionStorageEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.entity.structure.StructureEntity;
-import de.ipb_halle.lbac.material.entity.tissue.TissueEntity;
-import de.ipb_halle.lbac.material.subtype.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.subtype.structure.Structure;
-import de.ipb_halle.lbac.material.subtype.taxonomy.Taxonomy;
-import de.ipb_halle.lbac.material.subtype.tissue.Tissue;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
