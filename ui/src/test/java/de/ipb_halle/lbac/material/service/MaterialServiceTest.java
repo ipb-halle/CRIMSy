@@ -527,29 +527,29 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertTrue(loadedMaterials.isEmpty());
 
         cmap.clear();
-        cmap.put("INDEX_GESTIS", "%Gestis%");
+        cmap.put("INDEX", "%Gestis%");
         loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
         Assert.assertEquals(1, loadedMaterials.size());
         Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-        cmap.put("INDEX_GESTIS", "%GestisXX%");
+        cmap.put("INDEX", "%GestisXX%");
         Assert.assertEquals(1, loadedMaterials.size());
         Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
 
         cmap.clear();
-        cmap.put("INDEX_CRS", "%crs%");
+        cmap.put("INDEX", "%crs%");
         loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
         Assert.assertEquals(1, loadedMaterials.size());
         Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-        cmap.put("INDEX_CRS", "%XX%");
+        cmap.put("INDEX", "%XX%");
         Assert.assertEquals(1, loadedMaterials.size());
         Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
 
         cmap.clear();
-        cmap.put("INDEX_CAS", "%cas%");
+        cmap.put("INDEX", "%cas%");
         loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
         Assert.assertEquals(1, loadedMaterials.size());
         Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-        cmap.put("INDEX_CAS", "%XX%");
+        cmap.put("INDEX", "%XX%");
         Assert.assertEquals(1, loadedMaterials.size());
         Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
 
@@ -615,21 +615,21 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
 
         cmap.clear();
-        cmap.put("INDEX_GESTIS", "%Gestis%");
+        cmap.put("INDEX", "%Gestis%");
         Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
-        cmap.put("INDEX_GESTIS", "%GestisXX%");
+        cmap.put("INDEX", "%GestisXX%");
         Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
 
         cmap.clear();
-        cmap.put("INDEX_CRS", "%crs%");
+        cmap.put("INDEX", "%crs%");
         Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
-        cmap.put("INDEX_CRS", "%XX%");
+        cmap.put("INDEX", "%XX%");
         Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
 
         cmap.clear();
-        cmap.put("INDEX_CAS", "%cas%");
+        cmap.put("INDEX", "%cas%");
         Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
-        cmap.put("INDEX_CAS", "%XX%");
+        cmap.put("INDEX", "%XX%");
         Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
     }
 

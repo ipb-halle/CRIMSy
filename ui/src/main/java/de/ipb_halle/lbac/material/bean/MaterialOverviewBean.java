@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +62,9 @@ public class MaterialOverviewBean implements Serializable {
 
     private User currentUser;
 
+    @Inject
+    private ProjectService projectService;
+
     private MaterialSearchMaskController searchController;
 
     @Inject
@@ -69,13 +73,14 @@ public class MaterialOverviewBean implements Serializable {
     @PostConstruct
     public void init() {
         tableController = new MaterialTableController(materialService);
-        this.searchController = new MaterialSearchMaskController(this, tableController, new HashMap<>(), materialService);
+        this.searchController = new MaterialSearchMaskController(this, tableController, new HashMap<>(), materialService, projectService);
 
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         tableController.reloadShownMaterial(currentUser, new HashMap<>());
+        searchController.clearInputFields();
 
     }
 

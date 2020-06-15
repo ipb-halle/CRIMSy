@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.bean;
 
 import de.ipb_halle.lbac.material.service.MaterialService;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
+import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,21 +44,38 @@ public class MaterialSearchMaskController {
     private String projectName;
     private String userName;
     private MaterialService materialService;
+    private ProjectService projectService;
+    private String gestisNumber;
 
     public MaterialSearchMaskController(
             MaterialOverviewBean overviewBean,
             MaterialTableController tableController,
             Map<Integer, String> indexCategories,
-            MaterialService materialService) {
+            MaterialService materialService,
+            ProjectService projectService) {
         this.indexTypes = indexCategories;
         this.indexTypeNames = new ArrayList<>(indexCategories.values());
         this.overviewBean = overviewBean;
         this.tableController = tableController;
         this.materialService = materialService;
+        this.projectService = projectService;
 
     }
 
+    public String getGestisNumber() {
+        return gestisNumber;
+    }
+
+    public void setGestisNumber(String gestisNumber) {
+        this.gestisNumber = gestisNumber;
+    }
+
     public void actionClearSearchFilter() {
+        clearInputFields();
+        tableController.reloadShownMaterial(overviewBean.getCurrentUser(), generateCmap());
+    }
+
+    public void clearInputFields() {
         id = null;
         indexTypeName = null;
         isIndexActive = false;
@@ -65,8 +83,6 @@ public class MaterialSearchMaskController {
         name = null;
         projectName = null;
         userName = null;
-        tableController.reloadShownMaterial(overviewBean.getCurrentUser(), generateCmap());
-
     }
 
     public void actionStartMaterialSearch() {
@@ -77,6 +93,15 @@ public class MaterialSearchMaskController {
         Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {
             cmap.put("NAME", name);
+        }
+        if (id != null && !id.trim().isEmpty()) {
+            cmap.put("ID", Integer.parseInt(id));
+        }
+        if (projectName != null && !projectName.trim().isEmpty()) {
+            cmap.put("PROJECT_NAME", projectName);
+        }
+        if (gestisNumber != null && !gestisNumber.trim().isEmpty()) {
+            cmap.put("INDEX", 2);
         }
         return cmap;
     }
@@ -90,7 +115,7 @@ public class MaterialSearchMaskController {
     }
 
     public List<String> getSimmilarProjectNames(String pattern) {
-        return new ArrayList<>();
+        return projectService.getSimilarProjectNames(pattern, overviewBean.getCurrentUser());
     }
 
     public boolean isIsIndexActive() {

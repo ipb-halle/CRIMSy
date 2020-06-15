@@ -93,9 +93,7 @@ public class MaterialService implements Serializable {
             + "WHERE deactivated=false "
             + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CAS)) AND mi.typeid=3) OR :INDEX_CAS='no_cas_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CRS)) AND mi.typeid=4) OR :INDEX_CRS='no_crs_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_GESTIS)) AND mi.typeid=2) OR :INDEX_GESTIS='no_gestis_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
             + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
             + "AND (m.materialid=:ID OR :ID=-1) "
             + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
@@ -110,9 +108,7 @@ public class MaterialService implements Serializable {
             + "WHERE deactivated=false "
             + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CAS)) AND mi.typeid=3) OR :INDEX_CAS='no_cas_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_CRS)) AND mi.typeid=4) OR :INDEX_CRS='no_crs_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX_GESTIS)) AND mi.typeid=2) OR :INDEX_GESTIS='no_gestis_filter') "
+            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
             + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
             + "AND (m.materialid=:ID OR :ID=-1) "
             + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
@@ -212,11 +208,6 @@ public class MaterialService implements Serializable {
         return em;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<Material> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
-        return new ArrayList<>();
-    }
-
     public int loadMaterialAmount(User u) {
         return loadMaterialAmount(u, new HashMap<>());
     }
@@ -232,9 +223,7 @@ public class MaterialService implements Serializable {
         q.setParameter("userid", u.getId());
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
         q.setParameter("ID", cmap.getOrDefault("ID", -1));
-        q.setParameter("INDEX_CAS", cmap.getOrDefault("INDEX_CAS", "no_cas_filter"));
-        q.setParameter("INDEX_GESTIS", cmap.getOrDefault("INDEX_GESTIS", "no_gestis_filter"));
-        q.setParameter("INDEX_CRS", cmap.getOrDefault("INDEX_CRS", "no_crs_filter"));
+        q.setParameter("INDEX", cmap.getOrDefault("INDEX", "no_index_filter"));
         return ((BigInteger) q.getResultList().get(0)).intValue();
 
     }

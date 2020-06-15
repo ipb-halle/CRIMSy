@@ -38,6 +38,7 @@ limitations under the License.
                                       />
                     </b:column>
                 </b:row>
+                
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
@@ -47,6 +48,56 @@ limitations under the License.
                                         styleClass="materialFilterInputfield"/>
                     </b:column>
                 </b:row>  
+                
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="ID"/>
+                    </b:column>
+                </b:row>
+                 <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <b:inputText
+                            value="#{materialOverviewBean.searchController.id}"
+                            styleClass="materialFilterInputfield"/>
+                    </b:column>
+                </b:row>
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="Projekt"
+                                      />
+                    </b:column>
+                </b:row>
+                
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <p:autoComplete value="#{materialOverviewBean.searchController.projectName}"
+                                        maxResults="10"
+                                        completeMethod="#{materialOverviewBean.searchController.getSimmilarProjectNames}"
+                                        styleClass="materialFilterInputfield"/>
+                    </b:column>
+                </b:row>  
+                
+                <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <h:outputText value="GESTIS"/>
+                    </b:column>
+                </b:row>
+                 <b:row
+                    styleClass="materialFilterRow">
+                    <b:column span="2">
+                        <b:inputText
+                            value="#{materialOverviewBean.searchController.gestisNumber}"
+                            styleClass="materialFilterInputfield"/>
+                    </b:column>
+                </b:row>
+                
+                
+                
                 <b:row>
                     <b:column
                         span="1" 
