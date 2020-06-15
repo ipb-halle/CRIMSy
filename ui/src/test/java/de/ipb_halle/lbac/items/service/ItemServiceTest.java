@@ -35,7 +35,7 @@ import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;

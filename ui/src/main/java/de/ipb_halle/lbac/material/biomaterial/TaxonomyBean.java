@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.biomaterial;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;

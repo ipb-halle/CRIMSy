@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.MemberService;

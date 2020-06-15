@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;

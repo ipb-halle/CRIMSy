@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.items.bean.history.ItemComparator;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.items.entity.ItemHistoryEntity;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.MemberService;

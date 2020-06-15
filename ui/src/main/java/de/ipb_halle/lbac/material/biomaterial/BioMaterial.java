@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.subtype.MaterialType;
+import de.ipb_halle.lbac.material.MaterialType;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

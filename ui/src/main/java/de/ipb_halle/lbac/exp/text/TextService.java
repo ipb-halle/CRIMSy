@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 
 import java.io.Serializable;
 import java.util.ArrayList;

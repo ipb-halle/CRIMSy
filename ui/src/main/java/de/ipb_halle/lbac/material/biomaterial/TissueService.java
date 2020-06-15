@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

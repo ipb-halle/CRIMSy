@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
-import de.ipb_halle.lbac.material.bean.manipulation.NameListOperation;
+import de.ipb_halle.lbac.material.common.bean.NameListOperation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import java.util.ArrayList;

@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.difference.MaterialComparator;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.history.MaterialComparator;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;

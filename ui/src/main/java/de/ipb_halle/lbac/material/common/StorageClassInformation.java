@@ -18,9 +18,9 @@
 package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.entity.storage.StorageConditionStorageEntity;
-import de.ipb_halle.lbac.material.entity.storage.StorageConditionStorageId;
-import de.ipb_halle.lbac.material.entity.storage.StorageEntity;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageEntity;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageId;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

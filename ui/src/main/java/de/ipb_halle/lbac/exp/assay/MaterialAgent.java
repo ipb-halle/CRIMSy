@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 
 import java.io.Serializable;
 import java.util.ArrayList;

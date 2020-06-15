@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.entity.hazard.HazardMaterialId;
-import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialsEntity;
+import de.ipb_halle.lbac.material.common.entity.hazard.HazardMaterialId;
+import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

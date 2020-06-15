@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common;
 
-import de.ipb_halle.lbac.material.entity.index.MaterialIndexEntryEntity;
+import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import java.util.Objects;
 
 /**

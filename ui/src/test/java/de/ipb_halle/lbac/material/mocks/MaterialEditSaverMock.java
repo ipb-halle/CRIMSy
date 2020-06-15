@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.material.mocks;
 
-import de.ipb_halle.lbac.material.service.MaterialService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.material.bean.save.MaterialEditSaver;
+import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.structure.Structure;
 import javax.persistence.Query;

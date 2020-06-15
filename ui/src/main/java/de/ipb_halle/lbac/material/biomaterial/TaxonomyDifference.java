@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.difference.MaterialDifference;
+import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

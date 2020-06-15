@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.common;
 import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.entity.MaterialDetailRightEntity;
+import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 
 /**
  * Java represantation of a materialdetailtype.

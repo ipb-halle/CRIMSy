@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNameController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyTreeController;
@@ -27,7 +28,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistoryController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyValidityController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.service.*;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
 import de.ipb_halle.lbac.admission.UserBean;
@@ -39,7 +39,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.difference.MaterialIndexDifference;
+import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;

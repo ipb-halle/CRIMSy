@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
-import de.ipb_halle.lbac.material.subtype.MaterialType;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;

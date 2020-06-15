@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
-import de.ipb_halle.lbac.material.bean.ModificationType;
-import de.ipb_halle.lbac.material.difference.MaterialDifference;
+import de.ipb_halle.lbac.material.common.ModificationType;
+import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 
 import java.util.Date;
 import java.util.UUID;

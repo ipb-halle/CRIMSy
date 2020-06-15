@@ -18,8 +18,7 @@
 package de.ipb_halle.lbac.material;
 
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
-import de.ipb_halle.lbac.material.subtype.MaterialType;
-import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
+import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.forum.HTMLInputFilter;
