@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.subtype.structure;
+package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.Material;
@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexEntryEntity;
-import de.ipb_halle.lbac.material.entity.structure.StructureEntity;
+import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
 import java.util.ArrayList;
 import java.util.List;

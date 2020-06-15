@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.bean.history;
 
 import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
-import de.ipb_halle.lbac.material.difference.MaterialStructureDifference;
+import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.difference.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.difference.MaterialDifference;
 import java.util.Calendar;

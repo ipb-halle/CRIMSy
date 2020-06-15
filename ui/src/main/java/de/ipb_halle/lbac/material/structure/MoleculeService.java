@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.service;
+package de.ipb_halle.lbac.material.structure;
 
 import java.io.Serializable;
 import javax.ejb.Stateless;

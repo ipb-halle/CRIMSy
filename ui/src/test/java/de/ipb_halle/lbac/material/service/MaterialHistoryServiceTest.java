@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.service;
 
+import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.EntityManagerService;

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNameController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyTreeController;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;

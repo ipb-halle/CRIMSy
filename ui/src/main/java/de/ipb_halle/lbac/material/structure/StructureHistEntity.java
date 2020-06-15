@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.entity.structure;
+package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import java.io.Serializable;

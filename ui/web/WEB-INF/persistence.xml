@@ -53,9 +53,9 @@
         <class>de.ipb_halle.lbac.material.entity.storage.StorageConditionHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.entity.storage.StorageConditionStorageEntity</class>
         <class>de.ipb_halle.lbac.material.entity.storage.StorageClassHistoryEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.storage.StorageEntity</class>    
-        <class>de.ipb_halle.lbac.material.entity.structure.StructureEntity</class>
-        <class>de.ipb_halle.lbac.material.entity.structure.StructureHistEntity</class>
+        <class>de.ipb_halle.lbac.material.entity.storage.StorageEntity</class>
+        <class>de.ipb_halle.lbac.material.structure.StructureEntity</class>
+        <class>de.ipb_halle.lbac.material.structure.StructureHistEntity</class>
 
         <class>de.ipb_halle.lbac.device.job.JobEntity</class>
         <class>de.ipb_halle.lbac.device.print.PrinterEntity</class>

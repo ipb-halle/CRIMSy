@@ -17,16 +17,17 @@
  */
 package de.ipb_halle.lbac.material.difference;
 
+import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.material.common.Hazard;
-import de.ipb_halle.lbac.material.subtype.structure.Molecule;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
-import de.ipb_halle.lbac.material.subtype.structure.Structure;
+import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

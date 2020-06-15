@@ -15,11 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.service;
+package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.subtype.structure.Structure;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -27,30 +26,31 @@ import javax.persistence.Query;
  *
  * @author fmauz
  */
-public class StructureInformationSaverMock extends StructureInformationSaver {
+public class StructureInformationSaver {
 
-    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule,format) VALUES(?,?,'V2000')";
+    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
+    protected EntityManager em;
 
-    public StructureInformationSaverMock(EntityManager em) {
-        super(em);
+    public StructureInformationSaver(EntityManager em) {
+        this.em = em;
     }
 
-    @Override
+    /**
+     *
+     * @param m
+     */
     public void saveStructureInformation(Material m) {
-        int molId = (int) (Math.random() * 100000);
         Structure s = (Structure) m;
         for (IndexEntry ie : s.getIndices()) {
             em.persist(ie.toDbEntity(m.getId(), 0));
         }
         if (s.getMolecule().getStructureModel() != null) {
             Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
-                    .setParameter(1, molId)
-                    .setParameter(2, s.getMolecule().getStructureModel());
+                    .setParameter("molecule", s.getMolecule().getStructureModel())
+                    .setParameter("format", s.getMolecule().getModelType().toString());
 
-            q.executeUpdate();
-
+            int molId = (int) q.getSingleResult();
             em.persist(s.createDbEntity(m.getId(), molId));
-            s.getMolecule().setId(molId);
         } else {
             em.persist(s.createDbEntity(m.getId(), null));
         }

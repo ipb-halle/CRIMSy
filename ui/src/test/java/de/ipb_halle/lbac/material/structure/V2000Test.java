@@ -15,9 +15,9 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.component;
+package de.ipb_halle.lbac.material.structure;
 
-import de.ipb_halle.lbac.material.subtype.structure.V2000;
+import de.ipb_halle.lbac.material.structure.V2000;
 import org.junit.Assert;
 import org.junit.Test;
 

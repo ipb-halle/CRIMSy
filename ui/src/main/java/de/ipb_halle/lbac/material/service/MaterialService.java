@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.service;
 
+import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
+import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.difference.MaterialDifference;
@@ -44,10 +46,10 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageConditionStorageEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageEntity;
-import de.ipb_halle.lbac.material.entity.structure.StructureEntity;
+import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
-import de.ipb_halle.lbac.material.subtype.structure.Structure;
+import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.project.ProjectService;

@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.bean.MaterialBean;
 import de.ipb_halle.lbac.material.service.MaterialService;
-import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;

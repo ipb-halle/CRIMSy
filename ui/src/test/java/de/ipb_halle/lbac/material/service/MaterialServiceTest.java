@@ -17,9 +17,11 @@
  */
 package de.ipb_halle.lbac.material.service;
 
+import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.subtype.structure.Molecule;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
@@ -51,7 +53,7 @@ import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.subtype.MaterialType;
-import de.ipb_halle.lbac.material.subtype.structure.Structure;
+import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
 import de.ipb_halle.lbac.navigation.Navigator;

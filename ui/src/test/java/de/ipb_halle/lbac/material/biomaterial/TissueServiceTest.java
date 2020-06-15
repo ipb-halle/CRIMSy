@@ -33,7 +33,7 @@ import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.service.MaterialService;
-import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;

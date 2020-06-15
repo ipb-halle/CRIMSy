@@ -18,19 +18,19 @@
 package de.ipb_halle.lbac.material.service;
 
 import de.ipb_halle.lbac.material.bean.ModificationType;
-import de.ipb_halle.lbac.material.subtype.structure.Molecule;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.bean.history.MaterialHistory;
 import de.ipb_halle.lbac.material.difference.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.difference.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.difference.MaterialOverviewDifference;
 import de.ipb_halle.lbac.material.difference.MaterialStorageDifference;
-import de.ipb_halle.lbac.material.difference.MaterialStructureDifference;
+import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
 import de.ipb_halle.lbac.material.entity.hazard.HazardsMaterialHistEntity;
 import de.ipb_halle.lbac.material.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageClassHistoryEntity;
 import de.ipb_halle.lbac.material.entity.storage.StorageConditionHistoryEntity;
-import de.ipb_halle.lbac.material.entity.structure.StructureHistEntity;
+import de.ipb_halle.lbac.material.structure.StructureHistEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity;
 
 import java.util.ArrayList;

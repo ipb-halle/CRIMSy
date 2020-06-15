@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.subtype.structure;
+package de.ipb_halle.lbac.material.structure;
 
 import java.util.Scanner;
 

@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.material.service.MoleculeService;
+import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.bean.mock.IndexServiceMock;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.service.MaterialService;
