@@ -337,7 +337,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.5.Final</version>
+            <version>5.3.5.Final</version>
         </dependency>
 
         <!-- Clean-room definition of JPA APIs intended for use in 
