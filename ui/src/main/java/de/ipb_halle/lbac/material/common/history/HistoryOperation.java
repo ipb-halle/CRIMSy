@@ -17,35 +17,22 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
-import com.google.common.base.Objects;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
-import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
-import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
-import de.ipb_halle.lbac.material.common.history.MaterialOverviewDifference;
-import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -125,10 +112,10 @@ public class HistoryOperation {
     public void applyPositiveStorage() {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            if (!Objects.equal(diff.getDescriptionNew(), diff.getDescriptionOld())) {
+            if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
                 storageInformation.setRemarks(diff.getDescriptionNew());
             }
-            if (!Objects.equal(diff.getStorageclassNew(), diff.getStorageclassOld())) {
+            if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
                 storageInformation.setStorageClass(new StorageClass(diff.getStorageclassNew(), ""));
             }
             for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
@@ -144,10 +131,10 @@ public class HistoryOperation {
     public void applyNegativeStorage() {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            if (!Objects.equal(diff.getDescriptionNew(), diff.getDescriptionOld())) {
+            if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
                 storageInformation.setRemarks(diff.getDescriptionOld());
             }
-            if (!Objects.equal(diff.getStorageclassNew(), diff.getStorageclassOld())) {
+            if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
                 storageInformation.setStorageClass(new StorageClass(diff.getStorageclassOld(), ""));
             }
             for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
@@ -184,15 +171,15 @@ public class HistoryOperation {
                 Integer oldTypeId = diff.getTypeIdsNew().get(i);
                 String newValue = diff.getRemarksNew().get(i);
                 boolean isHazardStatementEntry
-                        = Objects.equal(HazardInformation.HAZARD_STATEMENT, oldTypeId)
-                        || Objects.equal(HazardInformation.HAZARD_STATEMENT, newTypeId);
+                        = Objects.equals(HazardInformation.HAZARD_STATEMENT, oldTypeId)
+                        || Objects.equals(HazardInformation.HAZARD_STATEMENT, newTypeId);
                 if (isHazardStatementEntry) {
                     materialEditState.getHazards().setHazardStatements(newValue);
                     continue;
                 }
                 boolean isPreStatementEntry
-                        = Objects.equal(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
-                        || Objects.equal(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
+                        = Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
+                        || Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
                 if (isPreStatementEntry) {
                     materialEditState.getHazards().setPrecautionaryStatements(newValue);
                     continue;
@@ -214,15 +201,15 @@ public class HistoryOperation {
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String oldValue = diff.getRemarksOld().get(i);
                 boolean isHazardStatementEntry
-                        = Objects.equal(HazardInformation.HAZARD_STATEMENT, oldTypeId)
-                        || Objects.equal(HazardInformation.HAZARD_STATEMENT, newTypeId);
+                        = Objects.equals(HazardInformation.HAZARD_STATEMENT, oldTypeId)
+                        || Objects.equals(HazardInformation.HAZARD_STATEMENT, newTypeId);
                 if (isHazardStatementEntry) {
                     materialEditState.getHazards().setHazardStatements(oldValue);
                     continue;
                 }
                 boolean isPreStatementEntry
-                        = Objects.equal(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
-                        || Objects.equal(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
+                        = Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
+                        || Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
                 if (isPreStatementEntry) {
                     materialEditState.getHazards().setPrecautionaryStatements(oldValue);
                     continue;
@@ -257,20 +244,20 @@ public class HistoryOperation {
     protected void applyNegativeStructure() {
         MaterialStructureDifference structureDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStructureDifference.class, materialEditState.getCurrentVersiondate());
         if (structureDiff != null) {
-            if (!Objects.equal(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
+            if (!Objects.equals(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
                 if (structureDiff.getMoleculeId_old() == null && structureDiff.getMoleculeId_new() != null) {
                     structureInfos.setStructureModel(null);
                 } else {
                     structureInfos.setStructureModel(structureDiff.getMoleculeId_old().getStructureModel());
                 }
             }
-            if (!Objects.equal(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
+            if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
                 structureInfos.setMolarMass(structureDiff.getMolarMass_old());
             }
-            if (!Objects.equal(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
+            if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
                 structureInfos.setExactMolarMass(structureDiff.getExactMolarMass_old());
             }
-            if (!Objects.equal(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
+            if (!Objects.equals(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
                 structureInfos.setSumFormula(structureDiff.getSumFormula_old());
             }
         }
@@ -279,20 +266,20 @@ public class HistoryOperation {
     protected void applyPositiveStructure() {
         MaterialStructureDifference structureDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStructureDifference.class, materialEditState.getCurrentVersiondate());
         if (structureDiff != null) {
-            if (!Objects.equal(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
+            if (!Objects.equals(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
                 if (structureDiff.getMoleculeId_old() != null && structureDiff.getMoleculeId_new() == null) {
                     structureInfos.setStructureModel(null);
                 } else {
                     structureInfos.setStructureModel(structureDiff.getMoleculeId_new().getStructureModel());
                 }
             }
-            if (!Objects.equal(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
+            if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
                 structureInfos.setMolarMass(structureDiff.getMolarMass_new());
             }
-            if (!Objects.equal(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
+            if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
                 structureInfos.setExactMolarMass(structureDiff.getExactMolarMass_new());
             }
-            if (!Objects.equal(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
+            if (!Objects.equals(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
                 structureInfos.setSumFormula(structureDiff.getSumFormula_new());
             }
         }

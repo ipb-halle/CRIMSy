@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import com.google.common.collect.Lists;
 import de.ipb_halle.lbac.entity.InfoObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,10 +25,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * NOTE: This test runs NOT within an Arquillian context and 
- * therefore ignores the @PostConstruct annotation in 
- * class LdapProperties (which otherwise would override
- * the LDAP_GROUP_FILTER_DN setting unless it is saved here).
+ * NOTE: This test runs NOT within an Arquillian context and therefore ignores
+ * the @PostConstruct annotation in class LdapProperties (which otherwise would
+ * override the LDAP_GROUP_FILTER_DN setting unless it is saved here).
  *
  * @author fmauz
  */
