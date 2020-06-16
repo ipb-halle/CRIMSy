@@ -29,12 +29,14 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialTableController {
+public class MaterialTableController implements TableController {
 
+    private String noMaterialsFoundPattern = "No materials with active filters found";
+    private String MaterialsFoundPattern = "%d - %d of %d items shown";
     private MaterialService materialService;
-    private int firstResult;
-    private int chunkSize;
+
     private int maxResults;
+    private DataTableNavigationController tableController;
 
     private List<Material> shownMaterials;
     private Map<String, Object> lastcmap;
@@ -43,60 +45,43 @@ public class MaterialTableController {
 
     public MaterialTableController(MaterialService materialService) {
         this.materialService = materialService;
-        firstResult = 0;
-        chunkSize = 10;
+        tableController = new DataTableNavigationController(
+                this,
+                noMaterialsFoundPattern,
+                MaterialsFoundPattern,
+                maxResults
+        );
+
+    }
+
+    @Override
+    public void reloadDataTableItems() {
+        shownMaterials = materialService.getReadableMaterials(
+                lastUser,
+                lastcmap,
+                tableController.getFirstResult(),
+                tableController.getCHUNK_SIZE());
     }
 
     public void reloadShownMaterial(User user, Map<String, Object> cmap) {
         lastcmap = cmap;
         lastUser = user;
-        shownMaterials = materialService.getReadableMaterials(user, cmap, firstResult, chunkSize);
+        shownMaterials = materialService.getReadableMaterials(
+                user,
+                cmap,
+                tableController.getFirstResult(),
+                tableController.getCHUNK_SIZE());
         maxResults = materialService.loadMaterialAmount(user, cmap);
+        tableController.setMaxResults(maxResults);
+
     }
 
     public List<Material> getShownMaterials() {
         return shownMaterials;
     }
 
-    public void actionFirstResult() {
-        firstResult = 0;
-        shownMaterials = materialService.getReadableMaterials(lastUser, lastcmap, firstResult, chunkSize);
-    }
-
-    public void actionLastResult() {
-        firstResult = maxResults - chunkSize;
-        firstResult = Math.max(0, firstResult);
-        shownMaterials = materialService.getReadableMaterials(lastUser, lastcmap, firstResult, chunkSize);
-    }
-
-    public void actionPriorResults() {
-        firstResult -= chunkSize;
-        firstResult = Math.max(0, firstResult);
-        shownMaterials = materialService.getReadableMaterials(lastUser, lastcmap, firstResult, chunkSize);
-    }
-
-    public void actionNextResults() {
-        firstResult += chunkSize;
-        firstResult = Math.min(firstResult, maxResults - chunkSize);
-        shownMaterials = materialService.getReadableMaterials(lastUser, lastcmap, firstResult, chunkSize);
-    }
-
-    public boolean isPriorButtonGroupDisabled() {
-        return firstResult == 0;
-    }
-
-    public boolean isNextButtonGroupDisabled() {
-        return (maxResults - firstResult) <= chunkSize;
-    }
-
-    public String getNavigationInfos() {
-        int leftBorder = firstResult + 1;
-        int rightBorder = (int) Math.min(chunkSize + firstResult, maxResults);
-        if (maxResults > 0) {
-            return String.format("%d - %d of %d items shown", leftBorder, rightBorder, maxResults);
-        } else {
-            return "No materials with active filters found";
-        }
+    public DataTableNavigationController getTableController() {
+        return tableController;
     }
 
 }

@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  */
 @SessionScoped
 @Named
-public class ItemOverviewBean implements Serializable {
+public class ItemOverviewBean implements Serializable{
 
     private final int PAGE_SIZE = 10;
 

@@ -128,8 +128,8 @@
                                 <b:column span="1" styleClass="navigationColumn"> 
                                     <b:commandButton 
                                         styleClass="navigationButton"
-                                        disabled="#{materialOverviewBean.tableController.priorButtonGroupDisabled}"
-                                        action="#{materialOverviewBean.tableController.actionFirstResult()}"
+                                        disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
+                                        action="#{materialOverviewBean.tableController.tableController.actionFirstResult()}"
                                         icon-awesome="fa-fast-backward"
                                         ajax="true"
                                         update="@(.materialOverviewTableContainer)"
@@ -138,8 +138,8 @@
                                 <b:column span="1" styleClass="navigationColumn"> 
                                     <b:commandButton 
                                         styleClass="navigationButton"
-                                        disabled="#{materialOverviewBean.tableController.priorButtonGroupDisabled}"
-                                        action="#{materialOverviewBean.tableController.actionPriorResults()}"
+                                        disabled="#{materialOverviewBean.tableController.tableController.priorButtonGroupDisabled}"
+                                        action="#{materialOverviewBean.tableController.tableController.actionPriorResults()}"
                                         ajax="true"
                                         update="@(.materialOverviewTableContainer)"
                                         icon-awesome="fa-backward"/>
@@ -147,8 +147,8 @@
                                 <b:column span="1" styleClass="navigationColumn"> 
                                     <b:commandButton 
                                         styleClass="navigationButton"
-                                        disabled="#{materialOverviewBean.tableController.isNextButtonGroupDisabled()}"
-                                        action="#{materialOverviewBean.tableController.actionNextResults()}"
+                                        disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
+                                        action="#{materialOverviewBean.tableController.tableController.actionNextResults()}"
                                         ajax="true"
                                         update="@(.materialOverviewTableContainer)"
                                         icon-awesome="fa-forward"
@@ -157,15 +157,15 @@
                                 <b:column span="1" styleClass="navigationColumn"> 
                                     <b:commandButton 
                                         styleClass="navigationButton"
-                                        action="#{materialOverviewBean.tableController.actionLastResult()}"
-                                        disabled="#{materialOverviewBean.tableController.isNextButtonGroupDisabled()}"
+                                        action="#{materialOverviewBean.tableController.tableController.actionLastResult()}"
+                                        disabled="#{materialOverviewBean.tableController.tableController.isNextButtonGroupDisabled()}"
                                         ajax="true"
                                         update="@(.materialOverviewTableContainer)"
                                         icon-awesome="fa-fast-forward"
                                         />
                                 </b:column> 
                                 <b:column span="2" offset="1"> 
-                                    <h:outputText value="#{materialOverviewBean.tableController.getNavigationInfos()}"/>
+                                    <h:outputText value="#{materialOverviewBean.tableController.tableController.getNavigationInfos()}"/>
                                 </b:column> 
                             </b:row>
 
