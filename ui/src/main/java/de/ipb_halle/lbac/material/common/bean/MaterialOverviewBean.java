@@ -100,6 +100,10 @@ public class MaterialOverviewBean implements Serializable {
 
     }
 
+    public MaterialTableController getTableController() {
+        return tableController;
+    }
+
     public List<Material> getReadableMaterials() {
         return tableController.getShownMaterials();
 

@@ -215,7 +215,7 @@ public class ItemOverviewBean implements Serializable {
 
     public String getItemNavigationInfo() {
         int leftBorder = firstResult + 1;
-        int rightBorder = (int) Math.min(PAGE_SIZE + firstResult + 1, itemAmount);
+        int rightBorder = (int) Math.min(PAGE_SIZE + firstResult, itemAmount);
         if (itemAmount > 0) {
             return String.format("%d - %d of %d items shown", leftBorder, rightBorder, itemAmount);
         } else {

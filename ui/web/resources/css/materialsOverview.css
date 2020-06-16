@@ -18,6 +18,10 @@
  */
 
 
+.dataTables_info{
+    visibility: hidden !important;
+}
+
 .materialOverviewTableContainer{
     width: 100% !important;
 }
@@ -56,6 +60,17 @@
 
 .materialFilterButtonRight{
     left: -13px !important;
+}
+
+.navigationColumn{
+    width:10px  !important;
+}
+
+.navigationButton i{
+    font-size: 12px;
+    position: absolute;
+    top: 6px;
+    left: 22px;
 }
 
 

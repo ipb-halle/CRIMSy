@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 @Stateless
-public class TissueService {
+public class TissueService implements Serializable {
 
     @Inject
     private TaxonomyService taxonomyService;
