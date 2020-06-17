@@ -81,6 +81,7 @@ public class AssayController extends ExpRecordController implements MaterialHold
         return this.assayRecord;
     }
 
+    @Override
     public BarChartModel getBarChart() {
         return this.expRecord.getBarChart();
     }

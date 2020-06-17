@@ -21,6 +21,8 @@ package de.ipb_halle.lbac.exp;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.primefaces.model.chart.BarChartModel;
+
 /**
  * interface for experiment record controllers
  *
@@ -61,6 +63,10 @@ public abstract class ExpRecordController {
         } catch (Exception e) {
             this.logger.warn("actionSaveRecord() caught an exception: ", (Throwable) e);
         }
+    }
+
+    public BarChartModel getBarChart() {
+        return null; 
     }
 
     public abstract ExpRecord getExpRecord();
