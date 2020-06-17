@@ -37,7 +37,7 @@
                 <b:dataTable
                     value="#{containerModalBean.container}"
                     select="true"    
-                    update="@(.containerPseudoClass)"
+                    update="growlMsg @(.containerPseudoClass)"
                     onselect="ajax:itemBean.actionChangeContainer(container);"
                     oncomplete="$('.containerModal').modal('hide')"
                     var ="container">

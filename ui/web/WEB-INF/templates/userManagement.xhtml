@@ -195,7 +195,7 @@
                             <b:commandButton value="#{msgs.userMgr_ChangePassword}"
                                              type="submit"
                                              ajax="true"
-                                             update="@form frmUserList:userList"
+                                             update="@form frmUserList:userList growlMsg"
                                              onclick="ajax:userMgrBean.actionChangePassword();"
                                              oncomplete="if(!validationFailed){$('.modalUserDialog').modal('hide')};return false;"
                                              look="primary"/>

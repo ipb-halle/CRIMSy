@@ -51,7 +51,6 @@ public class MaterialTableController implements TableController {
                 MaterialsFoundPattern,
                 maxResults
         );
-
     }
 
     @Override

@@ -37,12 +37,12 @@ public class TaxonomyValidityController {
         if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
             if (taxonomyBean.getTaxonomyToCreate() != null) {
                 if (taxonomyBean.getSelectedTaxonomy() == null) {
-                    UIMessage.warn(MESSAGE_BUNDLE, "taxonomy_no_valide_parent");
+                    UIMessage.error(MESSAGE_BUNDLE, "taxonomy_no_valide_parent");
                     return false;
                 }
 
                 if (!isNameSet()) {
-                    UIMessage.warn(MESSAGE_BUNDLE, "taxonomy_no_valide_input");
+                    UIMessage.error(MESSAGE_BUNDLE, "taxonomy_no_valide_input");
                     return false;
                 } else {
                     UIMessage.info(MESSAGE_BUNDLE, "taxonomy_saved");

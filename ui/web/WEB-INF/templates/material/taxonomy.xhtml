@@ -46,7 +46,7 @@
                         <b:commandButton 
                             icon-awesome="fa-backward"
                             ajax="true"
-                            update="@(.taxonomyInfos)"
+                            update="growlMsg @(.taxonomyInfos)"
                             onclick="ajax:taxonomyBean.historyController.actionSwitchToEarlierVersion();"
                             rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
                             disabled="#{taxonomyBean.renderController.historyBackButtonDisabled}"/>
@@ -80,7 +80,7 @@
                             look="default"
                             styleClass="taxonomy-edit-button"
                             process="@(.taxonomyInfos)"
-                            update="@(.taxonomyInfos) @(.taxonomyTree)"
+                            update="growlMsg @(.taxonomyInfos) @(.taxonomyTree)"
                             onclick="ajax:taxonomyBean.actionClickFirstButton();"
                             disabled="#{taxonomyBean.renderController.isFirstButtonDisabled()}"/>
                     </b:column>
@@ -92,7 +92,7 @@
                             look="primary"
                             ajax="true"
                             process="@(.taxonomyInfos)"
-                            update="@(.taxonomyInfos) @(.taxonomyTree)"
+                            update="growlMsg @(.taxonomyInfos) @(.taxonomyTree)"
                             onclick="ajax:taxonomyBean.actionClickSecondButton();"
                             disabled="#{taxonomyBean.renderController.isSecondButtonDisabled()}">
                         </b:commandButton>
