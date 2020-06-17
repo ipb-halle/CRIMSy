@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.container.service;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,7 @@ import javax.persistence.PersistenceContext;
  * @author fmauz
  */
 @Stateless
-public class ContainerNestingService {
+public class ContainerNestingService implements Serializable{
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;

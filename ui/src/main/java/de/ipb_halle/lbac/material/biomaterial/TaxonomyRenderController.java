@@ -18,10 +18,10 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.service.MemberService;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class TaxonomyRenderController {
+public class TaxonomyRenderController implements Serializable {
 
     protected TaxonomyBean taxonomyBean;
     protected TaxonomyNameController nameController;

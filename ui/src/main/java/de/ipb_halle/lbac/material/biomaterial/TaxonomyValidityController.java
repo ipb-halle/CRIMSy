@@ -18,13 +18,13 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
+import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
-public class TaxonomyValidityController {
+public class TaxonomyValidityController implements Serializable{
 
     protected TaxonomyBean taxonomyBean;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";

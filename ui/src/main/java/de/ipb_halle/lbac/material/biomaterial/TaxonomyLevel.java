@@ -18,13 +18,13 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity;
+import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
-public class TaxonomyLevel implements DTO {
+public class TaxonomyLevel implements DTO,Serializable {
 
     private int id;
     private String name;

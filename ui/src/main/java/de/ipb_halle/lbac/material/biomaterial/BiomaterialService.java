@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import java.io.Serializable;
 import javax.ejb.Stateless;
 
 /**
@@ -24,6 +25,6 @@ import javax.ejb.Stateless;
  * @author fmauz
  */
 @Stateless
-public class BiomaterialService {
+public class BiomaterialService implements Serializable {
 
 }

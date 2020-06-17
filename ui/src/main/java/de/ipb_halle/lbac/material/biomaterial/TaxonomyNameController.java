@@ -17,10 +17,9 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.common.bean.NameListOperation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class TaxonomyNameController {
+public class TaxonomyNameController implements Serializable{
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";

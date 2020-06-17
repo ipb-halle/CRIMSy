@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.container.components;
 
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.container.ContainerType;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 @FacesComponent("ContainerComponent")
-public class ContainerComponent extends UIComponentBase {
+public class ContainerComponent extends UIComponentBase implements Serializable{
 
     private final Map<String, Renderer> renderer = new HashMap<>();
     private final Logger logger = LogManager.getLogger(this.getClass().getName());

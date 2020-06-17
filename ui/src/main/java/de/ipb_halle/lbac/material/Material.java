@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,7 +41,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public abstract class Material implements DTO {
+public abstract class Material implements DTO, Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -56,7 +57,7 @@ public abstract class Material implements DTO {
     protected List<IndexEntry> indices = new ArrayList<>();
     protected List<MaterialDetailRight> detailRights = new ArrayList<>();
     protected MaterialHistory history = new MaterialHistory();
-     protected HTMLInputFilter vFilter;
+    protected HTMLInputFilter vFilter;
 
     public Material(
             int id,
@@ -69,7 +70,7 @@ public abstract class Material implements DTO {
         this.projectId = projectId;
         this.hazards = hazards;
         this.storageInformation = storageInformation;
-        vFilter=new HTMLInputFilter(false, true);
+        vFilter = new HTMLInputFilter(false, true);
     }
 
     public void setId(int id) {
@@ -111,7 +112,7 @@ public abstract class Material implements DTO {
     }
 
     public String getPrintableNames() {
-        
+
         String back = "";
         for (MaterialName s : names) {
             back += vFilter.filter(s.getValue()) + "<br>";

@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.container.components;
 
 import de.ipb_halle.lbac.container.Container;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.ResponseWriter;
 
@@ -26,7 +27,7 @@ import javax.faces.context.ResponseWriter;
  *
  * @author fmauz
  */
-public class BlankRenderer implements Renderer {
+public class BlankRenderer implements Renderer,Serializable {
 
     @Override
     public void render(ResponseWriter responseWriter, Container container, UIComponentBase component) throws IOException {

@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.UUID;
  *
  * @author fmauz
  */
-public class TaxonomyDifference implements MaterialDifference {
+public class TaxonomyDifference implements MaterialDifference, Serializable {
 
     private UUID actorId;
     private int materialId;

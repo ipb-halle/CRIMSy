@@ -18,12 +18,13 @@
 package de.ipb_halle.lbac.container.bean;
 
 import de.ipb_halle.lbac.i18n.UIMessage;
+import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
-public class ErrorMessagePresenter {
+public class ErrorMessagePresenter implements Serializable {
 
     public void presentErrorMessage(String content, Object... args) {
         UIMessage.error(content, args);

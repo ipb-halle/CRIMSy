@@ -20,12 +20,13 @@ package de.ipb_halle.lbac.container;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
 import de.ipb_halle.lbac.container.entity.ContainerNestingId;
+import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerNesting implements DTO {
+public class ContainerNesting implements DTO, Serializable {
 
     protected boolean nested;
     protected int source;

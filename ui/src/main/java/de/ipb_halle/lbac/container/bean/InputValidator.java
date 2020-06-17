@@ -20,9 +20,6 @@ package de.ipb_halle.lbac.container.bean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Checks input values of a container for validity

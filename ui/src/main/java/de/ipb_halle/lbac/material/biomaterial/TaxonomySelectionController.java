@@ -17,11 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.biomaterial.SimpleTaxonomyLevelController;
-import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyTreeController;
+import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +28,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author fmauz
  */
-public class TaxonomySelectionController {
+public class TaxonomySelectionController implements Serializable {
 
     protected TaxonomyTreeController treeController;
     protected TreeNode selectedTaxonomy;

@@ -19,14 +19,12 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.service.MemberService;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
@@ -36,7 +34,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class TaxonomyHistoryController {
+public class TaxonomyHistoryController implements Serializable{
 
     private SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private final String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";

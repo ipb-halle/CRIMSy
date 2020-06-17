@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.container.components;
 
 import de.ipb_halle.lbac.container.Container;
 import java.io.IOException;
+import java.io.Serializable;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.ResponseWriter;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class WellPlateRenderer implements Renderer {
+public class WellPlateRenderer implements Renderer,Serializable {
 
     Logger logger = logger = LogManager.getLogger(this.getClass().getName());
 

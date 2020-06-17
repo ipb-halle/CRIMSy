@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author fmauz
  */
-public class TaxonomyLevelController {
+public class TaxonomyLevelController implements Serializable {
 
     protected TaxonomyBean taxonomyBean;
     protected List<TaxonomyLevel> levels;

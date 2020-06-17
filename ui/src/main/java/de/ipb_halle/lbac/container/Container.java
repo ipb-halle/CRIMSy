@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.project.Project;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Container implements DTO {
+public class Container implements DTO, Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 

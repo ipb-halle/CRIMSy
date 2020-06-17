@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +37,7 @@ import org.primefaces.model.TreeNode;
  *
  * @author fmauz
  */
-public class TaxonomyTreeController {
+public class TaxonomyTreeController implements Serializable {
 
     protected TreeNode selectedTaxonomy;
     private List<Taxonomy> shownTaxonomies = new ArrayList<>();

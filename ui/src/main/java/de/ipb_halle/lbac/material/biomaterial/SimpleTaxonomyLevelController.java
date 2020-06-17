@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import java.util.List;
 
 /**

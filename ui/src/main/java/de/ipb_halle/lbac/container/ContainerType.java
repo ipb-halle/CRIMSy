@@ -18,20 +18,21 @@
 package de.ipb_halle.lbac.container;
 
 import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerType {
+public class ContainerType implements Serializable {
 
     private String name;
     private int rank;
 
     private String localizedName;
-    
-    public final static int HIGHEST_RANK=100;
+
+    public final static int HIGHEST_RANK = 100;
 
     public ContainerType() {
     }
@@ -39,13 +40,13 @@ public class ContainerType {
     public ContainerType(ContainerTypeEntity entity) {
         this.name = entity.getName();
         this.rank = entity.getRank();
-        this.localizedName=name;
+        this.localizedName = name;
     }
 
     public ContainerType(String name, int rank) {
         this.name = name;
         this.rank = rank;
-        this.localizedName=name;
+        this.localizedName = name;
     }
 
     public String getName() {
@@ -96,7 +97,5 @@ public class ContainerType {
         }
         return true;
     }
-
-  
 
 }
