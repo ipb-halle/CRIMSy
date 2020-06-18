@@ -159,6 +159,10 @@ public class ExperimentBean implements Serializable {
         }
     }
 
+    public void actionLog() {
+        this.logger.info("actionLog()");
+    }
+
     /**
      * creates a new Experiment or a new template
      */
@@ -288,6 +292,7 @@ public class ExperimentBean implements Serializable {
         cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
         this.expRecords = this.expRecordService.orderList(
                 this.expRecordService.load(cmap));
+        reIndex();
     }
 
     /**
