@@ -409,6 +409,8 @@ public class MaterialComparator {
             String oldValue,
             String newValue,
             Integer typId) {
+        oldValue = "".equals(oldValue) ? null : oldValue;
+        newValue = "".equals(newValue) ? null : newValue;
         if (!Objects.equals(oldValue, newValue)) {
             if (oldValue == null) {
                 hazardDiff.addDifference(null, typId, null, newValue);

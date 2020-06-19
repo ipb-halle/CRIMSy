@@ -168,7 +168,7 @@ public class HistoryOperation {
         if (diff != null) {
             for (int i = 0; i < diff.getEntries(); i++) {
                 Integer newTypeId = diff.getTypeIdsNew().get(i);
-                Integer oldTypeId = diff.getTypeIdsNew().get(i);
+                Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String newValue = diff.getRemarksNew().get(i);
                 boolean isHazardStatementEntry
                         = Objects.equals(HazardInformation.HAZARD_STATEMENT, oldTypeId)
