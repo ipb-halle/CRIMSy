@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -189,10 +190,14 @@ public class MaterialStructureDifference implements MaterialDifference {
     }
 
     public boolean differenceFound() {
-        return sumFormula_new != null
-                || molarMass_new != null
-                || exactMolarMass_new != null
-                || molecule_new != null;
+        boolean sumFormulaEqual = Objects.equals(sumFormula_new, sumFormula_old);
+        boolean molarMassEqual = Objects.equals(molarMass_new, molarMass_old);
+        boolean exactMolarMassEqual = Objects.equals(exactMolarMass_new, exactMolarMass_old);
+        boolean moleculeEqual = Objects.equals(molecule_new, molecule_old);
+        return !sumFormulaEqual
+                || !molarMassEqual
+                || !exactMolarMassEqual
+                || !moleculeEqual;
     }
 
     @Override

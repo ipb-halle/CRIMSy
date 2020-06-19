@@ -17,11 +17,16 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author fmauz
  */
 public class Molecule {
+
+    protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public enum MoleculeFormat {
         V2000,
@@ -37,7 +42,7 @@ public class Molecule {
     public Molecule(String structureModel, int id) {
         this.structureModel = structureModel;
         this.id = id;
-        this.modelType=MoleculeFormat.V2000;
+        this.modelType = MoleculeFormat.V2000;
     }
 
     public Molecule(String structureModel, int id, String format) {
@@ -68,6 +73,21 @@ public class Molecule {
 
     public void setModelType(MoleculeFormat modelType) {
         this.modelType = modelType;
+    }
+
+    public boolean isEmptyMolecule() {
+        try {
+            MoleculeStructureModel model;
+            if (modelType == MoleculeFormat.V2000) {
+                model = new V2000();
+                return model.isEmptyMolecule(structureModel);
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            logger.error("Could not valuate if molecule is empty", e);
+            return false;
+        }
     }
 
 }

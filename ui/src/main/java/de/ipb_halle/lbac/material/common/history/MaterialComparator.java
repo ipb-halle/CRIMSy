@@ -63,7 +63,7 @@ public class MaterialComparator {
             for (Taxonomy t : editedMat.getTaxHierachy()) {
                 td.getNewHierarchy().add(t.getId());
             }
-            
+
         }
         if (differenceFound) {
             differences.add(td);
@@ -358,9 +358,8 @@ public class MaterialComparator {
             List<MaterialDifference> differences,
             Structure originalStruc,
             Structure editedStruc) {
-
         MaterialStructureDifference diff = new MaterialStructureDifference();
-        if (!originalStruc.getSumFormula().equals(editedStruc.getSumFormula())) {
+        if (!Objects.equals(originalStruc.getSumFormula(), editedStruc.getSumFormula())) {
             diff.setSumFormula_new(editedStruc.getSumFormula());
             diff.setSumFormula_old(originalStruc.getSumFormula());
         }

@@ -18,13 +18,14 @@
 package de.ipb_halle.lbac.search.relevance;
 
 import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.entity.TermFrequency;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation of the Okapi BM25 Ranking
@@ -34,7 +35,7 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
  *
  * @author fmauz
  */
-public class RelevanceCalculator {
+public class RelevanceCalculator implements Serializable {
 
     private Map<String, Set<String>> searchTerms;
     private final Logger logger;
@@ -42,7 +43,7 @@ public class RelevanceCalculator {
     private List<String> originalSearchTerms;
 
     public RelevanceCalculator() {
-        this.searchTerms =  new HashMap<>();
+        this.searchTerms = new HashMap<>();
         this.logger = LogManager.getLogger(this.getClass().getName());
         this.develop = false;
         this.originalSearchTerms = new ArrayList<>();

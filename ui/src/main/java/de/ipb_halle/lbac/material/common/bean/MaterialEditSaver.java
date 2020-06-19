@@ -21,9 +21,6 @@ import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
@@ -69,6 +66,8 @@ public class MaterialEditSaver {
     protected String SQL_DELETE_EFFECTIVE_TAXONOMY = "DELETE FROM effective_taxonomy WHERE taxoid=:taxoid";
     protected String SQL_INSERT_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(:taxoid,:parentid)";
     protected String SQL_UPDATE_TAXONOMY_LEVEL = "UPDATE taxonomy SET level=:level WHERE id=:id";
+    protected String SQL_DELETE_INDICES = "DELETE FROM material_indices WHERE materialid=:mid";
+    protected String SQL_DELETE_HAZARDS = "DELETE FROM hazards_materials WHERE materialid=:mid";
 
     protected MaterialService materialService;
 
@@ -214,25 +213,20 @@ public class MaterialEditSaver {
     }
 
     public void saveEditedMaterialStructure() {
-
         MaterialStructureDifference strucDiff = comparator.getDifferenceOfType(diffs, MaterialStructureDifference.class);
         if (strucDiff != null) {
             Structure structure = (Structure) newMaterial;
             Molecule newMol = strucDiff.getMoleculeId_new();
             Molecule oldMol = strucDiff.getMoleculeId_old();
-
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
                     Query q = materialService.getEm().createNativeQuery(SQL_INSERT_MOLECULE)
                             .setParameter("molecule", newMol.getStructureModel())
                             .setParameter("format", newMol.getModelType().toString());
-
                     int molId = (int) q.getSingleResult();
                     newMol.setId(molId);
                 }
-
             }
-
             saveMaterialStrcutureDifferences(strucDiff);
             updateStructureOverview(structure);
         }
@@ -321,11 +315,17 @@ public class MaterialEditSaver {
     }
 
     protected void deleteOldMaterialIndices(Material m) {
-        this.materialService.getEm().createNativeQuery("Delete from material_indices where materialid=:mid").setParameter("mid", m.getId()).executeUpdate();
+        this.materialService.getEm()
+                .createNativeQuery(SQL_DELETE_INDICES)
+                .setParameter("mid", m.getId())
+                .executeUpdate();
     }
 
     protected void deleteOldHazards(Material m) {
-        this.materialService.getEm().createNativeQuery("Delete from hazards_materials where materialid=:mid").setParameter("mid", m.getId()).executeUpdate();
+        this.materialService.getEm()
+                .createNativeQuery(SQL_DELETE_HAZARDS)
+                .setParameter("mid", m.getId())
+                .executeUpdate();
     }
 
     protected void saveMaterialNames(Material m) {

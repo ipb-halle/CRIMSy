@@ -23,8 +23,8 @@ import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Molecule;
@@ -32,8 +32,6 @@ import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.MoleculeStructureModel;
 import de.ipb_halle.lbac.material.structure.V2000;
 import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
-import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
@@ -57,6 +55,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
+import javax.faces.component.UIMessages;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -91,6 +90,9 @@ public class MaterialBean implements Serializable {
 
     @Inject
     protected UserBean userBean;
+
+    @Inject
+    protected MaterialOverviewBean overviewBean;
 
     @Inject
     protected MaterialNameBean materialNameBean;
@@ -147,7 +149,7 @@ public class MaterialBean implements Serializable {
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
-        
+
     }
 
     public void startMaterialCreation() {
@@ -198,7 +200,7 @@ public class MaterialBean implements Serializable {
             mode = Mode.EDIT;
         } catch (Exception e) {
             logger.info("Error in Line " + e.getStackTrace()[0].getLineNumber());
-            logger.error(mode);
+            logger.error(e);
         }
     }
 
@@ -317,7 +319,22 @@ public class MaterialBean implements Serializable {
         materialEditState.getMaterialToEdit().setStorageInformation(storageClassInformation);
         if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
             Structure s = (Structure) materialEditState.getMaterialToEdit();
-            s.setMolecule(new Molecule(structureInfos.getStructureModel(), 0));
+            Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
+            if (m.isEmptyMolecule()) {
+                s.setMolecule(null);
+                if (calculateFormulaAndMassesByDb) {
+                    structureInfos.setExactMolarMass(0d);
+                    structureInfos.setMolarMass(0d);
+                    structureInfos.setSumFormula(null);
+                }
+            } else {
+                s.setMolecule(m);
+                if (calculateFormulaAndMassesByDb) {
+                    structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));
+                    structureInfos.setExactMolarMass(moleculeService.getExactMolarMassOfMolecule(structureInfos.getStructureModel()));
+                    structureInfos.setMolarMass(moleculeService.getMolarMassOfMolecule(structureInfos.getStructureModel()));
+                }
+            }
             s.setExactMolarMass(structureInfos.getExactMolarMass());
             s.setMolarMass(structureInfos.getMolarMass());
             s.setSumFormula(structureInfos.getSumFormula());
@@ -335,13 +352,19 @@ public class MaterialBean implements Serializable {
         }
     }
 
-    public void saveMaterial() {
+    public void actionSaveMaterial() {
         if (mode == Mode.CREATE) {
             saveNewMaterial();
+            UIMessage.info(MESSAGE_BUNDLE,"materialCreation_creation_new_completed");
+
         } else {
             saveEditedMaterial();
+            UIMessage.info(MESSAGE_BUNDLE,"materialCreation_creation_edit_completed");
+
         }
+        overviewBean.getTableController().reloadDataTableItems();
         navigator.navigate("/material/materials");
+
     }
 
     public StructureInformation getStructureInfos() {

@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
-import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

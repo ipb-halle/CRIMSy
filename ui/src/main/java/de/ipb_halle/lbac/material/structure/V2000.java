@@ -30,9 +30,7 @@ public class V2000 implements MoleculeStructureModel {
         try (Scanner scanner = new Scanner(s)) {
             int lineNumber = 0;
             while (scanner.hasNextLine()) {
-                
                 String line = scanner.nextLine();
-                
                 if (lineNumber == 3) {
                     String atoms = getNumberOfAtoms(line);
                     return Integer.parseInt(atoms) == 0;

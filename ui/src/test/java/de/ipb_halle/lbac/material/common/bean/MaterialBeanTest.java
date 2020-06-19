@@ -17,9 +17,6 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
@@ -31,11 +28,17 @@ import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
+import de.ipb_halle.lbac.container.service.ContainerNestingService;
+import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.items.bean.ItemBean;
+import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
+import de.ipb_halle.lbac.items.service.ArticleService;
+import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
@@ -197,6 +200,13 @@ public class MaterialBeanTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(MateriaBeanMock.class)
+                .addClass(MaterialOverviewBean.class)
+                .addClass(ContainerService.class)
+                .addClass(ItemService.class)
+                .addClass(ArticleService.class)
+                .addClass(ItemOverviewBean.class)
+                .addClass(ContainerNestingService.class)
+                .addClass(ItemBean.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);
     }

@@ -95,7 +95,7 @@ public class MaterialOverviewBean implements Serializable {
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
-        tableController.reloadShownMaterial(currentUser, new HashMap<>());
+        //tableController.reloadShownMaterial(currentUser, new HashMap<>());
         searchController.clearInputFields();
 
     }

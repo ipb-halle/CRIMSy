@@ -94,7 +94,7 @@
                                 value="#{materialBean.getCreateButtonText()}"
                                 disabled="#{!materialBean.isCreationAllowed()}"
                                 onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
-                                action="#{materialBean.saveMaterial()}"/>
+                                action="#{materialBean.actionSaveMaterial()}"/>
                         </b:column>
                     </b:row>
 

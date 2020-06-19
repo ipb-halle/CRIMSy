@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
+import java.util.ArrayList;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +38,7 @@ public class MaterialEditState {
     private Material materialBeforeEdit;
     private Material materialToEdit;
     private Project defaultProject;
-    private HazardInformation hazards;
+    private HazardInformation hazards=new HazardInformation();
 
     public MaterialEditState() {
         defaultProject = new Project(ProjectType.DUMMY_PROJECT, "bitte das Projekt auswählen");
