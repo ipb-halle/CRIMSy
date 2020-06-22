@@ -294,7 +294,7 @@ public class MaterialEditSaver {
         mE.setMaterialtypeid(m.getType().getId());
         mE.setOwnerid(userId);
         mE.setProjectid(m.getProjectId());
-        mE.setUsergroups(projectAclId);
+        mE.setAclist_id(projectAclId);
         materialService.getEm().merge(mE);
     }
 

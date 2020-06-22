@@ -132,7 +132,7 @@ public class MaterialServiceTest extends TestBase {
         List materials = entityManagerService.doSqlQuery(
                 "select materialtypeid,"
                 + "ctime,"
-                + "cast(usergroups as varchar),"
+                + "cast(aclist_id as varchar),"
                 + "cast(ownerid as varchar),"
                 + "projectid"
                 + " from materials");

@@ -60,7 +60,7 @@ public class TaxonomyService implements Serializable {
             + "ORDER BY id";
 
     private final String SQL_GET_MATERIAL_INFOS
-            = "SELECT ctime,CAST(usergroups AS VARCHAR),CAST(ownerid AS VARCHAR)"
+            = "SELECT ctime,CAST(aclist_id AS VARCHAR),CAST(ownerid AS VARCHAR)"
             + "FROM materials "
             + "WHERE materialid=:mid";
 

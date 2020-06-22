@@ -304,7 +304,7 @@ CREATE TABLE materials (
         materialid SERIAL NOT NULL PRIMARY KEY,
         materialTypeId INTEGER NOT NULL REFERENCES materialtypes(id),
         ctime TIMESTAMP  NOT NULL DEFAULT now(),
-        userGroups UUID NOT NULL REFERENCES aclists(id),
+        aclist_id UUID NOT NULL REFERENCES aclists(id),
         ownerId UUID NOT NULL REFERENCES usersgroups(id),
         deactivated BOOLEAN NOT NULL,
         projectId INTEGER REFERENCES projects(id));

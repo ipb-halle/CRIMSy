@@ -54,7 +54,7 @@ public class MaterialEntity implements Serializable {
 
     @Column
     @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID usergroups;
+    private UUID aclist_id;
 
     @Column
     @JohnzonConverter(LocalUUIDConverter.class)
@@ -89,12 +89,12 @@ public class MaterialEntity implements Serializable {
         this.ctime = ctime;
     }
 
-    public UUID getUsergroups() {
-        return usergroups;
+    public UUID getAclist_id() {
+        return aclist_id;
     }
 
-    public void setUsergroups(UUID usergroups) {
-        this.usergroups = usergroups;
+    public void setAclist_id(UUID aclist_id) {
+        this.aclist_id = aclist_id;
     }
 
     public UUID getOwnerid() {

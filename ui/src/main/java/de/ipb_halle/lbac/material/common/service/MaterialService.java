@@ -87,7 +87,7 @@ public class MaterialService implements Serializable {
             = "SELECT DISTINCT m.materialid, "
             + "m.materialtypeid, "
             + "m.ctime, "
-            + "m.usergroups, "
+            + "m.aclist_id, "
             + "m.ownerid, "
             + "m.projectid, "
             + "m.deactivated "
@@ -221,7 +221,7 @@ public class MaterialService implements Serializable {
     public int loadMaterialAmount(User u, Map<String, Object> cmap) {
 
         Query q = em.createNativeQuery(
-                SqlStringWrapper.aclWrapper(SQL_LOAD_MATERIAL_AMOUNT, "m.usergroups", ACPermission.permREAD)
+                SqlStringWrapper.aclWrapper(SQL_LOAD_MATERIAL_AMOUNT, "m.aclist_id", ACPermission.permREAD)
         );
         q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
         q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
@@ -236,7 +236,7 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<Material> getReadableMaterials(User u, Map<String, Object> cmap, int firstResult, int maxResults) {
-        Query q = em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL, "m.usergroups", ACPermission.permREAD), MaterialEntity.class);
+        Query q = em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL, "m.aclist_id", ACPermission.permREAD), MaterialEntity.class);
 
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
@@ -258,7 +258,7 @@ public class MaterialService implements Serializable {
             if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.BIOMATERIAL) {
                 m = getBioMaterial(me);
             }
-            m.setAcList(aclService.loadById(me.getUsergroups()));
+            m.setAcList(aclService.loadById(me.getAclist_id()));
             m.getDetailRights().addAll(loadDetailRightsOfMaterial(m.getId()));
             back.add(m);
         }
@@ -282,7 +282,7 @@ public class MaterialService implements Serializable {
                 taxonomyService.loadTaxonomyById(entity.getTaxoid()),
                 tissue
         );
-        b.setAcList(aclService.loadById(me.getUsergroups()));
+        b.setAcList(aclService.loadById(me.getAclist_id()));
         b.setOwnerID(me.getOwnerid());
         return b;
 
@@ -297,7 +297,7 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarMaterialNames(String name, User user) {
-        return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.usergroups", ACPermission.permREAD))
+        return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.aclist_id", ACPermission.permREAD))
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", userBean.getCurrentAccount().getId())
                 .getResultList();
@@ -537,7 +537,7 @@ public class MaterialService implements Serializable {
         mE.setMaterialtypeid(m.getType().getId());
         mE.setOwnerid(userBean.getCurrentAccount().getId());
         mE.setProjectid(m.getProjectId());
-        mE.setUsergroups(projectAclId);
+        mE.setAclist_id(projectAclId);
         mE.setDeactivated(false);
         em.persist(mE);
         m.setId(mE.getMaterialid());
@@ -631,7 +631,7 @@ public class MaterialService implements Serializable {
         mE.setMaterialtypeid(m.getType().getId());
         mE.setOwnerid(userId);
         mE.setProjectid(m.getProjectId());
-        mE.setUsergroups(projectAclId);
+        mE.setAclist_id(projectAclId);
         em.merge(mE);
     }
 

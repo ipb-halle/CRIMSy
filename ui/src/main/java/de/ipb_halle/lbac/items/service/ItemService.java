@@ -135,7 +135,7 @@ public class ItemService {
     public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
         List<Item> result = new ArrayList<>();
 
-        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS, "m.usergroups", ACPermission.permREAD), cmap, ItemEntity.class);
+        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS, "m.aclist_id", ACPermission.permREAD), cmap, ItemEntity.class);
         q.setParameter("userid", u.getId());
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
@@ -157,7 +157,7 @@ public class ItemService {
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS_AMOUNT, "m.usergroups", ACPermission.permREAD), cmap, null);
+        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS_AMOUNT, "m.aclist_id", ACPermission.permREAD), cmap, null);
         q.setParameter("userid", u.getId());
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();
