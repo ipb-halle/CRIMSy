@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -55,7 +56,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
-import javax.faces.component.UIMessages;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -122,8 +122,6 @@ public class MaterialBean implements Serializable {
 
     private boolean calculateFormulaAndMassesByDb = true;
 
-    private List<String> storageClassNames = new ArrayList<>();
-
     private MaterialEditState materialEditState = new MaterialEditState();
     private HistoryOperation historyOperation;
 
@@ -140,9 +138,7 @@ public class MaterialBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        storageClassNames = new ArrayList<>();
         strcutureModel = new V2000();
-        initStorageClassNames();
         permission = new MaterialEditPermission(this);
         taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService);
 
@@ -182,7 +178,7 @@ public class MaterialBean implements Serializable {
             currentMaterialType = m.getType();
             materialNameBean.getNames().addAll(m.getNames());
             materialIndexBean.getIndices().addAll(m.getIndices());
-            storageClassInformation = new StorageClassInformation(m, storageClassNames);
+            storageClassInformation = new StorageClassInformation(m, initStorageClassNames());
 
             if (m.getType() == MaterialType.STRUCTURE) {
                 Structure struc = (Structure) m;
@@ -206,7 +202,7 @@ public class MaterialBean implements Serializable {
 
     private void initState() {
         hazards = new HazardInformation();
-        storageClassInformation = new StorageClassInformation(storageClassNames);
+        storageClassInformation = new StorageClassInformation(initStorageClassNames());
         structureInfos = new StructureInformation();
         materialNameBean.init();
         materialIndexBean.init();
@@ -355,11 +351,11 @@ public class MaterialBean implements Serializable {
     public void actionSaveMaterial() {
         if (mode == Mode.CREATE) {
             saveNewMaterial();
-            UIMessage.info(MESSAGE_BUNDLE,"materialCreation_creation_new_completed");
+            UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_new_completed");
 
         } else {
             saveEditedMaterial();
-            UIMessage.info(MESSAGE_BUNDLE,"materialCreation_creation_edit_completed");
+            UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_edit_completed");
 
         }
         overviewBean.getTableController().reloadDataTableItems();
@@ -480,31 +476,16 @@ public class MaterialBean implements Serializable {
         return materialEditState;
     }
 
-    private void initStorageClassNames() {
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_1", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_2A", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_2B", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_3", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_4.1A", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_4.1B", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_4.2", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_4.3", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_5.1A", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_5.1B", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_5.1C", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_5.2", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_6.1A", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_6.1B", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_6.1C", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_6.1D", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_6.2", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_7", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_8A", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_8B", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_10", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_11", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_12", null));
-        storageClassNames.add(Messages.getString(MESSAGE_BUNDLE, "materialCreation_storageclass_13", null));
+    private List<StorageClass> initStorageClassNames() {
+        List<StorageClass> classes = materialService.loadStorageClasses();
+        for (StorageClass sc : classes) {
+            sc.setName(
+                    Messages.getString(
+                            MESSAGE_BUNDLE,
+                            "materialCreation_storageclass_" + sc.getName(),
+                            null));
+        }
+        return classes;
     }
 
     public HistoryOperation getHistoryOperation() {

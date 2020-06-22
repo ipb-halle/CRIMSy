@@ -52,6 +52,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
+import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
@@ -133,6 +134,7 @@ public class MaterialService implements Serializable {
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
     private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
+    private final String SQL_LOAD_STORAGE_CLASSES = "SELECT id,name FROM storageclasses";
 
     protected MaterialHistoryService materialHistoryService;
 
@@ -631,6 +633,16 @@ public class MaterialService implements Serializable {
         mE.setProjectid(m.getProjectId());
         mE.setUsergroups(projectAclId);
         em.merge(mE);
+    }
+
+    public List<StorageClass> loadStorageClasses() {
+        List<StorageClass> classes = new ArrayList<>();
+        List<Object> objects = this.em.createNativeQuery(SQL_LOAD_STORAGE_CLASSES).getResultList();
+        for (Object o : objects) {
+            Object[] oo = (Object[]) o;
+            classes.add(new StorageClass((Integer) oo[0], (String) oo[1]));
+        }
+        return classes;
     }
 
 }

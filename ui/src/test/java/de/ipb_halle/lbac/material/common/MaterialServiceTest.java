@@ -630,6 +630,12 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
     }
 
+    @Test
+    public void test008_loadStorageClasses() {
+        List<StorageClass> classes = instance.loadStorageClasses();
+        Assert.assertEquals(23, classes.size());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("MaterialServiceTest.war")

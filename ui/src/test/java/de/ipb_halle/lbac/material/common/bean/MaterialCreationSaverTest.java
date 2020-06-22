@@ -118,7 +118,9 @@ public class MaterialCreationSaverTest extends TestBase {
         Project p = creationTools.createProject();
         MoleculeStructureModel moleculeModel = new V2000();
         StructureInformation structureInfos = new StructureInformation();
-        saver.saveNewStructure(true, moleculeModel, structureInfos, p, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
+          StorageClassInformation sci=new StorageClassInformation();
+          //sci.setStorageClass(storageClass);
+        saver.saveNewStructure(true, moleculeModel, structureInfos, p, new HazardInformation(),sci, new ArrayList<>());
 
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());

@@ -47,19 +47,13 @@ public class StorageClassInformation {
         storageClass = possibleStorageClasses.get(0);
     }
 
-    public StorageClassInformation(List<String> storageClassNames) {
-
-        for (int i = 0; i < storageClassNames.size(); i++) {
-            possibleStorageClasses.add(new StorageClass(i + 1, storageClassNames.get(i)));
-        }
-
+    public StorageClassInformation(List<StorageClass> possibleClasses) {
+        possibleStorageClasses = possibleClasses;
     }
 
-    public StorageClassInformation(Material m, List<String> storageClassNames) {
+    public StorageClassInformation(Material m, List<StorageClass> possibleClasses) {
         possibleStorageClasses.clear();
-        for (int i = 0; i < storageClassNames.size(); i++) {
-            possibleStorageClasses.add(new StorageClass(i + 1, storageClassNames.get(i)));
-        }
+        this.possibleStorageClasses = possibleClasses;
         storageConditions.addAll(m.getStorageInformation().getStorageConditions());
 
         storageClass = new StorageClass(
