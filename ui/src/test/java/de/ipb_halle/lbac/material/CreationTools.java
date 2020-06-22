@@ -127,7 +127,7 @@ public class CreationTools {
         return p;
     }
 
-    public Structure createDefaultMaterial(Project p) {
+    public Structure createStructure(Project p) {
         Structure m = createEmptyStructure(p.getId());
 
         HazardInformation hazardInfos = new HazardInformation();

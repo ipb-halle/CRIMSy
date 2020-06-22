@@ -41,13 +41,13 @@ public class Structure extends Material {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     protected String sumFormula;
     protected Molecule molecule;
-    private double molarMass;
-    private double exactMolarMass;
+    private Double molarMass;
+    private Double exactMolarMass;
 
     public Structure(
             String sumFormula,
-            double molarMass,
-            double exactMolarMass,
+            Double molarMass,
+            Double exactMolarMass,
             int id,
             List<MaterialName> names,
             int projectId,
@@ -95,19 +95,19 @@ public class Structure extends Material {
         this.molecule = molecule;
     }
 
-    public double getMolarMass() {
+    public Double getMolarMass() {
         return molarMass;
     }
 
-    public void setMolarMass(double molarMass) {
+    public void setMolarMass(Double molarMass) {
         this.molarMass = molarMass;
     }
 
-    public double getExactMolarMass() {
+    public Double getExactMolarMass() {
         return exactMolarMass;
     }
 
-    public void setExactMolarMass(double exactMolarMass) {
+    public void setExactMolarMass(Double exactMolarMass) {
         this.exactMolarMass = exactMolarMass;
     }
 
@@ -124,8 +124,8 @@ public class Structure extends Material {
 
         String sumFormula = strcutureEntity.getSumformula();
         String stuctureModel = molecule;
-        double molarMass = strcutureEntity.getMolarmass();
-        double exactMass = strcutureEntity.getExactmolarmass();
+        Double molarMass = strcutureEntity.getMolarmass();
+        Double exactMass = strcutureEntity.getExactmolarmass();
 
         List<MaterialName> names = new ArrayList<>();
         List<IndexEntry> inices = new ArrayList<>();

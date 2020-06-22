@@ -17,13 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.structure.MoleculeStructureModel;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
@@ -60,51 +55,6 @@ public class MaterialCreationSaver {
         this.materialService = materialService;
     }
 
-    public void saveNewStructure(
-            boolean calculateFormulaAndMassesByDb,
-            MoleculeStructureModel moleculeModel,
-            StructureInformation structureInfos,
-            Project project,
-            HazardInformation hazards,
-            StorageClassInformation storageClassInformation,
-            List<IndexEntry> indices
-    ) {
-
-        try {
-            if (calculateFormulaAndMassesByDb && !moleculeModel.isEmptyMolecule(structureInfos.getStructureModel())) {
-                structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));
-                structureInfos.setExactMolarMass(moleculeService.getExactMolarMassOfMolecule(structureInfos.getStructureModel()));
-                structureInfos.setMolarMass(moleculeService.getMolarMassOfMolecule(structureInfos.getStructureModel()));
-            }
-
-            if (moleculeModel.isEmptyMolecule(structureInfos.getStructureModel())) {
-                structureInfos.setStructureModel(null);
-            }
-        } catch (Exception e) {
-            logger.error("Molecule model is not valide: " + structureInfos.getStructureModel());
-            structureInfos.setStructureModel(null);
-        }
-
-        Structure struc = new Structure(
-                structureInfos.getSumFormula(),
-                structureInfos.getMolarMass(),
-                structureInfos.getExactMolarMass(),
-                -1,
-                materialNameBean.getNames(),
-                project.getId(),
-                hazards,
-                storageClassInformation,
-                new Molecule(structureInfos.getStructureModel(), 0));
-
-        struc.getIndices().addAll(indices);
-
-        materialService.saveMaterialToDB(
-                struc,
-                project.getUserGroups().getId(),
-                project.getDetailTemplates()
-        );
-    }
-
     public void saveNewBioMaterial(
             Project project,
             List<MaterialName> names,
@@ -126,4 +76,49 @@ public class MaterialCreationSaver {
         materialService.saveMaterialToDB(bm, project.getUserGroups().getId(), project.getDetailTemplates());
 
     }
+
+    public void saveNewStructure(
+            boolean calculateFormulaAndMassesByDb,
+            MoleculeStructureModel moleculeModel,
+            StructureInformation structureInfos,
+            Project project,
+            HazardInformation hazards,
+            StorageClassInformation storageClassInformation,
+            List<IndexEntry> indices
+    ) {
+
+        try {
+            if (calculateFormulaAndMassesByDb && !moleculeModel.isEmptyMolecule(structureInfos.getStructureModel())) {
+                structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));
+                structureInfos.setExactMolarMass(moleculeService.getExactMolarMassOfMolecule(structureInfos.getStructureModel()));
+                structureInfos.setMolarMass(moleculeService.getMolarMassOfMolecule(structureInfos.getStructureModel()));
+            }
+
+            if (moleculeModel.isEmptyMolecule(structureInfos.getStructureModel())) {
+                structureInfos.setStructureModel(null);
+            }
+        } catch (Exception e) {
+            logger.error("Molecule model is not valide: " + structureInfos.getStructureModel(), e);
+            structureInfos.setStructureModel(null);
+        }
+        Structure struc = new Structure(
+                structureInfos.getSumFormula(),
+                structureInfos.getMolarMass(),
+                structureInfos.getExactMolarMass(),
+                -1,
+                materialNameBean.getNames(),
+                project.getId(),
+                hazards,
+                storageClassInformation,
+                new Molecule(structureInfos.getStructureModel(), 0));
+
+        struc.getIndices().addAll(indices);
+
+        materialService.saveMaterialToDB(
+                struc,
+                project.getUserGroups().getId(),
+                project.getDetailTemplates()
+        );
+    }
+
 }

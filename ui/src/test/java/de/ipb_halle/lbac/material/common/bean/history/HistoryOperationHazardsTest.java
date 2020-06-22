@@ -58,7 +58,7 @@ public class HistoryOperationHazardsTest {
     @Before
     public void init() {
         indices = new ArrayList<>();
-        s = new Structure("H2O", 0, 0, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
+        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);

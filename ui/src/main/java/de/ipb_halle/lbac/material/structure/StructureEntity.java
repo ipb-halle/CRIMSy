@@ -38,10 +38,10 @@ public class StructureEntity implements Serializable {
     private String sumformula;
 
     @Column
-    private double molarmass;
+    private Double molarmass;
 
     @Column
-    private double exactmolarmass;
+    private Double exactmolarmass;
 
     @Column
     private Integer moleculeid;
@@ -64,19 +64,19 @@ public class StructureEntity implements Serializable {
         this.sumformula = sumformula;
     }
 
-    public double getMolarmass() {
+    public Double getMolarmass() {
         return molarmass;
     }
 
-    public void setMolarmass(double molarmass) {
+    public void setMolarmass(Double molarmass) {
         this.molarmass = molarmass;
     }
 
-    public double getExactmolarmass() {
+    public Double getExactmolarmass() {
         return exactmolarmass;
     }
 
-    public void setExactmolarmass(double exactmolarmass) {
+    public void setExactmolarmass(Double exactmolarmass) {
         this.exactmolarmass = exactmolarmass;
     }
 

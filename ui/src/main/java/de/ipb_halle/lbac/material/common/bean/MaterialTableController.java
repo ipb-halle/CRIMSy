@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -39,7 +40,7 @@ public class MaterialTableController implements TableController {
     private DataTableNavigationController tableController;
 
     private List<Material> shownMaterials;
-    private Map<String, Object> lastcmap;
+    private Map<String, Object> lastcmap=new HashMap<>();
     private User lastUser;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 

@@ -25,15 +25,11 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.common.bean.mock.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
-import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -57,7 +53,7 @@ public class HistoryOperationStructureTest {
     @Before
     public void init() {
 
-        s = new Structure("H2O", 0, 0, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
+        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);

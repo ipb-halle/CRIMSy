@@ -41,14 +41,6 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
-import de.ipb_halle.lbac.material.common.Hazard;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
@@ -131,7 +123,7 @@ public class MaterialServiceTest extends TestBase {
 
         //Preparing project and material
         Project p = creationTools.createProject();
-        Structure m = creationTools.createDefaultMaterial(p);
+        Structure m = creationTools.createStructure(p);
         UUID idOfMatGeneralRights = p.getUserGroups().getId();
 
         instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates());
@@ -232,7 +224,7 @@ public class MaterialServiceTest extends TestBase {
         userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
         instance.setUserBean(userBean);
 
-        Structure structure = creationTools.createDefaultMaterial(p);
+        Structure structure = creationTools.createStructure(p);
 
         //Set initial storage parameter
         structure.getStorageInformation().setStorageClass(new StorageClass(1, "storage class 1"));
@@ -247,8 +239,8 @@ public class MaterialServiceTest extends TestBase {
         structure.getHazards().setHighlyFlammable(true);
         //set initial structure information
         structure.setSumFormula("H2O");
-        structure.setMolarMass(10);
-        structure.setExactMolarMass(9);
+        structure.setMolarMass(10d);
+        structure.setExactMolarMass(9d);
         structure.setMolecule(new Molecule("molecule-model", 0));
 
         //Save the material to the db
@@ -270,8 +262,8 @@ public class MaterialServiceTest extends TestBase {
         editedMaterial.getHazards().setHighlyFlammable(false);
         //Change  structure information
         editedMaterial.setSumFormula("H3O");
-        editedMaterial.setMolarMass(11);
-        editedMaterial.setExactMolarMass(10);
+        editedMaterial.setMolarMass(11d);
+        editedMaterial.setExactMolarMass(10d);
         editedMaterial.setMolecule(new Molecule("molecule-model after edit", 1));
 
         //Change the owner and project
@@ -336,7 +328,7 @@ public class MaterialServiceTest extends TestBase {
         userBean.setCurrentAccount(user);
         instance.setUserBean(userBean);
 
-        Structure m = creationTools.createDefaultMaterial(p);
+        Structure m = creationTools.createStructure(p);
         m.setHazards(new HazardInformation());
         m.getHazards().setIrritant(true);
         m.getHazards().setAttention(true);
@@ -394,7 +386,7 @@ public class MaterialServiceTest extends TestBase {
         instance.setUserBean(userBean);
 
         Project p = creationTools.createProject();
-        Structure m = creationTools.createDefaultMaterial(p);
+        Structure m = creationTools.createStructure(p);
         UUID idOfMatGeneralRights = p.getUserGroups().getId();
         instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates());
 
@@ -463,14 +455,14 @@ public class MaterialServiceTest extends TestBase {
         Project p = creationTools.createProject();
 
         //Create a structure
-        Structure struture1 = creationTools.createDefaultMaterial(p);
+        Structure struture1 = creationTools.createStructure(p);
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), p.getDetailTemplates());
 
         //Create a structure which is not readable
         userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
         ACList noRightsAcl = new ACList();
         noRightsAcl = aclistService.save(noRightsAcl);
-        Structure struture2 = creationTools.createDefaultMaterial(p);
+        Structure struture2 = creationTools.createStructure(p);
         instance.saveMaterialToDB(struture2, noRightsAcl.getId(), p.getDetailTemplates());
         //Create a biomaterial
 
@@ -571,14 +563,14 @@ public class MaterialServiceTest extends TestBase {
         Project p = creationTools.createProject();
 
         //Create a structure
-        Structure struture1 = creationTools.createDefaultMaterial(p);
+        Structure struture1 = creationTools.createStructure(p);
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), p.getDetailTemplates());
 
         //Create a structure which is not readable
         userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
         ACList noRightsAcl = new ACList();
         noRightsAcl = aclistService.save(noRightsAcl);
-        Structure struture2 = creationTools.createDefaultMaterial(p);
+        Structure struture2 = creationTools.createStructure(p);
         instance.saveMaterialToDB(struture2, noRightsAcl.getId(), p.getDetailTemplates());
         //Create a biomaterial
 

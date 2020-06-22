@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,6 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
 import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.bean.ItemBean;
@@ -40,21 +37,23 @@ import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.material.mocks.UserBeanMock;
-import de.ipb_halle.lbac.material.common.service.IndexService;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
+import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
+import de.ipb_halle.lbac.material.common.service.IndexService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.UserBeanMock;
+import de.ipb_halle.lbac.material.structure.MoleculeService;
+import de.ipb_halle.lbac.material.structure.MoleculeStructureModel;
+import de.ipb_halle.lbac.material.structure.StructureInformation;
+import de.ipb_halle.lbac.material.structure.V2000;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
@@ -67,13 +66,13 @@ import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,89 +82,53 @@ import org.junit.runner.RunWith;
  *
  * @author fmauz
  */
+/**
+ *
+ * @author fmauz
+ */
 @RunWith(Arquillian.class)
-public class MaterialBeanTest extends TestBase {
-
-    @Inject
-    private ACListService aclistService;
+public class MaterialCreationSaverTest extends TestBase {
 
     @Inject
     private MaterialService materialService;
 
     @Inject
-    private ProjectService projectService;
+    private MoleculeService moleculeService;
 
-    MateriaBeanMock instance;
-    CreationTools creationTools;
-    User publicUser;
-    User customUser;
-    ACList acl;
-    Material material;
-    UserBeanMock userBean;
-    Project project;
+    private CreationTools creationTools;
+    @Inject
+    private ProjectService projectService;
 
     @Before
     public void init() {
-        instance = new MateriaBeanMock();
-        instance.setAcListService(aclistService);
-
         creationTools = new CreationTools("", "", "", memberService, projectService);
-        project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
-        publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        acl = new ACList();
-        customUser = createUser("testUser", "testUser");
-        acl.addACE(customUser, new ACPermission[]{ACPermission.permEDIT});
-        acl = aclistService.save(acl);
-        project.setOwner(publicUser);
-        project.setUserGroups(acl);
-        projectService.saveProjectToDb(project);
-
-        userBean = new UserBeanMock();
-        userBean.setCurrentAccount(publicUser);
-        instance.setUserBean(userBean);
-
-        material = creationTools.createStructure(project);
-        Structure s = (Structure) material;
-        s.getMolecule().setStructureModel(null);
-        material.setOwnerID(publicUser.getId());
-        materialService.setUserBean(userBean);
-
-        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>());
-
-        instance.setMaterialIndexBean(new MaterialIndexBean());
-        instance.setMaterialNameBean(new MaterialNameBean());
-
-        instance.getMaterialEditState().setMaterialToEdit(material);
-        instance.getMaterialEditState().setMaterialBeforeEdit(material);
-    }
-
-    @After
-    public void finish() {
+        cleanItemsFromDb();
         cleanMaterialsFromDB();
-        cleanProjectFromDB(project, false);
-        // cleanUserFromDB(customUser);
 
     }
 
     @Test
-    public void test001_checkRights() {
+    public void test001_saveNewStructure() {
 
-        instance.setMode(MaterialBean.Mode.HISTORY);
-        Assert.assertFalse("testcase 001: In history mode edit must be false ", instance.isProjectEditEnabled());
-        instance.setMode(MaterialBean.Mode.CREATE);
-        Assert.assertTrue("testcase 001: In creation mode edit must be true ", instance.isProjectEditEnabled());
-        instance.setMode(MaterialBean.Mode.EDIT);
-        Assert.assertTrue("testcase 001: Owner must be able to edit project", instance.isProjectEditEnabled());
-        User admin = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.OWNER_ACCOUNT_ID));
-        userBean.setCurrentAccount(admin);
-        Assert.assertFalse("testcase 001: No priviliged user must not  be able to edit project", instance.isProjectEditEnabled());
-        userBean.setCurrentAccount(customUser);
-        Assert.assertTrue("testcase 001: Priviliged user must   be able to edit project", instance.isProjectEditEnabled());
+        MaterialNameBean nameBean = new MaterialNameBean();
+        MaterialCreationSaver saver = new MaterialCreationSaver(moleculeService, nameBean, materialService);
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
+        materialService.setUserBean(userBean);
+        Project p = creationTools.createProject();
+        MoleculeStructureModel moleculeModel = new V2000();
+        StructureInformation structureInfos = new StructureInformation();
+        saver.saveNewStructure(true, moleculeModel, structureInfos, p, new HazardInformation(), new StorageClassInformation(), new ArrayList<>());
+
+        List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
+        Assert.assertEquals(1, o.size());
+        o = entityManagerService.doSqlQuery("SELECT * FROM structures");
+        Assert.assertEquals(1, o.size());
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("MaterialEditBeanTest.war")
+        return prepareDeployment("MaterialCreationSaverTest.war")
                 .addClass(UserBeanMock.class)
                 .addClass(ACListService.class)
                 .addClass(CollectionBean.class)

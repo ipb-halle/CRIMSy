@@ -278,7 +278,7 @@ public class ItemServiceTest extends TestBase {
     }
 
     private Item createItem() {
-        Structure s = new Structure("", 0, 0, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
+        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
         item.setUnit("kg");
