@@ -119,6 +119,7 @@ public class MaterialCreationSaverTest extends TestBase {
         MoleculeStructureModel moleculeModel = new V2000();
         StructureInformation structureInfos = new StructureInformation();
           StorageClassInformation sci=new StorageClassInformation();
+          sci.setRemarks("test-remark");
           //sci.setStorageClass(storageClass);
         saver.saveNewStructure(true, moleculeModel, structureInfos, p, new HazardInformation(),sci, new ArrayList<>());
 
@@ -126,6 +127,9 @@ public class MaterialCreationSaverTest extends TestBase {
         Assert.assertEquals(1, o.size());
         o = entityManagerService.doSqlQuery("SELECT * FROM structures");
         Assert.assertEquals(1, o.size());
+        
+         o = entityManagerService.doSqlQuery("SELECT * FROM storages");
+         Assert.assertEquals(1, o.size());
     }
 
     @Deployment

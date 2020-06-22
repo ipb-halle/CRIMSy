@@ -635,6 +635,7 @@ public class MaterialService implements Serializable {
         em.merge(mE);
     }
 
+    @SuppressWarnings("unchecked")
     public List<StorageClass> loadStorageClasses() {
         List<StorageClass> classes = new ArrayList<>();
         List<Object> objects = this.em.createNativeQuery(SQL_LOAD_STORAGE_CLASSES).getResultList();

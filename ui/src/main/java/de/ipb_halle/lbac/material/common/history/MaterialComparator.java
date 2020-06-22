@@ -181,7 +181,7 @@ public class MaterialComparator {
         if (!Objects.equals(newStorageClassId, oldStorageClassId)) {
             diff.changeStorageClass(oldStorageClassId, newStorageClassId);
         }
-        if (!Objects.equals(newStorageClassId, oldStorageClassId)) {
+        if (!Objects.equals(oldDescription, newDescription)) {
             diff.changeStorageDescription(oldDescription, newDescription);
         }
 

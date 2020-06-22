@@ -179,6 +179,7 @@ public class MaterialBean implements Serializable {
             materialNameBean.getNames().addAll(m.getNames());
             materialIndexBean.getIndices().addAll(m.getIndices());
             storageClassInformation = new StorageClassInformation(m, initStorageClassNames());
+            storageClassInformation.setRemarks(m.getStorageInformation().getRemarks());
 
             if (m.getType() == MaterialType.STRUCTURE) {
                 Structure struc = (Structure) m;
@@ -313,14 +314,15 @@ public class MaterialBean implements Serializable {
         materialEditState.getMaterialToEdit().setIndices(materialIndexBean.getIndices());
         materialEditState.getMaterialToEdit().setHazards(hazards);
         materialEditState.getMaterialToEdit().setStorageInformation(storageClassInformation);
+
         if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
             Structure s = (Structure) materialEditState.getMaterialToEdit();
             Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
             if (m.isEmptyMolecule()) {
                 s.setMolecule(null);
                 if (calculateFormulaAndMassesByDb) {
-                    structureInfos.setExactMolarMass(0d);
-                    structureInfos.setMolarMass(0d);
+                    structureInfos.setExactMolarMass(null);
+                    structureInfos.setMolarMass(null);
                     structureInfos.setSumFormula(null);
                 }
             } else {
