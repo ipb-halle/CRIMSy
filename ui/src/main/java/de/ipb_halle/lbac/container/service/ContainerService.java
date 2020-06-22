@@ -92,7 +92,7 @@ public class ContainerService implements Serializable {
             + "c.deactivated "
             + "FROM containers c "
             + "LEFT JOIN projects p ON p.id=c.projectid "
-            + "LEFT JOIN acentries ace ON ace.aclist_id=p.usergroups "
+            + "LEFT JOIN acentries ace ON ace.aclist_id=p.aclist_id "
             + "LEFT JOIN memberships ms ON ms.group_id=ace.member_id "
             + "LEFT JOIN nested_containers nc ON nc.sourceid=c.id "
             + "LEFT JOIN containers c2 ON c2.id=nc.targetid "

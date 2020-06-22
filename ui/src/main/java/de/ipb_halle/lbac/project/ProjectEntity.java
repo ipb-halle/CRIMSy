@@ -64,7 +64,7 @@ public class ProjectEntity implements Serializable {
 
     @Column
     @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID userGroups;
+    private UUID aclist_id;
 
     @Column
     private String description;
@@ -84,7 +84,7 @@ public class ProjectEntity implements Serializable {
         budgetBlocked = p.budgetBlocked;
         projectTypeId = p.getProjectType().getId();
         ownerId = p.getOwnerID();
-        userGroups = p.getUserGroups().getId();
+        aclist_id = p.getUserGroups().getId();
         description = p.getDescription();
         ctime = new Date();
         mtime = new Date();
@@ -139,12 +139,12 @@ public class ProjectEntity implements Serializable {
         this.ownerId = ownerId;
     }
 
-    public UUID getUserGroups() {
-        return userGroups;
+    public UUID getAclist_id() {
+        return aclist_id;
     }
 
-    public void setUserGroups(UUID userGroups) {
-        this.userGroups = userGroups;
+    public void setAclist_id(UUID aclist_id) {
+        this.aclist_id = aclist_id;
     }
 
     public String getDescription() {

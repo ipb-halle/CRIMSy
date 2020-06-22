@@ -59,7 +59,7 @@ CREATE TABLE projects (
         budgetBlocked BOOLEAN default false,
 	projecttypeid INTEGER NOT NULL REFERENCES projecttypes(id),
 	ownerid UUID NOT NULL REFERENCES usersgroups(id),
-        usergroups UUID NOT NULL REFERENCES aclists(id),
+        aclist_id UUID NOT NULL REFERENCES aclists(id),
 	description VARCHAR,
 	ctime TIMESTAMP  NOT NULL DEFAULT now(),
 	mtime TIMESTAMP  NOT NULL DEFAULT now());

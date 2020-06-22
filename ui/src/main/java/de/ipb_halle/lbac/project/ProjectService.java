@@ -86,7 +86,7 @@ public class ProjectService {
      */
     @SuppressWarnings("unchecked")
     private Project loadDetailInfosOfProject(ProjectEntity pE) {
-        ACList projectACL = aclistService.loadById(pE.getUserGroups());
+        ACList projectACL = aclistService.loadById(pE.getAclist_id());
         Map<MaterialDetailType, ACList> detailTemplates = new HashMap<>();
         List<ProjectTemplateEntity> templates = em.createNativeQuery(
                 SQL_PROJECT_TEMPLATES, ProjectTemplateEntity.class)
@@ -154,7 +154,7 @@ public class ProjectService {
 
         List<ProjectEntity> results = this.em.createQuery(criteriaQuery.distinct(true)).getResultList();
         for (ProjectEntity pE : results) {
-            ACList projectACL = aclistService.loadById(pE.getUserGroups());
+            ACList projectACL = aclistService.loadById(pE.getAclist_id());
             boolean isOwner = pE.getOwnerId().equals(u.getId());
             boolean hasReadRight = false;
             if (!isOwner) {
