@@ -24,9 +24,21 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <ui:composition>
-        #{material.names.get(0).value}
-    </ui:composition>
+   <composite:interface name="textView"
+                     displayName="textView"
+                     preferred="true"
+                     expert="false"
+                     shortDescription="Displays text">
+        <composite:attribute name="text" required="true" />
+    </composite:interface>
+
+    <composite:implementation>
+
+        <h:outputText value="#{cc.attrs.text}" escape="false"/> 
+
+    </composite:implementation>
 </html>
+

@@ -24,22 +24,19 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<!--
-    Every action needs to set the materialHolder 
--->
+    <composite:interface name="materialView"
+                     displayName="Most simple material view"
+                     preferred="true"
+                     expert="false"
+                     shortDescription="Displays the first name of a material">
+        <composite:attribute name="material" required="true" />
+    </composite:interface>
 
-    <ui:composition>
-        <p:dialog header="Chart Data" 
-                widgetVar="dlg_barChart"
-                modal="true" 
-                width="700"
-                height="350">
-            <center>
-                <p:chart type="bar" model="#{chartController.barChart}" style="height:300px" rendered="#{chartController.barChart != null}" />
-            </center>
-        </p:dialog>
+    <composite:implementation >
+        #{cc.attrs.material.names.get(0).value}
+    </composite:implementation>
 
-    </ui:composition>
 </html>

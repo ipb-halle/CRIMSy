@@ -24,6 +24,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
@@ -56,21 +57,19 @@
                 </p:dialog> 
                 <br/></div>
 
-            <ui:fragment rendered="#{rec.facelet eq 'ASSAY'}">
-                <ui:insert name="assayPanel">
-                    <ui:include src="assay.xhtml">
-                        <ui:param name="expAssayRecord" value="#{rec}" />
-                    </ui:include>
-                </ui:insert>
-            </ui:fragment>
+            <crimsy:assay assay="#{rec}"
+                        controller="#{controller}"
+                        materialAgent="#{materialAgent}" 
+                        bean="#{experimentBean}"
+                        rendered="#{rec.facelet eq 'ASSAY'}">
+                <crimsy:assayRecords assay="#{rec}"
+                            controller="#{controller}"
+                            materialAgent="#{materialAgent}" />
+            </crimsy:assay>
 
-            <ui:fragment rendered="#{rec.facelet eq 'TEXT'}">
-                <ui:insert name="textPanel">
-                    <ui:include src="text.xhtml">
-                        <ui:param name="expTextRecord" value="#{rec}" />
-                    </ui:include>
-                </ui:insert>
-            </ui:fragment>
+            <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
+            <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+
 
             <ui:fragment rendered="#{rec.edit}">
                 <p:commandButton value="Cancel" action="#{controller.actionCancel}" update="@all" />

@@ -37,6 +37,7 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.primefaces.model.chart.BarChartModel;
 
 /**
  * Bean for interacting with the ui to present and manipulate a experiments 
@@ -65,6 +66,8 @@ public class ExperimentBean implements Serializable {
     private String newRecordType;
 
     private boolean templateMode = false;
+
+    private BarChartModel barChart;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -174,6 +177,10 @@ public class ExperimentBean implements Serializable {
         this.experimentService.save(this.experiment);
     }
 
+    public void actionSetBarChartModel(int rank) {
+        this.barChart = this.expRecords.get(rank).getBarChart();
+    }
+
     /**
      * toggle the currently active experiment
      * ToDo: xxxxx restrict search
@@ -212,6 +219,7 @@ public class ExperimentBean implements Serializable {
     public void cleanup() {
         this.expRecordController = null;
         this.newRecordType = "";
+        this.barChart = null;
     }
 
     public void createExpRecordController(String recordType) {
@@ -225,6 +233,10 @@ public class ExperimentBean implements Serializable {
             default :
                 this.expRecordController = null;
         }
+    }
+
+    public BarChartModel getBarChart() {
+        return this.barChart;
     }
 
     public Experiment getExperiment() {

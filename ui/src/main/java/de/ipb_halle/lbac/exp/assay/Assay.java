@@ -177,6 +177,7 @@ public class Assay extends ExpRecord implements DTO {
         return model;
     }
 
+    @Override
     public BarChartModel getBarChart() {
         switch (this.outcomeType) {
             case SINGLE_POINT : return computeSinglePointBarChart();

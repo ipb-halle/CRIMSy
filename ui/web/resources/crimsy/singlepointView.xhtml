@@ -24,10 +24,22 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <ui:composition>
-        <td class="assayTableCell">#{outcome.value}</td>
-        <td class="assayTableCell">#{outcome.unit}</td>
-    </ui:composition>
+    <composite:interface name="singlepointView"
+                     displayName="View of single point assay outcomes"
+                     preferred="true"
+                     expert="false"
+                     shortDescription="Displays value and unit of the outcome">
+        <composite:attribute name="outcome" required="true" />
+    </composite:interface>
+
+    <composite:implementation >
+
+        <td class="assayTableCell">#{cc.attrs.outcome.value}</td>
+        <td class="assayTableCell">#{cc.attrs.outcome.unit}</td>
+
+    </composite:implementation>
 </html>
+

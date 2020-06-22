@@ -53,8 +53,6 @@ public class Text extends ExpRecord implements DTO {
         return new ArrayList<AssayRecord> ();
     }
 
-
-
     public TextEntity createEntity() {
         return new TextEntity()
             .setExpRecordId(getExpRecordId())

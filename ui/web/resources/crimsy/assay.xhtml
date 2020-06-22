@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <composite:interface name="assay"
+                     displayName="Assay"
+                     preferred="true"
+                     expert="false"
+                     shortDescription="view and edit assays">
+        <composite:attribute name="assay" required="true" >
+            <composite:editableValueHolder name="remarks" />
+            <composite:editableValueHolder name="unit" />
+            <composite:editableValueHolder name="value" />
+            <composite:editableValueHolder name="units" />
+        </composite:attribute>
+        <composite:attribute name="controller" required="true" >
+        </composite:attribute>
+        <composite:attribute name="materialAgent" required="true" >
+            <composite:attribute name="setMaterialHolder" 
+                method-signature="void setMaterialHolder(de.ipb_halle.lbac.exp.assay.MaterialHolder)" />
+        </composite:attribute>
+        <composite:attribute name="bean" required="true" >
+            <composite:attribute name="actionSetBarChartModel"
+                method-signature="void actionSetBarChartModel(int)" />
+        </composite:attribute>
+    </composite:interface>
+
+    <composite:implementation >
+
+        <h:panelGrid columns="2">
+            <h:outputText value="Remarks:" />
+            <p:inputText value="#{cc.attrs.assay.remarks}" />
+            <h:outputText value="Standard units:" />
+            <h:panelGroup>
+                <p:inputText value="#{cc.attrs.assay.units}" disabled="#{! cc.attrs.assay.template}"/>
+            </h:panelGroup>
+            <h:outputText value="Target:" />
+            <h:panelGroup>
+                <crimsy:materialView material="#{cc.attrs.assay.target}" />
+                <h:commandLink 
+                    update="@none"
+                    rendered="#{cc.attrs.assay.edit}"
+                    action="#{cc.attrs.materialAgent.setMaterialHolder(cc.attrs.controller)}"
+                    onclick="PF('dlg_materialEdit').show();" >
+                    <span class="fa fa-cog"> </span>
+                </h:commandLink>
+            </h:panelGroup>
+            <h:outputText value="Outcome Type:" />
+            <h:outputText value="SINGLE_POINT xxxxx" />
+        </h:panelGrid>
+
+        <table>
+            <tr>
+                <th class="assayTableCell">Material</th>
+                <th class="assayTableCell">Item</th>
+                <th class="assayTableCell">
+                    <p:commandLink 
+                            update="@none" 
+                            action="#{cc.attrs.bean.actionSetBarChartModel(cc.attrs.assay.index)}"
+                            onclick="PF('dlg_barChart').show();">
+                        <span class="fa fa-search"> Value</span>
+                    </p:commandLink></th>
+                <th class="assayTableCell">Unit</th>
+                <th class="assayTableCell"> </th>
+            </tr>
+
+
+        <composite:insertChildren />
+
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <p:commandLink 
+                    rendered="#{cc.attrs.assay.edit}"
+                    update="@form"
+                    action="#{cc.attrs.controller.actionAppendAssayRecord()}" >
+                    <span class="fa fa-plus"> </span>
+                </p:commandLink>
+            </td>
+        </tr>
+        </table>
+
+    </composite:implementation >
+</html>

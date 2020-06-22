@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <composite:interface name="assayRecords"
+                     displayName="assayRecords"
+                     preferred="true"
+                     expert="false"
+                     shortDescription="view and edit assay records">
+        <composite:attribute name="assay" required="true" />
+        <composite:attribute name="controller" required="true" >
+            <composite:attribute name="edit" 
+                method-signature="void actionEditAssayRecord(int)" />
+        </composite:attribute>
+        <composite:attribute name="materialAgent" required="true" >
+            <composite:attribute name="setMaterialHolder" 
+                method-signature="void setMaterialHolder(de.ipb_halle.lbac.exp.assay.MaterialHolder)" />
+        </composite:attribute>
+    </composite:interface>
+
+    <composite:implementation >
+
+        <ui:repeat value="#{cc.attrs.assay.records}" var="assayRec">
+            
+            <tr>
+                <td class="assayTableCell">
+                    <crimsy:materialView material="#{assayRec.material}" />
+                    <p:commandLink title="Action" 
+                            rendered="#{assayRec.edit}"
+                            action="#{cc.attrs.materialAgent.setMaterialHolder(cc.attrs.controller)}"
+                            update="@parent" >
+                        <span class="fa fa-pencil"> </span>
+                        <p:ajax oncomplete="PF('dlg_materialEdit').show();" />
+                    </p:commandLink>
+
+                </td><td class="assayTableCell">Item currently omitted</td>
+
+                <crimsy:singlepointView outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and (! assayRec.edit)}" />
+                <crimsy:singlepointEdit outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and assayRec.edit}" />
+                
+                <td class="assayTableCell">
+                    <p:commandLink 
+                            rendered="#{cc.attrs.assay.edit}"
+                            update="@all"
+                            action="#{cc.attrs.controller.edit(assayRec.rank)}" >
+                        <span class="fa fa-cog"> </span>
+                    </p:commandLink>
+                </td>
+            </tr>
+
+        </ui:repeat>
+
+    </composite:implementation >
+</html>

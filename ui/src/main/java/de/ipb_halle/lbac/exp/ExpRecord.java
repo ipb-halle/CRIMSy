@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import org.primefaces.model.chart.BarChartModel;
 
 /**
  * Experiment records (<code>ExpRecord</code>) are the abstract base class 
@@ -78,6 +79,10 @@ public abstract class ExpRecord implements DTO {
             .setType(this.type);
     }
 
+    public BarChartModel getBarChart() {
+        return null;
+    }
+
     public Date getChangeTime() {
         return this.changetime;
     }
@@ -120,6 +125,17 @@ public abstract class ExpRecord implements DTO {
      */
     public int getIndex() {
         return this.index;
+    }
+
+    /**
+     * @return the value of the template flag for this records 
+     * experiment or false if experiment is not set.
+     */
+    public boolean getTemplate() {
+        if (this.experiment != null) {
+            return this.experiment.getTemplate();
+        }
+        return false;
     }
 
     /**
