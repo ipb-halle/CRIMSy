@@ -156,7 +156,7 @@ limitations under the License.
                             styleClass="materialFilterButton"
                             value="Clear"
                             ajax="true"
-                            update="materialSearchMaskForm @(.materialOverviewTableContainer)"
+                            update="materialForm materialSearchMaskForm @(.materialOverviewTableContainer)"
                             onclick="ajax:materialOverviewBean.searchController.actionClearSearchFilter();"/>
                     </b:column>
                     <b:column
@@ -166,7 +166,7 @@ limitations under the License.
                             styleClass="materialFilterButton"
                             value="Search"
                             ajax="true"
-                            update="materialSearchMaskForm @(.materialOverviewTableContainer)"
+                            update="materialForm materialSearchMaskForm @(.materialOverviewTableContainer)"
                             onclick="ajax:materialOverviewBean.searchController.actionStartMaterialSearch();"/>
                     </b:column>
                 </b:row>
