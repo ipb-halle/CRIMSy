@@ -99,7 +99,9 @@ public class ItemService {
             + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
             + "LEFT JOIN containers c ON nc.targetid=c.id "
             + "LEFT JOIN containers c2 ON i.containerid=c2.id "
+            + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1) "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
             + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
@@ -116,7 +118,9 @@ public class ItemService {
             + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
             + "LEFT JOIN containers c ON nc.targetid=c.id "
             + "LEFT JOIN containers c2 ON i.containerid=c2.id "
+            + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
             + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
@@ -135,7 +139,7 @@ public class ItemService {
     public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
         List<Item> result = new ArrayList<>();
 
-        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS, "m.aclist_id", ACPermission.permREAD), cmap, ItemEntity.class);
+        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS, "m.aclist_id", "m.ownerid", ACPermission.permREAD), cmap, ItemEntity.class);
         q.setParameter("userid", u.getId());
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
@@ -157,7 +161,7 @@ public class ItemService {
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS_AMOUNT, "m.aclist_id", ACPermission.permREAD), cmap, null);
+        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS_AMOUNT, "m.aclist_id", "m.ownerid", ACPermission.permREAD), cmap, null);
         q.setParameter("userid", u.getId());
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();

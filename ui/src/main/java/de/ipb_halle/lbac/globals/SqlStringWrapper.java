@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.entity.ACPermission;
-import java.util.UUID;
 
 /**
  *
@@ -26,66 +25,37 @@ import java.util.UUID;
  */
 public class SqlStringWrapper {
 
-    public static String[] splitSqlAtKeyword(String sql, String keyword) {
-        int lastIndex = sql.toLowerCase().lastIndexOf(keyword.toLowerCase());
-        if (lastIndex == -1) {
-            return new String[]{sql};
-        }
-        String firstPart = sql.substring(0, lastIndex);
-        String lastPart = sql.substring(lastIndex, sql.length());
-        return new String[]{firstPart, lastPart};
-    }
+    public static final String JOIN_KEYWORD = "#ACL_JOIN#";
+    public static final String WHERE_KEYWORD = "#ACL_WHERE#";
 
     public static String aclWrapper(
-            String originalSql,
-            String aclColumn,
+            String originalSqlString,
+            String acListColumn,
+            String ownerColumn,
             ACPermission... permissions) {
-        String[] splittedBeforeWhere = splitSqlAtKeyword(originalSql, "where");
-        switch (splittedBeforeWhere.length) {
-            case 2:
-                return (splittedBeforeWhere[0]
-                        + aclTableJoin(aclColumn)
-                        + aclPermissionConditionWithWhere(permissions)
-                        + splittedBeforeWhere[1].substring(5, splittedBeforeWhere[1].length())).replace("  ", " ");
-            case 1:
-                String[] splittedBeforeGroupBy = splitSqlAtKeyword(originalSql, "group by");
-                switch (splittedBeforeGroupBy.length) {
-                    case 1:
-                        return (splittedBeforeGroupBy[0] + aclTableJoin(aclColumn) + aclPermissionConditionWithoutWhere(permissions)).replace("  ", " ");
-
-                    case 2:
-                        return (splittedBeforeGroupBy[0] + aclTableJoin(aclColumn) + aclPermissionConditionWithoutWhere(permissions) + splittedBeforeGroupBy[1]).replace("  ", " ");
-
-                    default:
-                        throw new RuntimeException("Strings with multiple where clauses(e.g. union) are not supported");
-                }
-            default:
-                throw new RuntimeException("Strings with multiple where clauses(e.g. union) are not supported");
-        }
+        return originalSqlString
+                .replaceAll(JOIN_KEYWORD, join(acListColumn))
+                .replaceAll(WHERE_KEYWORD, where(ownerColumn, permissions))
+                .replaceAll("  ", " ")
+                .trim();
     }
 
-    public static String aclTableJoin(String aclColumn) {
+    private static String join(String aclColumn) {
         return String.format(
                 " JOIN acentries ace ON ace.aclist_id=%s "
                 + " JOIN memberships me ON ace.member_id=me.group_id ",
                 aclColumn);
     }
 
-    public static String aclPermissionConditionWithWhere(ACPermission... permissions) {
-        return aclPermissionConditionWithoutWhere(permissions) + " AND ";
-
-    }
-
-    public static String aclPermissionConditionWithoutWhere(ACPermission... permissions) {
-
-        String back = " WHERE";
+    private static String where(String ownerColumn, ACPermission... permissions) {
+        String back = "";
         for (int i = 0; i < permissions.length; i++) {
             back += String.format(" ace.%s=true ", permissions[i].toString().toLowerCase());
             back += " AND ";
         }
 
         back += "(CAST(:userid AS UUID)=me.member_id "
-                + "OR m.ownerid=CAST(:userid AS UUID)) ";
+                + "OR " + ownerColumn + "=CAST(:userid AS UUID)) ";
         return back;
     }
 }

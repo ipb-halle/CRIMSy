@@ -31,9 +31,11 @@ public class SqlStringWrapperTest {
     @Test
     public void test001_aclTableJoin() {
 
-        String originalString = "SELECT a.a,a.b FROM columns a WHERE a.id=0";
-
-        String enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD);
+        String originalString = String.format(
+                "SELECT a.a,a.b FROM columns a %s"
+                + " WHERE %s AND a.id=0",
+                SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
+        String enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", "m.ownerid", ACPermission.permREAD);
 
         Assert.assertEquals(
                 "SELECT a.a,a.b "
@@ -44,9 +46,13 @@ public class SqlStringWrapperTest {
                 + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
                 + "AND a.id=0", enchantedString);
 
-        originalString = "SELECT a.a,a.b FROM columns a";
-        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD);
-        Assert.assertEquals(enchantedString.trim(),
+        originalString = String.format("SELECT a.a,a.b FROM columns a %s WHERE %s", SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
+        enchantedString = SqlStringWrapper.aclWrapper(
+                originalString,
+                "a.aclistid",
+                "m.ownerid",
+                ACPermission.permREAD);
+        Assert.assertEquals(enchantedString,
                 "SELECT a.a,a.b "
                 + "FROM columns a "
                 + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
@@ -55,8 +61,8 @@ public class SqlStringWrapperTest {
                 + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID))"
         );
 
-        originalString = "SELECT a.a,a.b FROM columns a GROUP BY a.x";
-        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD);
+        originalString = String.format("SELECT a.a,a.b FROM columns a %s WHERE %s GROUP BY a.x", SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
+        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", "m.ownerid", ACPermission.permREAD);
         Assert.assertEquals(
                 "SELECT a.a,a.b "
                 + "FROM columns a "
@@ -67,8 +73,8 @@ public class SqlStringWrapperTest {
                 + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
                 + "GROUP BY a.x", enchantedString);
 
-        originalString = "SELECT a.a,a.b FROM columns a WHERE a=0 GROUP BY a.x";
-        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", ACPermission.permREAD, ACPermission.permEDIT);
+        originalString = String.format("SELECT a.a,a.b FROM columns a %s WHERE %s AND a=0 GROUP BY a.x", SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
+        enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", "m.ownerid", ACPermission.permREAD, ACPermission.permEDIT);
         Assert.assertEquals(
                 "SELECT a.a,a.b "
                 + "FROM columns a "

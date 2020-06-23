@@ -95,7 +95,9 @@ public class MaterialService implements Serializable {
             + "JOIN projects p ON p.id=m.projectid "
             + "JOIN material_indices mi ON mi.materialid=m.materialid "
             + "JOIN usersgroups u ON u.id=m.ownerid "
+            + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE deactivated=false "
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
@@ -110,7 +112,9 @@ public class MaterialService implements Serializable {
             + "JOIN projects p ON p.id=m.projectid "
             + "JOIN material_indices mi ON mi.materialid=m.materialid "
             + "JOIN usersgroups u ON u.id=m.ownerid "
+            + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE deactivated=false "
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
@@ -130,7 +134,9 @@ public class MaterialService implements Serializable {
             = "SELECT DISTINCT(mi.value) "
             + "FROM material_indices mi "
             + "JOIN materials m ON m.materialid=mi.materialid "
+            + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE LOWER(mi.value) LIKE LOWER(:name) "
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
     private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
@@ -221,7 +227,7 @@ public class MaterialService implements Serializable {
     public int loadMaterialAmount(User u, Map<String, Object> cmap) {
 
         Query q = em.createNativeQuery(
-                SqlStringWrapper.aclWrapper(SQL_LOAD_MATERIAL_AMOUNT, "m.aclist_id", ACPermission.permREAD)
+                SqlStringWrapper.aclWrapper(SQL_LOAD_MATERIAL_AMOUNT, "m.aclist_id", "m.ownerid", ACPermission.permREAD)
         );
         q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
         q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
@@ -236,7 +242,7 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<Material> getReadableMaterials(User u, Map<String, Object> cmap, int firstResult, int maxResults) {
-        Query q = em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL, "m.aclist_id", ACPermission.permREAD), MaterialEntity.class);
+        Query q = em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL, "m.aclist_id", "m.ownerid", ACPermission.permREAD), MaterialEntity.class);
 
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
@@ -297,7 +303,7 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarMaterialNames(String name, User user) {
-        return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.aclist_id", ACPermission.permREAD))
+        return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.aclist_id", "m.ownerid", ACPermission.permREAD))
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", userBean.getCurrentAccount().getId())
                 .getResultList();
