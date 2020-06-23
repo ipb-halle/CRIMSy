@@ -37,7 +37,7 @@ CREATE TABLE experiments (
     code            VARCHAR,
     description     VARCHAR,
     template        BOOLEAN NOT NULL DEFAULT FALSE,
-    usergroups      UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    aclist_id       UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     ownerid         UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 

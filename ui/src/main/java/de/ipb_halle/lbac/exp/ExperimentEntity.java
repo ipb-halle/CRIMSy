@@ -54,7 +54,7 @@ public class ExperimentEntity implements Serializable {
     private UUID ownerid;
 
     @Column
-    private UUID usergroups;
+    private UUID aclist_id;
 
     @Column
     private boolean template;
@@ -76,7 +76,7 @@ public class ExperimentEntity implements Serializable {
     }
 
     public UUID getACListId() {
-        return usergroups;
+        return aclist_id;
     }
 
     public boolean getTemplate() {
@@ -103,8 +103,8 @@ public class ExperimentEntity implements Serializable {
         return this;
     }
 
-    public ExperimentEntity setACListId(UUID usergroups) {
-        this.usergroups = usergroups;
+    public ExperimentEntity setACListId(UUID aclist_id) {
+        this.aclist_id = aclist_id;
         return this;
     }
 
