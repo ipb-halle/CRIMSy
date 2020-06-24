@@ -49,7 +49,7 @@
                         value="#{itemBean.containerController.getTotalSlots(0)}"
                         var="x">
                         <p:column>
-                            #{x}
+                            #{x+1}
                         </p:column>
                     </p:repeat>
 
@@ -70,7 +70,7 @@
                             styleClass="#{itemBean.containerController.getStyleOfContainerPlace(x,y)}">
                             <p:selectBooleanCheckbox
                                 value="#{itemBean.containerController.itemPositions[x][y]}"
-                                disabled="#{itemBean.container.getItemAtPos(x, y, 0)!= null}"
+                                disabled="#{itemBean.containerController.isContainerPlaceDisabled(x, y)}"
                                 title="#{itemBean.containerController.getToolTipForContainerPlace(x,y)}"
                                 />
                         </p:column>

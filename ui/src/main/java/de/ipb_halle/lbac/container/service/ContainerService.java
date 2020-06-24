@@ -69,6 +69,10 @@ public class ContainerService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
+    private final String SQL_DELETE_ITEM_IN_CONTAINER
+            = "DELETE FROM item_positions "
+            + "WHERE itemid=:itemid";
+
     private final String SQL_NESTED_TARGETS
             = "SELECT targetid "
             + " FROM nested_containers "
@@ -403,7 +407,14 @@ public class ContainerService implements Serializable {
         return new ContainerType(entity.getName(), entity.getRank());
     }
 
+    public void deleteItemInContainer(int itemid) {
+        this.em.createNativeQuery(SQL_DELETE_ITEM_IN_CONTAINER)
+                .setParameter("itemid", itemid)
+                .executeUpdate();
+    }
+
     public void saveItemInContainer(int itemid, int containerid, int posX, int posY) {
+
         this.em.createNativeQuery(SQL_SAVE_ITEM_IN_CONTAINER)
                 .setParameter("itemid", itemid)
                 .setParameter("containerid", containerid)

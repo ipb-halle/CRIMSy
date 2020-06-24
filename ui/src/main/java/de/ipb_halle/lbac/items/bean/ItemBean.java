@@ -159,7 +159,8 @@ public class ItemBean implements Serializable {
         } else {
             itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount());
         }
-        Set<int[]> posis = containerController.resolveItemPositions();
+
+        containerService.deleteItemInContainer(state.getEditedItem().getId());
         for (int[] pos : containerController.resolveItemPositions()) {
             containerService.saveItemInContainer(
                     state.getEditedItem().getId(),

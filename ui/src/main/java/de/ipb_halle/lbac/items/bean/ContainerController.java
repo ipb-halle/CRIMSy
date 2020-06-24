@@ -32,21 +32,30 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class ContainerController {
-    
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private boolean[][] itemPositions;
-    
+
     private ItemBean itemBean;
     private Container container;
-    
+
     public ContainerController(ItemBean itemBean, Container container) {
         this.itemBean = itemBean;
         this.container = container;
-        if (container != null&&container.getDimensionIndex()!=null) {
+        if (container != null && container.getDimensionIndex() != null) {
             itemPositions = new boolean[container.getDimensionIndex()[0]][container.getDimensionIndex()[1]];
+            if (itemBean.getState().getOriginalItem() != null) {
+                for (int x = 0; x < container.getDimensionIndex()[0]; x++) {
+                    for (int y = 0; y < container.getDimensionIndex()[1]; y++) {
+                        if (container.getItemAtPos(x, y, 0) != null && container.getItemAtPos(x, y, 0).getId() == itemBean.getState().getOriginalItem().getId()) {
+                            itemPositions[x][y] = true;
+                        }
+                    }
+                }
+            }
         }
     }
-    
+
     public boolean isContainerSubComponentRendered(String typename) {
         if (typename == null) {
             return itemBean.getContainer() == null;
@@ -57,7 +66,7 @@ public class ContainerController {
         }
         return false;
     }
-    
+
     public List<Integer> getTotalSlots(int dimension) {
         if (itemBean.getContainer() == null) {
             return new ArrayList<>();
@@ -68,23 +77,26 @@ public class ContainerController {
         }
         return result;
     }
-    
+
     public String getLetterByIndex(int index) {
         return Character.toString((char) (65 + index));
     }
-    
+
     public boolean[][] getItemPositions() {
         return itemPositions;
     }
-    
+
     public void setItemPositions(boolean[][] itemPositions) {
         this.itemPositions = itemPositions;
     }
-    
+
     public Set<int[]> resolveItemPositions() {
+        if (itemPositions == null) {
+            return new HashSet<>();
+        }
         Set<int[]> positions = new HashSet<>();
-        for (int x = 0; x < itemPositions[0].length; x++) {
-            for (int y = 0; y < itemPositions[1].length; y++) {
+        for (int x = 0; x < itemPositions.length; x++) {
+            for (int y = 0; y < itemPositions[0].length; y++) {
                 if (itemPositions[x][y]) {
                     positions.add(new int[]{x, y});
                 }
@@ -92,20 +104,27 @@ public class ContainerController {
         }
         return positions;
     }
-    
+
     public boolean isContainerPlaceDisabled(int x, int y) {
-        return false;
+        if (container.getItemAtPos(x, y, 0) == null) {
+            return false;
+        } else if (itemBean.getState().getOriginalItem() == null) {
+            return false;
+
+        } else {
+            return !Objects.equals(container.getItemAtPos(x, y, 0).getId(), itemBean.getState().getOriginalItem().getId());
+        }
     }
-    
+
     public String getToolTipForContainerPlace(int x, int y) {
         if (container.getItemAtPos(x, y, 0) != null) {
             return "ID: " + container.getItemAtPos(x, y, 0).getId();
         }
         return "free place";
     }
-    
+
     public String getStyleOfContainerPlace(int x, int y) {
-        
+
         try {
             if (container.getItemAtPos(x, y, 0) == null) {
                 return "possible-place";
@@ -117,6 +136,6 @@ public class ContainerController {
         } catch (Exception e) {
             return "no class set due error";
         }
-        
+
     }
 }

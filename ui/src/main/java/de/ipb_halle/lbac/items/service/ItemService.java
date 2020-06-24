@@ -233,11 +233,24 @@ public class ItemService {
     public Item saveEditedItem(Item editedItem, Item origItem, User user) {
         ItemComparator comparator = new ItemComparator();
         ItemHistory history = comparator.compareItems(origItem, editedItem, user);
-        if (history != null) {
+        if (history != null || doesContainerDiffer(editedItem, origItem)) {
             saveItem(editedItem);
+
+        }
+        if (history != null) {
             saveItemHistory(history);
         }
         return editedItem;
+    }
+
+    private boolean doesContainerDiffer(Item editedItem, Item origItem) {
+        if (editedItem.getContainer() == null && origItem.getContainer() == null) {
+            return false;
+        } else if (editedItem.getContainer() != null && origItem.getContainer() != null) {
+            return editedItem.getContainer().getId() != origItem.getContainer().getId();
+        } else {
+            return true;
+        }
     }
 
     public void saveItemHistory(ItemHistory history) {
