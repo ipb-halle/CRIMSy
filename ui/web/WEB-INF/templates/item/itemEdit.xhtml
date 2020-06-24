@@ -26,7 +26,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:nwc="http://ipb-halle.de/nwc"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
 
     <h:head></h:head>
 
@@ -301,12 +302,9 @@
                             <b:column 
                                 span="4"
                                 styleClass="containerPseudoClass">
-                                <nwc:container
+                                <crimsy:container2d 
                                     container="#{itemBean.container}"
-                                    positions="#{itemBean.itemPositions}"
-                                    id="customComponentContainer">
-
-                                </nwc:container>
+                                    rendered="#{itemBean.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
                             </b:column>
                             <b:column span="3">
                                 <b:container>

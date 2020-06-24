@@ -34,6 +34,12 @@ import org.apache.logging.log4j.Logger;
  */
 public class Container implements DTO, Serializable {
 
+    public enum DimensionType {
+        NONE,
+        ZERO_DIMENSION,
+        ONE_DIMENSION,
+        TWO_DIMENSION
+    }
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private int id;
@@ -75,6 +81,14 @@ public class Container implements DTO, Serializable {
             } else if (size.length == 1) {
                 items = new Item[Integer.valueOf(size[0])][1][1];
             }
+        }
+    }
+
+    public DimensionType getDimensionType() {
+        if (dimension == null) {
+            return DimensionType.NONE;
+        } else {
+            return DimensionType.TWO_DIMENSION;
         }
     }
 

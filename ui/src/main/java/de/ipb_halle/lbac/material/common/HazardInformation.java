@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.common;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardMaterialId;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class HazardInformation {
+public class HazardInformation implements Serializable{
 
     public static final Integer HAZARD_STATEMENT = 12;
     public static final Integer PRECAUTIONARY_STATEMENT = 13;

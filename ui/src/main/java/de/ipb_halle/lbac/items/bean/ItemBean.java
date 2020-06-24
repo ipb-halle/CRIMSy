@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,7 +74,7 @@ public class ItemBean implements Serializable {
     @Inject
     private ItemService itemService;
 
-    private Set<String> itemPositions = new HashSet<>();
+    private ContainerController containerController;
 
     private List<Project> projects = new ArrayList<>();
     private List<Container> containers = new ArrayList<>();
@@ -120,6 +121,14 @@ public class ItemBean implements Serializable {
         historyOperation.applyNextPositiveDifference();
     }
 
+    public ContainerController getContainerController() {
+        return containerController;
+    }
+
+    public void setContainerController(ContainerController containerController) {
+        this.containerController = containerController;
+    }
+
     public void applyNextNegativeDiff() {
         historyOperation.applyNextNegativeDifference();
     }
@@ -137,9 +146,9 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
-        if (container != null) {
-            state.getEditedItem().setContainer(container);
-        }
+
+        state.getEditedItem().setContainer(container);
+
         if (mode == Mode.CREATE) {
             state.getEditedItem().setOwner(userBean.getCurrentAccount());
             state.getEditedItem().setMaterial(material);
@@ -150,12 +159,13 @@ public class ItemBean implements Serializable {
         } else {
             itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount());
         }
-        for (String pos : itemPositions) {
+        Set<int[]> posis = containerController.resolveItemPositions();
+        for (int[] pos : containerController.resolveItemPositions()) {
             containerService.saveItemInContainer(
                     state.getEditedItem().getId(),
                     container.getId(),
-                    Integer.parseInt(pos.split("-")[0]),
-                    Integer.parseInt(pos.split("-")[1]));
+                    pos[0],
+                    pos[1]);
         }
         itemOverviewBean.reloadItems();
         navigator.navigate("/item/items");
@@ -178,6 +188,7 @@ public class ItemBean implements Serializable {
         this.material = i.getMaterial();
         container = i.getContainer();
         historyOperation = new HistoryOperation(state);
+        containerController = new ContainerController(this, container);
     }
 
     public void actionStartItemCreation(Material m) {
@@ -193,6 +204,7 @@ public class ItemBean implements Serializable {
         solvents = loadSolvents();
         purities = loadPurities();
         clearFormular();
+        containerController = new ContainerController(this, null);
 
         this.material = m;
     }
@@ -218,26 +230,9 @@ public class ItemBean implements Serializable {
     }
 
     public void actionChangeContainer(Container c) {
+        containerController = new ContainerController(this, c);
         this.container = c;
         this.containerName = c.getLabel();
-
-    }
-
-    public boolean isContainerCheckBoxVisible(int x, int y) {
-        if (container == null) {
-            return false;
-        }
-        if (container.getDimension() == null) {
-            return false;
-        }
-        int xDim = Integer.parseInt(container.getDimension().split(";")[0]);
-        int yDim = Integer.parseInt(container.getDimension().split(";")[0]);
-        return x <= xDim && y <= yDim;
-
-    }
-
-    public boolean isContainerCheckBoxDisabled(int x, int y) {
-        return false;
     }
 
     public void onItemSelect(SelectEvent event) {
@@ -250,10 +245,6 @@ public class ItemBean implements Serializable {
         }
 
         actionChangeContainer(null);
-    }
-
-    public void changeContainerByName() {
-
     }
 
     public List<String> nameSuggestions(String enteredValue) {
@@ -434,14 +425,6 @@ public class ItemBean implements Serializable {
         this.solved = solved;
     }
 
-    public Set<String> getItemPositions() {
-        return itemPositions;
-    }
-
-    public void setItemPositions(Set<String> itemPositions) {
-        this.itemPositions = itemPositions;
-    }
-
     private List<String> loadPurities() {
         List<String> purities = new ArrayList<>();
         purities.add("unbekannt");
@@ -470,7 +453,6 @@ public class ItemBean implements Serializable {
 
     private void clearFormular() {
         containerUnit = units.get(0);
-        itemPositions = new HashSet<>();
         containerSize = null;
         container = null;
         basicContainerType = containerTypes.get(0);

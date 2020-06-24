@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <composite:interface name="container2d"
+                         displayName="Container-2D"
+                         preferred="true"
+                         expert="false"
+                         shortDescription="view and edit two dimensional container">
+        <composite:attribute name="container" required="true" >
+
+        </composite:attribute>
+
+    </composite:interface>
+
+    <composite:implementation >
+
+
+        <p:panelGrid >
+            <p:row>
+                <p:column>
+                    <p:repeat 
+                        value="#{itemBean.containerController.getTotalSlots(0)}"
+                        var="x">
+                        <p:column>
+                            #{x}
+                        </p:column>
+                    </p:repeat>
+
+                </p:column>
+            </p:row>
+
+            <p:repeat 
+                value="#{itemBean.containerController.getTotalSlots(1)}"
+                var="y">
+                <p:row>
+                    <p:column>
+                        #{itemBean.containerController.getLetterByIndex(y)}
+                    </p:column>
+                    <p:repeat 
+                        value="#{itemBean.containerController.getTotalSlots(0)}"
+                        var="x">
+                        <p:column
+                            styleClass="#{itemBean.containerController.getStyleOfContainerPlace(x,y)}">
+                            <p:selectBooleanCheckbox
+                                value="#{itemBean.containerController.itemPositions[x][y]}"
+                                disabled="#{itemBean.container.getItemAtPos(x, y, 0)!= null}"
+                                title="#{itemBean.containerController.getToolTipForContainerPlace(x,y)}"
+                                />
+                        </p:column>
+                    </p:repeat>
+                </p:row>
+            </p:repeat>
+        </p:panelGrid>
+    </composite:implementation >
+</html>
