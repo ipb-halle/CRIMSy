@@ -101,7 +101,7 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(1, life.getLevel().getId());
         Assert.assertEquals("Leben_de", life.getFirstName());
 
-        Taxonomy wulstlinge = taxonomies.get(5);
+        Taxonomy wulstlinge = taxonomies.get(12);
         Assert.assertEquals(7, wulstlinge.getLevel().getId());
         Assert.assertEquals("Wulstlinge_de", wulstlinge.getFirstName());
         Assert.assertEquals(6, wulstlinge.getId());
@@ -130,6 +130,7 @@ public class TaxonomyServiceTest extends TestBase {
         createTaxonomyTreeInDB(userGroups, owner.getId().toString());
 
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+       
         Taxonomy editedTaxonomy = taxonomies.get(20).copyMaterial();
         editedTaxonomy.getNames().get(0).setValue("Haarnixen_de_edited");
         editedTaxonomy.getNames().add(new MaterialName("english_name", "en", 2));
@@ -146,14 +147,15 @@ public class TaxonomyServiceTest extends TestBase {
                 owner.getId());
 
         taxonomies = service.loadTaxonomy(new HashMap<>(), true);
-        Taxonomy t = taxonomies.get(20);
+         for(Taxonomy t:taxonomies){
+            System.out.println(t.getFirstName());
+        }
+        Taxonomy t = taxonomies.get(4);
         Assert.assertEquals("Haarnixen_de_edited", t.getNames().get(0).getValue());
         Assert.assertEquals("english_name", t.getNames().get(1).getValue());
-        Assert.assertEquals(4, t.getTaxHierachy().size());
-        Assert.assertEquals(4, t.getTaxHierachy().get(0).getId());
-        Assert.assertEquals(3, t.getTaxHierachy().get(1).getId());
-        Assert.assertEquals(2, t.getTaxHierachy().get(2).getId());
-        Assert.assertEquals(1, t.getTaxHierachy().get(3).getId());
+        Assert.assertEquals(2, t.getTaxHierachy().size());
+        Assert.assertEquals(16, t.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(1, t.getTaxHierachy().get(1).getId());
 
         Assert.assertEquals(3, t.getLevel().getId());
 

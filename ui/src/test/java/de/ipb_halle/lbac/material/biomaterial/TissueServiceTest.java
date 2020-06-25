@@ -94,7 +94,10 @@ public class TissueServiceTest extends TestBase {
         names.add(new MaterialName("Wurzel", "de", 1));
         names.add(new MaterialName("Root", "en", 2));
         names.add(new MaterialName("Radix", "la", 3));
-        Taxonomy taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(15);
+         for (Taxonomy t : taxoService.loadTaxonomy(new HashMap<>(), true)) {
+            System.out.println(t.getFirstName());
+        }
+        Taxonomy taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(3);
         Tissue tissue = new Tissue(100, names, taxo);
         materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
 
@@ -107,7 +110,8 @@ public class TissueServiceTest extends TestBase {
 
         names = new ArrayList<>();
         names.add(new MaterialName("Blüte", "de", 1));
-        Taxonomy seerose = taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(17);
+       
+        Taxonomy seerose = taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(11);
         tissue = new Tissue(100, names, seerose);
         materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
 
