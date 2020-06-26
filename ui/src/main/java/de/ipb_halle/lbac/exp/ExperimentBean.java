@@ -97,7 +97,7 @@ public class ExperimentBean implements Serializable {
     /**
      * ToDo: xxxxx support additional record types
      */
-    public void actionAppendRecord() {
+    public void actionAppendRecord(int delta) {
 
         if (this.experiment == null) {
             this.logger.info("actionAppendRecord(): experiment not set");
@@ -111,7 +111,12 @@ public class ExperimentBean implements Serializable {
 
             // where to insert?
             int index = this.expRecordIndex;
-            index++;
+            if (delta >= 0) {
+                index += delta;
+            } else {
+                index = this.expRecords.size();
+            }
+
             if ((index < 0) || (index > this.expRecords.size())) {
                 this.logger.info("actionAppendRecord() out of range");
                 return;
@@ -136,10 +141,13 @@ public class ExperimentBean implements Serializable {
      * when changing from Template to Experiment mode.
      */
     public void actionCancel() {
-        if (this.expRecordController != null) {
+        try {
             this.expRecordController.actionCancel();
+            experimentBeanInit();
+            this.logger.info("actionCancel() completed");
+        } catch (Exception e) {
+            this.logger.warn("actionCancel() caught an exception: ", (Throwable) e);
         }
-        experimentBeanInit();
     }
 
     /**
@@ -214,7 +222,7 @@ public class ExperimentBean implements Serializable {
         this.expRecordController = new NullController(this);
         this.newRecordType = "";
         this.barChart = null;
-        this.expRecordIndex = -2;
+        this.expRecordIndex = -1;
     }
 
     public void createExpRecordController(String recordType) {

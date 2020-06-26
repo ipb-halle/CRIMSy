@@ -35,21 +35,12 @@ public class NullController extends ExpRecordController {
         super(bean);
     }
 
-    public void actionCancel() {
-        this.bean.reIndex();
-        this.bean.cleanup();
-        this.logger.info("actionCancel(): do nothing");
-    }
-
-    public void actionSaveRecord() {
-        this.logger.info("actionSaveRecord(): do nothing");
-    }
-
     @Override
     public boolean getEdit() {
         return true;
     }
 
+    @Override
     public ExpRecord getExpRecord() {
         return null;
     }

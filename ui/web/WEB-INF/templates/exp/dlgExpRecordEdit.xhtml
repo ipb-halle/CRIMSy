@@ -32,12 +32,13 @@
             <div class="ui-g">
                 <div class="ui-g-12">
                     <p:selectOneMenu value="#{experimentBean.newRecordType}" >
-                        <f:selectItem itemLabel="Append record ..." itemValue="" />
                         <f:selectItem itemLabel="Text" itemValue="TEXT" />
                         <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
-                        <p:ajax event="change" listener="#{experimentBean.actionAppendRecord}" 
-                            oncomplete="PF('dlg_expRecordEdit').hide();" update="@all" />
                     </p:selectOneMenu>
+                    <p:splitButton value="Append" action="#{experimentBean.actionAppendRecord(1)}" update="expRecordsForm">
+                        <p:menuitem value="Prepend" action="#{experimentBean.actionAppendRecord(0)}" update="expRecordsForm" />
+                        <p:ajax oncomplete="PF('dlg_expRecordEdit').hide();" />
+                    </p:splitButton>
                 </div>
                 <div class="ui-g-12">
                     <p:commandButton value="Edit ..." 

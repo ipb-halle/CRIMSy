@@ -37,12 +37,14 @@ public abstract class ExpRecordController {
 
     public void actionCancel() {
         ExpRecord rec = getExpRecord();
-        if (rec.getExpRecordId() == null) {
-            this.bean.getExpRecords().remove(rec.getIndex());
-        } else {
-            int index = rec.getIndex();
-            rec = this.bean.loadExpRecordById(rec.getExpRecordId());
-            this.bean.getExpRecords().set(index, rec);
+        if (rec != null) {
+            if (rec.getExpRecordId() == null) {
+                this.bean.getExpRecords().remove(rec.getIndex());
+            } else {
+                int index = rec.getIndex();
+                rec = this.bean.loadExpRecordById(rec.getExpRecordId());
+                this.bean.getExpRecords().set(index, rec);
+            }
         }
         this.bean.reIndex();
         this.bean.cleanup();
@@ -51,7 +53,11 @@ public abstract class ExpRecordController {
 
     public void actionSaveRecord() {
         try {
-            ExpRecord rec = this.bean.saveExpRecord(getExpRecord());
+            ExpRecord rec = getExpRecord();
+            if (rec == null) {
+                throw new NullPointerException("attempt to save non-existent ExpRecord");
+            }
+            rec = this.bean.saveExpRecord(rec);
             this.bean.adjustOrder(rec);
             this.bean.cleanup();
             this.bean.reIndex();
@@ -66,7 +72,11 @@ public abstract class ExpRecordController {
     }
 
     public ExpRecord getExpRecord() {
-        return this.bean.getExpRecords().get(this.bean.getExpRecordIndex());
+        int i = this.bean.getExpRecordIndex();
+        if ((i >= 0) && (i < this.bean.getExpRecords().size())) {
+            return this.bean.getExpRecords().get(this.bean.getExpRecordIndex());
+        }
+        return null;
     }
 
     public abstract ExpRecord getNewRecord();
