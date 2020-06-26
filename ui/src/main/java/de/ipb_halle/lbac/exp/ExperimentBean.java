@@ -95,7 +95,7 @@ public class ExperimentBean implements Serializable {
 
 
     /**
-     * ToDo: xxxxx support additional record types
+     * @param delta 0 = actually prepend record, 1 = append record, -1 = append as last record
      */
     public void actionAppendRecord(int delta) {
 
@@ -110,12 +110,11 @@ public class ExperimentBean implements Serializable {
             record.setExperiment(this.experiment);
 
             // where to insert?
-            int index = this.expRecordIndex;
-            if (delta >= 0) {
-                index += delta;
-            } else {
-                index = this.expRecords.size();
+            if (delta < 0) {
+                this.expRecordIndex = this.expRecords.size();
+                delta = 0;
             }
+            int index = this.expRecordIndex + delta;
 
             if ((index < 0) || (index > this.expRecords.size())) {
                 this.logger.info("actionAppendRecord() out of range");

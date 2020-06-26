@@ -36,6 +36,7 @@ public class AssayController extends ExpRecordController implements MaterialHold
 
     private ExperimentBean bean;
     private AssayRecord assayRecord;
+    private String materialTarget;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
@@ -93,9 +94,20 @@ public class AssayController extends ExpRecordController implements MaterialHold
     }
 
     public void setMaterial(Material material) {
-        if (this.assayRecord != null) {
-            this.assayRecord.setMaterial(material);
+        switch (this.materialTarget) {
+            case "TARGET" :
+                ((Assay) getExpRecord()).setTarget(material);
+                break;
+            case "RECORD" :
+                if (this.assayRecord != null) {
+                    this.assayRecord.setMaterial(material);
+                }
+                break;
         }
+    }
+
+    public  void setMaterialTarget(String target) {
+        this.materialTarget = target;
     }
 
 }

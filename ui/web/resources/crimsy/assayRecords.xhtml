@@ -53,6 +53,7 @@
                             rendered="#{assayRec.edit}"
                             update="@parent" >
                         <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
+                        <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="RECORD" />
                         <span class="fa fa-pencil"> </span>
                         <p:ajax oncomplete="PF('dlg_materialEdit').show();" />
                     </p:commandLink>

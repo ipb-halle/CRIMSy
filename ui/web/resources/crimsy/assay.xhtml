@@ -56,10 +56,11 @@
             <h:panelGroup>
                 <crimsy:materialView material="#{cc.attrs.assay.target}" />
                 <h:commandLink 
-                        update="@none"
                         rendered="#{cc.attrs.assay.edit}"
-                        onclick="PF('dlg_materialEdit').show();" >
+                        update="@none">
                     <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
+                    <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
+                    <p:ajax oncomplete="PF('dlg_materialEdit').show();" />
                     <span class="fa fa-cog"> </span>
                 </h:commandLink>
             </h:panelGroup>
