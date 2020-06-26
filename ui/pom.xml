@@ -269,17 +269,8 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- compined (API and implementation) jsf  -->
-<!--
-        NOTE: Mojarra 2.2.12 has issues with nested ui:repeat elements
-
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.faces</artifactId>
-            <version>2.2.12</version>
-            <scope>provided</scope>
-        </dependency>
--->
+        <!-- Apache MyFaces JSF -->
+        <!-- Mojarra 2.2.12 had issues with nested ui:repeat elements -->
         <dependency>
             <groupId>org.apache.myfaces.core</groupId>
             <artifactId>myfaces-api</artifactId>

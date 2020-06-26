@@ -24,6 +24,12 @@ done
 popd
 
 #
+# Remove default Faces installation (Mojarra 2.2.12);
+# MyFaces is contained in extralib
+#
+rm $TOMCAT_HOME/lib/javax.faces-2.2.12.jar
+
+#
 # Remove default webapps
 #
 pushd $TOMCAT_HOME/webapps
