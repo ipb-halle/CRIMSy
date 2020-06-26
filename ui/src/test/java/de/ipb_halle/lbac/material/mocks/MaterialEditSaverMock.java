@@ -34,7 +34,7 @@ public class MaterialEditSaverMock extends MaterialEditSaver {
     String SQL_ID_MOLECULE = "select max(id) from molecules";
 
     public MaterialEditSaverMock(MaterialService materialService) {
-        super(materialService);
+        super(materialService, null);
         SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(:molecule,:format)";
     }
 

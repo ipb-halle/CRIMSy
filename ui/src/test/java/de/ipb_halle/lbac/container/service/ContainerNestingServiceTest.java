@@ -17,44 +17,31 @@
  */
 package de.ipb_halle.lbac.container.service;
 
-import de.ipb_halle.lbac.EntityManagerService;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
 import de.ipb_halle.lbac.admission.SystemSettings;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
-import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.service.ACListService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -122,6 +109,7 @@ public class ContainerNestingServiceTest extends TestBase {
                 .addClass(UserBean.class)
                 .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(LdapProperties.class)
                 .addClass(ContainerNestingService.class)
                 .addClass(ProjectService.class);

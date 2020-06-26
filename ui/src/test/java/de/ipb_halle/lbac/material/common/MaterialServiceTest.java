@@ -49,6 +49,7 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -670,6 +671,7 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
                 .addClass(TaxonomyService.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(TissueService.class)
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)

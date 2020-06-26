@@ -35,6 +35,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
@@ -386,6 +387,7 @@ public class ContainerServiceTest extends TestBase {
                 .addClass(KeyManager.class)
                 .addClass(UserBean.class)
                 .addClass(MembershipOrchestrator.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(MoleculeService.class)
                 .addClass(LdapProperties.class)
                 .addClass(ContainerNestingService.class)

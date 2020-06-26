@@ -41,6 +41,7 @@ import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
@@ -187,6 +188,7 @@ public class MaterialBeanTest extends TestBase {
                 .addClass(IndexService.class)
                 .addClass(MaterialNameBean.class)
                 .addClass(MaterialIndexBean.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(LdapProperties.class)
                 .addClass(ProjectService.class)
                 .addClass(SystemSettings.class)

@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
 import de.ipb_halle.lbac.admission.UserBean;
@@ -31,14 +29,14 @@ import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.mocks.UserBeanMock;
-import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -60,6 +58,9 @@ public class TaxonomyServiceTest extends TestBase {
     User owner;
     String userGroups;
     String ownerid;
+
+    @Inject
+    private TaxonomyNestingService nestingService;
 
     @Inject
     private TaxonomyService service;
@@ -130,7 +131,7 @@ public class TaxonomyServiceTest extends TestBase {
         createTaxonomyTreeInDB(userGroups, owner.getId().toString());
 
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
-       
+
         Taxonomy editedTaxonomy = taxonomies.get(20).copyMaterial();
         editedTaxonomy.getNames().get(0).setValue("Haarnixen_de_edited");
         editedTaxonomy.getNames().add(new MaterialName("english_name", "en", 2));
@@ -147,9 +148,6 @@ public class TaxonomyServiceTest extends TestBase {
                 owner.getId());
 
         taxonomies = service.loadTaxonomy(new HashMap<>(), true);
-         for(Taxonomy t:taxonomies){
-            System.out.println(t.getFirstName());
-        }
         Taxonomy t = taxonomies.get(4);
         Assert.assertEquals("Haarnixen_de_edited", t.getNames().get(0).getValue());
         Assert.assertEquals("english_name", t.getNames().get(1).getValue());
@@ -161,7 +159,42 @@ public class TaxonomyServiceTest extends TestBase {
 
         Material loadedMaterial = materialService.loadMaterialById(editedTaxonomy.getId());
         Assert.assertEquals(1, loadedMaterial.getHistory().getChanges().size());
+        for (Taxonomy tr : taxonomies) {
+            System.out.println(tr.getFirstName());
+        }
+        //Scenario : change the parent of 'Champignonartige' from 'Agaricomycetes' to 'Dacrymytes'
+        Taxonomy champignonartigeOrig = taxonomies.get(7).copyMaterial();
+        Taxonomy champignonartigeEdit = taxonomies.get(7).copyMaterial();
+        champignonartigeEdit.getTaxHierachy().clear();
+        champignonartigeEdit.getTaxHierachy().add(taxonomies.get(6));
+        champignonartigeEdit.getTaxHierachy().add(taxonomies.get(1));
+        champignonartigeEdit.getTaxHierachy().add(taxonomies.get(0));
 
+        champignonartigeEdit.getTaxHierachy();
+
+        materialService.saveEditedMaterial(
+                champignonartigeEdit,
+                champignonartigeOrig,
+                null,
+                owner.getId());
+
+        Set<Integer> parents = getParentsOfTaxo(taxonomies.get(14).getId());
+        Assert.assertEquals(5, parents.size());
+        Assert.assertTrue(String.format("test003: has no 'Leben(%d)' as parent", taxonomies.get(0).getId()), parents.remove(taxonomies.get(0).getId()));
+        Assert.assertTrue(String.format("test003: has no 'Pilze(%d)' as parent", taxonomies.get(1).getId()), parents.remove(taxonomies.get(1).getId()));
+        Assert.assertTrue(String.format("test003: has no 'Dacrymytes(%d)' as parent", taxonomies.get(6).getId()), parents.remove(taxonomies.get(6).getId()));
+        Assert.assertTrue(String.format("test003: has no 'Champignonartige(%d)' as parent", taxonomies.get(7).getId()), parents.remove(taxonomies.get(7).getId()));
+        Assert.assertTrue(String.format("test003: has no 'Wulstlingsverwandte(%d)' as parent", taxonomies.get(10).getId()), parents.remove(taxonomies.get(10).getId()));
+
+    }
+
+    private Set<Integer> getParentsOfTaxo(int id) {
+        Set<Integer> parents = new HashSet<>();
+        List<Object> results = entityManagerService.doSqlQuery(String.format("SELECT parentid FROM EFFECTIVE_TAXONOMY WHERE taxoid=%d ORDER BY parentid", id));
+        for (Object o : results) {
+            parents.add((Integer) o);
+        }
+        return parents;
     }
 
     @Deployment
@@ -176,6 +209,7 @@ public class TaxonomyServiceTest extends TestBase {
                 .addClass(LdapProperties.class)
                 .addClass(KeyManager.class)
                 .addClass(TissueService.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(TaxonomyService.class);
     }
 }

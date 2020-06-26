@@ -51,6 +51,7 @@ import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -171,11 +172,14 @@ public class MaterialService implements Serializable {
     @Inject
     protected TissueService tissueService;
 
+    @Inject
+    protected TaxonomyNestingService taxonomyNestingService;
+
     @PostConstruct
     public void init() {
         comparator = new MaterialComparator();
         materialHistoryService = new MaterialHistoryService(this);
-        editedMaterialSaver = new MaterialEditSaver(this);
+        editedMaterialSaver = new MaterialEditSaver(this, taxonomyNestingService);
         structureInformationSaver = new StructureInformationSaver(em);
     }
 

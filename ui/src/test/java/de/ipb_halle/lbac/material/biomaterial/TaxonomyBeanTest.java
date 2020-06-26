@@ -92,10 +92,8 @@ public class TaxonomyBeanTest extends TestBase {
         LoginEvent event = new LoginEvent(owner);
         bean.setCurrentAccount(event);
         bean.getTreeController().reloadTreeNode();
-        TreeNode tree=bean.getTreeController().getTaxonomyTree();
-       
-       
-        
+        TreeNode tree = bean.getTreeController().getTaxonomyTree();
+
         int i = 0;
     }
 
@@ -111,6 +109,7 @@ public class TaxonomyBeanTest extends TestBase {
                 .addClass(GlobalAdmissionContext.class)
                 .addClass(MoleculeService.class)
                 .addClass(TaxonomyService.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(ProjectService.class)
                 .addClass(TissueService.class)
                 .addClass(MaterialService.class);

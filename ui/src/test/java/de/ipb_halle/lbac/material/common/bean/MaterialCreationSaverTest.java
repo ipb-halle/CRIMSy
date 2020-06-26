@@ -37,6 +37,7 @@ import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -175,6 +176,7 @@ public class MaterialCreationSaverTest extends TestBase {
                 .addClass(ArticleService.class)
                 .addClass(ItemOverviewBean.class)
                 .addClass(ContainerNestingService.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(ItemBean.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);

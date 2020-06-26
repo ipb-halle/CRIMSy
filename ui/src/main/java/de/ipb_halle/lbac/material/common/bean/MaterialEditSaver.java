@@ -46,6 +46,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntityId;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
@@ -70,6 +71,7 @@ public class MaterialEditSaver {
     protected String SQL_DELETE_HAZARDS = "DELETE FROM hazards_materials WHERE materialid=:mid";
 
     protected MaterialService materialService;
+    protected TaxonomyNestingService taxonomyNestingService;
 
     protected MaterialComparator comparator;
     protected List<MaterialDifference> diffs;
@@ -94,8 +96,11 @@ public class MaterialEditSaver {
         this.actorId = actorId;
     }
 
-    public MaterialEditSaver(MaterialService materialService) {
+    public MaterialEditSaver(
+            MaterialService materialService,
+            TaxonomyNestingService taxonomyNestingService) {
         this.materialService = materialService;
+        this.taxonomyNestingService = taxonomyNestingService;
     }
 
     /**
@@ -244,18 +249,21 @@ public class MaterialEditSaver {
     }
 
     protected void updateEffectiveTaxonomy(TaxonomyDifference diff) {
-        materialService.getEm()
-                .createNativeQuery(SQL_DELETE_EFFECTIVE_TAXONOMY)
-                .setParameter("taxoid", diff.getMaterialId())
-                .executeUpdate();
+        Taxonomy t = (Taxonomy) newMaterial;
+        taxonomyNestingService.updateParentOfTaxonomy(newMaterial.getId(), t.getTaxHierachy().get(0).getId());
 
-        for (Integer parent : diff.getNewHierarchy()) {
-            materialService.getEm()
-                    .createNativeQuery(SQL_INSERT_EFFECTIVE_TAXONOMY)
-                    .setParameter("taxoid", diff.getMaterialId())
-                    .setParameter("parentid", parent)
-                    .executeUpdate();
-        }
+//        materialService.getEm()
+//                .createNativeQuery(SQL_DELETE_EFFECTIVE_TAXONOMY)
+//                .setParameter("taxoid", diff.getMaterialId())
+//                .executeUpdate();
+//
+//        for (Integer parent : diff.getNewHierarchy()) {
+//            materialService.getEm()
+//                    .createNativeQuery(SQL_INSERT_EFFECTIVE_TAXONOMY)
+//                    .setParameter("taxoid", diff.getMaterialId())
+//                    .setParameter("parentid", parent)
+//                    .executeUpdate();
+//        }
     }
 
     public void saveEditedMaterialOverview() {

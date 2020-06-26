@@ -138,6 +138,7 @@ public class TissueServiceTest extends TestBase {
                 .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
                 .addClass(LdapProperties.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(KeyManager.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);

@@ -129,6 +129,7 @@ public class BiomaterialServiceTest extends TestBase {
                 .addClass(MoleculeService.class)
                 .addClass(LdapProperties.class)
                 .addClass(KeyManager.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(BiomaterialService.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);

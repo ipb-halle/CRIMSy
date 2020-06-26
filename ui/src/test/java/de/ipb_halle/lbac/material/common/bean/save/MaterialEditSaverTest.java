@@ -35,6 +35,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
@@ -240,6 +241,7 @@ public class MaterialEditSaverTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(TaxonomyService.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(TissueService.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);

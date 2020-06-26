@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
@@ -206,6 +207,7 @@ public class InputValidatorTest extends TestBase {
                 .addClass(ContainerNestingService.class)
                 .addClass(UserBean.class)
                 .addClass(MembershipOrchestrator.class)
+                .addClass(TaxonomyNestingService.class)
                 .addClass(MoleculeService.class)
                 .addClass(LdapProperties.class)
                 .addClass(ProjectService.class);

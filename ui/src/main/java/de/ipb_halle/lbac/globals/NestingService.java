@@ -15,62 +15,49 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.container.service;
+package de.ipb_halle.lbac.globals;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import javax.ejb.Stateless;
+
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
- * Service for manipulating the nesting of containers
  *
  * @author fmauz
  */
-@Stateless
-public class ContainerNestingService implements Serializable {
+public class NestingService implements Serializable {
 
-    @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
-    protected String SQL_LOAD_PARENT_OF_CONTAINER
-            = "SELECT parentcontainer "
-            + "FROM containers "
-            + "WHERE id=:containerid";
-    protected String SQL_LOAD_NESTED_CONTAINER
-            = "SELECT targetid "
-            + "FROM nested_containers "
-            + "WHERE sourceid =:containerid";
-    protected String SQL_LOAD_SUB_CONTAINER
-            = "SELECT sourceid "
-            + "FROM nested_containers "
-            + "WHERE targetid =:containerid";
-    protected String SQL_DELETE_PATH
-            = "DELETE FROM nested_containers "
-            + "WHERE sourceid =:containerid";
-    protected String SQL_BUILD_PATH
-            = "INSERT INTO nested_containers "
-            + "(sourceid,targetid,nested) "
-            + "VALUES(:sourceid,:targetid,:nested)";
+    protected String SQL_LOAD_PARENT_OF_OBJECT;
+    protected String SQL_LOAD_NESTED_OBJECTS;
+    protected String SQL_LOAD_SUB_OBJECTS;
+    protected String SQL_DELETE_PATH;
+    protected String SQL_BUILD_PATH;
 
-    /**
-     * adds a new path of a container
-     *
-     * @param cid
-     * @param path list of ids of path
-     */
+    public NestingService(EntityManager em) {
+        this.em = em;
+    }
+
     public void addNewPath(int cid, Set<Integer> path) {
-        Integer parentid = loadParentIdOfContainer(cid);
+        Integer parentid = loadParentIdOfObject(cid);
         for (Integer pe : path) {
-            this.em.createNativeQuery(SQL_BUILD_PATH)
-                    .setParameter("sourceid", cid)
-                    .setParameter("targetid", pe)
-                    .setParameter("nested", Objects.equals(parentid, pe))
-                    .executeUpdate();
+            if (parentid != null) {
+                this.em.createNativeQuery(SQL_BUILD_PATH)
+                        .setParameter("sourceid", cid)
+                        .setParameter("targetid", pe)
+                        .setParameter("nested", Objects.equals(parentid, pe))
+                        .executeUpdate();
+            } else {
+                this.em.createNativeQuery(SQL_BUILD_PATH)
+                        .setParameter("sourceid", cid)
+                        .setParameter("targetid", pe)
+                        .executeUpdate();
+            }
         }
     }
 
@@ -79,8 +66,8 @@ public class ContainerNestingService implements Serializable {
      *
      * @param cid
      */
-    public void deletePathForContainer(int cid) {
-        this.em.createNativeQuery(SQL_DELETE_PATH).setParameter("containerid", cid).executeUpdate();
+    public void deletePathForObject(int cid) {
+        this.em.createNativeQuery(SQL_DELETE_PATH).setParameter("id", cid).executeUpdate();
     }
 
     /**
@@ -90,10 +77,10 @@ public class ContainerNestingService implements Serializable {
      * @param cid
      * @return subcontainer ids (unordered)
      */
-    public Set<Integer> loadAllSubContainer(int cid) {
+    public Set<Integer> loadAllSubObjects(int cid) {
         Set<Integer> ids = new HashSet<>();
-        List results = em.createNativeQuery(SQL_LOAD_SUB_CONTAINER).
-                setParameter("containerid", cid)
+        List results = em.createNativeQuery(SQL_LOAD_SUB_OBJECTS).
+                setParameter("id", cid)
                 .getResultList();
         for (Object o : results) {
             ids.add((Integer) o);
@@ -108,10 +95,10 @@ public class ContainerNestingService implements Serializable {
      * @param cid
      * @return container ids of path (unordered)
      */
-    public Set<Integer> loadNestedInContainers(int cid) {
+    public Set<Integer> loadNestedInObjects(int cid) {
         Set<Integer> ids = new HashSet<>();
-        List results = em.createNativeQuery(SQL_LOAD_NESTED_CONTAINER).
-                setParameter("containerid", cid)
+        List results = em.createNativeQuery(SQL_LOAD_NESTED_OBJECTS).
+                setParameter("id", cid)
                 .getResultList();
         for (Object o : results) {
             ids.add((Integer) o);
@@ -125,10 +112,13 @@ public class ContainerNestingService implements Serializable {
      * @param cid
      * @return id or null if none exists
      */
-    public Integer loadParentIdOfContainer(int cid) {
-        List resultId = this.em.createNativeQuery(SQL_LOAD_PARENT_OF_CONTAINER).
-                setParameter("containerid", cid).
+    public Integer loadParentIdOfObject(int cid) {
+        List resultId = this.em.createNativeQuery(SQL_LOAD_PARENT_OF_OBJECT).
+                setParameter("id", cid).
                 getResultList();
+        if (resultId.isEmpty()) {
+            return null;
+        }
         return (Integer) resultId.get(0);
     }
 
@@ -140,8 +130,8 @@ public class ContainerNestingService implements Serializable {
      * @return ids of container which are between x and y
      */
     public Set<Integer> loadSubpath(int from, int to) {
-        Set<Integer> fromPath = loadNestedInContainers(from);
-        Set<Integer> toPath = loadNestedInContainers(to);
+        Set<Integer> fromPath = loadNestedInObjects(from);
+        Set<Integer> toPath = loadNestedInObjects(to);
         fromPath.removeAll(toPath);
         return fromPath;
     }
@@ -154,25 +144,65 @@ public class ContainerNestingService implements Serializable {
      * @param cid id of edited container
      * @param newParent id of new parent, can be null
      */
-    public void updateNestedContainerFor(int cid, Integer newParent) {
+    public void updateNestedObjectFor(int cid, Integer newParent) {
         Set<Integer> newPath = new HashSet<>();
         if (newParent != null) {
-            newPath = loadNestedInContainers(newParent);
+            newPath = loadNestedInObjects(newParent);
             newPath.add(newParent);
         }
-        Set<Integer> subContainer = loadAllSubContainer(cid);
+        Set<Integer> subContainer = loadAllSubObjects(cid);
         for (Integer sc : subContainer) {
             Set<Integer> subpath = loadSubpath(sc, cid);
             subpath.addAll(newPath);
-            deletePathForContainer(sc);
+            deletePathForObject(sc);
             addNewPath(sc, subpath);
         }
-        deletePathForContainer(cid);
+        deletePathForObject(cid);
         addNewPath(cid, newPath);
     }
 
     public void setEm(EntityManager em) {
         this.em = em;
+    }
+
+    public String getSqlLoadParentOfObject() {
+        return SQL_LOAD_PARENT_OF_OBJECT;
+    }
+
+    public void setSqlLoadParentOfObject(String sql) {
+        this.SQL_LOAD_PARENT_OF_OBJECT = sql;
+    }
+
+    public String getSqlLoadNestedObjects() {
+        return SQL_LOAD_NESTED_OBJECTS;
+    }
+
+    public void setSqlLoadNestedObjects(String sql) {
+        this.SQL_LOAD_NESTED_OBJECTS = sql;
+    }
+
+    public String getSqlLoadSubObjects() {
+        return SQL_LOAD_SUB_OBJECTS;
+    }
+
+    public void setSqlLoadSubObjects(String sql) {
+        this.SQL_LOAD_SUB_OBJECTS = sql;
+    }
+
+    public String getSqlDeletePath() {
+        return SQL_DELETE_PATH;
+    }
+
+    public void setSqlDeletePath(String sql) {
+        this.SQL_DELETE_PATH = sql;
+    }
+
+    public String getSqlBuildPath() {
+        return SQL_BUILD_PATH;
+    }
+
+    public void setSqlBuildPath(String sql) {
+        this.SQL_BUILD_PATH = sql;
     }
 
 }
