@@ -32,18 +32,18 @@ public class TaxonomyNestingService {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
-    protected String SQL_LOAD_PARENT_OF_CONTAINER
+    protected String SQL_LOAD_PARENT_OF_TAXONOMY
             = "SELECT ef.parentid "
             + "FROM effective_taxonomy ef "
             + "JOIN taxonomy t ON ef.parentid=t.id "
-            + "WHERE ef.taxoid=:containerid "
+            + "WHERE ef.taxoid=:id "
             + "ORDER BY level desc "
             + "LIMIT 1 ";
-    protected String SQL_LOAD_NESTED_CONTAINER
+    protected String SQL_LOAD_NESTED_TAXONOMY
             = "SELECT parentid "
             + "FROM effective_taxonomy "
             + "WHERE taxoid =:id";
-    protected String SQL_LOAD_SUB_CONTAINER
+    protected String SQL_LOAD_SUB_TAXONOMY
             = "SELECT taxoid "
             + "FROM effective_taxonomy "
             + "WHERE parentid =:id";
@@ -55,14 +55,19 @@ public class TaxonomyNestingService {
             + "(taxoid,parentid) "
             + "VALUES(:sourceid,:targetid)";
 
+    /**
+     * Updates the nesting path of the taxonomy
+     *
+     * @param taxonomyid
+     * @param newparentId
+     */
     public void updateParentOfTaxonomy(int taxonomyid, int newparentId) {
         NestingService service = new NestingService(em);
-        service.setSqlLoadParentOfObject(SQL_LOAD_PARENT_OF_CONTAINER);
-        service.setSqlLoadNestedObjects(SQL_LOAD_NESTED_CONTAINER);
-        service.setSqlLoadSubObjects(SQL_LOAD_SUB_CONTAINER);
+        service.setSqlLoadParentOfObject(SQL_LOAD_PARENT_OF_TAXONOMY);
+        service.setSqlLoadNestedObjects(SQL_LOAD_NESTED_TAXONOMY);
+        service.setSqlLoadSubObjects(SQL_LOAD_SUB_TAXONOMY);
         service.setSqlDeletePath(SQL_DELETE_PATH);
         service.setSqlBuildPath(SQL_BUILD_PATH);
-
         service.updateNestedObjectFor(taxonomyid, newparentId);
     }
 
