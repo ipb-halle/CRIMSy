@@ -24,12 +24,13 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
-        <h:form id="experimentForm">
+        <!-- form -->
 
             <b:panel title="Record Data">
                 <p:outputPanel deferred="false">
-
                     <b:row>
+
+        <h:form id="experimentForm">
                         <b:column span="3">
 
                             <ui:insert name="expSearch">
@@ -46,14 +47,15 @@
                             </b:panel>
 
                         </b:column> 
+        </h:form>
+        <h:form id="expRecordsForm" >
                         <b:column span="8">
                             <b:panel collapsible="false" title="experiment records">
                                 <ui:insert name="expRecords">
-                                    <ui:include src="expRecordList.xhtml">
-                                        <ui:param name="controller" value="#{experimentBean.expRecordController}" />
-                                    </ui:include>
+                                    <ui:include src="expRecordList.xhtml" />
                                 </ui:insert>
                             </b:panel>
+
                             <b:panel title="Record Actions" rendered="#{experimentBean.getExperiment().experimentId != null}" >
                                 <b:container>
                                     <b:row>
@@ -61,34 +63,37 @@
                                             <f:selectItem itemLabel="Append record ..." itemValue="" />
                                             <f:selectItem itemLabel="Text" itemValue="TEXT" />
                                             <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
-                                            <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(0)}" update="@all" />
+                                            <p:ajax event="change" listener="#{experimentBean.actionAppendRecord()}" update="@form" />
                                         </p:selectOneMenu>
                                     </b:row>
                                 </b:container>
                             </b:panel>
 
                         </b:column>
-                    </b:row>
+        </h:form>
 
+                    </b:row> 
                 </p:outputPanel>
             </b:panel>
 
-
             <!-- plugin modules -->
             <ui:insert name="matEditPanel">
-                <ui:include src="materialEdit.xhtml" >
+                <ui:include src="dlgMaterialEdit.xhtml" >
                     <ui:param name="materialHolder" value="#{experimentBean.expRecordController}" />
                 </ui:include>
             </ui:insert>
 
 
             <ui:insert name="barChartPanel">
-                <ui:include src="barChart.xhtml" >
+                <ui:include src="dlgBarChart.xhtml" >
                     <ui:param name="chartController" value="#{experimentBean}" />
                 </ui:include>
             </ui:insert>
 
-        </h:form>
+            <ui:insert name="expRecordEditPanel">
+                <ui:include src="dlgExpRecordEdit.xhtml" />
+            </ui:insert>
+
     </h:body>
 
 </html>

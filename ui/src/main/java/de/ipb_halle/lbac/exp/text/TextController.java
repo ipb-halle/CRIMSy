@@ -31,26 +31,15 @@ import org.apache.logging.log4j.Logger;
  */
 public class TextController extends ExpRecordController {
 
-    private Text expRecord;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public TextController(ExperimentBean bean) {
         super(bean);
     }
 
-    public ExpRecord getExpRecord() {
-        return this.expRecord;
-    }
-
     public ExpRecord getNewRecord() {
-        this.expRecord = new Text();
-        this.expRecord.setEdit(true);
-        return this.expRecord;
+        ExpRecord rec = new Text();
+        rec.setEdit(true);
+        return rec; 
     }
-
-    public ExpRecordController setExpRecord(ExpRecord expRecord) {
-        this.expRecord = (Text) expRecord;
-        return this;
-    }
-
 }

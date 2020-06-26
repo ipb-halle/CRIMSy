@@ -42,6 +42,12 @@
         <param-value>false</param-value>
     </context-param>
     
+
+<listener>
+  <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+</listener>
+
+
     <!--
         Tells Bootsfaces to download the components (Datatable, JQuery, 
         CSS, ...) from CDN (true), leave this task to local html document 

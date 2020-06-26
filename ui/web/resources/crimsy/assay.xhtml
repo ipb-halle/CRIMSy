@@ -39,16 +39,8 @@
             <composite:editableValueHolder name="value" />
             <composite:editableValueHolder name="units" />
         </composite:attribute>
-        <composite:attribute name="controller" required="true" >
-        </composite:attribute>
-        <composite:attribute name="materialAgent" required="true" >
-            <composite:attribute name="setMaterialHolder" 
-                method-signature="void setMaterialHolder(de.ipb_halle.lbac.exp.assay.MaterialHolder)" />
-        </composite:attribute>
-        <composite:attribute name="bean" required="true" >
-            <composite:attribute name="actionSetBarChartModel"
-                method-signature="void actionSetBarChartModel(int)" />
-        </composite:attribute>
+        <composite:attribute name="materialAgent" required="true" />
+        <composite:attribute name="bean" required="true" />
     </composite:interface>
 
     <composite:implementation >
@@ -64,10 +56,10 @@
             <h:panelGroup>
                 <crimsy:materialView material="#{cc.attrs.assay.target}" />
                 <h:commandLink 
-                    update="@none"
-                    rendered="#{cc.attrs.assay.edit}"
-                    action="#{cc.attrs.materialAgent.setMaterialHolder(cc.attrs.controller)}"
-                    onclick="PF('dlg_materialEdit').show();" >
+                        update="@none"
+                        rendered="#{cc.attrs.assay.edit}"
+                        onclick="PF('dlg_materialEdit').show();" >
+                    <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
                     <span class="fa fa-cog"> </span>
                 </h:commandLink>
             </h:panelGroup>
@@ -81,9 +73,10 @@
                 <th class="assayTableCell">Item</th>
                 <th class="assayTableCell">
                     <p:commandLink 
-                            update="@none" 
-                            action="#{cc.attrs.bean.actionSetBarChartModel(cc.attrs.assay.index)}"
-                            onclick="PF('dlg_barChart').show();">
+                            update="dlgBarChartForm"
+                            process="@this"
+                            onclick="PF('dlg_barChart').show();" >
+                        <f:setPropertyActionListener target="#{cc.attrs.bean.barChartModel}" value="#{cc.attrs.assay.index}" />
                         <span class="fa fa-search"> Value</span>
                     </p:commandLink></th>
                 <th class="assayTableCell">Unit</th>
@@ -102,7 +95,7 @@
                 <p:commandLink 
                     rendered="#{cc.attrs.assay.edit}"
                     update="@form"
-                    action="#{cc.attrs.controller.actionAppendAssayRecord()}" >
+                    action="#{cc.attrs.bean.expRecordController.actionAppendAssayRecord()}" >
                     <span class="fa fa-plus"> </span>
                 </p:commandLink>
             </td>

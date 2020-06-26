@@ -69,6 +69,8 @@ public class ExperimentBean implements Serializable {
 
     private BarChartModel barChart;
 
+    private int expRecordIndex;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
 
@@ -95,7 +97,7 @@ public class ExperimentBean implements Serializable {
     /**
      * ToDo: xxxxx support additional record types
      */
-    public void actionAppendRecord(long id) {
+    public void actionAppendRecord() {
 
         if (this.experiment == null) {
             this.logger.info("actionAppendRecord(): experiment not set");
@@ -108,15 +110,12 @@ public class ExperimentBean implements Serializable {
             record.setExperiment(this.experiment);
 
             // where to insert?
-            int index = this.expRecords.size();
-            if (id != 0) {
-                index = getIndexOfExpRecord(Long.valueOf(id));
-                if (index < 0) {
-                    this.logger.info("actionAppendRecord() invalid insert position");
-                    return;
-                }
-                index++;
-            }  
+            int index = this.expRecordIndex;
+            index++;
+            if ((index < 0) || (index > this.expRecords.size())) {
+                this.logger.info("actionAppendRecord() out of range");
+                return;
+            }
 
             if (index < (this.expRecords.size())) {
                 // link to the following record
@@ -126,6 +125,8 @@ public class ExperimentBean implements Serializable {
             // remember index (initially id is null)
             record.setIndex(index);
             this.expRecords.add(index, record);
+            reIndex();
+            record.setEdit(true);
         }
     }
 
@@ -150,15 +151,12 @@ public class ExperimentBean implements Serializable {
     /**
      * select a record for editing
      */
-    public void actionEditRecord(Long id) {
-        int index = getIndexOfExpRecord(Long.valueOf(id));
-        if (index > -1) {
-            this.logger.info("actionEditRecord(): ExpRecordId = {}", id);
-            ExpRecord record = this.expRecords.get(index);
-            record.setIndex(index);
+    public void actionEditRecord() {
+        if ((this.expRecordIndex > -1) && (this.expRecordIndex < this.expRecords.size())) {
+            ExpRecord record = this.expRecords.get(this.expRecordIndex);
+            this.logger.info("actionEditRecord(): ExpRecordId = {}", record.getExpRecordId());
             record.setEdit(true);
             createExpRecordController(record.getType().toString());
-            this.expRecordController.setExpRecord(record);
         }
     }
 
@@ -175,10 +173,6 @@ public class ExperimentBean implements Serializable {
 
     public void actionSaveExperiment() {
         this.experimentService.save(this.experiment);
-    }
-
-    public void actionSetBarChartModel(int rank) {
-        this.barChart = this.expRecords.get(rank).getBarChart();
     }
 
     /**
@@ -217,9 +211,10 @@ public class ExperimentBean implements Serializable {
     /**
      */
     public void cleanup() {
-        this.expRecordController = null;
+        this.expRecordController = new NullController(this);
         this.newRecordType = "";
         this.barChart = null;
+        this.expRecordIndex = -2;
     }
 
     public void createExpRecordController(String recordType) {
@@ -231,7 +226,7 @@ public class ExperimentBean implements Serializable {
                 this.expRecordController = new TextController(this);
                 break;
             default :
-                this.expRecordController = null;
+                this.expRecordController = new NullController(this);
         }
     }
 
@@ -254,27 +249,15 @@ public class ExperimentBean implements Serializable {
         return this.expRecordController;
     }
 
-    public List<ExpRecord> getExpRecords() {
-        return this.expRecords;
+    /*
+     * index of the currently selected ExpRecord
+     */
+    protected int getExpRecordIndex() {
+        return this.expRecordIndex;
     }
 
-    /**
-     * obtain the list index of a record with a specific
-     * expRecordId.
-     */
-    public int getIndexOfExpRecord(Long expRecordId) {
-        int index = -1;
-        if (this.expRecords == null) {
-            return index;
-        }
-        ListIterator<ExpRecord> iter = this.expRecords.listIterator();
-        while (iter.hasNext()) {
-            index++;
-            if (iter.next().getExpRecordId().equals(expRecordId)) {
-                return index;
-            }
-        }
-        return -1;
+    public List<ExpRecord> getExpRecords() {
+        return this.expRecords;
     }
 
     public String getNewRecordType() {
@@ -326,8 +309,17 @@ public class ExperimentBean implements Serializable {
         return this.expRecordService.save(record);
     }
 
+    public void setBarChartModel(int rank) {
+        this.barChart = this.expRecords.get(rank).getBarChart();
+    }
+
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
+    }
+
+    public void setExpRecordIndex(int index) {
+        this.logger.info("setExpRecordIndex() index = {}", index);
+        this.expRecordIndex = index;
     }
 
     public void setNewRecordType(String newRecordType) {

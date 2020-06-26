@@ -26,32 +26,22 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-<!--
-    Every action needs to set the materialHolder 
--->
-
     <ui:composition>
-        <p:dialog header="Select Material" 
-                widgetVar="dlg_materialEdit"
+        <p:dialog header="Chart Data" 
+                widgetVar="dlg_barChart"
                 modal="true" 
-                height="300">
-            <p:panel id="materialEdit">
-                <div class="ui-g">
-                    Please note: this is a mock dialog! It is only possible to choose among Id==1 and Id==2.<br/>
-                    <div class="ui-g-12">
-                        <p:inputText label="Material Id" value="#{materialAgent.materialId}" />
-                    </div>
-                    <div class="ui-g-12">
-                        <p:commandButton value="Select" 
-                            action="#{materialAgent.actionSetMaterial}" 
-                            ajax="false" >
-                            <f:setPropertyActionListener target="#{materialAgent.materialHolder}" value="#{materialHolder}" />
-                            <p:ajax oncomplete="PF('dlg_materialEdit').hide();" />
-                        </p:commandButton>
-                    </div>
-                </div> 
-            </p:panel>
+                width="700"
+                height="350">
+            <center>
+                <h:form id="dlgBarChartForm">
+                    <p:chart 
+                        id="barChart"
+                        type="bar" 
+                        model="#{chartController.barChart}" 
+                        style="height:300px" 
+                        rendered="#{chartController.barChart != null}" />
+                </h:form>
+            </center>
         </p:dialog>
-
     </ui:composition>
 </html>

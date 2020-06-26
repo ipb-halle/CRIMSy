@@ -35,7 +35,6 @@ import org.apache.logging.log4j.Logger;
 public class AssayController extends ExpRecordController implements MaterialHolder {
 
     private ExperimentBean bean;
-    private Assay expRecord;
     private AssayRecord assayRecord;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -49,11 +48,12 @@ public class AssayController extends ExpRecordController implements MaterialHold
     public void actionAppendAssayRecord() {
         this.logger.info("actionAppendAssayRecord()");
         try {
-            List<AssayRecord> records = this.expRecord.getRecords();
+            Assay rec = (Assay) getExpRecord();
+            List<AssayRecord> records = rec.getRecords();
             int rank = records.size();
-            this.assayRecord = new AssayRecord(this.expRecord, rank);
+            this.assayRecord = new AssayRecord(rec, rank);
             records.add(this.assayRecord);
-            actionEditAssayRecord(rank);    // select this record for edit
+            setRecordEdit(rank);    // select this record for edit
         } catch (Exception e) {
             this.logger.info("actionAppendAssayRecord() caught an exception" , (Throwable) e); 
         }
@@ -62,13 +62,13 @@ public class AssayController extends ExpRecordController implements MaterialHold
     /**
      * set record 
      */
-    public void actionEditAssayRecord(int rank) {
-        List<AssayRecord> records = this.expRecord.getRecords();
+    public void setRecordEdit(int rank) {
+        List<AssayRecord> records = ((Assay) getExpRecord()).getRecords();
         for (AssayRecord rec : records) {
             if (rec.getRank() == rank) {
                 rec.setEdit(true);
                 this.assayRecord = rec;
-                this.logger.info("actionEditAssayRecord({})", rank);
+                this.logger.info("setRecordEdit({})", rank);
             } else {
                 rec.setEdit(false);
             }
@@ -86,19 +86,10 @@ public class AssayController extends ExpRecordController implements MaterialHold
         return null;
     }
 
-    public ExpRecord getExpRecord() {
-        return this.expRecord;
-    }
-
     public ExpRecord getNewRecord() {
-        this.expRecord = new Assay();
-        this.expRecord.setEdit(true);
-        return this.expRecord;
-    }
-
-    public ExpRecordController setExpRecord(ExpRecord expRecord) {
-        this.expRecord = (Assay) expRecord;
-        return this;
+        ExpRecord rec = new Assay();
+        rec.setEdit(true);
+        return rec; 
     }
 
     public void setMaterial(Material material) {

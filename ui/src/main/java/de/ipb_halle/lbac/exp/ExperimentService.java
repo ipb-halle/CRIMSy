@@ -54,7 +54,7 @@ public class ExperimentService implements Serializable {
     public final static String TEMPLATE_FLAG = "TEMPLATE_FLAG";
 
     private final static String SQL_LOAD = "SELECT e.experimentid, e.code, e.description, "
-        + "e.template, e.usergroups, e.ownerid FROM experiments AS e "
+        + "e.template, e.aclist_id, e.ownerid FROM experiments AS e "
         + "WHERE (e.template = :TEMPLATE_FLAG OR :TEMPLATE_FLAG IS NULL) "
         + "ORDER BY e.code";
 
