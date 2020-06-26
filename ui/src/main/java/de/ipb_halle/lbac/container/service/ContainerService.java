@@ -212,7 +212,7 @@ public class ContainerService implements Serializable {
 
     public void saveEditedContainer(Container c) {
         em.merge(c.createEntity());
-        nestingService.updateNestedContainerFor(
+        nestingService.updateContainerNesting(
                 c.getId(),
                 c.getParentContainer() == null ? null : c.getParentContainer().getId()
         );
