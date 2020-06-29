@@ -251,19 +251,6 @@ public class MaterialEditSaver {
     protected void updateEffectiveTaxonomy(TaxonomyDifference diff) {
         Taxonomy t = (Taxonomy) newMaterial;
         taxonomyNestingService.updateParentOfTaxonomy(newMaterial.getId(), t.getTaxHierachy().get(0).getId());
-
-//        materialService.getEm()
-//                .createNativeQuery(SQL_DELETE_EFFECTIVE_TAXONOMY)
-//                .setParameter("taxoid", diff.getMaterialId())
-//                .executeUpdate();
-//
-//        for (Integer parent : diff.getNewHierarchy()) {
-//            materialService.getEm()
-//                    .createNativeQuery(SQL_INSERT_EFFECTIVE_TAXONOMY)
-//                    .setParameter("taxoid", diff.getMaterialId())
-//                    .setParameter("parentid", parent)
-//                    .executeUpdate();
-//        }
     }
 
     public void saveEditedMaterialOverview() {

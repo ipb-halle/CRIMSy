@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.announcement.membership.mock;
 
-import de.ipb_halle.lbac.announcement.membership.MembershipWebRequest;
+import de.ipb_halle.lbac.admission.MembershipWebRequest;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

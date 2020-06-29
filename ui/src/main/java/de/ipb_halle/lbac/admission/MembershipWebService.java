@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.announcement.membership;
+package de.ipb_halle.lbac.admission;
 
 /**
  * MembershipWebService This service takes user, group and membership

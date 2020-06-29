@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LdapProperties;
 import de.ipb_halle.lbac.admission.SystemSettings;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;

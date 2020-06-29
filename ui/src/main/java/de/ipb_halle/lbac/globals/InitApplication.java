@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.globals.health.HealthState;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.announcement.membership.MembershipWebService;
+import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;

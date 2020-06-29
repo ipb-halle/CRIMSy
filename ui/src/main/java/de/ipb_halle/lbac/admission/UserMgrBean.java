@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
 
 import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.Membership;
