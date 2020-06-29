@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 
@@ -51,6 +52,8 @@ public class MaterialAgent {
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
 
+    @Inject UserBean userBean;
+
     @Inject 
     private MaterialService materialService;
 
@@ -79,6 +82,15 @@ public class MaterialAgent {
         } else {
             this.logger.info("actionSetMaterial(): materialHolder not set");
         }
+    }
+
+    public List<Material> getMaterialList() {
+        HashMap<String, Object> cmap = new HashMap<String, Object> ();
+        return this.materialService.getReadableMaterials(
+                this.userBean.getCurrentAccount(), 
+                cmap,  
+                0,  
+                5);
     }
 
     public int getMaterialId() {
