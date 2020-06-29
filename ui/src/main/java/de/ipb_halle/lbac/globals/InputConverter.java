@@ -39,7 +39,7 @@ public class InputConverter implements Converter {
 
     @Override
     public String getAsString(FacesContext fc, UIComponent uic, Object o) {
-        return filter.filter(o.toString());
+        return o == null ? "" : filter.filter(o.toString());
     }
 
 }
