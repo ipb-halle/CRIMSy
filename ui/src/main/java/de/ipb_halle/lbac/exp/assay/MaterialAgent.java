@@ -82,6 +82,7 @@ public class MaterialAgent {
      */
     public List<Material> getMaterialList() {
         HashMap<String, Object> cmap = new HashMap<String, Object> ();
+        cmap.put("TYPES", this.materialHolder.getMaterialTypes());
         return this.materialService.getReadableMaterials(
                 this.userBean.getCurrentAccount(), 
                 cmap,  

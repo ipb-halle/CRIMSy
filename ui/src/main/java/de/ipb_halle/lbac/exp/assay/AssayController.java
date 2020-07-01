@@ -21,7 +21,9 @@ import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.MaterialType;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -83,6 +85,16 @@ public class AssayController extends ExpRecordController implements MaterialHold
     public Material getMaterial() {
         if (this.assayRecord != null) {
             return this.assayRecord.getMaterial();
+        }
+        return null;
+    }
+
+    public List<Integer> getMaterialTypes() {
+        switch (this.materialTarget) {
+            case "TARGET" :
+                return Arrays.asList( MaterialType.BIOMATERIAL.getId() );
+            case "RECORD" :
+                return Arrays.asList( MaterialType.STRUCTURE.getId() );
         }
         return null;
     }

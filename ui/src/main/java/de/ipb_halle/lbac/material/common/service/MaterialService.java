@@ -103,6 +103,7 @@ public class MaterialService implements Serializable {
             + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
             + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
+            + "AND (materialtypeid IN ( :TYPES ) OR :TYPES IS NULL ) "
             + "AND (m.materialid=:ID OR :ID=-1) "
             + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
             + "AND materialtypeid NOT IN (6,7) ";
@@ -120,6 +121,7 @@ public class MaterialService implements Serializable {
             + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
             + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
             + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
+            + "AND (materialtypeid IN ( :TYPES ) OR :TYPES IS NULL ) "
             + "AND (m.materialid=:ID OR :ID=-1) "
             + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
             + "AND materialtypeid NOT IN (6,7) ";
@@ -235,6 +237,7 @@ public class MaterialService implements Serializable {
         );
         q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
         q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
+        q.setParameter("TYPES", cmap.getOrDefault("TYPES", null)); 
         q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
         q.setParameter("userid", u.getId());
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
@@ -252,6 +255,7 @@ public class MaterialService implements Serializable {
         q.setMaxResults(maxResults);
         q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
         q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
+        q.setParameter("TYPES", cmap.getOrDefault("TYPES", null)); 
         q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
         q.setParameter("userid", u.getId());
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));

@@ -376,8 +376,8 @@ CREATE TABLE item_positions(
     id SERIAL NOT NULL PRIMARY KEY,
     itemid INTEGER REFERENCES items(id),
     containerid INTEGER NOT NULL REFERENCES containers(id),
-    row INTEGER ,
-    col INTEGER );
+    itemrow INTEGER ,
+    itemcol INTEGER );
 
 CREATE TABLE itemtransfers(
     itemid INTEGER NOT NULL REFERENCES items(id),

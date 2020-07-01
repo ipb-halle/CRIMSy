@@ -129,16 +129,16 @@ public class ContainerService implements Serializable {
 
     String SQL_LOAD_ITEMS_OF_CONTAINER = "SELECT "
             + "itemid,"
-            + "col,"
-            + "row "
+            + "itemcol,"
+            + "itemrow "
             + "FROM item_positions "
             + "WHERE containerId=:containerId";
 
     String SQL_SAVE_ITEM_IN_CONTAINER = "INSERT INTO item_positions ("
             + "itemid,"
             + "containerid,"
-            + "row,"
-            + "col) "
+            + "itemrow,"
+            + "itemcol) "
             + "VALUES("
             + ":itemid,"
             + ":containerid,"

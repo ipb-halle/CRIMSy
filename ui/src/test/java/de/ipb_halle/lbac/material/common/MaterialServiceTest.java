@@ -65,6 +65,7 @@ import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -147,14 +148,14 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("ID of owner not expected one", ownerId, material[3]);
         Assert.assertEquals("ID of project not expected one", p.getId(), (int) material[4]);
 
-        //Checking the strcuture  table entry
+        //Checking the structure  table entry
         List structures = entityManagerService.doSqlQuery("select sumformula,molarmass,exactmolarmass,moleculeid from structures");
         Assert.assertEquals(1, structures.size());
-        Object[] strcuture = (Object[]) structures.get(0);
-        Assert.assertEquals("Sumformula not correct", "", (String) strcuture[0]);
-        Assert.assertEquals(10d, (double) strcuture[1], 0.001);
-        Assert.assertEquals(20d, (double) strcuture[2], 0.001);
-        Assert.assertNotNull("Molecule must be not null", strcuture[3]);
+        Object[] structure = (Object[]) structures.get(0);
+        Assert.assertEquals("Sumformula not correct", "", (String) structure[0]);
+        Assert.assertEquals(10d, (double) structure[1], 0.001);
+        Assert.assertEquals(20d, (double) structure[2], 0.001);
+        Assert.assertNotNull("Molecule must be not null", structure[3]);
 
         //Checking the hazard information
         List hazards = entityManagerService.doSqlQuery("select typeid,remarks from hazards_materials where materialid=" + m.getId() + " order by typeid asc");
@@ -597,6 +598,11 @@ public class MaterialServiceTest extends TestBase {
         cmap.put("TYPE", MaterialType.BIOMATERIAL.getId());
         Assert.assertEquals(0, instance.loadMaterialAmount(testUser, cmap));
         cmap.clear();
+
+        cmap.put("TYPES", Arrays.asList(new Integer[] { Integer.valueOf(MaterialType.STRUCTURE.getId()) }));
+        Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
+        cmap.clear();
+
         cmap.put("NAME", "%Test-Struc%");
         Assert.assertEquals(1, instance.loadMaterialAmount(testUser, cmap));
         
