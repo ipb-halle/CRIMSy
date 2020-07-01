@@ -76,6 +76,9 @@ public class MaterialSearchMaskController {
         this.materialTypes = materialTypes;
     }
 
+    /**
+     * ToDo: localize the material type names
+     */
     public String getLocalizedMaterialTypeName(MaterialType mt) {
         if (mt == null) {
             return "Alle";
@@ -137,15 +140,15 @@ public class MaterialSearchMaskController {
         return cmap;
     }
 
-    public List<String> getSimmilarMaterialNames(String pattern) {
+    public List<String> getSimilarMaterialNames(String pattern) {
         return materialService.getSimilarMaterialNames(pattern, overviewBean.getCurrentUser());
     }
 
-    public List<String> getSimmilarUserNames(String pattern) {
+    public List<String> getSimilarUserNames(String pattern) {
         return new ArrayList<>(memberService.loadSimilarUserNames(pattern));
     }
 
-    public List<String> getSimmilarProjectNames(String pattern) {
+    public List<String> getSimilarProjectNames(String pattern) {
         return projectService.getSimilarProjectNames(pattern, overviewBean.getCurrentUser());
     }
 

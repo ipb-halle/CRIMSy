@@ -32,7 +32,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -57,24 +56,18 @@ public class MaterialAgent {
     @Inject 
     private MaterialService materialService;
 
-    // @ManagedProperty(value="#{materialHolder}")
     private MaterialHolder materialHolder;
 
-    private int materialId;
+    private Integer materialId;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    public MaterialAgent() {
-        this.materialId = 1;
-    }
-
     public void actionSetMaterial() {
-        this.logger.info("actionSetMaterial() materialId = {}", materialId);
+        this.logger.info("actionSetMaterial() materialId = {}", this.materialId);
         if (this.materialHolder != null) {
 
             // do the actual work
-            if ((this.materialId == 1) ||
-              (this.materialId == 2)) {
+            if (this.materialId != null) {
                 this.materialHolder.setMaterial(
                     this.materialService.loadMaterialById(this.materialId));
             }
@@ -84,6 +77,9 @@ public class MaterialAgent {
         }
     }
 
+    /**
+     * get the list of appropriate materials
+     */
     public List<Material> getMaterialList() {
         HashMap<String, Object> cmap = new HashMap<String, Object> ();
         return this.materialService.getReadableMaterials(
@@ -93,7 +89,7 @@ public class MaterialAgent {
                 5);
     }
 
-    public int getMaterialId() {
+    public Integer getMaterialId() {
         return this.materialId;
     }
 
@@ -102,7 +98,7 @@ public class MaterialAgent {
         this.materialHolder = materialHolder;
     }
 
-    public void setMaterialId(int materialId) {
+    public void setMaterialId(Integer materialId) {
         this.materialId = materialId;
     }
 }
