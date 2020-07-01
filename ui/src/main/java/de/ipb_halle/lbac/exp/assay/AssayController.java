@@ -96,7 +96,7 @@ public class AssayController extends ExpRecordController implements MaterialHold
             case "RECORD" :
                 return Arrays.asList( MaterialType.STRUCTURE.getId() );
         }
-        return null;
+        return Arrays.asList(-1);
     }
 
     public ExpRecord getNewRecord() {
