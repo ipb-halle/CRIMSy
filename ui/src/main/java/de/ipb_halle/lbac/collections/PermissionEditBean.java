@@ -37,7 +37,8 @@ import javax.faces.view.ViewScoped;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation of the api for a modal to edit the permission rights of an ac
@@ -101,6 +102,7 @@ public class PermissionEditBean implements PermissionEdit, Serializable {
         for (ACEntry m : acList.getACEntries().values()) {
             groupsNotInAcList.remove(m.getMember());
         }
+        collectionBean.startAclChange(memberService.loadGroups(new HashMap<>()));
     }
 
     /**

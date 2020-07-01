@@ -23,13 +23,19 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
 
     <h:body>
         <ui:composition>
+             <crimsy:acobjectModal
+                acobjectController="#{collectionBean.acObjectController}"
+                groupsAgent="#{groupAgent}"/>
+             <!--
             <ui:insert name="acCols">
                 <ui:include src="/WEB-INF/templates/acEditModal.xhtml"/>
             </ui:insert>
+             -->
             <h2>#{msgs.collMgr_header}</h2>
             <b:modal 
                 id="modalCollection"
@@ -290,12 +296,13 @@
                                          ajax="true"
                                          process="@this"
                                          tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                         update="growlMsg modalAcListID frmACList"
+                                         update="@(.acoEditModal)"
                                          type="button"
                                          action="#{permissionEditBean.initModal()}"
-                                         onclick="ajax:collectionBean.setActiveCollection(collection);"
-                                         oncomplete="$('.modalAcList').modal();return false;"
-                                         disabled="#{!collectionBean.isPermissionEditAllowed(collection)}"/>
+                                         onclick="ajax:collectionBean.setActiveCollection(collection)"
+                                         oncomplete="PF('dlgAcl').show();"
+                                         disabled="#{!collectionBean.isPermissionEditAllowed(collection)}">
+                        </b:commandButton>
                     </b:dataTableColumn>
                 </b:dataTable>
             </b:form>

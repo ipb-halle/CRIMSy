@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.collections;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
@@ -30,6 +31,8 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
@@ -48,7 +51,8 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Controller for view templates/collectionManagement.xhtml This bean displays
@@ -74,7 +78,7 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
  */
 @SessionScoped
 @Named("collectionBean")
-public class CollectionBean implements Serializable {
+public class CollectionBean implements Serializable, ACObjectBean {
 
     private static final String PUBLIC_COLLECTION_NAME = "public";
     private final static long serialVersionUID = 1L;
@@ -92,11 +96,32 @@ public class CollectionBean implements Serializable {
     private CollectionPermissionAnalyser collPermAnalyser;
 
     private int shownCollections = -1;
+    private ACObjectController acObjectController;
 
     @Inject
     private DocumentSearchBean documentSearchBean;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    @Override
+    public void applyAclChanges(int collectionid, ACList newACList) {
+        collectionService.save(activeCollection);
+        
+        acObjectController = null;
+        refreshCollectionList();
+    }
+
+    @Override
+    public void cancelAclChanges() {
+        activeCollection.setACList(acListService.loadById(activeCollection.getACList().getId()));
+        acObjectController = null;
+        refreshCollectionList();
+    }
+
+    @Override
+    public void startAclChange(List<Group> possibleGroupstoAdd) {
+        acObjectController = new ACObjectController(activeCollection, possibleGroupstoAdd, this);
+    }
 
     private enum MODE {
         CREATE, //Creates a new collection
@@ -124,7 +149,7 @@ public class CollectionBean implements Serializable {
 
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
-    
+
     @Inject
     private SolrTermVectorSearch solrTermVectorSearch;
 
@@ -486,6 +511,14 @@ public class CollectionBean implements Serializable {
         } else {
             return POLLING_INTERVALL_INACTIVE;
         }
+    }
+
+    public ACObjectController getAcObjectController() {
+        return acObjectController;
+    }
+
+    public void setAcObjectController(ACObjectController acObjectController) {
+        this.acObjectController = acObjectController;
     }
 
 }

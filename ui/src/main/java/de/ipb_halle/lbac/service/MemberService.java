@@ -54,9 +54,10 @@ import org.apache.logging.log4j.LogManager;
 public class MemberService implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final static String PUBLIC_ACCOUNT_ID = "088e3bc0-7fb2-422e-b29a-71ca3ec907d2";
-    private final static String OWNER_ACCOUNT_ID = "0a662938-e11e-4825-bd45-fa117963d12f";
-    private final String SQL_GET_SIMILAR_NAMES = "SELECT name FROM usersgroups WHERE LOWER(name) LIKE LOWER(:name) AND membertype='U' AND name <> 'deactivated'";
+    private final String SQL_GET_SIMILAR_NAMES
+            = "SELECT name "
+            + "FROM usersgroups "
+            + "WHERE LOWER(name) LIKE LOWER(:name) AND membertype='U' AND name <> 'deactivated'";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
