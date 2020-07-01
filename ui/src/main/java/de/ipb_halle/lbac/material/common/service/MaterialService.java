@@ -107,7 +107,7 @@ public class MaterialService implements Serializable {
             + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
             + "AND materialtypeid NOT IN (6,7) ";
 
-    private final String SQL_LOAD_MATERIAL_AMOUNT
+    private final String SQL_GET_MATERIAL_COUNT
             = "SELECT COUNT(DISTINCT(m.materialid)) "
             + "FROM materials m "
             + "JOIN projects p ON p.id=m.projectid "
@@ -141,7 +141,7 @@ public class MaterialService implements Serializable {
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
     private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
-    private final String SQL_LOAD_STORAGE_CLASSES = "SELECT id,name FROM storageclasses";
+    private final String SQL_GET_STORAGE_CLASSES = "SELECT id,name FROM storageclasses";
 
     protected MaterialHistoryService materialHistoryService;
 
@@ -231,7 +231,7 @@ public class MaterialService implements Serializable {
     public int loadMaterialAmount(User u, Map<String, Object> cmap) {
 
         Query q = em.createNativeQuery(
-                SqlStringWrapper.aclWrapper(SQL_LOAD_MATERIAL_AMOUNT, "m.aclist_id", "m.ownerid", ACPermission.permREAD)
+                SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL_COUNT, "m.aclist_id", "m.ownerid", ACPermission.permREAD)
         );
         q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
         q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
@@ -648,7 +648,7 @@ public class MaterialService implements Serializable {
     @SuppressWarnings("unchecked")
     public List<StorageClass> loadStorageClasses() {
         List<StorageClass> classes = new ArrayList<>();
-        List<Object> objects = this.em.createNativeQuery(SQL_LOAD_STORAGE_CLASSES).getResultList();
+        List<Object> objects = this.em.createNativeQuery(SQL_GET_STORAGE_CLASSES).getResultList();
         for (Object o : objects) {
             Object[] oo = (Object[]) o;
             classes.add(new StorageClass((Integer) oo[0], (String) oo[1]));
