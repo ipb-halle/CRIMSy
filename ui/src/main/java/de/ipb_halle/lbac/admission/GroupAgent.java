@@ -43,19 +43,16 @@ public class GroupAgent {
     private String name;
     private String institute;
 
-    
-    
-    
-    
     public List<Group> loadGroups() {
-        logger.info("Lade neue Gruppen");
-
         Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {
-            cmap.put("name", name);
+            cmap.put("NAME", "%" + name + "%");
+        }
+        if (institute != null && !institute.trim().isEmpty()) {
+            cmap.put("INSTITUTE", "%" + institute + "%");
         }
 
-        return memberService.loadGroups(cmap);
+        return memberService.loadGroupsFuzzy(cmap);
     }
 
     public String getName() {
