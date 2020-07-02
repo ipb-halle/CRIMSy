@@ -39,14 +39,14 @@
             <p:panel id="materialEdit">
 
                 <div class="ui-g">
-                    <p:dataTable value="#{materialAgent.materialList}" var="material">
+                    <p:dataTable id="materialTable" value="#{materialAgent.materialList}" var="material" >
                         <p:column>
                             #{material.firstName}
                         </p:column>
                         <p:column>
                             <p:commandButton value="Select"
                                     action="#{materialAgent.actionSetMaterial}"
-                                    ajax="false">
+                                    update="@all" >
                                 <f:setPropertyActionListener target="#{materialAgent.materialHolder}" value="#{materialHolder}" />
                                 <f:setPropertyActionListener target="#{materialAgent.materialId}" value="#{material.id}" />
                                 <p:ajax oncomplete="PF('dlg_materialEdit').hide();" />

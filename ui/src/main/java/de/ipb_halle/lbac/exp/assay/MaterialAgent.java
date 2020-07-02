@@ -81,13 +81,28 @@ public class MaterialAgent {
      * get the list of appropriate materials
      */
     public List<Material> getMaterialList() {
-        HashMap<String, Object> cmap = new HashMap<String, Object> ();
-        cmap.put("TYPES", this.materialHolder.getMaterialTypes());
-        return this.materialService.getReadableMaterials(
-                this.userBean.getCurrentAccount(), 
-                cmap,  
-                0,  
-                5);
+        if ( this.materialHolder != null ) {
+            try {
+                HashMap<String, Object> cmap = new HashMap<String, Object> ();
+                cmap.put("TYPES", this.materialHolder.getMaterialTypes());
+                List<Material> result = this.materialService.getReadableMaterials(
+                        this.userBean.getCurrentAccount(), 
+                        cmap,  
+                        0,  
+                        5);
+                if (result == null) {
+                    this.logger.info("getMaterialList() result is null");
+                } else {
+                    this.logger.info("getMaterialList() got {} results", result.size());
+                }
+                return result;
+            } catch(Exception e) {
+                this.logger.warn("getMaterialList() caught an exception: ", (Throwable) e);
+            }
+        } else {
+            this.logger.info("getMaterialList() MaterialHolder is null");
+        }
+        return new ArrayList<Material> ();
     }
 
     public Integer getMaterialId() {
