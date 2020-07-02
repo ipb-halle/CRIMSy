@@ -42,6 +42,7 @@ import de.ipb_halle.lbac.service.ACListService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -105,8 +106,8 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     @Override
     public void applyAclChanges(int collectionid, ACList newACList) {
-        collectionService.save(activeCollection);
-        
+        activeCollection = collectionService.save(activeCollection);
+
         acObjectController = null;
         refreshCollectionList();
     }
@@ -120,7 +121,11 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     @Override
     public void startAclChange(List<Group> possibleGroupstoAdd) {
-        acObjectController = new ACObjectController(activeCollection, possibleGroupstoAdd, this);
+        acObjectController = new ACObjectController(
+                activeCollection,
+                possibleGroupstoAdd,
+                this,
+                activeCollection.getName() + " (" + activeCollection.getNode().getInstitution() + ")");
     }
 
     private enum MODE {
@@ -303,15 +308,19 @@ public class CollectionBean implements Serializable, ACObjectBean {
     public List<Collection> getLocalCollectionList() {
         List<Collection> collsToShow = new ArrayList<>();
         if (!showLocalCollectionsOnly) {
-            return collectionSearchState.getCollections();
+            collsToShow = collectionSearchState.getCollections();
         } else {
             for (Collection c : collectionSearchState.getCollections()) {
                 if (c.getNode().getId().equals(nodeService.getLocalNodeId())) {
                     collsToShow.add(c);
                 }
             }
-            return collsToShow;
         }
+        Collections.sort(collsToShow,
+                (Collection c1, Collection c2)
+                -> (c1.getName() + c1.getNode().getInstitution())
+                        .compareTo(c2.getName() + c2.getNode().getInstitution()));
+        return collsToShow;
     }
 
     public List<Collection> getOnlyLocalCollections() {
