@@ -107,16 +107,12 @@ public class CollectionBean implements Serializable, ACObjectBean {
     @Override
     public void applyAclChanges(int collectionid, ACList newACList) {
         activeCollection = collectionService.save(activeCollection);
-
         acObjectController = null;
-        refreshCollectionList();
     }
 
     @Override
     public void cancelAclChanges() {
-        activeCollection.setACList(acListService.loadById(activeCollection.getACList().getId()));
         acObjectController = null;
-        refreshCollectionList();
     }
 
     @Override

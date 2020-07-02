@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.globals;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACList;
@@ -44,19 +45,25 @@ public class ACObjectController {
     private final ACObject objectToChange;
     private List<Group> possibleGroupsToAdd = new ArrayList<>();
     private boolean aclEdited;
+    private String title;
+    private ACList originalAcl;
 
     public ACObjectController(
             ACObject objectToChange,
             List<Group> possibleGroupsToAdd,
-            ACObjectBean bean) {
+            ACObjectBean bean,
+            String title) {
         this.bean = bean;
         this.objectToChange = objectToChange;
         aclEdited = false;
+        this.title = title;
         this.possibleGroupsToAdd = possibleGroupsToAdd;
+        originalAcl = objectToChange.getACList();
+        objectToChange.setACList(copyAcList(originalAcl));
     }
 
     public String getTitleOfModal() {
-        return "";
+        return Messages.getString(MESSAGE_BUNDLE, MESG_KEY_TITLE, new String[]{title});
     }
 
     public List<ACEntry> getAcEntries() {
@@ -89,12 +96,11 @@ public class ACObjectController {
     }
 
     public void actionApplyChanges() {
-        logger.info("Ich mache aus und wende an " + bean);
         bean.applyAclChanges(0, acList);
     }
 
     public void actionCancelChanges() {
-        logger.info("Ich mache aus und schmeisse weg");
+        objectToChange.setACList(originalAcl);
         bean.cancelAclChanges();
     }
 
@@ -107,7 +113,6 @@ public class ACObjectController {
     }
 
     public void handleClose(CloseEvent event) {
-        logger.info("Dialog closed. Edited: " + aclEdited);
         if (aclEdited) {
             actionApplyChanges();
         } else {
@@ -118,6 +123,19 @@ public class ACObjectController {
 
     public void saveNewAcList() {
         aclEdited = true;
+    }
+
+    private ACList copyAcList(ACList original) {
+        ACList newAcl = new ACList();
+        newAcl.setId(original.getId());
+        newAcl.setName(original.getName());
+        for (UUID aceid : original.getACEntries().keySet()) {
+            newAcl.addACE(
+                    original.getACEntries().get(aceid).getMember(),
+                    original.getACEntries().get(aceid).getAcPermissionArray()
+            );
+        }
+        return newAcl;
     }
 
 }
