@@ -36,6 +36,8 @@ import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webservice.Updater;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -221,6 +223,22 @@ public class MemberServiceTest extends TestBase {
     public void testLoadSimilarUserNames() {
         Set<String> names = memberService.loadSimilarUserNames("admi");
         Assert.assertTrue(names.size() > 0);
+    }
+
+    @Test
+    public void testLoadGroupsFuzzy() {
+        HashMap<String, Object> cmap = new HashMap<>();
+        createGroup("FuzzyGroup", nodeService.getLocalNode(), memberService, membershipService);
+        List<Group> groups = memberService.loadGroupsFuzzy(cmap);
+        Assert.assertEquals(memberService.loadGroups(new HashMap<>()).size(), groups.size());
+        cmap.put("NAME", "%Fuzzy%");
+        groups = memberService.loadGroupsFuzzy(cmap);
+        Assert.assertEquals(1, groups.size());
+        cmap.clear();
+        cmap.put("INSTITUTE", "%Anonymous%");
+        groups = memberService.loadGroupsFuzzy(cmap);
+        Assert.assertEquals(1, groups.size());
+
     }
 
 }

@@ -49,6 +49,7 @@ import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.openjpa.lib.rop.ResultList;
 
 @Stateless
 public class MemberService implements Serializable {
@@ -58,6 +59,25 @@ public class MemberService implements Serializable {
             = "SELECT name "
             + "FROM usersgroups "
             + "WHERE LOWER(name) LIKE LOWER(:name) AND membertype='U' AND name <> 'deactivated'";
+
+    private final String SQL_GET_GROUPS
+            = "SELECT "
+            + "ug.id, "
+            + "ug.membertype, "
+            + "ug.subsystemtype, "
+            + "ug.subsystemdata, "
+            + "ug.modified, "
+            + "ug.node_id, "
+            + "ug.login, "
+            + "ug.name, "
+            + "ug.email, "
+            + "ug.password, "
+            + "ug.phone "
+            + "FROM usersgroups ug "
+            + "JOIN nodes n ON ug.node_id=n.id "
+            + "WHERE membertype='G' "
+            + "AND (n.institution ILIKE (:INSTITUTE) OR :INSTITUTE='no_institution_filter') "
+            + "AND (ug.name ILIKE (:NAME) OR :NAME='no_name_filter')";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -120,6 +140,27 @@ public class MemberService implements Serializable {
             result.add(new Group(ge, node));
         }
         return result;
+    }
+
+    /**
+     * Loads all groups matching the pattern given by the cmap
+     *
+     * @param cmap
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public List<Group> loadGroupsFuzzy(Map<String, Object> cmap) {
+        List<Group> resultGroups = new ArrayList<>();
+        List<GroupEntity> results = this.em.createNativeQuery(SQL_GET_GROUPS, GroupEntity.class)
+                .setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"))
+                .setParameter("INSTITUTE", cmap.getOrDefault("INSTITUTE", "no_institution_filter"))
+                .getResultList();
+
+        for (GroupEntity ge : results) {
+            Node node = this.nodeService.loadById(ge.getNode());
+            resultGroups.add(new Group(ge, node));
+        }
+        return resultGroups;
     }
 
     /**
