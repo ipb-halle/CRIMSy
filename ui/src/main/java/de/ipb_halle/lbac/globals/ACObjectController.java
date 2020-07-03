@@ -127,7 +127,6 @@ public class ACObjectController {
 
     private ACList copyAcList(ACList original) {
         ACList newAcl = new ACList();
-        newAcl.setId(original.getId());
         newAcl.setName(original.getName());
         for (UUID aceid : original.getACEntries().keySet()) {
             newAcl.addACE(
