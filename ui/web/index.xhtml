@@ -67,6 +67,9 @@
         <h:outputStylesheet name="css/itemEdit.css"/>
         <h:outputStylesheet name="css/itemOverview.css"/>
         <h:outputStylesheet name="css/materialsOverview.css"/>
+        <h:outputStylesheet name="css/collections.css"/>
+
+
 
         <h:outputScript name="fine-uploader/jquery.fine-uploader.js" target="body" position="last"/>
         <h:outputScript name="js/lbac_fineUploaderMulti.js" target="body" position="last"/>
@@ -84,6 +87,7 @@
 
     </h:head>
     <h:body>
+
 
 
         <b:growl
@@ -114,9 +118,11 @@
         </h:form>
 
         <b:container class="simplesearch">
-            <ui:insert name="content">
-                <ui:include src="#{navigator.nextPage}"/>
-            </ui:insert>
+           
+                <ui:insert name="content">
+                    <ui:include src="#{navigator.nextPage}"/>
+                </ui:insert>
+           
 
         </b:container>
         <ui:insert name="footer">

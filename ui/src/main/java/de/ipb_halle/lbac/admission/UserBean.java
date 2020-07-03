@@ -96,10 +96,10 @@ public class UserBean implements Serializable {
 
     private Navigator navigator;
 
-    private String login;
+    private String login="";
 
     @Size(max = 50)
-    private String oldPassword;
+    private String oldPassword="";
 
     @Size(min = 8, max = 50)
     private String newPassword;

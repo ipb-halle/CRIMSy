@@ -45,7 +45,8 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 
 //import javax.naming.Context;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class CollectionService {

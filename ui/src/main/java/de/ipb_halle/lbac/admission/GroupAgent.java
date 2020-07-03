@@ -43,6 +43,11 @@ public class GroupAgent {
     private String name;
     private String institute;
 
+    
+    public void clear(){
+        name=null;
+        institute=null;
+    }
     public List<Group> loadGroups() {
         Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {
