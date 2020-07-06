@@ -35,7 +35,6 @@
 } 
 .toolsTableColumn{
     font-size: 10px;
-    width: 50px !important;
 }
 
 .toolsTableColumn > button > span > i{
@@ -47,7 +46,7 @@
 
 .mainPanelEntry{
     border-width: 0px !important;
-     background-color: #FCFCFC  !important;
+    background-color: #FCFCFC  !important;
 }
 
 .acEntriesTableClass{
@@ -106,6 +105,10 @@
 
 .acoEditModal{
     background-color: #FCFCFC  !important;
+}
+
+.searchMaskClass > .acoCancelButton{
+ 
 }
 
 

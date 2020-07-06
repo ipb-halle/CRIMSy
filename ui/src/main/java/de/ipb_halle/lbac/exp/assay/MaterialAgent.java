@@ -38,9 +38,8 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
- * Bean for interacting with the ui to present and manipulate a experiments 
+ * Bean for interacting with the ui to present and manipulate a experiments
  *
  * @author fbroda
  */
@@ -51,9 +50,10 @@ public class MaterialAgent {
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
 
-    @Inject UserBean userBean;
+    @Inject
+    UserBean userBean;
 
-    @Inject 
+    @Inject
     private MaterialService materialService;
 
     private MaterialHolder materialHolder;
@@ -62,6 +62,10 @@ public class MaterialAgent {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
+    public String getTime() {
+        return new Date().toString();
+    }
+
     public void actionSetMaterial() {
         this.logger.info("actionSetMaterial() materialId = {}", this.materialId);
         if (this.materialHolder != null) {
@@ -69,7 +73,7 @@ public class MaterialAgent {
             // do the actual work
             if (this.materialId != null) {
                 this.materialHolder.setMaterial(
-                    this.materialService.loadMaterialById(this.materialId));
+                        this.materialService.loadMaterialById(this.materialId));
             }
 
         } else {
@@ -81,14 +85,14 @@ public class MaterialAgent {
      * get the list of appropriate materials
      */
     public List<Material> getMaterialList() {
-        if ( this.materialHolder != null ) {
+        if (this.materialHolder != null) {
             try {
-                HashMap<String, Object> cmap = new HashMap<String, Object> ();
+                HashMap<String, Object> cmap = new HashMap<String, Object>();
                 cmap.put("TYPES", this.materialHolder.getMaterialTypes());
                 List<Material> result = this.materialService.getReadableMaterials(
-                        this.userBean.getCurrentAccount(), 
-                        cmap,  
-                        0,  
+                        this.userBean.getCurrentAccount(),
+                        cmap,
+                        0,
                         5);
                 if (result == null) {
                     this.logger.info("getMaterialList() result is null");
@@ -96,13 +100,13 @@ public class MaterialAgent {
                     this.logger.info("getMaterialList() got {} results", result.size());
                 }
                 return result;
-            } catch(Exception e) {
+            } catch (Exception e) {
                 this.logger.warn("getMaterialList() caught an exception: ", (Throwable) e);
             }
         } else {
             this.logger.info("getMaterialList() MaterialHolder is null");
         }
-        return new ArrayList<Material> ();
+        return new ArrayList<Material>();
     }
 
     public Integer getMaterialId() {

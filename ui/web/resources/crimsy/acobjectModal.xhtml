@@ -70,10 +70,9 @@
                                     </p:column>
                                     <p:column
                                         styleClass="textTableColumn"
-                                        headerText="Institut">
+                                        headerText="#{aclEdit_modal_table_institution}">
                                         <h:outputText value="#{ace.getMember().getNode().institution}"/>
                                     </p:column>
-
                                     <p:column
                                         styleClass="checkBoxTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_read}">
@@ -151,43 +150,37 @@
                                 styleClass="searchMaskClass">
                                 <h:outputText 
                                     styleClass="groupSearchFilterHeader groupFilterRow groupFilterInputfield"
-                                    value="Suchfilter"/>
+                                    value="#{msgs.aclEdit_modal_search_title}"/>
                                 <br/>
                                 <h:outputText 
                                     styleClass="groupFilterRow"
-                                    value="Institut"/>
+                                    value="#{msgs.aclEdit_modal_table_institution}"/>
                                 <h:inputText 
                                     styleClass="groupFilterInputfield groupFilterRow"
                                     value="#{cc.attrs.groupsAgent.institute}"/>
                                 <h:outputText
                                     styleClass="groupFilterRow"
-                                    value="Gruppenname"/>
+                                    value="#{msgs.aclEdit_modal_table_groupname}"/>
                                 <h:inputText 
                                     styleClass="groupFilterInputfield groupFilterRow"
                                     value="#{cc.attrs.groupsAgent.name}"/>
-                                <p:commandButton value="clear"
+                                <p:commandButton value="#{msgs.aclEdit_modal_search_clear}"
                                                  ajax="true"
                                                  update="@(.mainPanel)"
                                                  action="#{cc.attrs.groupsAgent.clear()}"
-                                                 styleClass="groupFilterButton groupFilterButtonColumn"
+                                                 styleClass="groupFilterButton groupFilterButtonColumn acoCancelButton"
                                                  />
-
-
                                 <p:commandButton 
                                     styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn"
-                                    value="apply"
+                                    value="#{msgs.aclEdit_modal_search_apply}"
                                     ajax="true"
-                                    update="@(.mainPanel)"
-                                    >
-
+                                    update="@(.mainPanel)">
                                     <f:setPropertyActionListener 
                                         value="#{cc.attrs.groupsAgent.loadGroups()}"
                                         target="#{cc.attrs.acobjectController.possibleGroupsToAdd}"/>
                                 </p:commandButton>
                             </h:form>
-
                         </p:column>
-
                     </p:row>
                     <p:row styleClass="mainPanelEntry">
                         <p:column styleClass="mainPanelEntry">
@@ -199,12 +192,12 @@
                                 value="#{cc.attrs.acobjectController.getGroupsNotInAcList()}">
                                 <p:column
                                     styleClass="textTableColumn"
-                                    headerText="Gruppenname">
+                                    headerText="#{msgs.aclEdit_modal_table_groupname}">
                                     <h:outputText value="#{group.name}" />
                                 </p:column>
                                 <p:column 
                                     styleClass="textTableColumn"
-                                    headerText="Institut">
+                                    headerText="#{msgs.aclEdit_modal_table_institution}">
                                     <h:outputText value="#{group.getNode().institution}" />
                                 </p:column>
                                 <p:column headerText="Tools">
@@ -220,16 +213,15 @@
                                 </p:column>
                             </p:dataTable>
                         </p:column>
-
                         <p:column styleClass="mainPanelEntry">
                             <h:form id ="acoInnerFormId" styleClass="acoInnerFormClass">
                                 <p:commandButton
                                     styleClass="groupFilterButton groupFilterButtonColumn"
-                                    value="Cancel"
+                                    value="#{msgs.aclEdit_modal_cancel}"
                                     oncomplete="PF('dlgAcl').hide();"
                                     />
                                 <p:commandButton 
-                                    value="Apply"
+                                    value="#{msgs.aclEdit_modal_save}"
                                     styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn"
                                     action="#{cc.attrs.acobjectController.saveNewAcList}"
                                     oncomplete="PF('dlgAcl').hide();"/>
