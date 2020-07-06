@@ -369,7 +369,8 @@ CREATE TABLE items(
     containersize FLOAT,
     containertype VARCHAR REFERENCES containertypes(name),
     containerid INTEGER REFERENCES containers(id),
-    ctime TIMESTAMP  NOT NULL DEFAULT now()
+    ctime TIMESTAMP  NOT NULL DEFAULT now(),
+    aclist_id UUID NOT NULL
 );
 
 CREATE TABLE item_positions(

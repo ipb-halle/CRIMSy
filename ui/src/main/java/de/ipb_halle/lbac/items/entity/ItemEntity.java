@@ -83,6 +83,9 @@ public class ItemEntity implements Serializable {
     @Column
     private Date ctime;
 
+    @Column
+    private UUID aclist_id;
+
     public Integer getId() {
         return id;
     }
@@ -201,6 +204,14 @@ public class ItemEntity implements Serializable {
 
     public void setCtime(Date ctime) {
         this.ctime = ctime;
+    }
+
+    public UUID getAclist_id() {
+        return aclist_id;
+    }
+
+    public void setAclist_id(UUID aclist_id) {
+        this.aclist_id = aclist_id;
     }
 
 }

@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.items.entity.ItemHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.MemberService;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -75,6 +76,9 @@ public class ItemService {
     @Inject
     private ProjectService projectService;
 
+    @Inject
+    private ACListService aclistService;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private final String SQL_LOAD_ITEMS = "Select DISTINCT i.id,"
             + "i.materialid,"
@@ -90,7 +94,8 @@ public class ItemService {
             + "i.containersize,"
             + "i.containertype,"
             + "i.containerid,"
-            + "i.ctime "
+            + "i.ctime,"
+            + "i.aclist_id "
             + "FROM items i "
             + "JOIN material_indices mi ON mi.materialid=i.materialid "
             + "JOIN usersgroups u on u.id=i.owner "
@@ -153,7 +158,9 @@ public class ItemService {
                     memberService.loadUserById(entity.getOwner()),
                     entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                     entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
-                    containerService.loadNestedContainer(entity.getContainerid()));
+                    containerService.loadNestedContainer(entity.getContainerid()),
+                    aclistService.loadById(entity.getAclist_id())
+            );
             i.setHistory(loadHistoryOfItem(i));
             result.add(i);
         }
@@ -193,7 +200,8 @@ public class ItemService {
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
-                containerService.loadNestedContainer(entity.getContainerid()));
+                containerService.loadNestedContainer(entity.getContainerid()),
+                aclistService.loadById(entity.getAclist_id()));
     }
 
     public Item loadItemByIdWithoutContainer(int id) {
@@ -205,7 +213,8 @@ public class ItemService {
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
-                new ArrayList<>());
+                new ArrayList<>(),
+                aclistService.loadById(entity.getAclist_id()));
     }
 
     /**

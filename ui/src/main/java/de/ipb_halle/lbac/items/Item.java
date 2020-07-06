@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.items;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
@@ -35,8 +37,8 @@ import java.util.TreeMap;
  *
  * @author fmauz
  */
-public class Item implements DTO, Serializable {
-
+public class Item extends ACObject implements DTO, Serializable {
+    
     private Integer id;
     private Double amount;
     private String unit;
@@ -47,18 +49,17 @@ public class Item implements DTO, Serializable {
     private ContainerType containerType;
     private String description;
     private Material material;
-    private User owner;
     private Project project;
     private String purity;
     private Solvent solvent;
     private Date cTime;
     private SortedMap<Date, ItemHistory> history = new TreeMap<>();
     private List<Container> nestedContainer = new ArrayList<>();
-
+    
     public Item() {
-
+        
     }
-
+    
     public Item(ItemEntity entity,
             Article art,
             Container con,
@@ -66,7 +67,8 @@ public class Item implements DTO, Serializable {
             User owner,
             Project project,
             Solvent sol,
-            List<Container> nestedContainer) {
+            List<Container> nestedContainer,
+            ACList aclist) {
         this.id = entity.getId();
         this.amount = entity.getAmount();
         this.unit = entity.getUnit();
@@ -79,14 +81,15 @@ public class Item implements DTO, Serializable {
         }
         this.description = entity.getDescription();
         this.material = mat;
-        this.owner = owner;
         this.project = project;
         this.purity = entity.getPurity();
         this.solvent = sol;
         this.cTime = entity.getCtime();
         this.nestedContainer = nestedContainer;
+        this.setACList(aclist);
+        this.setOwner(owner);
     }
-
+    
     @Override
     public ItemEntity createEntity() {
         ItemEntity entity = new ItemEntity();
@@ -106,8 +109,8 @@ public class Item implements DTO, Serializable {
             entity.setContainertype(containerType.getName());
         }
         entity.setMaterialid(material.getId());
-        if (owner != null) {
-            entity.setOwner(owner.getId());
+        if (getOwner() != null) {
+            entity.setOwner(getOwner().getId());
         }
         if (project != null) {
             entity.setProjectid(project.getId());
@@ -116,143 +119,136 @@ public class Item implements DTO, Serializable {
         if (solvent != null) {
             entity.setSolventid(solvent.getId());
         }
+        entity.setAclist_id(getACList().getId());
         entity.setCtime(cTime);
-
+        
         return entity;
     }
-
+    
     public Integer getId() {
         return id;
     }
-
+    
     public void setId(Integer id) {
         this.id = id;
     }
-
+    
     public Double getAmount() {
         return amount;
     }
-
+    
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-
+    
     public Article getArticle() {
         return article;
     }
-
+    
     public void setArticle(Article article) {
         this.article = article;
     }
-
+    
     public Double getConcentration() {
         return concentration;
     }
-
+    
     public void setConcentration(Double concentration) {
         this.concentration = concentration;
     }
-
+    
     public Container getContainer() {
         return container;
     }
-
+    
     public void setContainer(Container container) {
         this.container = container;
     }
-
+    
     public Double getContainerSize() {
         return containerSize;
     }
-
+    
     public void setContainerSize(Double containerSize) {
         this.containerSize = containerSize;
     }
-
+    
     public String getUnit() {
         return unit;
     }
-
+    
     public void setUnit(String unit) {
         this.unit = unit;
     }
-
+    
     public String getDescription() {
         return description;
     }
-
+    
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
     public Material getMaterial() {
         return material;
     }
-
+    
     public void setMaterial(Material material) {
         this.material = material;
     }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
+    
     public Project getProject() {
         return project;
     }
-
+    
     public void setProject(Project project) {
         this.project = project;
     }
-
+    
     public String getPurity() {
         return purity;
     }
-
+    
     public void setPurity(String purity) {
         this.purity = purity;
     }
-
+    
     public Solvent getSolvent() {
         return solvent;
     }
-
+    
     public void setSolvent(Solvent solvent) {
         this.solvent = solvent;
     }
-
+    
     public ContainerType getContainerType() {
         return containerType;
     }
-
+    
     public void setContainerType(ContainerType containerType) {
         this.containerType = containerType;
     }
-
+    
     public Date getcTime() {
         return cTime;
     }
-
+    
     public void setcTime(Date cTime) {
         this.cTime = cTime;
     }
-
+    
     public SortedMap<Date, ItemHistory> getHistory() {
         return history;
     }
-
+    
     public void setHistory(SortedMap<Date, ItemHistory> history) {
         this.history = history;
     }
-
+    
     public List<Container> getNestedContainer() {
         return nestedContainer;
     }
-
+    
     public String getNestedLocation() {
         if (container == null) {
             return "";
@@ -261,8 +257,8 @@ public class Item implements DTO, Serializable {
         for (Container c : nestedContainer) {
             location += c.getLocation(true) + ".";
         }
-
+        
         return location + container.getLocation(true);
     }
-
+    
 }

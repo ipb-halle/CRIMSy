@@ -81,6 +81,9 @@ public class ItemServiceTest extends TestBase {
     private ContainerService containerService;
 
     @Inject
+    private GlobalAdmissionContext globalContext;
+
+    @Inject
     private ProjectService projectService;
     private User owner;
     private Project project;
@@ -256,6 +259,7 @@ public class ItemServiceTest extends TestBase {
                 .addClass(LdapProperties.class)
                 .addClass(MoleculeService.class)
                 .addClass(ArticleService.class)
+                .addClass(GlobalAdmissionContext.class)
                 .addClass(MembershipOrchestrator.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
@@ -283,6 +287,7 @@ public class ItemServiceTest extends TestBase {
         Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
+        item.setACList(globalContext.getAdminOnlyACL());
         item.setUnit("kg");
         item.setArticle(null);
         item.setConcentration(32d);

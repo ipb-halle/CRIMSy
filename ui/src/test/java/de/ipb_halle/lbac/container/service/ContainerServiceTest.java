@@ -89,6 +89,9 @@ public class ContainerServiceTest extends TestBase {
     @Inject
     private ProjectService projectService;
 
+    @Inject
+    private GlobalAdmissionContext globalContext;
+
     @Before
     @Override
     public void setUp() {
@@ -390,6 +393,7 @@ public class ContainerServiceTest extends TestBase {
                 .addClass(TaxonomyNestingService.class)
                 .addClass(MoleculeService.class)
                 .addClass(LdapProperties.class)
+                .addClass(GlobalAdmissionContext.class)
                 .addClass(ContainerNestingService.class)
                 .addClass(ProjectService.class);
     }
@@ -466,11 +470,31 @@ public class ContainerServiceTest extends TestBase {
     }
 
     private void createItems(String ownerid) {
-        String sql = "INSERT INTO items values(1,1,10,null,null,0,'kg','unknown',null,'item 1',cast('" + ownerid + "' as UUID),null,null," + c0.getId() + ",now())";
+        String sql = "INSERT INTO items "
+                + " (id,materialid,amount, articleid,projectid,concentration, "
+                + "unit,purity,solventid,description,owner,containersize,containertype, "
+                + "containerid,ctime,aclist_id) "
+                + "values("
+                + "1,1,10,null,null,0,'kg','unknown',null,'item 1', "
+                + "cast('" + ownerid + "' as UUID),null,null," + c0.getId() + ",now(), "
+                + "cast('" + globalContext.getAdminOnlyACL().getId() + "' AS UUID))";
+
+        entityManagerService
+                .doSqlUpdate(sql);
+        sql = "INSERT INTO items "
+                + " (id,materialid,amount, articleid,projectid,concentration, "
+                + "unit,purity,solventid,description,owner,containersize,containertype, "
+                + "containerid,ctime,aclist_id) "
+                + "values(2,1,5,null,null,0,'g','pure',null,'item 2',cast('" + ownerid + "' as UUID),null,null," + c0.getId() + ",now(), "
+                + "cast('" + globalContext.getAdminOnlyACL().getId() + "' AS UUID))";
+
         entityManagerService.doSqlUpdate(sql);
-        sql = "INSERT INTO items values(2,1,5,null,null,0,'g','pure',null,'item 2',cast('" + ownerid + "' as UUID),null,null," + c0.getId() + ",now())";
-        entityManagerService.doSqlUpdate(sql);
-        sql = "INSERT INTO items values(3,1,11,null,null,0,'mg','xxx',null,'item 3',cast('" + ownerid + "' as UUID),null,null," + c1.getId() + ",now())";
+        sql = "INSERT INTO items "
+                + " (id,materialid,amount, articleid,projectid,concentration, "
+                + "unit,purity,solventid,description,owner,containersize,containertype, "
+                + "containerid,ctime,aclist_id) "
+                + "values(3,1,11,null,null,0,'mg','xxx',null,'item 3',cast('" + ownerid + "' as UUID),null,null," + c1.getId() + ",now(), "
+                + "cast('" + globalContext.getAdminOnlyACL().getId() + "' AS UUID))";
         entityManagerService.doSqlUpdate(sql);
     }
 
