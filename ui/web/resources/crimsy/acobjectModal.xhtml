@@ -33,8 +33,10 @@
                          expert="false"
                          shortDescription="modal for editing an aclist of an acobject">
         <composite:attribute name="acobjectController" required="true" >
+
             <composite:editableValueHolder name="possibleGroupsToAdd" />
         </composite:attribute>
+        <composite:attribute name="updateTargetClass" required="true" />
         <composite:attribute name="groupsAgent" required="true" />
 
 
@@ -61,7 +63,6 @@
                                     scrollHeight="200"
                                     styleClass="acEntriesTableClass"
                                     value="#{cc.attrs.acobjectController.getAcEntries()}">
-
                                     <p:column
                                         styleClass="textTableColumn"
                                         headerText="#{msgs.aclEdit_modal_table_groupname}"
@@ -222,6 +223,7 @@
                                     />
                                 <p:commandButton 
                                     value="#{msgs.aclEdit_modal_save}"
+                                    update="@(.#{cc.attrs.updateTargetClass})"
                                     styleClass="groupFilterButton groupFilterButtonRight groupFilterButtonColumn"
                                     action="#{cc.attrs.acobjectController.saveNewAcList}"
                                     oncomplete="PF('dlgAcl').hide();"/>

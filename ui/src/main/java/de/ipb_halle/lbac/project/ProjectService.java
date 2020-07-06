@@ -51,6 +51,10 @@ public class ProjectService {
             + "FROM projects "
             + "WHERE name=:projectname";
 
+    private final String SQL_DELETE_PROJECT_TEMPLATES
+            = "DELETE FROM projecttemplates "
+            + "WHERE projectid=:projectid";
+
     @Inject
     private MemberService memberService;
 
@@ -192,6 +196,30 @@ public class ProjectService {
             }
         }
         return p;
+    }
+
+    public void saveEditedProjectToDb(Project p) {
+        ACList existingAcl = acListService.save(p.getUserGroups());
+        p.setUserGroups(existingAcl);
+        for (MaterialDetailType md : p.getDetailTemplates().keySet()) {
+            if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
+                existingAcl = acListService.save(p.getDetailTemplates().get(md));
+                p.getDetailTemplates().put(md, existingAcl);
+
+            }
+        }
+        ProjectEntity pE = p.createEntity();
+        this.em.merge(pE);
+        this.em.createNativeQuery(SQL_DELETE_PROJECT_TEMPLATES)
+                .setParameter("projectid", p.getId())
+                .executeUpdate();
+
+        for (MaterialDetailType md : p.getDetailTemplates().keySet()) {
+            if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
+                ProjectTemplateEntity ptE = new ProjectTemplateEntity(md.getId(), p.getDetailTemplates().get(md).getId(), pE.getId());
+                this.em.persist(ptE);
+            }
+        }
     }
 
 }

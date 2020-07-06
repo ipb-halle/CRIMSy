@@ -27,7 +27,8 @@
     <h:body>
         <crimsy:acobjectModal
             acobjectController="#{projectBean.acObjectController}"
-            groupsAgent="#{groupAgent}"/>
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="readableProjectTable"/>
 
         <b:form id="projectOverviewFormId">
             <b:container>
@@ -45,6 +46,7 @@
                         <b:dataTable
                             styleClass="readableProjectTable"
                             paginated="false"
+                            id="projectTableId"
                             value="#{projectBean.getReadableProjects()}"
                             var="project">
                             <b:dataTableColumn
@@ -68,18 +70,20 @@
                                                  ajax="true"
                                                  process="@this"
                                                  type="button"
-                                                 tooltip="Projekt editieren"
+                                                 disabled="true"
+                                                 tooltip="Projekt editieren(not yet implemented)"
                                                  />
                                 <b:commandButton style="padding: 0 4px;"
                                                  icon="glyphicon glyphicon-user"
                                                  look="link"
                                                  ajax="true"
                                                  process="@this"
+                                                 tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                                 update="@(.acoEditModal)"
                                                  type="button"
-                                                 tooltip="Nutzerrechte anpassen"
-                                                 />
-
-
+                                                 onclick="ajax:projectBean.actionStartAclEdit(project)"
+                                                 oncomplete="PF('dlgAcl').show();"
+                                                 disabled="#{!projectBean.isPermissionEditAllowed(project)}"/>
 
                                 <b:commandButton style="padding: 0 4px;"
                                                  icon="trash"
@@ -87,7 +91,8 @@
                                                  ajax="true"
                                                  process="@this"
                                                  type="button"
-                                                 tooltip="Projekt loeschen"
+                                                 disabled="true"
+                                                 tooltip="Projekt loeschen(not yet implemented)"
                                                  />
                             </b:dataTableColumn>
                         </b:dataTable>

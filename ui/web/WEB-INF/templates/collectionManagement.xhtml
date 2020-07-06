@@ -28,14 +28,16 @@
 
     <h:body>
         <ui:composition>
-             <crimsy:acobjectModal
+            <crimsy:acobjectModal
                 acobjectController="#{collectionBean.acObjectController}"
-                groupsAgent="#{groupAgent}"/>
-             <!--
-            <ui:insert name="acCols">
-                <ui:include src="/WEB-INF/templates/acEditModal.xhtml"/>
-            </ui:insert>
-             -->
+                groupsAgent="#{groupAgent}"
+                updateTargetClass="collectionList"
+                />
+            <!--
+           <ui:insert name="acCols">
+               <ui:include src="/WEB-INF/templates/acEditModal.xhtml"/>
+           </ui:insert>
+            -->
             <h2>#{msgs.collMgr_header}</h2>
             <b:modal 
                 id="modalCollection"

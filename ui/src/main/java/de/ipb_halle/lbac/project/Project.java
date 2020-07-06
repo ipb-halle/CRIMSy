@@ -19,9 +19,11 @@ package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
+import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Project extends ACObject {
+public class Project extends ACObject implements DTO {
 
     protected int id;
     protected String name;
@@ -45,6 +47,8 @@ public class Project extends ACObject {
     protected Map<String, String> projectIndices = new HashMap<>();
     protected Map<MaterialDetailType, ACList> detailTemplates = new HashMap<>();
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private Date ctime;
+    private Date mTime;
 
     public Project() {
     }
@@ -61,6 +65,8 @@ public class Project extends ACObject {
         this.projectType = ProjectType.getProjectTypeById(pE.getProjectTypeId());
         this.budgetBlocked = pE.isBudgetBlocked();
         this.description = pE.getDescription();
+        ctime = pE.getCtime();
+        mTime = pE.getMtime();
 
         this.setOwner(owner);
         this.setACList(userGroups);
@@ -178,6 +184,22 @@ public class Project extends ACObject {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public ProjectEntity createEntity() {
+        ProjectEntity entity = new ProjectEntity();
+        entity.setId(id);
+        entity.setAclist_id(getACList().getId());
+        entity.setBudget(budget);
+        entity.setBudgetBlocked(budgetBlocked);
+        entity.setCtime(ctime);
+        entity.setDescription(description);
+        entity.setMtime(mTime);
+        entity.setName(name);
+        entity.setOwnerId(getOwnerID());
+        entity.setProjectTypeId(projectType.getId());
+        return entity;
     }
 
 }

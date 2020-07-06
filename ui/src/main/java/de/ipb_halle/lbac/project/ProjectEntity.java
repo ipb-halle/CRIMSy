@@ -38,7 +38,7 @@ import org.apache.johnzon.mapper.JohnzonConverter;
 @Entity
 @Table(name = "projects")
 public class ProjectEntity implements Serializable {
-    
+
     private final static long serialVersionUID = 1L;
 
     public ProjectEntity() {
@@ -78,7 +78,7 @@ public class ProjectEntity implements Serializable {
     private Date mtime;
 
     public ProjectEntity(Project p) {
-        
+      
         name = p.getName();
         budget = p.getBudget();
         budgetBlocked = p.budgetBlocked;

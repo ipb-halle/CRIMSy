@@ -113,9 +113,7 @@ public class ACObjectController {
     }
 
     public void handleClose(CloseEvent event) {
-        if (aclEdited) {
-            actionApplyChanges();
-        } else {
+        if (!aclEdited) {
             actionCancelChanges();
         }
 
@@ -123,6 +121,7 @@ public class ACObjectController {
 
     public void saveNewAcList() {
         aclEdited = true;
+        actionApplyChanges();
     }
 
     private ACList copyAcList(ACList original) {

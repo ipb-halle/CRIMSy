@@ -21,17 +21,22 @@ import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
+import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import javax.ejb.Init;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -40,32 +45,48 @@ import javax.inject.Named;
 @SessionScoped
 @Named
 public class ProjectBean implements Serializable, ACObjectBean {
-
+    
     @Inject
     private ProjectService projectService;
-
+    
     @Inject
     private UserBean userBean;
-
+    
     private List<Project> readableProjects = new ArrayList<>();
-
+    
     private Project projectInFocus;
-
+    
+    private Logger logger = LogManager.getLogger(ProjectBean.class);
+    
+    private User user;
+    
+    @Inject
+    private MemberService memberService;
+    
+    private void reloadReadableProjects() {
+        List<Project> result = projectService.loadReadableProjectsOfUser(user);
+        Collections.sort(result, (p1, p2) -> {
+            return p1.getName().compareTo(p2.getName());
+        });
+        readableProjects = result;
+    }
+    
     @Init
     public void init() {
-        readableProjects = projectService.loadReadableProjectsOfUser(userBean.getCurrentAccount());
+        
     }
-
+    
     private ACObjectController acObjectController;
-
+    
     public ACObjectController getAcObjectController() {
         return acObjectController;
     }
-
+    
     public List<Project> getReadableProjects() {
-        return projectService.loadReadableProjectsOfUser(userBean.getCurrentAccount());
+        return readableProjects;
+        
     }
-
+    
     public Project getReadableProjectById(int projectId) {
         for (Project p : getReadableProjects()) {
             if (p.getId() == projectId) {
@@ -74,33 +95,43 @@ public class ProjectBean implements Serializable, ACObjectBean {
         }
         return null;
     }
-
+    
     public void setCurrentAccount(@Observes LoginEvent evt) {
-
+        this.user = evt.getCurrentAccount();
+        reloadReadableProjects();
     }
-
+    
     @Override
     public void applyAclChanges(int acobjectid, ACList newAcList) {
-
+        projectService.saveEditedProjectToDb(projectInFocus);
+        acObjectController = null;
+        projectInFocus = null;
+        reloadReadableProjects();
     }
-
+    
     @Override
     public void cancelAclChanges() {
-
+        acObjectController = null;
+        projectInFocus = null;
+        reloadReadableProjects();
     }
-
+    
     @Override
     public void startAclChange(List<Group> possibleGroupstoAdd) {
         acObjectController = new ACObjectController(
                 projectInFocus,
                 possibleGroupstoAdd,
                 this,
-                "Title of ACL-EDit of Project " + projectInFocus.getName());
+                projectInFocus.getName());
     }
-
-    public void startAclEdit(Project p) {
+    
+    public void actionStartAclEdit(Project p) {
         projectInFocus = p;
-        startAclChange(new ArrayList<>());
+        startAclChange(memberService.loadGroups(new HashMap<>()));
     }
-
+    
+    public boolean isPermissionEditAllowed(Project p) {
+        return true;
+    }
+    
 }
