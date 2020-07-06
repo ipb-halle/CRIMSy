@@ -17,12 +17,19 @@
  */
 package de.ipb_halle.lbac.project;
 
+import de.ipb_halle.lbac.admission.ACObjectBean;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACObject;
+import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.globals.ACObjectController;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Init;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -32,7 +39,7 @@ import javax.inject.Named;
  */
 @SessionScoped
 @Named
-public class ProjectBean implements Serializable {
+public class ProjectBean implements Serializable, ACObjectBean {
 
     @Inject
     private ProjectService projectService;
@@ -42,9 +49,17 @@ public class ProjectBean implements Serializable {
 
     private List<Project> readableProjects = new ArrayList<>();
 
+    private Project projectInFocus;
+
     @Init
     public void init() {
         readableProjects = projectService.loadReadableProjectsOfUser(userBean.getCurrentAccount());
+    }
+
+    private ACObjectController acObjectController;
+
+    public ACObjectController getAcObjectController() {
+        return acObjectController;
     }
 
     public List<Project> getReadableProjects() {
@@ -58,6 +73,34 @@ public class ProjectBean implements Serializable {
             }
         }
         return null;
+    }
+
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+
+    }
+
+    @Override
+    public void applyAclChanges(int acobjectid, ACList newAcList) {
+
+    }
+
+    @Override
+    public void cancelAclChanges() {
+
+    }
+
+    @Override
+    public void startAclChange(List<Group> possibleGroupstoAdd) {
+        acObjectController = new ACObjectController(
+                projectInFocus,
+                possibleGroupstoAdd,
+                this,
+                "Title of ACL-EDit of Project " + projectInFocus.getName());
+    }
+
+    public void startAclEdit(Project p) {
+        projectInFocus = p;
+        startAclChange(new ArrayList<>());
     }
 
 }

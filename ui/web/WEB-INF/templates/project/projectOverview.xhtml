@@ -22,11 +22,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
+        <crimsy:acobjectModal
+            acobjectController="#{projectBean.acObjectController}"
+            groupsAgent="#{groupAgent}"/>
+
         <b:form id="projectOverviewFormId">
             <b:container>
                 <b:row>

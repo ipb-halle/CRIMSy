@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Project {
+public class Project extends ACObject {
 
     protected int id;
     protected String name;
@@ -43,7 +44,6 @@ public class Project {
     protected String description;
     protected Map<String, String> projectIndices = new HashMap<>();
     protected User owner;
-    protected ACList userGroups;
     protected Map<MaterialDetailType, ACList> detailTemplates = new HashMap<>();
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -64,7 +64,7 @@ public class Project {
         this.description = pE.getDescription();
 
         this.owner = owner;
-        this.userGroups = userGroups;
+        this.setACList(userGroups);
         this.detailTemplates = detailTemplates;
         this.budgetReservation = budgetReservation;
 
@@ -127,20 +127,16 @@ public class Project {
         this.description = s;
     }
 
-    public void setOwner(User u) {
-        this.owner = u;
-    }
-
     public String getOwnerName() {
         return owner.getName();
     }
 
     public ACList getUserGroups() {
-        return userGroups;
+        return getACList();
     }
 
     public void setUserGroups(ACList userGroups) {
-        this.userGroups = userGroups;
+        this.setACList(userGroups);
     }
 
     public Map<MaterialDetailType, ACList> getDetailTemplates() {
