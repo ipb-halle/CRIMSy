@@ -43,7 +43,6 @@ public class Project extends ACObject {
     protected ProjectType projectType;
     protected String description;
     protected Map<String, String> projectIndices = new HashMap<>();
-    protected User owner;
     protected Map<MaterialDetailType, ACList> detailTemplates = new HashMap<>();
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -63,7 +62,7 @@ public class Project extends ACObject {
         this.budgetBlocked = pE.isBudgetBlocked();
         this.description = pE.getDescription();
 
-        this.owner = owner;
+        this.setOwner(owner);
         this.setACList(userGroups);
         this.detailTemplates = detailTemplates;
         this.budgetReservation = budgetReservation;
@@ -128,7 +127,7 @@ public class Project extends ACObject {
     }
 
     public String getOwnerName() {
-        return owner.getName();
+        return getOwner().getName();
     }
 
     public ACList getUserGroups() {
@@ -148,7 +147,7 @@ public class Project extends ACObject {
     }
 
     public UUID getOwnerID() {
-        return this.owner.getId();
+        return this.getOwner().getId();
     }
 
     @Override
