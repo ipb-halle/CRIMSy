@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -50,7 +51,7 @@ import org.apache.logging.log4j.Logger;
  */
 @SessionScoped
 @Named
-public class MaterialOverviewBean implements Serializable,ACObjectBean {
+public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     private List<Material> materials = new ArrayList<>();
     private Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -158,22 +159,30 @@ public class MaterialOverviewBean implements Serializable,ACObjectBean {
 
     @Override
     public void applyAclChanges(int acobjectid, ACList newAcList) {
+        materialService.updateMaterialAcList(materialInFocus);
+        searchController.actionStartMaterialSearch();
         
     }
 
     @Override
     public void cancelAclChanges() {
-        
+        acObjectController = null;
+        materialInFocus = null;
     }
 
     @Override
     public void startAclChange(List<Group> possibleGroupstoAdd) {
-        acObjectController=new ACObjectController(materialInFocus, possibleGroupstoAdd, this, materialInFocus.getFirstName());
+        acObjectController = new ACObjectController(materialInFocus, possibleGroupstoAdd, this, materialInFocus.getFirstName());
+    }
+
+    public void actionStartAclEdit(Material m) {
+        materialInFocus = m;
+        startAclChange(memberService.loadGroups(new HashMap<>()));
     }
 
     @Override
     public ACObjectController getAcObjectController() {
-       return acObjectController;
+        return acObjectController;
     }
 
 }

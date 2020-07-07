@@ -107,15 +107,21 @@
                                                          action="#{materialOverviewBean.actionCreateNewItem(material)}"
                                                          tooltip="#{msgs.materialOverview_actions_createItem}"
                                                          />
+
+
                                         <b:commandButton style="padding: 0 4px;"
                                                          icon="glyphicon glyphicon-user"
                                                          look="link"
                                                          ajax="true"
                                                          process="@this"
-                                                         type="button"
-                                                         disabled="true"
                                                          tooltip="#{msgs.materialOverview_actions_changeRights}"
-                                                         />
+                                                         update="@(.acoEditModal)"
+                                                         type="button"
+                                                         action="#{materialOverviewBean.actionStartAclEdit(material)}"
+                                                         oncomplete="PF('dlgAcl').show();"
+                                                         disabled="false"/>
+
+
                                         <b:commandButton style="padding: 0 4px;"
                                                          icon="trash"
                                                          look="link"

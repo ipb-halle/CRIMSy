@@ -147,6 +147,11 @@ public class MaterialService implements Serializable {
     private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
     private final String SQL_GET_STORAGE_CLASSES = "SELECT id,name FROM storageclasses";
 
+    private final String SQL_UPDATE_MATERIAL_ACL
+            = "UPDATE materials "
+            + "SET aclist_id =CAST(:aclid AS UUID)"
+            + "WHERE materialid=:mid";
+
     protected MaterialHistoryService materialHistoryService;
 
     @Inject
@@ -563,6 +568,15 @@ public class MaterialService implements Serializable {
         m.setACList(aclService.loadById(projectAclId));
         m.setOwner(memberService.loadUserById(userBean.getCurrentAccount().getId()));
         m.setCreationTime(mE.getCtime());
+        return m;
+    }
+
+    public Material updateMaterialAcList(Material m) {
+        m.setACList(aclService.save(m.getACList()));
+        em.createNativeQuery(SQL_UPDATE_MATERIAL_ACL)
+                .setParameter("mid", m.getId())
+                .setParameter("aclid", m.getACList().getId())
+                .executeUpdate();
         return m;
     }
 
