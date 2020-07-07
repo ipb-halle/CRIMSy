@@ -146,20 +146,17 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
-
         state.getEditedItem().setContainer(container);
-
+        state.getEditedItem().setACList(material.getAcList());
         if (mode == Mode.CREATE) {
             state.getEditedItem().setOwner(userBean.getCurrentAccount());
             state.getEditedItem().setMaterial(material);
             state.getEditedItem().setcTime(new Date());
-
             state.setEditedItem(itemService.saveItem(state.getEditedItem()));
 
         } else {
             itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount());
         }
-
         containerService.deleteItemInContainer(state.getEditedItem().getId());
         for (int[] pos : containerController.resolveItemPositions()) {
             containerService.saveItemInContainer(

@@ -233,7 +233,9 @@ public class ItemService {
      * @return
      */
     public Item saveItem(Item item) {
+        item.setACList(aclistService.save(item.getACList()));
         ItemEntity entity = item.createEntity();
+        
         entity = em.merge(entity);
         item.setId(entity.getId());
         return item;

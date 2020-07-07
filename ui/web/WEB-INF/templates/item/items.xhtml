@@ -26,11 +26,19 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:nwc="http://ipb-halle.de/nwc"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
+
+        <crimsy:acobjectModal
+            acobjectController="#{itemOverviewBean.acObjectController}"
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="itemOverviewContainer"/>
         <b:form 
             id="itemForm">
-            <b:container styleClass="itemOverviewContainer">
+            <b:container 
+                id="itemOverviewContainerId"
+                styleClass="itemOverviewContainer">
                 <b:row>
                     <b:column span="2"> 
                         <b:container>
@@ -204,6 +212,17 @@
                                                              ajax="false"
                                                              action="#{itemOverviewBean.actionStartItemEdit(item)}"
                                                              />
+                                            <b:commandButton style="padding: 0 4px;"
+                                                 icon="glyphicon glyphicon-user"
+                                                 look="link"
+                                                 ajax="true"
+                                                 process="@this"
+                                                 tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                                 update="@(.acoEditModal)"
+                                                 type="button"
+                                                 onclick="ajax:itemOverviewBean.actionStartAclEdit(item)"
+                                                 oncomplete="PF('dlgAcl').show();"
+                                                 disabled="false"/>
                                         </b:dataTableColumn>
                                     </b:dataTable>
                                 </b:column> 

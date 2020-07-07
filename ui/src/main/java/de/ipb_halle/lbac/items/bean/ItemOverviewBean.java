@@ -17,10 +17,14 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -46,47 +50,50 @@ import org.apache.logging.log4j.Logger;
  */
 @SessionScoped
 @Named
-public class ItemOverviewBean implements Serializable{
-
+public class ItemOverviewBean implements Serializable, ACObjectBean {
+    
     private final int PAGE_SIZE = 10;
-
+    
     private String materialSearchName;
     private String itemSearchId;
     private String searchUserName;
     private String searchProject;
     private String searchLocation;
     private String searchDescription;
-
+    
     private int firstResult;
     private int itemAmount;
+    private Item itemInFocus;
+    
+    private ACObjectController acObjectController;
     @Inject
     private ItemService itemService;
-
+    
     @Inject
     private ItemBean itemBean;
-
+    
     @Inject
     private MemberService memberService;
-
+    
     @Inject
     private Navigator navigator;
-
+    
     @Inject
     private MaterialService materialService;
-
+    
     @Inject
     private ProjectService projectService;
     @Inject
     private ContainerService containerService;
-
+    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Item> items;
     private User currentUser;
-
+    
     public List<Item> getItems() {
         return items;
     }
-
+    
     public void reloadItems() {
         Map<String, String> cmap = new HashMap<>();
         if (materialSearchName != null && !materialSearchName.isEmpty()) {
@@ -107,11 +114,11 @@ public class ItemOverviewBean implements Serializable{
         if (searchLocation != null && !searchLocation.isEmpty()) {
             cmap.put("LOCATION_NAME", searchLocation);
         }
-
+        
         itemAmount = itemService.getItemAmount(currentUser, cmap);
         items = itemService.loadItems(currentUser, cmap, firstResult, PAGE_SIZE);
     }
-
+    
     public void actionClearSearchFilter() {
         materialSearchName = null;
         itemSearchId = null;
@@ -120,26 +127,26 @@ public class ItemOverviewBean implements Serializable{
         searchLocation = null;
         searchDescription = null;
     }
-
+    
     public void actionApplySearchFilter() {
         reloadItems();
     }
-
+    
     public void actionStartItemEdit(Item i) {
         itemBean.actionStartItemEdit(i);
         navigator.navigate("/item/itemEdit");
     }
-
+    
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         firstResult = 0;
         reloadItems();
     }
-
+    
     public String getAmountString(Item i) {
         return i.getAmount() + " " + i.getUnit();
     }
-
+    
     public String getMaterialName(Item i) {
         String back = "";
         for (MaterialName mn : i.getMaterial().getNames()) {
@@ -147,7 +154,7 @@ public class ItemOverviewBean implements Serializable{
         }
         return back;
     }
-
+    
     public String getOwnerString(Item i) {
         String back = "";
         if (i.getProject() != null) {
@@ -156,11 +163,11 @@ public class ItemOverviewBean implements Serializable{
         back += "/" + i.getOwner().getName();
         return back;
     }
-
+    
     public String getLocationOfItem(Item i) {
         return i.getNestedLocation();
     }
-
+    
     public String getDatesOfItem(Item i) {
         String back = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -172,47 +179,47 @@ public class ItemOverviewBean implements Serializable{
         }
         return back;
     }
-
+    
     public int getItemAmount() {
         return itemAmount;
     }
-
+    
     public void setItemAmount(int itemAmount) {
         this.itemAmount = itemAmount;
     }
-
+    
     public void actionLastItems() {
-
+        
         firstResult -= PAGE_SIZE;
         firstResult = Math.max(0, firstResult);
         reloadItems();
     }
-
+    
     public void actionNextItems() {
         firstResult += PAGE_SIZE;
         firstResult = Math.min(firstResult, itemAmount - PAGE_SIZE);
         reloadItems();
     }
-
+    
     public void actionFirstItems() {
         firstResult = 0;
         reloadItems();
     }
-
+    
     public void actionEndItems() {
         firstResult = itemAmount - PAGE_SIZE;
         firstResult = Math.max(0, firstResult);
         reloadItems();
     }
-
+    
     public boolean isBackDeactivated() {
         return firstResult == 0;
     }
-
+    
     public boolean isForwardDeactivated() {
         return (itemAmount - firstResult) < PAGE_SIZE;
     }
-
+    
     public String getItemNavigationInfo() {
         int leftBorder = firstResult + 1;
         int rightBorder = (int) Math.min(PAGE_SIZE + firstResult, itemAmount);
@@ -222,70 +229,95 @@ public class ItemOverviewBean implements Serializable{
             return "no items with active filters found";
         }
     }
-
+    
     public String getMaterialSearchName() {
         return materialSearchName;
     }
-
+    
     public void setMaterialSearchName(String materialSearchName) {
         this.materialSearchName = materialSearchName;
     }
-
+    
     public List<String> getSimilarMaterialNames(String input) {
         List<String> names = materialService.getSimilarMaterialNames(input, currentUser);
         return names;
     }
-
+    
     public List<String> getSimilarProjectNames(String input) {
         return projectService.getSimilarProjectNames(input, currentUser);
     }
-
+    
     public List<String> getSimilarUserNames(String input) {
         return new ArrayList<>(memberService.loadSimilarUserNames(input));
     }
-
+    
     public List<String> getSimilarContainerNames(String input) {
         return new ArrayList<>(containerService.getSimilarContainerNames(input, currentUser));
     }
-
+    
     public String getItemSearchId() {
         return itemSearchId;
     }
-
+    
     public void setItemSearchId(String itemSearchId) {
         this.itemSearchId = itemSearchId;
     }
-
+    
     public String getSearchUserName() {
         return searchUserName;
     }
-
+    
     public void setSearchUserName(String searchUserName) {
         this.searchUserName = searchUserName;
     }
-
+    
     public String getSearchProject() {
         return searchProject;
     }
-
+    
     public void setSearchProject(String searchProject) {
         this.searchProject = searchProject;
     }
-
+    
     public String getSearchLocation() {
         return searchLocation;
     }
-
+    
     public void setSearchLocation(String searchLocation) {
         this.searchLocation = searchLocation;
     }
-
+    
     public String getSearchDescription() {
         return searchDescription;
     }
-
+    
     public void setSearchDescription(String searchDescription) {
         this.searchDescription = searchDescription;
     }
-
+    
+    public ACObjectController getAcObjectController() {
+        return acObjectController;
+    }
+    
+    @Override
+    public void applyAclChanges(int acobjectid, ACList newAcList) {
+        itemService.saveItem(itemInFocus);
+    }
+    
+    @Override
+    public void cancelAclChanges() {
+        acObjectController=null;
+        itemInFocus=null;
+    }
+    
+    @Override
+    public void startAclChange(List<Group> possibleGroupstoAdd) {
+        
+    }
+    
+    public void actionStartAclEdit(Item i) {
+        itemInFocus = i;
+        acObjectController = new ACObjectController(i, memberService.loadGroups(new HashMap<>()), this, i.getDescription());
+    }
+    
 }

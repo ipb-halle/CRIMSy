@@ -30,6 +30,8 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
+import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.material.CreationTools;
@@ -245,6 +247,20 @@ public class ItemServiceTest extends TestBase {
         Assert.assertTrue("test002: history2 differs", compareHistories(history2, histories.get(i.next())));
         Assert.assertTrue("test002: history3 differs", compareHistories(history3, histories.get(i.next())));
         Assert.assertTrue("test002: history4 differs", compareHistories(history4, histories.get(i.next())));
+    }
+
+    @Test
+    public void test003_editUserRights() {
+        Item item = createItem();
+        instance.saveItem(item);
+        ACList acl = new ACList();
+        acl.setName("test003_editUserRights - test-acl");
+        acl.addACE(owner, new ACPermission[]{ACPermission.permREAD});
+        item.setACList(acl);
+        instance.saveItem(item);
+        Item i = instance.loadItemById(item.getId());
+        Assert.assertEquals("test003_editUserRights - test-acl", i.getACList().getName());
+
     }
 
     @Deployment
