@@ -388,7 +388,7 @@ public class MaterialService implements Serializable {
                 molecule,
                 moleculeId,
                 moleculeFormat);
-
+        s.setOwner(memberService.loadUserById(me.getOwnerid()));
         return s;
     }
 
