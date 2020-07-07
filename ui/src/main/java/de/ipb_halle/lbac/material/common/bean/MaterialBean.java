@@ -450,8 +450,8 @@ public class MaterialBean implements Serializable {
             case HISTORY:
                 return false;
             default:
-                boolean isOnwer = materialEditState.getMaterialToEdit().getOwnerID().equals(userBean.getCurrentAccount().getId());
-                boolean hastRights = acListService.isPermitted(ACPermission.permEDIT, materialEditState.getMaterialToEdit().getAcList(), userBean.getCurrentAccount());
+                boolean isOnwer = materialEditState.getMaterialToEdit().getOwner().getId().equals(userBean.getCurrentAccount().getId());
+                boolean hastRights = acListService.isPermitted(ACPermission.permEDIT, materialEditState.getMaterialToEdit().getACList(), userBean.getCurrentAccount());
                 return isOnwer || hastRights;
         }
     }

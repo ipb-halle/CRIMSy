@@ -17,8 +17,12 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -29,7 +33,6 @@ import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -47,12 +50,12 @@ import org.apache.logging.log4j.Logger;
  */
 @SessionScoped
 @Named
-public class MaterialOverviewBean implements Serializable {
+public class MaterialOverviewBean implements Serializable,ACObjectBean {
 
     private List<Material> materials = new ArrayList<>();
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private MaterialTableController tableController;
-
+    private ACObjectController acObjectController;
     @Inject
     private MaterialBean materialEditBean;
 
@@ -71,6 +74,7 @@ public class MaterialOverviewBean implements Serializable {
     private MemberService memberService;
 
     private MaterialSearchMaskController searchController;
+    private Material materialInFocus;
 
     @Inject
     ItemBean itemBean;
@@ -150,6 +154,26 @@ public class MaterialOverviewBean implements Serializable {
 
     public MaterialSearchMaskController getSearchController() {
         return searchController;
+    }
+
+    @Override
+    public void applyAclChanges(int acobjectid, ACList newAcList) {
+        
+    }
+
+    @Override
+    public void cancelAclChanges() {
+        
+    }
+
+    @Override
+    public void startAclChange(List<Group> possibleGroupstoAdd) {
+        acObjectController=new ACObjectController(materialInFocus, possibleGroupstoAdd, this, materialInFocus.getFirstName());
+    }
+
+    @Override
+    public ACObjectController getAcObjectController() {
+       return acObjectController;
     }
 
 }

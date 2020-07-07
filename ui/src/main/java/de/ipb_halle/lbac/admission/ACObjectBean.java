@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.globals.ACObjectController;
 import java.util.List;
 
 /**
@@ -32,5 +33,7 @@ public interface ACObjectBean {
     public void cancelAclChanges();
 
     public void startAclChange(List<Group> possibleGroupstoAdd);
+
+    public ACObjectController getAcObjectController();
 
 }

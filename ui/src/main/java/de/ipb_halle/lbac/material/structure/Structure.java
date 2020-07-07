@@ -31,7 +31,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  *
  * @author fmauz
@@ -150,7 +149,6 @@ public class Structure extends Material {
         );
         s.setId(mE.getMaterialid());
         s.setIndices(inices);
-        s.setOwnerID(mE.getOwnerid());
         s.setCreationTime(mE.getCtime());
         return s;
     }
@@ -182,8 +180,8 @@ public class Structure extends Material {
         copy.setIndices(getCopiedIndices());
         copy.setNames(getCopiedNames());
         copy.setDetailRights(getCopiedDetailRights());
-        copy.setOwnerID(ownerID);
-        copy.setAcList(acList);
+        copy.setOwner(getOwner());
+        copy.setACList(getACList());
         copy.setCreationTime(creationTime);
         copy.setHistory(history);
 

@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -47,16 +48,18 @@ import org.junit.Test;
 public class MaterialComparatorTest {
 
     private MaterialComparator instance;
+    private User user;
 
     @Before
     public void init() {
         instance = new MaterialComparator();
+        user=new User();
     }
 
     @Test(expected = Exception.class)
     public void test001_compareMaterialWithDifferentType() throws Exception {
         instance.compareMaterial(
-                createEmptyStructure(UUID.randomUUID()),
+                createEmptyStructure(user),
                 new BioMaterial(
                         34,
                         new ArrayList<>(),
@@ -73,15 +76,15 @@ public class MaterialComparatorTest {
         Assert.assertTrue(
                 "test002-List of differences must be empty",
                 instance.compareMaterial(
-                        createEmptyStructure(ownerID),
-                        createEmptyStructure(ownerID)).isEmpty());
+                        createEmptyStructure(user),
+                        createEmptyStructure(user)).isEmpty());
     }
 
     @Test
     public void test003_compareMaterialWithNameDifference() throws Exception {
         UUID ownerID = UUID.randomUUID();
-        Structure oldStruc = createEmptyStructure(ownerID);
-        Structure newStruc = createEmptyStructure(ownerID);
+        Structure oldStruc = createEmptyStructure(user);
+        Structure newStruc = createEmptyStructure(user);
 
         //Testcase 1 - an old Name was deleted, everything else remains
         oldStruc.getNames().add(new MaterialName("water", "en", 0));
@@ -176,8 +179,8 @@ public class MaterialComparatorTest {
     @Test
     public void test004_compareMaterialWithIndexDifference() throws Exception {
         UUID ownerID = UUID.randomUUID();
-        Structure oldStruc = createEmptyStructure(ownerID);
-        Structure newStruc = createEmptyStructure(ownerID);
+        Structure oldStruc = createEmptyStructure(user);
+        Structure newStruc = createEmptyStructure(user);
 
         //Testcase 1: change an value of an existing entry
         oldStruc.getIndices().add(new IndexEntry(2, "A38", null));
@@ -231,8 +234,8 @@ public class MaterialComparatorTest {
     @Test
     public void test005_compareMaterialWithStructureDifference() throws Exception {
         UUID ownerID = UUID.randomUUID();
-        Structure oldStruc = createEmptyStructure(ownerID);
-        Structure newStruc = createEmptyStructure(ownerID);
+        Structure oldStruc = createEmptyStructure(user);
+        Structure newStruc = createEmptyStructure(user);
         //Testcase 1 : remove information fro structure
         oldStruc.setMolecule(new Molecule("xx-xx", 0));
         oldStruc.setSumFormula("h2o");
@@ -263,8 +266,8 @@ public class MaterialComparatorTest {
     @Test
     public void test006_compareMaterialWithHazardDifference() throws Exception {
         UUID ownerID = UUID.randomUUID();
-        Structure oldStruc = createEmptyStructure(ownerID);
-        Structure newStruc = createEmptyStructure(ownerID);
+        Structure oldStruc = createEmptyStructure(user);
+        Structure newStruc = createEmptyStructure(user);
 
         oldStruc.getHazards().setHazardStatements("HazardBeforeEdit");
         oldStruc.getHazards().setPrecautionaryStatements(null);
@@ -304,8 +307,8 @@ public class MaterialComparatorTest {
     @Test
     public void test007_compareMaterialWithStorageDifference() throws Exception {
         UUID ownerID = UUID.randomUUID();
-        Structure oldStruc = createEmptyStructure(ownerID);
-        Structure newStruc = createEmptyStructure(ownerID);
+        Structure oldStruc = createEmptyStructure(user);
+        Structure newStruc = createEmptyStructure(user);
 
         List<MaterialDifference> diffs = instance.compareMaterial(
                 oldStruc, newStruc);
@@ -335,7 +338,7 @@ public class MaterialComparatorTest {
         Assert.assertEquals("Testcase 7 - 3 differences in new storage conditions must be found", 2, storageDiff.getStorageConditionsNew().size());
     }
 
-    protected Structure createEmptyStructure(UUID ownerID) {
+    protected Structure createEmptyStructure(User user) {
         List<MaterialName> names = new ArrayList<>();
         int projectId = 4;
         HazardInformation hazards = new HazardInformation();
@@ -353,8 +356,8 @@ public class MaterialComparatorTest {
                 hazards,
                 storage,
                 new Molecule("", 1));
-        s.setAcList(new ACList());
-        s.setOwnerID(ownerID);
+        s.setACList(new ACList());
+        s.setOwner(user);
         s.getStorageInformation().setStorageClass(new StorageClass(0, "default class"));
         return s;
     }

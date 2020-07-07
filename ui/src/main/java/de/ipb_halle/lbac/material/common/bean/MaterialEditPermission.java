@@ -73,7 +73,7 @@ public class MaterialEditPermission {
     private boolean isOwnerOrPermitted(MaterialDetailType type, ACPermission permission) {
         ACList aclist = bean.getMaterialEditState().getMaterialToEdit().getDetailRight(type);
         boolean userHasEditRight = aclist != null && bean.getAcListService().isPermitted(permission, aclist, bean.getUserBean().getCurrentAccount());
-        boolean userIsOwner = bean.getMaterialEditState().getMaterialToEdit().getOwnerID().equals(bean.getUserBean().getCurrentAccount().getId());
+        boolean userIsOwner = bean.getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(bean.getUserBean().getCurrentAccount().getId());
         return userIsOwner || userHasEditRight;
     }
 
@@ -132,14 +132,14 @@ public class MaterialEditPermission {
     private boolean isOwner() {
         if (bean.getMaterialEditState() == null
                 || bean.getMaterialEditState().getMaterialToEdit() == null
-                || bean.getMaterialEditState().getMaterialToEdit().getOwnerID() == null) {
+                || bean.getMaterialEditState().getMaterialToEdit().getOwner().getId() == null) {
             return false;
         }
         try {
             return bean.getMaterialEditState() != null
                     && bean.getMaterialEditState()
                             .getMaterialToEdit()
-                            .getOwnerID()
+                            .getOwner().getId()
                             .equals(bean.getUserBean()
                                     .getCurrentAccount()
                                     .getId());

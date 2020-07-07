@@ -56,6 +56,7 @@ import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -178,6 +179,9 @@ public class MaterialService implements Serializable {
     @Inject
     protected TaxonomyNestingService taxonomyNestingService;
 
+    @Inject
+    protected MemberService memberService;
+
     @PostConstruct
     public void init() {
         comparator = new MaterialComparator();
@@ -238,7 +242,7 @@ public class MaterialService implements Serializable {
         );
         q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
         q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
-        q.setParameter("TYPES", cmap.getOrDefault("TYPES", Arrays.asList(-1))); 
+        q.setParameter("TYPES", cmap.getOrDefault("TYPES", Arrays.asList(-1)));
         q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
         q.setParameter("userid", u.getId());
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
@@ -256,7 +260,7 @@ public class MaterialService implements Serializable {
         q.setMaxResults(maxResults);
         q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
         q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
-        q.setParameter("TYPES", cmap.getOrDefault("TYPES", Arrays.asList(-1))); 
+        q.setParameter("TYPES", cmap.getOrDefault("TYPES", Arrays.asList(-1)));
         q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
         q.setParameter("userid", u.getId());
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
@@ -273,7 +277,7 @@ public class MaterialService implements Serializable {
             if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.BIOMATERIAL) {
                 m = getBioMaterial(me);
             }
-            m.setAcList(aclService.loadById(me.getAclist_id()));
+            m.setACList(aclService.loadById(me.getAclist_id()));
             m.getDetailRights().addAll(loadDetailRightsOfMaterial(m.getId()));
             back.add(m);
         }
@@ -297,8 +301,8 @@ public class MaterialService implements Serializable {
                 taxonomyService.loadTaxonomyById(entity.getTaxoid()),
                 tissue
         );
-        b.setAcList(aclService.loadById(me.getAclist_id()));
-        b.setOwnerID(me.getOwnerid());
+        b.setACList(aclService.loadById(me.getAclist_id()));
+        b.setOwner(memberService.loadUserById(me.getOwnerid()));
         return b;
 
     }
@@ -556,8 +560,8 @@ public class MaterialService implements Serializable {
         mE.setDeactivated(false);
         em.persist(mE);
         m.setId(mE.getMaterialid());
-        m.setAcList(aclService.loadById(projectAclId));
-        m.setOwnerID(userBean.getCurrentAccount().getId());
+        m.setACList(aclService.loadById(projectAclId));
+        m.setOwner(memberService.loadUserById(userBean.getCurrentAccount().getId()));
         m.setCreationTime(mE.getCtime());
         return m;
     }

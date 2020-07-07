@@ -65,8 +65,8 @@ public class BioMaterial extends Material {
                 storageInformation.copy(),
                 taxonomy.copyMaterial(),
                 tissue == null ? null : tissue.copyMaterial());
-        b.setAcList(acList);
-        b.setOwnerID(ownerID);
+        b.setACList(getACList());
+        b.setOwner(getOwner());
         return b;
     }
 

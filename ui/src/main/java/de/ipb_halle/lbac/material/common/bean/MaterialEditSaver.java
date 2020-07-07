@@ -256,7 +256,7 @@ public class MaterialEditSaver {
     public void saveEditedMaterialOverview() {
         if (comparator.getDifferenceOfType(diffs, MaterialOverviewDifference.class) != null) {
             saveMaterialOverviewDifference(comparator.getDifferenceOfType(diffs, MaterialOverviewDifference.class));
-            updateMaterialOverview(newMaterial, projectAcl, newMaterial.getOwnerID());
+            updateMaterialOverview(newMaterial, projectAcl, newMaterial.getOwner().getId());
         }
     }
 

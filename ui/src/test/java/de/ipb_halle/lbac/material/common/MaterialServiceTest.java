@@ -270,7 +270,7 @@ public class MaterialServiceTest extends TestBase {
 
         //Change the owner and project
         User u2 = createUser("user2", "user2");
-        editedMaterial.setOwnerID(u2.getId());
+        editedMaterial.setOwner(u2);
         editedMaterial.setProjectId(p2.getId());
         
         instance.saveEditedMaterial(
@@ -414,20 +414,20 @@ public class MaterialServiceTest extends TestBase {
         names.add(new MaterialName("Rose", "de", 2));
         names.add(new MaterialName("Rosa ", "la", 3));
         
-        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(),memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)), new Date());
         t.setLevel(levels.get(0));
         instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
         
         names = new ArrayList<>();
         names.add(new MaterialName("red rose", "en", 1));
-        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(),memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)), new Date());
         t2.getTaxHierachy().add(t);
         t2.setLevel(levels.get(1));
         instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>());
         
         names = new ArrayList<>();
         names.add(new MaterialName("small red rose", "en", 1));
-        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(),memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)), new Date());
         t3.getTaxHierachy().add(t);
         t3.getTaxHierachy().add(t2);
         t3.setLevel(levels.get(2));

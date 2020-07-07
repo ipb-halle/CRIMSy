@@ -17,9 +17,11 @@
  */
 package de.ipb_halle.lbac.material;
 
+import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.forum.HTMLInputFilter;
 import de.ipb_halle.lbac.material.common.Hazard;
@@ -41,7 +43,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public abstract class Material implements DTO, Serializable {
+public abstract class Material extends ACObject implements DTO, Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -49,8 +51,6 @@ public abstract class Material implements DTO, Serializable {
     protected MaterialType type;
     protected List<MaterialName> names;
     protected Integer projectId;
-    protected ACList acList;
-    protected UUID ownerID;
     protected Date creationTime;
     protected HazardInformation hazards;
     protected StorageClassInformation storageInformation;
@@ -126,22 +126,6 @@ public abstract class Material implements DTO, Serializable {
 
     public Integer getProjectId() {
         return projectId;
-    }
-
-    public ACList getAcList() {
-        return acList;
-    }
-
-    public void setAcList(ACList acList) {
-        this.acList = acList;
-    }
-
-    public UUID getOwnerID() {
-        return ownerID;
-    }
-
-    public void setOwnerID(UUID ownerID) {
-        this.ownerID = ownerID;
     }
 
     public HazardInformation getHazards() {

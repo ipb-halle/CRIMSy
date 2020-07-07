@@ -137,7 +137,7 @@ public class TaxonomyRenderController implements Serializable {
                 back += "<br><br>";
                 back += "ID " + t.getId() + "<br>";
                 back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_created", null) + " " + SDF.format(t.getCreationTime()) + "<br>";
-                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_by", null) + " " + memberService.loadUserById(t.getOwnerID()).getName() + "<br>";
+                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_by", null) + " " + memberService.loadUserById(t.getOwner().getId()).getName() + "<br>";
                 return back;
             }
         }

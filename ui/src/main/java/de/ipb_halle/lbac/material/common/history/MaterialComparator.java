@@ -143,22 +143,22 @@ public class MaterialComparator {
             Material editedMat) throws Exception {
         MaterialOverviewDifference overviewDiff = new MaterialOverviewDifference();
         //Check material overview differences
-        if (originalMat.getAcList() == null || editedMat.getAcList() == null) {
+        if (originalMat.getACList()== null || editedMat.getACList() == null) {
             throw new Exception("Acl-list of material not set !");
         }
-        boolean bothAclsEqual = originalMat.getAcList().permEquals(editedMat.getAcList());
+        boolean bothAclsEqual = originalMat.getACList().permEquals(editedMat.getACList());
         if (!bothAclsEqual) {
-            overviewDiff.setAcListNew(editedMat.getAcList());
-            overviewDiff.setAcListOld(originalMat.getAcList());
+            overviewDiff.setAcListNew(editedMat.getACList());
+            overviewDiff.setAcListOld(originalMat.getACList());
         }
-        if (originalMat.getOwnerID() == null || editedMat.getOwnerID() == null) {
+        if (originalMat.getACList() == null || editedMat.getOwner()== null) {
             throw new Exception("Owner of material not set !");
         }
-        if (!originalMat.getOwnerID().toString().equals(editedMat.getOwnerID().toString())) {
-            overviewDiff.setOwnerIdNew(editedMat.getOwnerID());
-            overviewDiff.setOwnerIdOld(originalMat.getOwnerID());
+        if (!originalMat.getOwner().getId().toString().equals(editedMat.getOwner().getId().toString())) {
+            overviewDiff.setOwnerIdNew(editedMat.getOwner().getId());
+            overviewDiff.setOwnerIdOld(originalMat.getOwner().getId());
         }
-        if (originalMat.getProjectId() != editedMat.getProjectId()) {
+        if (!Objects.equals(originalMat.getProjectId(), editedMat.getProjectId())) {
             overviewDiff.setProjectIdNew(editedMat.getProjectId());
             overviewDiff.setProjectIdOld(originalMat.getProjectId());
         }

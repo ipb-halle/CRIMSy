@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -72,6 +73,9 @@ public class TaxonomyService implements Serializable {
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
+
+    @Inject
+    private MemberService memberService;
 
     @PostConstruct
     public void init() {
@@ -128,7 +132,7 @@ public class TaxonomyService implements Serializable {
                     new HazardInformation(),
                     new StorageClassInformation(),
                     taxonomyHierarchy,
-                    UUID.fromString((String) o[2]),
+                    memberService.loadUserById(UUID.fromString((String) o[2])),
                     new Date(((Timestamp) o[0]).getTime()));
             t.setLevel(new TaxonomyLevel(em.find(TaxonomyLevelEntity.class, entity.getLevel())));
 

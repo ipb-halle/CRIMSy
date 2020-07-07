@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -46,10 +47,10 @@ public class Taxonomy extends Material {
             HazardInformation hazards,
             StorageClassInformation storageInformation,
             List<Taxonomy> hierarchy,
-            UUID ownerID,
+            User owner,
             Date creationDate) {
         super(id, names, null, hazards, storageInformation);
-        this.ownerID = ownerID;
+        this.setOwner(owner);
         this.creationTime = creationDate;
         this.type = MaterialType.TAXONOMY;
         this.taxHierachy = hierarchy;
@@ -62,7 +63,7 @@ public class Taxonomy extends Material {
         for (MaterialName mn : names) {
             copiedNames.add(new MaterialName(mn.getValue(), mn.getLanguage(), mn.getRank()));
         }
-        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy, ownerID, creationTime);
+        Taxonomy copiedTaxonomy = new Taxonomy(id, copiedNames, hazards, storageInformation, taxHierachy, getOwner(), creationTime);
         copiedTaxonomy.setTaxHierachy(new ArrayList<>());
         for (Taxonomy t : taxHierachy) {
             copiedTaxonomy.getTaxHierachy().add(t);

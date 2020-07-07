@@ -147,7 +147,7 @@ public class ItemBean implements Serializable {
 
     public void actionSave() {
         state.getEditedItem().setContainer(container);
-        state.getEditedItem().setACList(material.getAcList());
+        state.getEditedItem().setACList(material.getACList());
         if (mode == Mode.CREATE) {
             state.getEditedItem().setOwner(userBean.getCurrentAccount());
             state.getEditedItem().setMaterial(material);

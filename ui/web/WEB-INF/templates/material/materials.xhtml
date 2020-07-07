@@ -23,9 +23,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
-
+        <crimsy:acobjectModal
+            acobjectController="#{materialOverviewBean.acObjectController}"
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="materialOverviewTableContainer"/>
         <b:container
             styleClass="materialOverviewTableContainer">
             <b:row>

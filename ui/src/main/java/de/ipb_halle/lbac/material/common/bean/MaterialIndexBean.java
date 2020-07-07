@@ -20,8 +20,6 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import java.io.Serializable;
@@ -165,7 +163,7 @@ public class MaterialIndexBean implements Serializable {
 
         ACList aclist = materialEditBean.getMaterialEditState().getMaterialToEdit().getDetailRight(MaterialDetailType.INDEX);
         boolean userHasEditRight = aclist != null && materialEditBean.getAcListService().isPermitted(ACPermission.permEDIT, aclist, materialEditBean.getUserBean().getCurrentAccount());
-        boolean userIsOwner = materialEditBean.getMaterialEditState().getMaterialToEdit().getOwnerID().equals(materialEditBean.getUserBean().getCurrentAccount().getId());
+        boolean userIsOwner = materialEditBean.getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(materialEditBean.getUserBean().getCurrentAccount().getId());
         logger.info("OWNER "+userIsOwner);
         logger.info("RIGHTS "+userHasEditRight);
         return !(userIsOwner || userHasEditRight);
