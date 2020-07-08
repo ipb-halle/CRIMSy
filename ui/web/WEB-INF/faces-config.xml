@@ -40,7 +40,9 @@
         <resource-handler>org.omnifaces.resourcehandler.UnmappedResourceHandler</resource-handler>
 
     </application>
-
+<factory>
+    <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
+</factory>
     <!--  managed beans  -->
     <managed-bean>
         <managed-bean-name>Navigator</managed-bean-name>
