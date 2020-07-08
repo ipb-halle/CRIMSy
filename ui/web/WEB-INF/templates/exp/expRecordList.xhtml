@@ -30,7 +30,7 @@
     <ui:composition>
         <ui:repeat value="#{experimentBean.expRecords}" var="rec">
 
-            <div title="#{rec.expRecordDetails}">#{rec.expRecordInfo}
+            <div title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
 
                 <p:commandLink title="Action" 
                         update="@none"
@@ -42,17 +42,19 @@
                 <br/>
             </div>
 
-            <crimsy:assay assay="#{rec}"
-                        materialAgent="#{materialAgent}" 
-                        bean="#{experimentBean}"
-                        rendered="#{rec.facelet eq 'ASSAY'}">
-                <crimsy:assayRecords assay="#{rec}"
+            <h:panelGroup id="recordDetails" styleClass="rec.edit ? 'currentEditRecord' : 'otherViewRecord'}">
+                <crimsy:assay assay="#{rec}"
+                            materialAgent="#{materialAgent}" 
                             bean="#{experimentBean}"
-                            materialAgent="#{materialAgent}" />
-            </crimsy:assay>
+                            rendered="#{rec.facelet eq 'ASSAY'}">
+                    <crimsy:assayRecords assay="#{rec}"
+                                bean="#{experimentBean}"
+                                materialAgent="#{materialAgent}" />
+                </crimsy:assay>
 
-            <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
-            <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
+                <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+            </h:panelGroup>
 
 
             <ui:fragment rendered="#{rec.edit}">

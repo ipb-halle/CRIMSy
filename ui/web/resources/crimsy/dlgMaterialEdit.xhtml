@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pass="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <composite:interface name="dlgMaterialEdit"
+                     displayName="material edit dialog"
+                     preferred="true"
+                     expert="false"
+                     shortDescription="material edit dialog">
+        <composite:attribute name="agent" required="true" />
+        <composite:attribute name="holder" required="true" />
+    </composite:interface>
+
+    <composite:implementation >
+
+    <h:form id="dlgMaterialEditForm">
+        <p:dialog id="dlgMaterialEdit"
+                header="Select Material" 
+                styleClass="dlgMaterialEdit"
+                widgetVar="dlg_materialEdit"
+                modal="true" 
+                height="300">
+            <p:panel id="materialEdit" styleClass="materialEdit" >
+
+                    <p:fragment id="cmdMaterialFragment">
+                        <h:inputHidden id="materialId" 
+                                pass:class="cmdMaterialId" 
+                                value="#{cc.attrs.agent.materialId}" />
+                        <p:remoteCommand 
+                                name="cmdActionSetMaterial" 
+                                update="@all" 
+                                action="#{cc.attrs.agent.actionSetMaterial}" >
+                            <f:setPropertyActionListener target="#{cc.attrs.agent.materialHolder}" value="#{cc.attrs.holder}" />
+                        </p:remoteCommand>
+                    </p:fragment>
+
+                    <!-- rendered attribute of table is irrelevant -->
+                    <p:dataTable id="materialTable" 
+                            value="#{cc.attrs.agent.getMaterialList(cc.attrs.holder)}" 
+                            var="material" >
+                        <p:column id="col0">
+                            #{material.firstName}
+                        </p:column>
+                        <p:column id="col1">
+
+                            <p:button id="selectBtn"
+                                value="Select"
+                                onclick="$('input[class=cmdMaterialId]').val(#{material.id}); cmdActionSetMaterial();" />
+
+                        </p:column>
+                    </p:dataTable>
+
+            </p:panel>
+        </p:dialog>
+    </h:form>
+    </composite:implementation>
+</html>
+

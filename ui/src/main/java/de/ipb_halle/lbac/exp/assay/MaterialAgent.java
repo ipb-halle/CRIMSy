@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 
@@ -81,13 +82,26 @@ public class MaterialAgent {
         }
     }
 
+    public MaterialHolder getMaterialHolder() {
+        this.logger.info("getMaterialHolder() {}", this.materialHolder == null ? "null" : "holder is set");
+        return this.materialHolder;
+    }
+
+    public String getTime() { return new Date().toString(); }
+
     /**
      * get the list of appropriate materials
      */
-    public List<Material> getMaterialList() {
-        if (this.materialHolder != null) {
+    public List<Material> getMaterialList(ExpRecordController holder) {
+        if (holder instanceof MaterialHolder) {
+            this.materialHolder = (MaterialHolder) holder;
+        } else {
+            return null;
+        }
+
+        if ( this.materialHolder != null ) {
             try {
-                HashMap<String, Object> cmap = new HashMap<String, Object>();
+                HashMap<String, Object> cmap = new HashMap<String, Object> ();
                 cmap.put("TYPES", this.materialHolder.getMaterialTypes());
                 List<Material> result = this.materialService.getReadableMaterials(
                         this.userBean.getCurrentAccount(),
@@ -119,6 +133,7 @@ public class MaterialAgent {
     }
 
     public void setMaterialId(Integer materialId) {
+        this.logger.info("setMaterialId() {}", materialId);
         this.materialId = materialId;
     }
 }

@@ -46,6 +46,7 @@ public class AssayController extends ExpRecordController implements MaterialHold
      */
     public AssayController(ExperimentBean bean) {
         super(bean);
+        this.materialTarget = "";
     }
 
     public void actionAppendAssayRecord() {

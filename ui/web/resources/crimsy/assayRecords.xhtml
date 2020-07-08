@@ -49,14 +49,15 @@
             <tr>
                 <td class="assayTableCell">
                     <crimsy:materialView material="#{assayRec.material}" />
-                    <p:commandLink title="Action" 
+
+                    <h:commandLink title="Action"
                             rendered="#{assayRec.edit}"
-                            update="dlgMaterialEditForm:materialTable @parent" >
-                        <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
+                            update="@this" >
                         <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="RECORD" />
-                        <p:ajax oncomplete="PF('dlg_materialEdit').show();" />
+                        <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
+                        <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
                         <span class="fa fa-pencil"> </span>
-                    </p:commandLink>
+                    </h:commandLink>
 
                 </td><td class="assayTableCell">Item currently omitted</td>
 

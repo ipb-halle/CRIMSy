@@ -22,15 +22,30 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
 
+        <!-- plugin modules -->
+        <crimsy:dlgMaterialEdit id="ccDlgMaterialEdit" agent="#{materialAgent}" holder="#{experimentBean.expRecordController}" />
+
+        <ui:insert name="barChartPanel">
+            <ui:include src="dlgBarChart.xhtml" >
+                <ui:param name="chartController" value="#{experimentBean}" />
+            </ui:include>
+        </ui:insert>
+
+        <ui:insert name="expRecordEditPanel">
+            <ui:include src="dlgExpRecordEdit.xhtml" />
+        </ui:insert>
+
+        <!-- content -->
         <b:panel id="experiments" title="Record Data">
             <p:outputPanel deferred="false">
                 <b:row>
 
                     <h:form id="experimentForm">
-                        <b:column span="3">
+                        <b:column id="experimentColumn" span="3">
 
                            <p:tabMenu activeIndex="#{experimentBean.templateMode ? 0 : 1}">
                                 <p:menuitem value="Templates"   
@@ -91,24 +106,6 @@
                 </b:row> 
             </p:outputPanel>
         </b:panel>
-
-        <!-- plugin modules -->
-        <ui:insert name="matEditPanel">
-            <ui:include src="dlgMaterialEdit.xhtml" >
-                <ui:param name="materialHolder" value="#{experimentBean.expRecordController}" />
-            </ui:include>
-        </ui:insert>
-
-
-        <ui:insert name="barChartPanel">
-            <ui:include src="dlgBarChart.xhtml" >
-                <ui:param name="chartController" value="#{experimentBean}" />
-            </ui:include>
-        </ui:insert>
-
-        <ui:insert name="expRecordEditPanel">
-            <ui:include src="dlgExpRecordEdit.xhtml" />
-        </ui:insert>
 
     </h:body>
 
