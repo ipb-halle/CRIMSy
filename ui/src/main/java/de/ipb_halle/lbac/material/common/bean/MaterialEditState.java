@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialEditState {
+public class MaterialEditState implements Serializable{
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Project currentProject;

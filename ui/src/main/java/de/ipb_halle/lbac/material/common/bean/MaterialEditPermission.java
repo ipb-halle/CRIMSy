@@ -19,12 +19,10 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import static de.ipb_halle.lbac.entity.ACPermission.permEDIT;
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
-import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialEditPermission {
+public class MaterialEditPermission implements Serializable{
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 

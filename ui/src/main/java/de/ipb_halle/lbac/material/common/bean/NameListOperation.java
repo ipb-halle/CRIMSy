@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.MaterialName;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class NameListOperation {
+public class NameListOperation implements Serializable {
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
     private final String defaultLanguage;

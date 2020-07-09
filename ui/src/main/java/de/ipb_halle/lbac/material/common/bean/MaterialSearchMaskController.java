@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.MemberService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialSearchMaskController {
+public class MaterialSearchMaskController implements Serializable {
 
     private String id;
     private String indexTypeName;
@@ -49,7 +50,7 @@ public class MaterialSearchMaskController {
     private String index;
     private MemberService memberService;
     private List<MaterialType> materialTypes;
-    
+
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public MaterialSearchMaskController(
@@ -108,7 +109,7 @@ public class MaterialSearchMaskController {
         projectName = null;
         userName = null;
         index = null;
-        materialType=null;
+        materialType = null;
     }
 
     public void actionStartMaterialSearch() {
@@ -132,11 +133,11 @@ public class MaterialSearchMaskController {
         if (userName != null && !userName.trim().isEmpty()) {
             cmap.put("USER", "%" + userName.trim() + "%");
         }
-        logger.info("TYPE "+materialType);
+        logger.info("TYPE " + materialType);
         if (materialType != null) {
             cmap.put("TYPE", materialType.getId());
         }
-        
+
         return cmap;
     }
 

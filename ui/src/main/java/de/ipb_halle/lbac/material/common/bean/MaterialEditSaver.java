@@ -50,6 +50,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import javax.persistence.Query;
@@ -60,7 +61,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialEditSaver {
+public class MaterialEditSaver implements Serializable{
 
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
     protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_storages WHERE materialid=:mid";

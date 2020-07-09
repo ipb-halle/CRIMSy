@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.project.Project;
+import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +40,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialCreationSaver {
+public class MaterialCreationSaver implements Serializable {
 
     protected MoleculeService moleculeService;
     protected MaterialNameBean materialNameBean;

@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public interface TableController {
+public interface TableController extends Serializable {
 
     public void reloadDataTableItems();
 }

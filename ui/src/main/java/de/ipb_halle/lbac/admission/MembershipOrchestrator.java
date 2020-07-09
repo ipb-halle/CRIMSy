@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,14 +36,15 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
  * @author fmauz
  */
 @Stateless
-public class MembershipOrchestrator {
+public class MembershipOrchestrator implements Serializable {
 
     private Logger LOGGER = LogManager.getLogger(MembershipOrchestrator.class);
 

@@ -17,13 +17,15 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import java.io.Serializable;
+
 /**
  * Manages the presentation of chunks of the total possible results for a
  * datatable
  *
  * @author fmauz
  */
-public class DataTableNavigationController {
+public class DataTableNavigationController implements Serializable{
 
     private final int CHUNK_SIZE = 10;
     private int firstResult;
