@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.entity.User;
 import java.io.Serializable;
 
 /**
@@ -26,4 +27,5 @@ import java.io.Serializable;
 public interface TableController extends Serializable {
 
     public void reloadDataTableItems();
+    public void setLastUser(User u);
 }

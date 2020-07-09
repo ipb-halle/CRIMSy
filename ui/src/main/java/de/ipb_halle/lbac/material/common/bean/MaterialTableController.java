@@ -40,7 +40,7 @@ public class MaterialTableController implements TableController {
     private DataTableNavigationController tableController;
 
     private List<Material> shownMaterials;
-    private Map<String, Object> lastcmap=new HashMap<>();
+    private Map<String, Object> lastcmap = new HashMap<>();
     private User lastUser;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -82,6 +82,11 @@ public class MaterialTableController implements TableController {
 
     public DataTableNavigationController getTableController() {
         return tableController;
+    }
+
+    @Override
+    public void setLastUser(User u) {
+        this.lastUser = u;
     }
 
 }

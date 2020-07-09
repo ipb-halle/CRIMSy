@@ -100,7 +100,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
-        //tableController.reloadShownMaterial(currentUser, new HashMap<>());
+        tableController.setLastUser(currentUser);
         searchController.clearInputFields();
 
     }
