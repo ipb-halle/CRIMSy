@@ -38,7 +38,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Named("groupMgrBean")
 @SessionScoped
@@ -54,8 +55,6 @@ public class GroupMgrBean implements Serializable {
 
     @Inject
     private ACListService aclistService;
-
-  
 
     @Inject
     private NodeService nodeService;
@@ -86,13 +85,12 @@ public class GroupMgrBean implements Serializable {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
-
     /**
      * Initialization depending on injected resources
      */
     @PostConstruct
     private void InitGroupMgrBean() {
-        initGroup(); 
+        initGroup();
     }
 
     public void actionAddMembership(Member m) {
@@ -282,6 +280,5 @@ public class GroupMgrBean implements Serializable {
     public String getOPERATIONNAME_MANAGE_MEMBERS() {
         return OPERATIONNAME_MANAGE_MEMBERS;
     }
-    
-    
+
 }

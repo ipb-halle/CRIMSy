@@ -18,13 +18,11 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.entity.InfoEntityList;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.service.InfoObjectService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -34,7 +32,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.Context;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 

@@ -19,14 +19,14 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webservice.RestApiHelper;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -41,10 +41,10 @@ import javax.ws.rs.core.MediaType;
  */
 public class MembershipWebClient
         extends LbacWebClient {
-    
+
     private final static String REST_PATH
             = RestApiHelper.getRestApiDefaultPath(MembershipWebService.class);
-    
+
     private MembershipWebRequest membershipAnnouncement;
     private Logger LOGGER = LogManager.getLogger(this.getClass().getName());
 
@@ -69,9 +69,9 @@ public class MembershipWebClient
             Set<Group> groupsOfUser,
             UUID localNodeId,
             PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        
+
         membershipAnnouncement = new MembershipWebRequest();
-        
+
         membershipAnnouncement.setGroups(groupsOfUser);
         membershipAnnouncement.setUser(u);
         membershipAnnouncement.setSignature(
@@ -80,15 +80,15 @@ public class MembershipWebClient
         membershipAnnouncement.setUserToAnnounce(u);
         membershipAnnouncement.setCloudName(cloudNode.getCloud().getName());
         membershipAnnouncement.setNodeIdOfRequest(localNodeId);
-        
+
         WebClient wc = SecureWebClientBuilder.createWebClient(
                 cloudNode, REST_PATH);
         wc.accept(MediaType.APPLICATION_XML_TYPE);
         wc.type(MediaType.APPLICATION_XML_TYPE);
-        
+
         MembershipWebRequest response
                 = wc.post(membershipAnnouncement, MembershipWebRequest.class);
-        
+
         logFailureResponse(
                 response.getStatusCode(),
                 LOGGER,

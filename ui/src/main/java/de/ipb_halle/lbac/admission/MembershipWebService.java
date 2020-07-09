@@ -30,8 +30,6 @@ package de.ipb_halle.lbac.admission;
  * <li> passwords and other sensitive information is wiped
  * </ul>
  */
-import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.Node;
@@ -43,7 +41,6 @@ import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;

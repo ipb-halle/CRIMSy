@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
@@ -39,7 +40,7 @@ import static java.util.stream.Collectors.toMap;
  * Leibniz Bioactives Cloud
  */
 
-public enum AdmissionSubSystemType {
+public enum AdmissionSubSystemType implements Serializable {
 
     BUILTIN(0),
     LOCAL(1), 

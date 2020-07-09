@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.service.MemberService;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  */
 @RequestScoped
 @Named
-public class GroupAgent {
+public class GroupAgent implements Serializable {
 
     private Logger logger = LogManager.getLogger(GroupAgent.class);
     @Inject
@@ -43,11 +43,11 @@ public class GroupAgent {
     private String name;
     private String institute;
 
-    
-    public void clear(){
-        name=null;
-        institute=null;
+    public void clear() {
+        name = null;
+        institute = null;
     }
+
     public List<Group> loadGroups() {
         Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {

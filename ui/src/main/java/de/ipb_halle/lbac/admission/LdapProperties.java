@@ -18,14 +18,12 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.entity.InfoEntityList;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.service.InfoObjectService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;

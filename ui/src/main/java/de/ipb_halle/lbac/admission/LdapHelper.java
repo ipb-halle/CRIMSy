@@ -21,8 +21,6 @@ import de.ipb_halle.lbac.entity.MemberType;
 import de.ipb_halle.lbac.util.HexUtil;
 
 import java.io.Serializable;
-import java.util.Hashtable;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -31,9 +29,10 @@ import javax.naming.NamingEnumeration;
 import javax.naming.directory.*;
 import javax.naming.ldap.LdapName;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-public class LdapHelper {
+public class LdapHelper implements Serializable {
 
     /**
      * This class performs all LDAP lookups and synchronizes the local node with
@@ -47,6 +46,7 @@ public class LdapHelper {
 
     /**
      * constructor
+     * @param prop
      */
     public LdapHelper(LdapProperties prop) {
         this.ldapProperties = prop;
@@ -71,7 +71,6 @@ public class LdapHelper {
             try {
                 SearchControls ctrl = new SearchControls();
                 ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-
 
                 NamingEnumeration<SearchResult> srch = ctx.search(this.ldapProperties.get("LDAP_BASE_DN"),
                         this.ldapProperties.get("LDAP_SEARCH_FILTER_LOGIN").replaceAll("@", l), ctrl);
@@ -109,7 +108,7 @@ public class LdapHelper {
 
             try {
                 LdapName filterName = new LdapName(filter);
-                
+
                 return name.startsWith(filterName);
             } catch (InvalidNameException f) {
                 this.logger.warn("filterGroup() invalid filter expression:" + filter);
@@ -191,7 +190,7 @@ public class LdapHelper {
                     String dn = result.getNameInNamespace();
                     Attributes attrs = result.getAttributes();
                     String cn = (String) attrs.get(this.ldapProperties.get("LDAP_ATTR_COMMON_NAME")).get();
-                    String mail = ""; 
+                    String mail = "";
                     String phone = "";
                     String uniqueId = login;
                     try {
@@ -226,7 +225,7 @@ public class LdapHelper {
                                 user.addMembership(groupDn);
                                 queryLdapGroups(ctx, groupDn, ldapObjects);
                             }
-                            
+
                         }
                     }
                     srch.close();

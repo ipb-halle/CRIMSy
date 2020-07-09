@@ -17,17 +17,13 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Member;
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.service.MemberService;
 import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
+import java.io.Serializable;
 
-import java.util.List;
-import java.util.Map;
 
-public abstract class AbstractAdmissionSubSystem implements IAdmissionSubSystem {
+public abstract class AbstractAdmissionSubSystem implements IAdmissionSubSystem,Serializable {
 
     private MemberService       memberService;
     private MembershipService   membershipService;

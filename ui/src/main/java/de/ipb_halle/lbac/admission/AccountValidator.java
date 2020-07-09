@@ -19,14 +19,13 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.globals.SessionHelper;
 import de.ipb_halle.lbac.service.MemberService;
+import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.FacesValidator;
@@ -38,7 +37,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("AccountValidator")
-public class AccountValidator implements Validator {
+public class AccountValidator implements Validator,Serializable {
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 

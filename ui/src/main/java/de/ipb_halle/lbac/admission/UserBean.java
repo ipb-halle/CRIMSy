@@ -48,7 +48,8 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @SessionScoped
 @Named("userBean")
@@ -96,10 +97,10 @@ public class UserBean implements Serializable {
 
     private Navigator navigator;
 
-    private String login="";
+    private String login = "";
 
     @Size(max = 50)
-    private String oldPassword="";
+    private String oldPassword = "";
 
     @Size(min = 8, max = 50)
     private String newPassword;
@@ -366,7 +367,7 @@ public class UserBean implements Serializable {
         this.currentAccount = u;
         this.permissionCache.clear();
         this.loginEvent.fire(new LoginEvent(u));
-        if (!u.equals(this.globalAdmissionContext.getPublicAccount())) { 
+        if (!u.equals(this.globalAdmissionContext.getPublicAccount())) {
             announceUser(u);
         }
     }
@@ -411,8 +412,8 @@ public class UserBean implements Serializable {
         }
         return false;
     }
-    
-    public boolean isComponentAccessable(String s){
+
+    public boolean isComponentAccessable(String s) {
         return true;
     }
 

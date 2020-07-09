@@ -17,15 +17,16 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class LockoutInfo {
+public class LockoutInfo implements Serializable {
 
     // 20 minutes
     private final static long LOCKOUT_MILLIS = 1000 * 60 * 20;
     private final static int LOCKOUT_COUNT = 5;
 
-    private long time; 
+    private long time;
     private int count;
 
     /**
@@ -38,6 +39,7 @@ public class LockoutInfo {
 
     /**
      * check the lock status of this record
+     *
      * @return true if record is locked
      */
     public boolean check() {
@@ -47,7 +49,8 @@ public class LockoutInfo {
 
     /**
      * check if a lock record is expired
-     * @param t the time to check 
+     *
+     * @param t the time to check
      * @param return true if is record is already expired
      */
     public boolean expired(long t) {

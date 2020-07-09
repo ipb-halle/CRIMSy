@@ -20,11 +20,8 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.i18n.UIClient;
 import de.ipb_halle.lbac.i18n.UIMessage;
 
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
 
