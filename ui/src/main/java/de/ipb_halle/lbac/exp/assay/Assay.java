@@ -109,6 +109,14 @@ public class Assay extends ExpRecord implements DTO {
         } 
     }
 
+    @Override
+    public void copy() {
+        for (AssayRecord rec : this.records) {
+            rec.setAssay(this);
+            rec.setRecordId(null);
+        }
+    }
+
     public AssayEntity createEntity() {
         return new AssayEntity()
             .setExpRecordId(getExpRecordId())

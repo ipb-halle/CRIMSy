@@ -153,6 +153,35 @@ public class ExperimentBean implements Serializable {
      * make an experiment from the current template
      */
     public void actionCopyTemplate() {
+        Date copyDate = new Date();
+
+        // load the template records
+        Map<String, Object> cmap = new HashMap<String, Object> ();
+        cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
+        List<ExpRecord> records = this.expRecordService.load(cmap);
+    
+        // copy the experiment
+        this.experiment.setExperimentId(null);
+        this.experiment.setTemplate(false);
+        this.experiment.setCreationTime(copyDate);
+        /* ToDo: xxxx set Owner 
+        this.experiment.setOwner(...);
+         */
+        this.experiment = this.experimentService.save(this.experiment);
+
+        // copy all experiment records
+        for (ExpRecord rec : records) {
+            rec.setChangeTime(copyDate);
+            rec.setCreationTime(copyDate);
+            rec.setExperiment(this.experiment);
+            rec.setExpRecordId(null);
+            rec.copy();
+            this.expRecordService.save(rec);
+        }
+
+        // activate the copied experiment 
+        this.templateMode = false;
+        loadExpRecords();
     }
 
     /**
@@ -241,8 +270,29 @@ public class ExperimentBean implements Serializable {
         return this.barChart;
     }
 
+    /**
+     * @return true if in template mode and an experiment has been 
+     * selected
+     */
+    public boolean getCopyEnabled() {
+        return this.templateMode && (this.experiment.getExperimentId() != null);
+    }
+
     public Experiment getExperiment() {
         return this.experiment;
+    }
+
+    /**
+     * @return a localized label for the experiment edit button
+     */
+    public String getExperimentEditLabel() {
+        if (this.experiment.getExperimentId() == null) {
+            return "New ...";
+        }
+        if (this.templateMode) {
+            return "Edit / Clone ...";
+        }
+        return "Edit ..."; 
     }
 
     public List<Experiment> getExperiments() {

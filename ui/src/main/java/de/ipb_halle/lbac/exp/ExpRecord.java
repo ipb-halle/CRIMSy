@@ -68,6 +68,13 @@ public abstract class ExpRecord implements DTO {
         this.dateFormatter = new SimpleDateFormat(DATE_FORMAT);
     }
 
+    /**
+     * perform any actions necessary when cloning this record from 
+     * an experiment template. Does nothing per default.
+     */
+    public void copy() {
+    }
+
     public ExpRecordEntity createExpRecordEntity() {
         return new ExpRecordEntity()
             .setChangeTime(this.changetime)

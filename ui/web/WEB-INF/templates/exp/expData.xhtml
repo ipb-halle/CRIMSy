@@ -30,29 +30,41 @@
     <ui:composition>
         <div>
             <p:commandButton type="button" 
-                        value="#{experimentBean.getExperiment().experimentId == null ? 'New ...' : 'Edit ...'}"
+                        value="#{experimentBean.experimentEditLabel}" 
                         class="experimentActionButton"
                         onclick="PF('dlg_experimentData').show();" />
             <p:dialog header="#{experimentBean.getExperiment().experimentId == null ? 'New Experiment' : 'Edit Experiment'}" 
                               widgetVar="dlg_experimentData" modal="true" height="300">
 
                 <div class="ui-g">
-                    <div class="ui-g-12">
-                        <p:inputText label="Code" value="#{experimentBean.getExperiment().code}" />
+                    <div class="ui-g-3">Code</div>
+                    <div class="ui-g-9"><p:inputText label="Code" value="#{experimentBean.getExperiment().code}" /></div>
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3">Description</div>
+                    <div class="ui-g-9"><p:inputText label="Description" value="#{experimentBean.getExperiment().description}"/></div>
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3">Project</div>
+                    <div class="ui-g-9">
+                        <p:selectOneMenu label="Project" >
+                            <f:selectItem itemLabel="Not implemented" />
+                        </p:selectOneMenu>
                     </div>
-                    <div class="ui-g-12">
-                        <p:inputText label="Description" value="#{experimentBean.getExperiment().description}"/>
-                    </div>
-                    <div class="ui-g-12">
-                        <p:inputText label="Project" value="not implemented" />
-                    </div>
-
-                    <div class="ui-g-12">
-                        <p:commandButton value="Save" 
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3"><p:commandButton value="Save" 
                             action="#{experimentBean.actionSaveExperiment}" 
                             update="@all"
                             onclick="PF('dlg_experimentData').hide();" />
                     </div>
+                    <div class="ui-g-3"><p:commandButton value="Clone"
+                            rendered="#{experimentBean.copyEnabled}"
+                            action="#{experimentBean.actionCopyTemplate}" 
+                            update="@all"
+                            onclick="PF('dlg_experimentData').hide();" />
+                    </div>
+                    <div class="ui-g-6"> </div>
                 </div> 
 
             </p:dialog>

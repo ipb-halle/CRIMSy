@@ -156,6 +156,10 @@ public class Experiment implements DTO {
         this.code = code;
     }
 
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
     public void setExperimentId(Integer experimentid) { 
         this.experimentid = experimentid; 
     }
