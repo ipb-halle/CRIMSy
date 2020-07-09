@@ -63,10 +63,6 @@ public class MaterialAgent {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    public String getTime() {
-        return new Date().toString();
-    }
-
     public void actionSetMaterial() {
         this.logger.info("actionSetMaterial() materialId = {}", this.materialId);
         if (this.materialHolder != null) {
@@ -86,8 +82,6 @@ public class MaterialAgent {
         this.logger.info("getMaterialHolder() {}", this.materialHolder == null ? "null" : "holder is set");
         return this.materialHolder;
     }
-
-    public String getTime() { return new Date().toString(); }
 
     /**
      * get the list of appropriate materials
