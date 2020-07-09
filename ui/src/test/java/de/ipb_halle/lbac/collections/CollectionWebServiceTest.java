@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
-import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.CollectionList;
 import de.ipb_halle.lbac.entity.User;
@@ -98,7 +97,6 @@ public class CollectionWebServiceTest
                 .addPackage(SolrSearcher.class.getPackage())
                 .addPackage(CollectionBean.class.getPackage())
                 .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(PermissionEditBean.class.getPackage())
                 .addPackage(UserBean.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
                 .addPackage(Navigator.class.getPackage())

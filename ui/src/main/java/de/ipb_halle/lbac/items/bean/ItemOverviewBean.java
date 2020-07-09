@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -307,18 +307,15 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     @Override
     public void cancelAclChanges() {
-        acObjectController = null;
-        itemInFocus = null;
+        
     }
 
     @Override
-    public void startAclChange(List<Group> possibleGroupstoAdd) {
-
+    public void actionStartAclChange(ACObject aco) {
+        itemInFocus = (Item) aco;
+        acObjectController = new ACObjectController(aco, memberService.loadGroups(new HashMap<>()), this, itemInFocus.getDescription());
     }
 
-    public void actionStartAclEdit(Item i) {
-        itemInFocus = i;
-        acObjectController = new ACObjectController(i, memberService.loadGroups(new HashMap<>()), this, i.getDescription());
-    }
+   
 
 }

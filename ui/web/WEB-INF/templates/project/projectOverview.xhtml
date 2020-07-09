@@ -81,7 +81,7 @@
                                                  tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
                                                  update="@(.acoEditModal)"
                                                  type="button"
-                                                 onclick="ajax:projectBean.actionStartAclEdit(project)"
+                                                 onclick="ajax:projectBean.actionStartAclChange(project)"
                                                  oncomplete="PF('dlgAcl').show();"
                                                  disabled="#{!projectBean.isPermissionEditAllowed(project)}"/>
 

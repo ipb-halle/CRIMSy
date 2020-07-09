@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Group;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
@@ -67,7 +68,12 @@ public class ACObjectController {
     }
 
     public List<ACEntry> getAcEntries() {
-        return new ArrayList<>(objectToChange.getACList().getACEntries().values());
+        ArrayList<ACEntry> results = new ArrayList<>(objectToChange.getACList().getACEntries().values());
+        Collections.sort(results, (a1, a2)
+                -> (a1.getMember().getName() + a1.getMember().getNode().getInstitution()).compareTo(
+                        a2.getMember().getName() + a2.getMember().getNode().getInstitution()
+                ));
+        return results;
     }
 
     public void removeGroupFromAcList(ACEntry ace) {

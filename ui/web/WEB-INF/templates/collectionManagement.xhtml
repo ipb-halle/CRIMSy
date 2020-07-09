@@ -29,7 +29,7 @@
     <h:body>
         <ui:composition>
             <crimsy:acobjectModal
-                acobjectController="#{collectionBean.acObjectController}"
+                acobjectController="#{collectionBean.getAcObjectController()}"
                 groupsAgent="#{groupAgent}"
                 updateTargetClass="collectionList"
                 />
@@ -300,8 +300,7 @@
                                          tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
                                          update="@(.acoEditModal)"
                                          type="button"
-                                         action="#{permissionEditBean.initModal()}"
-                                         onclick="ajax:collectionBean.setActiveCollection(collection)"
+                                         action="#{collectionBean.actionStartAclChange(collection)}"
                                          oncomplete="PF('dlgAcl').show();"
                                          disabled="#{!collectionBean.isPermissionEditAllowed(collection)}">
                         </b:commandButton>

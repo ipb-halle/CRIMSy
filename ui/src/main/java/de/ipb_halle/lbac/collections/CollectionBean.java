@@ -30,8 +30,8 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.search.SolrSearcher;
@@ -39,13 +39,15 @@ import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.service.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
+
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.faces.event.ActionEvent;
@@ -104,23 +106,25 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
+    @Inject
+    private MemberService memberService;
+
     @Override
     public void applyAclChanges(int collectionid, ACList newACList) {
 
         activeCollection = collectionService.save(activeCollection);
-        acObjectController = null;
     }
 
     @Override
     public void cancelAclChanges() {
-        acObjectController = null;
     }
 
     @Override
-    public void startAclChange(List<Group> possibleGroupstoAdd) {
+    public void actionStartAclChange(ACObject aco) {
+        activeCollection = (Collection) aco;
         acObjectController = new ACObjectController(
-                activeCollection,
-                possibleGroupstoAdd,
+                aco,
+                memberService.loadGroups(new HashMap<>()),
                 this,
                 activeCollection.getName() + " (" + activeCollection.getNode().getInstitution() + ")");
     }
@@ -519,6 +523,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
         }
     }
 
+    @Override
     public ACObjectController getAcObjectController() {
         return acObjectController;
     }

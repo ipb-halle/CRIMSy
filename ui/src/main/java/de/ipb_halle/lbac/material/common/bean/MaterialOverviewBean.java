@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
@@ -161,23 +161,20 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     public void applyAclChanges(int acobjectid, ACList newAcList) {
         materialService.updateMaterialAcList(materialInFocus);
         searchController.actionStartMaterialSearch();
-        
+        materialInFocus = null;
+
     }
 
     @Override
     public void cancelAclChanges() {
-        acObjectController = null;
+
         materialInFocus = null;
     }
 
     @Override
-    public void startAclChange(List<Group> possibleGroupstoAdd) {
-        acObjectController = new ACObjectController(materialInFocus, possibleGroupstoAdd, this, materialInFocus.getFirstName());
-    }
-
-    public void actionStartAclEdit(Material m) {
-        materialInFocus = m;
-        startAclChange(memberService.loadGroups(new HashMap<>()));
+    public void actionStartAclChange(ACObject aco) {
+        materialInFocus = (Material) aco;
+        acObjectController = new ACObjectController(materialInFocus, memberService.loadGroups(new HashMap<>()), this, materialInFocus.getFirstName());
     }
 
     @Override
