@@ -91,8 +91,27 @@ public abstract class ExpRecord implements DTO {
         return this.creationtime;
     }
 
+    /**
+     * @return true if the record is in edit mode
+     */
     public boolean getEdit() {
         return this.edit;
+    }
+
+    /**
+     * @return true if the record is in edit mode and not part 
+     * of an experiment template
+     */
+    public boolean getEditRecord() {
+        return (this.edit && (! getTemplate()));
+    }
+
+    /**
+     * @return true if the record is in edit mode and part of
+     * an experiment template
+     */
+    public boolean getEditTemplate() {
+        return (this.edit && getTemplate());
     }
 
     public Experiment getExperiment() { 

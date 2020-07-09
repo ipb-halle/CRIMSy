@@ -50,13 +50,13 @@
             <p:inputText value="#{cc.attrs.assay.remarks}" />
             <h:outputText value="Standard units:" />
             <h:panelGroup>
-                <p:inputText value="#{cc.attrs.assay.units}" disabled="#{! cc.attrs.assay.template}"/>
+                <p:inputText value="#{cc.attrs.assay.units}" disabled="#{! cc.attrs.assay.editTemplate}"/>
             </h:panelGroup>
             <h:outputText value="Target:" />
             <h:panelGroup>
                 <crimsy:materialView material="#{cc.attrs.assay.target}" />
                 <h:commandLink title="Action"
-                        rendered="#{cc.attrs.assay.edit}"
+                        rendered="#{cc.attrs.assay.editTemplate}"
                         update="@this" > 
                     <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
                     <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
@@ -66,7 +66,12 @@
 
             </h:panelGroup>
             <h:outputText value="Outcome Type:" />
-            <h:outputText value="SINGLE_POINT xxxxx" />
+            <p:selectOneMenu 
+                disabled="#{! cc.attrs.assay.editTemplate}"
+                value="#{cc.attrs.assay.outcomeType}" >
+                <f:selectItems value="#{cc.attrs.assay.outcomeTypes}" />
+            </p:selectOneMenu>
+
         </h:panelGrid>
 
         <table>
@@ -76,6 +81,7 @@
                 <th class="assayTableCell">
                     <p:commandLink 
                             update="dlgBarChartForm"
+                            rendered="#{! cc.attrs.assay.template}"
                             process="@this"
                             onclick="PF('dlg_barChart').show();" >
                         <f:setPropertyActionListener target="#{cc.attrs.bean.barChartModel}" value="#{cc.attrs.assay.index}" />
@@ -95,7 +101,7 @@
             <td></td>
             <td>
                 <p:commandLink 
-                    rendered="#{cc.attrs.assay.edit}"
+                    rendered="#{cc.attrs.assay.editRecord}"
                     update="@form"
                     action="#{cc.attrs.bean.expRecordController.actionAppendAssayRecord()}" >
                     <span class="fa fa-plus"> </span>

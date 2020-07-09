@@ -63,22 +63,6 @@ public class AssayController extends ExpRecordController implements MaterialHold
         }
     }
 
-    /**
-     * set record 
-     */
-    public void setRecordEdit(int rank) {
-        List<AssayRecord> records = ((Assay) getExpRecord()).getRecords();
-        for (AssayRecord rec : records) {
-            if (rec.getRank() == rank) {
-                rec.setEdit(true);
-                this.assayRecord = rec;
-                this.logger.info("setRecordEdit({})", rank);
-            } else {
-                rec.setEdit(false);
-            }
-        }
-    }
-
     public AssayRecord getAssayRecord() {
         return this.assayRecord;
     }
@@ -127,4 +111,19 @@ public class AssayController extends ExpRecordController implements MaterialHold
         this.logger.info("setMaterialTarget() {}", target);
     }
 
+    /**
+     * set record 
+     */
+    public void setRecordEdit(int rank) {
+        List<AssayRecord> records = ((Assay) getExpRecord()).getRecords();
+        for (AssayRecord rec : records) {
+            if (rec.getRank() == rank) {
+                rec.setEdit(true);
+                this.assayRecord = rec;
+                this.logger.info("setRecordEdit({})", rank);
+            } else {
+                rec.setEdit(false);
+            }
+        }
+    }
 }

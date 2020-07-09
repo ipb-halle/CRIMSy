@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import com.corejsf.util.Messages;
+
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import javax.faces.model.SelectItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,6 +55,7 @@ import org.primefaces.model.chart.ChartSeries;
  */
 public class Assay extends ExpRecord implements DTO {
 
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
@@ -187,6 +191,19 @@ public class Assay extends ExpRecord implements DTO {
 
     public AssayOutcomeType getOutcomeType() {
         return this.outcomeType;
+    }
+
+    /**
+     * @return a localized list of outcometypes for selection in
+     * template mode
+     */
+    public List<SelectItem> getOutcomeTypes() {
+        List<SelectItem> l = new ArrayList<SelectItem> ();
+        for(AssayOutcomeType t : AssayOutcomeType.values()) {
+            l.add(new SelectItem(t, 
+                    Messages.getString(MESSAGE_BUNDLE, "AssayOutcomeType_" + t.toString(), null)));
+        }
+        return l;
     }
 
     public List<AssayRecord> getRecords() {
