@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.webclient;
 
 import de.ipb_halle.lbac.util.HexUtil;
+import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -26,7 +27,8 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.util.Base64;
 import java.util.Date;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Basic class for webclient which provides basic funtionality e.g. creating
@@ -34,7 +36,7 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
  *
  * @author fmauz
  */
-public class LbacWebClient {
+public class LbacWebClient implements Serializable{
 
     protected String SIGNATURE_ALGORITHM = "SHA256withRSA";
     protected int RANDOM_VALUE_LENGTH = 8;

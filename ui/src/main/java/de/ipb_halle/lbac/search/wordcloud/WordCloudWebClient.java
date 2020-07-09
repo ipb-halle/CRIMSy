@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.NodeService;
@@ -29,7 +28,6 @@ import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import javax.ejb.Stateless;

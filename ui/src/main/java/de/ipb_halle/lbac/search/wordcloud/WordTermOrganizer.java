@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.Map;
  *
  * @author fmauz
  */
-public class WordTermOrganizer {
+public class WordTermOrganizer implements Serializable{
 
     boolean insertAsFirst = true;
     private int wordsSet = 0;

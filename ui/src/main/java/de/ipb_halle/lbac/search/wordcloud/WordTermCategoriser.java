@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
  *
  * @author fmauz
  */
-public class WordTermCategoriser {
+public class WordTermCategoriser implements Serializable{
 
     protected int totalDocs;
     protected int totalWords;

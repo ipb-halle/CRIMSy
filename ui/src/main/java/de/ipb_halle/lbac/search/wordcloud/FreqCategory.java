@@ -17,12 +17,14 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import java.io.Serializable;
+
 /**
  * Determines the importance of a term in a sprecific environment
  *
  * @author fmauz
  */
-public enum FreqCategory {
+public enum FreqCategory implements Serializable{
 
     HIGHEST(5),
     HIGH(4),

@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.entity.TermFrequency;
 import de.ipb_halle.lbac.entity.TermFrequencyList;
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;

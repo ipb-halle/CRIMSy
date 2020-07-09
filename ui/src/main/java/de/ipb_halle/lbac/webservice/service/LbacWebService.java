@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.webservice.service;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.webservice.WebRequest;
+import java.io.Serializable;
 import javax.inject.Inject;
 
 /**
@@ -28,7 +29,7 @@ import javax.inject.Inject;
  *
  * @author fmauz
  */
-public abstract class LbacWebService {
+public abstract class LbacWebService implements Serializable{
 
     @Inject
     protected WebRequestAuthenticator authenticator;

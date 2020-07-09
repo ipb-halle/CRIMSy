@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public class WordTerm implements Comparable<WordTerm> {
+public class WordTerm implements Comparable<WordTerm>,Serializable {
 
     private int absoluteFrequency;
     private float relativeFrequency;
