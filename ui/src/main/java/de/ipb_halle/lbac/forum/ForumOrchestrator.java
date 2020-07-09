@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
@@ -36,7 +36,7 @@ import javax.inject.Inject;
  * @author fmauz
  */
 @Stateless
-public class ForumOrchestrator {
+public class ForumOrchestrator implements Serializable{
 
     @Resource
     ManagedExecutorService managedExecutorService;

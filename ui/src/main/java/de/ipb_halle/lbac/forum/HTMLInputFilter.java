@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.forum;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ import java.util.regex.Pattern;
  * and &deg; 2014-04-14
  *
  */
-public class HTMLInputFilter {
+public class HTMLInputFilter implements Serializable{
 
     /**
      * flag determining whether to try to make tags when presented with

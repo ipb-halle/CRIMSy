@@ -18,10 +18,8 @@
 package de.ipb_halle.lbac.forum.topics;
 
 import de.ipb_halle.lbac.forum.ForumService;
-import de.ipb_halle.lbac.forum.Posting;
 import de.ipb_halle.lbac.forum.Topic;
 import de.ipb_halle.lbac.forum.TopicsList;
-import de.ipb_halle.lbac.service.MemberService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import javax.ejb.Stateless;
@@ -50,9 +48,6 @@ public class TopicsWebService extends LbacWebService {
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
-    @Inject
-    private MemberService memberService;
 
     /**
      *

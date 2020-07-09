@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.CollectionList;

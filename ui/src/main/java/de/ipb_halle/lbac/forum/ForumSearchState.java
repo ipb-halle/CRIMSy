@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.forum;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author fmauz
  */
-public class ForumSearchState {
+public class ForumSearchState implements Serializable{
 
     private List<Topic> readableTopics = new ArrayList<>();
 

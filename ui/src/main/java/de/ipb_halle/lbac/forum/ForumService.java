@@ -28,9 +28,9 @@ import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.forum.postings.PostingWebClient;
 import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.MemberService;
 import de.ipb_halle.lbac.service.NodeService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,16 +51,13 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
  * @author fmauz
  */
 @Stateless
-public class ForumService {
+public class ForumService implements Serializable{
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
     @Inject
     private CloudNodeService cloudNodeService;
-
-    @Inject
-    private CloudService cloudService;
 
     @Inject
     private NodeService nodeService;

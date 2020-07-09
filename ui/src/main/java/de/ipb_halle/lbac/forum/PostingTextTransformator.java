@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.forum;
 
 import de.ipb_halle.lbac.entity.User;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -26,7 +27,7 @@ import java.util.Date;
  *
  * @author fmauz
  */
-public class PostingTextTransformator {
+public class PostingTextTransformator implements Serializable{
 
     public PostingTextTransformator() {
 

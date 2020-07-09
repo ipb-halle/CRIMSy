@@ -33,10 +33,12 @@ import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.File;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
@@ -46,7 +48,7 @@ import org.apache.solr.common.util.ContentStreamBase;
  *
  * @author fmauz
  */
-public class CollectionOperation {
+public class CollectionOperation implements Serializable{
 
     private final FileService fileService;
     private final FileEntityService fileEntityService;

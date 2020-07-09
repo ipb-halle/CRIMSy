@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.forum.topics;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public enum TopicCategory {
+public enum TopicCategory implements Serializable {
     OTHER,
     COLLECTION,
     DOCUMENT
