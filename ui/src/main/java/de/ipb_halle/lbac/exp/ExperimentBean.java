@@ -317,6 +317,16 @@ public class ExperimentBean implements Serializable {
         return this.expRecords;
     }
 
+    public String getExpRecordStyle(boolean edit, boolean even) {
+        if (edit) {
+            return "expRecordEdit";
+        }
+        if (even) {
+            return "expRecordEven";
+        }
+        return "expRecordOdd";
+    }
+
     public String getNewRecordType() {
         return "";
     }

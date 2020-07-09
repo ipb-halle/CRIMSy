@@ -33,3 +33,16 @@
     background-color: #fcfcfc;
     color: 222;
 }
+
+.expRecordEven {
+    background-color: #fffff0;
+}
+
+.expRecordOdd {
+    background-color: #fffff8;
+}
+
+.expRecordEdit {
+    background-color: #fafaff;
+}
+

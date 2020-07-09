@@ -28,9 +28,10 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:composition>
-        <ui:repeat value="#{experimentBean.expRecords}" var="rec">
+        <ui:repeat value="#{experimentBean.expRecords}" var="rec" varStatus="recStatus">
 
-            <div title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
+            <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
+                title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
 
                 <p:commandLink title="Action" 
                         update="@none"
@@ -42,7 +43,9 @@
                 <br/>
             </div>
 
-            <h:panelGroup id="recordDetails" styleClass="rec.edit ? 'currentEditRecord' : 'otherViewRecord'}">
+            <h:panelGroup id="recordDetails" 
+                layout="block"
+                styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
                 <crimsy:assay assay="#{rec}"
                             materialAgent="#{materialAgent}" 
                             bean="#{experimentBean}"
