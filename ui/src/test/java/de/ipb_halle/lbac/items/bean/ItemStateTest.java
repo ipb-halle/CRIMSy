@@ -17,9 +17,20 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.entity.ACList;
+import static de.ipb_halle.lbac.entity.ACObjectEntity_.owner;
+import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemHistory;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.project.Project;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -63,6 +74,31 @@ public class ItemStateTest {
         Assert.assertEquals(2023, cal.get(1));
 
         Assert.assertNull(state.getFollowingKey(cal.getTime()));
+    }
+
+    @Test
+    public void test002_copyItemTest() {
+        Item item = createItem();
+        ItemState state = new ItemState(item);
+
+        Assert.assertEquals(item.getACList().getId(), state.getEditedItem().getACList().getId());
+        Assert.assertEquals(item.getAmount(), state.getEditedItem().getAmount());
+        Assert.assertEquals(item.getArticle(), state.getEditedItem().getArticle());
+        Assert.assertEquals(item.getConcentration(), state.getEditedItem().getConcentration());
+        Assert.assertEquals(item.getContainer().getId(), state.getEditedItem().getContainer().getId());
+        Assert.assertEquals(item.getContainerSize(), state.getEditedItem().getContainerSize());
+        Assert.assertEquals(item.getContainerType(), state.getEditedItem().getContainerType());
+        Assert.assertEquals(item.getDescription(), state.getEditedItem().getDescription());
+        Assert.assertEquals(item.getId(), state.getEditedItem().getId());
+        Assert.assertEquals(item.getMaterial().getId(), state.getEditedItem().getMaterial().getId());
+        Assert.assertEquals(item.getNestedContainer().size(), state.getEditedItem().getNestedContainer().size());
+        Assert.assertEquals(item.getNestedLocation(), state.getEditedItem().getNestedLocation());
+        Assert.assertEquals(item.getOwner().getId(), state.getEditedItem().getOwner().getId());
+        Assert.assertEquals(item.getProject().getId(), state.getEditedItem().getProject().getId());
+        Assert.assertEquals(item.getPurity(), state.getEditedItem().getPurity());
+        Assert.assertEquals(item.getSolvent(), state.getEditedItem().getSolvent());
+        Assert.assertEquals(item.getUnit(), state.getEditedItem().getUnit());
+        Assert.assertEquals(item.getcTime(), state.getEditedItem().getcTime());
 
     }
 
@@ -72,5 +108,36 @@ public class ItemStateTest {
         cal.set(year, 4, 0);
         history.setMdate(cal.getTime());
         return history;
+    }
+
+    private Item createItem() {
+        Container c = new Container();
+        c.setId(10);
+        c.setLabel("test-container");
+        Project project = new Project();
+        project.setId(1);
+        ACList acl = new ACList();
+        acl.setId(UUID.randomUUID());
+        acl.setName("test-acl");
+        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
+        Item item = new Item();
+        item.setAmount(23d);
+        item.setACList(acl);
+        item.setUnit("kg");
+        item.setArticle(null);
+        item.setConcentration(32d);
+        item.setContainer(c);
+        item.setContainerSize(100d);
+        item.setDescription("description");
+        item.setMaterial(s);
+        User u = new User();
+        u.setId(UUID.randomUUID());
+        u.setName("testUser");
+        item.setOwner(u);
+        item.setProject(project);
+        item.setPurity("rein");
+        item.setcTime(new Date());
+        item.setSolvent(null);
+        return item;
     }
 }

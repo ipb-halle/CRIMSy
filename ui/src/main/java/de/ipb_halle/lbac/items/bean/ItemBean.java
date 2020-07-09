@@ -35,10 +35,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -147,8 +144,9 @@ public class ItemBean implements Serializable {
 
     public void actionSave() {
         state.getEditedItem().setContainer(container);
-        state.getEditedItem().setACList(material.getACList());
+
         if (mode == Mode.CREATE) {
+            state.getEditedItem().setACList(material.getACList());
             state.getEditedItem().setOwner(userBean.getCurrentAccount());
             state.getEditedItem().setMaterial(material);
             state.getEditedItem().setcTime(new Date());

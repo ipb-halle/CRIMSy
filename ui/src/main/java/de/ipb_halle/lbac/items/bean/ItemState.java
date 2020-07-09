@@ -62,6 +62,9 @@ public class ItemState {
         copiedItem.setUnit(original.getUnit());
         copiedItem.setcTime(original.getcTime());
         copiedItem.setHistory(original.getHistory());
+        copiedItem.setACList(original.getACList());
+        copiedItem.setOwner(original.getOwner());
+                
         return copiedItem;
     }
 

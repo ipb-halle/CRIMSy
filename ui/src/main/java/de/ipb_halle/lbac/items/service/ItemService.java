@@ -235,7 +235,6 @@ public class ItemService {
     public Item saveItem(Item item) {
         item.setACList(aclistService.save(item.getACList()));
         ItemEntity entity = item.createEntity();
-        
         entity = em.merge(entity);
         item.setId(entity.getId());
         return item;
@@ -246,7 +245,6 @@ public class ItemService {
         ItemHistory history = comparator.compareItems(origItem, editedItem, user);
         if (history != null || doesContainerDiffer(editedItem, origItem)) {
             saveItem(editedItem);
-
         }
         if (history != null) {
             saveItemHistory(history);
