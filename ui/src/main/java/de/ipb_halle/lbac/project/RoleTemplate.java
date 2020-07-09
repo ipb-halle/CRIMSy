@@ -17,13 +17,14 @@
  */
 package de.ipb_halle.lbac.project;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  *
  * @author fmauz
  */
-public class RoleTemplate {
+public class RoleTemplate implements Serializable{
     protected int id;
     protected int projectId;
     protected UUID aclistId;

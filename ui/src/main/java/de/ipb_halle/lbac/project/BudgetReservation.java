@@ -17,10 +17,12 @@
  */
 package de.ipb_halle.lbac.project;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public class BudgetReservation {
+public class BudgetReservation implements Serializable {
     
 }

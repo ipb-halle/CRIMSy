@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.MemberService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 @Stateless
-public class ProjectService {
+public class ProjectService implements Serializable {
 
     private final String SQL_PROJECT_TEMPLATES = "SELECT id,materialdetailtypeid,aclistid,projectid FROM projecttemplates WHERE projectid=:pid";
     private final String SQL_GET_SIMILAR_NAMES = "SELECT name FROM projects WHERE LOWER(name) LIKE LOWER(:name)";

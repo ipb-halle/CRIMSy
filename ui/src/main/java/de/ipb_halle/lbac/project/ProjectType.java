@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.material.MaterialType;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * @author fmauz
  */
-public enum ProjectType {
+public enum ProjectType implements Serializable{
     DUMMY_PROJECT(0),
     CHEMICAL_PROJECT(1,
             MaterialType.STRUCTURE,
