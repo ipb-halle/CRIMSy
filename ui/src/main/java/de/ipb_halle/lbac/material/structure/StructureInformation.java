@@ -18,12 +18,13 @@
 package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.Material;
+import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
-public class StructureInformation {
+public class StructureInformation implements Serializable {
 
     protected Double exactMolarMass;
     protected Double molarMass;
@@ -34,7 +35,7 @@ public class StructureInformation {
     }
 
     public StructureInformation(Material m) {
-        
+
     }
 
     public Double getExactMolarMass() {

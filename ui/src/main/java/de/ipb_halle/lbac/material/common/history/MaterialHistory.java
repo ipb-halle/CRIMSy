@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +31,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialHistory {
+public class MaterialHistory  implements Serializable{
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private final SortedMap<Date, List<MaterialDifference>> changes = new TreeMap<>();

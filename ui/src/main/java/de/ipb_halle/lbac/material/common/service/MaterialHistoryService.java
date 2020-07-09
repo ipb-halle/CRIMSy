@@ -32,6 +32,7 @@ import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntit
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity;
 import de.ipb_halle.lbac.material.structure.StructureHistEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity;
+import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +48,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialHistoryService {
+public class MaterialHistoryService  implements Serializable{
 
     private final String SQL_GET_INDEX_HISTORY = "select"
             + " id,"

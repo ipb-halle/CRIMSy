@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
+import java.io.Serializable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Molecule {
+public class Molecule  implements Serializable{
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 

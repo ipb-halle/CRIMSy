@@ -18,13 +18,14 @@
 package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author fmauz
  */
-public class IndexEntry {
+public class IndexEntry  implements Serializable{
 
     protected String value;
     protected int typeId;

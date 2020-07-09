@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public enum StorageCondition {
+public enum StorageCondition implements Serializable {
     moistureSensitive(1),
     keepMoist(2),
     lightSensitive(3),

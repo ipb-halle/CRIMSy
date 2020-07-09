@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public enum ModificationType {
+public enum ModificationType implements Serializable {
     EDIT,
     DELETE
 

@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class StorageClassInformation {
+public class StorageClassInformation implements Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 

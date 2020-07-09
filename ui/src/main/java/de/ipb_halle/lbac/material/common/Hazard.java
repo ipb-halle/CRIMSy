@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public enum Hazard {
+public enum Hazard  implements Serializable {
 
     explosive(1),
     highlyFlammable(2),

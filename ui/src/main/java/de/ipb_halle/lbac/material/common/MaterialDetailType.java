@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public enum MaterialDetailType {
+public enum MaterialDetailType  implements Serializable{
 
     COMMON_INFORMATION(1),
     STRUCTURE_INFORMATION(2),

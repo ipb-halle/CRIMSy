@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -26,7 +27,7 @@ import javax.persistence.Query;
  *
  * @author fmauz
  */
-public class StructureInformationSaver {
+public class StructureInformationSaver implements Serializable {
 
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
     protected EntityManager em;

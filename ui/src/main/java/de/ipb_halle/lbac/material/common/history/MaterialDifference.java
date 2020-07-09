@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ import java.util.UUID;
  *
  * @author fmauz
  */
-public interface MaterialDifference {
+public interface MaterialDifference extends Serializable{
 
     public UUID getUserId();
 

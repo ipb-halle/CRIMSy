@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +43,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class HistoryOperation {
+public class HistoryOperation  implements Serializable{
 
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected ProjectBean projectBean;

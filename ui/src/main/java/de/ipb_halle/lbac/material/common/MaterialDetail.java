@@ -18,12 +18,13 @@
 package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.entity.ACList;
+import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
-public class MaterialDetail {
+public class MaterialDetail  implements Serializable{
 
     protected ACList acList;
     protected String name;

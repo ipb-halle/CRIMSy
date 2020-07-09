@@ -21,13 +21,14 @@ import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
+import java.io.Serializable;
 
 /**
  * Java represantation of a materialdetailtype.
  *
  * @author fmauz
  */
-public class MaterialDetailRight {
+public class MaterialDetailRight  implements Serializable{
 
     protected ACList acList;
     protected MaterialDetailType type;

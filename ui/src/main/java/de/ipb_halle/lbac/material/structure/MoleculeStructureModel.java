@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
+import java.io.Serializable;
+
 /**
  *
  * @author fmauz
  */
-public interface MoleculeStructureModel {
+public interface MoleculeStructureModel extends Serializable {
 
     public boolean isEmptyMolecule(String s) throws Exception;
 }

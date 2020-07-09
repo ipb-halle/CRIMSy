@@ -17,13 +17,14 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author fmauz
  */
-public class StorageClass {
+public class StorageClass  implements Serializable{
 
     public Integer id;
     public String name;

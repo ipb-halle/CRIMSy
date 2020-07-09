@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material;
 
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * @author fmauz
  */
-public enum MaterialType {
+public enum MaterialType implements Serializable {
     STRUCTURE(
             1,
             MaterialDetailType.COMMON_INFORMATION,
