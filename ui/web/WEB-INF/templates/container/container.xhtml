@@ -23,18 +23,26 @@ limitations under the License.
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:body>
         <ui:composition>
-            <b:container styleClass="containerOverviewContainer">
+            <b:container 
+                styleClass="containerOverviewContainer"
+                id="containerOverviewId">
                 <b:row
                     styleClass="containerTopRow">
                     <b:column span="1" offset="11"
                               >
-                        <b:form id="topLevelRowForm">
+                        <b:form 
+                            id="topLevelRowFormId"
+                            styleClass="topLevelRowForm">
                             <b:commandButton
                                 disabled ="#{!containerOverviewBean.isSecondButtonVisible()}"
                                 onclick="ajax:containerOverviewBean.actionSecondButtonClick();"
                                 value="#{containerOverviewBean.getSecondButtonLabel()}"
                                 ajax="true"
-                                update="@(.containerEdit) @(.containerTopRow) topLevelRowForm editForm"
+                                update="
+                                @(.containerEdit)
+                                @(.containerTopRow)
+                                @(.topLevelRowForm)
+                                @(.containerEditFormStyle)"
                                 />
                         </b:form>
                     </b:column>

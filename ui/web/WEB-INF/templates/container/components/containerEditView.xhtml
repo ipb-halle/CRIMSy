@@ -24,10 +24,14 @@ limitations under the License.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
-        <b:form id="editForm">
+        <b:form 
+            id="editForm"
+            styleClass="containerEditFormStyle">
             <b:container
+                id="containerEditId"
                 styleClass="containerEdit">
                 <p:panel
+                    id="containerEditPanelId"
                     rendered="#{containerEditBean.isEditPanelVisible()}"
                     styleClass="containerEditPanel"
                     >
@@ -182,19 +186,21 @@ limitations under the License.
                     </b:row>
                     <b:row>
                         <b:commandButton
+                            id="CancelButtonId"
                             action="#{containerOverviewBean.actionCancel()}"
                             immediate="true"
                             rendered="#{containerOverviewBean.isFirstButtonVisible()}"
                             value="#{msgs.container_button_cancel}"
                             ajax="true"
-                            update="@(.containerEdit) @(.containerTopRow) topLevelRowForm editForm"
+                            update="@(.containerEdit) @(.containerTopRow) @(.topLevelRowForm) editForm"
                             />
 
                         <b:commandButton
+                            id="SaveButtonId"
                             onclick="ajax:containerOverviewBean.actionSaveNewContainer();"
                             value="#{containerOverviewBean.getSecondButtonLabel()}"
                             ajax="true"
-                            update="growlMsg @(.containerOverviewContainer) topLevelRowForm editForm"
+                            update="growlMsg @(.containerOverviewContainer) @(.topLevelRowForm) editForm"
                             />
                     </b:row>
                 </p:panel>
