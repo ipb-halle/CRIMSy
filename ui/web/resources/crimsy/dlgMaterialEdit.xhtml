@@ -49,6 +49,10 @@
                 height="300">
             <p:panel id="materialEdit" styleClass="materialEdit" >
 
+                    <p:inputText value="#{cc.attrs.agent.materialSearch}">
+                        <p:ajax event="keyup" update="@(.materialEdit)" />
+                    </p:inputText> 
+
                     <p:fragment id="cmdMaterialFragment">
                         <h:inputHidden id="materialId" 
                                 pass:class="cmdMaterialId" 

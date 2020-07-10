@@ -57,6 +57,8 @@ public class MaterialAgent {
     @Inject
     private MaterialService materialService;
 
+    private String materialSearch = "";
+
     private MaterialHolder materialHolder;
 
     private Integer materialId;
@@ -97,6 +99,9 @@ public class MaterialAgent {
             try {
                 HashMap<String, Object> cmap = new HashMap<String, Object> ();
                 cmap.put("TYPES", this.materialHolder.getMaterialTypes());
+                if (this.materialSearch.length() > 0) {
+                    cmap.put("NAME", "%" + this.materialSearch + "%");
+                }
                 List<Material> result = this.materialService.getReadableMaterials(
                         this.userBean.getCurrentAccount(),
                         cmap,
@@ -121,6 +126,10 @@ public class MaterialAgent {
         return this.materialId;
     }
 
+    public String getMaterialSearch() {
+        return this.materialSearch;
+    }
+
     public void setMaterialHolder(MaterialHolder materialHolder) {
         this.logger.info("setMaterialHolder() {}", materialHolder);
         this.materialHolder = materialHolder;
@@ -129,5 +138,9 @@ public class MaterialAgent {
     public void setMaterialId(Integer materialId) {
         this.logger.info("setMaterialId() {}", materialId);
         this.materialId = materialId;
+    }
+
+    public void setMaterialSearch(String materialSearch) {
+        this.materialSearch = materialSearch;
     }
 }

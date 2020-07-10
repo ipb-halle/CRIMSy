@@ -101,13 +101,13 @@ public class MaterialService implements Serializable {
             + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE deactivated=false "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
-            + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
+            + "AND (p.name ILIKE :PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
+            + "AND ((mi.value ILIKE :NAME AND mi.typeid=1) OR :NAME='no_name_filter') "
+            + "AND ((mi.value ILIKE :INDEX AND mi.typeid>1) OR :INDEX='no_index_filter') "
             + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
             + "AND (materialtypeid IN ( :TYPES ) OR -1 IN ( :TYPES ) ) "
             + "AND (m.materialid=:ID OR :ID=-1) "
-            + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
+            + "AND (u.name ILIKE :USER OR :USER='no_user_filter') "
             + "AND materialtypeid NOT IN (6,7) ";
 
     private final String SQL_GET_MATERIAL_COUNT
@@ -119,13 +119,13 @@ public class MaterialService implements Serializable {
             + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE deactivated=false "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
-            + "AND (LOWER(p.name) LIKE (LOWER(:PROJECT_NAME)) OR :PROJECT_NAME='no_project_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:NAME)) AND mi.typeid=1) OR :NAME='no_name_filter') "
-            + "AND ((LOWER(mi.value) LIKE (LOWER(:INDEX)) AND mi.typeid>1) OR :INDEX='no_index_filter') "
+            + "AND (p.name ILIKE :PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
+            + "AND ((mi.value ILIKE :NAME AND mi.typeid=1) OR :NAME='no_name_filter') "
+            + "AND ((mi.value ILIKE :INDEX AND mi.typeid>1) OR :INDEX='no_index_filter') "
             + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
             + "AND (materialtypeid IN ( :TYPES ) OR -1 IN ( :TYPES ) ) "
             + "AND (m.materialid=:ID OR :ID=-1) "
-            + "AND (LOWER(u.name) LIKE (LOWER(:USER)) OR :USER='no_user_filter') "
+            + "AND (u.name ILIKE :USER OR :USER='no_user_filter') "
             + "AND materialtypeid NOT IN (6,7) ";
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
@@ -140,7 +140,7 @@ public class MaterialService implements Serializable {
             + "FROM material_indices mi "
             + "JOIN materials m ON m.materialid=mi.materialid "
             + SqlStringWrapper.JOIN_KEYWORD + " "
-            + "WHERE LOWER(mi.value) LIKE LOWER(:name) "
+            + "WHERE mi.value ILIKE :name "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
