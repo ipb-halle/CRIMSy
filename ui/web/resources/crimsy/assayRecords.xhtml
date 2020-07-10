@@ -51,18 +51,19 @@
                     <crimsy:materialView material="#{assayRec.material}" />
 
                     <h:commandLink title="Action"
+                            id="materialEditLink"
                             rendered="#{assayRec.edit}"
                             update="@this" >
                         <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="RECORD" />
                         <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
-                        <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
+                        <p:ajax oncomplete="PF('dlg_materialEdit').show();" process="@namingcontainer" update="@(.materialEdit)" />
                         <span class="fa fa-pencil"> </span>
                     </h:commandLink>
 
                 </td><td class="assayTableCell">Item currently omitted</td>
 
-                <crimsy:singlepointView outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and (! assayRec.edit)}" />
-                <crimsy:singlepointEdit outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and assayRec.edit}" />
+                <crimsy:singlepointView id="SPview" outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and (! assayRec.edit)}" />
+                <crimsy:singlepointEdit id="SPedit" outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and assayRec.edit}" />
                 
                 <td class="assayTableCell">
                     <p:commandLink 

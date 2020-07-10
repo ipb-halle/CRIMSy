@@ -60,6 +60,8 @@ public class AssayService implements Serializable {
     @Inject
     private MaterialService materialService;
 
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+
     /**
      * Load a list of AssayRecords for a given Assay. 
      *
@@ -67,6 +69,8 @@ public class AssayService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<AssayRecord> loadAssayRecords(Assay assay) {
+
+        // this.logger.info("loadAssayRecords() called");
 
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
         CriteriaQuery<AssayRecordEntity> criteriaQuery = builder.createQuery(AssayRecordEntity.class);
