@@ -20,13 +20,12 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:pass="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <composite:interface name="dlgMaterialEdit"
@@ -46,12 +45,20 @@
                 styleClass="dlgMaterialEdit"
                 widgetVar="dlg_materialEdit"
                 modal="true" 
-                height="300">
+                height="800">
             <p:panel id="materialEdit" styleClass="materialEdit" >
 
                     <p:inputText value="#{cc.attrs.agent.materialSearch}">
                         <p:ajax event="keyup" update="@(.materialEdit)" />
                     </p:inputText> 
+
+                    <nwc:molPlugin 
+                            value="#{cc.attrs.agent.moleculeSearch}" 
+                            plugintype="MolPaintJS"
+                            edit="true"/>
+                    <p:commandButton value="Submit" 
+                    onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
+                    update="@(.materialEdit)" />
 
                     <p:fragment id="cmdMaterialFragment">
                         <h:inputHidden id="materialId" 

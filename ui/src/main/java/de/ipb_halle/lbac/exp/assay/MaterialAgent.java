@@ -58,6 +58,7 @@ public class MaterialAgent {
     private MaterialService materialService;
 
     private String materialSearch = "";
+    private String moleculeSearch = "";
 
     private MaterialHolder materialHolder;
 
@@ -102,6 +103,11 @@ public class MaterialAgent {
                 if (this.materialSearch.length() > 0) {
                     cmap.put("NAME", "%" + this.materialSearch + "%");
                 }
+                // crude (!) check on empty molecules
+                if (this.moleculeSearch.length() > 80) {
+                    this.logger.info("getMaterialList() MOLECULE: {}", this.moleculeSearch);
+                    cmap.put("MOLECULE", this.moleculeSearch);
+                }
                 List<Material> result = this.materialService.getReadableMaterials(
                         this.userBean.getCurrentAccount(),
                         cmap,
@@ -130,6 +136,11 @@ public class MaterialAgent {
         return this.materialSearch;
     }
 
+    public String getMoleculeSearch() {
+        this.logger.info("getMoleculeSearch() len={}", this.moleculeSearch.length());
+        return this.moleculeSearch;
+    }
+
     public void setMaterialHolder(MaterialHolder materialHolder) {
         this.logger.info("setMaterialHolder() {}", materialHolder);
         this.materialHolder = materialHolder;
@@ -142,5 +153,10 @@ public class MaterialAgent {
 
     public void setMaterialSearch(String materialSearch) {
         this.materialSearch = materialSearch;
+    }
+
+    public void setMoleculeSearch(String moleculeSearch) {
+        this.logger.info("setMoleculeSearch() len={}", moleculeSearch.length());
+        this.moleculeSearch = moleculeSearch;
     }
 }
