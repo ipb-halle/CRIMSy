@@ -98,6 +98,8 @@ public class MaterialService implements Serializable {
             + "JOIN projects p ON p.id=m.projectid "
             + "JOIN material_indices mi ON mi.materialid=m.materialid "
             + "JOIN usersgroups u ON u.id=m.ownerid "
+            + "LEFT JOIN structures s ON s.id = m.materialid "
+            + "LEFT JOIN molecules mol ON mol.id=s.moleculeid "
             + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE deactivated=false "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
@@ -108,7 +110,8 @@ public class MaterialService implements Serializable {
             + "AND (materialtypeid IN ( :TYPES ) OR -1 IN ( :TYPES ) ) "
             + "AND (m.materialid=:ID OR :ID=-1) "
             + "AND (u.name ILIKE :USER OR :USER='no_user_filter') "
-            + "AND materialtypeid NOT IN (6,7) ";
+            + "AND materialtypeid NOT IN (6,7) "
+            + "AND (mol.molecule >= CAST(:MOLECULE AS MOLECULE) OR :MOLECULE IS NULL) ";
 
     private final String SQL_GET_MATERIAL_COUNT
             = "SELECT COUNT(DISTINCT(m.materialid)) "
@@ -116,6 +119,8 @@ public class MaterialService implements Serializable {
             + "JOIN projects p ON p.id=m.projectid "
             + "JOIN material_indices mi ON mi.materialid=m.materialid "
             + "JOIN usersgroups u ON u.id=m.ownerid "
+            + "LEFT JOIN structures s ON s.id = m.materialid "
+            + "LEFT JOIN molecules mol ON mol.id=s.moleculeid "
             + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE deactivated=false "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
@@ -126,7 +131,8 @@ public class MaterialService implements Serializable {
             + "AND (materialtypeid IN ( :TYPES ) OR -1 IN ( :TYPES ) ) "
             + "AND (m.materialid=:ID OR :ID=-1) "
             + "AND (u.name ILIKE :USER OR :USER='no_user_filter') "
-            + "AND materialtypeid NOT IN (6,7) ";
+            + "AND materialtypeid NOT IN (6,7) "
+            + "AND (mol.molecule >= CAST(:MOLECULE AS MOLECULE) OR :MOLECULE IS NULL) ";
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
@@ -253,6 +259,7 @@ public class MaterialService implements Serializable {
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
         q.setParameter("ID", cmap.getOrDefault("ID", -1));
         q.setParameter("INDEX", cmap.getOrDefault("INDEX", "no_index_filter"));
+        q.setParameter("MOLECULE", cmap.getOrDefault("MOLECULE", null));
         return ((BigInteger) q.getResultList().get(0)).intValue();
 
     }
@@ -271,6 +278,7 @@ public class MaterialService implements Serializable {
         q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
         q.setParameter("ID", cmap.getOrDefault("ID", -1));
         q.setParameter("INDEX", cmap.getOrDefault("INDEX", "no_index_filter"));
+        q.setParameter("MOLECULE", cmap.getOrDefault("MOLECULE", null));
         List<MaterialEntity> ies = q.getResultList();
         List<Material> back = new ArrayList<>();
         for (MaterialEntity me : ies) {
