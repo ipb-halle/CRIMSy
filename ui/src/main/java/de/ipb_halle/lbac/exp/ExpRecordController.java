@@ -80,4 +80,13 @@ public abstract class ExpRecordController {
     }
 
     public abstract ExpRecord getNewRecord();
+
+    /**
+     * display mol editor in search dialog; method may be overwritten 
+     * by child classes
+     * @return false
+     */
+    public boolean getShowMolEditor() {
+        return false;
+    }
 }

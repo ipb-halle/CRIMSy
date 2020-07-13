@@ -93,6 +93,11 @@ public class AssayController extends ExpRecordController implements MaterialHold
         return rec; 
     }
 
+    @Override
+    public boolean getShowMolEditor() {
+        return this.materialTarget.equals("RECORD");
+    }
+
     public void setMaterial(Material material) {
         switch (this.materialTarget) {
             case "TARGET" :

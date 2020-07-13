@@ -63,13 +63,19 @@
                         <p:ajax event="keyup" update="@(.materialEdit)" />
                     </p:inputText> 
 
-                    <p:outputLabel id="molEditorLabel" for="molEditor" value="Substructure" />
+                    <p:outputLabel id="molEditorLabel" 
+                            for="molEditor" 
+                            value="Substructure" 
+                            rendered="#{cc.attrs.holder.showMolEditor}"/>
                     <nwc:molPlugin id="molEditor"
+                            rendered="#{cc.attrs.holder.showMolEditor}"
                             value="#{cc.attrs.agent.moleculeSearch}" 
                             plugintype="MolPaintJS"
                             edit="true"/>
 
-                    <p:commandButton id="submitButton" value="Update" 
+                    <p:commandButton id="submitButton" 
+                        value="Update" 
+                        rendered="#{cc.attrs.holder.showMolEditor}"
                         onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
                         update="@(.materialEdit)" />
 
