@@ -45,20 +45,33 @@
                 styleClass="dlgMaterialEdit"
                 widgetVar="dlg_materialEdit"
                 modal="true" 
-                height="800">
-            <p:panel id="materialEdit" styleClass="materialEdit" >
+                height="600">
 
-                    <p:inputText value="#{cc.attrs.agent.materialSearch}">
+            <p:panelGrid id="materialEdit" 
+                    columns="2" 
+                    layout="grid"
+                    styleClass="materialEdit" 
+                    columnClasses="ui-g-12 ui-md-5 ui-xl-4, ui-col-12 ui-md-7 ui-xl-8">
+
+                <p:panelGrid id="search" 
+                    columns="1"
+                    layout="grid"
+                    columnClasses="ui-g-12 ui-md-12 ui-xl-12">
+
+                    <p:outputLabel id="nameSearchLabel" for="nameSearch" value="Material Name" />
+                    <p:inputText id="nameSearch" value="#{cc.attrs.agent.materialSearch}">
                         <p:ajax event="keyup" update="@(.materialEdit)" />
                     </p:inputText> 
 
-                    <nwc:molPlugin 
+                    <p:outputLabel id="molEditorLabel" for="molEditor" value="Substructure" />
+                    <nwc:molPlugin id="molEditor"
                             value="#{cc.attrs.agent.moleculeSearch}" 
                             plugintype="MolPaintJS"
                             edit="true"/>
-                    <p:commandButton value="Submit" 
-                    onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
-                    update="@(.materialEdit)" />
+
+                    <p:commandButton id="submitButton" value="Update" 
+                        onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
+                        update="@(.materialEdit)" />
 
                     <p:fragment id="cmdMaterialFragment">
                         <h:inputHidden id="materialId" 
@@ -73,23 +86,33 @@
                         </p:remoteCommand>
                     </p:fragment>
 
-                    <!-- rendered attribute of table is irrelevant -->
+                </p:panelGrid>
+
+                <!-- rendered attribute of table is irrelevant -->
+                <h:panelGroup id="materialTablePanelGrp">
+                    <p:outputLabel id="materialTableLabel" for="materialTable" value="Material" />
                     <p:dataTable id="materialTable" 
                             value="#{cc.attrs.agent.getMaterialList(cc.attrs.holder)}" 
                             var="material" >
-                        <p:column id="col0">
+                        <p:column id="col0" width="80%">
+                            <f:facet name="header">
+                                Name
+                            </f:facet>
                             #{material.firstName}
                         </p:column>
-                        <p:column id="col1">
-
+                        <p:column id="col1" width="20%">
+                            <f:facet name="header">
+                                Action
+                            </f:facet>
                             <p:button id="selectBtn"
                                 value="Select"
                                 onclick="$('input[class=cmdMaterialId]').val(#{material.id}); cmdActionSetMaterial();" />
 
                         </p:column>
                     </p:dataTable>
+                </h:panelGroup>
 
-            </p:panel>
+            </p:panelGrid>
         </p:dialog>
     </h:form>
     </composite:implementation>
