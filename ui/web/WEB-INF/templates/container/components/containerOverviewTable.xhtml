@@ -72,14 +72,27 @@ limitations under the License.
                                      icon="pencil"
                                      look="link"
                                      type="submit"
+                                     update="
+                                     editForm:editNameInputField
+                                     @(.nameInputFieldClass)
+                                     @(.containerTopRow)
+                                     @(.containerEdit)
+                                     @(.containerEditModal)"
                                      action="#{containerOverviewBean.actionContainerEdit(container)}"
+                                     oncomplete="PF('dlgcontainerEdit').show();"
                                      />
                     <b:commandButton style="padding: 0 4px;"
                                      icon="trash"
                                      look="link"
                                      type="submit"
                                      ajax="true"
-                                     update="@(.containerDataTable)"
+                                     update="
+                                     containerOverviewId
+                                     editForm
+                                     searchMaskForm
+                                     containerTableId
+                                     @(.containerDataTable)
+                                     @(.containerEditModal)"
                                      action="#{containerOverviewBean.actionContainerDeactivate(container)}"
                                      />
 

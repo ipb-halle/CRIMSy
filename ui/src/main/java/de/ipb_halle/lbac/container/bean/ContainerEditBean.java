@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.container.bean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.container.bean.ContainerOverviewBean.Mode;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.project.Project;
@@ -55,7 +56,7 @@ public class ContainerEditBean implements Serializable {
     private Integer containerWidth;
     private Container containerToCreate;
     private Container originalContainer;
-    private List<ContainerType> containerTypes;
+    private List<ContainerType> containerTypes = new ArrayList<>();
     List<Project> possibleProjects = new ArrayList<>();
     private User currentUser;
     private String containerLocation;
@@ -63,8 +64,10 @@ public class ContainerEditBean implements Serializable {
     private final List<String> possibleSecuritylevel = new ArrayList<>();
     private String preferredProjectName;
     Logger logger = LogManager.getLogger(this.getClass().getName());
+    private Mode mode;
 
     public void startNewContainerCreation() {
+        mode = Mode.CREATE;
         containerTypes = containerService.loadContainerTypes();
         containerToCreate = new Container();
         containerToCreate.setType(containerTypes.get(0));
@@ -72,16 +75,41 @@ public class ContainerEditBean implements Serializable {
         containerLocation = "";
     }
 
+    public void clearEditBean() {
+        containerTypes.clear();
+        originalContainer = null;
+        containerToCreate = null;
+        preferredProjectName = null;
+        containerLocation = null;
+        containerWidth = null;
+        containerHeight = null;
+        gvoClass = null;
+
+    }
+
     public void startContainerEdit(Container c) {
+        mode = Mode.EDIT;
         containerTypes = containerService.loadContainerTypes();
         originalContainer = c;
         containerToCreate = c.copy();
         if (c.getProject() != null) {
             preferredProjectName = c.getProject().getName();
+        } else {
+            preferredProjectName = null;
         }
         if (c.getParentContainer() != null) {
             containerLocation = c.getParentContainer().getLabel();
+        } else {
+            containerLocation = null;
         }
+        if (c.getDimensionIndex() != null) {
+            containerWidth = c.getDimensionIndex()[0];
+            containerHeight = c.getDimensionIndex()[1];
+        } else {
+            containerWidth = null;
+            containerHeight = null;
+        }
+
     }
 
     public List<ContainerType> getContainerTypes() {
@@ -95,9 +123,11 @@ public class ContainerEditBean implements Serializable {
     }
 
     public ContainerType getContainerType() {
-
-        return containerToCreate.getType();
-
+        if (containerToCreate != null) {
+            return containerToCreate.getType();
+        } else {
+            return new ContainerType("XXX", 1000);
+        }
     }
 
     public Container getContainerToCreate() {
@@ -105,13 +135,16 @@ public class ContainerEditBean implements Serializable {
     }
 
     public void setContainerType(ContainerType t) {
-
         containerToCreate.setType(t);
-
     }
 
     public String getContainerName() {
-        return containerToCreate.getLabel();
+        if (containerToCreate != null) {
+            return containerToCreate.getLabel();
+        } else {
+            return null;
+        }
+
     }
 
     public void setContainerName(String containerName) {
@@ -160,8 +193,11 @@ public class ContainerEditBean implements Serializable {
     }
 
     public String getSecurityLevel() {
-
-        return containerToCreate.getGmosavety();
+        if (containerToCreate != null) {
+            return containerToCreate.getGmosavety();
+        } else {
+            return null;
+        }
 
     }
 
@@ -178,14 +214,21 @@ public class ContainerEditBean implements Serializable {
     }
 
     public boolean isSecurityLevelVisible() {
+        if (containerToCreate != null) {
+            return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
 
-        return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
-
+        } else {
+            return false;
+        }
     }
 
     public boolean isDimensionVisible() {
 
-        return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
+        if (containerToCreate != null) {
+            return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
+        } else {
+            return false;
+        }
 
     }
 
@@ -213,4 +256,7 @@ public class ContainerEditBean implements Serializable {
         this.containerWidth = containerWidth;
     }
 
+    public boolean isEditable() {
+        return mode == Mode.CREATE;
+    }
 }

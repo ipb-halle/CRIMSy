@@ -24,187 +24,201 @@ limitations under the License.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
-        <b:form 
-            id="editForm"
-            styleClass="containerEditFormStyle">
-            <b:container
-                id="containerEditId"
-                styleClass="containerEdit">
-                <p:panel
-                    id="containerEditPanelId"
-                    rendered="#{containerEditBean.isEditPanelVisible()}"
-                    styleClass="containerEditPanel"
-                    >
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <h:outputText value="Type"
-                                          />
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <b:selectOneMenu 
-                                value="#{containerEditBean.containerType}" 
-                                ajax="true"
-                                update="@(.containerFilterRow)"
-                                styleClass="containerEditInputfield">
-                                <f:selectItems
-                                    var="type"
-                                    value="#{containerEditBean.containerTypes}" 
-                                    noSelectionValue="true"
-                                    itemLabel="#{type.getLocalizedName()}"/>
+        <p:dialog 
+            widgetVar="dlgcontainerEdit"
+            modal="true" 
+            styleClass="containerEditModal"
+            width="400px">
+            <center>
+                <b:form 
+                    id="editForm"
+                    styleClass="containerEditFormStyle">
+                    <b:container
+                        id="containerEditId"
+                        styleClass="containerEdit">
 
-                            </b:selectOneMenu>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <h:outputText value="Name"
-                                          />
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <b:inputText
-                                value="#{containerEditBean.containerName}"
-                                styleClass="containerEditInputfield">
-                                <f:converter converterId="InputConverter" />
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <h:outputText value="Project"
-                                          />
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <p:autoComplete value="#{containerEditBean.preferredProjectName}"
-                                            maxResults="10"
-                                            completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
-                                            styleClass="containerEditInputfield">
-                            </p:autoComplete>
-                        </b:column>
-                    </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <h:outputText value="Type"/>
+                            </b:column>
+                        </b:row>
 
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <h:outputText value="Ort"
-                                          />
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2">
-                            <p:autoComplete value="#{containerEditBean.containerLocation}"
-                                            maxResults="10"
-                                            completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
-                                            styleClass="containerEditInputfield"/>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column
-                            span="2"
-                            rendered="#{containerEditBean.isDimensionVisible()}">
-                            <h:outputText value="Groesse"/>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column 
-                            span="1"
-                            rendered="#{containerEditBean.isDimensionVisible()}">
-                            <b:inputText
-                                id="height"
-                                value="#{containerEditBean.containerWidth}"
-                                styleClass="containerEditDimesionField"
-                                label="Breite">
-                                <f:converter converterId="InputConverter" />
-                            </b:inputText>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <b:selectOneMenu 
+                                    value="#{containerEditBean.containerType}" 
+                                    ajax="true"
+                                    disabled="#{!containerEditBean.isEditable()}"
+                                    update="@(.containerFilterRow)"
+                                    styleClass="containerEditInputfield">
+                                    <f:selectItems
+                                        var="type"
+                                        value="#{containerEditBean.containerTypes}" 
+                                        noSelectionValue="true"
+                                        itemLabel="#{type.getLocalizedName()}"/>
 
-                        </b:column>
-                        <b:column
-                            offset="2"
-                            span="1"
-                            rendered="#{containerEditBean.isDimensionVisible()}">
-                            <b:inputText
-                                value="#{containerEditBean.containerHeight}"
-                                styleClass="containerEditDimesionField"
-                                label="Hoehe">
-                                <f:converter converterId="InputConverter" />
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2"
-                                  rendered="#{containerEditBean.isSecurityLevelVisible()}">
-                            <h:outputText value="Sicherheitsstufe"/>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column span="2"
-                                  >
-                            <b:selectOneMenu 
-                                value="#{containerEditBean.securityLevel}" 
-                                styleClass="containerEditInputfield"
+                                </b:selectOneMenu>
+                            </b:column>
+                        </b:row>
+
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <h:outputText value="Name"/>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <b:inputText
+                                    id="editNameInputField"
+                                    value="#{containerEditBean.containerName}"
+                                    styleClass="containerEditInputfield nameInputFieldClass">
+                                    <f:converter converterId="InputConverter" />
+                                </b:inputText>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <h:outputText value="Project"
+                                              />
+                            </b:column>
+                        </b:row>
+
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <p:autoComplete value="#{containerEditBean.preferredProjectName}"
+                                                maxResults="10"
+                                                completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
+                                                styleClass="containerEditInputfield">
+                                </p:autoComplete>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <h:outputText value="Ort"
+                                              />
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <p:autoComplete value="#{containerEditBean.containerLocation}"
+                                                maxResults="10"
+                                                completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
+                                                styleClass="containerEditInputfield"/>
+                            </b:column>
+                        </b:row>
+
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2">
+                                <h:outputText 
+                                    rendered="#{containerEditBean.isDimensionVisible()}"
+                                    value="Groesse"/>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow"
+                            id="sizeRowId">
+                            <b:column 
+                                span="1"
+                                id="widthcolId">
+                                <b:inputText
+                                    disabled="#{!containerEditBean.isEditable()}"
+                                    rendered="#{containerEditBean.isDimensionVisible()}"
+                                    id="width"
+                                    value="#{containerEditBean.containerWidth}"
+                                    styleClass="containerEditDimesionField"
+                                    label="Breite">
+                                    <f:converter converterId="InputConverter" />
+                                </b:inputText>
+
+                            </b:column>
+                            <b:column
+                                id="heightcolId"
+                                offset="2"
+                                span="1"
+                                >
+                                <b:inputText
+                                    disabled="#{!containerEditBean.isEditable()}"
+                                    rendered="#{containerEditBean.isDimensionVisible()}"
+                                    id="height"
+                                    value="#{containerEditBean.containerHeight}"
+                                    styleClass="containerEditDimesionField"
+                                    label="Hoehe">
+                                    <f:converter converterId="InputConverter" />
+                                </b:inputText>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2"
+                                      rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                                <h:outputText value="Sicherheitsstufe"/>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="2"
+                                      >
+                                <b:selectOneMenu 
+                                    value="#{containerEditBean.securityLevel}" 
+                                    styleClass="containerEditInputfield"
+                                    rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                                    <f:selectItems
+                                        value="#{containerEditBean.getGvoClasses()}"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column
+                                span="2" 
                                 rendered="#{containerEditBean.isSecurityLevelVisible()}">
-                                <f:selectItems
-                                    value="#{containerEditBean.getGvoClasses()}"/>
-                            </b:selectOneMenu>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column
-                            span="2" 
-                            rendered="#{containerEditBean.isSecurityLevelVisible()}">
-                            <h:outputText value="Feuerbereich"/>
-                        </b:column>
-                    </b:row>
-                    <b:row
-                        styleClass="containerFilterRow">
-                        <b:column 
-                            span="2"
-                            rendered="#{containerEditBean.isSecurityLevelVisible()}">
-                            <b:inputText
-                                value="#{containerEditBean.fireSection}"
-                                styleClass="containerEditInputfield">
-                                <f:converter converterId="InputConverter" />
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:commandButton
-                            id="CancelButtonId"
-                            action="#{containerOverviewBean.actionCancel()}"
-                            immediate="true"
-                            rendered="#{containerOverviewBean.isFirstButtonVisible()}"
-                            value="#{msgs.container_button_cancel}"
-                            ajax="true"
-                            update="@(.containerEdit) @(.containerTopRow) @(.topLevelRowForm) editForm"
-                            />
+                                <h:outputText value="Feuerbereich"/>
+                            </b:column>
+                        </b:row>
 
-                        <b:commandButton
-                            id="SaveButtonId"
-                            onclick="ajax:containerOverviewBean.actionSaveNewContainer();"
-                            value="#{containerOverviewBean.getSecondButtonLabel()}"
-                            ajax="true"
-                            update="growlMsg @(.containerOverviewContainer) @(.topLevelRowForm) editForm"
-                            />
-                    </b:row>
-                </p:panel>
-            </b:container>
-        </b:form>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column 
+                                span="2"
+                                rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                                <b:inputText
+                                    value="#{containerEditBean.fireSection}"
+                                    styleClass="containerEditInputfield">
+                                    <f:converter converterId="InputConverter" />
+                                </b:inputText>
+                            </b:column>
+                        </b:row>
+
+                        <b:row>
+                            <b:commandButton
+                                id="CancelButtonId"
+                                onclick="ajax:containerOverviewBean.actionCancel();"
+                                immediate="true"
+                                rendered="#{containerOverviewBean.isFirstButtonVisible()}"
+                                value="#{msgs.container_button_cancel}"
+                                ajax="true"
+                                update="@(.topLevelRowForm)"
+                                oncomplete="PF('dlgcontainerEdit').hide();"/>
+                            <b:commandButton
+                                id="SaveButtonId"
+                                onclick="ajax:containerOverviewBean.actionTriggerContainerSave();"
+                                value="#{containerOverviewBean.getSecondButtonLabel()}"
+                                ajax="true"
+                                update="growlMsg @(.containerOverviewContainer) @(.topLevelRowForm) editForm"
+                                oncomplete="PF('dlgcontainerEdit').hide();"/>
+                        </b:row>
+                    </b:container>
+                </b:form>
+            </center>
+        </p:dialog>
     </h:body>
 </html>

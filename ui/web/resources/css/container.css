@@ -58,12 +58,12 @@
 }
 
 .containerEditInputfield{
-    width: 200px  !important;
+    width: 300px  !important;
     height: 30px !important;
 }
 
 .containerEditInputfield input{
-    width: 200px  !important;
+    width: 300px  !important;
     height: 30px !important;
 }
 
@@ -78,6 +78,7 @@
 
 .containerEdit{
     padding: 0px;
+    width: 350px;
 }
 
 .containerOverviewContainer{

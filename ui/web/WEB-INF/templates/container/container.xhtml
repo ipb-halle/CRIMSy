@@ -23,10 +23,14 @@ limitations under the License.
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:body>
         <ui:composition>
+            <ui:insert> 
+                <ui:include src="/WEB-INF/templates/container/components/containerEditView.xhtml"/>
+            </ui:insert>
             <b:container 
                 styleClass="containerOverviewContainer"
                 id="containerOverviewId">
                 <b:row
+                    id="topLevelRowId"
                     styleClass="containerTopRow">
                     <b:column span="1" offset="11"
                               >
@@ -34,6 +38,7 @@ limitations under the License.
                             id="topLevelRowFormId"
                             styleClass="topLevelRowForm">
                             <b:commandButton
+                                rendered="#{containerOverviewBean.isTopLevelButtonVisible()}"
                                 disabled ="#{!containerOverviewBean.isSecondButtonVisible()}"
                                 onclick="ajax:containerOverviewBean.actionSecondButtonClick();"
                                 value="#{containerOverviewBean.getSecondButtonLabel()}"
@@ -42,7 +47,9 @@ limitations under the License.
                                 @(.containerEdit)
                                 @(.containerTopRow)
                                 @(.topLevelRowForm)
-                                @(.containerEditFormStyle)"
+                                @(.containerEditFormStyle)
+                                @(.containerEditModal)"
+                                oncomplete="PF('dlgcontainerEdit').show();"
                                 />
                         </b:form>
                     </b:column>
@@ -53,14 +60,9 @@ limitations under the License.
                             <ui:include src="/WEB-INF/templates/container/components/containerSearchMask.xhtml"/>
                         </ui:insert>
                     </b:column>
-                    <b:column span="8">  
+                    <b:column span="10">  
                         <ui:insert> 
                             <ui:include src="/WEB-INF/templates/container/components/containerOverviewTable.xhtml"/>
-                        </ui:insert>
-                    </b:column> 
-                    <b:column span="2">  
-                        <ui:insert> 
-                            <ui:include src="/WEB-INF/templates/container/components/containerEditView.xhtml"/>
                         </ui:insert>
                     </b:column> 
                 </b:row>

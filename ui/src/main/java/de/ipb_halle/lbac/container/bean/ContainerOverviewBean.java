@@ -105,11 +105,25 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     public void actionContainerEdit(Container c) {
+        logger.info("Container "+c.getId());
         editBean.startContainerEdit(c);
         mode = Mode.EDIT;
     }
 
-    public boolean actionSaveNewContainer() {
+    public void actionTriggerContainerSave() {
+        if (mode == Mode.CREATE) {
+            saveNewContainer();
+        } else {
+            saveEditedContainer();
+        }
+        editBean.clearEditBean();
+    }
+
+    public boolean isTopLevelButtonVisible() {
+        return mode == Mode.SHOW;
+    }
+
+    public boolean saveNewContainer() {
         validator = new InputValidator(containerService);
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
