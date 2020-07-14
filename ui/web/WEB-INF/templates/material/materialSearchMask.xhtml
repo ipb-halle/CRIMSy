@@ -20,8 +20,8 @@ limitations under the License.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <b:form id="materialSearchMaskForm">
@@ -132,7 +132,7 @@ limitations under the License.
                                 itemValue=""
                                 itemLabel="#{materialOverviewBean.searchController.getLocalizedMaterialTypeName(null)}"
                                 >
-                                
+
                             </f:selectItem>
                             <f:selectItems
                                 value="#{materialOverviewBean.searchController.materialTypes}"
@@ -146,6 +146,16 @@ limitations under the License.
                     </b:column>
                 </b:row>
 
+                <b:row>
+                    <b:column span="2">
+                        <nwc:molPlugin id="molEditor"
+                                       value="#{materialOverviewBean.searchController.molecule}" 
+                                       plugintype="MolPaintJS"
+                                       edit="true"/>
+                    </b:column>
+
+
+                </b:row>
 
 
                 <b:row>
@@ -167,7 +177,8 @@ limitations under the License.
                             value="Search"
                             ajax="true"
                             update="materialForm materialSearchMaskForm @(.materialOverviewTableContainer)"
-                            onclick="ajax:materialOverviewBean.searchController.actionStartMaterialSearch();"/>
+                            action="#{materialOverviewBean.searchController.actionStartMaterialSearch()}"
+                            onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"/>
                     </b:column>
                 </b:row>
             </b:container>

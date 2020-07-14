@@ -105,7 +105,6 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     public void actionContainerEdit(Container c) {
-        logger.info("Container "+c.getId());
         editBean.startContainerEdit(c);
         mode = Mode.EDIT;
     }

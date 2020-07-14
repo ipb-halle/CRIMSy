@@ -26,14 +26,16 @@ import java.util.Scanner;
 public class V2000 implements MoleculeStructureModel {
 
     @Override
-    public boolean isEmptyMolecule(String s) throws Exception{
+    public boolean isEmptyMolecule(String s) throws Exception {
+        if (s == null || s.trim().isEmpty()) {
+            return true;
+        }
         try (Scanner scanner = new Scanner(s)) {
             int lineNumber = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (lineNumber == 3) {
-                    String atoms = getNumberOfAtoms(line);
-                    return Integer.parseInt(atoms) == 0;
+                    return getNumberOfAtoms(line) == 0;
                 }
                 lineNumber++;
                 // process the line
@@ -42,13 +44,7 @@ public class V2000 implements MoleculeStructureModel {
         return false;
     }
 
-    private String getNumberOfAtoms(String line) {
-        String[] splittedLine = line.split(" ");
-        for (String s : splittedLine) {
-            if (!s.isEmpty()) {
-                return s;
-            }
-        }
-        return null;
+    private int getNumberOfAtoms(String line) {
+        return Integer.parseInt(line.substring(0, 3).trim());
     }
 }

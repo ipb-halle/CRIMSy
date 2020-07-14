@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.structure.V2000;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
@@ -50,6 +51,7 @@ public class MaterialSearchMaskController implements Serializable {
     private String index;
     private MemberService memberService;
     private List<MaterialType> materialTypes;
+    private String molecule;
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -79,6 +81,8 @@ public class MaterialSearchMaskController implements Serializable {
 
     /**
      * ToDo: localize the material type names
+     * @param mt
+     * @return 
      */
     public String getLocalizedMaterialTypeName(MaterialType mt) {
         if (mt == null) {
@@ -110,6 +114,7 @@ public class MaterialSearchMaskController implements Serializable {
         userName = null;
         index = null;
         materialType = null;
+        molecule = "";
     }
 
     public void actionStartMaterialSearch() {
@@ -117,6 +122,7 @@ public class MaterialSearchMaskController implements Serializable {
     }
 
     private Map<String, Object> generateCmap() {
+
         Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {
             cmap.put("NAME", "%" + name.trim() + "%");
@@ -133,9 +139,15 @@ public class MaterialSearchMaskController implements Serializable {
         if (userName != null && !userName.trim().isEmpty()) {
             cmap.put("USER", "%" + userName.trim() + "%");
         }
-        logger.info("TYPE " + materialType);
         if (materialType != null) {
             cmap.put("TYPE", materialType.getId());
+        }
+        try {
+            if (!new V2000().isEmptyMolecule(molecule)) {
+                cmap.put("MOLECULE", molecule);
+            }
+        } catch (Exception e) {
+            logger.error("Could not parse molecule", e);
         }
 
         return cmap;
@@ -173,6 +185,10 @@ public class MaterialSearchMaskController implements Serializable {
         return materialType;
     }
 
+    public String getMolecule() {
+        return molecule;
+    }
+
     public String getName() {
         return name;
     }
@@ -203,6 +219,10 @@ public class MaterialSearchMaskController implements Serializable {
 
     public void setMaterialType(MaterialType materialType) {
         this.materialType = materialType;
+    }
+
+    public void setMolecule(String molecule) {
+        this.molecule = molecule;
     }
 
     public void setName(String name) {
