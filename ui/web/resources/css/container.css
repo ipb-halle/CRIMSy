@@ -85,5 +85,28 @@
     width:100%  !important;
 }
 
+.containerEditButtonRowClass{
+    margin-left: 154px;
+}
+
+.containerEditButtonLeft{
+    margin-right: 7px;
+}
+
+.containerEditLabel{
+    width: 325px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.containerFilterRow > div > div > label{
+    font-weight: normal;
+}
+
+.containerEditModal > div > span {
+    text-align: center;
+}
+
+
 /** format info box test results in ldpap check **/
 

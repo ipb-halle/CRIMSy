@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class Container implements DTO, Serializable {
-    
+
     public enum DimensionType {
         NONE,
         ZERO_DIMENSION,
@@ -41,7 +41,7 @@ public class Container implements DTO, Serializable {
         TWO_DIMENSION
     }
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     private int id;
     private Container parentContainer;
     private String label;
@@ -54,11 +54,11 @@ public class Container implements DTO, Serializable {
     private Item[][][] items;
     List<Container> containerHierarchy = new ArrayList<>();
     private boolean deactivated;
-    
+
     public Container() {
         deactivated = false;
     }
-    
+
     public Container(
             ContainerEntity dbentity,
             Project p,
@@ -83,7 +83,7 @@ public class Container implements DTO, Serializable {
             }
         }
     }
-    
+
     public DimensionType getDimensionType() {
         if (dimension == null) {
             return DimensionType.NONE;
@@ -91,15 +91,15 @@ public class Container implements DTO, Serializable {
             return DimensionType.TWO_DIMENSION;
         }
     }
-    
+
     public Item[][][] getItems() {
         return items;
     }
-    
+
     public void setItems(Item[][][] items) {
         this.items = items;
     }
-    
+
     public Container(
             ContainerEntity dbentity) {
         this.id = dbentity.getId();
@@ -109,96 +109,94 @@ public class Container implements DTO, Serializable {
         this.gmosavety = dbentity.getGmosavety();
         this.barCode = dbentity.getBarcode();
         this.deactivated = dbentity.isDeactivated();
-        
+
     }
-    
+
     public int getId() {
         return id;
     }
-    
+
     public Item getItemAtPos(int x, int y, int z) {
         if (dimension == null) {
             return null;
         }
         return items[x][y][z];
     }
-    
+
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public Container getParentContainer() {
         if (parentContainer == null && containerHierarchy.size() > 0) {
             return containerHierarchy.get(0);
         }
         return parentContainer;
     }
-    
+
     public void setParentContainer(Container parentContainer) {
         this.parentContainer = parentContainer;
     }
-    
+
     public String getLabel() {
         return label;
     }
-    
+
     public void setLabel(String label) {
         this.label = label;
     }
-    
+
     public Project getProject() {
         return project;
     }
-    
+
     public void setProject(Project project) {
         this.project = project;
     }
-    
+
     public String getDimension() {
         return dimension;
     }
-    
+
     public void setDimension(String dimension) {
         this.dimension = dimension;
     }
-    
+
     public ContainerType getType() {
         return type;
     }
-    
+
     public void setType(ContainerType type) {
         this.type = type;
     }
-    
+
     public String getFireSection() {
         return fireSection;
     }
-    
+
     public void setFireSection(String fireSection) {
         this.fireSection = fireSection;
     }
-    
+
     public String getBarCode() {
         return barCode;
     }
-    
+
     public void setBarCode(String barCode) {
         this.barCode = barCode;
     }
-    
+
     public String getLocation(boolean inclusiveItsself) {
         if (containerHierarchy.isEmpty()) {
-            return label;
+            return "";
         } else {
             return containerHierarchy
                     .stream()
                     .map(r -> r.getLabel())
                     .collect(Collectors.joining("<br>"));
-            
         }
-        
     }
-    
+
     public int[] getDimensionIndex() {
         if (dimension != null) {
             String[] size = dimension.split(";");
@@ -218,27 +216,27 @@ public class Container implements DTO, Serializable {
         }
         return null;
     }
-    
+
     public List<Container> getContainerHierarchy() {
         return containerHierarchy;
     }
-    
+
     public String getGmosavety() {
         return gmosavety;
     }
-    
+
     public void setGmosavety(String securitylevel) {
         this.gmosavety = securitylevel;
     }
-    
+
     public boolean isDeactivated() {
         return deactivated;
     }
-    
+
     public void setDeactivated(boolean deactivated) {
         this.deactivated = deactivated;
     }
-    
+
     @Override
     public ContainerEntity createEntity() {
         ContainerEntity dbe = new ContainerEntity();
@@ -260,7 +258,7 @@ public class Container implements DTO, Serializable {
         dbe.setDeactivated(this.isDeactivated());
         return dbe;
     }
-    
+
     public Container copy() {
         Container c = new Container();
         c.setBarCode(barCode);
@@ -277,5 +275,5 @@ public class Container implements DTO, Serializable {
         c.getContainerHierarchy().addAll(containerHierarchy);
         return c;
     }
-    
+
 }

@@ -25,9 +25,11 @@ limitations under the License.
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <p:dialog 
+            closable="false"
             widgetVar="dlgcontainerEdit"
             modal="true" 
             styleClass="containerEditModal"
+            header="#{containerEditBean.getDialogTitle()}"
             width="400px">
             <center>
                 <b:form 
@@ -39,8 +41,8 @@ limitations under the License.
 
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
-                                <h:outputText value="Type"/>
+                            <b:column span="2" styleClass="containerEditLabel">
+                                <h:outputText value="#{msgs.container_edit_label_type}"/>
                             </b:column>
                         </b:row>
 
@@ -65,8 +67,11 @@ limitations under the License.
 
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
-                                <h:outputText value="Name"/>
+                            <b:column
+                                span="2"
+                                styleClass="containerEditLabel">
+                                <h:outputText
+                                    value="#{msgs.container_edit_label_label}"/>
                             </b:column>
                         </b:row>
                         <b:row
@@ -82,9 +87,11 @@ limitations under the License.
                         </b:row>
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
-                                <h:outputText value="Project"
-                                              />
+                            <b:column
+                                span="2"
+                                styleClass="containerEditLabel">
+                                <h:outputText
+                                    value="#{msgs.container_edit_label_project}"/>
                             </b:column>
                         </b:row>
 
@@ -100,9 +107,12 @@ limitations under the License.
                         </b:row>
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
-                                <h:outputText value="Ort"
-                                              />
+                            <b:column
+                                span="2"
+                                styleClass="containerEditLabel">
+                                <h:outputText 
+                                    value="#{msgs.container_edit_label_location}"
+                                    />
                             </b:column>
                         </b:row>
                         <b:row
@@ -117,10 +127,12 @@ limitations under the License.
 
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
+                            <b:column
+                                span="2"
+                                styleClass="containerEditLabel">
                                 <h:outputText 
                                     rendered="#{containerEditBean.isDimensionVisible()}"
-                                    value="Groesse"/>
+                                    value="#{msgs.container_edit_label_size}"/>
                             </b:column>
                         </b:row>
                         <b:row
@@ -135,7 +147,7 @@ limitations under the License.
                                     id="width"
                                     value="#{containerEditBean.containerWidth}"
                                     styleClass="containerEditDimesionField"
-                                    label="Breite">
+                                    label="#{msgs.container_edit_label_size_width}">
                                     <f:converter converterId="InputConverter" />
                                 </b:inputText>
 
@@ -151,7 +163,7 @@ limitations under the License.
                                     id="height"
                                     value="#{containerEditBean.containerHeight}"
                                     styleClass="containerEditDimesionField"
-                                    label="Hoehe">
+                                    label="#{msgs.container_edit_label_size_height}">
                                     <f:converter converterId="InputConverter" />
                                 </b:inputText>
                             </b:column>
@@ -159,8 +171,10 @@ limitations under the License.
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column span="2"
-                                      rendered="#{containerEditBean.isSecurityLevelVisible()}">
-                                <h:outputText value="Sicherheitsstufe"/>
+                                      rendered="#{containerEditBean.isSecurityLevelVisible()}"
+                                      styleClass="containerEditLabel">
+                                <h:outputText 
+                                    value="#{msgs.container_edit_label_savetylevel}"/>
                             </b:column>
                         </b:row>
                         <b:row
@@ -180,8 +194,10 @@ limitations under the License.
                             styleClass="containerFilterRow">
                             <b:column
                                 span="2" 
-                                rendered="#{containerEditBean.isSecurityLevelVisible()}">
-                                <h:outputText value="Feuerbereich"/>
+                                rendered="#{containerEditBean.isSecurityLevelVisible()}"
+                                styleClass="containerEditLabel">
+                                <h:outputText 
+                                    value="#{msgs.container_edit_label_firearea}"/>
                             </b:column>
                         </b:row>
 
@@ -198,9 +214,10 @@ limitations under the License.
                             </b:column>
                         </b:row>
 
-                        <b:row>
+                        <b:row styleClass="containerEditButtonRowClass">
                             <b:commandButton
                                 id="CancelButtonId"
+                                styleClass="containerEditButtonLeft"
                                 onclick="ajax:containerOverviewBean.actionCancel();"
                                 immediate="true"
                                 rendered="#{containerOverviewBean.isFirstButtonVisible()}"

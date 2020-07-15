@@ -178,6 +178,10 @@ public class ContainerOverviewBean implements Serializable {
                             )
                     );
         }
+        if (editBean.getPreferredProjectName() == null || editBean.getPreferredProjectName().trim().isEmpty()) {
+            editBean.getContainerToCreate()
+                    .setProject(null);
+        }
 
         if (editBean.getContainerLocation() != null) {
             editBean.getContainerToCreate()

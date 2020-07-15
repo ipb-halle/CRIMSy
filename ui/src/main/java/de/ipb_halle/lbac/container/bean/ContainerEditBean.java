@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
@@ -65,6 +66,9 @@ public class ContainerEditBean implements Serializable {
     private String preferredProjectName;
     Logger logger = LogManager.getLogger(this.getClass().getName());
     private Mode mode;
+    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+
+    ;
 
     public void startNewContainerCreation() {
         mode = Mode.CREATE;
@@ -109,7 +113,19 @@ public class ContainerEditBean implements Serializable {
             containerWidth = null;
             containerHeight = null;
         }
+    }
 
+    public String getDialogTitle() {
+        if (mode == Mode.CREATE) {
+            return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_create", null);
+        } else {
+            if (originalContainer != null) {
+                return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_edit", new String[]{originalContainer.getLabel()});
+
+            } else {
+                return "";
+            }
+        }
     }
 
     public List<ContainerType> getContainerTypes() {
