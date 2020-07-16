@@ -73,7 +73,7 @@ public class InputValidator implements Serializable {
         this.preferredProjectName = preferredProjectName;
         this.preferredLocationName = containerLocation;
 
-        boolean valide = isLabelValide(allowDublicateNames);
+        boolean valide = !containerToCheck.getType().isTransportable() || isLabelValide();
         if (!valide) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_NAME_INVALIDE);
         }
@@ -121,15 +121,14 @@ public class InputValidator implements Serializable {
     /**
      * Checks the containerlabel for existance and if toggled for unique
      *
-     * @param allowDublicateNames
      * @return
      */
-    protected boolean isLabelValide(boolean allowDublicateNames) {
+    protected boolean isLabelValide() {
         if (containerToCheck.getLabel() == null || containerToCheck.getLabel().trim().isEmpty()) {
             return false;
         }
 
-        return allowDublicateNames || !containerToCheck.getType().isTransportable() || containerService.loadContainerByName(containerToCheck.getLabel()) == null;
+        return containerService.loadContainerByName(containerToCheck.getLabel()) == null;
     }
 
     /**
