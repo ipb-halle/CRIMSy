@@ -28,7 +28,6 @@ import java.io.Serializable;
  */
 public class InputValidator implements Serializable {
 
-   
     protected ErrorMessagePresenter errorMessagePresenter = new ErrorMessagePresenter();
     protected Integer height;
     protected final int MAX_WIDTH = 1000;
@@ -43,8 +42,6 @@ public class InputValidator implements Serializable {
     protected final String ERROR_MESSAGE_LOCATION_TO_SMALL = "container_input_location_to_small";
     protected final String ERROR_MESSAGE_NAME_INVALIDE = "container_input_name_invalide";
     protected final String ERROR_MESSAGE_PROJECT_INVALIDE = "container_input_project_invalide";
-
-   
 
     public InputValidator(ContainerService containerService) {
         this.containerService = containerService;
@@ -132,7 +129,7 @@ public class InputValidator implements Serializable {
             return false;
         }
 
-        return allowDublicateNames || containerService.loadContainerByName(containerToCheck.getLabel()) == null;
+        return allowDublicateNames || !containerToCheck.getType().isTransportable() || containerService.loadContainerByName(containerToCheck.getLabel()) == null;
     }
 
     /**

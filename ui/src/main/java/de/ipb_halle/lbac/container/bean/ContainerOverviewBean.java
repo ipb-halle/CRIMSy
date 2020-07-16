@@ -115,6 +115,7 @@ public class ContainerOverviewBean implements Serializable {
         } else {
             saveEditedContainer();
         }
+        mode = Mode.SHOW;
         editBean.clearEditBean();
     }
 

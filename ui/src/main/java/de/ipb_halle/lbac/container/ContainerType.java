@@ -29,6 +29,7 @@ public class ContainerType implements Serializable {
 
     private String name;
     private int rank;
+    private boolean transportable;
 
     private String localizedName;
 
@@ -41,12 +42,14 @@ public class ContainerType implements Serializable {
         this.name = entity.getName();
         this.rank = entity.getRank();
         this.localizedName = name;
+        transportable = rank < 70 && rank != 100;
     }
 
     public ContainerType(String name, int rank) {
         this.name = name;
         this.rank = rank;
         this.localizedName = name;
+        transportable = rank < 70 && rank != 100;
     }
 
     public String getName() {
@@ -96,6 +99,14 @@ public class ContainerType implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public boolean isTransportable() {
+        return transportable;
+    }
+
+    public void setTransportable(boolean transportable) {
+        this.transportable = transportable;
     }
 
 }

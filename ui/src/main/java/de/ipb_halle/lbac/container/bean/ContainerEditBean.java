@@ -37,6 +37,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Representation of the controller of the ContainerEdit dialog with the data
+ * tier
  *
  * @author fmauz
  */
@@ -45,42 +47,29 @@ import org.apache.logging.log4j.Logger;
 public class ContainerEditBean implements Serializable {
 
     @Inject
-    private ContainerOverviewBean overviewBean;
-
-    @Inject
     private ContainerService containerService;
 
     @Inject
     private ProjectService projectService;
 
     private Integer containerHeight;
-    private Integer containerWidth;
-    private Container containerToCreate;
-    private Container originalContainer;
-    private List<ContainerType> containerTypes = new ArrayList<>();
-    List<Project> possibleProjects = new ArrayList<>();
-    private User currentUser;
     private String containerLocation;
+    private Container containerToCreate;
+    private List<ContainerType> containerTypes = new ArrayList<>();
+    private Integer containerWidth;
+    private User currentUser;
     private String gvoClass;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private Mode mode;
+    private Container originalContainer;
     private final List<String> possibleSecuritylevel = new ArrayList<>();
     private String preferredProjectName;
-    Logger logger = LogManager.getLogger(this.getClass().getName());
-    private Mode mode;
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    ;
-
-    public void startNewContainerCreation() {
-        mode = Mode.CREATE;
-        containerTypes = containerService.loadContainerTypes();
-        containerToCreate = new Container();
-        containerToCreate.setType(containerTypes.get(0));
-        preferredProjectName = "";
-        containerLocation = "";
-    }
-
+    /**
+     * removes all information from temporary container attribures
+     */
     public void clearEditBean() {
-        containerTypes.clear();
         originalContainer = null;
         containerToCreate = null;
         preferredProjectName = null;
@@ -88,10 +77,275 @@ public class ContainerEditBean implements Serializable {
         containerWidth = null;
         containerHeight = null;
         gvoClass = null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Integer getContainerHeight() {
+        return containerHeight;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getContainerName() {
+        if (containerToCreate != null) {
+            return containerToCreate.getLabel();
+        } else {
+            return null;
+        }
 
     }
 
+    /**
+     *
+     * @return
+     */
+    public String getContainerLocation() {
+        return containerLocation;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Container getContainerToCreate() {
+        return containerToCreate;
+    }
+
+    /**
+     * if the container is not yet set a mock Containertype is created to bypass
+     * null pointer issues
+     *
+     * @return
+     */
+    public ContainerType getContainerType() {
+        if (containerToCreate != null) {
+            return containerToCreate.getType();
+        } else {
+            return new ContainerType("XXX", 1000);
+        }
+    }
+
+    /**
+     * Only types with rank > 0 are returned
+     *
+     * @return
+     */
+    public List<ContainerType> getContainerTypes() {
+        List<ContainerType> filteredContainerTypes = new ArrayList<>();
+        for (ContainerType t : containerTypes) {
+            if (t.getRank() > 0) {
+                filteredContainerTypes.add(t);
+            }
+        }
+        return filteredContainerTypes;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Integer getContainerWidth() {
+        return containerWidth;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getDialogTitle() {
+        if (mode == Mode.CREATE) {
+            return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_create", null);
+        } else {
+            if (originalContainer != null) {
+                return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_edit", new String[]{originalContainer.getLabel()});
+            } else {
+                return "";
+            }
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getFireSection() {
+        return containerToCreate.getFireSection();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getGvoClass() {
+        return gvoClass;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<String> getGvoClasses() {
+        return possibleSecuritylevel;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getPreferredProjectName() {
+        return preferredProjectName;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getSecurityLevel() {
+        if (containerToCreate != null) {
+            return containerToCreate.getGmosavety();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     *
+     */
+    public void initSecurityLevels() {
+        possibleSecuritylevel.clear();
+        possibleSecuritylevel.add(Messages.getString(MESSAGE_BUNDLE, "container_securitylevel_none", null));
+        possibleSecuritylevel.add("S1");
+        possibleSecuritylevel.add("S2");
+        possibleSecuritylevel.add("S3");
+        possibleSecuritylevel.add("S4");
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isDimensionVisible() {
+        if (containerToCreate != null) {
+            return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isEditable() {
+        return mode == Mode.CREATE;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isSecurityLevelVisible() {
+        if (containerToCreate != null) {
+            return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @param containerHeight
+     */
+    public void setContainerHeight(Integer containerHeight) {
+        this.containerHeight = containerHeight;
+    }
+
+    /**
+     *
+     * @param containerLocation
+     */
+    public void setContainerLocation(String containerLocation) {
+        this.containerLocation = containerLocation;
+    }
+
+    /**
+     *
+     * @param containerName
+     */
+    public void setContainerName(String containerName) {
+        containerToCreate.setLabel(containerName);
+    }
+
+    /**
+     *
+     * @param t
+     */
+    public void setContainerType(ContainerType t) {
+        containerToCreate.setType(t);
+    }
+
+    /**
+     *
+     * @param containerWidth
+     */
+    public void setContainerWidth(Integer containerWidth) {
+        this.containerWidth = containerWidth;
+    }
+
+    /**
+     *
+     * @param evt
+     */
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+        projectService.loadReadableProjectsOfUser(currentUser);
+        clearEditBean();
+        initSecurityLevels();
+    }
+
+    /**
+     *
+     * @param fireSection
+     */
+    public void setFireSection(String fireSection) {
+        containerToCreate.setFireSection(fireSection);
+    }
+
+    /**
+     *
+     * @param gvoClass
+     */
+    public void setGvoClass(String gvoClass) {
+        this.gvoClass = gvoClass;
+    }
+
+    /**
+     *
+     * @param preferredProjectName
+     */
+    public void setPreferredProjectName(String preferredProjectName) {
+        this.preferredProjectName = preferredProjectName;
+    }
+
+    /**
+     *
+     * @param securityLevel
+     */
+    public void setSecurityLevel(String securityLevel) {
+        containerToCreate.setGmosavety(securityLevel);
+    }
+
+    /**
+     *
+     * @param c
+     */
     public void startContainerEdit(Container c) {
+        clearEditBean();
         mode = Mode.EDIT;
         containerTypes = containerService.loadContainerTypes();
         originalContainer = c;
@@ -115,164 +369,16 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    public String getDialogTitle() {
-        if (mode == Mode.CREATE) {
-            return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_create", null);
-        } else {
-            if (originalContainer != null) {
-                return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_edit", new String[]{originalContainer.getLabel()});
-
-            } else {
-                return "";
-            }
-        }
-    }
-
-    public List<ContainerType> getContainerTypes() {
-        List<ContainerType> filteredContainerTypes = new ArrayList<>();
-        for (ContainerType t : containerTypes) {
-            if (t.getRank() > 0) {
-                filteredContainerTypes.add(t);
-            }
-        }
-        return filteredContainerTypes;
-    }
-
-    public ContainerType getContainerType() {
-        if (containerToCreate != null) {
-            return containerToCreate.getType();
-        } else {
-            return new ContainerType("XXX", 1000);
-        }
-    }
-
-    public Container getContainerToCreate() {
-        return containerToCreate;
-    }
-
-    public void setContainerType(ContainerType t) {
-        containerToCreate.setType(t);
-    }
-
-    public String getContainerName() {
-        if (containerToCreate != null) {
-            return containerToCreate.getLabel();
-        } else {
-            return null;
-        }
+    /**
+     *
+     */
+    public void startNewContainerCreation() {
+        clearEditBean();
+        containerToCreate = new Container();
+        mode = Mode.CREATE;
+        containerTypes = containerService.loadContainerTypes();
+        containerToCreate.setType(containerTypes.get(0));
 
     }
 
-    public void setContainerName(String containerName) {
-        containerToCreate.setLabel(containerName);
-    }
-
-    public void setCurrentAccount(@Observes LoginEvent evt) {
-        currentUser = evt.getCurrentAccount();
-        projectService.loadReadableProjectsOfUser(currentUser);
-        possibleSecuritylevel.add("keine");
-        possibleSecuritylevel.add("S1");
-        possibleSecuritylevel.add("S2");
-        possibleSecuritylevel.add("S3");
-        possibleSecuritylevel.add("S4");
-    }
-
-    public String getContainerLocation() {
-        return containerLocation;
-    }
-
-    public void setContainerLocation(String containerLocation) {
-        this.containerLocation = containerLocation;
-    }
-
-    public boolean isEditPanelVisible() {
-        return overviewBean.getMode() == ContainerOverviewBean.Mode.CREATE
-                || overviewBean.getMode() == ContainerOverviewBean.Mode.EDIT;
-    }
-
-    public String getGvoClass() {
-        return gvoClass;
-    }
-
-    public void setGvoClass(String gvoClass) {
-        this.gvoClass = gvoClass;
-    }
-
-    public List<String> getGvoClasses() {
-        return possibleSecuritylevel;
-    }
-
-    public void setSecurityLevel(String securityLevel) {
-
-        containerToCreate.setGmosavety(securityLevel);
-
-    }
-
-    public String getSecurityLevel() {
-        if (containerToCreate != null) {
-            return containerToCreate.getGmosavety();
-        } else {
-            return null;
-        }
-
-    }
-
-    public void setFireSection(String fireSection) {
-
-        containerToCreate.setFireSection(fireSection);
-
-    }
-
-    public String getFireSection() {
-
-        return containerToCreate.getFireSection();
-
-    }
-
-    public boolean isSecurityLevelVisible() {
-        if (containerToCreate != null) {
-            return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
-
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isDimensionVisible() {
-
-        if (containerToCreate != null) {
-            return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
-        } else {
-            return false;
-        }
-
-    }
-
-    public void setPreferredProjectName(String preferredProjectName) {
-        this.preferredProjectName = preferredProjectName;
-    }
-
-    public String getPreferredProjectName() {
-        return preferredProjectName;
-    }
-
-    public Integer getContainerHeight() {
-        return containerHeight;
-    }
-
-    public void setContainerHeight(Integer containerHeight) {
-        this.containerHeight = containerHeight;
-    }
-
-    public Integer getContainerWidth() {
-        return containerWidth;
-    }
-
-    public void setContainerWidth(Integer containerWidth) {
-        this.containerWidth = containerWidth;
-    }
-
-    public boolean isEditable() {
-        return mode == Mode.CREATE;
-    }
 }
