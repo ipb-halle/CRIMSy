@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.project;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.MemberService;
@@ -46,7 +47,13 @@ import org.apache.logging.log4j.Logger;
 public class ProjectService implements Serializable {
 
     private final String SQL_PROJECT_TEMPLATES = "SELECT id,materialdetailtypeid,aclistid,projectid FROM projecttemplates WHERE projectid=:pid";
-    private final String SQL_GET_SIMILAR_NAMES = "SELECT name FROM projects WHERE LOWER(name) LIKE LOWER(:name)";
+    private final String SQL_GET_SIMILAR_NAMES
+            = "SELECT DISTINCT (p.name) "
+            + "FROM projects p "
+            + SqlStringWrapper.JOIN_KEYWORD + " "
+            + "WHERE p.name ILIKE :name "
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " ";
+
     private final String SQL_LOAD_PROJECT_BY_NAME
             = "SELECT id "
             + "FROM projects "
@@ -79,8 +86,11 @@ public class ProjectService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarProjectNames(String name, User user) {
-        return this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
+
+        String sql = SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "p.aclist_id", "p.ownerid", ACPermission.permREAD);
+        return this.em.createNativeQuery(sql)
                 .setParameter("name", "%" + name + "%")
+                .setParameter("userid", user.getId())
                 .getResultList();
     }
 
