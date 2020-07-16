@@ -149,8 +149,7 @@ public class ContainerOverviewBean implements Serializable {
                 editBean.getPreferredProjectName(),
                 editBean.getContainerLocation(),
                 editBean.getContainerHeight(),
-                editBean.getContainerWidth(),
-                allowDuplicateContainerNames
+                editBean.getContainerWidth()
         );
 
         if (valide) {
@@ -196,8 +195,7 @@ public class ContainerOverviewBean implements Serializable {
                 editBean.getPreferredProjectName(),
                 editBean.getContainerLocation(),
                 editBean.getContainerHeight(),
-                editBean.getContainerWidth(),
-                allowDuplicateContainerNames
+                editBean.getContainerWidth()
         );
         if (valide) {
             mode = Mode.SHOW;

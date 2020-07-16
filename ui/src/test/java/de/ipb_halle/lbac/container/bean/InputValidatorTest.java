@@ -87,27 +87,27 @@ public class InputValidatorTest extends TestBase {
         c2.setType(new ContainerType("ROOM", 100));
         containerService.saveContainer(c2);
 
-        Assert.assertFalse("test001: containername already in use", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        c.setType(new ContainerType("transportable", 99));
+        Assert.assertFalse("test001: containername already in use", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_name_invalide"));
         messagePresenter.errorMessages.clear();
+        c.setType(new ContainerType("ROOM", 100));
 
-        allowDuplicateNames = true;
-        Assert.assertTrue("test001: containername already in use but is accepted", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        Assert.assertTrue("test001: containername already in use but is accepted", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
-        allowDuplicateNames = false;
 
         c.setLabel("");
-        Assert.assertFalse("test001: containername is empty", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test001: containername is empty", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_name_invalide"));
         messagePresenter.errorMessages.clear();
 
         c.setLabel(null);
-        Assert.assertFalse("test001: containername is null", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test001: containername is null", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_name_invalide"));
         messagePresenter.errorMessages.clear();
 
         c.setLabel("VALIDE_CONTAINER_NAME");
-        Assert.assertTrue("test001: Valide containername not accepted", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        Assert.assertTrue("test001: Valide containername not accepted", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
     }
 
@@ -116,24 +116,24 @@ public class InputValidatorTest extends TestBase {
         Project p = new Project();
         p.setName("TEST_PROJECT");
 
-        Assert.assertFalse("test002: project expected, but not found", validator.isInputValideForCreation(c, "TEST_PROJECT", null, 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test002: project expected, but not found", validator.isInputValideForCreation(c, "TEST_PROJECT", null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_project_invalide"));
         messagePresenter.errorMessages.clear();
 
-        Assert.assertTrue("test002: no project set and  expected", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        Assert.assertTrue("test002: no project set and  expected", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
 
         c.setProject(p);
-        Assert.assertFalse("test002: project set, but none expected", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test002: project set, but none expected", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_project_invalide"));
         messagePresenter.errorMessages.clear();
 
         c.setProject(p);
-        Assert.assertFalse("test002: project set, but wrong name expected", validator.isInputValideForCreation(c, "TEST_PROJECT-FAILURE", null, 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test002: project set, but wrong name expected", validator.isInputValideForCreation(c, "TEST_PROJECT-FAILURE", null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_project_invalide"));
         messagePresenter.errorMessages.clear();
 
-        Assert.assertTrue("test002: project found and expected", validator.isInputValideForCreation(c, "TEST_PROJECT", null, 1, 1, allowDuplicateNames));
+        Assert.assertTrue("test002: project found and expected", validator.isInputValideForCreation(c, "TEST_PROJECT", null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
     }
 
@@ -145,19 +145,19 @@ public class InputValidatorTest extends TestBase {
         c.setType(new ContainerType("CUPBOARD", 20));
         containerService.saveContainer(c2);
 
-        Assert.assertTrue("test003: no location expected and set", validator.isInputValideForCreation(c, null, null, 1, 1, allowDuplicateNames));
+        Assert.assertTrue("test003: no location expected and set", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
 
-        Assert.assertFalse("test003: no location set but expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test003: no location set but expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
         messagePresenter.errorMessages.clear();
 
-        Assert.assertFalse("test003: location set but none expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test003: location set but none expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
         messagePresenter.errorMessages.clear();
 
         c.setParentContainer(c2);
-        Assert.assertTrue("test003: location set and expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1, allowDuplicateNames));
+        Assert.assertTrue("test003: location set and expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
     }
 
@@ -168,26 +168,26 @@ public class InputValidatorTest extends TestBase {
         c2.setType(new ContainerType("ROOM", 100));
 
         c.setParentContainer(c2);
-        Assert.assertFalse("test004: container to big for location", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test004: container to big for location", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_to_small"));
         messagePresenter.errorMessages.clear();
 
         c.setType(new ContainerType("CUPBOARD", 20));
-        Assert.assertTrue("test004: container should fit into location ", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1, allowDuplicateNames));
+        Assert.assertTrue("test004: container should fit into location ", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
     }
 
     @Test
     public void test005_isDimensionsValide() {
-        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", -1, 1, allowDuplicateNames));
+        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", -1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
         messagePresenter.errorMessages.clear();
 
-        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", -1, -11, allowDuplicateNames));
+        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", -1, -11));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
         messagePresenter.errorMessages.clear();
 
-        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1, allowDuplicateNames));
+        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
         messagePresenter.errorMessages.clear();
     }

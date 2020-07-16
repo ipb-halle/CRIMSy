@@ -42,7 +42,6 @@ public class EditInputValidator extends InputValidator {
      * @param containerLocation
      * @param height
      * @param width
-     * @param allowDublicateNames
      * @return
      */
     @Override
@@ -51,8 +50,7 @@ public class EditInputValidator extends InputValidator {
             String preferredProjectName,
             String containerLocation,
             Integer height,
-            Integer width,
-            boolean allowDublicateNames) {
+            Integer width) {
         this.height = height;
         this.width = width;
         this.containerToCheck = container;
