@@ -41,7 +41,7 @@ limitations under the License.
                                 rendered="#{containerOverviewBean.isTopLevelButtonVisible()}"
                                 disabled ="#{!containerOverviewBean.isSecondButtonVisible()}"
                                 onclick="ajax:containerOverviewBean.actionSecondButtonClick();"
-                                value="#{containerOverviewBean.getSecondButtonLabel()}"
+                                value="#{msgs.container_overview_create}"
                                 ajax="true"
                                 update="
                                 @(.containerEdit)

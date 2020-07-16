@@ -227,14 +227,6 @@ public class ContainerOverviewBean implements Serializable {
         return mode != Mode.SHOW;
     }
 
-    public String getSecondButtonLabel() {
-        if (mode == Mode.SHOW) {
-            return Messages.getString(MESSAGE_BUNDLE, "container_button_create", null);
-        } else {
-            return Messages.getString(MESSAGE_BUNDLE, "container_button_save", null);
-        }
-    }
-
     public Mode getMode() {
         return mode;
     }

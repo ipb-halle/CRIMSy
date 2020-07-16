@@ -228,7 +228,7 @@ limitations under the License.
                             <b:commandButton
                                 id="SaveButtonId"
                                 onclick="ajax:containerOverviewBean.actionTriggerContainerSave();"
-                                value="#{containerOverviewBean.getSecondButtonLabel()}"
+                                value="#{msgs.container_button_save}"
                                 ajax="true"
                                 update="growlMsg @(.containerOverviewContainer) @(.topLevelRowForm) editForm"
                                 oncomplete="PF('dlgcontainerEdit').hide();"/>

@@ -20,22 +20,21 @@ limitations under the License.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <b:form id="searchMaskForm">
             <b:container>
                 <b:row>
                     <b:column>
-                        <h:outputText value="Suchfilter"
-                                      styleClass="containerFilterHeader"/>
+                        <h:outputText 
+                            value="Suchfilter"
+                            styleClass="containerFilterHeader"/>
                     </b:column>
                 </b:row>    
                 <b:row
                     styleClass="containerFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Name"
-                                      />
+                        <h:outputText value="#{msgs.container_search_label}"/>
                     </b:column>
                 </b:row>
                 <b:row
@@ -50,7 +49,7 @@ limitations under the License.
                 <b:row
                     styleClass="containerFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Containernummer"/>
+                        <h:outputText value="#{msgs.container_search_id}"/>
                     </b:column>
                 </b:row>
                 <b:row
@@ -64,7 +63,7 @@ limitations under the License.
                 <b:row
                     styleClass="containerFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Project"/>
+                        <h:outputText value="#{msgs.container_search_project}"/>
                     </b:column>
                 </b:row>
                 <b:row
@@ -80,7 +79,7 @@ limitations under the License.
                 <b:row
                     styleClass="containerFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Standort"/>
+                        <h:outputText value="#{msgs.container_search_location}"/>
                     </b:column>
                 </b:row>  
                 <b:row
@@ -92,14 +91,13 @@ limitations under the License.
                                         styleClass="containerFilterInputfield"/>
                     </b:column>
                 </b:row>
-
                 <b:row>
                     <b:column
                         span="1" 
                         styleClass="containerFilterButtonColumn">
                         <b:commandButton 
                             styleClass="containerFilterButton"
-                            value="Clear"
+                            value="#{msgs.container_search_button_clear}"
                             ajax="true"
                             update="searchMaskForm @(.containerDataTable)"
                             onclick="ajax:containerSearchMaskBean.actionClearSearchFilter();"/>
@@ -109,7 +107,7 @@ limitations under the License.
                         styleClass="containerFilterButtonColumn containerFilterButtonRight">
                         <b:commandButton 
                             styleClass="containerFilterButton"
-                            value="Search"
+                            value="#{msgs.container_search_button_search}"
                             ajax="true"
                             update="searchMaskForm @(.containerDataTable)"
                             onclick="ajax:containerOverviewBean.actionStartFilteredSearch();"/>
