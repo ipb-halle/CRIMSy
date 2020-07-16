@@ -43,7 +43,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialComparator  implements Serializable {
+public class MaterialComparator implements Serializable {
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -144,7 +144,7 @@ public class MaterialComparator  implements Serializable {
             Material editedMat) throws Exception {
         MaterialOverviewDifference overviewDiff = new MaterialOverviewDifference();
         //Check material overview differences
-        if (originalMat.getACList()== null || editedMat.getACList() == null) {
+        if (originalMat.getACList() == null || editedMat.getACList() == null) {
             throw new Exception("Acl-list of material not set !");
         }
         boolean bothAclsEqual = originalMat.getACList().permEquals(editedMat.getACList());
@@ -152,7 +152,7 @@ public class MaterialComparator  implements Serializable {
             overviewDiff.setAcListNew(editedMat.getACList());
             overviewDiff.setAcListOld(originalMat.getACList());
         }
-        if (originalMat.getACList() == null || editedMat.getOwner()== null) {
+        if (originalMat.getACList() == null || editedMat.getOwner() == null) {
             throw new Exception("Owner of material not set !");
         }
         if (!originalMat.getOwner().getId().toString().equals(editedMat.getOwner().getId().toString())) {
@@ -364,13 +364,19 @@ public class MaterialComparator  implements Serializable {
             diff.setSumFormula_new(editedStruc.getSumFormula());
             diff.setSumFormula_old(originalStruc.getSumFormula());
         }
-        if (Math.abs(originalStruc.getExactMolarMass() - editedStruc.getExactMolarMass()) > Double.MIN_NORMAL) {
-            diff.setExactMolarMass_new(editedStruc.getExactMolarMass());
-            diff.setExactMolarMass_old(originalStruc.getExactMolarMass());
+        if (!checkIfBothAreNull(originalStruc.getExactMolarMass(), editedStruc.getExactMolarMass())) {
+            if (checkIfOneIsNull(originalStruc.getExactMolarMass(), editedStruc.getExactMolarMass())
+                    || Math.abs(originalStruc.getExactMolarMass() - editedStruc.getExactMolarMass()) > Double.MIN_NORMAL) {
+                diff.setExactMolarMass_new(editedStruc.getExactMolarMass());
+                diff.setExactMolarMass_old(originalStruc.getExactMolarMass());
+            }
         }
-        if (Math.abs(originalStruc.getMolarMass() - editedStruc.getMolarMass()) > Double.MIN_NORMAL) {
-            diff.setMolarMass_new(editedStruc.getMolarMass());
-            diff.setMolarMass_old(originalStruc.getMolarMass());
+        if (!checkIfBothAreNull(originalStruc.getMolarMass(), editedStruc.getMolarMass())) {
+            if (checkIfOneIsNull(originalStruc.getMolarMass(), editedStruc.getMolarMass())
+                    || Math.abs(originalStruc.getMolarMass() - editedStruc.getMolarMass()) > Double.MIN_NORMAL) {
+                diff.setMolarMass_new(editedStruc.getMolarMass());
+                diff.setMolarMass_old(originalStruc.getMolarMass());
+            }
         }
         Molecule origMol = originalStruc.getMolecule();
         Molecule newMol = editedStruc.getMolecule();
@@ -390,6 +396,19 @@ public class MaterialComparator  implements Serializable {
         if (diff.differenceFound()) {
             differences.add(diff);
         }
+    }
+
+    private boolean checkIfOneIsNull(
+            Double originalStruc,
+            Double editedStruc) {
+        return (originalStruc != null && editedStruc == null)
+                || (originalStruc == null && editedStruc != null);
+    }
+
+    private boolean checkIfBothAreNull(
+            Double originalStruc,
+            Double editedStruc) {
+        return originalStruc == null && editedStruc == null;
     }
 
     protected Set<Hazard> getNotMatchingHazards(
