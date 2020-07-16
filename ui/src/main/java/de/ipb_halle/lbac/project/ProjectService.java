@@ -55,9 +55,11 @@ public class ProjectService implements Serializable {
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " ";
 
     private final String SQL_LOAD_PROJECT_BY_NAME
-            = "SELECT id "
-            + "FROM projects "
-            + "WHERE name=:projectname";
+            = "SELECT p.id "
+            + "FROM projects p "
+            + SqlStringWrapper.JOIN_KEYWORD + " "
+            + "WHERE p.name=:projectname "
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " ";
 
     private final String SQL_DELETE_PROJECT_TEMPLATES
             = "DELETE FROM projecttemplates "
@@ -143,9 +145,12 @@ public class ProjectService implements Serializable {
         if (projectName.trim().isEmpty()) {
             return null;
         }
+
+        String sql = SqlStringWrapper.aclWrapper(SQL_LOAD_PROJECT_BY_NAME, "p.aclist_id", "p.ownerid", ACPermission.permREAD);
         List<Object> ids = this.em
-                .createNativeQuery(SQL_LOAD_PROJECT_BY_NAME)
+                .createNativeQuery(sql)
                 .setParameter("projectname", projectName)
+                .setParameter("userid", u.getId())
                 .getResultList();
 
         if (!ids.isEmpty()) {
