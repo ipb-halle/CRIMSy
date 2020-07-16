@@ -38,7 +38,7 @@ import java.util.TreeMap;
  * @author fmauz
  */
 public class Item extends ACObject implements DTO, Serializable {
-    
+
     private Integer id;
     private Double amount;
     private String unit;
@@ -55,11 +55,11 @@ public class Item extends ACObject implements DTO, Serializable {
     private Date cTime;
     private SortedMap<Date, ItemHistory> history = new TreeMap<>();
     private List<Container> nestedContainer = new ArrayList<>();
-    
+
     public Item() {
-        
+
     }
-    
+
     public Item(ItemEntity entity,
             Article art,
             Container con,
@@ -89,7 +89,7 @@ public class Item extends ACObject implements DTO, Serializable {
         this.setACList(aclist);
         this.setOwner(owner);
     }
-    
+
     @Override
     public ItemEntity createEntity() {
         ItemEntity entity = new ItemEntity();
@@ -121,134 +121,134 @@ public class Item extends ACObject implements DTO, Serializable {
         }
         entity.setAclist_id(getACList().getId());
         entity.setCtime(cTime);
-        
+
         return entity;
     }
-    
+
     public Integer getId() {
         return id;
     }
-    
+
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public Double getAmount() {
         return amount;
     }
-    
+
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-    
+
     public Article getArticle() {
         return article;
     }
-    
+
     public void setArticle(Article article) {
         this.article = article;
     }
-    
+
     public Double getConcentration() {
         return concentration;
     }
-    
+
     public void setConcentration(Double concentration) {
         this.concentration = concentration;
     }
-    
+
     public Container getContainer() {
         return container;
     }
-    
+
     public void setContainer(Container container) {
         this.container = container;
     }
-    
+
     public Double getContainerSize() {
         return containerSize;
     }
-    
+
     public void setContainerSize(Double containerSize) {
         this.containerSize = containerSize;
     }
-    
+
     public String getUnit() {
         return unit;
     }
-    
+
     public void setUnit(String unit) {
         this.unit = unit;
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public Material getMaterial() {
         return material;
     }
-    
+
     public void setMaterial(Material material) {
         this.material = material;
     }
-    
+
     public Project getProject() {
         return project;
     }
-    
+
     public void setProject(Project project) {
         this.project = project;
     }
-    
+
     public String getPurity() {
         return purity;
     }
-    
+
     public void setPurity(String purity) {
         this.purity = purity;
     }
-    
+
     public Solvent getSolvent() {
         return solvent;
     }
-    
+
     public void setSolvent(Solvent solvent) {
         this.solvent = solvent;
     }
-    
+
     public ContainerType getContainerType() {
         return containerType;
     }
-    
+
     public void setContainerType(ContainerType containerType) {
         this.containerType = containerType;
     }
-    
+
     public Date getcTime() {
         return cTime;
     }
-    
+
     public void setcTime(Date cTime) {
         this.cTime = cTime;
     }
-    
+
     public SortedMap<Date, ItemHistory> getHistory() {
         return history;
     }
-    
+
     public void setHistory(SortedMap<Date, ItemHistory> history) {
         this.history = history;
     }
-    
+
     public List<Container> getNestedContainer() {
         return nestedContainer;
     }
-    
+
     public String getNestedLocation() {
         if (container == null) {
             return "";
@@ -257,8 +257,8 @@ public class Item extends ACObject implements DTO, Serializable {
         for (Container c : nestedContainer) {
             location += c.getLocation(true) + ".";
         }
-        
+
         return location + container.getLocation(true);
     }
-    
+
 }

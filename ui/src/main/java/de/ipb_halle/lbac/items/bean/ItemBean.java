@@ -471,7 +471,7 @@ public class ItemBean implements Serializable {
             if (containerTypes.get(i).getRank() > 0) {
                 containerTypes.remove(i);
             } else {
-                containerTypes.get(i).setLocalizedName("D - " + containerTypes.get(i).getName());
+                containerTypes.get(i).setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + containerTypes.get(i).getName(), null));
             }
         }
     }

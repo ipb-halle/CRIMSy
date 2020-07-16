@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ContainerOverviewBean.Mode;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -140,8 +139,10 @@ public class ContainerEditBean implements Serializable {
         for (ContainerType t : containerTypes) {
             if (t.getRank() > 0) {
                 filteredContainerTypes.add(t);
+                t.setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + t.getName(), null));
             }
         }
+
         return filteredContainerTypes;
     }
 

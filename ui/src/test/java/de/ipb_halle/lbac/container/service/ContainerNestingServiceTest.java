@@ -51,19 +51,19 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ContainerNestingServiceTest extends TestBase {
-    
+
     @Inject
     private ContainerNestingService containerNestingService;
-    
+
     @Inject
     private ContainerService containerService;
-    
+
     @After
     public void cleanUp() {
         entityManagerService.doSqlUpdate("DELETE FROM nested_containers");
         entityManagerService.doSqlUpdate("DELETE FROM containers");
     }
-    
+
     @Test
     public void test001_loadNestedInContainers() {
         int[] ids = initializeContainer();
@@ -74,7 +74,7 @@ public class ContainerNestingServiceTest extends TestBase {
         nestedIds.contains(ids[4]);
         nestedIds.contains(ids[5]);
     }
-    
+
     @Test
     public void test002_loadAllSubContainer() {
         int[] ids = initializeContainer();
@@ -85,7 +85,7 @@ public class ContainerNestingServiceTest extends TestBase {
         nestedIds.contains(ids[4]);
         nestedIds.contains(ids[0]);
     }
-    
+
     @Test
     public void test003_loadSubpath() {
         int[] ids = initializeContainer();
@@ -94,7 +94,7 @@ public class ContainerNestingServiceTest extends TestBase {
         nestedIds.contains(ids[2]);
         nestedIds.contains(ids[4]);
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("ContainerNestingServiceTest.war")
@@ -115,7 +115,7 @@ public class ContainerNestingServiceTest extends TestBase {
                 .addClass(ContainerNestingService.class)
                 .addClass(ProjectService.class);
     }
-    
+
     private int[] initializeContainer() {
         Container c0 = new Container();
         c0.setType(new ContainerType("ROOM", 100));
@@ -145,7 +145,7 @@ public class ContainerNestingServiceTest extends TestBase {
         c5.setLabel("C5");
         c5.setParentContainer(c4);
         containerService.saveContainer(c5);
-        
+
         return new int[]{c5.getId(), c4.getId(), c3.getId(), c2.getId(), c1.getId(), c0.getId()};
     }
 }

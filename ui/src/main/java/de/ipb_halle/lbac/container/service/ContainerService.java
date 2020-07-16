@@ -58,9 +58,6 @@ public class ContainerService implements Serializable {
     private ProjectService projectService;
 
     @Inject
-    private ACListService aclistService;
-
-    @Inject
     ItemService itemService;
 
     @Inject
@@ -279,7 +276,10 @@ public class ContainerService implements Serializable {
         List<ContainerTypeEntity> dbEntities = allQuery.getResultList();
         List<ContainerType> result = new ArrayList<>();
         for (ContainerTypeEntity dbe : dbEntities) {
-            result.add(new ContainerType(dbe.getName(), dbe.getRank()));
+            result.add(
+                    new ContainerType(
+                            dbe.getName(),
+                            dbe.getRank()));
         }
         return result;
     }
@@ -404,7 +404,10 @@ public class ContainerService implements Serializable {
 
     public ContainerType loadContainerTypeByName(String name) {
         ContainerTypeEntity entity = em.find(ContainerTypeEntity.class, name);
-        return new ContainerType(entity.getName(), entity.getRank());
+        return new ContainerType(
+                entity.getName(),
+                entity.getRank()
+        );
     }
 
     public void deleteItemInContainer(int itemid) {

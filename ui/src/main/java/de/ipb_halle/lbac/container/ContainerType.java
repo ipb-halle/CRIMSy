@@ -44,7 +44,6 @@ public class ContainerType implements Serializable {
         this.localizedName = name;
         transportable = rank < 70 || rank == 100;
     }
-
     public ContainerType(String name, int rank) {
         this.name = name;
         this.rank = rank;

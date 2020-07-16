@@ -47,12 +47,10 @@ public class ContainerOverviewBean implements Serializable {
     @Inject
     private ProjectService projectService;
     private InputValidator validator;
-    private boolean allowDuplicateContainerNames;
 
     public enum Mode {
         SHOW, EDIT, CREATE
     }
-
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -76,7 +74,7 @@ public class ContainerOverviewBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        allowDuplicateContainerNames = false;
+
     }
 
     public List<Container> getReadableContainer() {
@@ -85,11 +83,16 @@ public class ContainerOverviewBean implements Serializable {
 
     public void setReadableContainer(List<Container> readableContainer) {
         this.readableContainer = readableContainer;
+        for (Container c : readableContainer) {
+            c.getType()
+                    .setLocalizedName(
+                            Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
+        }
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
-        readableContainer = containerService.loadContainers(currentUser);
+        setReadableContainer(containerService.loadContainers(currentUser));
         mode = Mode.SHOW;
     }
 
@@ -220,7 +223,7 @@ public class ContainerOverviewBean implements Serializable {
         if (searchMaskBean.getSearchLocation() != null && !searchMaskBean.getSearchLocation().trim().isEmpty()) {
             cmap.put("location", searchMaskBean.getSearchLocation());
         }
-        readableContainer = containerService.loadContainers(currentUser, cmap);
+        setReadableContainer(containerService.loadContainers(currentUser, cmap));
     }
 
     public boolean isFirstButtonVisible() {
