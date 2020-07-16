@@ -39,8 +39,8 @@ import org.apache.johnzon.mapper.JohnzonConverter;
  * <li>name of the label</li>
  * <li>description (for display in tooltips)</li>
  * <li>configuration of the label</li>
- * <li>applicable printer models</li>
- * <li>applicable classes (Item, Container, Material, ...)</li>
+ * <li>applicable printer model</li>
+ * <li>applicable class (Item, Container, Material, ...)</li>
  * </ul>
  *
  * During runtime the available labels are selected on the basis of the chosen 
@@ -71,11 +71,11 @@ public class LabelEntity implements Serializable {
 
 
     /**
-     * the types of objects, this label is applicable, e.g. Item, Collection, etc.
+     * the type of object, this label is applicable, e.g. Item, Collection, etc.
      * Space separated list.
      */
     @Column
-    private String labelTypes;
+    private String labeltype;
 
     /**
      * the name of the label to be displayed in a select box
@@ -87,7 +87,7 @@ public class LabelEntity implements Serializable {
      * the printer model which can print this label
      */
     @Column
-    private String printerModel;
+    private String printermodel;
 
     /*
      * default constructor
@@ -95,8 +95,8 @@ public class LabelEntity implements Serializable {
     public LabelEntity() {
         this.config = "";
         this.description = "";
-        this.labelTypes = "";
-        this.printerModel = "";
+        this.labeltype = "";
+        this.printermodel = "";
         this.name = "";
     }
 
@@ -112,8 +112,8 @@ public class LabelEntity implements Serializable {
         return this.id;
     }
 
-    public String getLabelTypes() {
-        return this.labelTypes;
+    public String getLabelType() {
+        return this.labeltype;
     }
 
     public String getName() { 
@@ -121,7 +121,7 @@ public class LabelEntity implements Serializable {
     }
 
     public String getPrinterModel() {
-        return this.printerModel;
+        return this.printermodel;
     }
 
     public LabelEntity setConfig(String config) {
@@ -139,8 +139,8 @@ public class LabelEntity implements Serializable {
         return this;
     }
 
-    public LabelEntity setLabelTypes(String labelTypes) {
-        this.labelTypes = labelTypes;
+    public LabelEntity setLabelType(String labeltype) {
+        this.labeltype = labeltype;
         return this;
     }
 
@@ -149,8 +149,8 @@ public class LabelEntity implements Serializable {
         return this;
     }
 
-    public LabelEntity setPrinterModel(String printerModel) {
-        this.printerModel = printerModel;
+    public LabelEntity setPrinterModel(String printermodel) {
+        this.printermodel = printermodel;
         return this;
     }
 }

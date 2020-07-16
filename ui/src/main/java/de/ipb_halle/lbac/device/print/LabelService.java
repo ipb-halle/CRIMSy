@@ -23,17 +23,16 @@ package de.ipb_halle.lbac.device.print;
  */
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Query;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -42,6 +41,16 @@ import org.apache.logging.log4j.LogManager;
 public class LabelService implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public final static String LABEL_TYPE = "LABEL_TYPE";
+    public final static String PRINTER_MODEL = "PRINTER_MODEL";
+
+    private final static String SQL_LOAD = "SELECT DISTINCT "
+        + "l.id, l.name, l.description, l.labeltype, l.printermodel, l.config "
+        + "FROM labels AS l WHERE "
+        + "(l.labeltype = :LABEL_TYPE OR :LABEL_TYPE IS NULL) "
+        + "(l.printermodel = :PRINTER_MODEL OR :PRINTER_MODEL IS NULL) "
+        + "ORDER BY l.name";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -60,25 +69,36 @@ public class LabelService implements Serializable {
     }
 
     /**
+     * build query
+     */
+    public Query createLabelQuery(String rawSql, Map<String, Object> cmap, Class targetClass) {
+        Query q;
+        if (targetClass == null) {
+            q = this.em.createNativeQuery(rawSql);
+        } else {
+            q = this.em.createNativeQuery(rawSql, targetClass);
+        }
+
+        q.setParameter(LABEL_TYPE, cmap.getOrDefault(LABEL_TYPE, null));
+        q.setParameter(PRINTER_MODEL, cmap.getOrDefault(PRINTER_MODEL, null));
+        return q;
+    }
+
+    /**
      * @param cmap the map of selection criteria
      * @return the list label configurations matching search criteria 
      */
     @SuppressWarnings("unchecked")
     public List<Label> load(Map<String, Object> cmap) {
 
-        CriteriaBuilder builder = this.em.getCriteriaBuilder();
-        CriteriaQuery<LabelEntity> criteriaQuery = builder.createQuery(LabelEntity.class);
-        Root<LabelEntity> labelRoot = criteriaQuery.from(LabelEntity.class);
-        criteriaQuery.select(labelRoot);
-
-        /*
-            ToDo: xxxxx really add criteria for Label selection
-
-         */
-
+        Query q = createLabelQuery(SQL_LOAD,
+            (cmap == null) ? new HashMap<String, Object> () : cmap,
+            LabelEntity.class);
+        // q.setFirstResult();
+        // q.setMaxResults();
 
         List<Label> result = new ArrayList<>();
-        for (LabelEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
+        for (LabelEntity e :  (List<LabelEntity>) q.getResultList()) {
             result.add(new Label(e));
         }
         return result;

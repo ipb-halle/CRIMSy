@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -49,6 +50,59 @@ import org.apache.logging.log4j.LogManager;
  * available printers and labels and manages the printing 
  * of labels 
  * 
+ *
+ * <h2>JSON label configuration</h2>
+ *
+ * <h3>Attributes</h3>
+ *
+ * <code>
+ *     type         LABEL, PICTURE, INTERLEAVE25, CODE39, CODE128, QR, DATAMATRIX  
+ *     fonts        MONOSPACED, SANS_SERIF (default),  SERIF
+ *     style        PLAIN (default), BOLD, ITALIC, BOLD_ITALIC
+ *     size         default 10
+ *     x, y         position on label
+ *     w, h         size (where applicable), e.g. for picture or barcode elements
+ *     data         static data (String for labels and barcodes, hex string for pictures)
+ *     field        name of the annotated field, takes precedence over data
+ * </code>
+ *
+ * Implementation for picture is currently missing. Some attributes and default 
+ * to printer defaults when omitted (<code>w</code> and <code>h</code> for 
+ * the <code>form</code> element; <code>font, style</code> and <code>size</code>
+ * for <code>label</code> elements.
+ * 
+ * <h3>Example</h3>
+ *
+ *  <code>
+ *  { "form" : { 
+ *      "w" : 200,
+ *      "h" : 80,
+ *      "elements" : [
+ *          {   
+ *              "type" : "LABEL",
+ *              "x" : 10,
+ *              "y" : 20,
+ *              "data" : "Hello World",
+ *              "font" : "SANS_SERIF",
+ *              "size" : 10,
+ *              "style" : "BOLD" 
+ *          }, {   
+ *              "type" : "LABEL",
+ *              "x" : 10,
+ *              "y" : 40,
+ *              "field" : "itemMaterialName" 
+ *          }, {
+ *              "type" : "INTERLEAVE25",
+ *              "x" : 100,
+ *              "y" : 40,
+ *              "w" : 80,
+ *              "h" : 30,
+ *              "field" : "itemLabel"
+ *          }
+ *
+ *      ] } }
+ *  </code>
+ *
  * @author fbroda
  */
 @RequestScoped
@@ -69,96 +123,74 @@ public class PrintBean implements Serializable {
 
     private Object labelDataObject;
 
-    private String printerQueue;
+    private Printer printer;
 
-    private Integer labelId;
+    private Label label;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName()); 
 
 
     public void actionPrintLabel() {
-        Map<String, String> labelData = readLabelData();
-        Label label = this.labelService.loadById(this.labelId);
-        PrintDriver driver = getDriver(); 
-        parseLabelConfig(label, labelData, driver);
-        submitJob(driver);
+        if ((this.labelDataObject != null) && 
+                (this.printer != null) &&
+                (this.label != null)) {
+            Map<String, String> labelData = readLabelData();
+            PrintDriver driver = PrintDriverFactory.buildPrintDriver(this.printer);
+            parseLabelConfig(labelData, driver);
+            submitJob(driver);
+        }
     }
 
-    public Integer getLabelId() {
-        return this.labelId;
+    public Label getLabel() {
+        return this.label;
     }
 
-    public String getPrinterQueue() {
-        return this.printerQueue;
+    public List<SelectItem> getLabels() {
+        Map<String, Object> cmap = new HashMap<String, Object> ();
+        cmap.put(LabelService.PRINTER_MODEL, getPrinterModel()); 
+        cmap.put(LabelService.LABEL_TYPE, getLabelType());
+
+        List<SelectItem> items = new ArrayList<SelectItem> ();
+        for (Label l : this.labelService.load(cmap)) {
+            items.add(new SelectItem(l, l.getName(), l.getDescription()));
+        }
+        return items;
+    }
+
+    private String getLabelType() {
+        if (this.labelDataObject != null) {
+            Class c = this.labelDataObject.getClass();
+            if( c.isAnnotationPresent( LabelType.class ) ) {
+                return ((LabelType) c.getAnnotation( LabelType.class )).name();
+            }
+        }
+        return null;
+    }
+
+    public Printer getPrinter() { 
+        return this.printer; 
     }
 
     /**
-     * obtain the driver for the selected printer
+     * return a list of available printers
      */
-    public PrintDriver getDriver() {
-        Printer printer = printerService.loadById(this.printerQueue);
-        return PrintDriverFactory.buildPrintDriver(printer);
-    }
-
-    public List<Label> getLabels() {
-        /**
-         * ToDo: xxxxx limit appropriate labels
-         */
-        return this.labelService.load(new HashMap<String, Object> ());
-    }
-
-    /**
-     */
-    public List<Printer> getPrinters() {
+    public List<SelectItem> getPrinters() {
         /*
          * ToDo: xxxxx limit accessible printers
          */
-        return printerService.load();
+        List<SelectItem> printers = new ArrayList<SelectItem> ();
+        for (Printer p : printerService.load()) {
+            printers.add(new SelectItem(p, p.getName(), p.getPlace()));
+        }
+        return printers;
     }
 
-/*
- * sample JSON label config
- * 
- * Attributes:
- * type:        LABEL, PICTURE, INTERLEAVE25, CODE39, CODE128, QR, DATAMATRIX  
- * fonts:       MONOSPACED, SANS_SERIF (default),  SERIF
- * style:       PLAIN (default), BOLD, ITALIC, BOLD_ITALIC
- * size:        default 10
- * x, y:        position on label
- * w, h:        size (where applicable), e.g. for picture or barcode elements
- * data:        static data (String for labels, hex string for pictures and barcodes)
- * field:       name of the annotated field 
- *
- * implementation is currently incomplete
-
-{ "form" : { 
-    "w" : 200,
-    "h" : 80,
-    "elements" : [
-        {   
-            "type" : "LABEL",
-            "x" : 10,
-            "y" : 20,
-            "data" : "Hello World",
-            "font" : "SANS_SERIF",
-            "size" : 10,
-            "style" : "BOLD" 
-        }, {   
-            "type" : "LABEL",
-            "x" : 10,
-            "y" : 40,
-            "field" : "itemMaterialName" 
-        }, {
-            "type" : "INTERLEAVE25",
-            "x" : 100,
-            "y" : 40,
-            "w" : 80,
-            "h" : 30,
-            "field" : "itemLabel"
+    private String getPrinterModel() {
+        if (this.printer != null) {
+            return printer.getModel();
         }
-
-    ] } }
-*/
+        return null;
+    }
 
     private void parseBarcode(JsonObject obj, Map<String, String> labelData, PrintDriver driver, BarcodeType type) {
         try {
@@ -290,8 +322,8 @@ public class PrintBean implements Serializable {
      * parse the label configuration and consecutively print the label
      * using the given labelData and driver
      */
-    private void parseLabelConfig(Label label, Map<String, String> labelData, PrintDriver driver) {
-        JsonElement jsonTree = JsonParser.parseString(label.getConfig());
+    private void parseLabelConfig(Map<String, String> labelData, PrintDriver driver) {
+        JsonElement jsonTree = JsonParser.parseString(this.label.getConfig());
 
         if(jsonTree.isJsonObject()) {
             JsonElement formElement = jsonTree.getAsJsonObject().get("form");
@@ -330,6 +362,9 @@ public class PrintBean implements Serializable {
         return null;
     }
 
+    /**
+     * read the label data from the <code>labelDataObject</code>
+     */
     private Map<String, String> readLabelData() {
         Map<String, String> labelData = new HashMap<String, String> ();
 
@@ -372,18 +407,18 @@ public class PrintBean implements Serializable {
         this.labelDataObject = obj;
     }
 
-    /*
-     * set the id of the label configuration
+    /**
+     * set the currently selected label 
      */
-    public void setLabelId(Integer labelId) {
-        this.labelId = labelId;
+    public void setLabel(Label label) {
+        this.label = label;
     }
 
     /**
-     * set the queue of the currently selected printer
+     * set the currently selected printer
      */
-    public void setPrinterQueue(String queue) {
-        this.printerQueue = queue;
+    public void setPrinter(Printer printer) {
+        this.printer = printer;
     }
 
     /**

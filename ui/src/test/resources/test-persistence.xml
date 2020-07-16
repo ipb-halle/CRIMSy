@@ -58,6 +58,7 @@
         <class>de.ipb_halle.lbac.items.entity.ItemEntity</class>
         <class>de.ipb_halle.lbac.items.entity.ItemHistoryEntity</class>
         <class>de.ipb_halle.lbac.device.job.JobEntity</class>
+        <class>de.ipb_halle.lbac.device.print.LabelEntity</class>
         <class>de.ipb_halle.lbac.device.print.PrinterEntity</class>
         <class>de.ipb_halle.lbac.entity.ACEntryEntity</class>
         <class>de.ipb_halle.lbac.entity.ACListEntity</class>

@@ -677,6 +677,15 @@ CREATE TABLE printers (
     status      INTEGER NOT NULL DEFAULT 0
 );
 
+CREATE TABLE labels (
+    id          SERIAL NOT NULL PRIMARY KEY,
+    name        VARCHAR NOT NULL DEFAULT '',
+    description VARCHAR NOT NULL DEFAULT '',
+    labeltype   VARCHAR NOT NULL DEFAULT '',
+    printermodel VARCHAR NOT NULL DEFAULT '',
+    config      VARCHAR NOT NULL DEFAULT ''
+);
+
 CREATE TABLE tissues(
     id INTEGER NOT NULL PRIMARY KEY REFERENCES materials(materialid),
     taxoid INTEGER NOT NULL REFERENCES taxonomy(id)

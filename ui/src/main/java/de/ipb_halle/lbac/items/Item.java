@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.items;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.device.print.LabelData;
+import de.ipb_halle.lbac.device.print.LabelType;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
@@ -37,6 +39,7 @@ import java.util.TreeMap;
  *
  * @author fmauz
  */
+@LabelType(name="Item")
 public class Item extends ACObject implements DTO, Serializable {
 
     private Integer id;
@@ -123,6 +126,11 @@ public class Item extends ACObject implements DTO, Serializable {
         entity.setCtime(cTime);
 
         return entity;
+    }
+
+    @LabelData(name="itemIdPlain")
+    public String getItemIdPlain() {
+        return String.format("%08d", id.intValue());
     }
 
     public Integer getId() {

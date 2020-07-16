@@ -33,7 +33,7 @@ public class Label implements DTO {
     private Integer id;
     private String config;
     private String description;
-    private String labelTypes;
+    private String labelType;
     private String name;
     private String printerModel;
 
@@ -44,7 +44,7 @@ public class Label implements DTO {
         this.id = entity.getId();
         this.config = entity.getConfig();
         this.description = entity.getDescription();
-        this.labelTypes = entity.getLabelTypes();
+        this.labelType = entity.getLabelType();
         this.name = entity.getName();
         this.printerModel = entity.getPrinterModel();
     }
@@ -54,9 +54,20 @@ public class Label implements DTO {
             .setId(this.id)
             .setConfig(this.config)
             .setDescription(this.description)
-            .setLabelTypes(this.labelTypes)
+            .setLabelType(this.labelType)
             .setName(this.name)
             .setPrinterModel(this.printerModel);
+    }
+
+    @Override
+    public boolean equals(Object o) { 
+        if ((o != null) && o.getClass().equals(this.getClass())) {
+            Label l = (Label) o;
+            if ((getId() != null) && getId().equals(l.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getConfig() {
@@ -71,8 +82,8 @@ public class Label implements DTO {
         return this.id;
     }
 
-    public String getLabelTypes() {
-        return this.labelTypes;
+    public String getLabelType() {
+        return this.labelType;
     }
 
     public String getName() {
@@ -81,6 +92,10 @@ public class Label implements DTO {
 
     public String getPrinterModel() {
         return this.printerModel;
+    }
+
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
     }
 
     public void setConfig(String config) {
@@ -95,8 +110,8 @@ public class Label implements DTO {
         this.id = id;
     }
 
-    public void setLabelTypes(String labelTypes) { 
-        this.labelTypes = labelTypes;
+    public void setLabelType(String labelType) { 
+        this.labelType = labelType;
     }
 
     public void setName(String name) {

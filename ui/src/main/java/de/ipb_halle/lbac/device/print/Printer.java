@@ -69,6 +69,17 @@ public class Printer extends ACObject implements DTO {
             .setStatus(this.status);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ((o != null) && o.getClass().equals(this.getClass())) {
+            Printer p = (Printer) o;
+            if ((getQueue() != null) && getQueue().equals(p.getQueue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public String getConfig() {
         return this.config;
     }
@@ -99,6 +110,10 @@ public class Printer extends ACObject implements DTO {
 
     public PrinterStatus getStatus() {
         return this.status;
+    }
+
+    public int hashCode() {
+        return getQueue() != null ? getQueue().hashCode() : 0;
     }
 
     public void setConfig(String config) {
