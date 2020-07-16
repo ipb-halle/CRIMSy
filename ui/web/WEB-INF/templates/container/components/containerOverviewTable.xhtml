@@ -30,48 +30,48 @@ limitations under the License.
                 var="container">
 
                 <b:dataTableColumn
-                    label="Nummer">
+                    label="#{msgs.container_table_title_id}">
                     <h:outputText
-                        title="Nummer"
                         value="#{container.id}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn 
-                    label="Label">
+                    label="#{msgs.container_table_title_label}">
                     <h:outputText
                         value="#{container.label}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    label="Typ">
+                    label="#{msgs.container_table_title_type}">
                     <h:outputText
                         value="#{container.type.getLocalizedName()}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    label="Ort">
+                    label="#{msgs.container_table_title_location}">
                     <h:outputText
                         escape="false"
                         value="#{container.getLocation(false)}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    label="Projekt">
+                    label="#{msgs.container_table_title_project}">
                     <h:outputText
                         value="#{containerOverviewBean.getProjectName(container)}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    label="Sicherheitsstufe">
+                    label="#{msgs.container_table_title_savetylevel}">
                     <h:outputText
                         value="#{container.getGmosavety()}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    label="Feuersektion">
+                    label="#{msgs.container_table_title_firearea}">
                     <h:outputText
                         value="#{container.getFireSection()}"/>
                 </b:dataTableColumn>
                 <b:dataTableColumn
-                    label="Tools">
+                    label="#{msgs.container_table_title_tools}">
                     <b:commandButton style="padding: 0 4px;"
                                      icon="pencil"
                                      look="link"
                                      type="submit"
+                                     title="#{msgs.container_table_tooltip_edit}"
                                      update="
                                      editForm:editNameInputField
                                      @(.nameInputFieldClass)
@@ -86,6 +86,7 @@ limitations under the License.
                                      look="link"
                                      type="submit"
                                      ajax="true"
+                                     title="#{msgs.container_table_tooltip_deactivate}"
                                      update="
                                      containerOverviewId
                                      editForm
@@ -95,7 +96,6 @@ limitations under the License.
                                      @(.containerEditModal)"
                                      action="#{containerOverviewBean.actionContainerDeactivate(container)}"
                                      />
-
                 </b:dataTableColumn>
             </b:dataTable>
         </b:form>
