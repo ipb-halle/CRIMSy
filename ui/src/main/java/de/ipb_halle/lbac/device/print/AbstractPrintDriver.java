@@ -232,6 +232,18 @@ public abstract class AbstractPrintDriver implements PrintDriver {
         return Double.parseDouble(new String(result, StandardCharsets.UTF_8));
     }
 
+    public String getDefaultFontName() {
+        return Font.SANS_SERIF;
+    }
+
+    public int getDefaultFontSize() {
+        return NORMAL_FONT_SIZE;
+    }
+
+    public int getDefaultFontStyle() {
+        return PLAIN;
+    }
+
     /**
      * compute the pixel coordinate from a length in 
      * millimeters and a resolution in pixels per inch (dpi)
@@ -378,7 +390,7 @@ public abstract class AbstractPrintDriver implements PrintDriver {
 
     public PrintDriver printLine(double x, double y, String fontName, int fontStyle, int fontSize, String text) {
         Font font = new Font(fontName, fontStyle, fontSize);
-        return printLine(x, y, text);
+        return printLine(x, y, font, text);
     }
 
     public PrintDriver printLine(double x, double y, Font font, String text) {
@@ -396,7 +408,7 @@ public abstract class AbstractPrintDriver implements PrintDriver {
     /**
      * set the default values for a printer
      */
-    protected void setDefault(String key, String data) {
+    public void setDefault(String key, String data) {
         this.configMap.put(key, data.getBytes());
     }
 

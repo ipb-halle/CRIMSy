@@ -17,30 +17,24 @@
  */
 package de.ipb_halle.lbac.device.print;
 
-import de.ipb_halle.lbac.device.job.Job;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Interface for print drivers.
+ * Annotation for printable fields for label printing
  *
  * @author fbroda
  */
-public interface PrintDriver { 
+@Documented
+@Inherited
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface LabelData {
 
-    public PrintDriver clear();
-    public Job createJob();
-
-    public String getDefaultFontName();
-    public int getDefaultFontSize();
-    public int getDefaultFontStyle();
-
-    public PrintDriver printBarcode(double x, double y, double w, double h, BarcodeType type, String data);
-    public PrintDriver printLine(double x, double y, String line);
-    public PrintDriver printLine(double x, double y, String fontName, int fontStyle, int fontSize, String line);
-
-    public void setDefault(String key, String value);
-    public PrintDriver setPrinter(Printer printer);
+    String name(); 
 
 }
