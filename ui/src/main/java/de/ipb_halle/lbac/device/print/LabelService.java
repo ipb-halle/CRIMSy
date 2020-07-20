@@ -48,8 +48,8 @@ public class LabelService implements Serializable {
     private final static String SQL_LOAD = "SELECT DISTINCT "
         + "l.id, l.name, l.description, l.labeltype, l.printermodel, l.config "
         + "FROM labels AS l WHERE "
-        + "(l.labeltype = :LABEL_TYPE OR :LABEL_TYPE IS NULL) "
-        + "(l.printermodel = :PRINTER_MODEL OR :PRINTER_MODEL IS NULL) "
+        + "    (l.labeltype = :LABEL_TYPE OR :LABEL_TYPE = 'undefined') "
+        + "AND (l.printermodel = :PRINTER_MODEL OR :PRINTER_MODEL = 'undefined') "
         + "ORDER BY l.name";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -79,8 +79,8 @@ public class LabelService implements Serializable {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
 
-        q.setParameter(LABEL_TYPE, cmap.getOrDefault(LABEL_TYPE, null));
-        q.setParameter(PRINTER_MODEL, cmap.getOrDefault(PRINTER_MODEL, null));
+        q.setParameter(LABEL_TYPE, cmap.getOrDefault(LABEL_TYPE, "undefined"));
+        q.setParameter(PRINTER_MODEL, cmap.getOrDefault(PRINTER_MODEL, "undefined"));
         return q;
     }
 

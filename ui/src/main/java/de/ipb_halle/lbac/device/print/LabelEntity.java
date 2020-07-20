@@ -54,6 +54,7 @@ public class LabelEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
 

@@ -25,7 +25,9 @@ import de.ipb_halle.lbac.device.job.JobService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -48,12 +50,16 @@ public class PrintAdminBean implements Serializable {
     private final static String PRINTER_LIST = NavigationConstants.TEMPLATE_FOLDER + "print/printerList.xhtml";
     private final static String PRINTER_DETAILS = NavigationConstants.TEMPLATE_FOLDER + "print/printerDetails.xhtml";
     private final static String PRINTER_JOBS = NavigationConstants.TEMPLATE_FOLDER + "print/printerJobs.xhtml";
+    private final static String LABEL_DETAILS = NavigationConstants.TEMPLATE_FOLDER + "print/labelDetails.xhtml";
 
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
     private JobService jobService;
+
+    @Inject
+    private LabelService labelService;
 
     @Inject
     private PrinterService printerService;
@@ -64,6 +70,7 @@ public class PrintAdminBean implements Serializable {
     private String currentPage;
     private String driverType;
     private Printer printer; 
+    private Label label;
     private Logger logger;
 
 
@@ -80,8 +87,13 @@ public class PrintAdminBean implements Serializable {
         this.printer = new Printer(new PrinterEntity(),
                 GlobalAdmissionContext.getPublicReadACL(),
                 globalAdmissionContext.getAdminAccount());
+        this.label = new Label(new LabelEntity());
     }
 
+    public void actionAddLabel() {
+        this.label = new Label(new LabelEntity());
+        this.currentPage = LABEL_DETAILS;
+    }
 
     public void actionAddPrinter() {
         this.printer = new Printer(new PrinterEntity(),
@@ -99,6 +111,11 @@ public class PrintAdminBean implements Serializable {
         printerService.delete(printer);
     }
 
+    public void actionDelete(Label label) {
+        this.logger.info("actionDelete(): {}", label.getId());
+        labelService.delete(label);
+    }
+
     /**
      * print a testpage for the selected Printer
      */
@@ -109,15 +126,26 @@ public class PrintAdminBean implements Serializable {
         submitJob(driver);
     }
 
-    public void actionSave() {
+    public void actionSaveLabel() {
+        this.label = labelService.save(this.label);
+        // ToDo: xxxxx error handling!!!
+    }
+
+    public void actionSavePrinter() {
         this.printer = printerService.save(this.printer);
-        // xxxxx error handling!!!
+        // ToDo: xxxxx error handling!!!
+    }
+
+    public void actionSelectLabel(Label label) {
+        this.label = label;
+        currentPage = LABEL_DETAILS;
+        // ToDo: xxxxx error handling!!!
     }
 
     public void actionSelectPrinter(Printer printer) {
         this.printer = printer; 
         currentPage = PRINTER_DETAILS;
-        // xxxxx error handling!!!
+        // ToDo: xxxxx error handling!!!
     }
 
     public void actionShowJobs(String queue) {
@@ -127,6 +155,10 @@ public class PrintAdminBean implements Serializable {
 
     public String getDriverType() {
         return this.driverType;
+    }
+
+    public  Label getLabel() {
+        return this.label;
     }
 
     public String getPage() {
@@ -142,6 +174,13 @@ public class PrintAdminBean implements Serializable {
      */
     public List<String> getDrivers() {
         return PrintDriverFactory.getDrivers();
+    }
+
+    /**
+     * obtain the list of labels
+     */
+    public List<Label> getLabels() {
+        return labelService.load(new HashMap<String, Object> ());
     }
 
     /**

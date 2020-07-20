@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -402,6 +403,23 @@ public abstract class AbstractPrintDriver implements PrintDriver {
                 text,
                 getPixels(x, this.hdpi),
                 getPixels(y, this.vdpi));
+        return this;
+    }
+
+    /**
+     * print a raster image
+     * @param x horizontal position
+     * @param y vertical position
+     * @param picture the picture to print
+     */
+    public PrintDriver printPicture(double x, double y, Raster picture) {
+        WritableRaster raster = this.image.getSubimage(
+                getPixels(x, this.hdpi),
+                getPixels(y, this.vdpi),
+                picture.getWidth(), 
+                picture.getHeight()).getRaster();
+
+        raster.setRect(picture);
         return this;
     }
 

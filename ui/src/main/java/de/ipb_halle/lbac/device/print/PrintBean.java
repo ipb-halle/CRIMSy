@@ -26,8 +26,15 @@ import com.google.gson.JsonPrimitive;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.util.HexUtil;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -61,9 +68,13 @@ import org.apache.logging.log4j.LogManager;
  *     style        PLAIN (default), BOLD, ITALIC, BOLD_ITALIC
  *     size         default 10
  *     x, y         position on label
- *     w, h         size (where applicable), e.g. for picture or barcode elements
- *     data         static data (String for labels and barcodes, hex string for pictures)
- *     field        name of the annotated field, takes precedence over data
+ *     w, h         size (where applicable), e.g. for form, picture or barcode elements
+ *     data         static data: String for labels and barcodes, hex String (inside raster element) for pictures
+ *     field        name of the annotated field or a JSON object (name, param) specifiying the field name 
+ *                  and a parameter; field takes precedence over data or raster
+ *     name         the name of the LabelData annotation of a method
+ *     param        a String parameter to the annotated method (e.g. format string; see method documentation)
+ *     raster       JSON object (w, h, data)
  * </code>
  *
  * Implementation for picture is currently missing. Some attributes and default 
@@ -92,16 +103,27 @@ import org.apache.logging.log4j.LogManager;
  *              "y" : 40,
  *              "field" : "itemMaterialName" 
  *          }, {
+ *              "type" : "LABEL",
+ *              "x" : 10,
+ *              "y" : 60,
+ *              "field" : { "name" : "itemCode", "param" : "*%04d*" }
+ *          }, {
  *              "type" : "INTERLEAVE25",
  *              "x" : 100,
  *              "y" : 40,
  *              "w" : 80,
  *              "h" : 30,
  *              "field" : "itemLabel"
+ *          }, {
+ *              "type" : "PICTURE",
+ *              "x" : 80,
+ *              "y" : 50,
+ *              "raster" : { "w":3, "h":3, "data": "ffffffff00ffffffff" }
  *          }
- *
  *      ] } }
  *  </code>
+ *
+ * ToDo: remember the last used printer and label type via user preferences
  *
  * @author fbroda
  */
@@ -134,9 +156,8 @@ public class PrintBean implements Serializable {
         if ((this.labelDataObject != null) && 
                 (this.printer != null) &&
                 (this.label != null)) {
-            Map<String, String> labelData = readLabelData();
             PrintDriver driver = PrintDriverFactory.buildPrintDriver(this.printer);
-            parseLabelConfig(labelData, driver);
+            parseLabelConfig(driver);
             submitJob(driver);
         }
     }
@@ -157,6 +178,7 @@ public class PrintBean implements Serializable {
         return items;
     }
 
+    @SuppressWarnings("unchecked")
     private String getLabelType() {
         if (this.labelDataObject != null) {
             Class c = this.labelDataObject.getClass();
@@ -192,7 +214,7 @@ public class PrintBean implements Serializable {
         return null;
     }
 
-    private void parseBarcode(JsonObject obj, Map<String, String> labelData, PrintDriver driver, BarcodeType type) {
+    private void parseBarcode(JsonObject obj, PrintDriver driver, BarcodeType type) {
         try {
             double x = parseDimension(obj, "x");
             double y = parseDimension(obj, "y");
@@ -200,9 +222,9 @@ public class PrintBean implements Serializable {
             double h = parseDimension(obj, "h");
         
             String data = "";
-            String field = parseString(obj, "field");
+            JsonElement field = obj.get("field");
             if (field != null) {
-                data = labelData.get(field);
+                data = readLabelData(field, String.class);
             } else {
                 data = parseString(obj, "data");
             }
@@ -223,7 +245,7 @@ public class PrintBean implements Serializable {
         throw new NoSuchFieldException("No such field: " + dimension);
     }
 
-    private void parseElements(JsonArray elements,  Map<String, String> labelData, PrintDriver driver) {
+    private void parseElements(JsonArray elements, PrintDriver driver) {
         Iterator<JsonElement> iter = elements.iterator();
         while (iter.hasNext()) {
             JsonElement e = iter.next();
@@ -233,25 +255,25 @@ public class PrintBean implements Serializable {
                 if (type != null) {
                     switch (type) { 
                         case "LABEL" :
-                            parseLabel(obj, labelData, driver);
+                            parseLabel(obj, driver);
                             break;
                         case "INTERLEAVE25" :
-                            parseBarcode(obj, labelData, driver, BarcodeType.INTERLEAVE25);
+                            parseBarcode(obj, driver, BarcodeType.INTERLEAVE25);
                             break;
                         case "CODE39" :
-                            parseBarcode(obj, labelData, driver, BarcodeType.CODE39);
+                            parseBarcode(obj, driver, BarcodeType.CODE39);
                             break;
                         case "CODE128" :
-                            parseBarcode(obj, labelData, driver, BarcodeType.CODE128);
+                            parseBarcode(obj, driver, BarcodeType.CODE128);
                             break;
                         case "QR" :
-                            parseBarcode(obj, labelData, driver, BarcodeType.QR);
+                            parseBarcode(obj, driver, BarcodeType.QR);
                             break;
                         case "DATAMATRIX" :
-                            parseBarcode(obj, labelData, driver, BarcodeType.DATAMATRIX);
+                            parseBarcode(obj, driver, BarcodeType.DATAMATRIX);
                             break;
                         case "PICTURE" :
-                            parsePicture(obj,  labelData, driver);
+                            parsePicture(obj, driver);
                             break;
                     }
                 }
@@ -293,7 +315,7 @@ public class PrintBean implements Serializable {
         return driver.getDefaultFontStyle();
     }
 
-    private void parseLabel(JsonObject obj, Map<String, String> labelData, PrintDriver driver) {
+    private void parseLabel(JsonObject obj, PrintDriver driver) {
         try {
             double x = parseDimension(obj, "x");
             double y = parseDimension(obj, "y");
@@ -303,9 +325,9 @@ public class PrintBean implements Serializable {
             int fontStyle = parseFontStyle(obj, driver);
 
             String data = "";
-            String field = parseString(obj, "field");
+            JsonElement field = obj.get("field");
             if (field != null) {
-                data = labelData.get(field);
+                data = readLabelData(field, String.class);
             } else { 
                 data = parseString(obj, "data");
             }
@@ -320,9 +342,9 @@ public class PrintBean implements Serializable {
 
     /**
      * parse the label configuration and consecutively print the label
-     * using the given labelData and driver
+     * using the given driver
      */
-    private void parseLabelConfig(Map<String, String> labelData, PrintDriver driver) {
+    private void parseLabelConfig(PrintDriver driver) {
         JsonElement jsonTree = JsonParser.parseString(this.label.getConfig());
 
         if(jsonTree.isJsonObject()) {
@@ -344,14 +366,59 @@ public class PrintBean implements Serializable {
                 }
                 JsonElement e = form.get("elements");
                 if ((e != null) && e.isJsonArray()) {
-                    parseElements(e.getAsJsonArray(), labelData, driver);
+                    parseElements(e.getAsJsonArray(), driver);
                 }
             }
         }
     }
 
-    private void parsePicture(JsonObject obj, Map<String, String> labelData, PrintDriver driver) {
+    private void parsePicture(JsonObject obj, PrintDriver driver) {
         // do nothing, not implemented yet
+        try {
+            double x = parseDimension(obj, "x");
+            double y = parseDimension(obj, "y");
+
+            Raster raster = null;
+            JsonElement field = obj.get("field");
+            if (field != null) {
+                raster = readLabelData(field, Raster.class);
+            } else {
+                raster = parseRaster(obj, "raster");
+            }
+
+            if (raster != null) {
+                driver.printPicture(x, y, raster); 
+            }
+        } catch (NoSuchFieldException e) {
+            this.logger.warn("parsePicture() label config did not contain dimension");
+        }
+
+    }
+
+    private Raster parseRaster(JsonObject obj, String field) {
+        JsonElement elem = obj.get(field);
+        if ((elem != null) && elem.isJsonObject()) {
+            int w = 0;
+            int h = 0;
+            JsonObject pic = elem.getAsJsonObject();
+
+            elem = pic.get("w");
+            if ((elem != null) && elem.isJsonPrimitive()) {
+                w = elem.getAsJsonPrimitive().getAsInt();
+            }
+            elem = pic.get("h");
+            if ((elem != null) && elem.isJsonPrimitive()) {
+                h = elem.getAsJsonPrimitive().getAsInt();
+            }
+            byte[] data = HexUtil.fromHex(parseString(pic, "data"));
+            if ((data != null) && (data.length > 0) && (w > 0) && (h > 0)) {
+                BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_BINARY);
+                WritableRaster raster = img.getRaster();
+                raster.setDataElements(0, 0, new DataBufferByte(data, data.length));
+                return raster;
+            }
+        }
+        return null;
     }
 
     private String parseString(JsonObject obj, String field) {
@@ -365,39 +432,57 @@ public class PrintBean implements Serializable {
     /**
      * read the label data from the <code>labelDataObject</code>
      */
-    private Map<String, String> readLabelData() {
-        Map<String, String> labelData = new HashMap<String, String> ();
+    @SuppressWarnings("unchecked")
+    private <T> T readLabelData(JsonElement elem, Class T) {
 
-        if (this.labelDataObject != null) {
+        if ((elem == null) || (this.labelDataObject == null)) {
+            return null;
+        }
 
-            Method[] methods = this.labelDataObject.getClass().getMethods();
-            for( Method m : methods ) {
-                if( m.isAnnotationPresent( LabelData.class ) ) {
-                    try {
-                        LabelData annotation = m.getAnnotation( LabelData.class );
-                        labelData.put(
-                            annotation.name(), 
-                            (String) m.invoke(this.labelDataObject));
-                    } catch(IllegalAccessException noAccess) {
-                        this.logger.warn("readLabelData() method {} not accessible on class {}", 
-                                m.getName(), 
-                                this.labelDataObject.getClass().getName());
-                    } catch(IllegalArgumentException illegalArgument) {
-                        this.logger.warn("readLabelData() argument error for method {} in class {}",
-                                m.getName(), 
-                                this.labelDataObject.getClass().getName());
-                    } catch(InvocationTargetException invokationError) {
-                        this.logger.warn("readLabelData() caught exception from target method", 
-                                (Throwable) invokationError);
-                    } catch(NullPointerException npError) {
-                        this.logger.warn("readLabelData() null pointer", (Throwable) npError); 
-                    } catch(ExceptionInInitializerError iniError) {
-                        this.logger.warn("readLabelData() exception in initialization", (Throwable) iniError);
+        String name = null;
+        String param = null;
+        if (elem.isJsonObject()) {
+            name = parseString(elem.getAsJsonObject(), "name");
+            param = parseString(elem.getAsJsonObject(), "param");
+        } 
+        if (elem.isJsonPrimitive()) {
+            name = elem.getAsJsonPrimitive().getAsString();
+        }
+
+        if (name == null) {
+            return null;
+        }
+
+        Method[] methods = this.labelDataObject.getClass().getMethods();
+        for( Method m : methods ) {
+            if( m.isAnnotationPresent( LabelData.class ) ) {
+                try {
+                    LabelData annotation = m.getAnnotation( LabelData.class );
+                    if (name.equals(annotation.name())) {
+                        if (param == null) {
+                            return (T) m.invoke(this.labelDataObject);
+                        } 
+                        return (T) m.invoke(this.labelDataObject, param);
                     }
+                } catch(IllegalAccessException noAccess) {
+                    this.logger.warn("readLabelData() method {} not accessible on class {}", 
+                            m.getName(), 
+                            this.labelDataObject.getClass().getName());
+                } catch(IllegalArgumentException illegalArgument) {
+                    this.logger.warn("readLabelData() argument error for method {} in class {}",
+                            m.getName(), 
+                            this.labelDataObject.getClass().getName());
+                } catch(InvocationTargetException invokationError) {
+                    this.logger.warn("readLabelData() caught exception from target method", 
+                            (Throwable) invokationError);
+                } catch(NullPointerException npError) {
+                    this.logger.warn("readLabelData() null pointer", (Throwable) npError); 
+                } catch(ExceptionInInitializerError iniError) {
+                    this.logger.warn("readLabelData() exception in initialization", (Throwable) iniError);
                 }
             }
         }
-        return labelData;
+        return null;
     }
 
     /**

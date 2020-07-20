@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.device.print;
 
 import de.ipb_halle.lbac.device.job.Job;
 
+import java.awt.image.Raster;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public interface PrintDriver {
     public PrintDriver printBarcode(double x, double y, double w, double h, BarcodeType type, String data);
     public PrintDriver printLine(double x, double y, String line);
     public PrintDriver printLine(double x, double y, String fontName, int fontStyle, int fontSize, String line);
+    public PrintDriver printPicture(double x, double y, Raster picture);
 
     public void setDefault(String key, String value);
     public PrintDriver setPrinter(Printer printer);

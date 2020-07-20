@@ -83,6 +83,54 @@
                                 action="#{printAdminBean.actionAddPrinter}" value="#{msgs.PrinterAddPrinter}"/>
                     </b:row>
                 </b:panel>
+
+               <b:panel title="#{msgs.LabelSettings}" collapsible="false" look="info">
+
+                    <b:dataTable id="labelList"
+                                 value="#{printAdminBean.labels}"
+                                 styleClass="cloudNodeList"
+                                 striped="true"
+                                 responsive="false"
+                                 customOptions="autoWidth:true"
+                                 fixedHeader="true"
+                                 var="ll"
+                                 csv="true"
+                                 columnVisibility="true">
+                        <f:facet name="header">
+                            <tr>
+                                <th>#{msgs.LabelName}</th>
+                                <th>#{msgs.LabelType}</th>
+                                <th>#{msgs.PrinterModel}</th>
+                                <th style="min-width:30px">#{msgs.Tools}</th>
+                            </tr>
+                        </f:facet>
+                        <b:dataTableColumn value="#{ll.name}" order="asc"/>
+                        <b:dataTableColumn value="#{ll.labelType}"/>
+                        <b:dataTableColumn value="#{ll.printerModel}"/>
+                        <b:dataTableColumn>
+                            <b:commandButton style="padding: 0 4px;"
+                                             icon="pencil"
+                                             look="link"
+                                             type="submit"
+                                             action="#{printAdminBean.actionSelectLabel(ll)}" />
+                            <p:commandButton style="padding: 0 4px;"
+                                             styleClass="btn btn-link"
+                                             icon="fa fa-trash"
+                                             action="#{printAdminBean.actionDelete(ll)}"
+                                             update="printerSettings">
+                                <p:confirm header="#{msgs.LabelConfirmDelete}" 
+                                                    message="#{msgs.LabelConfirmDelete_detail}"
+                                                    icon="fa fa-warning" />
+                            </p:commandButton>
+                        </b:dataTableColumn>
+                    </b:dataTable>
+
+                    <b:row>
+                        <b:commandButton type="submit" iconAwesome="plus" style="margin-right:3px;"
+                                action="#{printAdminBean.actionAddLabel}" value="#{msgs.LabelAddLabel}"/>
+                    </b:row>
+                </b:panel>
+
             </b:form>
         </b:panelGrid>
 
