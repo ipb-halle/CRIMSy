@@ -79,9 +79,9 @@
 
                     <b:navbarLinks pull="right">
                         <b:navCommandLink iconAwesome="log-in" rendered="#{userBean.currentAccount.isPublicAccount()}" value="Login"
-                                          actionListener="#{navigator.navigate('login')}"/>
+                                          styleClass="tstLoginCmdLink" actionListener="#{navigator.navigate('login')}"/>
                         <b:navCommandLink iconAwesome="log-out" rendered="#{! userBean.currentAccount.isPublicAccount()}" value="Logout"
-                                          actionListener="#{userBean.actionLogout}"/>
+                                          styleClass="tstLogoutCmdLink" actionListener="#{userBean.actionLogout}"/>
                         <b:dropMenu value="#{msgs.Settings}" rendered="#{! userBean.currentAccount.isPublicAccount()}" iconAwesome="cog"
                                     iconAlign="left">
                             <b:navLink header="#{userBean.currentAccount.name}"/>

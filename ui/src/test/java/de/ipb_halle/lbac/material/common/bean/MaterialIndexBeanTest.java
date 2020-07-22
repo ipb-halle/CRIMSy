@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.admission.LdapProperties;
 import de.ipb_halle.lbac.admission.SystemSettings;
 import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
@@ -90,7 +91,8 @@ public class MaterialIndexBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("MaterialIndexBeanTest.war")
+        WebArchive deployment = 
+                prepareDeployment("MaterialIndexBeanTest.war")
                 .addClass(UserBeanMock.class)
                 .addClass(ACListService.class)
                 .addClass(CollectionBean.class)
@@ -125,7 +127,7 @@ public class MaterialIndexBeanTest extends TestBase {
                 .addClass(MaterialBean.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class)
-                 .addClass(MaterialOverviewBean.class)
+                .addClass(MaterialOverviewBean.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(ContainerService.class)
                 .addClass(ItemService.class)
@@ -134,6 +136,7 @@ public class MaterialIndexBeanTest extends TestBase {
                 .addClass(ContainerNestingService.class)
                 .addClass(ItemBean.class)
                 .addClass(IndexServiceMock.class);
+        return PrintBeanDeployment.add(deployment);
     }
 
     @Test

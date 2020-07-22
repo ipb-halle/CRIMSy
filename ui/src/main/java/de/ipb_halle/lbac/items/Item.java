@@ -128,6 +128,35 @@ public class Item extends ACObject implements DTO, Serializable {
         return entity;
     }
 
+    /**
+     * compute a 10 digit string including the Interleave 25 check sum
+     * ToDo: add a configuratble offset to the item id
+     */
+    @LabelData(name="itemId25")
+    public String getItemId25() {
+        int j = 3;
+        int k = 0;
+        String s = String.format("%09d", this.id); 
+        int l = s.length();
+
+        /* 
+         * Code 25 expects an even number of digits
+         * --> prepend a zero as needed
+         *
+        if((l % 2) == 0) {
+            s = "0" + s;
+            l++;
+        }
+        */
+
+        for(int i=0; i<l; i++) {
+            k = k + j * ((int) s.charAt(i) - 0x30);
+            j = (j + 2) % 4;        
+        }
+        k = (10 - (k % 10)) % 10;
+        return s+Integer.toString(k);
+    }
+
     @LabelData(name="itemIdPlain")
     public String getItemIdPlain() {
         return String.format("%08d", id.intValue());

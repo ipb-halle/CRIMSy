@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.admission.LdapProperties;
 import de.ipb_halle.lbac.admission.SystemSettings;
 import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
@@ -135,7 +136,8 @@ public class MaterialCreationSaverTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("MaterialCreationSaverTest.war")
+        WebArchive deployment = 
+                prepareDeployment("MaterialCreationSaverTest.war")
                 .addClass(UserBeanMock.class)
                 .addClass(ACListService.class)
                 .addClass(CollectionBean.class)
@@ -180,5 +182,6 @@ public class MaterialCreationSaverTest extends TestBase {
                 .addClass(ItemBean.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);
+        return PrintBeanDeployment.add(deployment);
     }
 }

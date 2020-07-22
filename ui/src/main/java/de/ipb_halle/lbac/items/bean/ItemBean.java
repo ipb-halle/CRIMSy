@@ -21,6 +21,7 @@ import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.device.print.PrintBean;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
@@ -56,6 +57,9 @@ public class ItemBean implements Serializable {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Material material;
     private HistoryOperation historyOperation;
+
+    @Inject
+    private PrintBean printBean;
 
     @Inject
     private ItemOverviewBean itemOverviewBean;
@@ -138,6 +142,18 @@ public class ItemBean implements Serializable {
         this.basicContainerType = basicContainerType;
     }
 
+    /**
+     * Printing an item label makes sense only for persisted items.
+     * @return true if item id is not null
+     */
+    public boolean getLabelPrintingEnabled() {
+        return (state.getEditedItem().getId() != null);
+    }
+
+    public PrintBean getPrintBean() {
+        return this.printBean;
+    }
+
     public List<String> getPurityUnits() {
         return Arrays.asList("%", "M", "mM", "µM", "ppm");
     }
@@ -151,9 +167,11 @@ public class ItemBean implements Serializable {
             state.getEditedItem().setMaterial(material);
             state.getEditedItem().setcTime(new Date());
             state.setEditedItem(itemService.saveItem(state.getEditedItem()));
+            this.printBean.setLabelDataObject(state.getEditedItem());
 
         } else {
             itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount());
+            this.printBean.setLabelDataObject(state.getEditedItem());
         }
         containerService.deleteItemInContainer(state.getEditedItem().getId());
         for (int[] pos : containerController.resolveItemPositions()) {
@@ -181,6 +199,7 @@ public class ItemBean implements Serializable {
         solvents = loadSolvents();
         purities = loadPurities();
         state = new ItemState(i);
+        this.printBean.setLabelDataObject(state.getEditedItem());
         this.material = i.getMaterial();
         container = i.getContainer();
         historyOperation = new HistoryOperation(state);
@@ -190,6 +209,7 @@ public class ItemBean implements Serializable {
     public void actionStartItemCreation(Material m) {
         mode = Mode.CREATE;
         state = new ItemState();
+        this.printBean.setLabelDataObject(state.getEditedItem());
         directContainer = true;
         projects = projectService.loadReadableProjectsOfUser(userBean.getCurrentAccount());
         containers = containerService.loadContainers(userBean.getCurrentAccount());

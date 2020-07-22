@@ -73,12 +73,27 @@
                                     action="#{itemBean.applyNextPositiveDiff()}">
                                 </b:commandButton>
                             </b:column>
+                            <b:column  span="1">
+                                <b:commandButton
+                                    action="#{navigator.navigate('item/items')}"
+                                    value="#{msgs.Cancel}"/>
+                            </b:column>
                             <b:column span="1" offset="1">
                                 <b:commandButton
                                     value="#{itemBean.getSaveButtonText()}"
                                     action="#{itemBean.actionSave()}"
                                     />
                             </b:column>
+                        </b:row>
+                    </b:container>
+                </b:panel>
+
+                <b:panel>
+                    <b:container>
+                        <b:row>
+                            <crimsy:label id="labelPrintUI" 
+                                    rendered="#{itemBean.labelPrintingEnabled}" 
+                                    printbean="#{itemBean.printBean}" />
                         </b:row>
                     </b:container>
                 </b:panel>

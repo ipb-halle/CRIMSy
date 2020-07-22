@@ -1,0 +1,131 @@
+{
+  "id": "8878dd93-e245-43a5-8e6a-5360a50b0906",
+  "version": "2.0",
+  "name": "CRIMSy_login",
+  "url": "https://localhost",
+  "tests": [{
+    "id": "20824114-51bc-4e55-936c-3ccad6851e93",
+    "name": "login test",
+    "commands": [{
+      "id": "681856a9-5ca9-492a-8523-0b0f730a0a93",
+      "comment": "",
+      "command": "open",
+      "target": "/ui/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9668ebc5-402a-4f98-9334-804490929d5c",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1447x872",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3d805498-8ef9-46f0-9da1-7158337373a2",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Login",
+      "targets": [
+        ["id=input_logInFormId:loginLogin", "id"],
+        ["name=input_logInFormId:loginLogin", "name"],
+        ["css=#input_logInFormId\\3AloginLogin", "css:finder"],
+        ["xpath=//input[@id='input_logInFormId:loginLogin']", "xpath:attributes"],
+        ["xpath=//div[@id='logInFormId:loginLogin']/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ca6c9cd5-cd6d-41dc-9cb7-1b6526181c46",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstLoginLogin",
+      "targets": [
+        ["id=input_logInFormId:j_id_1w_4", "id"],
+        ["name=input_logInFormId:j_id_1w_4", "name"],
+        ["css=#input_logInFormId\\3Aj_id_1w_4", "css:finder"],
+        ["xpath=//input[@id='input_logInFormId:j_id_1w_4']", "xpath:attributes"],
+        ["xpath=//div[@id='logInFormId:j_id_1w_4']/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "admin"
+    }, {
+      "id": "3305b5e7-379a-42a5-bffe-b71dce2967e5",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstLoginPassword",
+      "targets": [
+        ["id=input_logInFormId:j_id_1w_8", "id"],
+        ["name=input_logInFormId:j_id_1w_8", "name"],
+        ["css=#input_logInFormId\\3Aj_id_1w_8", "css:finder"],
+        ["xpath=//input[@id='input_logInFormId:j_id_1w_8']", "xpath:attributes"],
+        ["xpath=//div[@id='logInFormId:j_id_1w_8']/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "admin"
+    }, {
+      "id": "073127e4-1a05-4556-a079-29d9b3c3eb62",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstLoginCmdBtn",
+      "targets": [
+        ["id=logInFormId:j_id_1w_c", "id"],
+        ["name=logInFormId:j_id_1w_c", "name"],
+        ["css=#logInFormId\\3Aj_id_1w_c", "css:finder"],
+        ["xpath=//button[@id='logInFormId:j_id_1w_c']", "xpath:attributes"],
+        ["xpath=//div[@id='logInFormId:j_id_1w_b']/button", "xpath:idRelative"],
+        ["xpath=//div[5]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Anmelden')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "6318a584-ffde-4d44-9322-28c9dc6d9185",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "linkText=Logout",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4382e334-04a7-43df-aca5-2d7c4c0d0657",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Logout",
+      "targets": [
+        ["linkText=Logout", "linkText"],
+        ["css=#j_id_v\\3Aj_id_1h > .commandLink", "css:finder"],
+        ["xpath=//a[contains(text(),'Logout')]", "xpath:link"],
+        ["xpath=//a[@onclick=\"BsF.submitForm('j_id_v',{'j_id_v:j_id_1h':'j_id_v:j_id_1h'});return false;\"]", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1h']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[14]", "xpath:href"],
+        ["xpath=//ul[4]/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Logout')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "d09c1bfa-435f-4ae3-ac8b-31daa1c7df4d",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "linkText=Login",
+      "targets": [
+        ["linkText=Login", "linkText"],
+        ["css=#j_id_v\\3Aj_id_1g > .commandLink", "css:finder"],
+        ["xpath=//a[contains(text(),'Login')]", "xpath:link"],
+        ["xpath=//a[@onclick=\"BsF.submitForm('j_id_v',{'j_id_v:j_id_1g':'j_id_v:j_id_1g'});return false;\"]", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1g']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[14]", "xpath:href"],
+        ["xpath=//ul[4]/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "7167b151-24b2-44b8-b6f4-4a74d6e6ac51",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["20824114-51bc-4e55-936c-3ccad6851e93"]
+  }],
+  "urls": ["https://localhost/"],
+  "plugins": []
+}
