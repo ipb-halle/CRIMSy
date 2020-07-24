@@ -85,16 +85,12 @@ public class MembershipWebClientTest extends TestBase {
                 .addClass(Updater.class)
                 .addClass(KeyManager.class)
                 .addClass(FileService.class)
-                .addClass(KeyManager.class)
                 .addClass(FileEntityService.class);
 
     }
 
-  
-
     @Inject
     KeyManager keymanager;
-
 
     @Before
     public void setUp() {

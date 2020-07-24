@@ -23,7 +23,6 @@ import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -202,7 +201,6 @@ public class TaxonomyServiceTest extends TestBase {
                 .addClass(GlobalAdmissionContext.class)
                 .addClass(MaterialService.class)
                 .addClass(MoleculeService.class)
-                .addClass(KeyManager.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(TaxonomyService.class);

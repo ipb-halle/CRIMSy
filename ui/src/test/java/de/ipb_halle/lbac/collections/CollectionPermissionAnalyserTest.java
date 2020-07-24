@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
@@ -89,7 +88,6 @@ public class CollectionPermissionAnalyserTest extends TestBase {
                 .addPackage(Collection.class.getPackage())
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class)
-                .addClass(KeyManager.class)
                 .addClass(Navigator.class)
                 .addPackage(CollectionBean.class.getPackage())
                 .addPackage(WebRequestAuthenticator.class.getPackage())

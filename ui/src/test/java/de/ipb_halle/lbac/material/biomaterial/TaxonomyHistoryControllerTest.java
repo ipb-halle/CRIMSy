@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -152,7 +151,6 @@ public class TaxonomyHistoryControllerTest extends TestBase {
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)
                 .addClass(MoleculeService.class)
-                .addClass(KeyManager.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);

@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.collections.mock.CollectionWebClientMock;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
@@ -82,8 +81,7 @@ public class CollectionOrchestratorTest extends TestBase {
                 .addClass(SolrTermVectorSearch.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionWebServiceMock.class)
-                .addPackage(SolrSearcher.class.getPackage())
-                .addClass(KeyManager.class);
+                .addPackage(SolrSearcher.class.getPackage());
         return UserBeanDeployment.add(deployment);
     }
 

@@ -91,7 +91,7 @@ public class InfoObjectServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("InfoEntityServiceTest.war")
+        return prepareDeployment("InfoObjectServiceTest.war")
                 .addClass(KeyManager.class)
                 .addClass(CollectionService.class)
                 .addClass(CollectionOrchestrator.class)

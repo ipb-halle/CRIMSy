@@ -25,7 +25,6 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
@@ -382,7 +381,6 @@ public class ContainerServiceTest extends TestBase {
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
                 .addClass(ArticleService.class)
-                .addClass(KeyManager.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(MoleculeService.class)
                 .addClass(ContainerNestingService.class)

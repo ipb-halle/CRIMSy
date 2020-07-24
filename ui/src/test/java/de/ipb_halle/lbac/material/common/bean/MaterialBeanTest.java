@@ -34,7 +34,6 @@ import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.items.service.ArticleService;
@@ -181,7 +180,6 @@ public class MaterialBeanTest extends TestBase {
                 .addClass(DocumentSearchService.class)
                 .addClass(SolrSearcher.class)
                 .addClass(MoleculeService.class)
-                .addClass(KeyManager.class)
                 .addClass(ProjectBean.class)
                 .addClass(IndexService.class)
                 .addClass(MaterialNameBean.class)

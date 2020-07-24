@@ -30,7 +30,6 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;

@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.collections.mock.SolarAdminServiceMock;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
@@ -198,7 +197,6 @@ public class CollectionOperationTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("PermissionEditBeanTest.war")
                 .addPackage(Collection.class.getPackage())
-                .addClass(KeyManager.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
                 .addPackage(CollectionBean.class.getPackage())

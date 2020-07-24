@@ -37,7 +37,6 @@ import de.ipb_halle.lbac.file.mock.SolrTermVectorSearchMock;
 import de.ipb_halle.lbac.file.mock.SolrUpdateMock;
 import de.ipb_halle.lbac.file.mock.TermVectorEntityServiceMock;
 import de.ipb_halle.lbac.file.mock.TermVectorParserMock;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;

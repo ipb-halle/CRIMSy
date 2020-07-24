@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
@@ -225,7 +224,6 @@ public class MaterialEditSaverTest extends TestBase {
                 .addClass(DocumentSearchService.class)
                 .addClass(SolrSearcher.class)
                 .addClass(MoleculeService.class)
-                .addClass(KeyManager.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(DocumentSearchOrchestrator.class)

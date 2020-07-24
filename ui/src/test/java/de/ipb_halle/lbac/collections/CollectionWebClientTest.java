@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
@@ -78,9 +77,6 @@ public class CollectionWebClientTest extends TestBase {
     @Inject
     CollectionWebClient collectionWebClient;
 
-// xxx    @Inject
-// xxx    KeyManager keymanager;
-
     @Inject
     private CollectionWebServiceMock webService;
 
@@ -96,7 +92,6 @@ public class CollectionWebClientTest extends TestBase {
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(Navigator.class)
                 .addPackage(Logger.class.getPackage())
-                .addClass(KeyManager.class)
                 .addPackage(CollectionBean.class.getPackage())
                 .addPackage(DocumentSearchBean.class.getPackage())
                 .addPackage(WordCloudBean.class.getPackage())

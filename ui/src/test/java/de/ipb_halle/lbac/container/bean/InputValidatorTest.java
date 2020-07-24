@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.mock.ErrorMessagePresenterMock;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
 import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
@@ -199,7 +198,6 @@ public class InputValidatorTest extends TestBase {
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
                 .addClass(ArticleService.class)
-                .addClass(KeyManager.class)
                 .addClass(ContainerNestingService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(MoleculeService.class)

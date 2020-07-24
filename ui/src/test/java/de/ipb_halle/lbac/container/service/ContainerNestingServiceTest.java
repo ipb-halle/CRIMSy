@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.container.service;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.service.ArticleService;
@@ -102,7 +101,6 @@ public class ContainerNestingServiceTest extends TestBase {
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
                 .addClass(ArticleService.class)
-                .addClass(KeyManager.class)
                 .addClass(MoleculeService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(ContainerNestingService.class)

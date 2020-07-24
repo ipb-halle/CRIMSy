@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
@@ -100,7 +99,6 @@ public class TaxonomyBeanTest extends TestBase {
         WebArchive deployment = prepareDeployment("TaxonomyBeanTest.war")
                 .addClass(TaxonomyService.class)
                 .addClass(TaxonomyBean.class)
-                .addClass(KeyManager.class)
                 .addClass(MoleculeService.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TaxonomyNestingService.class)

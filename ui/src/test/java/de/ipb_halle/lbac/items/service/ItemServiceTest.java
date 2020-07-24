@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
@@ -268,7 +267,6 @@ public class ItemServiceTest extends TestBase {
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)
                 .addClass(ContainerService.class)
-                .addClass(KeyManager.class)
                 .addClass(MoleculeService.class)
                 .addClass(ArticleService.class)
                 .addClass(TaxonomyService.class)
