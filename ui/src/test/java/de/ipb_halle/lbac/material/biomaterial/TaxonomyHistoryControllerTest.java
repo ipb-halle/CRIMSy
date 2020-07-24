@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNameController;
@@ -28,10 +29,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistoryController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyValidityController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.globals.KeyManager;
@@ -151,17 +148,14 @@ public class TaxonomyHistoryControllerTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("TaxonomyHistoryControllerTest.war")
+        WebArchive deployment = prepareDeployment("TaxonomyHistoryControllerTest.war")
                 .addClass(ProjectService.class)
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(MaterialService.class)
-                .addClass(UserBean.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
-                .addClass(LdapProperties.class)
                 .addClass(KeyManager.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);
+        return UserBeanDeployment.add(deployment);
     }
 }

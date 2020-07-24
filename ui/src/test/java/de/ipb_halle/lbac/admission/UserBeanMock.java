@@ -15,23 +15,27 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.device.print;
+package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.entity.User;
+import javax.enterprise.context.SessionScoped;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
  *
- * @author fbroda
+ * @author fmauz
  */
-public class PrintBeanDeployment {
+@SessionScoped
+public class UserBeanMock extends UserBean {
 
-    public static WebArchive add(WebArchive deployment) {
-        return deployment.addClass(JobService.class)
-                .addClass(LabelService.class)
-                .addClass(PrintBean.class)
-                .addClass(PrinterService.class);
+    private User currentAccount;
+
+    public void setCurrentAccount(User u) {
+        this.currentAccount = u;
+    }
+
+    @Override
+    public User getCurrentAccount() {
+        return currentAccount;
     }
 }

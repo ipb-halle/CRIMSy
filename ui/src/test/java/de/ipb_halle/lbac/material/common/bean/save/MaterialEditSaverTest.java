@@ -19,9 +19,8 @@ package de.ipb_halle.lbac.material.common.bean.save;
 
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.SystemSettings;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
@@ -39,7 +38,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
@@ -212,8 +210,7 @@ public class MaterialEditSaverTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("MaterialEditSaverTest.war")
-                .addClass(UserBeanMock.class)
+        WebArchive deployment = prepareDeployment("MaterialEditSaverTest.war")
                 .addClass(ACListService.class)
                 .addClass(CollectionBean.class)
                 .addClass(CollectionService.class)
@@ -227,11 +224,8 @@ public class MaterialEditSaverTest extends TestBase {
                 .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(SolrSearcher.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
                 .addClass(KeyManager.class)
-                .addClass(SystemSettings.class)
-                .addClass(LdapProperties.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(DocumentSearchOrchestrator.class)
@@ -245,5 +239,6 @@ public class MaterialEditSaverTest extends TestBase {
                 .addClass(TissueService.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);
+        return UserBeanDeployment.add(deployment);
     }
 }

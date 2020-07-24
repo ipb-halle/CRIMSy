@@ -18,8 +18,7 @@
 package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
@@ -197,17 +196,15 @@ public class CollectionOperationTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("PermissionEditBeanTest.war")
+        WebArchive deployment = prepareDeployment("PermissionEditBeanTest.war")
                 .addPackage(Collection.class.getPackage())
                 .addClass(KeyManager.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
                 .addPackage(CollectionBean.class.getPackage())
-                .addClass(MembershipOrchestrator.class)
                 .addPackage(WebRequestAuthenticator.class.getPackage())
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(CollectionSearchState.class)
                 .addPackage(SolrAdminService.class.getPackage())
@@ -220,8 +217,8 @@ public class CollectionOperationTest extends TestBase {
                 .addClass(FileEntityService.class)
                 .addClass(CollectionService.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(SolrTermVectorSearch.class)
-                .addPackage(UserBean.class.getPackage());
+                .addClass(SolrTermVectorSearch.class);
+        return UserBeanDeployment.add(deployment);
     }
 
 }

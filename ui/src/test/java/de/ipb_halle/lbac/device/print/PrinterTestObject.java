@@ -15,25 +15,22 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.mocks;
+package de.ipb_halle.lbac.device.print;
 
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.entity.User;
 
 /**
- *
- * @author fmauz
+ * This class is a mock object for for the label printing module.
  */
-public class UserBeanMock extends UserBean {
+@LabelType(name="printerTestMock")
+public class PrinterTestObject {
 
-    private User currentAccount;
-
-    public void setCurrentAccount(User u) {
-        this.currentAccount = u;
+    @LabelData(name="testText")
+    public String getTestText() {
+        return "CRIMSy TEST";
     }
 
-    @Override
-    public User getCurrentAccount() {
-        return currentAccount;
+    @LabelData(name="testBarcode")
+    public String getTestBarcode() {
+        return "1234567895";
     }
 }

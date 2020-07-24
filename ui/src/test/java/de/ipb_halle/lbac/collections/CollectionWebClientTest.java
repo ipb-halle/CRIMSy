@@ -17,9 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
@@ -88,7 +86,7 @@ public class CollectionWebClientTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("CollectionWebClientTest.war")
+        WebArchive deployment = prepareDeployment("CollectionWebClientTest.war")
                 .addPackage(CollectionService.class.getPackage())
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
@@ -97,7 +95,6 @@ public class CollectionWebClientTest extends TestBase {
                 .addPackage(ACListService.class.getPackage())
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(Navigator.class)
-                .addPackage(GlobalAdmissionContext.class.getPackage())
                 .addPackage(Logger.class.getPackage())
                 .addClass(KeyManager.class)
                 .addPackage(CollectionBean.class.getPackage())
@@ -109,11 +106,10 @@ public class CollectionWebClientTest extends TestBase {
                 .addPackage(SolrAdminService.class.getPackage())
                 .addClass(CollectionWebClient.class)
                 .addClass(CollectionWebServiceMock.class)
-                .addPackage(UserBean.class.getPackage())
                 .addPackage(WebRequestAuthenticator.class.getPackage())
-                .addClass(MembershipOrchestrator.class)
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class);
+        return UserBeanDeployment.add(deployment);
     }
 
     @Before

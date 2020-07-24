@@ -25,9 +25,8 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.SystemSettings;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
@@ -44,7 +43,6 @@ import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
-import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
@@ -650,7 +648,7 @@ public class MaterialServiceTest extends TestBase {
     
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("MaterialServiceTest.war")
+        WebArchive deployment = prepareDeployment("MaterialServiceTest.war")
                 .addClass(UserBeanMock.class)
                 .addClass(ACListService.class)
                 .addClass(CollectionBean.class)
@@ -666,13 +664,10 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(DocumentSearchService.class)
                 .addClass(ACListService.class)
                 .addClass(SolrSearcher.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
                 .addClass(KeyManager.class)
-                .addClass(LdapProperties.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
-                .addClass(SystemSettings.class)
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
@@ -683,5 +678,6 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(WordCloudWebClient.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);
+        return UserBeanDeployment.add(deployment);
     }
 }

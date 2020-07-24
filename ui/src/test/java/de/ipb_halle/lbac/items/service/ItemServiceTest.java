@@ -20,9 +20,7 @@ package de.ipb_halle.lbac.items.service;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
@@ -265,24 +263,20 @@ public class ItemServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("ItemServiceTest.war")
+        WebArchive deployment =  prepareDeployment("ItemServiceTest.war")
                 .addClass(EntityManagerService.class)
-                .addClass(MemberService.class)
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)
                 .addClass(ContainerService.class)
                 .addClass(KeyManager.class)
-                .addClass(LdapProperties.class)
                 .addClass(MoleculeService.class)
                 .addClass(ArticleService.class)
-                .addClass(GlobalAdmissionContext.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(ContainerNestingService.class)
-                .addClass(UserBean.class)
                 .addClass(ItemService.class);
+        return UserBeanDeployment.add(deployment);
     }
 
     private void createAndSaveMaterial() {

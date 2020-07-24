@@ -17,8 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.TESTCLOUD;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
@@ -36,7 +35,6 @@ import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.MembershipService;
@@ -68,17 +66,13 @@ public class CollectionOrchestratorTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("CollectionOrchestratorTest.war")
+        WebArchive deployment = prepareDeployment("CollectionOrchestratorTest.war")
                 .addPackage(CollectionOrchestrator.class.getPackage())
-                .addPackage(GlobalAdmissionContext.class.getPackage())
                 .addPackage(NodeService.class.getPackage())
-                .addPackage(MembershipService.class.getPackage())
                 .addPackage(Logger.class.getPackage())
                 .addPackage(Updater.class.getPackage())
                 .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(ACListService.class.getPackage())
                 .addClass(Navigator.class)
-                .addClass(MembershipOrchestrator.class)
                 .addPackage(CollectionBean.class.getPackage())
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(FileService.class)
@@ -90,6 +84,7 @@ public class CollectionOrchestratorTest extends TestBase {
                 .addClass(CollectionWebServiceMock.class)
                 .addPackage(SolrSearcher.class.getPackage())
                 .addClass(KeyManager.class);
+        return UserBeanDeployment.add(deployment);
     }
 
     @Test

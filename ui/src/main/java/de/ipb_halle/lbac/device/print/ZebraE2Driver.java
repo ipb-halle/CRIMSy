@@ -88,8 +88,8 @@ public class ZebraE2Driver extends AbstractPrintDriver {
     @Override
     public PrintDriver clear() {
         super.clear();
-        this.offsetX = Integer.parseInt(new String(getConfig("offsetX"), StandardCharsets.UTF_8)); 
-        this.offsetY = Integer.parseInt(new String(getConfig("offsetY"), StandardCharsets.UTF_8));
+        this.offsetX = Integer.parseInt(new String(getConfig("offsetX", "30"), StandardCharsets.UTF_8)); 
+        this.offsetY = Integer.parseInt(new String(getConfig("offsetY", "30"), StandardCharsets.UTF_8));
         append(getConfig("prologue"));
         return this;
     }

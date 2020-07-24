@@ -19,16 +19,14 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
-import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
@@ -99,19 +97,16 @@ public class TaxonomyBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("TaxonomyBeanTest.war")
+        WebArchive deployment = prepareDeployment("TaxonomyBeanTest.war")
                 .addClass(TaxonomyService.class)
                 .addClass(TaxonomyBean.class)
-                .addClass(UserBean.class)
-                .addClass(MembershipOrchestrator.class)
-                .addClass(LdapProperties.class)
                 .addClass(KeyManager.class)
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(MoleculeService.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(ProjectService.class)
                 .addClass(TissueService.class)
                 .addClass(MaterialService.class);
+        return UserBeanDeployment.add(deployment);
     }
 }

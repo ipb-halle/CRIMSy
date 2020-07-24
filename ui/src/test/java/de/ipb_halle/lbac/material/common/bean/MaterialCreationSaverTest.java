@@ -19,9 +19,8 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.SystemSettings;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
@@ -47,7 +46,6 @@ import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.MoleculeStructureModel;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
@@ -152,16 +150,13 @@ public class MaterialCreationSaverTest extends TestBase {
                 .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(SolrSearcher.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
                 .addClass(KeyManager.class)
                 .addClass(ProjectBean.class)
                 .addClass(IndexService.class)
                 .addClass(MaterialNameBean.class)
                 .addClass(MaterialIndexBean.class)
-                .addClass(LdapProperties.class)
                 .addClass(ProjectService.class)
-                .addClass(SystemSettings.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(Updater.class)
@@ -182,6 +177,7 @@ public class MaterialCreationSaverTest extends TestBase {
                 .addClass(ItemBean.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);
+        deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }
 }

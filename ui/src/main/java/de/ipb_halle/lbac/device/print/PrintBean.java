@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.device.job.JobService;
 import de.ipb_halle.lbac.util.HexUtil;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
@@ -445,7 +444,7 @@ public class PrintBean implements Serializable {
             if ((data != null) && (data.length > 0) && (w > 0) && (h > 0)) {
                 BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_BINARY);
                 WritableRaster raster = img.getRaster();
-                raster.setDataElements(0, 0, new DataBufferByte(data, data.length));
+                raster.setDataElements(0, 0, w, h, data); 
                 return raster;
             }
         }
@@ -538,6 +537,13 @@ public class PrintBean implements Serializable {
     public void setPrinterQueue(String printerQueue) {
         this.logger.info("setPrinterQueue() {}", printerQueue);
         this.printerQueue = printerQueue;
+    }
+
+    /**
+     * for mocking the UserBean during testing
+     */
+    protected void setUserBean(UserBean userBean) {
+        this.userBean = userBean;
     }
 
     /**

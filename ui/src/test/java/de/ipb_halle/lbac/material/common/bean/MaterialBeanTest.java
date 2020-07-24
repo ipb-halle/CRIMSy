@@ -19,9 +19,8 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.SystemSettings;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
@@ -45,7 +44,6 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
@@ -169,7 +167,6 @@ public class MaterialBeanTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment = 
                 prepareDeployment("MaterialEditBeanTest.war")
-                .addClass(UserBeanMock.class)
                 .addClass(ACListService.class)
                 .addClass(CollectionBean.class)
                 .addClass(CollectionService.class)
@@ -183,7 +180,6 @@ public class MaterialBeanTest extends TestBase {
                 .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(SolrSearcher.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
                 .addClass(KeyManager.class)
                 .addClass(ProjectBean.class)
@@ -191,9 +187,7 @@ public class MaterialBeanTest extends TestBase {
                 .addClass(MaterialNameBean.class)
                 .addClass(MaterialIndexBean.class)
                 .addClass(TaxonomyNestingService.class)
-                .addClass(LdapProperties.class)
                 .addClass(ProjectService.class)
-                .addClass(SystemSettings.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(Updater.class)
@@ -213,6 +207,7 @@ public class MaterialBeanTest extends TestBase {
                 .addClass(ItemBean.class)
                 .addClass(MaterialIndexHistoryEntity.class)
                 .addClass(MaterialService.class);
+        deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }
 }

@@ -17,10 +17,7 @@
  */
 package de.ipb_halle.lbac.projects;
 
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.SystemSettings;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
@@ -66,12 +63,10 @@ public class ProjectEditBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("ProjectEditBeanTest.war")
+        WebArchive deployment = prepareDeployment("ProjectEditBeanTest.war")
                 .addClass(ProjectBean.class)
                 .addClass(Navigator.class)
-                .addClass(UserBean.class)
                 .addClass(ProjectService.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(KeyManager.class)
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
@@ -82,15 +77,14 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(SearchWebService.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(LdapProperties.class)
                 .addClass(SolrSearcher.class)
-                 .addClass(SystemSettings.class)
                 .addClass(SolrAdminService.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(SolrTermVectorSearch.class)
                 .addClass(Updater.class)
                 .addClass(ProjectEditBean.class);
+        return UserBeanDeployment.add(deployment);
     }
 
     @Test

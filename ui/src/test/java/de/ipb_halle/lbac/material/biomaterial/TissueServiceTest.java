@@ -20,16 +20,14 @@ package de.ipb_halle.lbac.material.biomaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.mocks.UserBeanMock;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -130,17 +128,14 @@ public class TissueServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("TissueServiceTest.war")
+        WebArchive deployment = prepareDeployment("TissueServiceTest.war")
                 .addClass(ProjectService.class)
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(MaterialService.class)
-                .addClass(UserBean.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(MoleculeService.class)
-                .addClass(LdapProperties.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(KeyManager.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);
+        return UserBeanDeployment.add(deployment);
     }
 }

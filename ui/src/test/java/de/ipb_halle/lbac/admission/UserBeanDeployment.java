@@ -15,9 +15,9 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.device.print;
+package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.globals.KeyManager;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -26,12 +26,15 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  *
  * @author fbroda
  */
-public class PrintBeanDeployment {
+public class UserBeanDeployment {
+
 
     public static WebArchive add(WebArchive deployment) {
-        return deployment.addClass(JobService.class)
-                .addClass(LabelService.class)
-                .addClass(PrintBean.class)
-                .addClass(PrinterService.class);
+        return deployment
+                .addClass(KeyManager.class)
+                .addClass(LdapProperties.class)
+                .addClass(MembershipOrchestrator.class)
+                .addClass(SystemSettings.class)
+                .addClass(UserBeanMock.class);
     }
 }

@@ -17,8 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
@@ -85,7 +84,7 @@ public class CollectionWebServiceTest
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("CollectionWebServiceTest.war")
+        WebArchive deployment = prepareDeployment("CollectionWebServiceTest.war")
                 .addClass(CollectionWebService.class)
                 .addPackage(CollectionService.class.getPackage())
                 .addClass(NodeService.class)
@@ -97,15 +96,14 @@ public class CollectionWebServiceTest
                 .addPackage(SolrSearcher.class.getPackage())
                 .addPackage(CollectionBean.class.getPackage())
                 .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(UserBean.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
                 .addPackage(Navigator.class.getPackage())
                 .addPackage(Updater.class.getPackage())
                 .addClass(SolrTermVectorSearch.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(FileService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(FileEntityService.class);
+        return UserBeanDeployment.add(deployment);
     }
 
     @Before
