@@ -17,14 +17,15 @@
 FROM httpd 
 
 #
-RUN mkdir -p /install/etc
+RUN mkdir -p /install
 
 #
 WORKDIR /install
 
 #
-COPY ./etc /install/etc/
-COPY ./proxy /install
+COPY ./etc /install/etc
+COPY ./proxy/conf /install/conf
+COPY ./proxy/setup.sh /install/
 
 #
 EXPOSE 80 443 8443

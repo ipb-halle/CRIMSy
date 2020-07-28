@@ -21,7 +21,7 @@
 # 
 #==========================================================
 #
-LBAC_EXPECTED_CONFIG_VERSION=3
+LBAC_EXPECTED_CONFIG_VERSION=4
 LBAC_CONFIG=etc/config.sh
 
 LBAC_SSL_KEYFILE=lbac_cert.key
@@ -36,55 +36,18 @@ LBAC_PGSQL_PORT_ENABLE="dnl"
 LBAC_SOLR_PORT_ENABLE="dnl"
 LBAC_TOMEE_PORT_ENABLE="dnl"
 LBAC_HSTS_ENABLE="dnl"
-LBAC_PROXY_OVERRIDE="AUTO";
 LBAC_CLOUD_MODE="AUTO";
 LBAC_SKIP_PREINSTALL="OFF"
 #
 #==========================================================
 #
-# configure the proxy (eventually override ON / OFF)
-# ToDo: enable / override HSTS
+# configure the proxy 
 #
 function configProxy {
-        case $LBAC_PROXY_MODE in
-            OFF)
-                LBAC_PROXY_ENABLE="dnl"
-                LBAC_TOMEE_PORT_ENABLE=" "
-                LBAC_PROXY_ENABLE2="OFF"
-                ;;
-            ON)
-                LBAC_PROXY_ENABLE=" "
-                LBAC_PROXY_ENABLE2="ON"
-                ;;
-            *)
-                LBAC_PROXY_ENABLE=" "
-                LBAC_PROXY_ENABLE2="ON"
-        esac 
 
-        #
-        # CAVEAT side effect: TomEE port will still be enabled if 
-        # LBAC_PROXY_MODE is OFF but is overriden to ON by command line
-        #
-        case $LBAC_PROXY_OVERRIDE in
-            ON)
-                LBAC_PROXY_ENABLE=" "
-                LBAC_PROXY_ENABLE2="ON"
-            ;;
-            OFF)
-                LBAC_PROXY_ENABLE="dnl"
-                LBAC_PROXY_ENABLE2="OFF"
-                LBAC_TOMEE_PORT_ENABLE=" "
-            ;;
-        esac
+    # update current certificates and CRLs
+    $LBAC_DATASTORE/dist/bin/updateCloud.sh install
 
-        echo "LBAC_PROXY_ENABLE2=\"$LBAC_PROXY_ENABLE2\"" \
-          >> "$LBAC_DATASTORE/dist/$LBAC_CONFIG"
-
-        # update current certificates and CRLs
-        # chain
-        if test $LBAC_PROXY_ENABLE2 = "ON" ; then
-            $LBAC_DATASTORE/dist/bin/updateCloud.sh install
-        fi
 }
 
 #
@@ -259,7 +222,6 @@ define(\`LBAC_NODE_RANK',\`$LBAC_NODE_RANK')dnl
 define(\`LBAC_PGSQL_PORT_ENABLE',\`$LBAC_PGSQL_PORT_ENABLE')dnl
 define(\`LBAC_SOLR_PORT_ENABLE',\`$LBAC_SOLR_PORT_ENABLE')dnl
 define(\`LBAC_TOMEE_PORT_ENABLE',\`$LBAC_TOMEE_PORT_ENABLE')dnl
-define(\`LBAC_PROXY_ENABLE',\`$LBAC_PROXY_ENABLE')dnl
 define(\`LBAC_HSTS_ENABLE',\`$LBAC_HSTS_ENABLE')dnl
 define(\`LBAC_PRIMARY_CLOUD',\`$LBAC_CLOUD')dnl
 EOF
@@ -403,15 +365,6 @@ for i in $* ; do
             echo 
             echo "Please consult manual for further information"
             exit 1
-            ;;
-        --noproxy)
-            echo "Disabling https proxy container ..."
-            echo "PLEASE NOTE: You must configure an external proxy yourself!"
-            LBAC_PROXY_OVERRIDE="OFF"
-            ;;
-        --proxy)
-            echo "Enabling https proxy container ..."
-            LBAC_PROXY_OVERRIDE="ON"
             ;;
         --skip-preinstall)
             LBAC_SKIP_PREINSTALL="ON"

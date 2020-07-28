@@ -52,21 +52,18 @@ function install {
 
 #
 # Get new CACerts and CRLs and install them into proxy Container
-# run only if proxy is enabled
 #
 function cacrl {
     . $LBAC_DATASTORE/dist/etc/config.sh
-    if test $LBAC_PROXY_ENABLE2 = "ON" ; then
-        install
+    install
 
-        tar -C $LBAC_DATASTORE/dist/proxy/conf -cf /tmp/ca_update.tar crt/ crl/
-        docker cp /tmp/ca_update.tar dist_proxy_1:/install/
-        docker exec dist_proxy_1 /usr/local/bin/ca_update.sh
-        rm "/tmp/ca_update.tar"
-        chown -R --reference=$LBAC_DATASTORE/dist/proxy/conf/httpd.conf \
-            $LBAC_DATASTORE/dist/proxy/conf/crt \
-            $LBAC_DATASTORE/dist/proxy/conf/crl
-    fi
+    tar -C $LBAC_DATASTORE/dist/proxy/conf -cf /tmp/ca_update.tar crt/ crl/
+    docker cp /tmp/ca_update.tar dist_proxy_1:/install/
+    docker exec dist_proxy_1 /usr/local/bin/ca_update.sh
+    rm "/tmp/ca_update.tar"
+    chown -R --reference=$LBAC_DATASTORE/dist/proxy/conf/httpd.conf \
+        $LBAC_DATASTORE/dist/proxy/conf/crt \
+        $LBAC_DATASTORE/dist/proxy/conf/crl
 }
 
 #

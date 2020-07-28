@@ -33,7 +33,7 @@ public class UIMolPlugin extends UIInput {
 
 	private final static String[]		pluginTypes = { null, "JChemPaint", "Marvin", "MarvinJS", "MolPaintJS" };
 
-	protected final static String	defaultPluginPath = "/ui/javax.faces.resource/plugin";
+	protected final static String	defaultPluginPath = "/plugins";
 	protected final static String	defaultPluginType = "MolPaintJS";
 	private int			height;
 	private String			pluginPath;
@@ -237,19 +237,19 @@ public class UIMolPlugin extends UIInput {
                 writer.startElement("link", this);
                 writer.writeAttribute("type", "text/css", null);
                 writer.writeAttribute("rel", "stylesheet", null);
-                writer.writeAttribute("href", String.format("%s/molpaintjs/css/styles.css", this.pluginPath), null);
+                writer.writeAttribute("href", String.format("%s/MolPaintJS/css/styles.css", this.pluginPath), null);
                 writer.endElement("link");
 
         	writer.startElement("script", this);
 		writer.writeAttribute("type", "text/javascript", null);
-                writer.writeAttribute("src", String.format("%s/molpaintjs/js/molpaint.js", this.pluginPath), null);
+                writer.writeAttribute("src", String.format("%s/MolPaintJS/js/molpaint.js", this.pluginPath), null);
                 writer.endElement("script");
 
 		writer.startElement("script", this);
                 writer.writeAttribute("type", "text/javascript", null);
 
 		// installPath currently needs a trailing slash!
-		writer.writeText(String.format("var molpaintjs = new MolPaintJS({installPath: '%s/molpaintjs/'});\n", 
+		writer.writeText(String.format("var molpaintjs = new MolPaintJS({installPath: '%s/MolPaintJS/'});\n", 
 		  this.pluginPath), null);
 		writer.endElement("script");
 

@@ -99,10 +99,8 @@ EOF
 function installCloud {
     pushd $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD > /dev/null
 
-    # add certificate and CRL to proxy (if enabled)
-    if [ $LBAC_PROXY_ENABLE2 = 'ON' ] ; then
-        $LBAC_DATASTORE/dist/bin/updateCloud.sh cacrl
-    fi
+    # add certificate and CRL to proxy 
+    $LBAC_DATASTORE/dist/bin/updateCloud.sh cacrl
 
     # add certificate to truststore
     docker cp $LBAC_CLOUD.truststore dist_ui_1:/install

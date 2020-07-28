@@ -44,18 +44,20 @@ LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
     volumes:
       - LBAC_DATASTORE/data/ui:/data/ui
 
-LBAC_PROXY_ENABLE proxy:
-LBAC_PROXY_ENABLE   build:
-LBAC_PROXY_ENABLE     context: .
-LBAC_PROXY_ENABLE     dockerfile: ./proxy/Dockerfile
-LBAC_PROXY_ENABLE   labels:
-LBAC_PROXY_ENABLE     de.ipb-halle.lbac.docker-container: "proxy"
-LBAC_PROXY_ENABLE   networks:
-LBAC_PROXY_ENABLE     - lbac_private
-LBAC_PROXY_ENABLE   ports:
-LBAC_PROXY_ENABLE     - "80:80"
-LBAC_PROXY_ENABLE     - "443:443"
-LBAC_PROXY_ENABLE     - "8443:8443"
+  proxy:
+    build:
+      context: .
+      dockerfile: ./proxy/Dockerfile
+    labels:
+      de.ipb-halle.lbac.docker-container: "proxy"
+    networks:
+      - lbac_private
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8443:8443"
+    volumes:
+      - LBAC_DATASTORE/dist/proxy/htdocs:/usr/local/apache2/htdocs
 
   lbacsolr:
     build:

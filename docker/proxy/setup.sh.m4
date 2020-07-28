@@ -11,10 +11,8 @@ adduser --no-create-home --gecos Apache2 --home /usr/local/apache2 \
   --disabled-password wwwrun
 
 mv $APACHE_HOME/conf $APACHE_HOME/conf.old
-mv $APACHE_HOME/htdocs $APACHE_HOME/htdocs.old
 
 cp -r /install/conf $APACHE_HOME/
-cp -r /install/htdocs $APACHE_HOME/
 
 cp /install/etc/$PRIMARY/$PRIMARY.cert $APACHE_HOME/conf/lbac_cert.pem
 cp /install/etc/$PRIMARY/$PRIMARY.key $APACHE_HOME/conf/lbac_cert.key

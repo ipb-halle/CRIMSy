@@ -33,7 +33,7 @@ CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
 
 #
 LBAC_CONFIG=etc/config.sh
-LBAC_CURRENT_CONFIG_VERSION=3
+LBAC_CURRENT_CONFIG_VERSION=4
 LBAC_INSTALLER=bin/install.sh
 
 LBAC_SSL_DEVCERT=devcert.pem
@@ -155,7 +155,7 @@ function dialog_HARDWARE_OK {
 	case $? in
 	0)
 		# alles Ok.
-		NEXT_FORM=DIALOG_PROXY_MODE 
+		NEXT_FORM=DIALOG_PROXY_HSTS 
 		;;
 	1)
 		dialog --backtitle "$CLOUD_NAME" \
@@ -283,25 +283,16 @@ function dialog_INTERNET_FQHN {
 		esac
 }
 
-function dialog_PROXY_MODE {
-	if test -z "$LBAC_PROXY_MODE" ; then
-		LBAC_PROXY_MODE=ON 
-	fi
+function dialog_PROXY_HSTS {
         if test -z "$LBAC_PROXY_HSTS" ; then
                 LBAC_PROXY_HSTS=OFF
         fi
 	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
-          --checklist "Falls Sie über eine fortgeschrittene Firewall mit Proxy-Funktion und ggf. Intrusion Detection verfügen, können Sie optional auf die Konfiguration eines Proxy-Containers verzichten. Sie müssen Ihren Proxy dann manuell konfigurieren. Bitte konsultieren Sie hierzu das Handbuch. " 15 72 2 \
-          PROXY "Proxy-Container automatisch konfigurieren" $LBAC_PROXY_MODE \
+          --checklist "Zur Erhöhung der Sicherheit können Sie HTTP Strict Transport Security (HSTS) aktivieren. Dies setzt jedoch ein Zertifikat einer offiziellen Zertifizierungsstelle voraus." 15 72 2 \
           HSTS "HTTP Strict Transport Security (HSTS) aktivieren" $LBAC_PROXY_HSTS 2> $TMP_RESULT
 	case $? in
 		0)
-                        if grep -q PROXY $TMP_RESULT ; then
-                            echo "LBAC_PROXY_MODE=\"ON\"" >> $TMP_CONFIG
-                        else
-                            echo "LBAC_PROXY_MODE=\"OFF\"" >> $TMP_CONFIG
-                        fi
                         if grep -q HSTS $TMP_RESULT ; then
                             echo "LBAC_PROXY_HSTS=\"ON\"" >> $TMP_CONFIG
                         else
@@ -869,8 +860,8 @@ while true ; do
 	DIALOG_INTERNET_FQHN)
 		dialog_INTERNET_FQHN
 		;;
-	DIALOG_PROXY_MODE)
-		dialog_PROXY_MODE
+	DIALOG_PROXY_HSTS)
+		dialog_PROXY_HSTS
 		;;
 	DIALOG_DATASTORE)
 		dialog_DATASTORE

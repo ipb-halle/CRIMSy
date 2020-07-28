@@ -39,7 +39,10 @@
 #
 LBAC_UI="ui.war"
 
-
+MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS
+JBROWSE_REPO=https://github.com/GMOD/jbrowse/releases/download/1.16.9-release
+JBROWSE_RELEASE_ZIP=JBrowse-1.16.9.zip
+JBROWSE_RELEASE_DIR=JBrowse-1.16.9
 #
 #==========================================================
 #
@@ -154,7 +157,6 @@ function cleanTmp {
 }
 
 function cleanUp {
-	mkdir -p target
 	pushd target > /dev/null
 	rm -r dist
 	mkdir -p dist/etc/$LBAC_CLOUD
@@ -198,10 +200,61 @@ function copyFiles {
         cp util/bin/updateCloud.sh target/dist/bin
 }
 
+function copyPlugins {
+        pushd target >/dev/null
+        mkdir -p dist/proxy/htdocs/plugins
+        cp -r jbrowse/$JBROWSE_RELEASE_DIR dist/proxy/htdocs/plugins/JBrowse
+        cp -r MolPaintJS/docs dist/proxy/htdocs/plugins/MolPaintJS
+        popd > /dev/null
+}
+
 function error {
 	echo $1
 	cleanTmp
 	exit 1
+}
+
+function genPackage {
+    cleanUp
+    copyDocker
+    copyFiles
+    copyPlugins
+    masterConfig
+    makeTomcatUsers
+    makeCert
+    copyCert
+    package
+    cleanTmp
+}
+
+function getJBrowse {
+        mkdir -p jbrowse
+        pushd jbrowse >/dev/null
+        if [ ! -f $JBROWSE_RELEASE_ZIP ] ; then
+            wget $JBROWSE_REPO/$JBROWSE_RELEASE_ZIP
+        fi
+        if [ ! -d $JBROWSE_RELEASE_DIR ] ; then
+            unzip $JBROWSE_RELEASE_ZIP
+        fi
+        popd >/dev/null
+}
+
+function getMolPaintJS {
+        if [ -d MolPaintJS ] ; then
+            pushd MolPaintJS > /dev/null
+            git pull 
+            popd >/dev/null
+        else
+            git clone https://github.com/ipb-halle/MolPaintJS
+        fi
+}
+
+function getResources {
+    mkdir -p target
+    pushd target >/dev/null
+    getMolPaintJS
+    getJBrowse
+    popd >/dev/null
 }
 
 function makeTomcatUsers {
@@ -261,18 +314,6 @@ function package {
 	popd >/dev/null
 }
 
-function genPackage {
-    cleanUp
-    copyDocker
-    copyFiles
-    masterConfig
-    makeTomcatUsers
-    makeCert
-    copyCert
-    package
-    cleanTmp
-}
-
 #
 #==========================================================
 #
@@ -290,9 +331,10 @@ LBAC_CONFIG=/tmp/lbac_config
 export LBAC_CA_DIR="$LBAC_REPO/config/$LBAC_CLOUD/CA"
 . $LBAC_CA_DIR/cloud.cfg
 
-cleanTmp
-
 pushd $LBAC_REPO > /dev/null
+cleanTmp
+getResources
+
 #  . config/CA/lbac_ca.cfg
 #  mkdir -p $LBAC_REPO/config/$LBAC_CLOUD
 . config/$LBAC_CLOUD/CA/cloud.cfg
