@@ -22,7 +22,7 @@ include(dist/etc/config_m4.inc)dnl
 /*
  * define global vars 
  */
-\set LBAC_SCHEMA_VERSION '\'00000\''
+\set LBAC_SCHEMA_VERSION '\'00005\''
 
 \set LBAC_SCHEMA lbac
 \set LBAC_DATABASE lbac
@@ -88,7 +88,7 @@ BEGIN TRANSACTION;
 -- tables --
 
 /*
- * Nodes
+ * Nodes, Clouds, etc.
  */
 CREATE TABLE nodes (
   id          UUID    NOT NULL PRIMARY KEY,
@@ -96,10 +96,45 @@ CREATE TABLE nodes (
   institution VARCHAR NOT NULL,
   local       BOOLEAN NOT NULL DEFAULT FALSE,
   publicNode  BOOLEAN NOT NULL DEFAULT FALSE,
-  rank        INTEGER NOT NULL DEFAULT 1,
   version     VARCHAR NOT NULL DEFAULT '00001',
   publickey   VARCHAR NOT NULL DEFAULT 'dummy'
 );
+
+CREATE TABLE clouds (
+    id          BIGSERIAL NOT NULL PRIMARY KEY,
+    name        VARCHAR,
+    UNIQUE (name)
+);
+INSERT INTO clouds (name) VALUES ('LBAC_PRIMARY_CLOUD');
+
+CREATE TABLE cloud_nodes (
+    id          BIGSERIAL NOT NULL PRIMARY KEY,
+    node_id     UUID NOT NULL REFERENCES nodes(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    cloud_id    BIGINT NOT NULL REFERENCES clouds(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    rank        INTEGER NOT NULL DEFAULT 1,
+    publickey   VARCHAR NOT NULL DEFAULT 'dummy',
+    failures    INTEGER NOT NULL DEFAULT 0,
+    retrytime   BIGINT NOT NULL DEFAULT 0,
+    UNIQUE (cloud_id, node_id)
+);
+
+
+/* definition of master node (will be skipped on master node) */
+LBAC_MASTER_SKIP INSERT INTO nodes (id, baseUrl, institution, local) VALUES
+LBAC_MASTER_SKIP ('LBAC_MASTER_NODE_ID', 'LBAC_MASTER_URL', 'LBAC_MASTER_INSTITUTION', False);
+
+/* definition of local node */
+INSERT INTO nodes (id, baseUrl, institution, local) VALUES
+  ( 'LBAC_NODE_ID',
+    'https://LBAC_INTERNET_FQHN:8443/ui',
+    'LBAC_INSTITUTION_SHORT', True);
+
+INSERT INTO cloud_nodes (node_id, cloud_id, rank) 
+  SELECT 'LBAC_NODE_ID'::UUID AS node_id, id AS cloud_id, LBAC_NODE_RANK AS rank 
+  FROM clouds WHERE name='LBAC_PRIMARY_CLOUD';
+LBAC_MASTER_SKIP INSERT INTO cloud_nodes (node_id, cloud_id, rank) 
+LBAC_MASTER_SKIP  SELECT 'LBAC_MASTER_NODE_ID'::UUID AS node_id, id AS cloud_id, 10 AS rank
+LBAC_MASTER_SKIP  FROM clouds WHERE name='LBAC_PRIMARY_CLOUD';
 
 /*
  * Admission 
@@ -142,7 +177,7 @@ CREATE TABLE membership_nestingpathsets (
         UNIQUE(nestingpathset_id, membership_id)
 );
 /* 
- * TODO: Do some database sanitation for memberships.  
+ * ToDo: Do some database sanitation for memberships.  
  * This cleanup / sanitation is necessary, when the membership table 
  * is manipulated out of band, because the table 'nestingpathsets' is not 
  * covered by referential integrity, i.e. deleting memberships via 
@@ -173,8 +208,6 @@ CREATE TABLE nestingpathset_memberships (
 CREATE TABLE aclists (
     id          UUID PRIMARY KEY,
     name        VARCHAR,
-    node_id     UUID REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    modified    TIMESTAMP DEFAULT now(),
     permCode    INTEGER
 );
 
@@ -201,7 +234,7 @@ CREATE TABLE info (
   aclist_id     UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO info (key, value, owner_id, aclist_id) VALUES ('DBSchema Version', :LBAC_SCHEMA_VERSION, null, null);
+INSERT INTO info (key, value, owner_id, aclist_id) VALUES ('DBSchema Version', '00000', null, null);
 
 /*
  * Collections and other distributed resources
@@ -225,6 +258,7 @@ CREATE TABLE files (
   created       TIMESTAMP DEFAULT now(),
   user_id       UUID REFERENCES usersGroups (id) ON DELETE SET NULL,
   collection_id UUID NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE
+  document_language VARCHAR NOT NULL DEFAULT 'en'
 );
 
 CREATE TABLE topics (
@@ -233,7 +267,8 @@ CREATE TABLE topics (
   category      VARCHAR,
   owner_id      UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
   aclist_id     UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  node_id       UUID NOT NULL REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE
+  node_id       UUID NOT NULL REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  cloud_name    VARCHAR NOT NULL DEFAULT 'LBAC_PRIMARY_CLOUD' REFERENCES clouds(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE postings (
@@ -244,6 +279,32 @@ CREATE TABLE postings (
   created       TIMESTAMP DEFAULT now()
 );
 
-COMMIT TRANSACTION;
 
-\quit
+/*
+ * Termvector table
+ */
+CREATE TABLE termvectors (
+  wordroot    VARCHAR    NOT NULL,
+  file_id     UUID NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  termfrequency INTEGER NOT NULL,
+  PRIMARY KEY(wordroot, file_id)
+);
+CREATE INDEX i_termvectors_file_id ON termvectors (file_id);
+
+
+CREATE TABLE unstemmed_words(
+  wordroot VARCHAR NOT NULL,
+  file_id UUID NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  unstemmed_word VARCHAR NOT NULL,
+  PRIMARY KEY(file_id, unstemmed_word),
+  FOREIGN KEY (wordroot, file_id) REFERENCES termvectors (wordroot, file_id)
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE INDEX i_unstemmed_words_wordroot ON  unstemmed_words (wordroot);
+
+/*
+ * finally set DBSchema Version
+ */
+UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
+COMMIT;
+

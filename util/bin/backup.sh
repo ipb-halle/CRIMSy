@@ -34,7 +34,7 @@ function backupDB {
 	mkdir -p "$LBAC_DATASTORE/backup/db"
 	pushd "$LBAC_DATASTORE/backup/db" > /dev/null
 	rm -f dump.latest.sql
-	docker exec dist_db_1 pg_dump -Cc \
+	docker exec dist_db_1 pg_dump --create --clean --if-exists \
           -U lbac > "$LBAC_DATASTORE/backup/db/dump.$DATE.sql" || \
           error "Error during database dump"
 	ln -s dump.$DATE.sql dump.latest.sql

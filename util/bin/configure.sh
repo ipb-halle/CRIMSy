@@ -36,6 +36,7 @@ LBAC_CONFIG=etc/config.sh
 LBAC_CURRENT_CONFIG_VERSION=4
 LBAC_INSTALLER=bin/install.sh
 
+LBAC_DB_PWFILE=db.passwd
 LBAC_SSL_DEVCERT=devcert.pem
 LBAC_SSL_CHAIN=chain.txt
 LBAC_SSL_KEYFILE=lbac_cert.key
@@ -693,26 +694,22 @@ chmod +x "$LBAC_DATASTORE/$LBAC_INSTALLER"
 }
 
 #
-# Upgrade from config version 2 to version 3
+# Version Upgrade 
+# Various automatic setting updates and cleanups are performed during version upgrade.
+# This is more a convenience method and there is currently no support for skip versions.
+#
+#
+# - from 2 to 3 --> renaming of certificate files, MultiCloud, hierarchical PKI
+# - from 3 to 4 --> removal of pgchem
 #
 function upgradeOldConfig {
-	if test $LBAC_CONFIG_VERSION = 2 ; then
+	if test $LBAC_CONFIG_VERSION = 4 ; then
 
-		if test -f $LBAC_DATASTORE/etc/lbac_devcert.pem ; then 
-			mv $LBAC_DATASTORE/etc/lbac_devcert.pem $LBAC_DATASTORE/etc/devcert.pem
-		fi
-		if test -f $LBAC_DATASTORE/etc/lbac_cacert.pem ; then
+                rm -rf "$LBAC_DATASTORE/dist/pgchem" 
 
-			cat <<EOF > $LBAC_DATASTORE/etc/chain.txt
-/C=DE/ST=Sachsen-Anhalt/L=Halle (Saale)/O=Leibniz-Institut fuer Pflanzenbiochemie (IPB) Halle/OU=Abt. Natur- und Wirkstoffchemie/CN=Leibniz Bioactives Cloud CA 1/emailAddress=fbroda@ipb-halle.de
+                # this time no need to remove the entire dist directory
+                # touch $LBAC_DATASTORE/dist/dirty
 
-`cat $LBAC_DATASTORE/etc/lbac_cacert.pem`
-EOF
-
-			rm $LBAC_DATASTORE/etc/lbac_cacert.pem
-		fi
-
-		touch $LBAC_DATASTORE/dist/dirty
 	fi
 }
 
@@ -782,6 +779,10 @@ EOF
 function makeDirectories {
 	mkdir -p $LBAC_DATASTORE/etc && \
 	mkdir -p $LBAC_DATASTORE/bin
+
+        if [ ! -f "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE" ] ; then
+            uuidgen -r | tr -d $'\n' > "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE"
+        fi
 
 	# clean up certificates from download and 
 	# verification (see upload.sh)

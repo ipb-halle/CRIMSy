@@ -21,16 +21,6 @@
 #
 #==========================================================
 #
-# build pgchem container
-#
-function buildPgChem {
-    pushd "$LBAC_DATASTORE/dist/pgchem" > /dev/null
-    docker build --pull -t pgchem .
-    popd
-}
-#
-#==========================================================
-#
 # Install or update crontab settings
 #
 function installCron {
@@ -116,6 +106,16 @@ function installCloud {
 }
 
 #
+# install / recover / replay database backup
+#
+function installDbBackup {
+    echo "restoring data from database dump ..."
+    cat "$LBAC_DATASTORE/backup/db/dump.latest.sql" | \
+        docker exec -i -u postgres dist_db_1 psql template1 
+    echo "finished database restore ..."
+}
+
+#
 # provides permanent sudo access to unprivileged 
 # installation account 
 #
@@ -194,7 +194,14 @@ function postInstall {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
     echo "Waiting 10 sek. for database to come up ..."
     sleep 10
-    docker exec -ti -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
+    docker exec dist_db_1 chown postgres /data/db
+    docker exec -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
+    if [ -f "$LBAC_DATASTORE/data/db/VERSION_UPDATE" ] ; then
+        installDbBackup
+        rm "$LBAC_DATASTORE/data/db/VERSION_UPDATE"
+        # re-run dbupdate after installation of backup
+        docker exec -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
+    fi
 }
 
 #
@@ -288,10 +295,6 @@ fi
 . "$LBAC_DATASTORE/dist/etc/config.sh" || error "configuration missing: LBAC_DATASTORE/dist/etc/config.sh"
 
 case $1 in
-    buildPgChem)
-        echo "Setting up PGChem"
-        buildPgChem
-        ;;
     installCron)
         echo "Setting up CRON"
         installCron
@@ -300,6 +303,9 @@ case $1 in
         LBAC_CLOUD=$2
         echo "Installing cloud: $LBAC_CLOUD"
         installCloud
+        ;;
+    installDbBackup)
+        installDbBackup
         ;;
     installInit)
         echo "Installing Init Script"

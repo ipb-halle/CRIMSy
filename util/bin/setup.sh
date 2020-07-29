@@ -24,6 +24,8 @@
 LBAC_EXPECTED_CONFIG_VERSION=4
 LBAC_CONFIG=etc/config.sh
 
+LBAC_DB_PWFILE=db.passwd
+
 LBAC_SSL_KEYFILE=lbac_cert.key
 LBAC_SSL_PWFILE=lbac_cert.passwd
 
@@ -37,7 +39,7 @@ LBAC_SOLR_PORT_ENABLE="dnl"
 LBAC_TOMEE_PORT_ENABLE="dnl"
 LBAC_HSTS_ENABLE="dnl"
 LBAC_CLOUD_MODE="AUTO";
-LBAC_SKIP_PREINSTALL="OFF"
+LBAC_SKIP_SNAPSHOT="OFF"
 #
 #==========================================================
 #
@@ -224,6 +226,7 @@ define(\`LBAC_SOLR_PORT_ENABLE',\`$LBAC_SOLR_PORT_ENABLE')dnl
 define(\`LBAC_TOMEE_PORT_ENABLE',\`$LBAC_TOMEE_PORT_ENABLE')dnl
 define(\`LBAC_HSTS_ENABLE',\`$LBAC_HSTS_ENABLE')dnl
 define(\`LBAC_PRIMARY_CLOUD',\`$LBAC_CLOUD')dnl
+define(\`LBAC_DB_PASSWD',\``cat $LBAC_DATASTORE/etc/$LBAC_DB_PWFILE`')dnl
 EOF
 }
 
@@ -241,43 +244,27 @@ function preprocess {
 export -f preprocess
 
 #
-# test if a previous installation of LBAC exists
-# and act accordingly:
-# - possibly shut down node
-# - backup and make database dump
-#
-function preInstallTest {
-    if [ -f "$LBAC_DATASTORE/dist/bin/setupROOT.sh" ] ;then
-        LBAC_OLDINSTALL_AVAIL=TRUE
-        echo "  scheduling snapshot / backup ..." 
-
-        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" snapshot
-
-        echo "  shutting down containers ..."
-        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" shutdown
-        
-	if test -e $LBAC_DATASTORE/dist/dirty ; then
-		rm -rf $LBAC_DATASTORE/dist
-	fi
-    else
-        echo "  No previous installation found":
-        LBAC_OLDINSTALL_AVAIL=FALSE
-    fi
-}
-
-#
 # extract the archive from this file and call all the 
 # other functions
 #
 function setup {
 	cd $LBAC_DATASTORE
 
-        if test $LBAC_SKIP_PREINSTALL = "OFF" ; then
-            echo "Checking of previous installation ..."
-            preInstallTest
+        if test $LBAC_SKIP_SNAPSHOT = "OFF" ; then
+            snapshot 
             echo "Done."
         else
-            echo "Skipping preinstall test"
+            echo "Skipping snapshot / backup"
+        fi
+
+        if [ -f "$LBAC_DATASTORE/dist/bin/setupROOT.sh" ] ;then
+            echo "shutting down instance ..."
+            sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" shutdown
+        fi
+
+        if test -e $LBAC_DATASTORE/dist/dirty ; then
+                # clean up entire dist/ directory if demanded during configure.sh version update
+                rm -rf $LBAC_DATASTORE/dist
         fi
 
 	echo "Extracting archive ... "
@@ -307,7 +294,6 @@ function setup {
 
         echo "Doing superuser actions ..."
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" remove 
-        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" buildPgChem
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" setPermissions
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" installInit
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" installCron
@@ -315,6 +301,19 @@ function setup {
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" start
 
 	echo "Setup is finished" 
+}
+
+#
+# test if a previous installation of LBAC exists
+# and make a full backup 
+#
+function snapshot {
+    if [ -f "$LBAC_DATASTORE/dist/bin/setupROOT.sh" ] ;then
+        echo "  scheduling snapshot / backup ..." 
+        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" snapshot
+    else
+        echo "  No previous installation found":
+    fi
 }
 
 function error {
@@ -360,14 +359,14 @@ for i in $* ; do
             echo "  --debug            enable debugging (i.e. open ports)"
             echo "  --noproxy          disable proxy (requires manual proxy configuration)"
             echo "  --proxy            enable proxy where manual configuration is default"
-            echo "  --skip-preinstall  skip preinstallation procedure (backup, shutdown, ...)"
+            echo "  --skip-snapshot    skip preinstallation procedure (snapshot / backup)"
             echo "  --standalone       configure node to run standalone"
             echo 
             echo "Please consult manual for further information"
             exit 1
             ;;
-        --skip-preinstall)
-            LBAC_SKIP_PREINSTALL="ON"
+        --skip-snapshot)
+            LBAC_SKIP_SNAPSHOT="ON"
             ;;
         --standalone)
             echo "Activating standalone mode ..."

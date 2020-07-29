@@ -26,7 +26,7 @@
 # Database dump:
 # 	docker exec CONTAINER_ID su -l postgres -c "/usr/bin/pg_dump -Ccb lbac"
 #
-FROM pgchem:latest
+FROM ipbhalle/ccdbc:latest
 
 #
 COPY ./db/*.sql /docker-entrypoint-initdb.d/
