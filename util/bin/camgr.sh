@@ -227,6 +227,7 @@ function createCA {
         openssl ca -updatedb \
           -passin file:cacert.passwd -config ca.cfg
 
+        echo "createCA: importing root certificate into truststore ..."
         keytool -importcert -keystore truststore -storepass $TRUST_PASSWD \
           -noprompt -trustcacerts -file cacert.pem -alias "$CA_CN"
 
@@ -290,6 +291,7 @@ function createTruststore {
     TRUST_PASSWD=`cat $OUTPUT.passwd`
 
     cp truststore $OUTPUT
+    echo "createTruststore: Changing truststore password ..."
     keytool -storepasswd -keystore $OUTPUT -storepass $tmp \
           -new $TRUST_PASSWD
 
@@ -299,6 +301,7 @@ function createTruststore {
 
     # import a certificate into the truststore
     ALIAS=`grep $HASH index.cloud | tail -1 | cut -d' ' -f4-`
+    echo "createTruststore: Importing certificate into truststore ..."
     keytool -importcert -storepass $TRUST_PASSWD \
       -trustcacerts -file cloud/$HASH.pem \
       -keystore $OUTPUT -alias "$ALIAS" || error "keytool error"
@@ -556,9 +559,11 @@ function getAction {
                 ca)
                         ACTION=9
                         MODE='quit'
+                        ;;
                 devcert)
                         ACTION=2
                         MODE='quit'
+                        ;;
                 genCRL)
                         ACTION=8
                         MODE='quit'
@@ -717,6 +722,9 @@ ${BOLD}MODES${REGULAR}
 ca
     Create a CA / subCA (mainly intended for integration testing)
 
+devcert
+    Create a developers certificate (intended for integration testing)
+
 genCRL
     Generates a certificate revocation list and uploads it to the specified 
     location. Uploading is performed using scp and a supplied destination.
@@ -808,9 +816,11 @@ function importSubCA {
         TRUST_PASSWD=`uuidgen -r | tr -d $'\n'`
         echo $TRUST_PASSWD > truststore.passwd
 
+        echo "ImportSubCA: changing truststore password ..."
         keytool -storepasswd -keystore truststore -storepass $tmp \
           -new $TRUST_PASSWD 
 
+        echo "ImportSubCA: adding certificate to truststore ..."
         keytool -importcert -keystore truststore -storepass $TRUST_PASSWD \
           -noprompt -trustcacerts -file cacert.pem -alias "$CA_CN"
 

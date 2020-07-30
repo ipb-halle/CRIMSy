@@ -43,7 +43,7 @@ function runDistServer {
 
 function safetyCheck {
     if [ -d config ] ; then
-        if [ ! -f INTEGRATION_TEST ] ; then
+        if [ ! -f config/INTEGRATION_TEST ] ; then
             cat <<EOF
 *****************************************************************
 *                                                               *
@@ -61,7 +61,7 @@ EOF
         fi
     fi
     mkdir -p config
-    cat > INTEGRATION_TEST << EOF
+    cat > config/INTEGRATION_TEST << EOF
 *****************************************************************
 *                                                               *
 *                       WARNING!                                *
@@ -76,7 +76,26 @@ EOF
 }
 
 function setupTestCA {
-    for i in "rootCA:rootCA::CI root CA" "cloudONE:rootCA:cloudONE:ONE CA" "cloudTWO:rootCA:cloudTWO:TWO CA" ; do
+    $LBAC_REPO/util/bin/camgr.sh --batch --mode ca
+
+    for cloud in cloudONE cloudTWO ; do
+
+        $LBAC_REPO/util/bin/camgr.sh --batch --mode ca --cloud $cloud
+
+        $LBAC_REPO/util/bin/camgr.sh --batch --mode sign --extension v3_subCA \
+            --input $LBAC_REPO/config/$cloud/CA/cacert.req \
+            --output $LBAC_REPO/config/$cloud/CA/cacert.pem
+
+        $LBAC_REPO/util/bin/camgr.sh --batch --mode importSubCA --cloud $cloud
+    done
+}
+
+
+function setupTestCAconf {
+    for i in "rootCA:rootCA::CI root" \
+             "cloudONE:rootCA:cloudONE:CRIMSy CI Cloud ONE" \
+             "cloudTWO:rootCA:cloudTWO:CRIMSy CI Cloud TWO" ; do
+
         dist=`echo $i | cut -d: -f1`
         superior=`echo $i | cut -d: -f2`
         cloud=`echo $i | cut -d: -f3`
@@ -96,7 +115,7 @@ CA_PLACE="Somecity"
 CA_ORG="SomeOrg"
 CA_OU="Integration Test Dept."
 CA_EMAIL="admin@somewhere.invalid"
-CA_CN="$name"
+CA_CN="$name CA"
 CA_CRL="http://`hostname -f`:8000/$dist"
 DEV_COUNTRY="DE"
 DEV_STATE="State"
@@ -110,6 +129,7 @@ DOWNLOAD_URL="http://`hostname -f`:8000/$dist"
 SUPERIOR_URL="http://`hostname -f`:8000/$superior"
 SCP_ADDR="$LBAC_REPO/target/integration/htdocs/$dist"
 CLOUD="$cloud"
+CLOUD_NAME="$name"
 EOF
 
     done
@@ -118,6 +138,8 @@ EOF
 
 cd $LBAC_REPO
 safetyCheck
-setupTestCA
+setupTestCAconf
 buildDistServer
 runDistServer
+setupTestCA
+
