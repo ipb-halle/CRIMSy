@@ -31,7 +31,6 @@ function buildDistServer {
 }
 
 function runDistServer {
-    mkdir -p target/integration/htdocs
     cp docker/crimsyci/index.html target/integration/htdocs
     (docker inspect crimsyci_service | grep Status | grep -q running )\
         || docker start crimsyci_service \
@@ -42,8 +41,83 @@ function runDistServer {
         crimsyci
 }
 
+function safetyCheck {
+    if [ -d config ] ; then
+        if [ ! -f INTEGRATION_TEST ] ; then
+            cat <<EOF
+*****************************************************************
+*                                                               *
+*                         ERROR!                                *
+*                                                               *
+* This tree already contains a config directory, which is not   *
+* specially marked for integration testing. We refuse to        *
+* continue as this would damage valuable data (certificates,    *
+* keys, ...).                                                   *
+*                                                               *
+*****************************************************************
+EOF
+            exit 1
+
+        fi
+    fi
+    mkdir -p config
+    cat > INTEGRATION_TEST << EOF
+*****************************************************************
+*                                                               *
+*                       WARNING!                                *
+*                                                               *
+* This file enables batch mode for the camgr.sh script, which   * 
+* can result destruction of configuration data without further  *
+* questions asked. Do not use configuration data stored in this *
+* directory for production purposes.                            *
+*                                                               *
+*****************************************************************
+EOF
+}
+
+function setupTestCA {
+    for i in "rootCA:rootCA::CI root CA" "cloudONE:rootCA:cloudONE:ONE CA" "cloudTWO:rootCA:cloudTWO:TWO CA" ; do
+        dist=`echo $i | cut -d: -f1`
+        superior=`echo $i | cut -d: -f2`
+        cloud=`echo $i | cut -d: -f3`
+        name=`echo $i | cut -d: -f4`
+
+    mkdir -p "$LBAC_DATASTORE/config/$cloud/CA"
+    mkdir -p "$LBAC_DATASTORE/target/integration/htdocs/$dist"
+
+    cat > "$LBAC_DATASTORE/config/$cloud/CA/cloud.cfg" <<EOF
+#
+# Integration Test CA config
+# Tue Dec 10 17:05:31 CET 2019
+#
+CA_COUNTRY="XX"
+CA_STATE="Some State"
+CA_PLACE="Somecity"
+CA_ORG="SomeOrg"
+CA_OU="Integration Test Dept."
+CA_EMAIL="admin@somewhere.invalid"
+CA_CN="$name"
+CA_CRL="http://`hostname -f`:8000/$dist"
+DEV_COUNTRY="DE"
+DEV_STATE="State"
+DEV_PLACE="Location"
+DEV_ORG="Organization"
+DEV_OU="OU"
+DEV_EMAIL="Email"
+DEV_CN="Developer Name"
+DEV_CERT=""
+DOWNLOAD_URL="http://`hostname -f`:8000/$dist"
+SUPERIOR_URL="http://`hostname -f`:8000/$superior"
+SCP_ADDR="$LBAC_DATASTORE/target/integration/htdocs/$dist"
+CLOUD="$cloud"
+EOF
+
+    done
+
+}
 
 cd $LBAC_REPO
+safetyCheck
+setupTestCA
 buildDistServer
 runDistServer
-

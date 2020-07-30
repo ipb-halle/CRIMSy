@@ -176,13 +176,15 @@ function createCA {
 	TMP_SUBJECT_ALT_NAME="email:copy"
         TMP_SUBJECT_ALT_NAMES=''
 
-	CA_COUNTRY="$TMP_COUNTRY"
-	CA_STATE="$TMP_STATE"
-	CA_PLACE="$TMP_PLACE"
-	CA_ORG="$TMP_ORG"
-	CA_OU="$TMP_OU"
-	CA_EMAIL="$TMP_EMAIL"
-	CA_CN="$TMP_CN"
+        if [ x$BATCHMODE != 'x-batch' ] ; then
+            CA_COUNTRY="$TMP_COUNTRY"
+            CA_STATE="$TMP_STATE"
+            CA_PLACE="$TMP_PLACE"
+            CA_ORG="$TMP_ORG"
+            CA_OU="$TMP_OU"
+            CA_EMAIL="$TMP_EMAIL"
+            CA_CN="$TMP_CN"
+        fi
 
 	createConfig
 
@@ -196,7 +198,7 @@ function createCA {
 	  -new -keyout cacert.key -newkey rsa:4096 -sha256 -utf8 \
 	  -passout "file:cacert.passwd" -days 3650 \
 	  -config ca.cfg -extensions v3_ca \
-	  -subj "$CA_SUBJECT" 
+	  -subj "$CA_SUBJECT" $BATCHMODE
 
         # CA directories and infrastructure
 	mkdir -p req
@@ -235,13 +237,15 @@ function createSubCA {
 	TMP_SUBJECT_ALT_NAME="email:copy"
         TMP_SUBJECT_ALT_NAMES=''
 
-	CA_COUNTRY="$TMP_COUNTRY"
-	CA_STATE="$TMP_STATE"
-	CA_PLACE="$TMP_PLACE"
-	CA_ORG="$TMP_ORG"
-	CA_OU="$TMP_OU"
-	CA_EMAIL="$TMP_EMAIL"
-	CA_CN="$TMP_CN"
+        if [ x$BATCHMODE != 'x-batch' ] ; then
+            CA_COUNTRY="$TMP_COUNTRY"
+            CA_STATE="$TMP_STATE"
+            CA_PLACE="$TMP_PLACE"
+            CA_ORG="$TMP_ORG"
+            CA_OU="$TMP_OU"
+            CA_EMAIL="$TMP_EMAIL"
+            CA_CN="$TMP_CN"
+        fi
 
 	createConfig
 
@@ -255,7 +259,7 @@ function createSubCA {
 	  -new -keyout cacert.key -newkey rsa:4096 -sha256 -utf8 \
 	  -passout "file:cacert.passwd" -days 3650 \
 	  -config ca.cfg -reqexts v3_reqSubCA \
-	  -subj "$CA_SUBJECT" 
+	  -subj "$CA_SUBJECT" $BATCHMODE
 
 	mkdir -p req
 	mkdir -p cloud
@@ -313,13 +317,15 @@ function devCert {
 	TMP_SUBJECT_ALT_NAME="email:copy"
         TMP_SUBJECT_ALT_NAMES=''
 
-        DEV_COUNTRY="$TMP_COUNTRY"
-        DEV_STATE="$TMP_STATE"
-        DEV_PLACE="$TMP_PLACE"
-        DEV_ORG="$TMP_ORG"
-        DEV_OU="$TMP_OU"
-        DEV_EMAIL="$TMP_EMAIL"
-        DEV_CN="$TMP_CN"
+        if [ x$BATCHMODE != 'x-batch' ] ; then
+            DEV_COUNTRY="$TMP_COUNTRY"
+            DEV_STATE="$TMP_STATE"
+            DEV_PLACE="$TMP_PLACE"
+            DEV_ORG="$TMP_ORG"
+            DEV_OU="$TMP_OU"
+            DEV_EMAIL="$TMP_EMAIL"
+            DEV_CN="$TMP_CN"
+        fi
 
 	SUBJECT="/C=$DEV_COUNTRY/ST=$DEV_STATE/L=$DEV_PLACE"
 	SUBJECT="$SUBJECT/O=$DEV_ORG/OU=$DEV_OU"
@@ -334,11 +340,11 @@ function devCert {
 	  -new -keyout devcert/$SERIAL.key -newkey rsa:4096 -sha256 -utf8 \
 	  -passout "file:devcert/$SERIAL.passwd" -days 3650 \
 	  -config ca.cfg -reqexts v3_reqDevCert \
-	  -subj "$SUBJECT" || error
+	  -subj "$SUBJECT" $BATCHMODE || error
 
 	openssl ca -verbose -config ca.cfg -extensions v3_devCert \
 	  -in devcert/$SERIAL.req -out devcert/$SERIAL.pem \
-	  -passin "file:cacert.passwd" || error
+	  -passin "file:cacert.passwd" $BATCHMODE || error
 
         #
         # The Subject Key Identifier used by clients to identify, which 
@@ -360,8 +366,10 @@ function devCert {
 #
 function dialogCA {
 
-        dialog --backtitle "CA-Management" \
-          --yesno "Create new CA; this will destroy your current CA!" 15 76 || error "Aborted."
+        if [ x$BATCHMODE != 'x-batch' ] ; then
+            dialog --backtitle "CA-Management" \
+              --yesno "Create new CA; this will destroy your current CA!" 15 76 || error "Aborted."
+        fi
 
         rm index.txt.*
         rm serial.txt*
@@ -371,12 +379,14 @@ function dialogCA {
         rm -r cloud
         rm -r req
 
-        dialogCert "CA Name (CN)     :" "$CA_COUNTRY" "$CA_STATE" \
-          "$CA_PLACE" "$CA_ORG" "$CA_OU" "$CA_EMAIL" "$CA_CN"
-        dialogDownload 'this'
-        CA_CRL=$TMP_DOWNLOAD_URL/crl.pem
-        DOWNLOAD_URL=$TMP_DOWNLOAD_URL
-        dialogUpload
+        if [ x$BATCHMODE != 'x-batch' ] ; then
+            dialogCert "CA Name (CN)     :" "$CA_COUNTRY" "$CA_STATE" \
+              "$CA_PLACE" "$CA_ORG" "$CA_OU" "$CA_EMAIL" "$CA_CN"
+            dialogDownload 'this'
+            CA_CRL=$TMP_DOWNLOAD_URL/crl.pem
+            DOWNLOAD_URL=$TMP_DOWNLOAD_URL
+            dialogUpload
+        fi
 
         if test -z "$CLOUD" ; then
             createCA
@@ -388,11 +398,14 @@ function dialogCA {
             genCRL
             sleep 10
         else
-            dialogDownload '*superior*'
-            curl --output chain.txt $TMP_DOWNLOAD_URL/chain.txt
-            curl --output addresses.txt $TMP_DOWNLOAD_URL/addresses.txt
-            curl --output truststore $TMP_DOWNLOAD_URL/truststore
-            curl --output truststore.passwd $TMP_DOWNLOAD_URL/truststore.passwd
+            if [ x$BATCHMODE != 'x-batch' ] ; then
+                dialogDownload '*superior*'
+                SUPERIOR_URL=$TMP_DOWNLOAD_URL
+            fi
+            curl --output chain.txt $SUPERIOR_URL/chain.txt
+            curl --output addresses.txt $SUPERIOR_URL/addresses.txt
+            curl --output truststore $SUPERIOR_URL/truststore
+            curl --output truststore.passwd $SUPERIOR_URL/truststore.passwd
             createSubCA
         fi
         writeConfig
@@ -521,7 +534,7 @@ function genCert {
 	SERIAL=`cat serial.txt`
 	openssl ca -verbose -config ca.cfg -extensions $EXTENSION \
 	  -in $INPUT -out cloud/$TMP_CERT_ID.pem \
-	  -passin "file:cacert.passwd" || error
+	  -passin "file:cacert.passwd" $BATCHMODE || error
 
 	echo "$SERIAL `date +%s` $TMP_CERT_ID $TMP_HOSTNAME" >> index.cloud
 
@@ -540,6 +553,12 @@ function getAction {
                         ACTION=1
                         MODE='quit'
                         ;;
+                ca)
+                        ACTION=9
+                        MODE='quit'
+                devcert)
+                        ACTION=2
+                        MODE='quit'
                 genCRL)
                         ACTION=8
                         MODE='quit'
@@ -588,8 +607,10 @@ function performAction {
                         genCert 
                         ;;
                 2)
-                        dialogCert "Developer (CN)   :"  "$DEV_COUNTRY" "$DEV_STATE" \
-                          "$DEV_PLACE" "$DEV_ORG" "$DEV_OU" "$DEV_EMAIL" "$DEV_CN"
+                        if [ x$BATCHMODE != 'x-batch' ] ; then
+                            dialogCert "Developer (CN)   :"  "$DEV_COUNTRY" "$DEV_STATE" \
+                              "$DEV_PLACE" "$DEV_ORG" "$DEV_OU" "$DEV_EMAIL" "$DEV_CN"
+                        fi
                         devCert
                         ;;
                 3)
@@ -659,6 +680,9 @@ ${BOLD}DESCRIPTION${REGULAR}
     current directory.
 
 ${BOLD}OPTIONS${REGULAR}
+-b | --batch
+    Operate in batch mode (only for integration testing)
+
 -c CLOUD| --cloud CLOUD
     Name of the cloud (i.e. subCA) to operate; without this option, the 
     program operates on the toplevel CA directory (i.e. DIR/CA)
@@ -690,6 +714,9 @@ ${BOLD}OPTIONS${REGULAR}
     in a file named "NAME.passwd".
 
 ${BOLD}MODES${REGULAR}
+ca
+    Create a CA / subCA (mainly intended for integration testing)
+
 genCRL
     Generates a certificate revocation list and uploads it to the specified 
     location. Uploading is performed using scp and a supplied destination.
@@ -802,6 +829,24 @@ function importSubCA {
 }
 
 #
+#
+#
+function safetyCheck {
+    if [ -d $CONFIG_DIR ] ; then
+
+        if [ x$BATCHMODE = 'x-batch' ] ;then
+            if [ ! -f $CONFIG_DIR/INTEGRATION_TEST ]; then
+                error "Batch mode not allowed in normal setups"
+            fi
+        else 
+            if [ -f $CONFIG_DIR/INTEGRATION_TEST ]; then
+                error "Cannot run normally in integration test setups"
+            fi
+        fi
+    fi
+}
+
+#
 # Select a certificate for revokation
 #
 function selectDialog {
@@ -886,7 +931,6 @@ function setup() {
         export CA_DIR=`realpath $tmp`
         echo "CA_DIR=$CA_DIR"
 
-        TMP_RESULT=`mktemp /tmp/camgr.XXXXXX`
         if test -f $CA_DIR/cloud.cfg ; then
                 echo "reading cloud.cfg"
                 . $CA_DIR/cloud.cfg
@@ -981,7 +1025,7 @@ export NCURSES_NO_UTF8_ACS=1
 
 umask 0077
 p=`dirname $0`
-GETOPT=$(getopt -o 'c:d:e:hH:i:m:o:' --long 'cloud:,director:,extension:,help,hash:,input:,mode:,output:' -n 'camgr.sh' -- "$@")
+GETOPT=$(getopt -o 'bc:d:e:hH:i:m:o:' --long 'batch,cloud:,director:,extension:,help,hash:,input:,mode:,output:' -n 'camgr.sh' -- "$@")
 
 if [ $? -ne 0 ]; then
         echo 'Error in commandline evaluation. Terminating...' >&2
@@ -999,10 +1043,15 @@ INPUT=''
 MODE='interactive'
 OUTPUT=''
 CLOUD=''
+BATCHMODE=''
 
 while true ; do
 
     case "$1" in
+        '-b'|'--batch')
+            BATCHMODE='-batch'
+            shift
+            ;;
         '-c'|'--cloud')
             CLOUD="$2"
             shift 2
@@ -1045,6 +1094,9 @@ while true ; do
             ;;
         '-m'|'--mode')
             case "$2" in
+                'ca')
+                    MODE=ca
+                    ;;
                 'genCRL')
                     MODE=genCRL
                     ;;
@@ -1084,6 +1136,8 @@ while true ; do
     esac
 done
 
+TMP_RESULT=`mktemp /tmp/camgr.XXXXXX`
+safetyCheck
 setup
 pushd $CA_DIR
 while test $MODE != 'quit' ; do
