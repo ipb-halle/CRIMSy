@@ -82,10 +82,10 @@ function setupTestCA {
         cloud=`echo $i | cut -d: -f3`
         name=`echo $i | cut -d: -f4`
 
-    mkdir -p "$LBAC_DATASTORE/config/$cloud/CA"
-    mkdir -p "$LBAC_DATASTORE/target/integration/htdocs/$dist"
+    mkdir -p "$LBAC_REPO/config/$cloud/CA"
+    mkdir -p "$LBAC_REPO/target/integration/htdocs/$dist"
 
-    cat > "$LBAC_DATASTORE/config/$cloud/CA/cloud.cfg" <<EOF
+    cat > "$LBAC_REPO/config/$cloud/CA/cloud.cfg" <<EOF
 #
 # Integration Test CA config
 # Tue Dec 10 17:05:31 CET 2019
@@ -108,7 +108,7 @@ DEV_CN="Developer Name"
 DEV_CERT=""
 DOWNLOAD_URL="http://`hostname -f`:8000/$dist"
 SUPERIOR_URL="http://`hostname -f`:8000/$superior"
-SCP_ADDR="$LBAC_DATASTORE/target/integration/htdocs/$dist"
+SCP_ADDR="$LBAC_REPO/target/integration/htdocs/$dist"
 CLOUD="$cloud"
 EOF
 
