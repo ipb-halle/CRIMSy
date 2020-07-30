@@ -43,6 +43,17 @@ LBAC_SKIP_SNAPSHOT="OFF"
 #
 #==========================================================
 #
+# clean the distribution directory (everything except dist/etc)
+#
+function cleanDist {
+    pushd dist > /dev/null
+    # ToDo: remove folder pgchem in future revisions
+    rm -rf bin db extralib pgchem proxy solr ui
+    popd > /dev/null
+    
+}
+#
+#==========================================================
 # configure the proxy 
 #
 function configProxy {
@@ -263,8 +274,13 @@ function setup {
         fi
 
         if test -e $LBAC_DATASTORE/dist/dirty ; then
-                # clean up entire dist/ directory if demanded during configure.sh version update
-                rm -rf $LBAC_DATASTORE/dist
+            # clean up entire dist/ directory if demanded during configure.sh version update
+            echo "completely removing old distribution directory ..."
+            rm -rf $LBAC_DATASTORE/dist
+        else 
+            # otherwise clean up everything except dist/etc/
+            echo "cleaning up distribution directory (keeping dist/etc/) ..."
+            cleanDist
         fi
 
 	echo "Extracting archive ... "

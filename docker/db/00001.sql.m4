@@ -257,7 +257,7 @@ CREATE TABLE files (
   hash          VARCHAR,
   created       TIMESTAMP DEFAULT now(),
   user_id       UUID REFERENCES usersGroups (id) ON DELETE SET NULL,
-  collection_id UUID NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE
+  collection_id UUID NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE,
   document_language VARCHAR NOT NULL DEFAULT 'en'
 );
 

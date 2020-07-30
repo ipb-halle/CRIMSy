@@ -45,7 +45,7 @@ function getSchemaVersion {
 
     LBAC_SCHEMA_VERSION=`echo "\\pset tuples_only on
         SELECT value FROM lbac.info WHERE key='DBSchema Version';" \
-        | psql lbac | head -2 | tail -1 | tr -d ' '`
+        | psql lbac | head -1 | tr -d ' '`
 }
 
 function updatePre96 {
