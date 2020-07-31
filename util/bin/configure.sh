@@ -538,20 +538,7 @@ function dialog_ENCRYPT {
 	case $? in
 		0)
 			NEXT_FORM="ERROR: Fehler beim Verschlüsseln."
-			rm -f "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && \
-			cat << EOF > "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
-#
-# LBAC_INSTITUTION=$LBAC_INSTITUTION
-# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT" -text | \
-          grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
-# `date`
-#
-# ----- SMIME ENCRYPTED CONFIG BEGIN -----
-`openssl smime -encrypt -binary -outform PEM -aes-256-cbc \
-  -in "$LBAC_DATASTORE/$LBAC_CONFIG" "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT"`
-# ----- SMIME ENCRYPTED CONFIG END -----
-EOF
-
+                        encrypt
 			;;
 		*)
 			NEXT_FORM=DIALOG_ABORT
@@ -693,31 +680,23 @@ chmod +x "$LBAC_DATASTORE/$LBAC_INSTALLER"
 
 }
 
+# encrypt the configuration script
+function encrypt {
+        rm -f "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && \
+            cat << EOF > "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
 #
-# Version Upgrade 
-# Various automatic setting updates and cleanups are performed during version upgrade.
-# This is more a convenience method and there is currently no support for skip versions.
+# LBAC_INSTITUTION=$LBAC_INSTITUTION
+# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT" -text | \
+          grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
+# `date`
 #
-#
-# - from 2 to 3 --> renaming of certificate files, MultiCloud, hierarchical PKI
-# - from 3 to 4 --> removal of pgchem
-#
-function upgradeOldConfig {
-	if test $LBAC_CONFIG_VERSION = 4 ; then
-
-                rm -rf "$LBAC_DATASTORE/dist/pgchem" 
-
-                # this time no need to remove the entire dist directory
-                # touch $LBAC_DATASTORE/dist/dirty
-
-	fi
+# ----- SMIME ENCRYPTED CONFIG BEGIN -----
+`openssl smime -encrypt -binary -outform PEM -aes-256-cbc \
+  -in "$LBAC_DATASTORE/$LBAC_CONFIG" "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT"`
+# ----- SMIME ENCRYPTED CONFIG END -----
+EOF
 }
 
-# function installKeys {
-#	wget -O $LBAC_DATASTORE/etc/$LBAC_SSL_CHAIN $LBAC_DISTRIBUTION_POINT/$LBAC_SSL_CHAIN
-#	wget -O $LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT $LBAC_DISTRIBUTION_POINT/$LBAC_SSL_DEVCERT
-# }
- 
 function makeCertReq {
 	LBAC_COUNTRY=`head -1 $TMP_SSL_DATA | tr -d $'\n'`
 	LBAC_STATE=`head -2 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
@@ -769,11 +748,6 @@ EOF
 	  -passout "file:$LBAC_DATASTORE/etc/$LBAC_SSL_PWFILE" \
 	  -subj "$TMP_SSL_SUBJECT" \
 	  -config $TMP_SSL_DATA
-
-#
-#	deactivated!
-#	installKeys
-#
 }
 
 function makeDirectories {
@@ -807,21 +781,9 @@ EOF
 }
 
 #
-#==========================================================
+# select and run the next dialog
 #
-# line drawing in UTF-8 PuTTY
-export NCURSES_NO_UTF8_ACS=1
-
-umask 0077
-checkSoftware
-if test $NEXT_FORM = DIALOG_START ; then
-	checkTerminal
-	checkUser
-	makeTempConfig
-	checkTerminalSize
-fi
-
-while true ; do 
+function runDialogs {
 
 	case $NEXT_FORM in
 
@@ -891,7 +853,7 @@ while true ; do
 	__END__)
 		cleanUp
                 echo "cleaning up intermediate files"
-                rm configure.sh.sig chain.txt devcert.pem
+                rm configure.sh.sig 
                 echo "Moving configure.sh to $LBAC_DATASTORE/bin"
                 mv $0 "$LBAC_DATASTORE/bin"
 		exit 0
@@ -903,6 +865,48 @@ while true ; do
 		exit 1
 		;;
 	esac
+
+}
+
+#
+# Version Upgrade 
+# Various automatic setting updates and cleanups are performed during version upgrade.
+# This is more a convenience method and there is currently no support for skip versions.
+#
+#
+# - from 2 to 3 --> renaming of certificate files, MultiCloud, hierarchical PKI
+# - from 3 to 4 --> removal of pgchem
+#
+function upgradeOldConfig {
+	if test $LBAC_CONFIG_VERSION = 4 ; then
+
+                rm -rf "$LBAC_DATASTORE/dist/pgchem" 
+
+                # this time no need to remove the entire dist directory
+                # touch $LBAC_DATASTORE/dist/dirty
+
+	fi
+}
+#
+#==========================================================
+#
+# line drawing in UTF-8 PuTTY
+export NCURSES_NO_UTF8_ACS=1
+
+umask 0077
+# check for batch mode (configBatch.sh)
+if [ x$1 = 'xBATCH' ] ; then
+    return
+fi
+
+checkSoftware
+if test $NEXT_FORM = DIALOG_START ; then
+	checkTerminal
+	checkUser
+	makeTempConfig
+	checkTerminalSize
+fi
+
+while true ; do 
+    runDialogs
 done
-
-
