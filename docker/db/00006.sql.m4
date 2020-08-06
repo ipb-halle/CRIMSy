@@ -370,6 +370,7 @@ CREATE TABLE items(
     containertype VARCHAR REFERENCES containertypes(name),
     containerid INTEGER REFERENCES containers(id),
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
+    expiry_date TIMESTAMP,
     aclist_id UUID NOT NULL
 );
 

@@ -85,6 +85,9 @@ public class ItemEntity implements Serializable {
 
     @Column
     private UUID aclist_id;
+    
+    @Column
+    private Date expiry_date;
 
     public Integer getId() {
         return id;
@@ -212,6 +215,14 @@ public class ItemEntity implements Serializable {
 
     public void setAclist_id(UUID aclist_id) {
         this.aclist_id = aclist_id;
+    }
+
+    public Date getExpiry_date() {
+        return expiry_date;
+    }
+
+    public void setExpiry_date(Date expiry_date) {
+        this.expiry_date = expiry_date;
     }
 
 }

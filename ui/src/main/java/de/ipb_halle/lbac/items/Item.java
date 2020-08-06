@@ -58,6 +58,7 @@ public class Item extends ACObject implements DTO, Serializable {
     private Date cTime;
     private SortedMap<Date, ItemHistory> history = new TreeMap<>();
     private List<Container> nestedContainer = new ArrayList<>();
+    private Date expiry_date;
 
     public Item() {
 
@@ -79,6 +80,7 @@ public class Item extends ACObject implements DTO, Serializable {
         this.concentration = entity.getConcentration();
         this.container = con;
         this.containerSize = entity.getContainersize();
+        this.expiry_date=entity.getExpiry_date();
         if (entity.getContainertype() != null) {
             this.containerType = new ContainerType(entity.getContainertype(), 0);
         }
@@ -124,7 +126,7 @@ public class Item extends ACObject implements DTO, Serializable {
         }
         entity.setAclist_id(getACList().getId());
         entity.setCtime(cTime);
-
+        entity.setExpiry_date(expiry_date);
         return entity;
     }
 
@@ -292,10 +294,10 @@ public class Item extends ACObject implements DTO, Serializable {
         }
         String location = "";
         for (Container c : nestedContainer) {
-            location += c.getLocation(true) + ".";
+            location += c.getLabel() + ".";
         }
 
-        return location + container.getLocation(true);
+        return location + container.getLabel();
     }
 
 }
