@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
+ * Represantation of the database table 'containertypes'
  *
  * @author fmauz
  */
@@ -37,20 +38,74 @@ public class ContainerTypeEntity implements Serializable {
     @Column
     private Integer rank;
 
+    @Column
+    private boolean transportable;
+
+    @Column
+    private boolean unique_name;
+
+    /**
+     *
+     * @return
+     */
+    public boolean isTransportable() {
+        return transportable;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isUnique_name() {
+        return unique_name;
+    }
+
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    /**
+     *
+     * @return
+     */
     public Integer getRank() {
         return rank;
     }
 
+    /**
+     *
+     * @param rank
+     */
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    /**
+     *
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     *
+     * @param transportable
+     */
+    public void setTransportable(boolean transportable) {
+        this.transportable = transportable;
+    }
+
+    /**
+     *
+     * @param unique_name
+     */
+    public void setUnique_name(boolean unique_name) {
+        this.unique_name = unique_name;
     }
 
 }

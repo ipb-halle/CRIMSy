@@ -56,7 +56,6 @@ public class InputValidatorTest extends TestBase {
     private Container c;
     private InputValidator validator;
     private ErrorMessagePresenterMock messagePresenter;
-    private boolean allowDuplicateNames;
 
     @Before
     @Override
@@ -71,8 +70,7 @@ public class InputValidatorTest extends TestBase {
         c.setFireSection("F1");
         c.setGmosavety("S0");
         c.setLabel("R302");
-        c.setType(new ContainerType("ROOM", 100));
-        allowDuplicateNames = false;
+        c.setType(new ContainerType("ROOM", 100,false,true));
         entityManagerService.doSqlUpdate("DELETE FROM containers");
     }
 
@@ -80,15 +78,19 @@ public class InputValidatorTest extends TestBase {
     public void test001_isLabelValide() {
         Container c2 = new Container();
         c2.setLabel("R302");
-        c2.setType(new ContainerType("ROOM", 100));
+        c2.setType(new ContainerType("ROOM", 100,false,true));
         containerService.saveContainer(c2);
 
-        c.setType(new ContainerType("transportable", 99));
+        //Try to save a new container with a already saved name and a 
+        //unique_name type. This should lead to a error message.
+        c.setType(new ContainerType("mock_no_unique_name", 99, false, true));
         Assert.assertFalse("test001: containername already in use", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_name_invalide"));
         messagePresenter.errorMessages.clear();
-        c.setType(new ContainerType("ROOM", 100));
-
+        
+        //Try to save a new container with a already saved name and a 
+        //NOT unique_name type. This should lead to no error message.
+        c.setType(new ContainerType("ROOM", 100, false, false));
         Assert.assertTrue("test001: containername already in use but is accepted", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
 
@@ -137,8 +139,8 @@ public class InputValidatorTest extends TestBase {
     public void test003_isLocationAvailable() {
         Container c2 = new Container();
         c2.setLabel("PARENT_ROOM");
-        c2.setType(new ContainerType("ROOM", 100));
-        c.setType(new ContainerType("CUPBOARD", 20));
+        c2.setType(new ContainerType("ROOM", 100,false,true));
+        c.setType(new ContainerType("CUPBOARD", 20,true,false));
         containerService.saveContainer(c2);
 
         Assert.assertTrue("test003: no location expected and set", validator.isInputValideForCreation(c, null, null, 1, 1));
@@ -161,14 +163,14 @@ public class InputValidatorTest extends TestBase {
     public void test004_isLocationBiggerThan() {
         Container c2 = new Container();
         c2.setLabel("PARENT_ROOM");
-        c2.setType(new ContainerType("ROOM", 100));
+        c2.setType(new ContainerType("ROOM", 100,false,true));
 
         c.setParentContainer(c2);
         Assert.assertFalse("test004: container to big for location", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_to_small"));
         messagePresenter.errorMessages.clear();
 
-        c.setType(new ContainerType("CUPBOARD", 20));
+        c.setType(new ContainerType("CUPBOARD", 20,true,false));
         Assert.assertTrue("test004: container should fit into location ", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
     }

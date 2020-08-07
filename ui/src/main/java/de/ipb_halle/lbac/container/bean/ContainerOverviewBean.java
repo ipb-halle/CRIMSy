@@ -84,9 +84,8 @@ public class ContainerOverviewBean implements Serializable {
     public void setReadableContainer(List<Container> readableContainer) {
         this.readableContainer = readableContainer;
         for (Container c : readableContainer) {
-            c.getType()
-                    .setLocalizedName(
-                            Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
+            c.getType().setLocalizedName(
+                    Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
         }
     }
 

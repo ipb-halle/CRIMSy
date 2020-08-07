@@ -117,7 +117,8 @@ public class InputValidator implements Serializable {
     }
 
     /**
-     * Checks the containerlabel for existance and if toggled for unique
+     * Checks the containerlabel for existance and if only unique names for that
+     * type are allowed, checks for uniqness.
      *
      * @return
      */
@@ -125,7 +126,7 @@ public class InputValidator implements Serializable {
         if (containerToCheck.getLabel() == null || containerToCheck.getLabel().trim().isEmpty()) {
             return false;
         }
-        return containerToCheck.getType().isTransportable() || containerService.loadContainerByName(containerToCheck.getLabel()) == null;
+        return !containerToCheck.getType().isUnique_name() || containerService.loadContainerByName(containerToCheck.getLabel()) == null;
     }
 
     /**

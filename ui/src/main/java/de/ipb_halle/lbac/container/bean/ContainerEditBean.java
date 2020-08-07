@@ -125,7 +125,7 @@ public class ContainerEditBean implements Serializable {
         if (containerToCreate != null) {
             return containerToCreate.getType();
         } else {
-            return new ContainerType("XXX", 1000);
+            return new ContainerType("XXX", 1000,false,false);
         }
     }
 

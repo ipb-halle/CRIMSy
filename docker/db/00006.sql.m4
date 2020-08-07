@@ -329,6 +329,8 @@ CREATE TABLE  storagesconditions_storages_hist (
 CREATE TABLE containertypes(
     name varchar NOT NULL PRIMARY KEY,
     description varchar,
+    transportable BOOLEAN NOT NULL DEFAULT true,
+    unique_name BOOLEAN NOT NULL DEFAULT true,
     rank integer not null);
 
 CREATE TABLE containers(
@@ -409,25 +411,25 @@ CREATE TABLE items_history(
     owner_new UUID REFERENCES usersgroups(id),
     PRIMARY KEY(itemid,actorid,mdate));
 
-insert into containertypes(name,description,rank)values('ROOM',null,100);
-insert into containertypes(name,description,rank)values('CUPBOARD',null,90);
-insert into containertypes(name,description,rank)values('FREEZER',null,90);
-insert into containertypes(name,description,rank)values('WELLPLATE',null,50);
-insert into containertypes(name,description,rank)values('GLAS_FLASK',null,0);
-insert into containertypes(name,description,rank)values('PLASTIC_FLASK',null,0);
-insert into containertypes(name,description,rank)values('GLAS_VIAL',null,0);
-insert into containertypes(name,description,rank)values('PLASTIC_VIAL',null,0);
-insert into containertypes(name,description,rank)values('GLAS_AMPOULE',null,0);
-insert into containertypes(name,description,rank)values('PLASTIC_AMPOULE',null,0);
-insert into containertypes(name,description,rank)values('STEEL_BARREL',null,0);
-insert into containertypes(name,description,rank)values('PLASTIC_BARREL',null,0);
-insert into containertypes(name,description,rank)values('STEEL_CONTAINER',null,0);
-insert into containertypes(name,description,rank)values('PLASTIC_CONTAINER',null,0);
-insert into containertypes(name,description,rank)values('CARTON',null,0);
-insert into containertypes(name,description,rank)values('PLASTIC_BAG',null,0);
-insert into containertypes(name,description,rank)values('PLASTIC_SACK',null,0);
-insert into containertypes(name,description,rank)values('PAPER_BAG',null,0);
-insert into containertypes(name,description,rank)values('COMPRESSED_GAS_CYLINDER',null,0);
+insert into containertypes(name,description,rank,transportable,unique_name)values('ROOM',null,100,false,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('CUPBOARD',null,90,false,false);
+insert into containertypes(name,description,rank,transportable,unique_name)values('FREEZER',null,90,false,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('WELLPLATE',null,50,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_FLASK',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_FLASK',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_VIAL',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_VIAL',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_AMPOULE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_AMPOULE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('STEEL_BARREL',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_BARREL',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('STEEL_CONTAINER',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_CONTAINER',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('CARTON',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_BAG',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_SACK',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PAPER_BAG',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('COMPRESSED_GAS_CYLINDER',null,0,true,true);
 
 CREATE TABLE taxonomy_level(
     id SERIAL NOT NULL PRIMARY KEY,

@@ -39,7 +39,7 @@ import java.util.TreeMap;
  *
  * @author fmauz
  */
-@LabelType(name="Item")
+@LabelType(name = "Item")
 public class Item extends ACObject implements DTO, Serializable {
 
     private Integer id;
@@ -80,9 +80,9 @@ public class Item extends ACObject implements DTO, Serializable {
         this.concentration = entity.getConcentration();
         this.container = con;
         this.containerSize = entity.getContainersize();
-        this.expiry_date=entity.getExpiry_date();
+        this.expiry_date = entity.getExpiry_date();
         if (entity.getContainertype() != null) {
-            this.containerType = new ContainerType(entity.getContainertype(), 0);
+            this.containerType = new ContainerType(entity.getContainertype(), 0, true, false);
         }
         this.description = entity.getDescription();
         this.material = mat;
@@ -131,14 +131,14 @@ public class Item extends ACObject implements DTO, Serializable {
     }
 
     /**
-     * compute a 10 digit string including the Interleave 25 check sum
-     * ToDo: add a configuratble offset to the item id
+     * compute a 10 digit string including the Interleave 25 check sum ToDo: add
+     * a configuratble offset to the item id
      */
-    @LabelData(name="itemId25")
+    @LabelData(name = "itemId25")
     public String getItemId25() {
         int j = 3;
         int k = 0;
-        String s = String.format("%09d", this.id); 
+        String s = String.format("%09d", this.id);
         int l = s.length();
 
         /* 
@@ -149,17 +149,16 @@ public class Item extends ACObject implements DTO, Serializable {
             s = "0" + s;
             l++;
         }
-        */
-
-        for(int i=0; i<l; i++) {
+         */
+        for (int i = 0; i < l; i++) {
             k = k + j * ((int) s.charAt(i) - 0x30);
-            j = (j + 2) % 4;        
+            j = (j + 2) % 4;
         }
         k = (10 - (k % 10)) % 10;
-        return s+Integer.toString(k);
+        return s + Integer.toString(k);
     }
 
-    @LabelData(name="itemIdPlain")
+    @LabelData(name = "itemIdPlain")
     public String getItemIdPlain() {
         return String.format("%08d", id.intValue());
     }

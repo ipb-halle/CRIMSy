@@ -113,7 +113,7 @@ public class ItemServiceTest extends TestBase {
         c0.setFireSection("F1");
         c0.setGmosavety("S0");
         c0.setLabel("R302");
-        c0.setType(new ContainerType("ROOM", 90));
+        c0.setType(new ContainerType("ROOM", 90,false,true));
 
         c1 = new Container();
         c1.setBarCode("9845893457");
@@ -122,7 +122,7 @@ public class ItemServiceTest extends TestBase {
         c1.setGmosavety(c0.getGmosavety());
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
-        c1.setType(new ContainerType("CUPBOARD", 90));
+        c1.setType(new ContainerType("CUPBOARD", 90,true,false));
 
         c2 = new Container();
         c2.setBarCode("43753456");
@@ -131,7 +131,7 @@ public class ItemServiceTest extends TestBase {
         c2.setGmosavety(c1.getGmosavety());
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
-        c2.setType(new ContainerType("CARTON", 90));
+        c2.setType(new ContainerType("CARTON", 90,true,false));
 
         containerService.saveContainer(c0);
         containerService.saveContainer(c1);

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.ACListService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -279,7 +278,9 @@ public class ContainerService implements Serializable {
             result.add(
                     new ContainerType(
                             dbe.getName(),
-                            dbe.getRank()));
+                            dbe.getRank(),
+                            dbe.isTransportable(),
+                            dbe.isUnique_name()));
         }
         return result;
     }
@@ -406,7 +407,9 @@ public class ContainerService implements Serializable {
         ContainerTypeEntity entity = em.find(ContainerTypeEntity.class, name);
         return new ContainerType(
                 entity.getName(),
-                entity.getRank()
+                entity.getRank(),
+                entity.isTransportable(),
+                entity.isUnique_name()
         );
     }
 
@@ -446,5 +449,7 @@ public class ContainerService implements Serializable {
         c.setDeactivated(true);
         this.em.merge(c.createEntity());
     }
+    
+    
 
 }
