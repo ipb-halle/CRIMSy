@@ -17,17 +17,11 @@
  */
 package de.ipb_halle.lbac.cloud.servlet;
 
-import de.ipb_halle.lbac.entity.ACObject;
-import de.ipb_halle.lbac.entity.User;
 import java.io.IOException;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
-
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @WebFilter(urlPatterns = {"/uploaddocs/*"},
         filterName = "FileUploadSecurityFilter",

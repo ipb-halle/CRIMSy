@@ -20,7 +20,8 @@ package de.ipb_halle.lbac.container.bean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import java.io.Serializable;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  * Checks input values of a container for validity
  *
@@ -37,6 +38,7 @@ public class InputValidator implements Serializable {
     protected ContainerService containerService;
     protected Container containerToCheck;
     protected Integer width;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
     protected final String ERROR_MESSAGE_DIMENSION_INVALIDE = "container_input_dimensions";
     protected final String ERROR_MESSAGE_LOCATION_INVALIDE = "container_input_location_invalide";
     protected final String ERROR_MESSAGE_LOCATION_TO_SMALL = "container_input_location_to_small";
@@ -70,27 +72,26 @@ public class InputValidator implements Serializable {
         this.containerToCheck = container;
         this.preferredProjectName = preferredProjectName;
         this.preferredLocationName = containerLocation;
-
         boolean valide = isLabelValide();
         if (!valide) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_NAME_INVALIDE);
         }
 
-        if (valide && !isProjectValide()) {
+        if (!isProjectValide()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_PROJECT_INVALIDE);
         }
         valide = valide && isProjectValide();
 
-        if (valide && !isLocationAvailable()) {
+        if (!isLocationAvailable()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_INVALIDE);
         }
         valide = valide && isLocationAvailable();
 
-        if (valide && !isLocationBiggerThan()) {
+        if (!isLocationBiggerThan()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_TO_SMALL);
         }
         valide = valide && isLocationBiggerThan();
-        if (valide && !isDimensionsValide()) {
+        if (!isDimensionsValide()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_DIMENSION_INVALIDE);
         }
         valide = valide && isDimensionsValide();
@@ -177,7 +178,6 @@ public class InputValidator implements Serializable {
         boolean valide;
         boolean preferedProjectSet = preferredProjectName != null
                 && !preferredProjectName.trim().isEmpty();
-
         if (preferedProjectSet) {
             if (containerToCheck.getProject() == null) {
                 valide = false;

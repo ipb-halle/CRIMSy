@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -112,13 +113,17 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     public void actionTriggerContainerSave() {
+        boolean success;
         if (mode == Mode.CREATE) {
-            saveNewContainer();
+            success = saveNewContainer();
         } else {
-            saveEditedContainer();
+            success = saveEditedContainer();
         }
-        mode = Mode.SHOW;
-        editBean.clearEditBean();
+        PrimeFaces.current().ajax().addCallbackParam("success", success);
+        if (success) {
+            mode = Mode.SHOW;
+            editBean.clearEditBean();
+        }
     }
 
     public boolean isTopLevelButtonVisible() {
@@ -168,8 +173,11 @@ public class ContainerOverviewBean implements Serializable {
         return valide;
     }
 
-    private void saveEditedContainer() {
-        validator = new EditInputValidator(containerService);
+    private boolean saveEditedContainer() {
+        validator = new EditInputValidator(
+                containerService,
+                editBean.getOriginalContainer().getLabel());
+
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
@@ -192,19 +200,27 @@ public class ContainerOverviewBean implements Serializable {
                                     editBean.getContainerLocation()
                             ));
         }
-        boolean valide = validator.isInputValideForCreation(
-                editBean.getContainerToCreate(),
-                editBean.getPreferredProjectName(),
-                editBean.getContainerLocation(),
-                editBean.getContainerHeight(),
-                editBean.getContainerWidth()
-        );
+
+        boolean valide = false;
+        try {
+            valide = validator.isInputValideForCreation(
+                    editBean.getContainerToCreate(),
+                    editBean.getPreferredProjectName(),
+                    editBean.getContainerLocation(),
+                    editBean.getContainerHeight(),
+                    editBean.getContainerWidth()
+            );
+        } catch (Exception e) {
+            logger.error(e);
+
+        }
         if (valide) {
             mode = Mode.SHOW;
             containerService.saveEditedContainer(editBean.getContainerToCreate());
         }
 
         actionStartFilteredSearch();
+        return valide;
     }
 
     public void actionStartFilteredSearch() {

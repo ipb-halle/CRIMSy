@@ -287,6 +287,7 @@ public class ContainerEditBean implements Serializable {
      * @param t
      */
     public void setContainerType(ContainerType t) {
+        
         containerToCreate.setType(t);
     }
 
@@ -381,5 +382,11 @@ public class ContainerEditBean implements Serializable {
         containerToCreate.setType(containerTypes.get(0));
 
     }
+
+    public Container getOriginalContainer() {
+        return originalContainer;
+    }
+    
+    
 
 }

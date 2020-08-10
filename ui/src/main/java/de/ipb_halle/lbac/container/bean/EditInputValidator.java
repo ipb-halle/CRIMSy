@@ -21,14 +21,20 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 
 /**
- * Checks input values of a container for validity
+ * Checks input values of a container for validity. The difference to the InputValidator
+ * validator is, that a string is used to check if the label was changed.
  *
  * @author fmauz
  */
 public class EditInputValidator extends InputValidator {
 
-    public EditInputValidator(ContainerService containerService) {
+    private final String originalLabel;
+
+    public EditInputValidator(
+            ContainerService containerService,
+            String originalLabel) {
         super(containerService);
+        this.originalLabel = originalLabel;
 
     }
 
@@ -57,21 +63,27 @@ public class EditInputValidator extends InputValidator {
         this.preferredProjectName = preferredProjectName;
         this.preferredLocationName = containerLocation;
 
-        boolean valide = isProjectValide();
+        boolean valide = originalLabel.equals(container.getLabel()) || isLabelValide();
+
         if (!valide) {
+            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_NAME_INVALIDE);
+        }
+
+        valide = valide && isProjectValide();
+        if (!isProjectValide()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_PROJECT_INVALIDE);
         }
 
-        if (valide && !isLocationAvailable()) {
+        if (!isLocationAvailable()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_INVALIDE);
         }
         valide = valide && isLocationAvailable();
 
-        if (valide && !isLocationBiggerThan()) {
+        if (!isLocationBiggerThan()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_TO_SMALL);
         }
         valide = valide && isLocationBiggerThan();
-        if (valide && !isDimensionsValide()) {
+        if (!isDimensionsValide()) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_DIMENSION_INVALIDE);
         }
         valide = valide && isDimensionsValide();

@@ -78,6 +78,7 @@ limitations under the License.
                             styleClass="containerFilterRow">
                             <b:column span="2">
                                 <b:inputText
+                                    ajax="true"
                                     id="editNameInputField"
                                     value="#{containerEditBean.containerName}"
                                     styleClass="containerEditInputfield nameInputFieldClass">
@@ -220,18 +221,18 @@ limitations under the License.
                                 styleClass="containerEditButtonLeft"
                                 onclick="ajax:containerOverviewBean.actionCancel();"
                                 immediate="true"
-                                rendered="#{containerOverviewBean.isFirstButtonVisible()}"
                                 value="#{msgs.container_button_cancel}"
                                 ajax="true"
                                 update="@(.topLevelRowForm)"
                                 oncomplete="PF('dlgcontainerEdit').hide();"/>
-                            <b:commandButton
+                            <p:commandButton
                                 id="SaveButtonId"
-                                onclick="ajax:containerOverviewBean.actionTriggerContainerSave();"
+                                action="#{containerOverviewBean.actionTriggerContainerSave()}"
+                                process="@form"
                                 value="#{msgs.container_button_save}"
                                 ajax="true"
                                 update="growlMsg @(.containerOverviewContainer) @(.topLevelRowForm) editForm"
-                                oncomplete="PF('dlgcontainerEdit').hide();"/>
+                                oncomplete="if (args.success) PF('dlgcontainerEdit').hide();"/>
                         </b:row>
                     </b:container>
                 </b:form>
