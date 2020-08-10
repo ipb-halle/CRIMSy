@@ -44,6 +44,7 @@
     <filter>
         <filter-name>characterEncodingFilter</filter-name>
         <filter-class>org.omnifaces.filter.CharacterEncodingFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
         <filter-name>characterEncodingFilter</filter-name>
@@ -112,6 +113,7 @@
     <filter>
         <filter-name>FileUploadSecurityFilter</filter-name>
         <filter-class>de.ipb_halle.lbac.cloud.servlet.FileUploadSecurityFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
         <filter-name>FileUploadSecurityFilter</filter-name>
