@@ -177,7 +177,6 @@ public class ContainerService implements Serializable {
                 .getResultList();
         for (Integer id : l) {
             Container c = loadContainerById(id);
-            c.setAutoCompleteString(c.getId() + "-" + c.getLabel() + " (" + c.getLocation(true,false) + ")");
             container.add(c);
         }
 
@@ -190,6 +189,7 @@ public class ContainerService implements Serializable {
         container.setType(loadContainerTypeByName(entity.getType()));
         container.setItems(loadItemsOfContainer(container));
         loadContainerHierarchy(container);
+        container.setAutoCompleteString(container.getId() + "-" + container.getLabel() + " (" + container.getLocation(true, false) + ")");
         return container;
 
     }
@@ -257,6 +257,7 @@ public class ContainerService implements Serializable {
         }
         return result;
     }
+
     @SuppressWarnings("unchecked")
     private void loadContainerHierarchy(Container c) {
         List<ContainerEntity> nestedContainers = this.em

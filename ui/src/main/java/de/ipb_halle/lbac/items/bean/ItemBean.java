@@ -144,6 +144,7 @@ public class ItemBean implements Serializable {
 
     /**
      * Printing an item label makes sense only for persisted items.
+     *
      * @return true if item id is not null
      */
     public boolean getLabelPrintingEnabled() {
@@ -253,24 +254,22 @@ public class ItemBean implements Serializable {
 
     public void onItemSelect(SelectEvent event) {
         containerName = (String) event.getObject();
-        for (Container c : containers) {
-            if (c.getLabel().equals(containerName)) {
-                actionChangeContainer(c);
-                return;
-            }
-        }
+        int containerId = Integer.parseInt(containerName.split("-")[0]);
+        containerService.loadContainerById(containerId);
+        Container c = containerService.loadContainerById(containerId);
+        actionChangeContainer(c);
+        containerName = c.getLabel();
 
-        actionChangeContainer(null);
     }
 
     public List<String> nameSuggestions(String enteredValue) {
         List<String> matches = new ArrayList<>();
         List<String> names = new ArrayList<>();
         for (Container c : containers) {
-            names.add(c.getLabel());
+            names.add(c.getAutoCompleteString());
         }
         for (String s : names) {
-            if (enteredValue.trim().isEmpty() || s.toLowerCase().contains(enteredValue.toLowerCase())) {
+            if (enteredValue != null && (enteredValue.trim().isEmpty() || s.toLowerCase().contains(enteredValue.toLowerCase()))) {
                 matches.add(s);
             }
         }
@@ -345,10 +344,10 @@ public class ItemBean implements Serializable {
         if (container == null) {
             return "";
         } else {
-            if (container.getLocation(true,true) == null) {
+            if (container.getLocation(true, true) == null) {
                 return "unknown";
             } else {
-                return container.getLocation(true,true);
+                return container.getLocation(true, true);
             }
         }
     }

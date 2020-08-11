@@ -209,7 +209,7 @@ public class Container implements DTO, Serializable {
             Collections.reverse(containerHierarchy);
         }
         if(!htmlSupport){
-            locationString.replace("<br>", "");
+            locationString=locationString.replace("<br>", "");
         }
         return locationString;
 
