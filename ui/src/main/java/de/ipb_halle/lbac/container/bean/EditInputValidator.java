@@ -54,14 +54,14 @@ public class EditInputValidator extends InputValidator {
     public boolean isInputValideForCreation(
             Container container,
             String preferredProjectName,
-            String containerLocation,
+            Container containerLocation,
             Integer height,
             Integer width) {
         this.height = height;
         this.width = width;
         this.containerToCheck = container;
         this.preferredProjectName = preferredProjectName;
-        this.preferredLocationName = containerLocation;
+        this.parentContainer = containerLocation;
 
         boolean valide = originalLabel.equals(container.getLabel()) || isLabelValide();
 

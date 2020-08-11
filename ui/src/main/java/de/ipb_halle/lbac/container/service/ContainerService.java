@@ -74,7 +74,7 @@ public class ContainerService implements Serializable {
             + " FROM nested_containers "
             + "WHERE sourceid=:source";
     private final String SQL_GET_SIMILAR_NAMES
-            = "SELECT label "
+            = "SELECT id "
             + "FROM containers "
             + "WHERE LOWER(label) LIKE LOWER(:label) "
             + "AND deactivated =FALSE";
@@ -170,11 +170,18 @@ public class ContainerService implements Serializable {
      * @return List of matching materialnames
      */
     @SuppressWarnings("unchecked")
-    public Set<String> getSimilarContainerNames(String name, User user) {
-        List l = this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
+    public Set<Container> getSimilarContainerNames(String name, User user) {
+        Set<Container> container = new HashSet<>();
+        List<Integer> l = this.em.createNativeQuery(SQL_GET_SIMILAR_NAMES)
                 .setParameter("label", "%" + name + "%")
                 .getResultList();
-        return new HashSet<>(l);
+        for (Integer id : l) {
+            Container c = loadContainerById(id);
+            c.setAutoCompleteString(c.getId() + "-" + c.getLabel() + " (" + c.getLocation(true,false) + ")");
+            container.add(c);
+        }
+
+        return container;
     }
 
     public Container loadContainerById(int id) {
@@ -182,6 +189,7 @@ public class ContainerService implements Serializable {
         Container container = new Container(entity);
         container.setType(loadContainerTypeByName(entity.getType()));
         container.setItems(loadItemsOfContainer(container));
+        loadContainerHierarchy(container);
         return container;
 
     }
@@ -225,9 +233,6 @@ public class ContainerService implements Serializable {
     public List<Container> loadContainers(
             User u,
             Map<String, Object> cmap) {
-        List<Project> projects
-                = projectService.loadReadableProjectsOfUser(u);
-
         List<ContainerEntity> dbEntities
                 = em.createNativeQuery(SQL_LOAD_CONTAINERS, ContainerEntity.class)
                         .setParameter("userid", u.getId().toString())
@@ -249,21 +254,18 @@ public class ContainerService implements Serializable {
                 container.setProject(projectService.loadProjectById(dbe.getProjectid()));
                 result.add(container);
             }
-            //I think that is no more neccessary
-            if (container != null && dbe.getParentcontainer() != null) {
-                container.setParentContainer(loadContainerById(dbe.getParentcontainer()));
-            }
-            List<ContainerEntity> nestedContainers = this.em
-                    .createNativeQuery(SQL_LOAD_NESTED_CONTAINER, ContainerEntity.class)
-                    .setParameter("cid", dbe.getId())
-                    .getResultList();
-            for (ContainerEntity nce : nestedContainers) {
-                container.getContainerHierarchy().add(loadContainerById(nce.getId()));
-            }
-
         }
         return result;
-
+    }
+    @SuppressWarnings("unchecked")
+    private void loadContainerHierarchy(Container c) {
+        List<ContainerEntity> nestedContainers = this.em
+                .createNativeQuery(SQL_LOAD_NESTED_CONTAINER, ContainerEntity.class)
+                .setParameter("cid", c.getId())
+                .getResultList();
+        for (ContainerEntity nce : nestedContainers) {
+            c.getContainerHierarchy().add(loadContainerById(nce.getId()));
+        }
     }
 
     public List<ContainerType> loadContainerTypes() {
@@ -449,7 +451,5 @@ public class ContainerService implements Serializable {
         c.setDeactivated(true);
         this.em.merge(c.createEntity());
     }
-    
-    
 
 }

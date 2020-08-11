@@ -121,8 +121,17 @@ limitations under the License.
                             <b:column span="2">
                                 <p:autoComplete value="#{containerEditBean.containerLocation}"
                                                 maxResults="10"
+                                                converter="containerConverter"
+                                                forceSelection="true"
                                                 completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
-                                                styleClass="containerEditInputfield"/>
+                                                var="c"
+                                                itemLabel="#{c.getAutoCompleteString()}"
+                                                itemValue="#{c}"
+                                                styleClass="containerEditInputfield">
+                                    <p:ajax event="itemSelect"
+                                            listener="#{containerSearchMaskBean.handleSelect}"
+                                            update="@form" />
+                                </p:autoComplete>
                             </b:column>
                         </b:row>
 

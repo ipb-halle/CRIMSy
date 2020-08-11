@@ -252,7 +252,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public List<String> getSimilarContainerNames(String input) {
-        return new ArrayList<>(containerService.getSimilarContainerNames(input, currentUser));
+        return new ArrayList<>();
+        //return new ArrayList<>(containerService.getSimilarContainerNames(input, currentUser));
     }
 
     public String getItemSearchId() {

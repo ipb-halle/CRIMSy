@@ -114,6 +114,7 @@ public class ContainerOverviewBean implements Serializable {
 
     public void actionTriggerContainerSave() {
         boolean success;
+        editBean.getContainerToCreate().setParentContainer(editBean.getContainerLocation());
         if (mode == Mode.CREATE) {
             success = saveNewContainer();
         } else {
@@ -141,14 +142,6 @@ public class ContainerOverviewBean implements Serializable {
                                     editBean.getPreferredProjectName().trim()
                             )
                     );
-        }
-
-        if (editBean.getContainerLocation() != null) {
-            editBean.getContainerToCreate()
-                    .setParentContainer(
-                            containerService.loadContainerByName(
-                                    editBean.getContainerLocation()
-                            ));
         }
 
         boolean valide = validator.isInputValideForCreation(
@@ -195,10 +188,7 @@ public class ContainerOverviewBean implements Serializable {
 
         if (editBean.getContainerLocation() != null) {
             editBean.getContainerToCreate()
-                    .setParentContainer(
-                            containerService.loadContainerByName(
-                                    editBean.getContainerLocation()
-                            ));
+                    .setParentContainer(editBean.getContainerLocation());
         }
 
         boolean valide = false;
@@ -216,6 +206,7 @@ public class ContainerOverviewBean implements Serializable {
         }
         if (valide) {
             mode = Mode.SHOW;
+            editBean.getContainerToCreate().setParentContainer(editBean.getContainerLocation());
             containerService.saveEditedContainer(editBean.getContainerToCreate());
         }
 

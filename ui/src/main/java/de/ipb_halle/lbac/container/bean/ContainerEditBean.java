@@ -52,7 +52,7 @@ public class ContainerEditBean implements Serializable {
     private ProjectService projectService;
 
     private Integer containerHeight;
-    private String containerLocation;
+    private Container containerLocation;
     private Container containerToCreate;
     private List<ContainerType> containerTypes = new ArrayList<>();
     private Integer containerWidth;
@@ -103,7 +103,7 @@ public class ContainerEditBean implements Serializable {
      *
      * @return
      */
-    public String getContainerLocation() {
+    public Container getContainerLocation() {
         return containerLocation;
     }
 
@@ -270,7 +270,7 @@ public class ContainerEditBean implements Serializable {
      *
      * @param containerLocation
      */
-    public void setContainerLocation(String containerLocation) {
+    public void setContainerLocation(Container containerLocation) {
         this.containerLocation = containerLocation;
     }
 
@@ -357,8 +357,9 @@ public class ContainerEditBean implements Serializable {
         } else {
             preferredProjectName = null;
         }
+        c.setParentContainer(containerLocation);
         if (c.getParentContainer() != null) {
-            containerLocation = c.getParentContainer().getLabel();
+            containerLocation =c.getParentContainer();
         } else {
             containerLocation = null;
         }

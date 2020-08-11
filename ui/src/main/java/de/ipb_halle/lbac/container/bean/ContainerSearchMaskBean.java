@@ -18,12 +18,15 @@
 package de.ipb_halle.lbac.container.bean;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -31,6 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -45,6 +49,8 @@ public class ContainerSearchMaskBean implements Serializable {
     private String searchProject;
     private String searchLocation;
     private User currentUser;
+    
+   
 
     @Inject
     private ContainerOverviewBean overviewBean;
@@ -65,9 +71,9 @@ public class ContainerSearchMaskBean implements Serializable {
         overviewBean.actionStartFilteredSearch();
     }
 
-    public List<String> getSimilarContainerNames(String pattern) {
-        Set<String> suggestions = containerService.getSimilarContainerNames(pattern, currentUser);
-        return new ArrayList<>(suggestions);
+    public List<Container> getSimilarContainerNames(String pattern) {
+        return new ArrayList<>(containerService.getSimilarContainerNames(pattern, currentUser));
+
     }
 
     public List<String> getSimilarProjectNames(String pattern) {
@@ -108,6 +114,10 @@ public class ContainerSearchMaskBean implements Serializable {
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
+    }
+    
+     public void handleSelect(SelectEvent event) {
+
     }
 
 }

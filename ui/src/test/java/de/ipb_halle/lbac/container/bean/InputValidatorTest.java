@@ -146,16 +146,8 @@ public class InputValidatorTest extends TestBase {
         Assert.assertTrue("test003: no location expected and set", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
 
-        Assert.assertFalse("test003: no location set but expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
-        Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
-        messagePresenter.errorMessages.clear();
-
-        Assert.assertFalse("test003: location set but none expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
-        Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
-        messagePresenter.errorMessages.clear();
-
         c.setParentContainer(c2);
-        Assert.assertTrue("test003: location set and expected", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
+        Assert.assertTrue("test003: location set and expected", validator.isInputValideForCreation(c, null, c2, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
     }
 
@@ -166,27 +158,30 @@ public class InputValidatorTest extends TestBase {
         c2.setType(new ContainerType("ROOM", 100,false,true));
 
         c.setParentContainer(c2);
-        Assert.assertFalse("test004: container to big for location", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
+        Assert.assertFalse("test004: container to big for location", validator.isInputValideForCreation(c, null, c2, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_to_small"));
         messagePresenter.errorMessages.clear();
 
         c.setType(new ContainerType("CUPBOARD", 20,true,false));
-        Assert.assertTrue("test004: container should fit into location ", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
+        Assert.assertTrue("test004: container should fit into location ", validator.isInputValideForCreation(c, null, c2, 1, 1));
         Assert.assertTrue(messagePresenter.errorMessages.isEmpty());
     }
 
     @Test
     public void test005_isDimensionsValide() {
-        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", -1, 1));
-        Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
+        Container c2 = new Container();
+        c2.setLabel("PARENT_ROOM");
+        c2.setType(new ContainerType("ROOM", 100,false,true));
+        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, c2, -1, 1));
+        Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_dimensions"));
         messagePresenter.errorMessages.clear();
 
-        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", -1, -11));
-        Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
+        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, c2, -1, -11));
+        Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_dimensions"));
         messagePresenter.errorMessages.clear();
 
-        Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, "PARENT_ROOM", 1, 1));
-        Assert.assertTrue(messagePresenter.errorMessages.get(0).equals("container_input_location_invalide"));
+        Assert.assertTrue("test005: invalide dimension", validator.isInputValideForCreation(c, null, c2, 1, 1));
+        
         messagePresenter.errorMessages.clear();
     }
 

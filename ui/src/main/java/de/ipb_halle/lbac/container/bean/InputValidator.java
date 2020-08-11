@@ -34,7 +34,7 @@ public class InputValidator implements Serializable {
     protected final int MAX_WIDTH = 1000;
     protected final int MAX_HEIGHT = 1000;
     protected String preferredProjectName;
-    protected String preferredLocationName;
+    protected Container parentContainer;
     protected ContainerService containerService;
     protected Container containerToCheck;
     protected Integer width;
@@ -64,14 +64,14 @@ public class InputValidator implements Serializable {
     public boolean isInputValideForCreation(
             Container container,
             String preferredProjectName,
-            String containerLocation,
+            Container containerLocation,
             Integer height,
             Integer width) {
         this.height = height;
         this.width = width;
         this.containerToCheck = container;
         this.preferredProjectName = preferredProjectName;
-        this.preferredLocationName = containerLocation;
+        this.parentContainer = containerLocation;
         boolean valide = isLabelValide();
         if (!valide) {
             errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_NAME_INVALIDE);
@@ -137,21 +137,7 @@ public class InputValidator implements Serializable {
      * @return
      */
     protected boolean isLocationAvailable() {
-        boolean isLocationSet = preferredLocationName != null && !preferredLocationName.trim().isEmpty();
-        if (isLocationSet) {
-            if (containerToCheck.getParentContainer() == null) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            if (containerToCheck.getParentContainer() == null) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
+        return true;
     }
 
     /**

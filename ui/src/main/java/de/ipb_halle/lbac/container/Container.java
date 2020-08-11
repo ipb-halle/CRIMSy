@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.project.Project;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -54,6 +55,8 @@ public class Container implements DTO, Serializable {
     private Item[][][] items;
     List<Container> containerHierarchy = new ArrayList<>();
     private boolean deactivated;
+
+    private String autoCompleteString;
 
     public Container() {
         deactivated = false;
@@ -186,15 +189,30 @@ public class Container implements DTO, Serializable {
         this.barCode = barCode;
     }
 
-    public String getLocation(boolean inclusiveItsself) {
+    public String getLocation(boolean reverse,boolean htmlSupport) {
+        if (containerHierarchy.isEmpty()) {
+            return "";
+        }
+        String locationString;
+        if (reverse) {
+            Collections.reverse(containerHierarchy);
+        }
         if (containerHierarchy.isEmpty()) {
             return "";
         } else {
-            return containerHierarchy
+            locationString = containerHierarchy
                     .stream()
                     .map(r -> r.getLabel())
-                    .collect(Collectors.joining("<br>"));
+                    .collect(Collectors.joining(" -> <br>"));
         }
+        if (reverse) {
+            Collections.reverse(containerHierarchy);
+        }
+        if(!htmlSupport){
+            locationString.replace("<br>", "");
+        }
+        return locationString;
+
     }
 
     public int[] getDimensionIndex() {
@@ -274,6 +292,14 @@ public class Container implements DTO, Serializable {
         c.setType(type);
         c.getContainerHierarchy().addAll(containerHierarchy);
         return c;
+    }
+
+    public String getAutoCompleteString() {
+        return autoCompleteString;
+    }
+
+    public void setAutoCompleteString(String autoCompleteString) {
+        this.autoCompleteString = autoCompleteString;
     }
 
 }

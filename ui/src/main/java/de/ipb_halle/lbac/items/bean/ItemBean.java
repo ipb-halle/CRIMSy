@@ -345,10 +345,10 @@ public class ItemBean implements Serializable {
         if (container == null) {
             return "";
         } else {
-            if (container.getLocation(true) == null) {
+            if (container.getLocation(true,true) == null) {
                 return "unknown";
             } else {
-                return container.getLocation(true);
+                return container.getLocation(true,true);
             }
         }
     }
