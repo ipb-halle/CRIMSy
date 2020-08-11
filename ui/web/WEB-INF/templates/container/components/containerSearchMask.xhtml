@@ -87,6 +87,7 @@ limitations under the License.
                     <b:column span="2">
                         <p:autoComplete value="#{containerSearchMaskBean.searchLocation}"
                                         maxResults="10"
+                                        forceSelection="false"
                                         completeMethod="#{containerSearchMaskBean.getSimilarContainerNames}"
                                         styleClass="containerFilterInputfield"/>
                     </b:column>

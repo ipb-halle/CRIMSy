@@ -43,7 +43,7 @@
                     var ="container">
                     <b:dataTableColumn value="#{container.id}" />
                     <b:dataTableColumn value="#{container.label}" />
-                    <b:dataTableColumn value="#{container.getLocation(false)}" />
+                    <b:dataTableColumn value="#{container.getLocation(true,false)}" />
                     <b:dataTableColumn value="#{container.type}" />
                     <b:dataTableColumn value="#{containerModalBean.getDimensionString(container)}" />
 

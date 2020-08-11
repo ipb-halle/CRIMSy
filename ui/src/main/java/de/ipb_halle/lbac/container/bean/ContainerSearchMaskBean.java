@@ -24,9 +24,8 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -49,8 +48,6 @@ public class ContainerSearchMaskBean implements Serializable {
     private String searchProject;
     private String searchLocation;
     private User currentUser;
-    
-   
 
     @Inject
     private ContainerOverviewBean overviewBean;
@@ -71,8 +68,13 @@ public class ContainerSearchMaskBean implements Serializable {
         overviewBean.actionStartFilteredSearch();
     }
 
-    public List<Container> getSimilarContainerNames(String pattern) {
-        return new ArrayList<>(containerService.getSimilarContainerNames(pattern, currentUser));
+    public List<String> getSimilarContainerNames(String pattern) {
+        Set<String> names = new HashSet<>();
+        Set<Container> container = containerService.getSimilarContainerNames(pattern, currentUser);
+        for (Container c : container) {
+            names.add(c.getLabel());
+        }
+        return new ArrayList<>(names);
 
     }
 
@@ -115,8 +117,8 @@ public class ContainerSearchMaskBean implements Serializable {
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
     }
-    
-     public void handleSelect(SelectEvent event) {
+
+    public void handleSelect(SelectEvent event) {
 
     }
 
