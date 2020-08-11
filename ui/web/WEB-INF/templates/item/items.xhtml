@@ -101,7 +101,6 @@
                             </b:row>
                             <b:row
                                 styleClass="itemFilterRow">
-
                                 <b:column span="2">
                                     <p:autoComplete value="#{itemOverviewBean.searchProject}"
                                                     maxResults="10"
@@ -120,10 +119,11 @@
                                 <b:column span="2">
                                     <p:autoComplete value="#{itemOverviewBean.searchLocation}"
                                                     maxResults="10"
+                                                    forceSelection="true"
                                                     completeMethod="#{itemOverviewBean.getSimilarContainerNames}"
                                                     styleClass="itemFilterInputfield"/>
                                 </b:column>
-                            </b:row>                           
+                            </b:row>
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">

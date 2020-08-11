@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -252,8 +254,12 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public List<String> getSimilarContainerNames(String input) {
-        return new ArrayList<>();
-        //return new ArrayList<>(containerService.getSimilarContainerNames(input, currentUser));
+        List<String> names=new ArrayList<>();
+        Set<Container> container=containerService.getSimilarContainerNames(input, currentUser);
+        for(Container c:container){
+            names.add(c.getLabel());
+        }
+        return names;
     }
 
     public String getItemSearchId() {
