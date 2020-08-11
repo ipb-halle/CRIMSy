@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac;
+package de.ipb_halle.lbac.container.bean;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
@@ -46,16 +46,16 @@ public class ContainerConverter implements Converter {
         try {
             int id = Integer.parseInt(value.split("-")[0]);
             c = containerService.loadContainerById(id);
-            c.setAutoCompleteString(c.getId()+"-"+c.getLabel());
+            c.setAutoCompleteString(c.getId() + "-" + c.getLabel());
         } catch (Exception e) {
-
+            logger.warn("Could not set Container from: "+value);
         }
         return c;
     }
 
     @Override
     public String getAsString(FacesContext fc, UIComponent uic, Object object) {
-        if (object != null) {
+        if (object != null && object instanceof Container) {
             Container c = (Container) object;
             return c.getAutoCompleteString();
         } else {

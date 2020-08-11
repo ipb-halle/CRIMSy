@@ -75,6 +75,12 @@ public class ContainerSearchMaskBean implements Serializable {
             names.add(c.getLabel());
         }
         return new ArrayList<>(names);
+    }
+
+    public List<Container> getSimilarContainers(String pattern) {
+
+        Set<Container> container = containerService.getSimilarContainerNames(pattern, currentUser);
+        return new ArrayList<>(container);
 
     }
 
