@@ -36,16 +36,24 @@
 
                 <b:dataTable
                     value="#{containerModalBean.container}"
-                    select="true"    
+                    select="true"
                     update="growlMsg @(.containerPseudoClass)"
                     onselect="ajax:itemBean.actionChangeContainer(container);"
                     oncomplete="$('.containerModal').modal('hide')"
                     var ="container">
                     <b:dataTableColumn value="#{container.id}" />
-                    <b:dataTableColumn value="#{container.label}" />
-                    <b:dataTableColumn value="#{container.getLocation(true,false)}" />
-                    <b:dataTableColumn value="#{container.type}" />
-                    <b:dataTableColumn value="#{containerModalBean.getDimensionString(container)}" />
+                    <b:dataTableColumn
+                        value="#{container.label}" 
+                        label="Label"/>
+                    <b:dataTableColumn 
+                        value="#{container.getLocation(true,true)}"
+                        label="Standort"/>
+                    <b:dataTableColumn 
+                        value="#{container.type.getLocalizedName()}"
+                        label="Typ"/>
+                    <b:dataTableColumn
+                        value="#{containerModalBean.getDimensionString(container)}"
+                        label="Größe"/>
 
                 </b:dataTable>
 

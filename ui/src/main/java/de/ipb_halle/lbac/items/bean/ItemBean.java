@@ -250,6 +250,7 @@ public class ItemBean implements Serializable {
         containerController = new ContainerController(this, c);
         this.container = c;
         this.containerName = c.getLabel();
+
     }
 
     public void onItemSelect(SelectEvent event) {
@@ -258,7 +259,6 @@ public class ItemBean implements Serializable {
         containerService.loadContainerById(containerId);
         Container c = containerService.loadContainerById(containerId);
         actionChangeContainer(c);
-        containerName = c.getLabel();
 
     }
 

@@ -92,8 +92,8 @@
                     <b:container>
                         <b:row>
                             <crimsy:label id="labelPrintUI" 
-                                    rendered="#{itemBean.labelPrintingEnabled}" 
-                                    printbean="#{itemBean.printBean}" />
+                                          rendered="#{itemBean.labelPrintingEnabled}" 
+                                          printbean="#{itemBean.printBean}" />
                         </b:row>
                     </b:container>
                 </b:panel>
@@ -330,10 +330,12 @@
                                         </b:column>
                                     </b:row>
                                     <b:row>
-                                        <b:column span="2">
+                                        <b:column span="2"
+                                                  styleClass="containerPseudoClass">
                                             <p:autoComplete value="#{itemBean.containerName}"
                                                             maxResults="15"
-                                                            completeMethod="#{itemBean.nameSuggestions}">
+                                                            completeMethod="#{itemBean.nameSuggestions}"
+                                                            >
                                                 <p:ajax 
                                                     event="itemSelect" 
                                                     listener="#{itemBean.onItemSelect}"
