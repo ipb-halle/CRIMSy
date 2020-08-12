@@ -189,7 +189,7 @@ public class Container implements DTO, Serializable {
         this.barCode = barCode;
     }
 
-    public String getLocation(boolean reverse,boolean htmlSupport) {
+    public String getLocation(boolean reverse, boolean htmlSupport) {
         if (containerHierarchy.isEmpty()) {
             return "";
         }
@@ -208,8 +208,8 @@ public class Container implements DTO, Serializable {
         if (reverse) {
             Collections.reverse(containerHierarchy);
         }
-        if(!htmlSupport){
-            locationString=locationString.replace("<br>", "");
+        if (!htmlSupport) {
+            locationString = locationString.replace("<br>", "");
         }
         return locationString;
 

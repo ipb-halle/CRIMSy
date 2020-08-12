@@ -334,6 +334,7 @@
                                                   styleClass="containerPseudoClass">
                                             <p:autoComplete value="#{itemBean.containerName}"
                                                             maxResults="15"
+                                                            forceSelection="true"
                                                             completeMethod="#{itemBean.nameSuggestions}"
                                                             >
                                                 <p:ajax 
@@ -350,6 +351,13 @@
                                                 ajax="true"
                                                 oncomplete="$('.containerModal').modal()"
                                                 value="erweiterte Suche"/>
+                                        </b:column>
+                                         <b:column span="2">
+                                            <b:commandButton
+                                                ajax="true"
+                                                action="#{itemBean.removeContainer()}"
+                                               update="@(.containerPseudoClass)"
+                                                value="remove"/>
                                         </b:column>
                                     </b:row>
                                 </b:container>

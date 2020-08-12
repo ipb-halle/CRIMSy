@@ -324,7 +324,8 @@ public class ItemBean implements Serializable {
         if (container == null) {
             return "";
         } else {
-            return container.getType().getName();
+            container.getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + container.getType().getName(), null));
+            return container.getType().getLocalizedName();
         }
     }
 
@@ -529,5 +530,9 @@ public class ItemBean implements Serializable {
     public boolean isNextVersionButtonDisabled() {
         return state.getEditedItem().getHistory().isEmpty() || state.getCurrentHistoryDate() == null;
 
+    }
+    
+    public void removeContainer(){
+        this.container=null;
     }
 }

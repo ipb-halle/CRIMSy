@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
@@ -36,6 +37,7 @@ import javax.inject.Named;
 @Named
 public class ContainerModalBean implements Serializable {
 
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     @Inject
     private ContainerService service;
 
@@ -48,9 +50,17 @@ public class ContainerModalBean implements Serializable {
 
     public List<Container> getContainer() {
         container = service.loadContainers(userBean.getCurrentAccount());
+
         for (int i = container.size() - 1; i >= 0; i--) {
             if (blackList.contains(container.get(i).getType())) {
                 container.remove(i);
+            }
+        }
+
+        for (Container c : container) {
+            c.getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
+            for (Container c2 : c.getContainerHierarchy()) {
+                c2.getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + c2.getType().getName(), null));
             }
         }
         return container;

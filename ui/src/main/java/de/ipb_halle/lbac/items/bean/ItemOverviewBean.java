@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
@@ -54,6 +55,7 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ItemOverviewBean implements Serializable, ACObjectBean {
 
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private final int PAGE_SIZE = 10;
 
     private String materialSearchName;
@@ -119,6 +121,16 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
         itemAmount = itemService.getItemAmount(currentUser, cmap);
         items = itemService.loadItems(currentUser, cmap, firstResult, PAGE_SIZE);
+        //Localize containerNames
+        for (Item i : items) {
+            i.getContainerType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + i.getContainerType(), null));
+            if (i.getContainer() != null) {
+                i.getContainer().getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + i.getContainer().getType().getName(), null));
+                for (Container c : i.getContainer().getContainerHierarchy()) {
+                    c.getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
+                }
+            }
+        }
     }
 
     public void actionClearSearchFilter() {
@@ -254,9 +266,9 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public List<String> getSimilarContainerNames(String input) {
-        List<String> names=new ArrayList<>();
-        Set<Container> container=containerService.getSimilarContainerNames(input, currentUser);
-        for(Container c:container){
+        List<String> names = new ArrayList<>();
+        Set<Container> container = containerService.getSimilarContainerNames(input, currentUser);
+        for (Container c : container) {
             names.add(c.getLabel());
         }
         return names;
@@ -314,7 +326,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     @Override
     public void cancelAclChanges() {
-        
+
     }
 
     @Override
@@ -322,7 +334,5 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         itemInFocus = (Item) aco;
         acObjectController = new ACObjectController(aco, memberService.loadGroups(new HashMap<>()), this, itemInFocus.getDescription());
     }
-
-   
 
 }

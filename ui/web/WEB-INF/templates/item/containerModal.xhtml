@@ -30,10 +30,8 @@
                 backdrop="false"
                 close-on-escape="false"
                 closable="true"
-
-                title="XXX-Container-XXX"
+                title="#{msgs.container_dialog_title}"
                 size="modal-lg">
-
                 <b:dataTable
                     value="#{containerModalBean.container}"
                     select="true"
@@ -44,19 +42,18 @@
                     <b:dataTableColumn value="#{container.id}" />
                     <b:dataTableColumn
                         value="#{container.label}" 
-                        label="Label"/>
+                        label="#{msgs.container_dialog_label}"/>
                     <b:dataTableColumn 
-                        value="#{container.getLocation(true,true)}"
-                        label="Standort"/>
+                        label="#{msgs.container_dialog_location}">
+                        <h:outputText escape="false" value="#{container.getLocation(true,true)}"/>
+                    </b:dataTableColumn>
                     <b:dataTableColumn 
                         value="#{container.type.getLocalizedName()}"
-                        label="Typ"/>
+                        label="#{msgs.container_dialog_type}"/>
                     <b:dataTableColumn
                         value="#{containerModalBean.getDimensionString(container)}"
-                        label="Größe"/>
-
+                        label="#{msgs.container_dialog_size}"/>
                 </b:dataTable>
-
             </b:modal>
         </ui:composition>
     </h:body>
