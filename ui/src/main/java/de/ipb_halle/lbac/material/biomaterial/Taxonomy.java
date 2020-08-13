@@ -68,6 +68,7 @@ public class Taxonomy extends Material {
         for (Taxonomy t : taxHierachy) {
             copiedTaxonomy.getTaxHierachy().add(t);
         }
+       
         copiedTaxonomy.setLevel(new TaxonomyLevel(level.getId(), level.getName(), level.getRank()));
         return copiedTaxonomy;
 

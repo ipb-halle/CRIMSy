@@ -122,7 +122,7 @@ public class TaxonomyBean implements Serializable {
     }
 
     /**
-     * Triggered by an ui element to either switch to editm or create mode or to
+     * Triggered by an ui element to either switch to edit or create mode or to
      * save a new or edited taxonomy
      */
     public void actionClickSecondButton() {
@@ -141,6 +141,9 @@ public class TaxonomyBean implements Serializable {
             if (mode == Mode.EDIT) {
                 taxonomyToEdit.setLevel(levelController.getSelectedLevel());
                 materialService.saveEditedMaterial(taxonomyToEdit, taxonomyBeforeEdit, null, currentUser.getId());
+                treeController.reloadTreeNode();
+                levelController.setSelectedLevel(taxonomyToEdit.getLevel());
+                selectedTaxonomy = treeController.selectedTaxonomy;
                 taxonomyBeforeEdit = null;
                 taxonomyToEdit = null;
                 mode = Mode.SHOW;
@@ -151,7 +154,7 @@ public class TaxonomyBean implements Serializable {
             taxonomyToEdit = null;
             mode = Mode.SHOW;
         }
-        treeController.reloadTreeNode();
+        initHistoryDate();
     }
 
     /**
