@@ -182,7 +182,64 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertTrue(String.format("test003: has no 'Dacrymytes(%d)' as parent", taxonomies.get(6).getId()), parents.remove(taxonomies.get(6).getId()));
         Assert.assertTrue(String.format("test003: has no 'Champignonartige(%d)' as parent", taxonomies.get(7).getId()), parents.remove(taxonomies.get(7).getId()));
         Assert.assertTrue(String.format("test003: has no 'Wulstlingsverwandte(%d)' as parent", taxonomies.get(10).getId()), parents.remove(taxonomies.get(10).getId()));
+    }
 
+    // Move a taxonomy with a subtree to another node
+    //        T0          T0
+    //        |           |
+    //      |   |   ->  |   |
+    //      T1  T2      T1  T2
+    //      |               |
+    //      T3              T3
+    //      |               |
+    //   T4 T5 T6        T4 T5 T6
+    @Test
+    public void test004_moveTaxonomy() throws Exception {
+        project = creationTools.createProject();
+        userGroups = project.getUserGroups().getId().toString();
+        createTaxanomy(0, "T0", 1, userGroups, owner.getId().toString());
+        createTaxanomy(1, "T1", 2, userGroups, owner.getId().toString(), 0);
+        createTaxanomy(2, "T2", 2, userGroups, owner.getId().toString(), 0);
+        createTaxanomy(3, "T3", 14, userGroups, owner.getId().toString(), 0, 1);
+        createTaxanomy(4, "T4", 18, userGroups, owner.getId().toString(), 0, 1, 3);
+        createTaxanomy(5, "T5", 18, userGroups, owner.getId().toString(), 0, 1, 3);
+        createTaxanomy(6, "T6", 18, userGroups, owner.getId().toString(), 0, 1, 3);
+
+        Taxonomy t3 = service.loadTaxonomyById(3);
+        Taxonomy t2 = service.loadTaxonomyById(2);
+        Taxonomy t3_copy = t3.copyMaterial();
+        List<Taxonomy> hierarchy = t2.getTaxHierachy();
+        hierarchy.add(0, t2);
+        t3_copy.setTaxHierachy(hierarchy);
+
+        materialService.saveEditedMaterial(t3_copy, t3, project.getACList().getId(), owner.getId());
+
+        t3 = service.loadTaxonomyById(3);
+        Assert.assertEquals(2, t3.getTaxHierachy().size());
+        Assert.assertEquals(2, t3.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(0, t3.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(14, t3.getLevel().getId());
+
+        Taxonomy t4 = service.loadTaxonomyById(4);
+        Assert.assertEquals(3, t4.getTaxHierachy().size());
+        Assert.assertEquals(3, t4.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(2, t4.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(0, t4.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(18, t4.getLevel().getId());
+        
+        Taxonomy t5 = service.loadTaxonomyById(5);
+        Assert.assertEquals(3, t5.getTaxHierachy().size());
+        Assert.assertEquals(3, t5.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(2, t5.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(0, t5.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(18, t5.getLevel().getId());
+        
+        Taxonomy t6 = service.loadTaxonomyById(6);
+        Assert.assertEquals(3, t6.getTaxHierachy().size());
+        Assert.assertEquals(3, t6.getTaxHierachy().get(0).getId());
+        Assert.assertEquals(2, t6.getTaxHierachy().get(1).getId());
+        Assert.assertEquals(0, t6.getTaxHierachy().get(2).getId());
+        Assert.assertEquals(18, t6.getLevel().getId());
     }
 
     private Set<Integer> getParentsOfTaxo(int id) {

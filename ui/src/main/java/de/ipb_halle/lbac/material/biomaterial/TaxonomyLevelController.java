@@ -36,7 +36,6 @@ public class TaxonomyLevelController implements Serializable {
     }
 
     public List<TaxonomyLevel> getLevels() {
-
         if (taxonomyBean.getSelectedTaxonomy() != null) {
             List<TaxonomyLevel> valideLevels = new ArrayList<>();
             Taxonomy t;

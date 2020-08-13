@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -38,7 +37,8 @@ import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 
 /**
- * Bean for interacting with the ui to present and manipulate a single material
+ * Bean for interacting with the ui to present and manipulate a the taxonomy
+ * tree
  *
  * @author fmauz
  */
@@ -49,36 +49,28 @@ public class TaxonomyBean implements Serializable {
     public enum Mode {
         CREATE, SHOW, EDIT, HISTORY
     }
-
-    private final Logger logger = LogManager.getLogger(this.getClass().getName());
-    private User currentUser;
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
+    @Inject
+    private MaterialService materialService;
+    @Inject
+    private MemberService memberService;
     @Inject
     private TaxonomyService taxonomyService;
 
-    @Inject
-    private MaterialService materialService;
-
-    @Inject
-    private MemberService memberService;
-
+    private User currentUser;
+    protected TaxonomyHistoryController historyController;
+    protected TaxonomyLevelController levelController;
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    protected TaxonomyNameController nameController;
+    private Mode mode;
+    private Taxonomy parentOfNewTaxo;
     private TreeNode selectedTaxonomy;
-
+    protected TaxonomyRenderController renderController;
+    private Taxonomy taxonomyBeforeEdit;
     private Taxonomy taxonomyToCreate;
     private Taxonomy taxonomyToEdit;
-    private Taxonomy taxonomyBeforeEdit;
-
-    private Mode mode;
-
-    private Taxonomy parentOfNewTaxo;
-
-    protected TaxonomyNameController nameController;
-    protected TaxonomyRenderController renderController;
-    protected TaxonomyValidityController validityController;
     protected TaxonomyTreeController treeController;
-    protected TaxonomyLevelController levelController;
-    protected TaxonomyHistoryController historyController;
+    protected TaxonomyValidityController validityController;
 
     @PostConstruct
     public void init() {
@@ -87,10 +79,30 @@ public class TaxonomyBean implements Serializable {
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
         validityController = new TaxonomyValidityController(this);
         historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController,memberService);
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService);
         treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
     }
 
+    /**
+     * Initialises all data if a new user is logged in
+     *
+     * @param evt
+     */
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        mode = Mode.SHOW;
+        currentUser = evt.getCurrentAccount();
+        treeController.reloadTreeNode();
+        levelController.setLevels(taxonomyService.loadTaxonomyLevel());
+        levelController.setSelectedLevel(levelController.getLevels().get(0));
+        treeController.initialise();
+        selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
+        initHistoryDate();
+    }
+
+    /**
+     * Triggered by an ui element to either cancel a create or edit action or to
+     * start an edit action with a choosen taxonomy
+     */
     public void actionClickFirstButton() {
         if (mode == Mode.CREATE || mode == Mode.EDIT) {
             mode = Mode.SHOW;
@@ -101,6 +113,7 @@ public class TaxonomyBean implements Serializable {
                 taxonomyBeforeEdit = (Taxonomy) selectedTaxonomy.getData();
                 taxonomyToEdit = taxonomyBeforeEdit.copyMaterial();
                 treeController.disableTreeNodeEntries(taxonomyBeforeEdit);
+                levelController.setSelectedLevel(taxonomyToEdit.getLevel());
             } catch (Exception e) {
                 logger.error(e);
             }
@@ -108,6 +121,10 @@ public class TaxonomyBean implements Serializable {
         treeController.expandTree();
     }
 
+    /**
+     * Triggered by an ui element to either switch to editm or create mode or to
+     * save a new or edited taxonomy
+     */
     public void actionClickSecondButton() {
         try {
             if (mode == Mode.SHOW) {
@@ -130,52 +147,112 @@ public class TaxonomyBean implements Serializable {
             }
         } catch (Exception e) {
             logger.error(e);
+            taxonomyBeforeEdit = null;
+            taxonomyToEdit = null;
+            mode = Mode.SHOW;
         }
         treeController.reloadTreeNode();
     }
 
-    public Taxonomy getTaxonomyToCreate() {
-        return taxonomyToCreate;
+    /**
+     *
+     * @return
+     */
+    public TaxonomyHistoryController getHistoryController() {
+        return historyController;
     }
 
-    public void setTaxonomyToCreate(Taxonomy taxonomyToCreate) {
-        this.taxonomyToCreate = taxonomyToCreate;
+    /**
+     *
+     * @return
+     */
+    public TaxonomyLevelController getLevelController() {
+        return levelController;
     }
 
-    public void setCurrentAccount(@Observes LoginEvent evt) {
-        mode = Mode.SHOW;
-        currentUser = evt.getCurrentAccount();
-        treeController.reloadTreeNode();
-        levelController.setLevels(taxonomyService.loadTaxonomyLevel());
-        levelController.setSelectedLevel(levelController.getLevels().get(0));
-        treeController.initialise();
-        selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
-
-        initHistoryDate();
+    /**
+     *
+     * @return
+     */
+    public Mode getMode() {
+        return mode;
     }
 
+    /**
+     *
+     * @return
+     */
+    public TaxonomyNameController getNameController() {
+        return nameController;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Taxonomy getParentOfNewTaxo() {
+        return parentOfNewTaxo;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public TaxonomyRenderController getRenderController() {
+        return renderController;
+    }
+
+    /**
+     *
+     * @return
+     */
     public TreeNode getSelectedTaxonomy() {
         return selectedTaxonomy;
     }
 
-    public void setSelectedTaxonomy(TreeNode selectedTaxonomy) {
-        this.selectedTaxonomy = selectedTaxonomy;
+    /**
+     *
+     * @return
+     */
+    public Taxonomy getTaxonomyBeforeEdit() {
+        return taxonomyBeforeEdit;
     }
 
-    public void onTaxonomySelect(NodeSelectEvent event) {
-        if (mode == Mode.EDIT) {
-            Taxonomy t = (Taxonomy) event.getTreeNode().getData();
-            taxonomyToEdit.getTaxHierachy().clear();
-            taxonomyToEdit.getTaxHierachy().add(t);
-            taxonomyToEdit.getTaxHierachy().addAll(t.getTaxHierachy());
-        } else {
-            selectedTaxonomy = event.getTreeNode();
-            parentOfNewTaxo = (Taxonomy) selectedTaxonomy.getData();
-            initHistoryDate();
-
-        }
+    /**
+     *
+     * @return
+     */
+    public Taxonomy getTaxonomyToCreate() {
+        return taxonomyToCreate;
     }
 
+    /**
+     *
+     * @return
+     */
+    public Taxonomy getTaxonomyToEdit() {
+        return taxonomyToEdit;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public TaxonomyTreeController getTreeController() {
+        return treeController;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public TaxonomyValidityController getValidityController() {
+        return validityController;
+    }
+
+    /**
+     * looks for the last edit of a taxonomy and sets its date
+     */
     public void initHistoryDate() {
         Taxonomy t = (Taxonomy) selectedTaxonomy.getData();
         if (t.getHistory().getChanges().isEmpty()) {
@@ -189,8 +266,48 @@ public class TaxonomyBean implements Serializable {
         }
     }
 
-    private void saveNewTaxonomy() {
+    /**
+     *
+     * @param event
+     */
+    public void onTaxonomyCollapse(NodeCollapseEvent event) {
+        event.getTreeNode().setExpanded(false);
+    }
 
+    /**
+     *
+     * @param event
+     */
+    public void onTaxonomyExpand(NodeExpandEvent event) {
+        if (selectedTaxonomy == null) {
+            treeController.setSelectedTaxonomy(event.getTreeNode());
+        }
+        event.getTreeNode().setExpanded(true);
+    }
+
+    /**
+     * if in edit mode the taxonomy to be edited will get the selected taxonomy
+     * as its parent. If in Show mode the selected taxonomy will be displayed.
+     *
+     * @param event
+     */
+    public void onTaxonomySelect(NodeSelectEvent event) {
+        if (mode == Mode.EDIT) {
+            Taxonomy t = (Taxonomy) event.getTreeNode().getData();
+            taxonomyToEdit.getTaxHierachy().clear();
+            taxonomyToEdit.getTaxHierachy().add(t);
+            taxonomyToEdit.getTaxHierachy().addAll(t.getTaxHierachy());
+        } else {
+            selectedTaxonomy = event.getTreeNode();
+            parentOfNewTaxo = (Taxonomy) selectedTaxonomy.getData();
+            initHistoryDate();
+        }
+    }
+
+    /**
+     * Saves the new taxonomy entry with the public readable acl
+     */
+    private void saveNewTaxonomy() {
         taxonomyToCreate.setLevel(levelController.getSelectedLevel());
         if (selectedTaxonomy != null) {
             Taxonomy parent = (Taxonomy) selectedTaxonomy.getData();
@@ -201,99 +318,103 @@ public class TaxonomyBean implements Serializable {
 
     }
 
-    public void setTaxonomyService(TaxonomyService taxonomyService) {
-        this.taxonomyService = taxonomyService;
+    /**
+     *
+     * @param historyController
+     */
+    public void setHistoryController(TaxonomyHistoryController historyController) {
+        this.historyController = historyController;
     }
 
+    /**
+     *
+     * @param levelController
+     */
+    public void setLevelController(TaxonomyLevelController levelController) {
+        this.levelController = levelController;
+    }
+
+    /**
+     *
+     * @param materialService
+     */
     public void setMaterialService(MaterialService materialService) {
         this.materialService = materialService;
     }
 
-    public Taxonomy getTaxonomyToEdit() {
-        return taxonomyToEdit;
+    /**
+     *
+     * @param mode
+     */
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
+
+    /**
+     *
+     * @param nameController
+     */
+    public void setNameController(TaxonomyNameController nameController) {
+        this.nameController = nameController;
+    }
+
+    /**
+     *
+     * @param renderController
+     */
+    public void setRenderController(TaxonomyRenderController renderController) {
+        this.renderController = renderController;
+    }
+
+    /**
+     *
+     * @param selectedTaxonomy
+     */
+    public void setSelectedTaxonomy(TreeNode selectedTaxonomy) {
+        this.selectedTaxonomy = selectedTaxonomy;
+    }
+
+    /**
+     *
+     * @param taxonomyBeforeEdit
+     */
+    public void setTaxonomyBeforeEdit(Taxonomy taxonomyBeforeEdit) {
+        this.taxonomyBeforeEdit = taxonomyBeforeEdit;
+    }
+
+    /**
+     *
+     * @param taxonomyService
+     */
+    public void setTaxonomyService(TaxonomyService taxonomyService) {
+        this.taxonomyService = taxonomyService;
+    }
+
+    /**
+     *
+     * @param taxonomyToCreate
+     */
+    public void setTaxonomyToCreate(Taxonomy taxonomyToCreate) {
+        this.taxonomyToCreate = taxonomyToCreate;
     }
 
     public void setTaxonomyToEdit(Taxonomy taxonomyToEdit) {
         this.taxonomyToEdit = taxonomyToEdit;
     }
 
-    public Mode getMode() {
-        return mode;
-    }
-
-    public void setMode(Mode mode) {
-        this.mode = mode;
-    }
-
-    public Taxonomy getParentOfNewTaxo() {
-        return parentOfNewTaxo;
-    }
-
-    public TaxonomyNameController getNameController() {
-        return nameController;
-    }
-
-    public void setNameController(TaxonomyNameController nameController) {
-        this.nameController = nameController;
-    }
-
-    public Taxonomy getTaxonomyBeforeEdit() {
-        return taxonomyBeforeEdit;
-    }
-
-    public void setTaxonomyBeforeEdit(Taxonomy taxonomyBeforeEdit) {
-        this.taxonomyBeforeEdit = taxonomyBeforeEdit;
-    }
-
-    public TaxonomyRenderController getRenderController() {
-        return renderController;
-    }
-
-    public void setRenderController(TaxonomyRenderController renderController) {
-        this.renderController = renderController;
-    }
-
-    public TaxonomyValidityController getValidityController() {
-        return validityController;
-    }
-
-    public void setValidityController(TaxonomyValidityController validityController) {
-        this.validityController = validityController;
-    }
-
-    public TaxonomyTreeController getTreeController() {
-        return treeController;
-    }
-
+    /**
+     *
+     * @param treeController
+     */
     public void setTreeController(TaxonomyTreeController treeController) {
         this.treeController = treeController;
     }
 
-    public TaxonomyLevelController getLevelController() {
-        return levelController;
+    /**
+     *
+     * @param validityController
+     */
+    public void setValidityController(TaxonomyValidityController validityController) {
+        this.validityController = validityController;
     }
-
-    public void setLevelController(TaxonomyLevelController levelController) {
-        this.levelController = levelController;
-    }
-
-    public void onTaxonomyExpand(NodeExpandEvent event) {
-        if (selectedTaxonomy == null) {
-            treeController.setSelectedTaxonomy(event.getTreeNode());
-        }
-        event.getTreeNode().setExpanded(true);
-    }
-
-    public void onTaxonomyCollapse(NodeCollapseEvent event) {
-        event.getTreeNode().setExpanded(false);
-    }
-
-    public TaxonomyHistoryController getHistoryController() {
-        return historyController;
-    }
-
-    public void setHistoryController(TaxonomyHistoryController historyController) {
-        this.historyController = historyController;
-    }
-
 }
