@@ -431,7 +431,7 @@ function dialog_CERT_DATA {
 	case $? in
 		0)
 			NEXT_FORM="ERROR: Funktion makeCertReq fehlgeschlagen."
-			makeCertReq && dialog_CERT_CHECK && \
+			getCertReqData && makeCertReq && dialog_CERT_CHECK && \
 			   dialog_CERT_OK DIALOG_CERT_INFO DIALOG_INTRANET_FQHN 
 			;;
 		*)
@@ -697,14 +697,16 @@ function encrypt {
 EOF
 }
 
-function makeCertReq {
+function getCertReqData {
 	LBAC_COUNTRY=`head -1 $TMP_SSL_DATA | tr -d $'\n'`
 	LBAC_STATE=`head -2 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_CITY=`head -3 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_SSL_ORGANIZATION=`head -4 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_SSL_OU=`head -5 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_SSL_EMAIL=`head -6 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
+}
 
+function makeCertReq {
 	echo "LBAC_COUNTRY=\"$LBAC_COUNTRY\"" >> $TMP_CONFIG
 	echo "LBAC_STATE=\"$LBAC_STATE\"" >> $TMP_CONFIG
 	echo "LBAC_CITY=\"$LBAC_CITY\"" >> $TMP_CONFIG
@@ -878,7 +880,7 @@ function runDialogs {
 # - from 3 to 4 --> removal of pgchem
 #
 function upgradeOldConfig {
-	if test $LBAC_CONFIG_VERSION = 4 ; then
+	if test x$LBAC_CONFIG_VERSION = x4 ; then
 
                 rm -rf "$LBAC_DATASTORE/dist/pgchem" 
 
