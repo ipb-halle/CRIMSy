@@ -1107,6 +1107,9 @@ while true ; do
                 'ca')
                     MODE=ca
                     ;;
+                'devcert')
+                    MODE=devcert
+                    ;;
                 'genCRL')
                     MODE=genCRL
                     ;;
