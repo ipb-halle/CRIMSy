@@ -1,5 +1,5 @@
 #
-# remember to update column boundaries in configBatch.sh
+# remember to update column boundaries in configBatch.sh and testSetup.sh
 #
 #KEY    PRIMARY    CITY         INSTITUTION             INST_SHORT     MANAGER_EMAIL
 #

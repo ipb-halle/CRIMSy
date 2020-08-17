@@ -102,33 +102,46 @@ EOF
 EOF
 }
 
-function setupTestCA {
+function setupTestRootCA {
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca
-    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
-
-    for cloud in cloudONE cloudTWO ; do
-
-        $LBAC_REPO/util/bin/camgr.sh --batch --mode ca --cloud $cloud
-
-        $LBAC_REPO/util/bin/camgr.sh --batch --mode sign --extension v3_subCA \
-            --input $LBAC_REPO/config/$cloud/CA/cacert.req \
-            --output $LBAC_REPO/config/$cloud/CA/cacert.pem
-
-        $LBAC_REPO/util/bin/camgr.sh --batch --mode importSubCA --cloud $cloud
-    done
     chmod -R go+rX $LBAC_REPO/target/integration/htdocs
 }
 
+function setupTestSubCA {
+    cloud=`echo $0 | cut -d: -f1`
+
+    $LBAC_REPO/util/bin/camgr.sh --batch --mode ca --cloud $cloud
+
+    $LBAC_REPO/util/bin/camgr.sh --batch --mode sign --extension v3_subCA \
+        --input $LBAC_REPO/config/$cloud/CA/cacert.req \
+        --output $LBAC_REPO/config/$cloud/CA/cacert.pem
+
+    $LBAC_REPO/util/bin/camgr.sh --batch --mode importSubCA --cloud $cloud
+
+    $LBAC_REPO/util/bin/camgr.sh --batch --mode devcert --cloud $cloud
+
+    LBAC_CA_DIR=$LBAC_REPO/config/$cloud/CA
+    . $LBAC_CA_DIR/cloud.cfg
+
+    sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
+    sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD_NAME," |\
+    openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
+      -md sha256 -binary -out $LBAC_REPO/target/integration/htdocs/$cloud/configure.sh.sig \
+      -stream -nodetach \
+      -inkey $LBAC_CA_DIR/$DEV_CERT.key \
+      -passin file:$LBAC_CA_DIR/$DEV_CERT.passwd 
+
+    cp $LBAC_CA_DIR/$DEV_CERT.pem $LBAC_REPO/target/integration/htdocs/$cloud/devcert.pem
+
+    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
+}
+export -f setupTestSubCA
 
 function setupTestCAconf {
-    for i in "rootCA:rootCA::CI root" \
-             "cloudONE:rootCA:cloudONE:CRIMSy CI Cloud ONE" \
-             "cloudTWO:rootCA:cloudTWO:CRIMSy CI Cloud TWO" ; do
-
-        dist=`echo $i | cut -d: -f1`
-        superior=`echo $i | cut -d: -f2`
-        cloud=`echo $i | cut -d: -f3`
-        name=`echo $i | cut -d: -f4`
+    dist=`echo $0 | cut -d: -f1`
+    superior=`echo $0 | cut -d: -f2`
+    cloud=`echo $0 | cut -d: -f3`
+    name=`echo $0 | cut -d: -f4`
 
     mkdir -p "$LBAC_REPO/config/$cloud/CA"
     mkdir -p "$LBAC_REPO/target/integration/htdocs/$dist"
@@ -162,16 +175,27 @@ CLOUD="$cloud"
 CLOUD_NAME="$name"
 EOF
 
-    done
-
 }
+export -f setupTestCAconf
 
+#
+#==========================================================
+#
+# MAIN PROGRAM
+#
 cd $LBAC_REPO
 safetyCheck
-setupTestCAconf
+
+cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+    xargs -l1 -i /bin/bash -c setupTestCAconf "{}"
+
 buildDistServer
 runDistServer
-setupTestCA
+setupTestRootCA
 
-cat $HOSTLIST | xargs -l1 -i /bin/bash  -c createNodeConfig "{}"
+cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+    grep -v rootCA | 
+    xargs -l1 -i /bin/bash -c setupTestSubCA "{}"
+
+cat $HOSTLIST | xargs -l1 -i /bin/bash -c createNodeConfig "{}"
 
