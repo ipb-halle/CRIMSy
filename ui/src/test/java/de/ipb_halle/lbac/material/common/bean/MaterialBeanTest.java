@@ -175,8 +175,7 @@ public class MaterialBeanTest extends TestBase {
         MaterialIndexBean indexBean = new MaterialIndexBean();
         indexBean.setIndexService(indexService);
         instance.setMaterialIndexBean(indexBean);
-        
-        
+
         instance.setProjectBean(new ProjectBean());
         Material originalMaterial = materialService.loadMaterialById(material.getId());
 
@@ -194,10 +193,17 @@ public class MaterialBeanTest extends TestBase {
         originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial);
         instance.switchOneVersionBack();
-        
-        Assert.assertEquals(2,instance.getMaterialNameBean().getNames().size());
-        Assert.assertEquals("Test-Struktur",instance.getMaterialNameBean().getNames().get(0).getValue());
-        Assert.assertEquals("Test-Structure",instance.getMaterialNameBean().getNames().get(1).getValue());
+
+        Assert.assertEquals(2, instance.getMaterialNameBean().getNames().size());
+        Assert.assertEquals("Test-Struktur", instance.getMaterialNameBean().getNames().get(0).getValue());
+        Assert.assertEquals("Test-Structure", instance.getMaterialNameBean().getNames().get(1).getValue());
+
+        instance.switchOneVersionForward();
+        Assert.assertEquals(4, instance.getMaterialNameBean().getNames().size());
+        Assert.assertEquals("Test-Struktur", instance.getMaterialNameBean().getNames().get(0).getValue());
+        Assert.assertEquals("Test-Structure", instance.getMaterialNameBean().getNames().get(1).getValue());
+        Assert.assertEquals("Edited-name-1", instance.getMaterialNameBean().getNames().get(2).getValue());
+        Assert.assertEquals("Edited-name-2", instance.getMaterialNameBean().getNames().get(3).getValue());
 
         int i = 0;
     }

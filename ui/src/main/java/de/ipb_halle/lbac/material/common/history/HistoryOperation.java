@@ -291,7 +291,8 @@ public class HistoryOperation  implements Serializable{
         if (indexDiff != null) {
             for (int i = 0; i < indexDiff.getEntries(); i++) {
                 if (indexDiff.getTypeId().get(i) == 1) {
-                    for (int j = materialNameBean.getNames().size() - 1; j >= 0; j--) {
+                    int currentSize=materialNameBean.getNames().size();
+                    for (int j =  currentSize- 1; j >= 0; j--) {
                         MaterialName mn = materialNameBean.getNames().get(j);
                         String newLan = indexDiff.getLanguageNew().get(i);
                         String newValue = indexDiff.getValuesNew().get(i);
@@ -310,6 +311,7 @@ public class HistoryOperation  implements Serializable{
                         }
                         if (indexDiff.getRankOld().get(i) == null && indexDiff.getValuesOld().get(i) == null && indexDiff.getLanguageOld().get(i) == null) {
                             materialNameBean.getNames().add(new MaterialName(newValue, newLan, newRank));
+                            break;
                         }
                     }
                 } else {
