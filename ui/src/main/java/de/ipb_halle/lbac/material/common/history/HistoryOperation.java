@@ -343,7 +343,7 @@ public class HistoryOperation  implements Serializable{
             for (int i = 0; i < indexDiff.getEntries(); i++) {
                 if (indexDiff.getTypeId().get(i) == 1) {
 
-                    for (int j = originalNameSize - 1; j >= 0; j--) {
+                    for (int j = materialNameBean.getNames().size() - 1; j >= 0; j--) {
                         MaterialName mn = materialNameBean.getNames().get(j);
                         String oldLan = indexDiff.getLanguageOld().get(i);
                         String oldValue = indexDiff.getValuesOld().get(i);

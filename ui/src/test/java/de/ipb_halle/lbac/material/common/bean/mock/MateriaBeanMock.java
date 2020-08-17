@@ -64,6 +64,7 @@ public class MateriaBeanMock extends MaterialBean {
 
     @Override
     public void setMaterialIndexBean(MaterialIndexBean materialIndexBean) {
+        
         this.materialIndexBean = materialIndexBean;
     }
 

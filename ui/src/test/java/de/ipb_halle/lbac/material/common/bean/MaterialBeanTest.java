@@ -48,7 +48,11 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
@@ -103,6 +107,9 @@ public class MaterialBeanTest extends TestBase {
     UserBeanMock userBean;
     Project project;
 
+    @Inject
+    private IndexService indexService;
+
     @Before
     public void init() {
         instance = new MateriaBeanMock();
@@ -136,6 +143,7 @@ public class MaterialBeanTest extends TestBase {
 
         instance.getMaterialEditState().setMaterialToEdit(material);
         instance.getMaterialEditState().setMaterialBeforeEdit(material);
+        instance.setMaterialService(materialService);
     }
 
     @After
@@ -162,49 +170,82 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertTrue("testcase 001: Priviliged user must   be able to edit project", instance.isProjectEditEnabled());
     }
 
+    @Test
+    public void test002_navigateInHistory() throws Exception {
+        MaterialIndexBean indexBean = new MaterialIndexBean();
+        indexBean.setIndexService(indexService);
+        instance.setMaterialIndexBean(indexBean);
+        
+        
+        instance.setProjectBean(new ProjectBean());
+        Material originalMaterial = materialService.loadMaterialById(material.getId());
+
+        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, originalMaterial.getHazards());
+        materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
+        materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
+
+        materialService.saveEditedMaterial(
+                materialEditState.getMaterialToEdit(),
+                materialEditState.getMaterialBeforeEdit(),
+                materialEditState.getCurrentProject().getUserGroups().getId(),
+                userBean.getCurrentAccount().getId());
+
+        instance.setMaterialIndexBean(indexBean);
+        originalMaterial = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(originalMaterial);
+        instance.switchOneVersionBack();
+        
+        Assert.assertEquals(2,instance.getMaterialNameBean().getNames().size());
+        Assert.assertEquals("Test-Struktur",instance.getMaterialNameBean().getNames().get(0).getValue());
+        Assert.assertEquals("Test-Structure",instance.getMaterialNameBean().getNames().get(1).getValue());
+
+        int i = 0;
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = 
-                prepareDeployment("MaterialEditBeanTest.war")
-                .addClass(ACListService.class)
-                .addClass(CollectionBean.class)
-                .addClass(CollectionService.class)
-                .addClass(SolrAdminService.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
-                .addClass(SolrTermVectorSearch.class)
-                .addClass(CollectionOrchestrator.class)
-                .addClass(EntityManagerService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchBean.class)
-                .addClass(DocumentSearchService.class)
-                .addClass(SolrSearcher.class)
-                .addClass(MoleculeService.class)
-                .addClass(ProjectBean.class)
-                .addClass(IndexService.class)
-                .addClass(MaterialNameBean.class)
-                .addClass(MaterialIndexBean.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(ProjectService.class)
-                .addClass(CollectionWebClient.class)
-                .addClass(DocumentSearchOrchestrator.class)
-                .addClass(Updater.class)
-                .addClass(TissueService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(Navigator.class)
-                .addClass(WordCloudBean.class)
-                .addClass(ACListService.class)
-                .addClass(WordCloudWebClient.class)
-                .addClass(MateriaBeanMock.class)
-                .addClass(MaterialOverviewBean.class)
-                .addClass(ContainerService.class)
-                .addClass(ItemService.class)
-                .addClass(ArticleService.class)
-                .addClass(ItemOverviewBean.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(ItemBean.class)
-                .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class);
+        WebArchive deployment
+                = prepareDeployment("MaterialEditBeanTest.war")
+                        .addClass(ACListService.class)
+                        .addClass(CollectionBean.class)
+                        .addClass(CollectionService.class)
+                        .addClass(SolrAdminService.class)
+                        .addClass(FileService.class)
+                        .addClass(FileEntityService.class)
+                        .addClass(SolrTermVectorSearch.class)
+                        .addClass(CollectionOrchestrator.class)
+                        .addClass(EntityManagerService.class)
+                        .addClass(TermVectorEntityService.class)
+                        .addClass(DocumentSearchBean.class)
+                        .addClass(DocumentSearchService.class)
+                        .addClass(SolrSearcher.class)
+                        .addClass(MoleculeService.class)
+                        .addClass(ProjectBean.class)
+                        .addClass(IndexService.class)
+                        .addClass(MaterialNameBean.class)
+                        .addClass(MaterialIndexBean.class)
+                        .addClass(TaxonomyNestingService.class)
+                        .addClass(ProjectService.class)
+                        .addClass(CollectionWebClient.class)
+                        .addClass(DocumentSearchOrchestrator.class)
+                        .addClass(Updater.class)
+                        .addClass(TissueService.class)
+                        .addClass(TaxonomyService.class)
+                        .addClass(Navigator.class)
+                        .addClass(WordCloudBean.class)
+                        .addClass(ACListService.class)
+                        .addClass(WordCloudWebClient.class)
+                        .addClass(MateriaBeanMock.class)
+                        .addClass(MaterialOverviewBean.class)
+                        .addClass(ContainerService.class)
+                        .addClass(ItemService.class)
+                        .addClass(ArticleService.class)
+                        .addClass(ItemOverviewBean.class)
+                        .addClass(ContainerNestingService.class)
+                        .addClass(ItemBean.class)
+                        .addClass(MaterialIndexHistoryEntity.class)
+                        .addClass(IndexService.class)
+                        .addClass(MaterialService.class);
         deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }

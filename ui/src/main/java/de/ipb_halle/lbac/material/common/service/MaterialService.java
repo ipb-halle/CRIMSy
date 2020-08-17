@@ -466,6 +466,9 @@ public class MaterialService implements Serializable {
         if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.TAXONOMY) {
             material = taxonomyService.loadTaxonomyById(id);
         }
+        material.setACList(aclService.loadById(entity.getAclist_id()));
+        material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
+        material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
         return material;
     }
 
