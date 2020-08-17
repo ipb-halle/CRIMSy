@@ -193,8 +193,7 @@ buildDistServer
 runDistServer
 setupTestRootCA
 
-cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-    grep -v rootCA | \
+tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
     xargs -l1 -i /bin/bash -c setupTestSubCA "{}"
 
 cat $HOSTLIST | xargs -l1 -i /bin/bash -c createNodeConfig "{}"
