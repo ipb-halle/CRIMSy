@@ -34,14 +34,16 @@ LBAC_DATASTORE=`realpath $p`
 #
 #==========================================================
 #
-# Provide test data (from testdata file) 
+# Provide test data (from nodeconfig.txt file) 
 #
 function getTestData {
 
-    LBAC_CITY=__xxx___
-    LBAC_INSTITUTION=___xxx___
-    LBAC_INSTITUTION_SHORT=___xxx___
-    LBAC_MANAGER_EMAIL=___xxx___
+    data=`grep $TEST_ID nodeconfig.txt`
+    PRIMARY_CLOUD=`echo "$data" | cut -c9-18 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    LBAC_CITY=`echo "$data" | cut -c20-35 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    LBAC_INSTITUTION=`echo "$data" | cut -c36-59 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    LBAC_INSTITUTION_SHORT=`echo "$data" | cut -c50-68 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    LBAC_MANAGER_EMAIL=`echo "$data" | cut -c70-105 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
 
 }
 #
@@ -51,7 +53,7 @@ function createConfiguration {
     curl --output configure.sh.sig $URL/configure.sh.sig
     curl --output chain.txt $URL/chain.txt
     curl --output devcert.pem $URL/devcert.pem
-    curl --output testdata.txt $URL/testdata.txt
+    curl --output nodeconfig.txt $URL/nodeconfig.txt
 
     openssl verify -CAfile chain.txt devcert.pem || exit 1
     openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.txt -out configure.sh || exit 1

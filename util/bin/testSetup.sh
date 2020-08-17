@@ -21,6 +21,14 @@
 #
 p=`dirname $0`
 LBAC_REPO=`realpath "$p/../.."`
+
+if [ $# -eq 0 ] ; then
+    echo "usage: `basename $0` HOSTLIST"
+    echo 
+    echo "HOSTLIST is a file containing one nodekey hostname pair per line"
+fi
+HOSTLIST=$1
+
 #
 #==========================================================
 #
@@ -29,6 +37,18 @@ function buildDistServer {
     docker inspect crimsyci >/dev/null 2>/dev/null || docker build -f Dockerfile -t crimsyci .
     popd > /dev/null
 }
+
+function createNodeConfig {
+    key=`echo $0 | cut -d' ' -f1`
+    dst=`echo $0 | cut -d' ' -f2`
+    cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | cut -c9-18`
+    url="http://`hostname -f`:8000/$cloud"
+
+    scp "$LBAC_REPO/util/bin/configBatch.sh" $dst:
+    ssh $dst "chmod +x configBatch.sh && ./configBatch.sh $url $key"
+    scp $dst:etc/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
+}
+export -f createNodeConfig
 
 function runDistServer {
     cp docker/crimsyci/index.html target/integration/htdocs
@@ -103,6 +123,7 @@ function setupTestCAconf {
 
     mkdir -p "$LBAC_REPO/config/$cloud/CA"
     mkdir -p "$LBAC_REPO/target/integration/htdocs/$dist"
+    cp "$LBAC_REPO/util/test/etc/nodeconfig.txt" "$LBAC_REPO/target/integration/htdocs/$dist"
 
     cat > "$LBAC_REPO/config/$cloud/CA/cloud.cfg" <<EOF
 #
@@ -142,4 +163,6 @@ setupTestCAconf
 buildDistServer
 runDistServer
 setupTestCA
+
+cat $HOSTLIST | xargs -l1 -i /bin/bash  -c createNodeConfig "{}"
 
