@@ -26,8 +26,8 @@
 # the current (PRIMARY) cloud.
 #
 
-URL=$1
-TEST_ID=$2
+URL=$2
+TEST_ID=$3
 p=`dirname $0`
 LBAC_DATASTORE=`realpath $p`
 
@@ -102,3 +102,14 @@ function createConfiguration {
     rm configure.sh.sig
     mv configure.sh $LBAC_DATASTORE/bin
 }
+
+case $1 in 
+    CONFIG)
+        createConfiguration
+        exit 0
+        ;;
+    INSTALL)
+        echo "work in progress ..."
+        exit 0
+        ;;
+esac

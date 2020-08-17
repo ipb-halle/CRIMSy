@@ -21,7 +21,7 @@
 #
 p=`dirname $0`
 export LBAC_REPO=`realpath "$p/../.."`
-umask "g=rX,o=rX"
+umask 0022
 
 if [ $# -eq 0 ] ; then
     echo "usage: `basename $0` HOSTLIST"
@@ -46,9 +46,14 @@ function createNodeConfig {
     cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | cut -c9-18`
     url="http://`hostname -f`:8000/$cloud"
 
-    scp -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
-    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh $url $key"
-    scp -o "StrictHostKeyChecking no" $dst:etc/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
+    echo "copying script ..."
+    scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
+
+    echo "executing ..."
+    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $url $key"
+
+    echo "fetching node configuration ..."
+    scp -q -o "StrictHostKeyChecking no" $dst:etc/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
 }
 export -f createNodeConfig
 
@@ -99,6 +104,7 @@ EOF
 
 function setupTestCA {
     $LBAC_REPO/util/bin/camgr.sh --batch --mode ca
+    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
 
     for cloud in cloudONE cloudTWO ; do
 
@@ -110,6 +116,7 @@ function setupTestCA {
 
         $LBAC_REPO/util/bin/camgr.sh --batch --mode importSubCA --cloud $cloud
     done
+    chmod -R go+rX $LBAC_REPO/target/integration/htdocs
 }
 
 
