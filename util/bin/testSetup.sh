@@ -20,12 +20,14 @@
 #==========================================================
 #
 p=`dirname $0`
-LBAC_REPO=`realpath "$p/../.."`
+export LBAC_REPO=`realpath "$p/../.."`
+umask "g=rX,o=rX"
 
 if [ $# -eq 0 ] ; then
     echo "usage: `basename $0` HOSTLIST"
     echo 
     echo "HOSTLIST is a file containing one nodekey hostname pair per line"
+    exit 1
 fi
 HOSTLIST=$1
 
@@ -44,9 +46,9 @@ function createNodeConfig {
     cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | cut -c9-18`
     url="http://`hostname -f`:8000/$cloud"
 
-    scp "$LBAC_REPO/util/bin/configBatch.sh" $dst:
-    ssh $dst "chmod +x configBatch.sh && ./configBatch.sh $url $key"
-    scp $dst:etc/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
+    scp -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
+    ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh $url $key"
+    scp -o "StrictHostKeyChecking no" $dst:etc/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
 }
 export -f createNodeConfig
 
