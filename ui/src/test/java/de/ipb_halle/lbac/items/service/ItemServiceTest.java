@@ -315,6 +315,9 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(1, 0, 0).getId());
         Assert.assertNull(loadedWellPlate.getItemAtPos(1, 1, 0));
 
+        //Item should not be able to move to wellPlate_2 because item 2 is blocking the slot
+        Assert.assertFalse(containerService.moveItemToContainer(item, wellPlate_2, places));
+
     }
 
     @Deployment
