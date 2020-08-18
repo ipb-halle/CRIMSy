@@ -25,12 +25,14 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.service.CollectionService;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Checks some basic preconditions for start of the programm.
@@ -50,21 +52,26 @@ public class HealthStateCheck {
     private HealthState healthState;
     private CollectionService collectionService;
     private Collection publicCollection;
+    private TaxonomyService taxonomyService;
 
-    public HealthStateCheck(InfoObjectService infoObjectService,
+    public HealthStateCheck(
+            InfoObjectService infoObjectService,
             SolrAdminService solrAdminService,
             FileService fileService,
             String PUBLIC_COLLECTION,
             NodeService nodeService,
-            CollectionService collectionService) {
+            CollectionService collectionService,
+            TaxonomyService taxonomyService) {
         this.infoObjectService = infoObjectService;
         this.solrAdminService = solrAdminService;
         this.fileService = fileService;
         this.PUBLIC_COLLECTION = PUBLIC_COLLECTION;
         this.nodeService = nodeService;
         this.collectionService = collectionService;
-        healthState = new HealthState();
-        publicCollection = collectionService.getPublicCollectionFromDb();
+        this.healthState = new HealthState();
+        this.publicCollection = collectionService.getPublicCollectionFromDb();
+        this.taxonomyService = taxonomyService;
+
     }
 
     /**
@@ -72,7 +79,7 @@ public class HealthStateCheck {
      * checks if the local collections are in synchronity with the solR instance
      * and the filesysten. If the public collection is out of sync the
      * information in the database will be updated based on the information from
-     * solR and filesystem.
+     * solR and filesystem. If no root taxonomy is present one will be created
      *
      * @return The state of the preconditions
      */
@@ -82,6 +89,7 @@ public class HealthStateCheck {
         checkSolRStatus();
         checkPublicCollectionSync();
         checkSyncOfLocalCollections();
+        checkRootTaxonomy();
         return reportHealthState();
     }
 
@@ -127,6 +135,14 @@ public class HealthStateCheck {
             healthState.publicCollectionFileState = HealthState.State.OK;
         }
 
+    }
+
+    private void checkRootTaxonomy() {
+        if (taxonomyService.checkRootTaxonomy() == 0) {
+            healthState.rootTaxonomy = HealthState.State.FAILED;
+        } else {
+            healthState.rootTaxonomy = HealthState.State.OK;
+        }
     }
 
     /**

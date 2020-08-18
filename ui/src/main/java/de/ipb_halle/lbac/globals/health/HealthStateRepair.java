@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.globals.health;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.Collection;
@@ -25,9 +24,21 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.service.CollectionService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Tries to repair some discrepancies found by the healtcheck procedere
@@ -46,6 +57,7 @@ public class HealthStateRepair {
     private User adminAccount;
     private FileService fileService;
     private SolrAdminService solrAdminService;
+    private MaterialService materialService;
 
     public HealthStateRepair(String publicCollectionName,
             HealthState healthState,
@@ -54,7 +66,8 @@ public class HealthStateRepair {
             ACList publicReadAcl,
             User adminAccount,
             FileService fileService,
-            SolrAdminService solrAdminService) {
+            SolrAdminService solrAdminService,
+            MaterialService materialService) {
 
         this.publicCollectionName = publicCollectionName;
         this.healthState = healthState;
@@ -65,6 +78,8 @@ public class HealthStateRepair {
         this.fileService = fileService;
         this.solrAdminService = solrAdminService;
         this.publicCollection = collectionService.getPublicCollectionFromDb();
+        this.materialService = materialService;
+
     }
 
     /**
@@ -129,6 +144,18 @@ public class HealthStateRepair {
             return true;
         }
         return false;
+    }
+
+    public boolean isTaxonomyRepairNeeded() {
+        return healthState.rootTaxonomy == State.FAILED;
+    }
+
+    public void repairRootTaxonomy() {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("Life", "en", 1));
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), adminAccount, new Date());
+        t.setLevel(new TaxonomyLevel(1, "", 1));
+        materialService.saveMaterialToDB(t, publicReadAcl.getId(), new HashMap<>(), adminAccount.getId());
     }
 
     private void repairPublicCollectionInFileSystem() {

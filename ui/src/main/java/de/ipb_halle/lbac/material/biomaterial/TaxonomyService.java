@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,6 +65,11 @@ public class TaxonomyService implements Serializable {
             = "SELECT ctime,CAST(aclist_id AS VARCHAR),CAST(ownerid AS VARCHAR)"
             + "FROM materials "
             + "WHERE materialid=:mid";
+
+    private final String SQL_CHECK_ROOT_TAXONOMY_PRESENT
+            = "SELECT count(*) "
+            + "FROM taxonomy "
+            + "WHERE level=1";
 
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
     protected MaterialComparator comparator;
@@ -140,6 +146,12 @@ public class TaxonomyService implements Serializable {
             taxonomies.add(t);
         }
         return taxonomies;
+    }
+
+    @SuppressWarnings("unchecked")
+    public int checkRootTaxonomy() {
+        List<BigInteger> results = this.em.createNativeQuery(SQL_CHECK_ROOT_TAXONOMY_PRESENT).getResultList();
+        return results.get(0).intValue();
     }
 
     public Taxonomy loadTaxonomyById(Integer id) {

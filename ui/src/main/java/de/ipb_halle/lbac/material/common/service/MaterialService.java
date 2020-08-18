@@ -529,13 +529,15 @@ public class MaterialService implements Serializable {
      * @param m
      * @param projectAclId
      * @param detailTemplates
+     * @param onwerId
      */
     public void saveMaterialToDB(
             Material m,
             UUID projectAclId,
-            Map<MaterialDetailType, ACList> detailTemplates) {
+            Map<MaterialDetailType, ACList> detailTemplates,
+            UUID onwerId) {
 
-        saveMaterialOverview(m, projectAclId);
+        saveMaterialOverview(m, projectAclId, onwerId);
         saveMaterialNames(m);
         saveMaterialHazards(m);
         saveStorageConditions(m);
@@ -553,6 +555,23 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.BIOMATERIAL) {
             saveBioMaterial((BioMaterial) m);
         }
+    }
+
+    /**
+     *
+     * @param m
+     * @param projectAclId
+     * @param detailTemplates
+     */
+    public void saveMaterialToDB(
+            Material m,
+            UUID projectAclId,
+            Map<MaterialDetailType, ACList> detailTemplates) {
+        saveMaterialToDB(
+                m,
+                projectAclId,
+                detailTemplates,
+                userBean.getCurrentAccount().getId());
 
     }
 
@@ -566,18 +585,26 @@ public class MaterialService implements Serializable {
      * @param projectAclId
      * @return
      */
-    protected Material saveMaterialOverview(Material m, UUID projectAclId) {
+    protected Material saveMaterialOverview(Material m, UUID projectAclId, UUID ownerId) {
         MaterialEntity mE = new MaterialEntity();
+        logger.info(("A"));
         mE.setCtime(new Date());
+        logger.info(("B"));
         mE.setMaterialtypeid(m.getType().getId());
-        mE.setOwnerid(userBean.getCurrentAccount().getId());
+        logger.info(("C"));
+        // mE.setOwnerid(userBean.getCurrentAccount().getId());
+        mE.setOwnerid(ownerId);
+        logger.info(("D"));
         mE.setProjectid(m.getProjectId());
+        logger.info(("E"));
         mE.setAclist_id(projectAclId);
+        logger.info(("F"));
         mE.setDeactivated(false);
+        logger.info(("G"));
         em.persist(mE);
         m.setId(mE.getMaterialid());
         m.setACList(aclService.loadById(projectAclId));
-        m.setOwner(memberService.loadUserById(userBean.getCurrentAccount().getId()));
+        m.setOwner(memberService.loadUserById(ownerId));
         m.setCreationTime(mE.getCtime());
         return m;
     }
