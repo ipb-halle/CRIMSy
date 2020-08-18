@@ -50,10 +50,10 @@ function getTestData {
 #==========================================================
 #
 function createConfiguration {
-    curl --output configure.sh.sig $URL/configure.sh.sig
-    curl --output chain.txt $URL/chain.txt
-    curl --output devcert.pem $URL/devcert.pem
-    curl --output nodeconfig.txt $URL/nodeconfig.txt
+    curl --silent --output configure.sh.sig $URL/configure.sh.sig
+    curl --silent --output chain.txt $URL/chain.txt
+    curl --silent --output devcert.pem $URL/devcert.pem
+    curl --silent --output nodeconfig.txt $URL/nodeconfig.txt
 
     openssl verify -CAfile chain.txt devcert.pem || exit 1
     openssl smime -verify -in configure.sh.sig -certfile devcert.pem -CAfile chain.txt -out configure.sh || exit 1
@@ -94,6 +94,7 @@ function createConfiguration {
     LBAC_SSL_EMAIL="$LBAC_MANAGER_EMAIL"
 
     makeCertReq
+    appendCertRequest
 
     # dialog_SAVE
     mv $TMP_CONFIG $LBAC_DATASTORE/$LBAC_CONFIG

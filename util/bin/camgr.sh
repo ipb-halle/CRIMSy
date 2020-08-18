@@ -405,10 +405,10 @@ function dialogCA {
                 dialogDownload '*superior*'
                 SUPERIOR_URL=$TMP_DOWNLOAD_URL
             fi
-            curl --output chain.txt $SUPERIOR_URL/chain.txt
-            curl --output addresses.txt $SUPERIOR_URL/addresses.txt
-            curl --output truststore $SUPERIOR_URL/truststore
-            curl --output truststore.passwd $SUPERIOR_URL/truststore.passwd
+            curl --silent --output chain.txt $SUPERIOR_URL/chain.txt
+            curl --silent --output addresses.txt $SUPERIOR_URL/addresses.txt
+            curl --silent --output truststore $SUPERIOR_URL/truststore
+            curl --silent --output truststore.passwd $SUPERIOR_URL/truststore.passwd
             createSubCA
         fi
         writeConfig

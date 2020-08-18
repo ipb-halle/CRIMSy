@@ -46,10 +46,10 @@ function createNodeConfig {
     cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | cut -c9-18`
     url="http://`hostname -f`:8000/$cloud"
 
-    echo "copying script ..."
+    echo "copying configBatch.sh script ..."
     scp -q -o "StrictHostKeyChecking no" "$LBAC_REPO/util/bin/configBatch.sh" $dst:
 
-    echo "executing ..."
+    echo "executing configBatch.sh ..."
     ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $url $key"
 
     echo "fetching node configuration ..."
@@ -65,9 +65,9 @@ export -f installNode
 
 function runDistServer {
     cp docker/crimsyci/index.html target/integration/htdocs
-    (docker inspect crimsyci_service | grep Status | grep -q running )\
-        || docker start crimsyci_service \
-        || docker run -p 8000:80 \
+    (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
+    docker inspect crimsyci_service >/dev/null 2>&1 && docker rm crimsyci_service 
+    docker run -p 8000:80 \
         --mount type=bind,src=`realpath target/integration/htdocs`,dst=/usr/local/apache2/htdocs \
         --hostname `hostname -f` \
         --detach --name crimsyci_service \
@@ -192,29 +192,39 @@ export -f setupTestCAconf
 cd $LBAC_REPO
 safetyCheck
 
+mvn -DskipTests clean install 
+
 cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
     xargs -l1 -i /bin/bash -c setupTestCAconf "{}"
 
+echo "=== Distribution Server ==="
 buildDistServer
 runDistServer
+
+echo "=== Setup ROOT CA ==="
 setupTestRootCA
 
+echo "=== Setup Sub CAs ==="
 tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
     xargs -l1 -i /bin/bash -c setupTestSubCA "{}"
 
+echo "=== create node configurations ==="
 cat $HOSTLIST | xargs -l1 -i /bin/bash -c createNodeConfig "{}"
 
 # package master nodes
+echo "=== determine master nodes ==="
 tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
     cut -d: -f1 | \
-    xargs -l1 -i $LBAC_REPO/util/bin/package "{}" MASTERBATCH
+    xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" MASTERBATCH
 
 # package all other nodes
+echo "=== package all nodes ==="
 tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
     cut -d: -f1 | \
-    xargs -l1 -i $LBAC_REPO/util/bin/package "{}" AUTO
+    xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" AUTOBATCH
 
 # install node
+echo "=== install nodes ==="
 cat $HOSTLIST | xargs -l1 -i /bin/bash -c installNode "{}"
 
 #

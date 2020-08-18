@@ -379,6 +379,7 @@ function dialog_CERT_REQUEST {
 		  --yesno "Es wurde ein SSL-Zertifikatsantrag mit privatem Schlüssel gefunden. Antworten Sie bitte mit 'Ja', wenn Sie den Zertifikatsantrag weiter verwenden wollen und mit 'Nein', falls Sie die Zertifikatsdaten ändern wollen. Sie müssen einen neuen Zertifikatsantrag erstellen, wenn sich die Hostnamen geändert haben!" 15 72
 		case $? in
 			0)
+                                appendCertRequest
 				NEXT_FORM=DIALOG_CERT_INFO
 				;;
 			1)
@@ -475,10 +476,6 @@ function dialog_CERT_OK {
 }
 
 function dialog_CERT_INFO {
-	echo "cat <<EOF >/dev/null" >> $TMP_CONFIG
-	cat "$LBAC_DATASTORE/etc/$LBAC_SSL_REQ" >> $TMP_CONFIG
-	echo "EOF" >> $TMP_CONFIG
-
 	dialog --colors --backtitle "$CLOUD_NAME" \
 	  --msgbox "Der Zertifikatsantrag wurde für Sie in der Datei 
 
@@ -560,6 +557,12 @@ zukommen. Sie erhalten dann weitere Instruktionen für die Installation von uns.
 #
 #==========================================================
 #
+function appendCertRequest {
+	echo "cat <<EOF >/dev/null" >> $TMP_CONFIG
+	cat "$LBAC_DATASTORE/etc/$LBAC_SSL_REQ" >> $TMP_CONFIG
+	echo "EOF" >> $TMP_CONFIG
+}
+
 function checkTerminal {
 	if test ! -w `tty` ; then
 		dialog --backtitle "$CLOUD_NAME" \
