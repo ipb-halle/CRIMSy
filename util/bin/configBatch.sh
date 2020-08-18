@@ -73,9 +73,7 @@ function createConfiguration {
 
     echo "LBAC_PROXY_HSTS=\"OFF\"" >> $TMP_CONFIG
     echo "LBAC_INIT_TYPE=\"SYSTEMD\"" >> $TMP_CONFIG
-
-    # NOTE: docker exclusive might collide with Selenium Driver?
-    echo "LBAC_DOCKER_EXCLUSIVE=\"ON\"" >> $TMP_CONFIG
+    echo "LBAC_DOCKER_EXCLUSIVE=\"OFF\"" >> $TMP_CONFIG
 
     getTestData
     LBAC_INTRANET_FQHN=`hostname -f`

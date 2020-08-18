@@ -246,7 +246,7 @@ function getJBrowse {
         mkdir -p jbrowse
         pushd jbrowse >/dev/null
         if [ ! -f $JBROWSE_RELEASE_ZIP ] ; then
-            wget $JBROWSE_REPO/$JBROWSE_RELEASE_ZIP
+            curl --silent --output $JBROWSE_RELEASE_ZIP $JBROWSE_REPO/$JBROWSE_RELEASE_ZIP
         fi
         if [ ! -d $JBROWSE_RELEASE_DIR ] ; then
             unzip $JBROWSE_RELEASE_ZIP

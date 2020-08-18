@@ -34,7 +34,13 @@ CURRENT_PG_VERSION=11
  cd /docker-entrypoint-initdb.d/
 
 function getSchemaVersion {
-    PG_VERSION=`cat /data/db/pgsql/PG_VERSION`
+    if [ -e /data/db/pgsql/PG_VERSION ] ; then
+        PG_VERSION=`cat /data/db/pgsql/PG_VERSION`
+    else
+        PG_VERSION=$CURRENT_PG_VERSION
+        ln -s /data/db/pgsql_$CURRENT_PG_VERSION /data/db/pgsql
+    fi
+
     if [ $PG_VERSION != $CURRENT_PG_VERSION ] ; then
         LBAC_SCHEMA_VERSION='BACKUP'
 
@@ -48,14 +54,16 @@ function getSchemaVersion {
         | psql lbac | head -1 | tr -d ' '`
 }
 
-function updatePre96 {
+function updatePre11 {
     if [ ! -h /data/db/pgsql ] ; then
-        mv /data/db/pgsql /data/db/pgsql_96
-        ln -s /data/db/pgsql_96 /data/db/pgsql
+        if [ -e /data/db/pgsql ] ; then
+            mv /data/db/pgsql /data/db/pgsql_96
+            ln -s /data/db/pgsql_96 /data/db/pgsql
+        fi
     fi
 }
 
-    updatePre96
+    updatePre11
     getSchemaVersion
 
     echo "Found schema of database             : $LBAC_SCHEMA_VERSION"

@@ -28,8 +28,8 @@ function download {
     CACERT=`echo "$0" | cut -f4`
     CRL=`echo "$0" | cut -f5`
 
-    wget -O $LBAC_DATASTORE/dist/proxy/conf/crl/$NAME.$FP.crl $CRL
-    wget -O $LBAC_DATASTORE/dist/proxy/conf/crt/$NAME.$FP.pem $CACERT
+    curl --silent --output $LBAC_DATASTORE/dist/proxy/conf/crl/$NAME.$FP.crl $CRL
+    curl --silent --output $LBAC_DATASTORE/dist/proxy/conf/crt/$NAME.$FP.pem $CACERT
 }
 export -f download
 

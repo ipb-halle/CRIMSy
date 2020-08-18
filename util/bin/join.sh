@@ -71,9 +71,9 @@ function dialogDownload {
           --inputbox "Please specify download address for additional cloud" \
           15 72 "URL" 2>$TMP_RESULT || error "Aborted"
         DOWNLOAD_URL=`cat $TMP_RESULT`
-        wget -O $CLOUD.chain $DOWNLOAD_URL/chain.txt
-        wget -O $CLOUD.devcert $DOWNLOAD_URL/devcert.pem
-        wget -O $CLOUD.crl $DOWNLOAD_URL/crl.pem
+        curl --silent --output $CLOUD.chain $DOWNLOAD_URL/chain.txt
+        curl --silent --output $CLOUD.devcert $DOWNLOAD_URL/devcert.pem
+        curl --silent --output $CLOUD.crl $DOWNLOAD_URL/crl.pem
 }
 
 #
@@ -102,7 +102,7 @@ function dialogEncrypt {
 
 function downloadPackage {
 
-    wget -O $LBAC_INSTITUTION_MD5.$CLOUD $LBAC_DISTRIBUTION_POINT/$LBAC_INSTITUTION_MD5.$CLOUD
+    curl --silent --output $LBAC_INSTITUTION_MD5.$CLOUD $LBAC_DISTRIBUTION_POINT/$LBAC_INSTITUTION_MD5.$CLOUD
 
     openssl smime -verify -in $LBAC_INSTITUTION_MD5.$CLOUD -certfile $CLOUD.devcert \
       -CAfile $CLOUD.chain | openssl smime -decrypt -inform PEM  \
