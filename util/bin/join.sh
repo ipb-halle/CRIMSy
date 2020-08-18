@@ -91,20 +91,7 @@ function dialogEncrypt {
         15 72
         case $? in
                 0)
-                        rm -f config.sh.asc && \
-                        cat << EOF > "config.sh.asc" 
-#
-# LBAC_INSTITUTION=$LBAC_INSTITUTION
-# CERTIFICATE_ID=`openssl x509 -in $CLOUD.devcert -text | \
-          grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
-# `date`
-#
-# ----- SMIME ENCRYPTED CONFIG BEGIN -----
-`openssl smime -encrypt -binary -outform PEM -aes-256-cbc \
-  -in ../config.sh $CLOUD.devcert`
-# ----- SMIME ENCRYPTED CONFIG END -----
-EOF
-
+                        encrypt
                         ;;
                 *)
                         error "Aborted."
@@ -122,6 +109,23 @@ function downloadPackage {
       -inkey $LBAC_DATASTORE/etc/lbac_cert.key \
       -passin file:$LBAC_DATASTORE/etc/lbac_cert.passwd  \
       -out $CLOUD.tar.gz || error "Could not verify and decrypt install package"
+}
+
+function encrypt {
+    rm -f config.sh.asc && \
+    cat << EOF > "config.sh.asc" 
+#
+# LBAC_INSTITUTION=$LBAC_INSTITUTION
+# CERTIFICATE_ID=`openssl x509 -in $CLOUD.devcert -text | \
+          grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
+# `date`
+#
+# ----- SMIME ENCRYPTED CONFIG BEGIN -----
+`openssl smime -encrypt -binary -outform PEM -aes-256-cbc \
+  -in ../config.sh $CLOUD.devcert`
+# ----- SMIME ENCRYPTED CONFIG END -----
+EOF
+
 }
 
 function error {

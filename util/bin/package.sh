@@ -344,6 +344,17 @@ case $2 in
         setupMaster
         genPackage
         ;;
+    MASTERBATCH)
+        tmp=`grep $LBAC_CLOUD $LBAC_REPO/util/test/etc/cloudnodes.txt | grep MASTER | cut -d" " -f2`
+        tmp="$LBAC_REPO/config/nodes/$tmp.sh.asc"
+        if [ -f $tmp ] ; then
+            decryptConfig $tmp
+            . $LBAC_CONFIG
+            mv $tmp $LBAC_REPO/config/$LBAC_CLOUD
+            setupMaster
+            genPackage
+        fi
+        ;;
     AUTO)
 	. $LBAC_REPO/config/$LBAC_CLOUD/master.sh || error "Master config not found"
         for tmp in $LBAC_REPO/config/$LBAC_CLOUD/*.asc ; do

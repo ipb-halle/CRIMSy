@@ -57,6 +57,12 @@ function createNodeConfig {
 }
 export -f createNodeConfig
 
+function installNode {
+    dst=`echo $0 | cut -d' ' -f2`
+    ssh -o "StrictHostKeyChecking no" $dst "./bin/install.sh"
+}
+export -f installNode
+
 function runDistServer {
     cp docker/crimsyci/index.html target/integration/htdocs
     (docker inspect crimsyci_service | grep Status | grep -q running )\
@@ -197,4 +203,27 @@ tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
     xargs -l1 -i /bin/bash -c setupTestSubCA "{}"
 
 cat $HOSTLIST | xargs -l1 -i /bin/bash -c createNodeConfig "{}"
+
+# package master nodes
+tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+    cut -d: -f1 | \
+    xargs -l1 -i $LBAC_REPO/util/bin/package "{}" MASTERBATCH
+
+# package all other nodes
+tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+    cut -d: -f1 | \
+    xargs -l1 -i $LBAC_REPO/util/bin/package "{}" AUTO
+
+# install node
+cat $HOSTLIST | xargs -l1 -i /bin/bash -c installNode "{}"
+
+#
+# ToDo: multiple cloud memberships 
+#
+
+#
+# ToDo: start Selenium driver and process screenplay
+#
+
+echo "Finish"
 
