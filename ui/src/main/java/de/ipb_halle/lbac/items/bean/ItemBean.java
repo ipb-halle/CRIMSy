@@ -174,14 +174,9 @@ public class ItemBean implements Serializable {
             itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount());
             this.printBean.setLabelDataObject(state.getEditedItem());
         }
-        containerService.deleteItemInContainer(state.getEditedItem().getId());
-        for (int[] pos : containerController.resolveItemPositions()) {
-            containerService.saveItemInContainer(
-                    state.getEditedItem().getId(),
-                    container.getId(),
-                    pos[0],
-                    pos[1]);
-        }
+
+        boolean moveSuccess = containerService.moveItemToContainer(state.getEditedItem(), container, containerController.resolveItemPositions());
+
         itemOverviewBean.reloadItems();
         navigator.navigate("/item/items");
     }
@@ -531,8 +526,8 @@ public class ItemBean implements Serializable {
         return state.getEditedItem().getHistory().isEmpty() || state.getCurrentHistoryDate() == null;
 
     }
-    
-    public void removeContainer(){
-        this.container=null;
+
+    public void removeContainer() {
+        this.container = null;
     }
 }

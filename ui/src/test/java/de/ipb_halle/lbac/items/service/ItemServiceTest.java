@@ -42,13 +42,14 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.MemberService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -113,7 +114,7 @@ public class ItemServiceTest extends TestBase {
         c0.setFireSection("F1");
         c0.setGmosavety("S0");
         c0.setLabel("R302");
-        c0.setType(new ContainerType("ROOM", 90,false,true));
+        c0.setType(new ContainerType("ROOM", 90, false, true));
 
         c1 = new Container();
         c1.setBarCode("9845893457");
@@ -122,7 +123,7 @@ public class ItemServiceTest extends TestBase {
         c1.setGmosavety(c0.getGmosavety());
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
-        c1.setType(new ContainerType("CUPBOARD", 90,true,false));
+        c1.setType(new ContainerType("CUPBOARD", 90, true, false));
 
         c2 = new Container();
         c2.setBarCode("43753456");
@@ -131,7 +132,7 @@ public class ItemServiceTest extends TestBase {
         c2.setGmosavety(c1.getGmosavety());
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
-        c2.setType(new ContainerType("CARTON", 90,true,false));
+        c2.setType(new ContainerType("CARTON", 90, true, false));
 
         containerService.saveContainer(c0);
         containerService.saveContainer(c1);
@@ -257,12 +258,68 @@ public class ItemServiceTest extends TestBase {
         instance.saveItem(item);
         Item i = instance.loadItemById(item.getId());
         Assert.assertEquals("test003_editUserRights - test-acl", i.getACList().getName());
+    }
+
+    @Test
+    public void test004_moveItem() {
+        //Create two items
+        Item item = createItem();
+        item = instance.saveItem(item);
+        Item item2 = createItem();
+        item2 = instance.saveItem(item2);
+        //Create two wellplates with different dimensions
+        Container wellPlate_1 = new Container();
+        wellPlate_1.setDimension("5;2;1");
+        wellPlate_1.setLabel("Wellplate-1");
+        wellPlate_1.setParentContainer(c0);
+        wellPlate_1.setType(new ContainerType("WELLPLATE", 50, false, true));
+        wellPlate_1 = containerService.saveContainer(wellPlate_1);
+        Container wellPlate_2 = new Container();
+        wellPlate_2.setDimension("1;1;1");
+        wellPlate_2.setLabel("Wellplate-2");
+        wellPlate_2.setParentContainer(c0);
+        wellPlate_2.setType(new ContainerType("WELLPLATE", 50, false, true));
+        wellPlate_2 = containerService.saveContainer(wellPlate_2);
+        //Put container to item container hierarchy
+        item.getNestedContainer().add(wellPlate_1);
+        item.getNestedContainer().add(c0);
+        item2.getNestedContainer().add(wellPlate_2);
+        item2.getNestedContainer().add(c0);
+        //Move item 1 to wellplate 1
+        Set<int[]> places = new HashSet<>();
+        places.add(new int[]{0, 0});
+        places.add(new int[]{1, 0});
+        containerService.moveItemToContainer(item, wellPlate_1, places);
+        //Check if movement was correct
+        Container loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(1, 0, 0).getId());
+        //Move item 2 to wellplate 1
+        places = new HashSet<>();
+        places.add(new int[]{1, 1});
+        containerService.moveItemToContainer(item2, wellPlate_1, places);
+        //Check if movement was correct
+        loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(1, 0, 0).getId());
+        Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(1, 1, 0).getId());
+        // Check if item is now in new wellplate
+        places = new HashSet<>();
+        places.add(new int[]{0, 0});
+        containerService.moveItemToContainer(item2, wellPlate_2, places);
+        loadedWellPlate = containerService.loadContainerById(wellPlate_2.getId());
+        Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
+        // check if item is removed from old wellplate
+        loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(1, 0, 0).getId());
+        Assert.assertNull(loadedWellPlate.getItemAtPos(1, 1, 0));
 
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment =  prepareDeployment("ItemServiceTest.war")
+        WebArchive deployment = prepareDeployment("ItemServiceTest.war")
                 .addClass(EntityManagerService.class)
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)

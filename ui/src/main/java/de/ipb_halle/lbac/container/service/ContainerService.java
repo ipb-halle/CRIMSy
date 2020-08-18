@@ -422,6 +422,27 @@ public class ContainerService implements Serializable {
                 .executeUpdate();
     }
 
+    public void moveItemToContainer(Item i, Container c) {
+        deleteItemInContainer(i.getId());
+    }
+
+    public Integer getItemIdAtPosition(int containerId, int x, int y) {
+        return null;
+    }
+
+    public boolean moveItemToContainer(Item i, Container c, Set<int[]> positions) {
+
+        deleteItemInContainer(i.getId());
+        for (int[] pos : positions) {
+            saveItemInContainer(
+                    i.getId(),
+                    c.getId(),
+                    pos[0],
+                    pos[1]);
+        }
+        return true;
+    }
+
     public void saveItemInContainer(int itemid, int containerid, int posX, int posY) {
 
         this.em.createNativeQuery(SQL_SAVE_ITEM_IN_CONTAINER)
