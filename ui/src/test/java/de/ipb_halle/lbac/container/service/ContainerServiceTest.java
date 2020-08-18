@@ -108,7 +108,7 @@ public class ContainerServiceTest extends TestBase {
         c0.setFireSection("F1");
         c0.setGmosavety("S0");
         c0.setLabel("R302");
-        c0.setType(new ContainerType("ROOM", 90,false,true));
+        c0.setType(new ContainerType("ROOM", 90, false, true));
 
         c1 = new Container();
         c1.setBarCode("9845893457");
@@ -117,7 +117,7 @@ public class ContainerServiceTest extends TestBase {
         c1.setGmosavety(c0.getGmosavety());
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
-        c1.setType(new ContainerType("CUPBOARD", 90,true,false));
+        c1.setType(new ContainerType("CUPBOARD", 90, true, false));
 
         c2 = new Container();
         c2.setBarCode("43753456");
@@ -126,7 +126,7 @@ public class ContainerServiceTest extends TestBase {
         c2.setGmosavety(c1.getGmosavety());
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
-        c2.setType(new ContainerType("CARTON", 90,true,false));
+        c2.setType(new ContainerType("CARTON", 90, true, false));
 
         c3 = new Container();
         c3.setBarCode("43753456");
@@ -135,7 +135,7 @@ public class ContainerServiceTest extends TestBase {
         c3.setGmosavety(c1.getGmosavety());
         c3.setLabel("Karton5");
         c3.setParentContainer(c1);
-        c3.setType(new ContainerType("CARTON", 90,true,false));
+        c3.setType(new ContainerType("CARTON", 90, true, false));
     }
 
     @After
@@ -197,7 +197,7 @@ public class ContainerServiceTest extends TestBase {
         c4.setLabel("Karton3");
         c4.setProject(p);
         c4.setParentContainer(null);
-        c4.setType(new ContainerType("CARTON", 190,true,false));
+        c4.setType(new ContainerType("CARTON", 190, true, false));
         instance.saveContainer(c4);
 
         List<Container> result = instance.loadContainers(publicUser);
@@ -267,6 +267,10 @@ public class ContainerServiceTest extends TestBase {
                 }
             }
         }
+        Assert.assertTrue(3 == instance.getItemIdAtPosition(c1.getId(), 0, 1));
+        Assert.assertTrue(instance.saveItemInContainer(3, c1.getId(), 0, 1));
+        Assert.assertFalse(instance.saveItemInContainer(4, c1.getId(), 0, 1));
+
     }
 
     @Test
@@ -526,30 +530,30 @@ public class ContainerServiceTest extends TestBase {
 
     private Container[] test008_initializeContainer() {
         Container c0 = new Container();
-        c0.setType(new ContainerType("ROOM", 100,false,true));
+        c0.setType(new ContainerType("ROOM", 100, false, true));
         c0.setLabel("C0");
         instance.saveContainer(c0);
         Container c1 = new Container();
-        c1.setType(new ContainerType("ROOM", 99,false,true));
+        c1.setType(new ContainerType("ROOM", 99, false, true));
         c1.setLabel("C1");
         c1.setParentContainer(c0);
         instance.saveContainer(c1);
         Container c2 = new Container();
-        c2.setType(new ContainerType("ROOM", 99,false,true));
+        c2.setType(new ContainerType("ROOM", 99, false, true));
         c2.setLabel("C2");
         instance.saveContainer(c2);
         Container c3 = new Container();
-        c3.setType(new ContainerType("ROOM", 98,false,true));
+        c3.setType(new ContainerType("ROOM", 98, false, true));
         c3.setLabel("C3");
         c3.setParentContainer(c1);
         instance.saveContainer(c3);
         Container c4 = new Container();
-        c4.setType(new ContainerType("ROOM", 97,false,true));
+        c4.setType(new ContainerType("ROOM", 97, false, true));
         c4.setLabel("C4");
         c4.setParentContainer(c3);
         instance.saveContainer(c4);
         Container c5 = new Container();
-        c5.setType(new ContainerType("ROOM", 96,false,true));
+        c5.setType(new ContainerType("ROOM", 96, false, true));
         c5.setLabel("C5");
         c5.setParentContainer(c4);
         instance.saveContainer(c5);

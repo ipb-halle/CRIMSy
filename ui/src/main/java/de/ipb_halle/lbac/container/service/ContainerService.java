@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,6 +64,12 @@ public class ContainerService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
+    private final String SQL_CHECK_ITEM_AT_POSITION
+            = "SELECT itemid "
+            + "FROM item_positions "
+            + "WHERE itemrow=:row "
+            + "AND itemcol=:col "
+            + "AND containerid=:containerid";
     private final String SQL_DELETE_ITEM_IN_CONTAINER
             = "DELETE FROM item_positions "
             + "WHERE itemid=:itemid";
@@ -427,7 +432,16 @@ public class ContainerService implements Serializable {
     }
 
     public Integer getItemIdAtPosition(int containerId, int x, int y) {
-        return null;
+        List<Integer> results = this.em.createNativeQuery(SQL_CHECK_ITEM_AT_POSITION)
+                .setParameter("containerid", containerId)
+                .setParameter("col", x)
+                .setParameter("row", y)
+                .getResultList();
+        if (results.isEmpty()) {
+            return null;
+        } else {
+            return results.get(0);
+        }
     }
 
     public boolean moveItemToContainer(Item i, Container c, Set<int[]> positions) {
@@ -443,14 +457,28 @@ public class ContainerService implements Serializable {
         return true;
     }
 
-    public void saveItemInContainer(int itemid, int containerid, int posX, int posY) {
-
-        this.em.createNativeQuery(SQL_SAVE_ITEM_IN_CONTAINER)
-                .setParameter("itemid", itemid)
-                .setParameter("containerid", containerid)
-                .setParameter("posX", posX)
-                .setParameter("posY", posY)
-                .executeUpdate();
+    /**
+     * Checks if an item is at the place where the new item should be placed
+     * into and saves it to there if none item is blocking it.
+     *
+     * @param itemid
+     * @param containerid
+     * @param posX
+     * @param posY
+     * @return
+     */
+    public boolean saveItemInContainer(int itemid, int containerid, int posX, int posY) {
+        Integer itemAtPlace = getItemIdAtPosition(containerid, posX, posY);
+        if (itemAtPlace == null) {
+            this.em.createNativeQuery(SQL_SAVE_ITEM_IN_CONTAINER)
+                    .setParameter("itemid", itemid)
+                    .setParameter("containerid", containerid)
+                    .setParameter("posX", posX)
+                    .setParameter("posY", posY)
+                    .executeUpdate();
+            return true;
+        }
+        return itemAtPlace == itemid;
     }
 
     @SuppressWarnings("unchecked")
