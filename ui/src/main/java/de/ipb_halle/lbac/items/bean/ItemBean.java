@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.Material;
 
@@ -160,6 +161,11 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
+        boolean areSlotsEmpty = containerService.checkContainerSlots(state.getEditedItem(), container, containerController.resolveItemPositions());
+        if (!areSlotsEmpty) {
+            UIMessage.info(MESSAGE_BUNDLE, "itemEdit_container_blocked");
+            return;
+        }
         state.getEditedItem().setContainer(container);
 
         if (mode == Mode.CREATE) {
@@ -175,7 +181,7 @@ public class ItemBean implements Serializable {
             this.printBean.setLabelDataObject(state.getEditedItem());
         }
 
-        boolean moveSuccess = containerService.moveItemToContainer(state.getEditedItem(), container, containerController.resolveItemPositions());
+        containerService.moveItemToContainer(state.getEditedItem(), container, containerController.resolveItemPositions());
 
         itemOverviewBean.reloadItems();
         navigator.navigate("/item/items");

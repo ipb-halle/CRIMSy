@@ -431,6 +431,7 @@ public class ContainerService implements Serializable {
         deleteItemInContainer(i.getId());
     }
 
+    @SuppressWarnings("unchecked")
     public Integer getItemIdAtPosition(int containerId, int x, int y) {
         List<Integer> results = this.em.createNativeQuery(SQL_CHECK_ITEM_AT_POSITION)
                 .setParameter("containerid", containerId)
@@ -446,11 +447,8 @@ public class ContainerService implements Serializable {
 
     public boolean moveItemToContainer(Item i, Container c, Set<int[]> positions) {
         //check if target slots are empty
-        for (int[] pos : positions) {
-            Integer itemAtPlace = getItemIdAtPosition(c.getId(), pos[0], pos[1]);
-            if (itemAtPlace != null && itemAtPlace != i.getId()) {
-                return false;
-            }
+        if (!checkContainerSlots(i, c, positions)) {
+            return false;
         }
         deleteItemInContainer(i.getId());
         for (int[] pos : positions) {
@@ -460,7 +458,16 @@ public class ContainerService implements Serializable {
                     pos[0],
                     pos[1]);
         }
+        return true;
+    }
 
+    public boolean checkContainerSlots(Item i, Container c, Set<int[]> positions) {
+        for (int[] pos : positions) {
+            Integer itemAtPlace = getItemIdAtPosition(c.getId(), pos[0], pos[1]);
+            if (itemAtPlace != null && itemAtPlace != i.getId()) {
+                return false;
+            }
+        }
         return true;
     }
 
