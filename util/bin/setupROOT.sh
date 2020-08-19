@@ -193,8 +193,8 @@ function installInit {
 function postInstall {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
 
-    echo "Waiting 60 sek. for database to come up ..."
-    sleep 60
+    echo "Waiting 15 sek. for database to come up ..."
+    sleep 15
 
     docker exec -i dist_db_1 chown postgres /data/db
     docker exec -i -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
