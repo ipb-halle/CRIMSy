@@ -65,6 +65,7 @@
                         <p:column
                             styleClass="#{itemBean.containerController.getStyleOfContainerPlace(x,y)}">
                             <p:selectBooleanCheckbox
+                                styleClass="checkbox-round"
                                 value="#{itemBean.containerController.itemPositions[x][y]}"
                                 disabled="#{itemBean.containerController.isContainerPlaceDisabled(x, y)}"
                                 title="#{itemBean.containerController.getToolTipForContainerPlace(x,y)}"
