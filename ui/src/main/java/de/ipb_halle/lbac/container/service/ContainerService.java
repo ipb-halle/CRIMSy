@@ -446,7 +446,10 @@ public class ContainerService implements Serializable {
     }
 
     public boolean moveItemToContainer(Item i, Container c, Set<int[]> positions) {
-        //check if target slots are empty
+        if (c == null) {
+            deleteItemInContainer(i.getId());
+            return true;
+        }
         if (!checkContainerSlots(i, c, positions)) {
             return false;
         }
@@ -462,6 +465,9 @@ public class ContainerService implements Serializable {
     }
 
     public boolean checkContainerSlots(Item i, Container c, Set<int[]> positions) {
+        if (c == null) {
+            return true;
+        }
         for (int[] pos : positions) {
             Integer itemAtPlace = getItemIdAtPosition(c.getId(), pos[0], pos[1]);
             if (itemAtPlace != null && itemAtPlace != i.getId()) {
