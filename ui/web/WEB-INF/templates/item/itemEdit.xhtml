@@ -25,7 +25,6 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:p="http://primefaces.org/ui"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
 
@@ -40,10 +39,10 @@
                     <ui:include src="/WEB-INF/templates/item/containerModal.xhtml"/>
                 </ui:insert>
 
-                <b:panel>
+                <b:panel styleClass="itemEditPanel">
                     <b:container>
                         <b:row>
-                            <b:column span="2" 
+                            <b:column span="1" 
                                       offset="1"
                                       styleClass="itemEditMaterialName">
                                 <h:outputText
@@ -73,12 +72,12 @@
                                     action="#{itemBean.applyNextPositiveDiff()}">
                                 </b:commandButton>
                             </b:column>
-                            <b:column  span="1">
+                            <b:column  span="1" offset="1">
                                 <b:commandButton
                                     action="#{navigator.navigate('item/items')}"
                                     value="#{msgs.Cancel}"/>
                             </b:column>
-                            <b:column span="1" offset="1">
+                            <b:column span="1">
                                 <b:commandButton
                                     value="#{itemBean.getSaveButtonText()}"
                                     action="#{itemBean.actionSave()}"
@@ -88,7 +87,7 @@
                     </b:container>
                 </b:panel>
 
-                <b:panel>
+                <b:panel styleClass="itemEditPanel">
                     <b:container>
                         <b:row>
                             <crimsy:label id="labelPrintUI" 
@@ -99,10 +98,13 @@
                 </b:panel>
 
                 <b:panel
+                    styleClass="itemEditPanel"
                     title="#{msgs.itemEdit_projectPanel_title}">
                     <b:container>
                         <b:row>
-                            <b:column span="2">
+                            <b:column
+                                span="2"
+                                styleClass="rightLabeledCbxVendor">
                                 <b:selectOneMenu
                                     label="#{msgs.itemEdit_projectPanel_name}"
                                     value="#{itemBean.state.editedItem.project}">
@@ -143,6 +145,7 @@
                 </b:panel>
 
                 <b:panel
+                    styleClass="itemEditPanel"
                     title="#{msgs.itemEdit_itemPanel_title}">
                     <b:container>
                         <b:row>
@@ -154,7 +157,8 @@
                                     <f:converter converterId="InputConverter" />
                                 </b:inputText>
                             </b:column>
-                            <b:column span="1">
+                            <b:column span="1"
+                                      styleClass="rightLabeledCbxBound">
                                 <b:selectBooleanCheckbox
                                     label="#{msgs.itemEdit_itemPanel_directContainer}"
                                     ajax="true"
@@ -199,7 +203,10 @@
                         </b:row>
                         <b:row 
                             styleClass="solventClass">
-                            <b:column span="1" offset="1">
+                            <b:column 
+                                span="1"
+                                offset="1"
+                                styleClass="rightLabeledCbxSolvent">
                                 <b:selectBooleanCheckbox
                                     label="#{msgs.itemEdit_itemPanel_solvent}"
                                     ajax="true"
@@ -274,16 +281,38 @@
                         </b:row>
                     </b:container>
                 </b:panel>
-                <b:panel title="#{msgs.itemEdit_containerPanel_title}">
+                <b:panel
+                    styleClass="itemEditPanel"
+                    title="#{msgs.itemEdit_containerPanel_title}">
                     <b:container>
                         <b:row>
                             <b:column span="4" styleClass="containerPseudoClass">
                                 <b:container>
                                     <b:row>
-                                        <b:column span="1" >
-                                            <h:outputText value="#{msgs.itemEdit_containerPanel_container_name}"/>
+                                        <b:column
+                                            styleClass="itemEditLocationHeader"
+                                            span="2">
+                                            <h:outputText
+                                                value="Aktueller Standort"/>
                                         </b:column>
-                                        <b:column offset="1" span="1" >
+                                        <b:column
+                                            span="1">
+                                            <b:commandButton
+                                                styleClass="itemEditContainerRemoveButton"
+                                                ajax="true"
+                                                action="#{itemBean.removeContainer()}"
+                                                update="@(.containerPseudoClass)"
+                                                value="remove"/>
+                                        </b:column>
+                                    </b:row>
+
+
+                                    <b:row>
+                                        <b:column span="1" >
+                                            <h:outputText
+                                                value="#{msgs.itemEdit_containerPanel_container_name}"/>
+                                        </b:column>
+                                        <b:column span="2" >
                                             <h:outputText value="#{itemBean.getContainerName()}"/>
                                         </b:column>
                                     </b:row>
@@ -291,15 +320,15 @@
                                         <b:column span="1" >
                                             <h:outputText value="#{msgs.itemEdit_containerPanel_container_type}"/>
                                         </b:column>
-                                        <b:column offset="1" span="1" >
+                                        <b:column  span="2" >
                                             <h:outputText value="#{itemBean.getContainerType()}"/>
                                         </b:column>
                                     </b:row>
                                     <b:row>
-                                        <b:column span="1" >
+                                        <b:column  span="1">
                                             <h:outputText value="#{msgs.itemEdit_containerPanel_container_project}"/>
                                         </b:column>
-                                        <b:column offset="1" span="1" >
+                                        <b:column  span="2" >
                                             <h:outputText value="#{itemBean.getContainerProject()}"/>
                                         </b:column>
                                     </b:row>
@@ -307,24 +336,31 @@
                                         <b:column span="1" >
                                             <h:outputText value="#{msgs.itemEdit_containerPanel_container_location}"/>
                                         </b:column>
-                                        <b:column offset="1" span="1" >
-                                            <h:outputText value="#{itemBean.getContainerLocation()}"/>
+                                        <b:column span="2" >
+                                            <h:outputText 
+                                                escape="false"
+                                                value="#{itemBean.getContainerLocation()}"/>
                                         </b:column>
                                     </b:row>
-                                </b:container>
-
-                            </b:column>
-                            <b:column 
-                                span="4"
-                                styleClass="containerPseudoClass">
-                                <crimsy:container2d 
-                                    container="#{itemBean.container}"
-                                    rendered="#{itemBean.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
-                            </b:column>
-                            <b:column span="3">
-                                <b:container>
                                     <b:row>
-                                        <b:column span="2">
+                                        <b:column 
+                                            span="3"
+                                            styleClass="itemEditLocationHeader">
+                                            <h:outputText
+                                                value=""/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column 
+                                            span="3"
+                                            styleClass="itemEditLocationHeader">
+                                            <h:outputText
+                                                value="Standortsuche"/>
+                                        </b:column>
+                                    </b:row>
+
+                                    <b:row>
+                                        <b:column span="1">
                                             <h:outputText
                                                 value="#{msgs.itemEdit_containerPanel_quickSearch}"/>
                                         </b:column>
@@ -344,25 +380,25 @@
 
                                             </p:autoComplete>
                                         </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2">
+                                        <b:column span="1" >
                                             <b:commandButton
+                                                styleClass="itemEditcontainerAdvancedSearch"
                                                 ajax="true"
                                                 oncomplete="$('.containerModal').modal()"
                                                 value="erweiterte Suche"/>
                                         </b:column>
-                                         <b:column span="2">
-                                            <b:commandButton
-                                                ajax="true"
-                                                action="#{itemBean.removeContainer()}"
-                                               update="@(.containerPseudoClass)"
-                                                value="remove"/>
-                                        </b:column>
                                     </b:row>
-                                </b:container>
-                            </b:column>
 
+                                </b:container>
+
+                            </b:column>
+                            <b:column 
+                                span="4"
+                                styleClass="containerPseudoClass">
+                                <crimsy:container2d 
+                                    container="#{itemBean.container}"
+                                    rendered="#{itemBean.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
+                            </b:column>
                         </b:row>
                     </b:container>
                 </b:panel>
