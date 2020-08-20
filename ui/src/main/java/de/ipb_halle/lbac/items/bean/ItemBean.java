@@ -192,6 +192,7 @@ public class ItemBean implements Serializable {
     }
 
     public void actionStartItemEdit(Item i) {
+        mode = Mode.EDIT;
         projects = projectService.loadReadableProjectsOfUser(userBean.getCurrentAccount());
         containers = containerService.loadContainers(userBean.getCurrentAccount());
         containerTypes = containerService.loadContainerTypes();
