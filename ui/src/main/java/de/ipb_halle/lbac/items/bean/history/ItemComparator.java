@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean.history;
 
+import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
@@ -81,10 +82,28 @@ public class ItemComparator {
             history.setPurityNew(itemNew.getPurity());
             history.setPurityOld(itemOld.getPurity());
         }
+
+        if (!areContainerEqual(itemOld.getContainer(), itemNew.getContainer())) {
+            differenceFound = true;
+            history.setParentContainerNew(itemNew.getContainer());
+            history.setParentContainerOld(itemOld.getContainer());
+        }
         if (differenceFound) {
             return history;
         } else {
             return null;
         }
+    }
+
+    private boolean areContainerEqual(Container oldContainer, Container newContainer) {
+        Integer idOld = null;
+        if (oldContainer != null) {
+            idOld = oldContainer.getId();
+        }
+        Integer idNew = null;
+        if (newContainer != null) {
+            idNew = newContainer.getId();
+        }
+        return Objects.equals(idOld, idNew);
     }
 }

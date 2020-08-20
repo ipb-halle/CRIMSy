@@ -195,7 +195,7 @@ public class ItemService {
 
     public Item loadItemById(int id) {
         ItemEntity entity = this.em.find(ItemEntity.class, id);
-        return new Item(entity,
+        Item item = new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
                 entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
                 materialService.loadMaterialById(entity.getMaterialid()),
@@ -204,6 +204,8 @@ public class ItemService {
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
                 containerService.loadNestedContainer(entity.getContainerid()),
                 aclistService.loadById(entity.getAclist_id()));
+        item.setHistory(loadHistoryOfItem(item));
+        return item;
     }
 
     public Item loadItemByIdWithoutContainer(int id) {
@@ -245,23 +247,13 @@ public class ItemService {
     public Item saveEditedItem(Item editedItem, Item origItem, User user) {
         ItemComparator comparator = new ItemComparator();
         ItemHistory history = comparator.compareItems(origItem, editedItem, user);
-        if (history != null || doesContainerDiffer(editedItem, origItem)) {
+        if (history != null) {
             saveItem(editedItem);
         }
         if (history != null) {
             saveItemHistory(history);
         }
         return editedItem;
-    }
-
-    private boolean doesContainerDiffer(Item editedItem, Item origItem) {
-        if (editedItem.getContainer() == null && origItem.getContainer() == null) {
-            return false;
-        } else if (editedItem.getContainer() != null && origItem.getContainer() != null) {
-            return editedItem.getContainer().getId() != origItem.getContainer().getId();
-        } else {
-            return true;
-        }
     }
 
     public void saveItemHistory(ItemHistory history) {

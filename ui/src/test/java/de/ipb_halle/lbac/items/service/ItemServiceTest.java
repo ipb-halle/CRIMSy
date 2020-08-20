@@ -331,11 +331,23 @@ public class ItemServiceTest extends TestBase {
     @Test
     public void test005_saveAndLoadEditedItem() {
         Item original = createItem();
+        original.setContainer(c0);
         original.setAmount(1.5);
         instance.saveItem(original);
         Item edited = original.copy();
+        edited.setContainer(c1);
         edited.setAmount(1.25);
         instance.saveEditedItem(edited, original, owner);
+
+        Item loadedItem = instance.loadItemById(original.getId());
+        Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
+        Assert.assertEquals(1, loadedItem.getHistory().size());
+        ItemHistory history = loadedItem.getHistory().values().iterator().next();
+
+        Assert.assertEquals(c1.getId(), history.getParentContainerNew().getId());
+        Assert.assertEquals(c0.getId(), history.getParentContainerOld().getId());
+        Assert.assertEquals(1.5, history.getAmountOld(), 0.001);
+        Assert.assertEquals(1.25, history.getAmountNew(), 0.001);
 
     }
 

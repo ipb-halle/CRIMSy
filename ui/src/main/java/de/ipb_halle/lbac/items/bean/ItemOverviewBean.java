@@ -314,6 +314,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         this.searchDescription = searchDescription;
     }
 
+    @Override
     public ACObjectController getAcObjectController() {
         return acObjectController;
     }
