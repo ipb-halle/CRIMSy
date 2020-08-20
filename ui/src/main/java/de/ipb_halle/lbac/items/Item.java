@@ -299,4 +299,26 @@ public class Item extends ACObject implements DTO, Serializable {
         return location + container.getLabel();
     }
 
+    public Item copy() {
+        Item copiedItem = new Item();
+        copiedItem.setAmount(getAmount());
+        copiedItem.setArticle(getArticle());
+        copiedItem.setConcentration(getConcentration());
+        copiedItem.setContainer(getContainer());
+        copiedItem.setContainerSize(getContainerSize());
+        copiedItem.setContainerType(getContainerType());
+        copiedItem.setDescription(getDescription());
+        copiedItem.setId(getId());
+        copiedItem.setMaterial(getMaterial());
+        copiedItem.setOwner(getOwner());
+        copiedItem.setProject(getProject());
+        copiedItem.setPurity(getPurity());
+        copiedItem.setSolvent(getSolvent());
+        copiedItem.setUnit(getUnit());
+        copiedItem.setcTime(getcTime());
+        copiedItem.setHistory(getHistory());
+        copiedItem.setACList(getACList());
+        return copiedItem;
+    }
+
 }

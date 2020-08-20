@@ -253,7 +253,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertTrue("test002: history2 differs", compareHistories(history2, histories.get(i.next())));
         Assert.assertTrue("test002: history3 differs", compareHistories(history3, histories.get(i.next())));
         Assert.assertTrue("test002: history4 differs", compareHistories(history4, histories.get(i.next())));
-        
+
     }
 
     @Test
@@ -326,6 +326,16 @@ public class ItemServiceTest extends TestBase {
 
         //Item should not be able to move to wellPlate_2 because item 2 is blocking the slot
         Assert.assertFalse(containerService.moveItemToContainer(item, wellPlate_2, places));
+    }
+
+    @Test
+    public void test005_saveAndLoadEditedItem() {
+        Item original = createItem();
+        original.setAmount(1.5);
+        instance.saveItem(original);
+        Item edited = original.copy();
+        edited.setAmount(1.25);
+        instance.saveEditedItem(edited, original, owner);
 
     }
 
