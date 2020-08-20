@@ -104,13 +104,18 @@ function createConfiguration {
     mv configure.sh $LBAC_DATASTORE/bin
 }
 
+function cleanup {
+    pushd dist/docker
+    docker-compose down
+}
+
 case $1 in 
     CONFIG)
         createConfiguration
         exit 0
         ;;
-    INSTALL)
-        echo "work in progress ..."
-        exit 0
-        ;;
+    CLEANUP)
+        echo "cleaning up everything ..."
+        cleanup
+    ;;
 esac

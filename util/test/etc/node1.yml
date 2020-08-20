@@ -1,0 +1,5 @@
+capabilities:
+  acceptInsecureCerts: true
+  browserName: "firefox"
+baseUrl: "https://TESTBASE_HOSTNAME/ui/"
+server: "http://localhost:4444/wd/hub"

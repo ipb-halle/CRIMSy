@@ -74,6 +74,22 @@ function runDistServer {
         crimsyci
 }
 
+function runSeleniumTests {
+    key=`echo $0 | cut -d' ' -f1`
+    dst=`echo $0 | cut -d' ' -f2`
+
+    mkdir -p "$LBAC_REPO/target/test/$key"
+    cat "$LBAC_REPO/util/etc/$key.yml" | \
+      sed -e "s/TESTBASE_HOSTNAME/$dst/" > "$LBAC_REPO/target/test/$key.yml"
+
+    pushd $LBAC_REPO/util/test/screenplay > /dev/null
+    selenium-side-runner --config $LBAC_REPO/target/test/$key.yml \
+        --output-directory=$LBAC_REPO/target/test/$key \
+        "*.side"
+    popd > /dev/null
+}
+export -f runSeleniumTests
+
 function safetyCheck {
     if [ -d config ] ; then
         if [ ! -f config/INTEGRATION_TEST ] ; then
@@ -231,9 +247,19 @@ cat $HOSTLIST | xargs -l1 -i /bin/bash -c installNode "{}"
 # ToDo: multiple cloud memberships 
 #
 
-#
-# ToDo: start Selenium driver and process screenplay
-#
+# start test containers
+echo "start test containers ..."
+pushd $LBAC_REPO/util/etc > /dev/null
+docker-compose up -d
+sleep 5
+popd > /dev/null
 
+# run Selenium tests ...
+echo "run Selenium tests ..."
+cat $HOSTLIST | xargs -l1 -i /bin/bash -c runSeleniumTests "{}"
+
+#
+# ToDo: tear down everything
+#
 echo "Finish"
 
