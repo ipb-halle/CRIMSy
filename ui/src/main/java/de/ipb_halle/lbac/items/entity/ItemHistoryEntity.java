@@ -76,6 +76,12 @@ public class ItemHistoryEntity implements Serializable {
     @Column
     private String purity_old;
 
+    @Column
+    private Integer parent_containerid_new;
+
+    @Column
+    private Integer parent_containerid_old;
+
     public String getAction() {
         return action;
     }
@@ -186,6 +192,22 @@ public class ItemHistoryEntity implements Serializable {
 
     public void setPurity_old(String purity_old) {
         this.purity_old = purity_old;
+    }
+
+    public Integer getParent_containerid_new() {
+        return parent_containerid_new;
+    }
+
+    public void setParent_containerid_new(Integer parent_containerid_new) {
+        this.parent_containerid_new = parent_containerid_new;
+    }
+
+    public Integer getParent_containerid_old() {
+        return parent_containerid_old;
+    }
+
+    public void setParent_containerid_old(Integer parent_containerid_old) {
+        this.parent_containerid_old = parent_containerid_old;
     }
 
 }

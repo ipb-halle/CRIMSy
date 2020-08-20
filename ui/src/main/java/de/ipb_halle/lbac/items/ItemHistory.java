@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.items;
 
+import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.entity.ItemHistoryEntity;
 import de.ipb_halle.lbac.items.entity.ItemHistoryId;
 import de.ipb_halle.lbac.project.Project;
@@ -47,6 +47,8 @@ public class ItemHistory implements DTO {
     protected Project projectNew;
     protected String purityNew;
     protected String purityOld;
+    protected Container parentContainerNew;
+    protected Container parentContainerOld;
 
     public ItemHistory() {
     }
@@ -61,6 +63,8 @@ public class ItemHistory implements DTO {
      * @param item
      * @param projectOld
      * @param projectNew
+     * @param oldParentContainer
+     * @param newParentContainer
      */
     public ItemHistory(ItemHistoryEntity entity,
             User actor,
@@ -68,7 +72,9 @@ public class ItemHistory implements DTO {
             User ownerNew,
             Item item,
             Project projectOld,
-            Project projectNew) {
+            Project projectNew,
+            Container oldParentContainer,
+            Container newParentContainer) {
         this.actor = actor;
         this.ownerNew = ownerNew;
         this.ownerOld = ownerOld;
@@ -85,6 +91,9 @@ public class ItemHistory implements DTO {
         this.purityNew = entity.getPurity_new();
         this.purityOld = entity.getPurity_old();
         this.mdate = entity.getId().getMdate();
+        this.parentContainerOld = oldParentContainer;
+        this.parentContainerNew = newParentContainer;
+
     }
 
     /**
@@ -117,6 +126,12 @@ public class ItemHistory implements DTO {
         }
         entity.setPurity_new(purityNew);
         entity.setPurity_old(purityOld);
+        if (parentContainerNew != null) {
+            entity.setParent_containerid_new(parentContainerNew.getId());
+        }
+        if (parentContainerOld != null) {
+            entity.setParent_containerid_old(parentContainerOld.getId());
+        }
         return entity;
     }
 
@@ -246,6 +261,22 @@ public class ItemHistory implements DTO {
 
     public void setPurityOld(String purityOld) {
         this.purityOld = purityOld;
+    }
+
+    public Container getParentContainerNew() {
+        return parentContainerNew;
+    }
+
+    public void setParentContainerNew(Container parentContainerNew) {
+        this.parentContainerNew = parentContainerNew;
+    }
+
+    public Container getParentContainerOld() {
+        return parentContainerOld;
+    }
+
+    public void setParentContainerOld(Container parentContainerOld) {
+        this.parentContainerOld = parentContainerOld;
     }
 
 }

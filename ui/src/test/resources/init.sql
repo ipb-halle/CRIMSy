@@ -585,6 +585,8 @@ CREATE TABLE items_history(
     amount_new FLOAT,
     owner_old UUID REFERENCES usersgroups(id),
     owner_new UUID REFERENCES usersgroups(id),
+    parent_containerid_new INTEGER REFERENCES projects(id),
+    parent_containerid_old INTEGER REFERENCES projects(id),
     PRIMARY KEY(itemid,actorid,mdate));
 
 insert into containertypes(name,description,rank,transportable,unique_name)values('ROOM',null,100,false,true);

@@ -193,6 +193,8 @@ public class ItemServiceTest extends TestBase {
         history1.setAmountOld(23d);
         history1.setAmountNew(40d);
         history1.setAction("EDIT");
+        history1.setParentContainerOld(null);
+        history1.setParentContainerOld(null);
         instance.saveItemHistory(history1);
         Thread.sleep(100);
         ItemHistory history2 = new ItemHistory();
@@ -203,6 +205,8 @@ public class ItemServiceTest extends TestBase {
         history2.setConcentrationNew(0.5);
         history2.setConcentrationOld(32d);
         history2.setAction("EDIT");
+        history2.setParentContainerOld(c0);
+        history2.setParentContainerOld(null);
         instance.saveItemHistory(history2);
         Thread.sleep(100);
         Project project2 = creationTools.createProject();
@@ -214,6 +218,8 @@ public class ItemServiceTest extends TestBase {
         history3.setProjectNew(project2);
         history3.setProjectOld(project);
         history3.setAction("EDIT");
+        history3.setParentContainerOld(null);
+        history3.setParentContainerOld(c0);
         instance.saveItemHistory(history3);
         Thread.sleep(100);
         User user2 = createUser("itemServiceTestUser", "itemServiceTestUser");
@@ -225,6 +231,8 @@ public class ItemServiceTest extends TestBase {
         history4.setOwnerNew(user2);
         history4.setOwnerOld(owner);
         history4.setAction("EDIT");
+        history3.setParentContainerOld(c1);
+        history3.setParentContainerOld(c0);
         instance.saveItemHistory(history4);
         Thread.sleep(100);
         ItemHistory history5 = new ItemHistory();
@@ -245,6 +253,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertTrue("test002: history2 differs", compareHistories(history2, histories.get(i.next())));
         Assert.assertTrue("test002: history3 differs", compareHistories(history3, histories.get(i.next())));
         Assert.assertTrue("test002: history4 differs", compareHistories(history4, histories.get(i.next())));
+        
     }
 
     @Test

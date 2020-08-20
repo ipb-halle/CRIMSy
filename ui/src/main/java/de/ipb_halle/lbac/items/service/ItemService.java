@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.service;
 
+import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
@@ -281,7 +282,16 @@ public class ItemService {
             User ownerOld = e.getOwner_old() == null ? null : memberService.loadUserById(e.getOwner_old());
             Project projectOld = e.getProjectid_old() == null ? null : projectService.loadProjectById(e.getProjectid_old());
             Project projectNew = e.getProjectid_new() == null ? null : projectService.loadProjectById(e.getProjectid_new());
-            ItemHistory history = new ItemHistory(e, actor, ownerOld, ownerNew, item, projectOld, projectNew);
+            ItemHistory history = new ItemHistory(
+                    e,
+                    actor,
+                    ownerOld,
+                    ownerNew,
+                    item,
+                    projectOld,
+                    projectNew,
+                    loadParentContainer(e.getParent_containerid_old()),
+                    loadParentContainer(e.getParent_containerid_new()));
             history.setAction(e.getAction());
             history.setAmountNew(e.getAmount_new());
             history.setAmountOld(e.getAmount_old());
@@ -294,6 +304,13 @@ public class ItemService {
         }
 
         return histories;
+    }
+
+    private Container loadParentContainer(Integer containerId) {
+        if (containerId != null) {
+            return containerService.loadContainerById(containerId);
+        }
+        return null;
     }
 
 }
