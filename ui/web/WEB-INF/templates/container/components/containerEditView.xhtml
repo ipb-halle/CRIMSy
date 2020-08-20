@@ -57,14 +57,13 @@ limitations under the License.
                                     styleClass="containerEditInputfield">
                                     <f:selectItems
                                         var="type"
-                                        value="#{containerEditBean.containerTypes}" 
+                                        value="#{containerEditBean.getContainerTypesWithRankGreaterZero()}" 
                                         noSelectionValue="true"
                                         itemLabel="#{type.getLocalizedName()}"/>
 
                                 </b:selectOneMenu>
                             </b:column>
                         </b:row>
-
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
@@ -160,7 +159,6 @@ limitations under the License.
                                     label="#{msgs.container_edit_label_size_width}">
                                     <f:converter converterId="InputConverter" />
                                 </b:inputText>
-
                             </b:column>
                             <b:column
                                 id="heightcolId"

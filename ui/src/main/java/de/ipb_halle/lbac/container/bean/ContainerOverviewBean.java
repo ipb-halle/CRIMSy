@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -38,6 +37,8 @@ import org.apache.logging.log4j.Logger;
 import org.primefaces.PrimeFaces;
 
 /**
+ * Triggers save and search actions from UI.and initialises the readable
+ * containers for the logged in user.
  *
  * @author fmauz
  */
@@ -46,48 +47,23 @@ import org.primefaces.PrimeFaces;
 public class ContainerOverviewBean implements Serializable {
 
     @Inject
+    private ContainerService containerService;
+    @Inject
+    private ContainerEditBean editBean;
+    @Inject
     private ProjectService projectService;
+    @Inject
+    private ContainerSearchMaskBean searchMaskBean;
+
+    private User currentUser;
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private Mode mode;
+    private List<Container> readableContainer = new ArrayList<>();
     private InputValidator validator;
 
     public enum Mode {
         SHOW, EDIT, CREATE
-    }
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
-    Logger logger = LogManager.getLogger(this.getClass().getName());
-
-    private User currentUser;
-    private List<Container> readableContainer = new ArrayList<>();
-
-    @Inject
-    private ContainerSearchMaskBean searchMask;
-
-    @Inject
-    private ContainerService containerService;
-
-    @Inject
-    private ContainerSearchMaskBean searchMaskBean;
-
-    @Inject
-    private ContainerEditBean editBean;
-
-    private Mode mode;
-
-    @PostConstruct
-    public void init() {
-
-    }
-
-    public List<Container> getReadableContainer() {
-        return readableContainer;
-    }
-
-    public void setReadableContainer(List<Container> readableContainer) {
-        this.readableContainer = readableContainer;
-        for (Container c : readableContainer) {
-            c.getType().setLocalizedName(
-                    Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
-        }
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
@@ -100,16 +76,36 @@ public class ContainerOverviewBean implements Serializable {
         mode = Mode.SHOW;
     }
 
-    public void actionSecondButtonClick() {
-
-        editBean.startNewContainerCreation();
-        mode = Mode.CREATE;
-
+    public void actionContainerDeactivate(Container c) {
+        containerService.deactivateContainer(c);
+        actionStartFilteredSearch();
     }
 
     public void actionContainerEdit(Container c) {
         editBean.startContainerEdit(c);
         mode = Mode.EDIT;
+    }
+
+    public void actionSecondButtonClick() {
+        editBean.startNewContainerCreation();
+        mode = Mode.CREATE;
+    }
+
+    public void actionStartFilteredSearch() {
+        Map<String, Object> cmap = new HashMap<>();
+        if (searchMaskBean.getContainerSearchName() != null && !searchMaskBean.getContainerSearchName().trim().isEmpty()) {
+            cmap.put("label", searchMaskBean.getContainerSearchName());
+        }
+        if (searchMaskBean.getContainerSearchId() != null && !searchMaskBean.getContainerSearchId().trim().isEmpty()) {
+            cmap.put("id", Integer.valueOf(searchMaskBean.getContainerSearchId()));
+        }
+        if (searchMaskBean.getSearchProject() != null && !searchMaskBean.getSearchProject().trim().isEmpty()) {
+            cmap.put("project", searchMaskBean.getSearchProject());
+        }
+        if (searchMaskBean.getSearchLocation() != null && !searchMaskBean.getSearchLocation().trim().isEmpty()) {
+            cmap.put("location", searchMaskBean.getSearchLocation());
+        }
+        setReadableContainer(containerService.loadContainers(currentUser, cmap));
     }
 
     public void actionTriggerContainerSave() {
@@ -127,43 +123,32 @@ public class ContainerOverviewBean implements Serializable {
         }
     }
 
-    public boolean isTopLevelButtonVisible() {
+    public Mode getMode() {
+        return mode;
+    }
+
+    public String getProjectName(Container c) {
+        if (c.getProject() == null) {
+            return "";
+        } else {
+            return c.getProject().getName();
+        }
+    }
+
+    public List<Container> getReadableContainer() {
+        return readableContainer;
+    }
+
+    public boolean isFirstButtonVisible() {
+        return mode != Mode.SHOW;
+    }
+
+    public boolean isSecondButtonVisible() {
         return mode == Mode.SHOW;
     }
 
-    public boolean saveNewContainer() {
-        validator = new InputValidator(containerService);
-        if (editBean.getPreferredProjectName() != null
-                && !editBean.getPreferredProjectName().trim().isEmpty()) {
-            editBean.getContainerToCreate()
-                    .setProject(projectService
-                            .loadProjectByName(
-                                    currentUser,
-                                    editBean.getPreferredProjectName().trim()
-                            )
-                    );
-        }
-
-        boolean valide = validator.isInputValideForCreation(
-                editBean.getContainerToCreate(),
-                editBean.getPreferredProjectName(),
-                editBean.getContainerLocation(),
-                editBean.getContainerHeight(),
-                editBean.getContainerWidth()
-        );
-
-        if (valide) {
-            if (editBean.isDimensionVisible()) {
-                Integer height = Math.max(1, editBean.getContainerHeight() == null ? 0 : editBean.getContainerHeight());
-                Integer width = Math.max(1, editBean.getContainerWidth() == null ? 0 : editBean.getContainerWidth());
-                editBean.getContainerToCreate().setDimension(String.format("%d;%d;1", height, width));
-
-            }
-            mode = Mode.SHOW;
-            containerService.saveContainer(editBean.getContainerToCreate());
-            actionStartFilteredSearch();
-        }
-        return valide;
+    public boolean isTopLevelButtonVisible() {
+        return mode == Mode.SHOW;
     }
 
     private boolean saveEditedContainer() {
@@ -191,19 +176,13 @@ public class ContainerOverviewBean implements Serializable {
                     .setParentContainer(editBean.getContainerLocation());
         }
 
-        boolean valide = false;
-        try {
-            valide = validator.isInputValideForCreation(
-                    editBean.getContainerToCreate(),
-                    editBean.getPreferredProjectName(),
-                    editBean.getContainerLocation(),
-                    editBean.getContainerHeight(),
-                    editBean.getContainerWidth()
-            );
-        } catch (Exception e) {
-            logger.error(e);
+        boolean valide = validator.isInputValideForCreation(
+                editBean.getContainerToCreate(),
+                editBean.getPreferredProjectName(),
+                editBean.getContainerLocation(),
+                editBean.getContainerHeight(),
+                editBean.getContainerWidth());
 
-        }
         if (valide) {
             mode = Mode.SHOW;
             editBean.getContainerToCreate().setParentContainer(editBean.getContainerLocation());
@@ -214,48 +193,49 @@ public class ContainerOverviewBean implements Serializable {
         return valide;
     }
 
-    public void actionStartFilteredSearch() {
+    public boolean saveNewContainer() {
+        validator = new InputValidator(containerService);
+        if (editBean.getPreferredProjectName() != null
+                && !editBean.getPreferredProjectName().trim().isEmpty()) {
+            editBean.getContainerToCreate()
+                    .setProject(projectService
+                            .loadProjectByName(
+                                    currentUser,
+                                    editBean.getPreferredProjectName().trim()
+                            )
+                    );
+        }
+        boolean valide = validator.isInputValideForCreation(
+                editBean.getContainerToCreate(),
+                editBean.getPreferredProjectName(),
+                editBean.getContainerLocation(),
+                editBean.getContainerHeight(),
+                editBean.getContainerWidth()
+        );
 
-        Map<String, Object> cmap = new HashMap<>();
-        if (searchMaskBean.getContainerSearchName() != null && !searchMaskBean.getContainerSearchName().trim().isEmpty()) {
-            cmap.put("label", searchMaskBean.getContainerSearchName());
+        if (valide) {
+            setDimensionIfPossible();
+            containerService.saveContainer(editBean.getContainerToCreate());
+            mode = Mode.SHOW;
+            actionStartFilteredSearch();
         }
-        if (searchMaskBean.getContainerSearchId() != null && !searchMaskBean.getContainerSearchId().trim().isEmpty()) {
-            cmap.put("id", Integer.valueOf(searchMaskBean.getContainerSearchId()));
-        }
-        if (searchMaskBean.getSearchProject() != null && !searchMaskBean.getSearchProject().trim().isEmpty()) {
-            cmap.put("project", searchMaskBean.getSearchProject());
-        }
-        if (searchMaskBean.getSearchLocation() != null && !searchMaskBean.getSearchLocation().trim().isEmpty()) {
-            cmap.put("location", searchMaskBean.getSearchLocation());
-        }
-        setReadableContainer(containerService.loadContainers(currentUser, cmap));
+        return valide;
     }
 
-    public boolean isFirstButtonVisible() {
-        return mode != Mode.SHOW;
-    }
-
-    public Mode getMode() {
-        return mode;
-    }
-
-    public String getProjectName(Container c) {
-        if (c.getProject() == null) {
-            return "";
-        } else {
-            return c.getProject().getName();
+    private void setDimensionIfPossible() {
+        if (editBean.isDimensionVisible()) {
+            Integer height = Math.max(1, editBean.getContainerHeight() == null ? 0 : editBean.getContainerHeight());
+            Integer width = Math.max(1, editBean.getContainerWidth() == null ? 0 : editBean.getContainerWidth());
+            editBean.getContainerToCreate().setDimension(String.format("%d;%d;1", width, height));
         }
     }
 
-    public void actionContainerDeactivate(Container c) {
-        containerService.deactivateContainer(c);
-        actionStartFilteredSearch();
-
-    }
-
-    public boolean isSecondButtonVisible() {
-        return mode == Mode.SHOW;
+    public void setReadableContainer(List<Container> readableContainer) {
+        this.readableContainer = readableContainer;
+        for (Container c : readableContainer) {
+            c.getType().setLocalizedName(
+                    Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
+        }
     }
 
 }

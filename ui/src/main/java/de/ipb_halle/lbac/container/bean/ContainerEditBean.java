@@ -65,6 +65,13 @@ public class ContainerEditBean implements Serializable {
     private final List<String> possibleSecuritylevel = new ArrayList<>();
     private String preferredProjectName;
 
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+        projectService.loadReadableProjectsOfUser(currentUser);
+        clearEditBean();
+        initSecurityLevels();
+    }
+
     /**
      * removes all information from temporary container attribures
      */
@@ -78,39 +85,22 @@ public class ContainerEditBean implements Serializable {
         gvoClass = null;
     }
 
-    /**
-     *
-     * @return
-     */
     public Integer getContainerHeight() {
         return containerHeight;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getContainerName() {
         if (containerToCreate != null) {
             return containerToCreate.getLabel();
         } else {
             return null;
         }
-
     }
 
-    /**
-     *
-     * @return
-     */
     public Container getContainerLocation() {
         return containerLocation;
     }
 
-    /**
-     *
-     * @return
-     */
     public Container getContainerToCreate() {
         return containerToCreate;
     }
@@ -125,16 +115,11 @@ public class ContainerEditBean implements Serializable {
         if (containerToCreate != null) {
             return containerToCreate.getType();
         } else {
-            return new ContainerType("XXX", 1000,false,false);
+            return new ContainerType("XXX", 1000, false, false);
         }
     }
 
-    /**
-     * Only types with rank > 0 are returned
-     *
-     * @return
-     */
-    public List<ContainerType> getContainerTypes() {
+    public List<ContainerType> getContainerTypesWithRankGreaterZero() {
         List<ContainerType> filteredContainerTypes = new ArrayList<>();
         for (ContainerType t : containerTypes) {
             if (t.getRank() > 0) {
@@ -142,22 +127,13 @@ public class ContainerEditBean implements Serializable {
                 t.setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + t.getName(), null));
             }
         }
-
         return filteredContainerTypes;
     }
 
-    /**
-     *
-     * @return
-     */
     public Integer getContainerWidth() {
         return containerWidth;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
             return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_create", null);
@@ -170,42 +146,22 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    /**
-     *
-     * @return
-     */
     public String getFireSection() {
         return containerToCreate.getFireSection();
     }
 
-    /**
-     *
-     * @return
-     */
     public String getGvoClass() {
         return gvoClass;
     }
 
-    /**
-     *
-     * @return
-     */
     public List<String> getGvoClasses() {
         return possibleSecuritylevel;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getPreferredProjectName() {
         return preferredProjectName;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getSecurityLevel() {
         if (containerToCreate != null) {
             return containerToCreate.getGmosavety();
@@ -214,9 +170,6 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    /**
-     *
-     */
     public void initSecurityLevels() {
         possibleSecuritylevel.clear();
         possibleSecuritylevel.add(Messages.getString(MESSAGE_BUNDLE, "container_securitylevel_none", null));
@@ -226,10 +179,6 @@ public class ContainerEditBean implements Serializable {
         possibleSecuritylevel.add("S4");
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isDimensionVisible() {
         if (containerToCreate != null) {
             return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
@@ -238,18 +187,10 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isEditable() {
         return mode == Mode.CREATE;
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isSecurityLevelVisible() {
         if (containerToCreate != null) {
             return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
@@ -258,94 +199,43 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    /**
-     *
-     * @param containerHeight
-     */
     public void setContainerHeight(Integer containerHeight) {
         this.containerHeight = containerHeight;
     }
 
-    /**
-     *
-     * @param containerLocation
-     */
     public void setContainerLocation(Container containerLocation) {
         this.containerLocation = containerLocation;
     }
 
-    /**
-     *
-     * @param containerName
-     */
     public void setContainerName(String containerName) {
         containerToCreate.setLabel(containerName);
     }
 
-    /**
-     *
-     * @param t
-     */
     public void setContainerType(ContainerType t) {
-        
+
         containerToCreate.setType(t);
     }
 
-    /**
-     *
-     * @param containerWidth
-     */
     public void setContainerWidth(Integer containerWidth) {
         this.containerWidth = containerWidth;
     }
 
-    /**
-     *
-     * @param evt
-     */
-    public void setCurrentAccount(@Observes LoginEvent evt) {
-        currentUser = evt.getCurrentAccount();
-        projectService.loadReadableProjectsOfUser(currentUser);
-        clearEditBean();
-        initSecurityLevels();
-    }
-
-    /**
-     *
-     * @param fireSection
-     */
     public void setFireSection(String fireSection) {
         containerToCreate.setFireSection(fireSection);
     }
 
-    /**
-     *
-     * @param gvoClass
-     */
     public void setGvoClass(String gvoClass) {
         this.gvoClass = gvoClass;
     }
 
-    /**
-     *
-     * @param preferredProjectName
-     */
     public void setPreferredProjectName(String preferredProjectName) {
         this.preferredProjectName = preferredProjectName;
     }
 
-    /**
-     *
-     * @param securityLevel
-     */
     public void setSecurityLevel(String securityLevel) {
         containerToCreate.setGmosavety(securityLevel);
     }
 
-    /**
-     *
-     * @param c
-     */
     public void startContainerEdit(Container c) {
         clearEditBean();
         mode = Mode.EDIT;
@@ -359,7 +249,7 @@ public class ContainerEditBean implements Serializable {
         }
         c.setParentContainer(containerLocation);
         if (c.getParentContainer() != null) {
-            containerLocation =c.getParentContainer();
+            containerLocation = c.getParentContainer();
         } else {
             containerLocation = null;
         }
@@ -372,22 +262,16 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    /**
-     *
-     */
     public void startNewContainerCreation() {
         clearEditBean();
         containerToCreate = new Container();
         mode = Mode.CREATE;
         containerTypes = containerService.loadContainerTypes();
         containerToCreate.setType(containerTypes.get(0));
-
     }
 
     public Container getOriginalContainer() {
         return originalContainer;
     }
-    
-    
 
 }
