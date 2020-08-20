@@ -104,11 +104,6 @@ function createConfiguration {
     mv configure.sh $LBAC_DATASTORE/bin
 }
 
-function cleanup {
-    pushd dist/docker
-    docker-compose down
-}
-
 case $1 in 
     CONFIG)
         createConfiguration
@@ -116,6 +111,6 @@ case $1 in
         ;;
     CLEANUP)
         echo "cleaning up everything ..."
-        cleanup
+        sudo ./dist/bin/setupROOT.sh totalClean
     ;;
 esac

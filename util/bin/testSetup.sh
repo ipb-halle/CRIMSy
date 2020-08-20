@@ -30,6 +30,7 @@ if [ $# -eq 0 ] ; then
     exit 1
 fi
 HOSTLIST=$1
+TEST_DATE=`date +%Y%m%d%H%M`
 
 #
 #==========================================================
@@ -38,6 +39,12 @@ function buildDistServer {
     pushd docker/crimsyci > /dev/null
     docker inspect crimsyci >/dev/null 2>/dev/null || docker build -f Dockerfile -t crimsyci .
     popd > /dev/null
+}
+
+# DANGER: remove installation without (almost) any trace
+function cleanup {
+    dst=`echo $0 | cut -d' ' -f2`
+    ssh -o "StrictHostKeyChecking no" $dst "./configBatch.sh CLEANUP"
 }
 
 function createNodeConfig {
@@ -79,7 +86,7 @@ function runSeleniumTests {
     dst=`echo $0 | cut -d' ' -f2`
 
     mkdir -p "$LBAC_REPO/target/test/$key"
-    cat "$LBAC_REPO/util/etc/$key.yml" | \
+    cat "$LBAC_REPO/util/test/etc/$key.yml" | \
       sed -e "s/TESTBASE_HOSTNAME/$dst/" > "$LBAC_REPO/target/test/$key.yml"
 
     pushd $LBAC_REPO/util/test/screenplay > /dev/null
@@ -203,63 +210,81 @@ export -f setupTestCAconf
 #
 #==========================================================
 #
-# MAIN PROGRAM
+function mainFunc {
+    safetyCheck
+
+    mvn -DskipTests clean install 
+
+    cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        xargs -l1 -i /bin/bash -c setupTestCAconf "{}"
+
+    echo "=== Distribution Server ==="
+    buildDistServer
+    runDistServer
+
+    echo "=== Setup ROOT CA ==="
+    setupTestRootCA
+
+    echo "=== Setup Sub CAs ==="
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        xargs -l1 -i /bin/bash -c setupTestSubCA "{}"
+
+    echo "=== create node configurations ==="
+    cat $HOSTLIST | xargs -l1 -i /bin/bash -c createNodeConfig "{}"
+
+    # package master nodes
+    echo "=== determine master nodes ==="
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        cut -d: -f1 | \
+        xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" MASTERBATCH
+
+    # package all other nodes
+    echo "=== package all nodes ==="
+    tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
+        cut -d: -f1 | \
+        xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" AUTOBATCH
+
+    # install node
+    echo "=== install nodes ==="
+    cat $HOSTLIST | xargs -l1 -i /bin/bash -c installNode "{}"
+
+    #
+    # ToDo: multiple cloud memberships 
+    #
+
+    #
+    echo "sleep 15 seconds to settle everything ..."
+    sleep 15
+
+    # start test containers
+    echo "start test containers ..."
+    pushd $LBAC_REPO/util/test/etc > /dev/null
+    docker-compose up -d
+    sleep 5
+    popd > /dev/null
+
+    # run Selenium tests ...
+    echo "run Selenium tests ..."
+    cat $HOSTLIST | xargs -l1 -i /bin/bash -c runSeleniumTests "{}"
+
+    #
+    # tear down everything
+    cat $HOSTLIST | xargs -l1 -i /bin/bash -c cleanup "{}"
+    pushd $LBAC_REPO/util/test/etc > /dev/null
+    docker-compose down --rmi local --remove-orphans
+    popd > /dev/null
+}
+#
+#==========================================================
 #
 cd $LBAC_REPO
-safetyCheck
+mainFunc 2>&1 | tee $LBAC_REPO/target/test.$TEST_DATE.log
 
-mvn -DskipTests clean install 
-
-cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-    xargs -l1 -i /bin/bash -c setupTestCAconf "{}"
-
-echo "=== Distribution Server ==="
-buildDistServer
-runDistServer
-
-echo "=== Setup ROOT CA ==="
-setupTestRootCA
-
-echo "=== Setup Sub CAs ==="
-tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-    xargs -l1 -i /bin/bash -c setupTestSubCA "{}"
-
-echo "=== create node configurations ==="
-cat $HOSTLIST | xargs -l1 -i /bin/bash -c createNodeConfig "{}"
-
-# package master nodes
-echo "=== determine master nodes ==="
-tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-    cut -d: -f1 | \
-    xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" MASTERBATCH
-
-# package all other nodes
-echo "=== package all nodes ==="
-tail -n +2 $LBAC_REPO/util/test/etc/cloudconfig.txt | \
-    cut -d: -f1 | \
-    xargs -l1 -i $LBAC_REPO/util/bin/package.sh "{}" AUTOBATCH
-
-# install node
-echo "=== install nodes ==="
-cat $HOSTLIST | xargs -l1 -i /bin/bash -c installNode "{}"
-
-#
-# ToDo: multiple cloud memberships 
-#
-
-# start test containers
-echo "start test containers ..."
-pushd $LBAC_REPO/util/etc > /dev/null
-docker-compose up -d
-sleep 5
-popd > /dev/null
-
-# run Selenium tests ...
-echo "run Selenium tests ..."
-cat $HOSTLIST | xargs -l1 -i /bin/bash -c runSeleniumTests "{}"
-
-#
-# ToDo: tear down everything
-#
-echo "Finish"
+echo
+echo "*********************************************************************"
+echo "*                                                                   *"
+echo "* Finished. Please find your log file in                            *"
+echo "* target/test.$TEST_DATE.log                                      *"
+echo "*                                                                   *"
+echo "*********************************************************************"
 

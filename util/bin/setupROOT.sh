@@ -212,7 +212,7 @@ function postInstall {
 #
 function removeFunc {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" remove 
-    docker rmi pgchem
+    docker rmi pgchem 2>/dev/null >/dev/null
 }
 
 #
@@ -270,6 +270,30 @@ function startFunc {
             /etc/init.d/lbac start
             ;;
     esac
+}
+
+#
+#
+#
+function totalClean {
+    pushd $LBAC_DATASTORE >/dev/null
+
+    TMP_CRONTAB=`mktemp /tmp/crontab.XXXXXX`
+    crontab -l > $TMP_CRONTAB
+    cat << EOF | ed $TMP_CRONTAB
+/LBAC CRON BEGIN/,/LBAC CRON END/d
+w
+q
+EOF
+    cat $TMP_CRONTAB | crontab -u root -
+    rm $TMP_CRONTAB
+
+    shutdownFunc
+    sleep 15
+    removeFunc
+    rm -rf data/ dist/ etc/ tmp/ nodeconfig.txt configBatch.sh
+
+    popd > /dev/null
 }
 
 # 
@@ -337,6 +361,10 @@ case $1 in
     start)
         echo "Starting containers"
         startFunc
+        ;;
+    totalClean)
+        echo "Cleaning totally"
+        totalClean
         ;;
     *)
         error "setupROOT.sh called with invalid arguments"
