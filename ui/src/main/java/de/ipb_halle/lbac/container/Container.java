@@ -24,7 +24,9 @@ import de.ipb_halle.lbac.project.Project;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -300,6 +302,25 @@ public class Container implements DTO, Serializable {
 
     public void setAutoCompleteString(String autoCompleteString) {
         this.autoCompleteString = autoCompleteString;
+    }
+
+    public Set<int[]> getPositionsOfItem(int itemId) {
+        Set<int[]> places = new HashSet<>();
+        if (items == null) {
+            return places;
+        }
+        for (int x = 0; x < items.length; x++) {
+            for (int y = 0; y < items[x].length; y++) {
+                for (int z = 0; z < items[x][y].length; z++) {
+                    if (items[x][y][z] != null) {
+                        if (items[x][y][z].getId() == itemId) {
+                            places.add(new int[]{x, y});
+                        }
+                    }
+                }
+            }
+        }
+        return places;
     }
 
 }

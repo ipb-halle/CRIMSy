@@ -413,6 +413,18 @@ CREATE TABLE items_history(
     parent_containerid_old INTEGER REFERENCES containers(id),
     PRIMARY KEY(itemid,actorid,mdate));
 
+CREATE TABLE item_positions_history(
+    itemid INTEGER NOT NULL REFERENCES items(id),
+    containerid INTEGER NOT NULL REFERENCES containers(id),
+    mdate TIMESTAMP NOT NULL,
+    actorid UUID NOT NULL REFERENCES usersgroups(id),
+    row_old INTEGER,
+    row_new INTEGER,
+    col_old INTEGER,
+    col_new INTEGER,
+    PRIMARY KEY(itemid,containerid,mdate,actorid)
+);
+
 insert into containertypes(name,description,rank,transportable,unique_name)values('ROOM',null,100,false,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('CUPBOARD',null,90,false,false);
 insert into containertypes(name,description,rank,transportable,unique_name)values('FREEZER',null,90,false,true);

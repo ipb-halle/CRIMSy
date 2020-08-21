@@ -427,7 +427,7 @@ public class ContainerService implements Serializable {
                 .executeUpdate();
     }
 
-    public void moveItemToContainer(Item i, Container c) {
+    public void moveItemToContainer(Item i, Container c,User owner) {
         deleteItemInContainer(i.getId());
     }
 
@@ -445,7 +445,7 @@ public class ContainerService implements Serializable {
         }
     }
 
-    public boolean moveItemToContainer(Item i, Container c, Set<int[]> positions) {
+    public boolean moveItemToContainer(Item i, Container c, Set<int[]> positions,User owner) {
         if (c == null) {
             deleteItemInContainer(i.getId());
             return true;

@@ -115,6 +115,7 @@ public class ItemServiceTest extends TestBase {
         c0.setGmosavety("S0");
         c0.setLabel("R302");
         c0.setType(new ContainerType("ROOM", 90, false, true));
+        c0.setItems(new Item[3][3][1]);
 
         c1 = new Container();
         c1.setBarCode("9845893457");
@@ -124,6 +125,7 @@ public class ItemServiceTest extends TestBase {
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90, true, false));
+        c1.setItems(new Item[2][2][1]);
 
         c2 = new Container();
         c2.setBarCode("43753456");
@@ -298,7 +300,7 @@ public class ItemServiceTest extends TestBase {
         Set<int[]> places = new HashSet<>();
         places.add(new int[]{0, 0});
         places.add(new int[]{1, 0});
-        containerService.moveItemToContainer(item, wellPlate_1, places);
+        containerService.moveItemToContainer(item, wellPlate_1, places, owner);
         //Check if movement was correct
         Container loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
         Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
@@ -306,7 +308,7 @@ public class ItemServiceTest extends TestBase {
         //Move item 2 to wellplate 1
         places = new HashSet<>();
         places.add(new int[]{1, 1});
-        containerService.moveItemToContainer(item2, wellPlate_1, places);
+        containerService.moveItemToContainer(item2, wellPlate_1, places, owner);
         //Check if movement was correct
         loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
         Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
@@ -315,7 +317,7 @@ public class ItemServiceTest extends TestBase {
         // Check if item is now in new wellplate
         places = new HashSet<>();
         places.add(new int[]{0, 0});
-        containerService.moveItemToContainer(item2, wellPlate_2, places);
+        containerService.moveItemToContainer(item2, wellPlate_2, places, owner);
         loadedWellPlate = containerService.loadContainerById(wellPlate_2.getId());
         Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
         // check if item is removed from old wellplate
@@ -325,20 +327,30 @@ public class ItemServiceTest extends TestBase {
         Assert.assertNull(loadedWellPlate.getItemAtPos(1, 1, 0));
 
         //Item should not be able to move to wellPlate_2 because item 2 is blocking the slot
-        Assert.assertFalse(containerService.moveItemToContainer(item, wellPlate_2, places));
+        Assert.assertFalse(containerService.moveItemToContainer(item, wellPlate_2, places, owner));
     }
 
     @Test
     public void test005_saveAndLoadEditedItem() {
         Item original = createItem();
         original.setContainer(c0);
+        c0.getItems()[2][1][0] = original;
+        c0.getItems()[1][1][0] = original;
+
         original.setAmount(1.5);
         instance.saveItem(original);
+        Set<int[]> foundPositions = c0.getPositionsOfItem(original.getId());
+        for (int[] pos : foundPositions) {
+            Assert.assertTrue(pos[0] == 2 && pos[1] == 1 || pos[0] == 1 && pos[1] == 1);
+        }
+        Assert.assertEquals(2, foundPositions.size());
         Item edited = original.copy();
         edited.setContainer(c1);
         edited.setAmount(1.25);
         instance.saveEditedItem(edited, original, owner);
-
+        Set<int[]> positions = new HashSet<>();
+        positions.add(new int[]{1, 1});
+        containerService.moveItemToContainer(original, c1, positions, owner);
         Item loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         Assert.assertEquals(1, loadedItem.getHistory().size());
