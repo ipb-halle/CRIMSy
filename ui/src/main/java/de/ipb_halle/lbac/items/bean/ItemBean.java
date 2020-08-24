@@ -170,7 +170,6 @@ public class ItemBean implements Serializable {
             return;
         }
         state.getEditedItem().setContainer(container);
-
         if (mode == Mode.CREATE) {
             state.getEditedItem().setACList(material.getACList());
             state.getEditedItem().setOwner(userBean.getCurrentAccount());
@@ -178,18 +177,11 @@ public class ItemBean implements Serializable {
             state.getEditedItem().setcTime(new Date());
             state.setEditedItem(itemService.saveItem(state.getEditedItem()));
             this.printBean.setLabelDataObject(state.getEditedItem());
-
         } else {
-            itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount());
+            itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount(), containerController.resolveItemPositions());
             this.printBean.setLabelDataObject(state.getEditedItem());
         }
-
-        boolean success = containerService.moveItemToContainer(
-                state.getEditedItem(),
-                container,
-                containerController.resolveItemPositions(),
-                userBean.getCurrentAccount());
-        if (success) {
+        if (areSlotsEmpty) {
             itemOverviewBean.reloadItems();
             navigator.navigate("/item/items");
         }
