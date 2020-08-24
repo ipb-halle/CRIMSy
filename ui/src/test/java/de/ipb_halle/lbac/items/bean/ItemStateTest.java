@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.ACList;
-import static de.ipb_halle.lbac.entity.ACObjectEntity_.owner;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.project.Project;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,10 +46,10 @@ public class ItemStateTest {
         Calendar cal = Calendar.getInstance();
         ItemState state = new ItemState();
         Item item = new Item();
-        item.getHistory().put(createHistory(2020).getMdate(), createHistory(2020));
-        item.getHistory().put(createHistory(2021).getMdate(), createHistory(2021));
-        item.getHistory().put(createHistory(2022).getMdate(), createHistory(2022));
-        item.getHistory().put(createHistory(2023).getMdate(), createHistory(2023));
+        item.getHistory().put(createHistory(2020).get(0).getMdate(), createHistory(2020));
+        item.getHistory().put(createHistory(2021).get(0).getMdate(), createHistory(2021));
+        item.getHistory().put(createHistory(2022).get(0).getMdate(), createHistory(2022));
+        item.getHistory().put(createHistory(2023).get(0).getMdate(), createHistory(2023));
         state.setEditedItem(item);
 
         Assert.assertNull(state.getCurrentHistoryDate());
@@ -102,12 +103,14 @@ public class ItemStateTest {
 
     }
 
-    private ItemHistory createHistory(int year) {
+    private List<ItemDifference> createHistory(int year) {
+        List<ItemDifference> hist = new ArrayList<>();
         Calendar cal = Calendar.getInstance();
         ItemHistory history = new ItemHistory();
         cal.set(year, 4, 0);
         history.setMdate(cal.getTime());
-        return history;
+        hist.add(history);
+        return hist;
     }
 
     private Item createItem() {

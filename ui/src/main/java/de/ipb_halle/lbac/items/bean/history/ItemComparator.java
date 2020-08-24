@@ -34,9 +34,16 @@ import org.apache.logging.log4j.Logger;
 public class ItemComparator {
 
     private Logger logger;
+    private Date mdate;
+
+    public ItemComparator(Date mdate) {
+        this.logger = LogManager.getLogger(this.getClass().getName());
+        this.mdate = mdate;
+    }
 
     public ItemComparator() {
         this.logger = LogManager.getLogger(this.getClass().getName());
+        mdate = new Date();
     }
 
     public ItemHistory compareItems(Item itemOld, Item itemNew, User actor) {
@@ -66,7 +73,7 @@ public class ItemComparator {
             history.setDescriptionOld(itemOld.getDescription());
         }
         history.setItem(itemNew);
-        history.setMdate(new Date());
+        history.setMdate(mdate);
         if (!itemOld.getOwner().getId().equals(itemNew.getOwner().getId())) {
             differenceFound = true;
             history.setOwnerNew(itemNew.getOwner());

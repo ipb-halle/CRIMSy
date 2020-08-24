@@ -404,25 +404,6 @@ public class ContainerService implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public void moveItemToContainer(Item i, Container c, User owner) {
-        moveItemToContainer(i, c, new HashSet(), owner);
-    }
-
-    @SuppressWarnings("unchecked")
-    public boolean moveItemToContainer(Item i, Container c, Set<int[]> newPositions, User owner) {
-        if (!positionService.areContainerSlotsFree(i, c, newPositions)) {
-            return false;
-        }
-        if (c == null) {
-            positionService.deleteItemInAllContainer(i.getId());
-            return true;
-        } else {
-            positionService.moveItemToNewPosition(i, c, newPositions, owner);
-        }
-        return true;
-    }
-
-    @SuppressWarnings("unchecked")
     public Container loadContainerByName(String containerName) {
         if (containerName == null) {
             return null;

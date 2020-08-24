@@ -24,11 +24,15 @@ import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.ItemComparator;
 import de.ipb_halle.lbac.items.ItemHistory;
+import de.ipb_halle.lbac.items.ItemPositionHistoryList;
+import de.ipb_halle.lbac.items.ItemPositionsHistory;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.items.entity.ItemHistoryEntity;
+import de.ipb_halle.lbac.items.entity.ItemPositionsHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -255,16 +259,15 @@ public class ItemService {
     }
 
     public Item saveEditedItem(Item editedItem, Item origItem, User user, Set<int[]> newPositions) {
-
-        ItemComparator comparator = new ItemComparator();
+        Date mdate = new Date();
+        ItemComparator comparator = new ItemComparator(mdate);
         ItemHistory history = comparator.compareItems(origItem, editedItem, user);
         if (history != null) {
             saveItem(editedItem);
-        }
-        if (history != null) {
             saveItemHistory(history);
         }
-        containerPositionService.moveItemToNewPosition(editedItem, editedItem.getContainer(), newPositions, user);
+
+        containerPositionService.moveItemToNewPosition(editedItem, editedItem.getContainer(), newPositions, user, mdate);
         return editedItem;
     }
 
@@ -272,8 +275,26 @@ public class ItemService {
         this.em.merge(history.createEntity());
     }
 
-    public SortedMap<Date, ItemHistory> loadHistoryOfItem(Item item) {
-        SortedMap<Date, ItemHistory> histories = new TreeMap<>();
+    public SortedMap<Date, ItemPositionHistoryList> loadItemPositionHistory(Item item) {
+        SortedMap<Date, ItemPositionHistoryList> histories = new TreeMap<>();
+        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        CriteriaQuery<ItemPositionsHistoryEntity> criteriaQuery = builder.createQuery(ItemPositionsHistoryEntity.class);
+        Root<ItemPositionsHistoryEntity> itemHistoryRoot = criteriaQuery.from(ItemPositionsHistoryEntity.class);
+        criteriaQuery.select(itemHistoryRoot);
+        Predicate predicate = builder.equal(itemHistoryRoot.get("itemid"), item.getId());
+        criteriaQuery.where(predicate).orderBy(builder.desc(itemHistoryRoot.get("mdate")));
+        for (ItemPositionsHistoryEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
+            ItemPositionsHistory dto = new ItemPositionsHistory(e, memberService.loadUserById(e.getActorid()));
+            if (histories.get(dto.getmDate()) == null) {
+                histories.put(e.getMdate(), new ItemPositionHistoryList());
+            }
+            histories.get(e.getMdate()).addHistory(dto);
+        }
+        return histories;
+    }
+
+    public SortedMap<Date, List<ItemDifference>> loadHistoryOfItem(Item item) {
+        SortedMap<Date, List<ItemDifference>> histories = new TreeMap<>();
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
         CriteriaQuery<ItemHistoryEntity> criteriaQuery = builder.createQuery(ItemHistoryEntity.class);
         Root<ItemHistoryEntity> itemHistoryRoot = criteriaQuery.from(ItemHistoryEntity.class);
@@ -304,7 +325,18 @@ public class ItemService {
             history.setMdate(e.getId().getMdate());
             history.setPurityNew(e.getPurity_new());
             history.setPurityOld(e.getPurity_old());
-            histories.put(history.getMdate(), history);
+            ArrayList< ItemDifference> diffs = new ArrayList<>();
+            diffs.add(history);
+            histories.put(history.getMdate(), diffs);
+        }
+
+        SortedMap<Date, ItemPositionHistoryList> positions = loadItemPositionHistory(item);
+
+        for (Date d : positions.keySet()) {
+            if (histories.get(d) == null) {
+                histories.put(d, new ArrayList<>());
+            }
+            histories.get(d).add(positions.get(d));
         }
 
         return histories;

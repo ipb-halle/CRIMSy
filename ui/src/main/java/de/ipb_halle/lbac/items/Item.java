@@ -56,7 +56,7 @@ public class Item extends ACObject implements DTO, Serializable {
     private String purity;
     private Solvent solvent;
     private Date cTime;
-    private SortedMap<Date, ItemHistory> history = new TreeMap<>();
+    private SortedMap<Date, List<ItemDifference>> history = new TreeMap<>();
     private List<Container> nestedContainer = new ArrayList<>();
     private Date expiry_date;
 
@@ -275,11 +275,11 @@ public class Item extends ACObject implements DTO, Serializable {
         this.cTime = cTime;
     }
 
-    public SortedMap<Date, ItemHistory> getHistory() {
+    public SortedMap<Date, List<ItemDifference>> getHistory() {
         return history;
     }
 
-    public void setHistory(SortedMap<Date, ItemHistory> history) {
+    public void setHistory(SortedMap<Date, List<ItemDifference>> history) {
         this.history = history;
     }
 

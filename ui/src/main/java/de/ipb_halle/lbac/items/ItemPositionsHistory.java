@@ -38,6 +38,23 @@ public class ItemPositionsHistory implements DTO {
     private User user;
     private Integer id;
 
+    public ItemPositionsHistory() {
+
+    }
+
+    public ItemPositionsHistory(ItemPositionsHistoryEntity entity, User user) {
+        this.colNew = entity.getCol_new();
+        this.colOld = entity.getCol_old();
+        this.containerId = entity.getContainerid();
+        this.itemId = entity.getItemid();
+        this.mDate = entity.getMdate();
+        this.rowNew = entity.getRow_new();
+        this.rowOld = entity.getRow_old();
+        this.user = user;
+        this.id = entity.getId();
+
+    }
+
     @Override
     public ItemPositionsHistoryEntity createEntity() {
         ItemPositionsHistoryEntity entity = new ItemPositionsHistoryEntity();

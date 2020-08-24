@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean.history;
 
+import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.bean.ItemState;
 
@@ -34,46 +35,52 @@ public class HistoryOperation {
 
     public void applyNextNegativeDifference() {
         itemState.setCurrentHistoryDate(itemState.getPreviousKey(itemState.getCurrentHistoryDate()));
-        ItemHistory history = itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate());
-        if (history.getAmountOld() != null) {
-            itemState.getEditedItem().setAmount(history.getAmountOld());
-        }
-        if (history.getConcentrationOld() != null) {
-            itemState.getEditedItem().setConcentration(history.getConcentrationOld());
-        }
-        if (history.getDescriptionOld() != null) {
-            itemState.getEditedItem().setDescription(history.getDescriptionOld());
-        }
-        if (history.getOwnerOld() != null) {
-            itemState.getEditedItem().setOwner(history.getOwnerOld());
-        }
-        if (history.getProjectOld() != null) {
-            itemState.getEditedItem().setProject(history.getProjectOld());
-        }
-        if (history.getPurityOld() != null) {
-            itemState.getEditedItem().setPurity(history.getPurityOld());
+        ItemDifference diff = itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()).get(0);
+        if (diff instanceof ItemHistory) {
+            ItemHistory history = (ItemHistory) diff;
+            if (history.getAmountOld() != null) {
+                itemState.getEditedItem().setAmount(history.getAmountOld());
+            }
+            if (history.getConcentrationOld() != null) {
+                itemState.getEditedItem().setConcentration(history.getConcentrationOld());
+            }
+            if (history.getDescriptionOld() != null) {
+                itemState.getEditedItem().setDescription(history.getDescriptionOld());
+            }
+            if (history.getOwnerOld() != null) {
+                itemState.getEditedItem().setOwner(history.getOwnerOld());
+            }
+            if (history.getProjectOld() != null) {
+                itemState.getEditedItem().setProject(history.getProjectOld());
+            }
+            if (history.getPurityOld() != null) {
+                itemState.getEditedItem().setPurity(history.getPurityOld());
+            }
         }
     }
 
     public void applyNextPositiveDifference() {
-        ItemHistory history = itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate());
-        if (history.getAmountNew() != null) {
-            itemState.getEditedItem().setAmount(history.getAmountNew());
-        }
-        if (history.getConcentrationNew() != null) {
-            itemState.getEditedItem().setConcentration(history.getConcentrationNew());
-        }
-        if (history.getDescriptionNew() != null) {
-            itemState.getEditedItem().setDescription(history.getDescriptionNew());
-        }
-        if (history.getOwnerNew() != null) {
-            itemState.getEditedItem().setOwner(history.getOwnerNew());
-        }
-        if (history.getProjectNew() != null) {
-            itemState.getEditedItem().setProject(history.getProjectNew());
-        }
-        if (history.getPurityNew() != null) {
-            itemState.getEditedItem().setPurity(history.getPurityNew());
+        ItemDifference diff = itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()).get(0);
+        if (diff instanceof ItemHistory) {
+            ItemHistory history = (ItemHistory) diff;
+            if (history.getAmountNew() != null) {
+                itemState.getEditedItem().setAmount(history.getAmountNew());
+            }
+            if (history.getConcentrationNew() != null) {
+                itemState.getEditedItem().setConcentration(history.getConcentrationNew());
+            }
+            if (history.getDescriptionNew() != null) {
+                itemState.getEditedItem().setDescription(history.getDescriptionNew());
+            }
+            if (history.getOwnerNew() != null) {
+                itemState.getEditedItem().setOwner(history.getOwnerNew());
+            }
+            if (history.getProjectNew() != null) {
+                itemState.getEditedItem().setProject(history.getProjectNew());
+            }
+            if (history.getPurityNew() != null) {
+                itemState.getEditedItem().setPurity(history.getPurityNew());
+            }
         }
         itemState.setCurrentHistoryDate(itemState.getFollowingKey(itemState.getCurrentHistoryDate()));
     }

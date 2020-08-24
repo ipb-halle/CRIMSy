@@ -29,7 +29,7 @@ import java.util.Date;
  *
  * @author fmauz
  */
-public class ItemHistory implements DTO {
+public class ItemHistory implements DTO,ItemDifference {
 
     protected String action;
     protected User actor;

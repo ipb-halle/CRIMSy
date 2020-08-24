@@ -31,7 +31,9 @@ import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
+import de.ipb_halle.lbac.items.ItemPositionHistoryList;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -83,6 +85,9 @@ public class ItemServiceTest extends TestBase {
 
     @Inject
     private GlobalAdmissionContext globalContext;
+
+    @Inject
+    private ContainerPositionService positionService;
 
     @Inject
     private ProjectService projectService;
@@ -247,7 +252,7 @@ public class ItemServiceTest extends TestBase {
         history5.setAction("EDIT");
         instance.saveItemHistory(history5);
 
-        SortedMap<Date, ItemHistory> histories = instance.loadHistoryOfItem(item);
+        SortedMap<Date, List<ItemDifference>> histories = instance.loadHistoryOfItem(item);
 
         Assert.assertEquals("4 Histories must be found", 4, histories.size());
         Iterator i = histories.keySet().iterator();
@@ -301,7 +306,7 @@ public class ItemServiceTest extends TestBase {
         Set<int[]> places = new HashSet<>();
         places.add(new int[]{0, 0});
         places.add(new int[]{1, 0});
-        containerService.moveItemToContainer(item, wellPlate_1, places, owner);
+        positionService.moveItemToNewPosition(item, wellPlate_1, places, owner, new Date());
         //Check if movement was correct
         Container loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
         Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
@@ -309,7 +314,8 @@ public class ItemServiceTest extends TestBase {
         //Move item 2 to wellplate 1
         places = new HashSet<>();
         places.add(new int[]{1, 1});
-        containerService.moveItemToContainer(item2, wellPlate_1, places, owner);
+        positionService.moveItemToNewPosition(item2, wellPlate_1, places, owner, new Date());
+
         //Check if movement was correct
         loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
         Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
@@ -318,7 +324,7 @@ public class ItemServiceTest extends TestBase {
         // Check if item is now in new wellplate
         places = new HashSet<>();
         places.add(new int[]{0, 0});
-        containerService.moveItemToContainer(item2, wellPlate_2, places, owner);
+        positionService.moveItemToNewPosition(item2, wellPlate_2, places, owner, new Date());
         loadedWellPlate = containerService.loadContainerById(wellPlate_2.getId());
         Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
         // check if item is removed from old wellplate
@@ -328,7 +334,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertNull(loadedWellPlate.getItemAtPos(1, 1, 0));
 
         //Item should not be able to move to wellPlate_2 because item 2 is blocking the slot
-        Assert.assertFalse(containerService.moveItemToContainer(item, wellPlate_2, places, owner));
+        Assert.assertFalse(positionService.moveItemToNewPosition(item, wellPlate_2, places, owner, new Date()));
     }
 
     @Test
@@ -354,12 +360,13 @@ public class ItemServiceTest extends TestBase {
         positions.add(new int[]{1, 1});
         instance.saveEditedItem(edited, original, owner, positions);
 
-        containerService.moveItemToContainer(original, c1, positions, owner);
         Item loadedItem = instance.loadItemById(original.getId());
+
+        SortedMap<Date, ItemPositionHistoryList> histories = instance.loadItemPositionHistory(loadedItem);
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         Assert.assertEquals(1, loadedItem.getHistory().size());
-        ItemHistory history = loadedItem.getHistory().values().iterator().next();
-
+        List<ItemDifference> diffs = loadedItem.getHistory().values().iterator().next();
+        ItemHistory history = (ItemHistory) diffs.get(0);
         Assert.assertEquals(c1.getId(), history.getParentContainerNew().getId());
         Assert.assertEquals(c0.getId(), history.getParentContainerOld().getId());
         Assert.assertEquals(1.5, history.getAmountOld(), 0.001);
@@ -492,7 +499,9 @@ public class ItemServiceTest extends TestBase {
         return item;
     }
 
-    private boolean compareHistories(ItemHistory orig, ItemHistory loaded) {
+    private boolean compareHistories(ItemHistory orig, List<ItemDifference> diffList) {
+
+        ItemHistory loaded = (ItemHistory) diffList.get(0);
         boolean equal = orig.getAction().equals(loaded.getAction())
                 && orig.getActor().getId().equals(loaded.getActor().getId())
                 && Objects.equals(orig.getAmountNew(), loaded.getAmountNew())

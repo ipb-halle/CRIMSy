@@ -63,7 +63,12 @@ public class ContainerPositionService {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
-    public boolean moveItemToNewPosition(Item item, Container newContainer, Set<int[]> newPositions, User owner) {
+    public boolean moveItemToNewPosition(
+            Item item,
+            Container newContainer,
+            Set<int[]> newPositions,
+            User owner,
+            Date mdate) {
         //Check if new Positions are blocked
         if (!areContainerSlotsFree(item, newContainer, newPositions)) {
             return false;
@@ -71,14 +76,18 @@ public class ContainerPositionService {
         Set<int[]> oldPositions = getItemPositionsInContainer(item);
         if (!areItemPositionsEqual(oldPositions, newPositions)
                 || !areContainerEqual(item.getContainer(), newContainer)) {
-            archiveChanges(owner, item, item.getContainer(), oldPositions, newContainer, newPositions);
+            archiveChanges(owner, item, item.getContainer(), oldPositions, newContainer, newPositions, mdate
+            );
             deleteItemInAllContainer(item.getId());
             saveItemToPositions(newContainer, item, newPositions);
         }
         return true;
     }
 
-    private void saveItemToPositions(Container container, Item item, Set<int[]> positions) {
+    private void saveItemToPositions(
+            Container container,
+            Item item,
+            Set<int[]> positions) {
         if (container != null) {
             //Save new Positions
             for (int[] pos : positions) {
@@ -91,8 +100,7 @@ public class ContainerPositionService {
         }
     }
 
-    public void archiveChanges(User u, Item item, Container oldContainer, Set<int[]> oldPositions, Container containerNew, Set<int[]> positionsNew) {
-        Date mdate = new Date();
+    public void archiveChanges(User u, Item item, Container oldContainer, Set<int[]> oldPositions, Container containerNew, Set<int[]> positionsNew, Date mdate) {
         List<ItemPositionsHistory> diffs = new ArrayList<>();
         diffs.addAll(getNewDiffs(positionsNew, containerNew, item, mdate, u));
         diffs.addAll(getOldDiffs(oldPositions, oldContainer, item, mdate, u));
