@@ -18,9 +18,13 @@
 package de.ipb_halle.lbac.items.entity;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.util.UUID;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -33,8 +37,20 @@ public class ItemPositionsHistoryEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @EmbeddedId
-    private ItemPositionsHistoryId id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
+
+    @Column
+    private int itemid;
+
+    @Column
+    private int containerid;
+    @Column
+    private UUID actorid;
+    @Column
+    private Date mdate;
+
     @Column
     private Integer row_old;
     @Column
@@ -43,14 +59,6 @@ public class ItemPositionsHistoryEntity implements Serializable {
     private Integer col_old;
     @Column
     private Integer col_new;
-
-    public ItemPositionsHistoryId getId() {
-        return id;
-    }
-
-    public void setId(ItemPositionsHistoryId id) {
-        this.id = id;
-    }
 
     public Integer getRow_old() {
         return row_old;
@@ -82,6 +90,46 @@ public class ItemPositionsHistoryEntity implements Serializable {
 
     public void setCol_new(Integer col_new) {
         this.col_new = col_new;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public int getItemid() {
+        return itemid;
+    }
+
+    public void setItemid(int itemid) {
+        this.itemid = itemid;
+    }
+
+    public int getContainerid() {
+        return containerid;
+    }
+
+    public void setContainerid(int containerid) {
+        this.containerid = containerid;
+    }
+
+    public UUID getActorid() {
+        return actorid;
+    }
+
+    public void setActorid(UUID actorid) {
+        this.actorid = actorid;
+    }
+
+    public Date getMdate() {
+        return mdate;
+    }
+
+    public void setMdate(Date mdate) {
+        this.mdate = mdate;
     }
 
 }

@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.User;
@@ -36,8 +37,10 @@ import de.ipb_halle.lbac.service.MemberService;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.ejb.Stateless;
@@ -67,6 +70,9 @@ public class ItemService {
 
     @Inject
     private ContainerService containerService;
+
+    @Inject
+    private ContainerPositionService containerPositionService;
 
     @Inject
     private MaterialService materialService;
@@ -245,6 +251,11 @@ public class ItemService {
     }
 
     public Item saveEditedItem(Item editedItem, Item origItem, User user) {
+        return saveEditedItem(editedItem, origItem, user, new HashSet());
+    }
+
+    public Item saveEditedItem(Item editedItem, Item origItem, User user, Set<int[]> newPositions) {
+
         ItemComparator comparator = new ItemComparator();
         ItemHistory history = comparator.compareItems(origItem, editedItem, user);
         if (history != null) {
@@ -253,6 +264,7 @@ public class ItemService {
         if (history != null) {
             saveItemHistory(history);
         }
+        containerPositionService.moveItemToNewPosition(editedItem, editedItem.getContainer(), newPositions, user);
         return editedItem;
     }
 

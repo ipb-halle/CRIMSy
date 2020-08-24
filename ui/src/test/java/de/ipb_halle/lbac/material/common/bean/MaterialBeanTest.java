@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
+import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
@@ -49,10 +50,7 @@ import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
@@ -235,6 +233,7 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(CollectionWebClient.class)
                         .addClass(DocumentSearchOrchestrator.class)
                         .addClass(Updater.class)
+                        .addClass(ContainerPositionService.class)
                         .addClass(TissueService.class)
                         .addClass(TaxonomyService.class)
                         .addClass(Navigator.class)

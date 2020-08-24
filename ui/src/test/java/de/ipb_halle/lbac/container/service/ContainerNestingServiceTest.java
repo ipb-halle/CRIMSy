@@ -103,6 +103,7 @@ public class ContainerNestingServiceTest extends TestBase {
                 .addClass(ArticleService.class)
                 .addClass(MoleculeService.class)
                 .addClass(TaxonomyNestingService.class)
+                .addClass(ContainerPositionService.class)
                 .addClass(ContainerNestingService.class)
                 .addClass(ProjectService.class);
         return UserBeanDeployment.add(deployment);
@@ -110,30 +111,30 @@ public class ContainerNestingServiceTest extends TestBase {
 
     private int[] initializeContainer() {
         Container c0 = new Container();
-        c0.setType(new ContainerType("ROOM", 100,false,true));
+        c0.setType(new ContainerType("ROOM", 100, false, true));
         c0.setLabel("C0");
         containerService.saveContainer(c0);
         Container c1 = new Container();
-        c1.setType(new ContainerType("ROOM", 99,false,true));
+        c1.setType(new ContainerType("ROOM", 99, false, true));
         c1.setLabel("C1");
         c1.setParentContainer(c0);
         containerService.saveContainer(c1);
         Container c2 = new Container();
-        c2.setType(new ContainerType("ROOM", 99,false,true));
+        c2.setType(new ContainerType("ROOM", 99, false, true));
         c2.setLabel("C2");
         containerService.saveContainer(c2);
         Container c3 = new Container();
-        c3.setType(new ContainerType("ROOM", 98,false,true));
+        c3.setType(new ContainerType("ROOM", 98, false, true));
         c3.setLabel("C3");
         c3.setParentContainer(c1);
         containerService.saveContainer(c3);
         Container c4 = new Container();
-        c4.setType(new ContainerType("ROOM", 97,false,true));
+        c4.setType(new ContainerType("ROOM", 97, false, true));
         c4.setLabel("C4");
         c4.setParentContainer(c3);
         containerService.saveContainer(c4);
         Container c5 = new Container();
-        c5.setType(new ContainerType("ROOM", 96,false,true));
+        c5.setType(new ContainerType("ROOM", 96, false, true));
         c5.setLabel("C5");
         c5.setParentContainer(c4);
         containerService.saveContainer(c5);

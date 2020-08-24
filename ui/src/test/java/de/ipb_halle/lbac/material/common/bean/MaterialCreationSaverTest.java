@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
+import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.bean.ItemBean;
@@ -117,64 +118,65 @@ public class MaterialCreationSaverTest extends TestBase {
         Project p = creationTools.createProject();
         MoleculeStructureModel moleculeModel = new V2000();
         StructureInformation structureInfos = new StructureInformation();
-          StorageClassInformation sci=new StorageClassInformation();
-          sci.setRemarks("test-remark");
-          //sci.setStorageClass(storageClass);
-        saver.saveNewStructure(true, moleculeModel, structureInfos, p, new HazardInformation(),sci, new ArrayList<>());
+        StorageClassInformation sci = new StorageClassInformation();
+        sci.setRemarks("test-remark");
+        //sci.setStorageClass(storageClass);
+        saver.saveNewStructure(true, moleculeModel, structureInfos, p, new HazardInformation(), sci, new ArrayList<>());
 
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());
         o = entityManagerService.doSqlQuery("SELECT * FROM structures");
         Assert.assertEquals(1, o.size());
-        
-         o = entityManagerService.doSqlQuery("SELECT * FROM storages");
-         Assert.assertEquals(1, o.size());
+
+        o = entityManagerService.doSqlQuery("SELECT * FROM storages");
+        Assert.assertEquals(1, o.size());
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = 
-                prepareDeployment("MaterialCreationSaverTest.war")
-                .addClass(UserBeanMock.class)
-                .addClass(ACListService.class)
-                .addClass(CollectionBean.class)
-                .addClass(CollectionService.class)
-                .addClass(SolrAdminService.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
-                .addClass(SolrTermVectorSearch.class)
-                .addClass(CollectionOrchestrator.class)
-                .addClass(EntityManagerService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchBean.class)
-                .addClass(DocumentSearchService.class)
-                .addClass(SolrSearcher.class)
-                .addClass(MoleculeService.class)
-                .addClass(ProjectBean.class)
-                .addClass(IndexService.class)
-                .addClass(MaterialNameBean.class)
-                .addClass(MaterialIndexBean.class)
-                .addClass(ProjectService.class)
-                .addClass(CollectionWebClient.class)
-                .addClass(DocumentSearchOrchestrator.class)
-                .addClass(Updater.class)
-                .addClass(TissueService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(Navigator.class)
-                .addClass(WordCloudBean.class)
-                .addClass(ACListService.class)
-                .addClass(WordCloudWebClient.class)
-                .addClass(MateriaBeanMock.class)
-                .addClass(MaterialOverviewBean.class)
-                .addClass(ContainerService.class)
-                .addClass(ItemService.class)
-                .addClass(ArticleService.class)
-                .addClass(ItemOverviewBean.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(ItemBean.class)
-                .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class);
+        WebArchive deployment
+                = prepareDeployment("MaterialCreationSaverTest.war")
+                        .addClass(UserBeanMock.class)
+                        .addClass(ACListService.class)
+                        .addClass(CollectionBean.class)
+                        .addClass(CollectionService.class)
+                        .addClass(SolrAdminService.class)
+                        .addClass(FileService.class)
+                        .addClass(FileEntityService.class)
+                        .addClass(SolrTermVectorSearch.class)
+                        .addClass(CollectionOrchestrator.class)
+                        .addClass(EntityManagerService.class)
+                        .addClass(TermVectorEntityService.class)
+                        .addClass(DocumentSearchBean.class)
+                        .addClass(DocumentSearchService.class)
+                        .addClass(SolrSearcher.class)
+                        .addClass(MoleculeService.class)
+                        .addClass(ProjectBean.class)
+                        .addClass(IndexService.class)
+                        .addClass(MaterialNameBean.class)
+                        .addClass(MaterialIndexBean.class)
+                        .addClass(ProjectService.class)
+                        .addClass(CollectionWebClient.class)
+                        .addClass(DocumentSearchOrchestrator.class)
+                        .addClass(Updater.class)
+                        .addClass(TissueService.class)
+                        .addClass(TaxonomyService.class)
+                        .addClass(Navigator.class)
+                        .addClass(WordCloudBean.class)
+                        .addClass(ACListService.class)
+                        .addClass(WordCloudWebClient.class)
+                        .addClass(MateriaBeanMock.class)
+                        .addClass(MaterialOverviewBean.class)
+                        .addClass(ContainerService.class)
+                        .addClass(ItemService.class)
+                        .addClass(ContainerPositionService.class)
+                        .addClass(ArticleService.class)
+                        .addClass(ItemOverviewBean.class)
+                        .addClass(ContainerNestingService.class)
+                        .addClass(TaxonomyNestingService.class)
+                        .addClass(ItemBean.class)
+                        .addClass(MaterialIndexHistoryEntity.class)
+                        .addClass(MaterialService.class);
         deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }

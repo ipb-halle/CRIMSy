@@ -383,15 +383,6 @@ CREATE TABLE item_positions(
     itemrow INTEGER ,
     itemcol INTEGER );
 
-CREATE TABLE itemtransfers(
-    itemid INTEGER NOT NULL REFERENCES items(id),
-    projectid INTEGER NOT NULL REFERENCES projects(id),
-    actorid UUID NOT NULL REFERENCES usersgroups(id),
-    transferdate TIMESTAMP NOT NULL,
-    item_container_old INTEGER REFERENCES item_positions(id),
-    item_container_new INTEGER REFERENCES item_positions(id),
-    PRIMARY KEY(itemid,projectid,actorid,transferdate));
-
 CREATE TABLE items_history(
     itemid INTEGER NOT NULL REFERENCES items(id),
     mdate TIMESTAMP NOT NULL,
@@ -414,6 +405,7 @@ CREATE TABLE items_history(
     PRIMARY KEY(itemid,actorid,mdate));
 
 CREATE TABLE item_positions_history(
+    id SERIAL PRIMARY KEY,
     itemid INTEGER NOT NULL REFERENCES items(id),
     containerid INTEGER NOT NULL REFERENCES containers(id),
     mdate TIMESTAMP NOT NULL,
@@ -421,8 +413,7 @@ CREATE TABLE item_positions_history(
     row_old INTEGER,
     row_new INTEGER,
     col_old INTEGER,
-    col_new INTEGER,
-    PRIMARY KEY(itemid,containerid,mdate,actorid)
+    col_new INTEGER
 );
 
 insert into containertypes(name,description,rank,transportable,unique_name)values('ROOM',null,100,false,true);

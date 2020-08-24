@@ -21,6 +21,7 @@ import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
+import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.device.print.PrintBean;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
@@ -69,6 +70,8 @@ public class ItemBean implements Serializable {
 
     @Inject
     private ContainerService containerService;
+    @Inject
+    private ContainerPositionService containerPositionService;
 
     @Inject
     private Navigator navigator;
@@ -161,7 +164,7 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
-        boolean areSlotsEmpty = containerService.checkContainerSlots(state.getEditedItem(), container, containerController.resolveItemPositions());
+        boolean areSlotsEmpty = containerPositionService.areContainerSlotsFree(state.getEditedItem(), container, containerController.resolveItemPositions());
         if (!areSlotsEmpty) {
             UIMessage.info(MESSAGE_BUNDLE, "itemEdit_container_blocked");
             return;

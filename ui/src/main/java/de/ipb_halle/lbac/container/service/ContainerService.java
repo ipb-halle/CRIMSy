@@ -52,6 +52,9 @@ import org.apache.logging.log4j.Logger;
 public class ContainerService implements Serializable {
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    @Inject
+    private ContainerPositionService positionService;
     @Inject
     private ProjectService projectService;
 
@@ -63,16 +66,6 @@ public class ContainerService implements Serializable {
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
-
-    private final String SQL_CHECK_ITEM_AT_POSITION
-            = "SELECT itemid "
-            + "FROM item_positions "
-            + "WHERE itemrow=:row "
-            + "AND itemcol=:col "
-            + "AND containerid=:containerid";
-    private final String SQL_DELETE_ITEM_IN_CONTAINER
-            = "DELETE FROM item_positions "
-            + "WHERE itemid=:itemid";
 
     private final String SQL_NESTED_TARGETS
             = "SELECT targetid "
@@ -134,17 +127,6 @@ public class ContainerService implements Serializable {
             + "itemrow "
             + "FROM item_positions "
             + "WHERE containerId=:containerId";
-
-    String SQL_SAVE_ITEM_IN_CONTAINER = "INSERT INTO item_positions ("
-            + "itemid,"
-            + "containerid,"
-            + "itemrow,"
-            + "itemcol) "
-            + "VALUES("
-            + ":itemid,"
-            + ":containerid,"
-            + ":posY,"
-            + ":posX)";
 
     private final String SQL_LOAD_BY_CONTAINERNAME
             = "SELECT  "
@@ -421,84 +403,23 @@ public class ContainerService implements Serializable {
         );
     }
 
-    public void deleteItemInContainer(int itemid) {
-        this.em.createNativeQuery(SQL_DELETE_ITEM_IN_CONTAINER)
-                .setParameter("itemid", itemid)
-                .executeUpdate();
-    }
-
-    public void moveItemToContainer(Item i, Container c,User owner) {
-        deleteItemInContainer(i.getId());
+    @SuppressWarnings("unchecked")
+    public void moveItemToContainer(Item i, Container c, User owner) {
+        moveItemToContainer(i, c, new HashSet(), owner);
     }
 
     @SuppressWarnings("unchecked")
-    public Integer getItemIdAtPosition(int containerId, int x, int y) {
-        List<Integer> results = this.em.createNativeQuery(SQL_CHECK_ITEM_AT_POSITION)
-                .setParameter("containerid", containerId)
-                .setParameter("col", x)
-                .setParameter("row", y)
-                .getResultList();
-        if (results.isEmpty()) {
-            return null;
-        } else {
-            return results.get(0);
-        }
-    }
-
-    public boolean moveItemToContainer(Item i, Container c, Set<int[]> positions,User owner) {
-        if (c == null) {
-            deleteItemInContainer(i.getId());
-            return true;
-        }
-        if (!checkContainerSlots(i, c, positions)) {
+    public boolean moveItemToContainer(Item i, Container c, Set<int[]> newPositions, User owner) {
+        if (!positionService.areContainerSlotsFree(i, c, newPositions)) {
             return false;
         }
-        deleteItemInContainer(i.getId());
-        for (int[] pos : positions) {
-            saveItemInContainer(
-                    i.getId(),
-                    c.getId(),
-                    pos[0],
-                    pos[1]);
-        }
-        return true;
-    }
-
-    public boolean checkContainerSlots(Item i, Container c, Set<int[]> positions) {
         if (c == null) {
+            positionService.deleteItemInAllContainer(i.getId());
             return true;
-        }
-        for (int[] pos : positions) {
-            Integer itemAtPlace = getItemIdAtPosition(c.getId(), pos[0], pos[1]);
-            if (itemAtPlace != null && itemAtPlace != i.getId()) {
-                return false;
-            }
+        } else {
+            positionService.moveItemToNewPosition(i, c, newPositions, owner);
         }
         return true;
-    }
-
-    /**
-     * Checks if an item is at the place where the new item should be placed
-     * into and saves it to there if none item is blocking it.
-     *
-     * @param itemid
-     * @param containerid
-     * @param posX
-     * @param posY
-     * @return
-     */
-    public boolean saveItemInContainer(int itemid, int containerid, int posX, int posY) {
-        Integer itemAtPlace = getItemIdAtPosition(containerid, posX, posY);
-        if (itemAtPlace == null) {
-            this.em.createNativeQuery(SQL_SAVE_ITEM_IN_CONTAINER)
-                    .setParameter("itemid", itemid)
-                    .setParameter("containerid", containerid)
-                    .setParameter("posX", posX)
-                    .setParameter("posY", posY)
-                    .executeUpdate();
-            return true;
-        }
-        return itemAtPlace == itemid;
     }
 
     @SuppressWarnings("unchecked")

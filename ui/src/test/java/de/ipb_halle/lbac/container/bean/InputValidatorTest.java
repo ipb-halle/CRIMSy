@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.mock.ErrorMessagePresenterMock;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
+import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
@@ -198,6 +199,7 @@ public class InputValidatorTest extends TestBase {
                 .addClass(ContainerNestingService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(MoleculeService.class)
+                .addClass(ContainerPositionService.class)
                 .addClass(ProjectService.class);
         return UserBeanDeployment.add(deployment);
     }

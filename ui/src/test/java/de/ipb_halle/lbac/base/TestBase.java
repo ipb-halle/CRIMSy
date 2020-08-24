@@ -410,6 +410,7 @@ public class TestBase implements Serializable {
     }
 
     public void cleanItemsFromDb() {
+        entityManagerService.doSqlUpdate("delete from item_positions_history");
         entityManagerService.doSqlUpdate("delete from item_positions");
         entityManagerService.doSqlUpdate("delete from items_history");
         entityManagerService.doSqlUpdate("delete from items");

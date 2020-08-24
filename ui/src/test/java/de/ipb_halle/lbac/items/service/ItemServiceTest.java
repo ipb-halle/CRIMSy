@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
+import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.items.Item;
@@ -345,11 +346,14 @@ public class ItemServiceTest extends TestBase {
         }
         Assert.assertEquals(2, foundPositions.size());
         Item edited = original.copy();
+
+        // change to new container with new positions
         edited.setContainer(c1);
         edited.setAmount(1.25);
-        instance.saveEditedItem(edited, original, owner);
         Set<int[]> positions = new HashSet<>();
         positions.add(new int[]{1, 1});
+        instance.saveEditedItem(edited, original, owner, positions);
+
         containerService.moveItemToContainer(original, c1, positions, owner);
         Item loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
@@ -361,6 +365,79 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals(1.5, history.getAmountOld(), 0.001);
         Assert.assertEquals(1.25, history.getAmountNew(), 0.001);
 
+        //change to new container without position
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(c2);
+        instance.saveEditedItem(edited, original, owner);
+        loadedItem = instance.loadItemById(original.getId());
+        Assert.assertEquals(c2.getId(), loadedItem.getContainer().getId());
+        Container loadedContainer = containerService.loadContainerById(c2.getId());
+        Assert.assertNull(loadedContainer.getItems());
+        // remove the container
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(null);
+        instance.saveEditedItem(edited, original, owner);
+        loadedItem = instance.loadItemById(original.getId());
+        Assert.assertNull(loadedItem.getContainer());
+        //put into container  without positions
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(c1);
+        instance.saveEditedItem(edited, original, owner);
+        loadedItem = instance.loadItemById(original.getId());
+        Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
+        //stay in the same  container without positions
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(c1);
+        instance.saveEditedItem(edited, original, owner);
+        loadedItem = instance.loadItemById(original.getId());
+        Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
+        //change container to a new one with positions
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(c0);
+        positions.clear();
+        positions.add(new int[]{0, 0});
+        positions.add(new int[]{1, 0});
+        instance.saveEditedItem(edited, original, owner, positions);
+        loadedItem = instance.loadItemById(original.getId());
+        Assert.assertEquals(c0.getId(), loadedItem.getContainer().getId());
+        positions = loadedItem.getContainer().getPositionsOfItem(original.getId());
+        for (int[] pos : positions) {
+            Assert.assertTrue(pos[0] == 0 && pos[1] == 0 || pos[0] == 1 && pos[1] == 0);
+        }
+        //remove item from container 
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(null);
+        instance.saveEditedItem(edited, original, owner);
+        //put item into container with positions
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(c0);
+        positions.clear();
+        positions.add(new int[]{0, 0});
+        positions.add(new int[]{1, 0});
+        instance.saveEditedItem(edited, original, owner, positions);
+        loadedItem = instance.loadItemById(original.getId());
+        Assert.assertEquals(c0.getId(), loadedItem.getContainer().getId());
+        positions = loadedItem.getContainer().getPositionsOfItem(original.getId());
+        for (int[] pos : positions) {
+            Assert.assertTrue(pos[0] == 0 && pos[1] == 0 || pos[0] == 1 && pos[1] == 0);
+        }
+        //remove item from container 
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(null);
+        instance.saveEditedItem(edited, original, owner);
+        // save item with no container into no container
+        original = edited;
+        edited = original.copy();
+        edited.setContainer(null);
+        instance.saveEditedItem(edited, original, owner);
     }
 
     @Deployment
@@ -376,6 +453,7 @@ public class ItemServiceTest extends TestBase {
                 .addClass(TissueService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(ContainerNestingService.class)
+                .addClass(ContainerPositionService.class)
                 .addClass(ItemService.class);
         return UserBeanDeployment.add(deployment);
     }

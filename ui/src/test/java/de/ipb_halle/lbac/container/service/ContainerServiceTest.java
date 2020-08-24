@@ -43,7 +43,6 @@ import de.ipb_halle.lbac.service.ACListService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -67,9 +66,6 @@ public class ContainerServiceTest extends TestBase {
     Container c2;
     Container c3;
 
-    @Inject
-    private ContainerNestingService nestingController;
-
     private CreationTools creationTools;
     private User publicUser;
 
@@ -87,6 +83,9 @@ public class ContainerServiceTest extends TestBase {
 
     @Inject
     private GlobalAdmissionContext globalContext;
+
+    @Inject
+    private ContainerPositionService positionService;
 
     @Before
     @Override
@@ -236,9 +235,9 @@ public class ContainerServiceTest extends TestBase {
         createItems(ownerid);
 
         //Add the items to the container
-        instance.saveItemInContainer(1, c0.getId(), 0, 0);
-        instance.saveItemInContainer(2, c0.getId(), 1, 2);
-        instance.saveItemInContainer(3, c1.getId(), 0, 1);
+        positionService.saveItemInContainer(1, c0.getId(), 0, 0);
+        positionService.saveItemInContainer(2, c0.getId(), 1, 2);
+        positionService.saveItemInContainer(3, c1.getId(), 0, 1);
 
         List<Object> o = entityManagerService.doSqlQuery("Select * from item_positions");
         Assert.assertEquals("Three items must be in container one and two", 3, o.size());
@@ -267,9 +266,9 @@ public class ContainerServiceTest extends TestBase {
                 }
             }
         }
-        Assert.assertTrue(3 == instance.getItemIdAtPosition(c1.getId(), 0, 1));
-        Assert.assertTrue(instance.saveItemInContainer(3, c1.getId(), 0, 1));
-        Assert.assertFalse(instance.saveItemInContainer(4, c1.getId(), 0, 1));
+        Assert.assertTrue(3 == positionService.getItemIdAtPosition(c1.getId(), 0, 1));
+        Assert.assertTrue(positionService.saveItemInContainer(3, c1.getId(), 0, 1));
+        Assert.assertFalse(positionService.saveItemInContainer(4, c1.getId(), 0, 1));
 
     }
 
@@ -387,6 +386,7 @@ public class ContainerServiceTest extends TestBase {
                 .addClass(ArticleService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(MoleculeService.class)
+                .addClass(ContainerPositionService.class)
                 .addClass(ContainerNestingService.class)
                 .addClass(ProjectService.class);
         return UserBeanDeployment.add(deployment);

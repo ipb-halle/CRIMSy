@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.items;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.items.entity.ItemPositionsHistoryEntity;
-import de.ipb_halle.lbac.items.entity.ItemPositionsHistoryId;
 import java.util.Date;
 
 /**
@@ -37,15 +36,21 @@ public class ItemPositionsHistory implements DTO {
     private Integer rowNew;
     private Integer rowOld;
     private User user;
+    private Integer id;
 
     @Override
     public ItemPositionsHistoryEntity createEntity() {
         ItemPositionsHistoryEntity entity = new ItemPositionsHistoryEntity();
-        entity.setId(new ItemPositionsHistoryId(itemId, containerId, user.getId(), mDate));
+        entity.setId(id);
+        entity.setActorid(user.getId());
+        entity.setContainerid(containerId);
+        entity.setItemid(itemId);
         entity.setCol_new(colNew);
         entity.setCol_old(colOld);
         entity.setRow_new(rowNew);
         entity.setRow_old(rowOld);
+        entity.setMdate(mDate);
+
         return entity;
     }
 
