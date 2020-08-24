@@ -46,6 +46,7 @@ function cleanup {
     dst=`echo $0 | cut -d' ' -f2`
     ssh -o "StrictHostKeyChecking no" $dst "./configBatch.sh CLEANUP"
 }
+export -f cleanup
 
 function createNodeConfig {
     key=`echo $0 | cut -d' ' -f1`
@@ -278,13 +279,14 @@ function mainFunc {
 #==========================================================
 #
 cd $LBAC_REPO
+mkdir -p target
 mainFunc 2>&1 | tee $LBAC_REPO/target/test.$TEST_DATE.log
 
 echo
-echo "*********************************************************************"
-echo "*                                                                   *"
-echo "* Finished. Please find your log file in                            *"
-echo "* target/test.$TEST_DATE.log                                      *"
-echo "*                                                                   *"
-echo "*********************************************************************"
+echo "***********************************************************************"
+echo "*                                                                     *"
+echo "* Finished. Please find your log file in target/test.$TEST_DATE.log *"
+echo "* and test outcomes in directory target/test/                         *"
+echo "*                                                                     *"
+echo "***********************************************************************"
 

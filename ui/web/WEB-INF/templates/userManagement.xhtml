@@ -60,6 +60,7 @@
                         <b:message for="@previous"/>
                         <b:inputText id="name"
                                      value="#{userMgrBean.user.name}"
+                                     styleClass="tstUserMgrName"
                                      label="#{msgs.Name}"
                                      disabled="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"
                                      renderLabel="true"
@@ -72,6 +73,7 @@
                         <b:message for="@previous"/>
                         <b:inputText id="login"
                                      value="#{userMgrBean.user.login}"
+                                     styleClass="tstUserMgrLogin"
                                      label="#{msgs.Login}"
                                      disabled="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"
                                      renderLabel="true"
@@ -84,6 +86,7 @@
                         <b:message for="@previous"/>
                         <b:inputText id="email"
                                      value="#{userMgrBean.user.email}"
+                                     styleClass="tstUserMgrEmail"
                                      label="#{msgs.Email}"
                                      disabled="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"
                                      renderLabel="true"
@@ -98,6 +101,7 @@
                         <b:message for="@previous"/>
 
                         <b:inputSecret value="#{userMgrBean.tempPassword}"
+                                     styleClass="tstUserMgrPassword"
                                      label="#{msgs.Password}"
                                      renderLabel="true"
                                      rendered="#{userMgrBean.mode == 'CREATE'}"
@@ -112,6 +116,7 @@
                         <!-- value="" -->
                         <b:inputSecret id="tempPasswordRepeat"
                                      label="#{msgs.userMgr_Repeat}"
+                                     styleClass="tstUserMgrPasswordRepeat"
                                      renderLabel="true"
                                      rendered="#{userMgrBean.mode == 'CREATE'}"
                                      placeholder="#{msgs.userMgr_RepeatPlaceholder}" required="true">
@@ -122,6 +127,7 @@
 
                         <b:inputText id="phone"
                                      value="#{userMgrBean.user.phone}"
+                                     styleClass="tstUserMgrPhone"
                                      disabled="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"
                                      label="#{msgs.Phone}"
                                      renderLabel="true"
@@ -138,6 +144,7 @@
 
                         <b:column styleClass="text-center"> 
                             <b:commandButton value="#{msgs.Save}"
+                                             styleClass="tstUserMgrCreate"
                                              rendered="#{userMgrBean.mode == 'CREATE'}"
                                              type="submit"
                                              ajax="true"
@@ -146,6 +153,7 @@
                                              oncomplete="javascript:if(!validationFailed){$('.modalUserDialog').modal('hide')};return false;"
                                              look="primary"/>
                             <b:commandButton value="#{msgs.Edit}"
+                                             styleClass="tstUserMgrEdit"
                                              rendered="#{userMgrBean.mode == 'UPDATE'}"
                                              type="submit"
                                              ajax="true"
@@ -154,6 +162,7 @@
                                              oncomplete="if(!validationFailed){$('.modalUserDialog').modal('hide')};return false;"
                                              look="primary"/>
                             <b:commandButton value="#{msgs.Delete}"
+                                             styleClass="tstUserMgrDelete"
                                              rendered="#{userMgrBean.mode == 'DELETE'}"
                                              update="frmUserList:userList"
                                              type="submit"
@@ -170,6 +179,7 @@
                     <b:panel title="#{msgs.userMgr_ChangePassword}" collapsible="false" look="primary">
 
                         <b:inputSecret value="#{userMgrBean.tempPassword}" label="#{msgs.userMgr_NewPassword}"
+                                       styleClass="tstUserMgrChgPasswd1"
                                        placeholder="#{msgs.userMgr_NewPasswordPlaceholder}" renderLabel="true"
                                        required="true">
                             <f:validator validatorId="PasswordValidator" />
@@ -181,6 +191,7 @@
 
                         <b:inputSecret id="tempPasswordRepeat" 
                                        value="#{tempPasswordRepeat}"
+                                       styleClass="tstUserMgrChgPasswd2"
                                        label="#{msgs.userMgr_Repeat}"
                                        placeholder="#{msgs.userMgr_RepeatPlaceholder}" renderLabel="true"
                                        required="true">
@@ -193,6 +204,7 @@
 
                         <b:column styleClass="text-center">
                             <b:commandButton value="#{msgs.userMgr_ChangePassword}"
+                                             styleClass="tstUserMgrChgPasswdCmd"
                                              type="submit"
                                              ajax="true"
                                              update="@form frmUserList:userList growlMsg"
@@ -204,7 +216,7 @@
                 </b:form>
             </b:panelGrid>
             <center>
-              <b:button value="#{msgs.Close}" dismiss="modal"/>
+              <b:button value="#{msgs.Close}" styleClass="tstUserMgrEditClose" dismiss="modal"/>
             </center>
         </b:modal>
 
@@ -255,6 +267,7 @@
                 <b:dataTableColumn value="#{ms.nested ? msgs.YES : msgs.NO}"/>
                 <b:dataTableColumn>
                     <b:commandButton style="padding: 0 4px;"
+                                     styleClass="tstUserMgrMembershipDelete"
                                      icon="trash"
                                      look="link"
                                      ajax="true"
@@ -291,6 +304,7 @@
                 <b:dataTableColumn value="#{group.getNode().getInstitution()}"/>
                 <b:dataTableColumn>
                     <b:commandButton style="padding: 0 4px;"
+                                     styleClass="tstUserMgrMembershipAdd"
                                      iconAwesome="user-plus"
                                      look="link"
                                      ajax="true"
@@ -306,7 +320,7 @@
                 <b:fetchBeanInfos/>
 
                 <b:row styleClass="modal-footer">
-                    <b:button value="#{msgs.Close}" dismiss="modal"/>
+                    <b:button value="#{msgs.Close}" styleClass="tstUserMgrMembershipClose" dismiss="modal"/>
                 </b:row>
             </b:form>
         </b:modal>
@@ -328,7 +342,7 @@
                 <f:facet name="header">
                     <tr>
                         <th colspan="9">
-                            <b:commandButton styleClass="pull-right"
+                            <b:commandButton styleClass="pull-right tstUserMgrCreateDlg"
                                              style="margin:0 2px;"
                                              iconAwesome="fa-plus-circle"
                                              value="#{msgs.userMgr_newUser}"
@@ -339,7 +353,7 @@
                                              rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
                                              onclick="ajax:userMgrBean.setModeCreate();"
                                              oncomplete="$('.modalUserDialog').modal();"/>
-                            <b:commandButton styleClass="pull-right"
+                            <b:commandButton styleClass="pull-right tstUserMgrRefresh"
                                              style="margin:0 2px;"
                                              iconAwesome="refresh"
                                              value="#{msgs.Refresh}"
@@ -369,6 +383,7 @@
                 <b:dataTableColumn value="#{user.node.institution}"/>
                 <b:dataTableColumn>
                     <b:commandButton style="padding: 0 4px;"
+                                     styleClass="tstUserMgrEditDlg"
                                      icon="pencil"
                                      look="link"
                                      ajax="true"
@@ -379,6 +394,7 @@
                     <!-- possibly 'modalGroupDialog.DataTable().responsive.recalc();' could be 
                          necessary for responsive tables within a modal form -->
                     <b:commandButton style="padding: 0 4px;"
+                                     styleClass="tstUserMgrMembershipDlg"
                                      iconAwesome="users"
                                      look="link"
                                      ajax="true"
@@ -387,6 +403,7 @@
                                      onclick="ajax:userMgrBean.setUser(user);" 
                                      oncomplete="$('.modalGroupDialog').modal();"/>
                     <b:commandButton style="padding: 0 4px;"
+                                     styleClass="tstUserMgrDeleteDlg"
                                      icon="trash"
                                      look="link"
                                      ajax="true"

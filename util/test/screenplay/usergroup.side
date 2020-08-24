@@ -1,0 +1,414 @@
+{
+  "id": "1b32de61-b427-445d-bd52-cb2683d93ba2",
+  "version": "2.0",
+  "name": "usergroup",
+  "url": "https://localhost",
+  "tests": [{
+    "id": "7891cbf0-09a9-4279-a6a9-4364c8f047c3",
+    "name": "usergroup1",
+    "commands": [{
+      "id": "7d31adc4-839c-4c02-a529-4f1b7a726262",
+      "comment": "",
+      "command": "open",
+      "target": "/ui/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5018b15e-2359-43ec-8465-b245099d2739",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1800x1000",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6ebb9e6e-115c-49d2-87e1-5865a0013108",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Login",
+      "targets": [
+        ["linkText=Login", "linkText"],
+        ["css=#j_id_v\\3Aj_id_1g > .commandLink", "css:finder"],
+        ["xpath=//a[contains(text(),'Login')]", "xpath:link"],
+        ["xpath=//a[@onclick=\"BsF.submitForm('j_id_v',{'j_id_v:j_id_1g':'j_id_v:j_id_1g'});return false;\"]", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1g']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[14]", "xpath:href"],
+        ["xpath=//ul[4]/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e06c1d01-4619-4690-99cf-355589c27ed7",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstLoginLogin",
+      "targets": [
+        ["id=input_logInFormId:loginLogin", "id"],
+        ["name=input_logInFormId:loginLogin", "name"],
+        ["css=#input_logInFormId\\3AloginLogin", "css:finder"],
+        ["xpath=//input[@id='input_logInFormId:loginLogin']", "xpath:attributes"],
+        ["xpath=//div[@id='logInFormId:loginLogin']/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "admin"
+    }, {
+      "id": "f6768562-ae85-4174-85bf-a745826130ae",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstLoginPassword",
+      "targets": [
+        ["id=input_logInFormId:loginPasswd", "id"],
+        ["name=input_logInFormId:loginPasswd", "name"],
+        ["css=#input_logInFormId\\3AloginPasswd", "css:finder"],
+        ["xpath=//input[@id='input_logInFormId:loginPasswd']", "xpath:attributes"],
+        ["xpath=//div[@id='logInFormId:loginPasswd']/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "admin"
+    }, {
+      "id": "7e611489-78de-41bb-b693-6c526fb3a6e9",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstLoginCmdBtn",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7d1f8e9d-6f3c-4d70-be14-041465dc75bc",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstNavSettings > a",
+      "targets": [
+        ["id=dtLj_id_v:j_id_1i", "id"],
+        ["linkText=Einstellungen", "linkText"],
+        ["css=#dtLj_id_v\\3Aj_id_1i", "css:finder"],
+        ["xpath=//a[contains(text(),'Einstellungen')]", "xpath:link"],
+        ["xpath=//a[@id='dtLj_id_v:j_id_1i']", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1i']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[15]", "xpath:href"],
+        ["xpath=//ul[4]/li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Einstellungen')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7c31f496-4213-436e-a8b6-331892327ef4",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstNavGroupManager > a",
+      "targets": [
+        ["linkText=Gruppenverwaltung", "linkText"],
+        ["css=#j_id_v\\3Aj_id_1m > .commandLink", "css:finder"],
+        ["xpath=//a[contains(text(),'Gruppenverwaltung')]", "xpath:link"],
+        ["xpath=//a[@onclick=\"BsF.submitForm('j_id_v',{'j_id_v:j_id_1m':'j_id_v:j_id_1m'});return false;\"]", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1m']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[18]", "xpath:href"],
+        ["xpath=//li[2]/ul/li[4]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Gruppenverwaltung')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "790271f4-4d45-4c58-ad73-845883a696af",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstGrpMgrNewGroup",
+      "targets": [
+        ["id=frmGroupList:groupList:j_id_1w_1d", "id"],
+        ["name=frmGroupList:groupList:j_id_1w_1d", "name"],
+        ["css=#frmGroupList\\3AgroupList\\3Aj_id_1w_1d", "css:finder"],
+        ["xpath=//button[@id='frmGroupList:groupList:j_id_1w_1d']", "xpath:attributes"],
+        ["xpath=//table[@id='frmGroupList:groupList']/thead/tr/th/button", "xpath:idRelative"],
+        ["xpath=//form/div/table/thead/tr/th/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Neue Gruppe')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "0f4bcbec-7d1d-499a-99d3-677b8060ec74",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstGrpMgrNewName",
+      "targets": [
+        ["id=input_frmModalGroupDialog:name", "id"],
+        ["name=input_frmModalGroupDialog:name", "name"],
+        ["css=#input_frmModalGroupDialog\\3Aname", "css:finder"],
+        ["xpath=//input[@id='input_frmModalGroupDialog:name']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalGroupDialog:name']/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "TESTgroup1"
+    }, {
+      "id": "3171090c-d013-49a2-b8c5-71c6fd2be12e",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstGrpMgrCreate",
+      "targets": [
+        ["id=frmModalGroupDialog:j_id_1w_g", "id"],
+        ["name=frmModalGroupDialog:j_id_1w_g", "name"],
+        ["css=#frmModalGroupDialog\\3Aj_id_1w_g", "css:finder"],
+        ["xpath=//button[@id='frmModalGroupDialog:j_id_1w_g']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalGroupDialog:j_id_1w_e']/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Speichern')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3200c17e-9d91-45a7-96fa-56ace3e210d4",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstNavSettings > a",
+      "targets": [
+        ["id=dtLj_id_v:j_id_1i", "id"],
+        ["linkText=Einstellungen", "linkText"],
+        ["css=#dtLj_id_v\\3Aj_id_1i", "css:finder"],
+        ["xpath=//a[contains(text(),'Einstellungen')]", "xpath:link"],
+        ["xpath=//a[@id='dtLj_id_v:j_id_1i']", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1i']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[15]", "xpath:href"],
+        ["xpath=//ul[4]/li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Einstellungen')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "1a9460e4-29aa-4715-8e9f-09d46dbd4eef",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstNavUserManager > a",
+      "targets": [
+        ["linkText=Nutzerverwaltung", "linkText"],
+        ["css=#j_id_v\\3Aj_id_1l > .commandLink", "css:finder"],
+        ["xpath=//a[contains(text(),'Nutzerverwaltung')]", "xpath:link"],
+        ["xpath=//a[@onclick=\"BsF.submitForm('j_id_v',{'j_id_v:j_id_1l':'j_id_v:j_id_1l'});return false;\"]", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1l']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[17]", "xpath:href"],
+        ["xpath=//li[2]/ul/li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Nutzerverwaltung')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "b9402d35-f24c-4b45-aa70-e6558d28113b",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstUserMgrCreateDlg",
+      "targets": [
+        ["id=frmUserList:userList:j_id_1w_22", "id"],
+        ["name=frmUserList:userList:j_id_1w_22", "name"],
+        ["css=#frmUserList\\3AuserList\\3Aj_id_1w_22", "css:finder"],
+        ["xpath=//button[@id='frmUserList:userList:j_id_1w_22']", "xpath:attributes"],
+        ["xpath=//table[@id='frmUserList:userList']/thead/tr/th/button", "xpath:idRelative"],
+        ["xpath=//form/div/table/thead/tr/th/button", "xpath:position"],
+        ["xpath=//button[contains(.,' Neuer Nutzer')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5f22eb92-da4e-4d4e-a242-05d089cc970b",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstUserMgrName",
+      "targets": [
+        ["id=input_frmModalUserDialog:name", "id"],
+        ["name=input_frmModalUserDialog:name", "name"],
+        ["css=#input_frmModalUserDialog\\3Aname", "css:finder"],
+        ["xpath=//input[@id='input_frmModalUserDialog:name']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalUserDialog:name']/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/input", "xpath:position"]
+      ],
+      "value": "TESTuser1"
+    }, {
+      "id": "eb5f52d1-a4ec-4ddb-95de-2c1dd1f7afd8",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstUserMgrLogin",
+      "targets": [
+        ["id=input_frmModalUserDialog:login", "id"],
+        ["name=input_frmModalUserDialog:login", "name"],
+        ["css=#input_frmModalUserDialog\\3Alogin", "css:finder"],
+        ["xpath=//input[@id='input_frmModalUserDialog:login']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalUserDialog:login']/div/input", "xpath:idRelative"],
+        ["xpath=//div[5]/div/input", "xpath:position"]
+      ],
+      "value": "user1"
+    }, {
+      "id": "e8ce7f03-98e0-492f-9bb2-1d455625e14f",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstUserMgrEmail",
+      "targets": [
+        ["id=input_frmModalUserDialog:email", "id"],
+        ["name=input_frmModalUserDialog:email", "name"],
+        ["css=#input_frmModalUserDialog\\3A email", "css:finder"],
+        ["xpath=//input[@id='input_frmModalUserDialog:email']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalUserDialog:email']/div/input", "xpath:idRelative"],
+        ["xpath=//div[7]/div/input", "xpath:position"]
+      ],
+      "value": "user1@somewhere.invalid"
+    }, {
+      "id": "4745f5de-b316-4476-a67b-0c35b0b97159",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstUserMgrPassword",
+      "targets": [
+        ["id=input_frmModalUserDialog:j_id_1w_j", "id"],
+        ["name=input_frmModalUserDialog:j_id_1w_j", "name"],
+        ["css=#input_frmModalUserDialog\\3Aj_id_1w_j", "css:finder"],
+        ["xpath=//input[@id='input_frmModalUserDialog:j_id_1w_j']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalUserDialog:j_id_1w_j']/div/input", "xpath:idRelative"],
+        ["xpath=//div[9]/div/input", "xpath:position"]
+      ],
+      "value": "test1234"
+    }, {
+      "id": "418cdb7c-13a5-4820-bd1e-f2e72596413f",
+      "comment": "",
+      "command": "type",
+      "target": "css=.tstUserMgrPasswordRepeat",
+      "targets": [
+        ["id=input_frmModalUserDialog:tempPasswordRepeat", "id"],
+        ["name=input_frmModalUserDialog:tempPasswordRepeat", "name"],
+        ["css=#input_frmModalUserDialog\\3AtempPasswordRepeat", "css:finder"],
+        ["xpath=//input[@id='input_frmModalUserDialog:tempPasswordRepeat']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalUserDialog:tempPasswordRepeat']/div/input", "xpath:idRelative"],
+        ["xpath=//div[11]/div/input", "xpath:position"]
+      ],
+      "value": "test1234"
+    }, {
+      "id": "bc683077-1e01-45cc-b269-0860c6ce1e94",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstUserMgrCreate",
+      "targets": [
+        ["id=frmModalUserDialog:j_id_1w_t", "id"],
+        ["name=frmModalUserDialog:j_id_1w_t", "name"],
+        ["css=#frmModalUserDialog\\3Aj_id_1w_t", "css:finder"],
+        ["xpath=//button[@id='frmModalUserDialog:j_id_1w_t']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalUserDialog:j_id_1w_s']/button", "xpath:idRelative"],
+        ["xpath=//div[14]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Speichern')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "9e8a53f7-215d-4b92-8a8c-45e8c4193e26",
+      "comment": "",
+      "command": "type",
+      "target": "css=#frmUserList\\:userList_wrapper input[type='search']",
+      "targets": [
+        ["css=#frmUserList\\3AuserList_filter .form-control", "css:finder"],
+        ["xpath=(//input[@type='search'])[3]", "xpath:attributes"],
+        ["xpath=//div[@id='frmUserList:userList_filter']/label/input", "xpath:idRelative"],
+        ["xpath=//form/div/div[2]/div/label/input", "xpath:position"]
+      ],
+      "value": "user1"
+    }, {
+      "id": "2fc73ec3-3a30-4432-8e7b-5b5b1a71b94f",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstUserMgrMembershipDlg",
+      "targets": [
+        ["css=#frmUserList\\3AuserList\\3A 8\\3Aj_id_1w_2d .fa", "css:finder"],
+        ["xpath=//button[@id='frmUserList:userList:8:j_id_1w_2d']/span/i", "xpath:idRelative"],
+        ["xpath=//td[7]/button[2]/span/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "95cae406-d020-4e78-87bb-03cdb5907bb7",
+      "comment": "",
+      "command": "type",
+      "target": "css=#frmModalGroupDialog\\:groupList_wrapper input[type='search']",
+      "targets": [
+        ["css=#frmModalGroupDialog\\3AgroupList_filter .form-control", "css:finder"],
+        ["xpath=(//input[@type='search'])[2]", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalGroupDialog:groupList_filter']/label/input", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div[2]/div/label/input", "xpath:position"]
+      ],
+      "value": "TESTgroup1"
+    }, {
+      "id": "2666bbf2-78e0-4125-9be5-924a1942f579",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstUserMgrMembershipAdd",
+      "targets": [
+        ["css=.fa-user-plus", "css:finder"],
+        ["xpath=//button[@id='frmModalGroupDialog:groupList:3:j_id_1w_1u']/span/i", "xpath:idRelative"],
+        ["xpath=//td[3]/button/span/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "80418027-ba01-499d-b74b-363da92f1388",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstUserMgrMembershipClose",
+      "targets": [
+        ["id=frmModalGroupDialog:j_id_1w_1y", "id"],
+        ["name=frmModalGroupDialog:j_id_1w_1y", "name"],
+        ["css=#frmModalGroupDialog\\3Aj_id_1w_1y", "css:finder"],
+        ["xpath=//button[@id='frmModalGroupDialog:j_id_1w_1y']", "xpath:attributes"],
+        ["xpath=//div[@id='frmModalGroupDialog:j_id_1w_1x']/button", "xpath:idRelative"],
+        ["xpath=//div[6]/button", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "001db67c-bbbf-41bd-9c19-e2ceefba2c27",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstNavSettings > a",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9619366d-27ab-431c-b692-7cd68afc39e2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstNavGroupManager > a",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "019ad717-6bd4-4375-8c09-51ae678628c7",
+      "comment": "",
+      "command": "type",
+      "target": "css=#frmGroupList\\:groupList_wrapper input[type='search']",
+      "targets": [],
+      "value": "TESTgroup1"
+    }, {
+      "id": "c9a3e125-e2f1-42e3-8873-c195705f8581",
+      "comment": "",
+      "command": "click",
+      "target": "css=.tstGrpMgrMembershipDlg",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "5a39b3d0-dcee-4045-8c0e-6ca727cd0025",
+      "comment": "",
+      "command": "type",
+      "target": "css=#frmModalMembershipDialog\\:membershipList_wrapper input[type='search']",
+      "targets": [],
+      "value": "TESTuser1"
+    }, {
+      "id": "09376c35-effa-423a-ba8f-19ce71cdea08",
+      "comment": "",
+      "command": "assertElementPresent",
+      "target": "css=.tstGrpMgrRemoveMember",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "3f05572f-116f-4939-8c6d-4619e5f68c34",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Logout",
+      "targets": [
+        ["linkText=Logout", "linkText"],
+        ["css=#j_id_v\\3Aj_id_1h > .commandLink", "css:finder"],
+        ["xpath=//a[contains(text(),'Logout')]", "xpath:link"],
+        ["xpath=//a[@onclick=\"BsF.submitForm('j_id_v',{'j_id_v:j_id_1h':'j_id_v:j_id_1h'});return false;\"]", "xpath:attributes"],
+        ["xpath=//li[@id='j_id_v:j_id_1h']/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, '#')])[14]", "xpath:href"],
+        ["xpath=//ul[4]/li/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Logout')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "59a525ad-8c19-474c-8ab0-eecd26c95ec7",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["7891cbf0-09a9-4279-a6a9-4364c8f047c3"]
+  }],
+  "urls": ["https://localhost/"],
+  "plugins": []
+}

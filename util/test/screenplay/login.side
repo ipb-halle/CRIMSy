@@ -1,7 +1,7 @@
 {
   "id": "8878dd93-e245-43a5-8e6a-5360a50b0906",
   "version": "2.0",
-  "name": "CRIMSy_login",
+  "name": "login",
   "url": "https://localhost",
   "tests": [{
     "id": "20824114-51bc-4e55-936c-3ccad6851e93",

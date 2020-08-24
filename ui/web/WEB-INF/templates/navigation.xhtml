@@ -29,12 +29,15 @@
             <b:form>
                 <b:navBar position="top" sticky="true" styleClass="navigationMenu">
                     <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
-                        <b:dropMenu value="BioCloud">
+                        <b:dropMenu value="BioCloud" styleClass="tstNavBioCloud">
                             <b:navCommandLink  value="LBAC"
+                                               styleClass="tstNavLBAC"
                                                actionListener="#{navigator.navigate('default')}"/>
                             <b:navCommandLink value="Word Cloud Search"
+                                               styleClass="tstNavWordCloud"
                                               actionListener="#{navigator.navigate('wordCloud2')}"/>
                             <b:navCommandLink value="Forum"
+                                              styleClass="tstNavForum"
                                               actionListener="#{navigator.navigate('socialForum')}"/>
                         </b:dropMenu>
                         <b:navLink />
@@ -43,25 +46,31 @@
                     <b:flyOutMenu
                         width="50px" 
                         rendered="#{userBean.isComponentAccessable('InhouseDB')}"
-                        styleClass="lbacDropDownMenu">
+                        styleClass="lbacDropDownMenu tstNavLIMS">
                         <b:dropMenu value="LIMS">
                             <b:navCommandLink 
                                 value="Materialien"
+                                styleClass="tstNavMaterials"
                                 actionListener="#{navigator.navigate('material/materials')}"/>
                             <b:navCommandLink 
                                 value="Projekte"
+                                styleClass="tstNavProjects"
                                 actionListener="#{navigator.navigate('project/projectOverview')}"/>
                             <b:navCommandLink 
                                 value="Gebinde"
+                                styleClass="tstNavItems"
                                 actionListener="#{navigator.navigate('item/items')}"/>
                             <b:navCommandLink 
                                 value="Taxonomy"
+                                styleClass="tstNavTaxonomy"
                                 actionListener="#{navigator.navigate('material/taxonomy')}"/>
                             <b:navCommandLink 
                                 value="Experiment"
+                                styleClass="tstNavExperiments"
                                 actionListener="#{navigator.navigate('exp/experiments')}"/>
                             <b:navCommandLink 
                                 value="Container"
+                                styleClass="tstNavContainers"
                                 actionListener="#{navigator.navigate('container/container')}"/>
                             <b:navCommandLink value="..."
                                               />
@@ -82,42 +91,53 @@
                                           styleClass="tstLoginCmdLink" actionListener="#{navigator.navigate('login')}"/>
                         <b:navCommandLink iconAwesome="log-out" rendered="#{! userBean.currentAccount.isPublicAccount()}" value="Logout"
                                           styleClass="tstLogoutCmdLink" actionListener="#{userBean.actionLogout}"/>
-                        <b:dropMenu value="#{msgs.Settings}" rendered="#{! userBean.currentAccount.isPublicAccount()}" iconAwesome="cog"
+                        <b:dropMenu value="#{msgs.Settings}" 
+                                    styleClass="tstNavSettings"
+                                    rendered="#{! userBean.currentAccount.isPublicAccount()}" iconAwesome="cog"
                                     iconAlign="left">
                             <b:navLink header="#{userBean.currentAccount.name}"/>
 
                             <!-- Admission -->
-                            <b:navCommandLink iconAwesome="pencil" value="Mein Account"
+                            <b:navCommandLink iconAwesome="pencil" 
+                                              value="Mein Account"
+                                              styleClass="tstNavMyAccount"
                                               actionListener="#{navigator.navigate('myAccount')}"/>
 
                             <b:navCommandLink iconAwesome="user"
                                               value="#{msgs.userMgr_formTitle}"
+                                              styleClass="tstNavUserManager"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
                                               actionListener="#{navigator.navigate('userManagement')}"/>
                             <b:navCommandLink iconAwesome="users"
                                               value="#{msgs.groupMgr_formTitle}"
+                                              styleClass="tstNavGroupManager"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
                                               actionListener="#{navigator.navigate('groupManagement')}"/>
                             <b:navCommandLink iconAwesome="fa-users"
                                               value="#{msgs.LDAP_Connection}"
+                                              styleClass="tstNavLdapSettings"
                                               rendered="#{userBean.getPermission('LDAP_ENABLE', 'permEDIT')}"
                                               actionListener="#{navigator.navigate('LdapAdminProperties')}"/>
                             <b:navCommandLink iconAwesome="wrench"
                                               value="#{msgs.PrinterSettings}"
+                                              styleClass="tstNavPrinterSettings"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
                                               actionListener="#{navigator.navigate('printerSettings')}"/>
                             <b:navCommandLink iconAwesome="wrench"
                                               value="#{msgs.SystemSettings}"
+                                              styleClass="tstNavSystemSettings"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permEDIT')}"
                                               actionListener="#{navigator.navigate('systemSettings')}"/>
                             <b:navCommandLink iconAwesome="wrench"
                                               value="#{msgs.CloudNodeManagement}"
+                                              styleClass="tstNavCloudNodeManagement"
                                               rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permREAD')}"
                                               actionListener="#{navigator.navigate('cloudNodeManagement')}"/>
 
                             <!-- Collections -->
                             <b:navCommandLink iconAwesome="fa-file-archive-o"
                                               value="Collectionverwaltung"
+                                              styleClass="tstNavCollectionManagement"
                                               actionListener="#{navigator.navigate('collectionManagement')}"/>
 
                             <!-- LBAC-QSAR-35 playground -->
