@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.ItemPositionHistoryList;
+import de.ipb_halle.lbac.items.ItemPositionsHistory;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -346,6 +347,8 @@ public class ItemServiceTest extends TestBase {
 
         original.setAmount(1.5);
         instance.saveItem(original);
+        positionService.saveItemInContainer(original.getId(), c0.getId(), 2, 1);
+        positionService.saveItemInContainer(original.getId(), c0.getId(), 1, 1);
         Set<int[]> foundPositions = c0.getPositionsOfItem(original.getId());
         for (int[] pos : foundPositions) {
             Assert.assertTrue(pos[0] == 2 && pos[1] == 1 || pos[0] == 1 && pos[1] == 1);
@@ -362,15 +365,28 @@ public class ItemServiceTest extends TestBase {
 
         Item loadedItem = instance.loadItemById(original.getId());
 
-        SortedMap<Date, ItemPositionHistoryList> histories = instance.loadItemPositionHistory(loadedItem);
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         Assert.assertEquals(1, loadedItem.getHistory().size());
         List<ItemDifference> diffs = loadedItem.getHistory().values().iterator().next();
-        ItemHistory history = (ItemHistory) diffs.get(0);
-        Assert.assertEquals(c1.getId(), history.getParentContainerNew().getId());
-        Assert.assertEquals(c0.getId(), history.getParentContainerOld().getId());
-        Assert.assertEquals(1.5, history.getAmountOld(), 0.001);
-        Assert.assertEquals(1.25, history.getAmountNew(), 0.001);
+        Assert.assertEquals(2, diffs.size());
+        for (ItemDifference d : diffs) {
+            if (d instanceof ItemHistory) {
+                ItemHistory history = (ItemHistory) d;
+                Assert.assertEquals(c1.getId(), history.getParentContainerNew().getId());
+                Assert.assertEquals(c0.getId(), history.getParentContainerOld().getId());
+                Assert.assertEquals(1.5, history.getAmountOld(), 0.001);
+                Assert.assertEquals(1.25, history.getAmountNew(), 0.001);
+            } else {
+                ItemPositionHistoryList history = (ItemPositionHistoryList) d;
+                Assert.assertEquals(3, history.getPositionHistories().size());
+                for (ItemPositionsHistory h : history.getPositionHistories()) {
+                    boolean x = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 1) && Objects.equals(h.getRowOld(), 1);
+                    boolean y = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 2) && Objects.equals(h.getRowOld(), 1);
+                    boolean z = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 1) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
+                    Assert.assertTrue(x || y || z);
+                }
+            }
+        }
 
         //change to new container without position
         original = edited;
@@ -381,6 +397,22 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals(c2.getId(), loadedItem.getContainer().getId());
         Container loadedContainer = containerService.loadContainerById(c2.getId());
         Assert.assertNull(loadedContainer.getItems());
+        diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
+        Assert.assertEquals(2, diffs.size());
+        for (ItemDifference d : diffs) {
+            if (d instanceof ItemHistory) {
+                ItemHistory history = (ItemHistory) d;
+                Assert.assertEquals(c2.getId(), history.getParentContainerNew().getId());
+                Assert.assertEquals(c1.getId(), history.getParentContainerOld().getId());
+            } else {
+                ItemPositionHistoryList history = (ItemPositionHistoryList) d;
+                Assert.assertEquals(1, history.getPositionHistories().size());
+                for (ItemPositionsHistory h : history.getPositionHistories()) {
+                    boolean x = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 1) && Objects.equals(h.getRowOld(), 1);
+                    Assert.assertTrue(x);
+                }
+            }
+        }
         // remove the container
         original = edited;
         edited = original.copy();
@@ -388,6 +420,12 @@ public class ItemServiceTest extends TestBase {
         instance.saveEditedItem(edited, original, owner);
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertNull(loadedItem.getContainer());
+        diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
+        Assert.assertEquals(1, diffs.size());
+        ItemHistory history = (ItemHistory) diffs.get(0);
+        Assert.assertNull(history.getParentContainerNew());
+        Assert.assertEquals(c2.getId(), history.getParentContainerOld().getId());
+
         //put into container  without positions
         original = edited;
         edited = original.copy();
@@ -395,6 +433,11 @@ public class ItemServiceTest extends TestBase {
         instance.saveEditedItem(edited, original, owner);
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
+        diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
+        Assert.assertEquals(1, diffs.size());
+        history = (ItemHistory) diffs.get(0);
+        Assert.assertNull(history.getParentContainerOld());
+        Assert.assertEquals(c1.getId(), history.getParentContainerNew().getId());
         //stay in the same  container without positions
         original = edited;
         edited = original.copy();
@@ -402,6 +445,7 @@ public class ItemServiceTest extends TestBase {
         instance.saveEditedItem(edited, original, owner);
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
+        Assert.assertEquals(4, loadedItem.getHistory().size());
         //change container to a new one with positions
         original = edited;
         edited = original.copy();
@@ -416,6 +460,24 @@ public class ItemServiceTest extends TestBase {
         for (int[] pos : positions) {
             Assert.assertTrue(pos[0] == 0 && pos[1] == 0 || pos[0] == 1 && pos[1] == 0);
         }
+        diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
+        Assert.assertEquals(2, diffs.size());
+        for (ItemDifference d : diffs) {
+            if (d instanceof ItemHistory) {
+                history = (ItemHistory) d;
+                Assert.assertEquals(c0.getId(), history.getParentContainerNew().getId());
+                Assert.assertEquals(c1.getId(), history.getParentContainerOld().getId());
+            } else {
+                ItemPositionHistoryList l = (ItemPositionHistoryList) d;
+                Assert.assertEquals(2, l.getPositionHistories().size());
+                for (ItemPositionsHistory h : l.getPositionHistories()) {
+                    boolean x = Objects.equals(h.getColNew(), 0) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
+                    boolean y = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
+                    Assert.assertTrue(x || y);
+                }
+            }
+        }
+
         //remove item from container 
         original = edited;
         edited = original.copy();
@@ -435,16 +497,37 @@ public class ItemServiceTest extends TestBase {
         for (int[] pos : positions) {
             Assert.assertTrue(pos[0] == 0 && pos[1] == 0 || pos[0] == 1 && pos[1] == 0);
         }
+        diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
+        Assert.assertEquals(2, diffs.size());
+        for (ItemDifference d : diffs) {
+            if (d instanceof ItemHistory) {
+                history = (ItemHistory) d;
+                Assert.assertEquals(c0.getId(), history.getParentContainerNew().getId());
+                Assert.assertNull(history.getParentContainerOld());
+            } else {
+                ItemPositionHistoryList l = (ItemPositionHistoryList) d;
+                Assert.assertEquals(2, l.getPositionHistories().size());
+                for (ItemPositionsHistory h : l.getPositionHistories()) {
+                    boolean x = Objects.equals(h.getColNew(), 0) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
+                    boolean y = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
+                    Assert.assertTrue(x || y);
+                }
+            }
+        }
         //remove item from container 
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
         instance.saveEditedItem(edited, original, owner);
+        loadedItem = instance.loadItemById(original.getId());
+        int oldHistorySize = loadedItem.getHistory().size();
         // save item with no container into no container
         original = edited;
         edited = original.copy();
         edited.setContainer(null);
         instance.saveEditedItem(edited, original, owner);
+        loadedItem = instance.loadItemById(original.getId());
+        Assert.assertEquals(oldHistorySize, loadedItem.getHistory().size());
     }
 
     @Deployment

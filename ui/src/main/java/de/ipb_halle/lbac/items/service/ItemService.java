@@ -267,7 +267,10 @@ public class ItemService {
             saveItemHistory(history);
         }
 
-        containerPositionService.moveItemToNewPosition(editedItem, editedItem.getContainer(), newPositions, user, mdate);
+        containerPositionService.moveItemToNewPosition(origItem, editedItem.getContainer(), newPositions, user, mdate);
+        if(editedItem.getContainer()!=null){
+            editedItem.setContainer(containerService.loadContainerById(editedItem.getContainer().getId()));
+        }
         return editedItem;
     }
 
