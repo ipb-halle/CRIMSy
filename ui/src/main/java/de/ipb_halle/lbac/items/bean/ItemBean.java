@@ -93,7 +93,7 @@ public class ItemBean implements Serializable {
     private UserBean userBean;
 
     private Project project;
-    private Container container;
+    //private Container container;
 
     private String description;
 
@@ -164,12 +164,12 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
-        boolean areSlotsEmpty = containerPositionService.areContainerSlotsFree(state.getEditedItem(), container, containerController.resolveItemPositions());
+        boolean areSlotsEmpty = containerPositionService.areContainerSlotsFree(state.getEditedItem(), containerController.getContainer(), containerController.resolveItemPositions());
         if (!areSlotsEmpty) {
             UIMessage.info(MESSAGE_BUNDLE, "itemEdit_container_blocked");
             return;
         }
-        state.getEditedItem().setContainer(container);
+        state.getEditedItem().setContainer(containerController.getContainer());
         if (mode == Mode.CREATE) {
             state.getEditedItem().setACList(material.getACList());
             state.getEditedItem().setOwner(userBean.getCurrentAccount());
@@ -204,9 +204,8 @@ public class ItemBean implements Serializable {
         state = new ItemState(i);
         this.printBean.setLabelDataObject(state.getEditedItem());
         this.material = i.getMaterial();
-        container = i.getContainer();
-        historyOperation = new HistoryOperation(state);
-        containerController = new ContainerController(this, container);
+        containerController = new ContainerController(this, i.getContainer());
+        historyOperation = new HistoryOperation(state, containerController);
     }
 
     public void actionStartItemCreation(Material m) {
@@ -250,7 +249,6 @@ public class ItemBean implements Serializable {
 
     public void actionChangeContainer(Container c) {
         containerController = new ContainerController(this, c);
-        this.container = c;
         this.containerName = c.getLabel();
 
     }
@@ -299,11 +297,11 @@ public class ItemBean implements Serializable {
     }
 
     public Container getContainer() {
-        return container;
+        return containerController.getContainer();
     }
 
     public void setContainer(Container container) {
-        this.container = container;
+        containerController = new ContainerController(this, container);
     }
 
     public List<Container> getContainers() {
@@ -315,42 +313,42 @@ public class ItemBean implements Serializable {
     }
 
     public String getContainerName() {
-        if (container == null) {
+        if (containerController.getContainer() == null || containerController.getContainer().getLabel() == null) {
             return "";
         } else {
-            return container.getLabel();
+            return containerController.getContainer().getLabel();
         }
     }
 
     public String getContainerType() {
-        if (container == null) {
+        if (containerController.getContainer() == null) {
             return "";
         } else {
-            container.getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + container.getType().getName(), null));
-            return container.getType().getLocalizedName();
+            containerController.getContainer().getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + containerController.getContainer().getType().getName(), null));
+            return containerController.getContainer().getType().getLocalizedName();
         }
     }
 
     public String getContainerProject() {
-        if (container == null) {
+        if (containerController.getContainer() == null) {
             return "";
         } else {
-            if (container.getProject() == null) {
+            if (containerController.getContainer().getProject() == null) {
                 return "none";
             } else {
-                return container.getProject().getName();
+                return containerController.getContainer().getProject().getName();
             }
         }
     }
 
     public String getContainerLocation() {
-        if (container == null) {
+        if (containerController.getContainer() == null) {
             return "";
         } else {
-            if (container.getLocation(true, true) == null) {
+            if (containerController.getContainer().getLocation(true, true) == null) {
                 return "unknown";
             } else {
-                return container.getLocation(true, true);
+                return containerController.getContainer().getLocation(true, true);
             }
         }
     }
@@ -472,7 +470,7 @@ public class ItemBean implements Serializable {
     private void clearFormular() {
         containerUnit = units.get(0);
         containerSize = null;
-        container = null;
+        containerController = new ContainerController(this, null);
         basicContainerType = containerTypes.get(0);
         solved = false;
         concentration = null;
@@ -535,6 +533,6 @@ public class ItemBean implements Serializable {
     }
 
     public void removeContainer() {
-        this.container = null;
+        containerController = new ContainerController(this, null);
     }
 }

@@ -56,6 +56,18 @@ public class ContainerController {
         }
     }
 
+    public void setNewContainer(Container c) {
+        this.container = c;
+        if (container != null && container.getDimensionIndex() != null) {
+            itemPositions = new boolean[container.getDimensionIndex()[0]][container.getDimensionIndex()[1]];
+            for (int x = 0; x < container.getDimensionIndex()[0]; x++) {
+                for (int y = 0; y < container.getDimensionIndex()[1]; y++) {
+                    itemPositions[x][y] = false;
+                }
+            }
+        }
+    }
+
     public boolean isContainerSubComponentRendered(String typename) {
         if (typename == null) {
             return itemBean.getContainer() == null;
@@ -136,6 +148,19 @@ public class ContainerController {
         } catch (Exception e) {
             return "no class set due error";
         }
-
     }
+
+    public void setItemAtPosition(int x, int y) {
+        itemPositions[x][y] = true;
+    }
+
+    public void removeItemFromPosition(int x, int y) {
+        itemPositions[x][y] = false;
+    }
+
+    public Container getContainer() {
+        return container;
+    }
+    
+    
 }

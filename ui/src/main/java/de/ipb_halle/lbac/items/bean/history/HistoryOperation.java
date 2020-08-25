@@ -19,7 +19,14 @@ package de.ipb_halle.lbac.items.bean.history;
 
 import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
+import de.ipb_halle.lbac.items.ItemPositionHistoryList;
+import de.ipb_halle.lbac.items.ItemPositionsHistory;
+import de.ipb_halle.lbac.items.bean.ContainerController;
 import de.ipb_halle.lbac.items.bean.ItemState;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -27,62 +34,126 @@ import de.ipb_halle.lbac.items.bean.ItemState;
  */
 public class HistoryOperation {
 
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ItemState itemState;
+    private ContainerController containerController;
 
-    public HistoryOperation(ItemState itemState) {
+    public HistoryOperation(
+            ItemState itemState,
+            ContainerController containerController) {
         this.itemState = itemState;
+        this.containerController = containerController;
     }
 
     public void applyNextNegativeDifference() {
         itemState.setCurrentHistoryDate(itemState.getPreviousKey(itemState.getCurrentHistoryDate()));
-        ItemDifference diff = itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()).get(0);
-        if (diff instanceof ItemHistory) {
-            ItemHistory history = (ItemHistory) diff;
-            if (history.getAmountOld() != null) {
-                itemState.getEditedItem().setAmount(history.getAmountOld());
+
+        for (ItemDifference diff : orderDifferences(itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()))) {
+
+            if (diff instanceof ItemHistory) {
+
+                applyNegativeItemHistory((ItemHistory) diff);
             }
-            if (history.getConcentrationOld() != null) {
-                itemState.getEditedItem().setConcentration(history.getConcentrationOld());
-            }
-            if (history.getDescriptionOld() != null) {
-                itemState.getEditedItem().setDescription(history.getDescriptionOld());
-            }
-            if (history.getOwnerOld() != null) {
-                itemState.getEditedItem().setOwner(history.getOwnerOld());
-            }
-            if (history.getProjectOld() != null) {
-                itemState.getEditedItem().setProject(history.getProjectOld());
-            }
-            if (history.getPurityOld() != null) {
-                itemState.getEditedItem().setPurity(history.getPurityOld());
+            if (diff instanceof ItemPositionHistoryList) {
+
+                applyNegativePositionDiff((ItemPositionHistoryList) diff);
             }
         }
     }
 
     public void applyNextPositiveDifference() {
-        ItemDifference diff = itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()).get(0);
-        if (diff instanceof ItemHistory) {
-            ItemHistory history = (ItemHistory) diff;
-            if (history.getAmountNew() != null) {
-                itemState.getEditedItem().setAmount(history.getAmountNew());
+        for (ItemDifference diff : orderDifferences(itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()))) {
+            if (diff instanceof ItemHistory) {
+                applyPositiveItemHistory((ItemHistory) diff);
             }
-            if (history.getConcentrationNew() != null) {
-                itemState.getEditedItem().setConcentration(history.getConcentrationNew());
-            }
-            if (history.getDescriptionNew() != null) {
-                itemState.getEditedItem().setDescription(history.getDescriptionNew());
-            }
-            if (history.getOwnerNew() != null) {
-                itemState.getEditedItem().setOwner(history.getOwnerNew());
-            }
-            if (history.getProjectNew() != null) {
-                itemState.getEditedItem().setProject(history.getProjectNew());
-            }
-            if (history.getPurityNew() != null) {
-                itemState.getEditedItem().setPurity(history.getPurityNew());
+            if (diff instanceof ItemPositionHistoryList) {
+                applyPositivePositionDiff((ItemPositionHistoryList) diff);
             }
         }
         itemState.setCurrentHistoryDate(itemState.getFollowingKey(itemState.getCurrentHistoryDate()));
+    }
+
+    private void applyPositivePositionDiff(ItemPositionHistoryList diffs) {
+        for (ItemPositionsHistory diff : diffs.getPositionHistories()) {
+            if (diff.getColNew() != null) {
+                containerController.setItemAtPosition(diff.getRowNew(), diff.getColNew());
+            }
+            if (diff.getColOld() != null) {
+                containerController.removeItemFromPosition(diff.getRowOld(), diff.getColOld());
+            }
+        }
+    }
+
+    private void applyNegativePositionDiff(ItemPositionHistoryList diffs) {
+        for (ItemPositionsHistory diff : diffs.getPositionHistories()) {
+            if (diff.getColNew() != null) {
+                containerController.removeItemFromPosition(diff.getRowNew(), diff.getColNew());
+            }
+            if (diff.getColOld() != null) {
+                containerController.setItemAtPosition(diff.getRowOld(), diff.getColOld());
+            }
+        }
+    }
+
+    private void applyPositiveItemHistory(ItemHistory history) {
+        if (history.getAmountNew() != null) {
+            itemState.getEditedItem().setAmount(history.getAmountNew());
+        }
+        if (history.getConcentrationNew() != null) {
+            itemState.getEditedItem().setConcentration(history.getConcentrationNew());
+        }
+        if (history.getDescriptionNew() != null) {
+            itemState.getEditedItem().setDescription(history.getDescriptionNew());
+        }
+        if (history.getOwnerNew() != null) {
+            itemState.getEditedItem().setOwner(history.getOwnerNew());
+        }
+        if (history.getProjectNew() != null) {
+            itemState.getEditedItem().setProject(history.getProjectNew());
+        }
+        if (history.getPurityNew() != null) {
+            itemState.getEditedItem().setPurity(history.getPurityNew());
+        }
+        containerController.setNewContainer(history.getParentContainerNew());
+
+    }
+
+    private void applyNegativeItemHistory(ItemHistory history) {
+        if (history.getAmountOld() != null) {
+            itemState.getEditedItem().setAmount(history.getAmountOld());
+        }
+        if (history.getConcentrationOld() != null) {
+            itemState.getEditedItem().setConcentration(history.getConcentrationOld());
+        }
+        if (history.getDescriptionOld() != null) {
+            itemState.getEditedItem().setDescription(history.getDescriptionOld());
+        }
+        if (history.getOwnerOld() != null) {
+            itemState.getEditedItem().setOwner(history.getOwnerOld());
+        }
+        if (history.getProjectOld() != null) {
+            itemState.getEditedItem().setProject(history.getProjectOld());
+        }
+        if (history.getPurityOld() != null) {
+            itemState.getEditedItem().setPurity(history.getPurityOld());
+        }
+        containerController.setNewContainer(history.getParentContainerOld());
+    }
+
+    private List<ItemDifference> orderDifferences(List<ItemDifference> unorderedDiffs) {
+        List<ItemDifference> orderedDiffs = new ArrayList<>();
+        for (ItemDifference d : unorderedDiffs) {
+            if (d instanceof ItemHistory) {
+                orderedDiffs.add(d);
+            }
+        }
+        for (ItemDifference d : unorderedDiffs) {
+            if (!(d instanceof ItemPositionsHistory)) {
+                orderedDiffs.add(d);
+            }
+        }
+        return orderedDiffs;
+
     }
 
 }
