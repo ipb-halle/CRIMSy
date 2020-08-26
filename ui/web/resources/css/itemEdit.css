@@ -113,5 +113,10 @@
     cursor: pointer;
 }
 
+.itemEditTabView{
+    margin: auto !important;
+    width:1140px;
+}
+
 /** format info box test results in ldpap check **/
 
