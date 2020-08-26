@@ -212,10 +212,6 @@ export -f setupTestCAconf
 #==========================================================
 #
 function mainFunc {
-    safetyCheck
-
-    mvn -DskipTests clean install 
-
     cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
         xargs -l1 -i /bin/bash -c setupTestCAconf "{}"
 
@@ -279,7 +275,9 @@ function mainFunc {
 #==========================================================
 #
 cd $LBAC_REPO
-mkdir -p target
+safetyCheck
+mvn -DskipTests clean install 
+
 mainFunc 2>&1 | tee $LBAC_REPO/target/test.$TEST_DATE.log
 
 echo

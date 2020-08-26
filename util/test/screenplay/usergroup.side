@@ -120,6 +120,13 @@
       ],
       "value": ""
     }, {
+      "id": "3805ad4a-b2a9-4df0-b76f-4152d7f0384d",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "css=.tstGrpMgrNewName",
+      "targets": [],
+      "value": "1000"
+    }, {
       "id": "0f4bcbec-7d1d-499a-99d3-677b8060ec74",
       "comment": "",
       "command": "type",
@@ -196,6 +203,13 @@
         ["xpath=//button[contains(.,' Neuer Nutzer')]", "xpath:innerText"]
       ],
       "value": ""
+    }, {
+      "id": "882210da-a25a-4894-bd77-d567447e1735",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "css=.tstUserMgrName",
+      "targets": [],
+      "value": "1000"
     }, {
       "id": "5f22eb92-da4e-4d4e-a242-05d089cc970b",
       "comment": "",
@@ -282,6 +296,13 @@
       ],
       "value": ""
     }, {
+      "id": "cdd8979c-c938-4b08-b34c-a795a57ebd38",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "css=#frmUserList\\:userList_wrapper input[type='search']",
+      "targets": [],
+      "value": "1000"
+    }, {
       "id": "9e8a53f7-215d-4b92-8a8c-45e8c4193e26",
       "comment": "",
       "command": "type",
@@ -305,6 +326,13 @@
       ],
       "value": ""
     }, {
+      "id": "1a1aaf5c-af13-4d92-ae27-8d455e89c7fe",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "css=#frmModalGroupDialog\\:groupList_wrapper input[type='search']",
+      "targets": [],
+      "value": "1000"
+    }, {
       "id": "95cae406-d020-4e78-87bb-03cdb5907bb7",
       "comment": "",
       "command": "type",
@@ -316,6 +344,13 @@
         ["xpath=//div[4]/div/div[2]/div/label/input", "xpath:position"]
       ],
       "value": "TESTgroup1"
+    }, {
+      "id": "95441ec1-c7fd-42cf-9a2c-9edda88423f4",
+      "comment": "",
+      "command": "waitForElementVisible",
+      "target": "css=.tstUserMgrMembershipAdd",
+      "targets": [],
+      "value": "1000"
     }, {
       "id": "2666bbf2-78e0-4125-9be5-924a1942f579",
       "comment": "",
@@ -355,6 +390,13 @@
       "target": "css=.tstNavGroupManager > a",
       "targets": [],
       "value": ""
+    }, {
+      "id": "93d780a4-8851-4511-a3d8-21d6905a93c2",
+      "comment": "",
+      "command": "waitForElementEditable",
+      "target": "css=#frmGroupList\\:groupList_wrapper input[type='search']",
+      "targets": [],
+      "value": "1000"
     }, {
       "id": "019ad717-6bd4-4375-8c09-51ae678628c7",
       "comment": "",
