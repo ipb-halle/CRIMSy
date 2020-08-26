@@ -27,11 +27,11 @@
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-   <composite:interface name="textEdit"
-                     displayName="textEdit"
-                     preferred="true"
-                     expert="false"
-                     shortDescription="Text edit widget">
+    <composite:interface name="textEdit"
+                         displayName="textEdit"
+                         preferred="true"
+                         expert="false"
+                         shortDescription="Text edit widget">
         <composite:attribute name="text" required="true" />
         <composite:editableValueHolder name="text" /> 
 
@@ -40,6 +40,7 @@
     <composite:implementation>
 
         <p:textEditor widgetVar="textEditor" value="#{cc.attrs.text}" height="300" style="margin-bottom:10px">
+            <f:converter converterId="InputConverter" />
             <f:facet name="toolbar">
                 <span class="ql-formats">
                     <button class="ql-bold"></button>
