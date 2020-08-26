@@ -86,7 +86,7 @@
 
                     <!-- ##################################################################### -->
 
-                    <b:navbarLinks pull="right">
+                    <b:navbarLinks pull="right" styleClass="tstProperties">
                         <b:navCommandLink iconAwesome="log-in" rendered="#{userBean.currentAccount.isPublicAccount()}" value="Login"
                                           styleClass="tstLoginCmdLink" actionListener="#{navigator.navigate('login')}"/>
                         <b:navCommandLink iconAwesome="log-out" rendered="#{! userBean.currentAccount.isPublicAccount()}" value="Logout"
