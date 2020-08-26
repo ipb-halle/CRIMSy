@@ -169,7 +169,6 @@ public class ExperimentBean implements Serializable {
 
         // copy all experiment records
         for (ExpRecord rec : records) {
-            rec.setChangeTime(copyDate);
             rec.setCreationTime(copyDate);
             rec.setExperiment(this.experiment);
             rec.setExpRecordId(null);

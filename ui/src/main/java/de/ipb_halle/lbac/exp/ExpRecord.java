@@ -77,8 +77,8 @@ public abstract class ExpRecord implements DTO {
 
     public ExpRecordEntity createExpRecordEntity() {
         return new ExpRecordEntity()
-            .setChangeTime(this.changetime)
             .setCreationTime(this.creationtime)
+            .setChangeTime(changetime)
             .setExpRecordId(this.exprecordid)
             .setExperimentId(this.experiment.getExperimentId())
             .setNext(this.next)
@@ -169,12 +169,14 @@ public abstract class ExpRecord implements DTO {
      * the changetime.
      */
     public void incrementRevision() {
-        this.changetime = new Date();
+        this.changetime =  new Date();
         this.revision += 1;
     }
 
     /**
      * update the current object from the entity
+     * @param entity
+     * @return 
      */
     public ExpRecord setExpRecordEntity(ExpRecordEntity entity) {
         this.changetime = entity.getChangeTime();
@@ -200,11 +202,6 @@ public abstract class ExpRecord implements DTO {
 
     public ExpRecordType getType() {
         return this.type;
-    }
-
-    public ExpRecord setChangeTime(Date changetime) {
-        this.changetime = changetime;
-        return this;
     }
 
     public ExpRecord setCreationTime(Date creationtime) {

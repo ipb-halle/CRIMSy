@@ -28,7 +28,11 @@ import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -70,26 +74,65 @@ public class ExperimentServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadExp() {
-        Date creationDate=new Date();
-        Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment", false, publicReadAcl, publicUser, creationDate);
-        exp=experimentService.save(exp);
-        Text text1 = new Text();
-        text1.setChangeTime(new Date());
-        text1.setCreationTime(new Date());
-        text1.setExperiment(exp);
-        text1.setRevision(1);
-        text1.setText("Hallo");
-        recordService.save(text1);
-        
-        Experiment loadedExperiment=experimentService.loadById(exp.getExperimentId());
-        Assert.assertEquals(exp.getExperimentId(),loadedExperiment.getExperimentId());
-        Assert.assertEquals(exp.getCode(),loadedExperiment.getCode());
-        Assert.assertEquals(exp.getDescription(),loadedExperiment.getDescription());
-        Assert.assertEquals(exp.getTemplate(),loadedExperiment.getTemplate());
-        Assert.assertEquals(publicReadAcl.getId(),loadedExperiment.getACList().getId());
-        Assert.assertEquals(publicUser.getId(),loadedExperiment.getOwner().getId());
-        Assert.assertEquals(creationDate,loadedExperiment.getCreationTime());
 
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment", false, publicReadAcl, publicUser, creationDate);
+        exp = experimentService.save(exp);
+        Experiment exp2 = new Experiment(null, "TEST-EXP-002", "Testexperiment", false, publicReadAcl, publicUser, creationDate);
+        exp2 = experimentService.save(exp2);
+        Text text1 = new Text();
+        text1.setExperiment(exp);
+        text1.setCreationTime(creationDate);
+        text1.setText("Test001");
+        text1 = (Text) recordService.save(text1);
+
+        Text text2 = new Text();
+        text2.setExperiment(exp2);
+        text2.setText("Test001-A");
+        text2 = (Text) recordService.save(text2);
+
+        Experiment loadedExperiment = experimentService.loadById(exp.getExperimentId());
+        Assert.assertEquals(exp.getExperimentId(), loadedExperiment.getExperimentId());
+        Assert.assertEquals(exp.getCode(), loadedExperiment.getCode());
+        Assert.assertEquals(exp.getDescription(), loadedExperiment.getDescription());
+        Assert.assertEquals(exp.getTemplate(), loadedExperiment.getTemplate());
+        Assert.assertEquals(publicReadAcl.getId(), loadedExperiment.getACList().getId());
+        Assert.assertEquals(publicUser.getId(), loadedExperiment.getOwner().getId());
+        Assert.assertEquals(creationDate, loadedExperiment.getCreationTime());
+
+        List<ExpRecord> loadedRecords = recordService.load(new HashMap<>());
+        Assert.assertEquals(2, loadedRecords.size());
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put(ExpRecordService.EXPERIMENT_ID, exp.getExperimentId());
+        loadedRecords = recordService.load(cmap);
+        Assert.assertEquals(1, loadedRecords.size());
+
+        Assert.assertEquals("Test001", ((Text) loadedRecords.get(0)).getText());
+        Assert.assertEquals(exp.getExperimentId(), loadedRecords.get(0).getExperiment().getExperimentId());
+        Assert.assertEquals(ExpRecordType.TEXT, loadedRecords.get(0).getType());
+        Assert.assertEquals(creationDate, loadedRecords.get(0).getCreationTime());
+        Assert.assertTrue(loadedRecords.get(0).getChangeTime().getTime() >= creationDate.getTime());
+        Assert.assertNull(loadedRecords.get(0).getNext());
+        Assert.assertEquals(1, loadedRecords.get(0).getRevision());
+
+        Text loadedById = (Text) recordService.loadById(text1.getExpRecordId());
+        Assert.assertEquals("Test001", loadedById.getText());
+
+        Text text3 = new Text();
+        text3.setExperiment(exp);
+        text3.setCreationTime(creationDate);
+        text3.setText("Test001-text3");
+        text3 = (Text) recordService.save(text3);
+
+        text1.setNext(text3.getExpRecordId());
+        recordService.saveOnly(text1);
+        loadedRecords = recordService.load(cmap);
+        loadedRecords = recordService.orderList(loadedRecords);
+        Assert.assertEquals(2, loadedRecords.size());
+        Assert.assertEquals(text1.getExpRecordId(), loadedRecords.get(0).getExpRecordId());
+        Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(1).getExpRecordId());
+        Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(0).getNext());
+        Assert.assertNull(loadedRecords.get(1).getNext());
     }
 
     @Deployment
@@ -99,6 +142,7 @@ public class ExperimentServiceTest extends TestBase {
                 .addClass(TextService.class)
                 .addClass(AssayService.class)
                 .addClass(ItemService.class)
+                .addClass(ExperimentBean.class)
                 .addClass(ExperimentService.class);
         return UserBeanDeployment.add(ItemDeployment.add(deployment));
     }
