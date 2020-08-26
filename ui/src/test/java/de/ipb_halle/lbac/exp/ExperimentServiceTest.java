@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -69,7 +68,7 @@ public class ExperimentServiceTest extends TestBase {
 
     @After
     public void finish() {
-
+        entityManagerService.doSqlUpdate("DELETE FROM experiments");
     }
 
     @Test
@@ -92,6 +91,10 @@ public class ExperimentServiceTest extends TestBase {
         text2 = (Text) recordService.save(text2);
 
         Experiment loadedExperiment = experimentService.loadById(exp.getExperimentId());
+
+        List<Experiment> loadedExp = experimentService.load(new HashMap<>());
+        Assert.assertEquals(2, loadedExp.size());
+
         Assert.assertEquals(exp.getExperimentId(), loadedExperiment.getExperimentId());
         Assert.assertEquals(exp.getCode(), loadedExperiment.getCode());
         Assert.assertEquals(exp.getDescription(), loadedExperiment.getDescription());
