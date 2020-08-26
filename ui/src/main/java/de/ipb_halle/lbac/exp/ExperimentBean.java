@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.text.TextController;
 
@@ -27,11 +27,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -40,70 +38,71 @@ import org.apache.logging.log4j.Logger;
 import org.primefaces.model.chart.BarChartModel;
 
 /**
- * Bean for interacting with the ui to present and manipulate a experiments 
+ * Bean for interacting with the ui to present and manipulate a experiments
  *
  * @author fbroda
  */
 @SessionScoped
 @Named
 public class ExperimentBean implements Serializable {
-
+    
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
-
-    @Inject 
+    
+    @Inject    
     private ExperimentService experimentService;
-
+    
     @Inject
     private ExpRecordService expRecordService;
-
-    private Experiment experiment; 
-
+    
+    private Experiment experiment;    
+    
     private List<ExpRecord> expRecords;
-
+    
     private ExpRecordController expRecordController;
-
+    
     private String newRecordType;
-
+    
     private boolean templateMode = false;
-
+    
     private BarChartModel barChart;
-
+    
     private int expRecordIndex;
-
+    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-
-
+    
     @PostConstruct
     private void experimentBeanInit() {
         /*
          * ToDo: create an experiment with real user and ACL
          */
         cleanup();
-        this.expRecords = new ArrayList<ExpRecord> ();
-
+        this.expRecords = new ArrayList<ExpRecord>();
+        
         this.experiment = new Experiment(
-            null,                                               // experiment id
-            "code",                                             // code
-            "description",                                      // description
-            templateMode,                                       // template or experiment
-            this.globalAdmissionContext.getPublicReadACL(),     // aclist
-            this.globalAdmissionContext.getPublicAccount(),     // owner
-            new Date()                                          // creation time
-            );
+                null, // experiment id
+                "code", // code
+                "description", // description
+                templateMode, // template or experiment
+                this.globalAdmissionContext.getPublicReadACL(), // aclist
+                this.globalAdmissionContext.getPublicAccount(), // owner
+                new Date() // creation time
+        );
     }
 
-
     /**
-     * @param delta 0 = actually prepend record, 1 = append record, -1 = append as last record
+     * @param delta 0 = actually prepend record, 1 = append record, -1 = append
+     * as last record
      */
     public void actionAppendRecord(int delta) {
-
+        
         if (this.experiment == null) {
             this.logger.info("actionAppendRecord(): experiment not set");
             return;
         }
-
+        
         createExpRecordController(this.newRecordType);
         if (this.expRecordController != null) {
             ExpRecord record = this.expRecordController.getNewRecord();
@@ -115,12 +114,12 @@ public class ExperimentBean implements Serializable {
                 delta = 0;
             }
             int index = this.expRecordIndex + delta;
-
+            
             if ((index < 0) || (index > this.expRecords.size())) {
                 this.logger.info("actionAppendRecord() out of range");
                 return;
             }
-
+            
             if (index < (this.expRecords.size())) {
                 // link to the following record
                 record.setNext(this.expRecords.get(index).getExpRecordId());
@@ -135,9 +134,8 @@ public class ExperimentBean implements Serializable {
     }
 
     /**
-     * cancel everything and reset this bean to 
-     * clean state. This is especially important 
-     * when changing from Template to Experiment mode.
+     * cancel everything and reset this bean to clean state. This is especially
+     * important when changing from Template to Experiment mode.
      */
     public void actionCancel() {
         try {
@@ -156,10 +154,10 @@ public class ExperimentBean implements Serializable {
         Date copyDate = new Date();
 
         // load the template records
-        Map<String, Object> cmap = new HashMap<String, Object> ();
+        Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
         List<ExpRecord> records = this.expRecordService.load(cmap);
-    
+
         // copy the experiment
         this.experiment.setExperimentId(null);
         this.experiment.setTemplate(false);
@@ -195,7 +193,7 @@ public class ExperimentBean implements Serializable {
             createExpRecordController(record.getType().toString());
         }
     }
-
+    
     public void actionLog() {
         this.logger.info("actionLog()");
     }
@@ -206,34 +204,37 @@ public class ExperimentBean implements Serializable {
     public void actionNewExperiment() {
         experimentBeanInit();
     }
-
+    
     public void actionSaveExperiment() {
         this.experimentService.save(this.experiment);
     }
 
     /**
-     * toggle the currently active experiment
-     * ToDo: xxxxx restrict search
+     * toggle the currently active experiment ToDo: xxxxx restrict search
+     *
+     * @param exp
      */
     public void actionToggleExperiment(Experiment exp) {
         if ((exp != null) && (exp.getExperimentId() != null)) {
             if (exp.getExperimentId().equals(this.experiment.getExperimentId())) {
                 experimentBeanInit();
                 return;
-            } 
-
+            }            
+            
             this.experiment = exp;
             try {
                 loadExpRecords();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 this.logger.warn("actionToggleExperiment() caught an exception: ", (Throwable) e);
-                this.expRecords = new ArrayList<ExpRecord> ();
+                this.expRecords = new ArrayList<ExpRecord>();
             }
         }
     }
 
-    /** 
+    /**
      * maintain the proper chaining of ExpRecords
+     *
+     * @param record
      */
     public void adjustOrder(ExpRecord record) {
         int index = record.getIndex();
@@ -252,32 +253,31 @@ public class ExperimentBean implements Serializable {
         this.barChart = null;
         this.expRecordIndex = -1;
     }
-
+    
     public void createExpRecordController(String recordType) {
-        switch(recordType) {
-            case "ASSAY" :
-                this.expRecordController = new AssayController(this); 
+        switch (recordType) {
+            case "ASSAY":
+                this.expRecordController = new AssayController(this);                
                 break;
-            case "TEXT" :
+            case "TEXT":
                 this.expRecordController = new TextController(this);
                 break;
-            default :
+            default:
                 this.expRecordController = new NullController(this);
         }
     }
-
+    
     public BarChartModel getBarChart() {
         return this.barChart;
     }
 
     /**
-     * @return true if in template mode and an experiment has been 
-     * selected
+     * @return true if in template mode and an experiment has been selected
      */
     public boolean getCopyEnabled() {
         return this.templateMode && (this.experiment.getExperimentId() != null);
     }
-
+    
     public Experiment getExperiment() {
         return this.experiment;
     }
@@ -287,21 +287,21 @@ public class ExperimentBean implements Serializable {
      */
     public String getExperimentEditLabel() {
         if (this.experiment.getExperimentId() == null) {
-            return "New ...";
+            return Messages.getString(MESSAGE_BUNDLE, "searchBtnDlg", null);
         }
         if (this.templateMode) {
-            return "Edit / Clone ...";
+            return Messages.getString(MESSAGE_BUNDLE, "expEditCloneDlg", null);
         }
-        return "Edit ..."; 
+        return Messages.getString(MESSAGE_BUNDLE, "editBtnDlg", null);
     }
-
+    
     public List<Experiment> getExperiments() {
-        Map<String, Object> cmap = new HashMap<String, Object> ();
+        Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
-
+        
         return experimentService.load(cmap);
     }
-
+    
     public ExpRecordController getExpRecordController() {
         return this.expRecordController;
     }
@@ -312,11 +312,11 @@ public class ExperimentBean implements Serializable {
     protected int getExpRecordIndex() {
         return this.expRecordIndex;
     }
-
+    
     public List<ExpRecord> getExpRecords() {
         return this.expRecords;
     }
-
+    
     public String getExpRecordStyle(boolean edit, boolean even) {
         if (edit) {
             return "expRecordEdit";
@@ -326,28 +326,30 @@ public class ExperimentBean implements Serializable {
         }
         return "expRecordOdd";
     }
-
+    
     public String getNewRecordType() {
         return "";
     }
-
+    
     public boolean getTemplateMode() {
         return this.templateMode;
     }
 
     /**
-     * load a specific record by id
-     * e.g. for canceling edits
+     * load a specific record by id e.g.for canceling edits
+     *
+     * @param id
+     * @return
      */
     public ExpRecord loadExpRecordById(Long id) {
         return this.expRecordService.loadById(id);
     }
 
     /**
-     * load experiment records 
+     * load experiment records
      */
     public void loadExpRecords() {
-        Map<String, Object> cmap = new HashMap<String, Object> ();
+        Map<String, Object> cmap = new HashMap<String, Object>();
         if ((this.experiment != null) && (this.experiment.getExperimentId() != null)) {
             cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
         }
@@ -371,28 +373,31 @@ public class ExperimentBean implements Serializable {
 
     /**
      * save experiment record; to be called by ExpRecordController
+     *
+     * @param record
+     * @return
      */
     public ExpRecord saveExpRecord(ExpRecord record) {
         return this.expRecordService.save(record);
     }
-
+    
     public void setBarChartModel(int rank) {
         this.barChart = this.expRecords.get(rank).getBarChart();
     }
-
+    
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
     }
-
+    
     public void setExpRecordIndex(int index) {
         this.logger.info("setExpRecordIndex() index = {}", index);
         this.expRecordIndex = index;
     }
-
+    
     public void setNewRecordType(String newRecordType) {
         this.newRecordType = newRecordType;
     }
-
+    
     public void setTemplateMode(boolean templateMode) {
         this.templateMode = templateMode;
     }

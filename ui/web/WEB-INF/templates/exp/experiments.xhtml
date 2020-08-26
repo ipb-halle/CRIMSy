@@ -40,25 +40,25 @@
         </ui:insert>
 
         <!-- content -->
-        <b:panel id="experiments" title="Record Data">
+        <b:panel id="experiments" title="#{msgs.expExperiments}">
             <p:outputPanel deferred="false">
                 <b:row>
 
                     <h:form id="experimentForm">
                         <b:column id="experimentColumn" span="3">
 
-                           <p:tabMenu activeIndex="#{experimentBean.templateMode ? 0 : 1}">
-                                <p:menuitem value="Templates"   
-                                        action="#{experimentBean.actionCancel()}" 
-                                        update="experimentForm expRecordsForm" 
-                                        process="@parent">
-                                     <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="True" />
+                            <p:tabMenu activeIndex="#{experimentBean.templateMode ? 0 : 1}">
+                                <p:menuitem value="#{msgs.expTemplates}" 
+                                            action="#{experimentBean.actionCancel()}" 
+                                            update="experimentForm expRecordsForm" 
+                                            process="@parent">
+                                    <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="True" />
                                 </p:menuitem>
-                                <p:menuitem value="Experiments" 
-                                        action="#{experimentBean.actionCancel()}" 
-                                        update="experimentForm expRecordsForm" 
-                                        process="@parent">
-                                     <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="False" />
+                                <p:menuitem value="#{msgs.expExperiments}" 
+                                            action="#{experimentBean.actionCancel()}" 
+                                            update="experimentForm expRecordsForm" 
+                                            process="@parent">
+                                    <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="False" />
                                 </p:menuitem>
                             </p:tabMenu>
 
@@ -70,7 +70,7 @@
                             </ui:insert>
 
                             <b:panel collapsible="false" 
-                                    title="#{experimentBean.templateMode ? 'Templates' : 'Experiments'}">
+                                     title="#{experimentBean.templateMode ? '#{msgs.expTemplates}' : '#{msgs.expExperiments}'}">
 
                                 <ui:insert name="experimentList">
                                     <ui:include src="experimentList.xhtml"/>
@@ -81,25 +81,11 @@
 
                     <h:form id="expRecordsForm" >
                         <b:column span="9">
-                            <b:panel collapsible="false" title="experiment records">
+                            <b:panel collapsible="false" title="#{msgs.expExperimentRecords}">
                                 <ui:insert name="expRecords">
                                     <ui:include src="expRecordList.xhtml" />
                                 </ui:insert>
                             </b:panel>
-
-                            <b:panel title="Record Actions" rendered="#{experimentBean.getExperiment().experimentId != null}" >
-                                <b:container>
-                                    <b:row>
-                                        <p:selectOneMenu value="#{experimentBean.newRecordType}" >
-                                            <f:selectItem itemLabel="Append record ..." itemValue="" />
-                                            <f:selectItem itemLabel="Text" itemValue="TEXT" />
-                                            <f:selectItem itemLabel="Assay" itemValue="ASSAY" />
-                                            <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(-1)}" update="expRecordsForm" />
-                                        </p:selectOneMenu>
-                                    </b:row>
-                                </b:container>
-                            </b:panel>
-
                         </b:column>
                     </h:form>
 

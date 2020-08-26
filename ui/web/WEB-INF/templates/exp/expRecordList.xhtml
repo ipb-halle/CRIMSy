@@ -33,13 +33,20 @@
             <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
 
-                <p:commandLink title="Action" 
+                <p:commandLink title="#{msgs.Edit}" 
                                update="@all"
                                rendered="#{experimentBean.expRecordController.edit}"
                                action="#{experimentBean.actionEditRecord}">
                     <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
                     <span class="fa fa-pencil"> </span>
                 </p:commandLink>
+                <p:selectOneMenu value="#{experimentBean.newRecordType}"
+                                 rendered="#{experimentBean.expRecordController.edit}">
+                    <f:selectItem itemLabel="#{msgs.expAddRecord}" itemValue="" />
+                    <f:selectItem itemLabel="#{msgs.expText}" itemValue="TEXT" />
+                    <f:selectItem itemLabel="#{msgs.expAssay}" itemValue="ASSAY" />
+                    <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(-1)}" update="expRecordsForm" />
+                </p:selectOneMenu>
                 <br/>
             </div>
 
@@ -61,8 +68,8 @@
 
 
             <ui:fragment rendered="#{rec.edit}">
-                <p:commandButton value="Cancel" action="#{experimentBean.expRecordController.actionCancel}" update="@form" process="@this" />
-                <p:commandButton value="Save Record" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@form" />
+                <p:commandButton value="#{msgs.Cancel}" action="#{experimentBean.expRecordController.actionCancel}" update="@form" process="@this" />
+                <p:commandButton value="#{msgs.Save}" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@form" />
 
             </ui:fragment>
 

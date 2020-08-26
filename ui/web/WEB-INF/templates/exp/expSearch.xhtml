@@ -30,10 +30,10 @@
     <ui:composition>
 
           <p:commandButton type="button" 
-                  value="Search ..." 
+                  value="#{msgs.searchBtnDlg}" 
                   class="experimentActionButton"
                   onclick="PF('dlg_experimentSearch').show();" />
-          <p:dialog header="Experiment Search" 
+          <p:dialog header="#{msgs.expExperimentSearch}" 
                           widgetVar="dlg_experimentSearch" modal="true" height="300">
 
             <div class="ui-g">
@@ -41,7 +41,7 @@
                     <p:inputText label="id" />
                 </div>
                 <div class="ui-g-12">
-                    <p:commandButton value="search" onclick="PF('dlg_experimentSearch').hide();" />
+                    <p:commandButton value="#{msgs.searchBtn}" onclick="PF('dlg_experimentSearch').hide();" />
                 </div>
             </div> 
 
