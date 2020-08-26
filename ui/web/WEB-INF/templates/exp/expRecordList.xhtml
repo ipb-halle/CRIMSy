@@ -31,28 +31,28 @@
         <ui:repeat value="#{experimentBean.expRecords}" var="rec" varStatus="recStatus">
 
             <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
-                title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
+                 title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
 
                 <p:commandLink title="Action" 
-                        update="@none"
-                        rendered="#{experimentBean.expRecordController.edit}"
-                        onclick="PF('dlg_expRecordEdit').show();">
+                               update="@all"
+                               rendered="#{experimentBean.expRecordController.edit}"
+                               action="#{experimentBean.actionEditRecord}">
                     <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
-                    <span class="fa fa-cog"> </span>
+                    <span class="fa fa-pencil"> </span>
                 </p:commandLink>
                 <br/>
             </div>
 
             <h:panelGroup id="recordDetails" 
-                layout="block"
-                styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
+                          layout="block"
+                          styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
                 <crimsy:assay assay="#{rec}"
-                            materialAgent="#{materialAgent}" 
-                            bean="#{experimentBean}"
-                            rendered="#{rec.facelet eq 'ASSAY'}">
+                              materialAgent="#{materialAgent}" 
+                              bean="#{experimentBean}"
+                              rendered="#{rec.facelet eq 'ASSAY'}">
                     <crimsy:assayRecords assay="#{rec}"
-                                bean="#{experimentBean}"
-                                materialAgent="#{materialAgent}" />
+                                         bean="#{experimentBean}"
+                                         materialAgent="#{materialAgent}" />
                 </crimsy:assay>
 
                 <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
