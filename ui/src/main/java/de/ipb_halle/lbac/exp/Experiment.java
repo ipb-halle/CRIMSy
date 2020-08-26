@@ -73,6 +73,7 @@ public class Experiment implements DTO {
      * @param experimentid
      * @param code
      * @param description
+     * @param template
      * @param acList
      * @param owner
      * @param creationTime

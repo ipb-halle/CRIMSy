@@ -47,6 +47,7 @@ public class Text extends ExpRecord implements DTO {
         setType(ExpRecordType.TEXT);
     }
 
+    @Override
     public TextEntity createEntity() {
         return new TextEntity()
             .setExpRecordId(getExpRecordId())

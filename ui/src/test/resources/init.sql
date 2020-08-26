@@ -28,6 +28,7 @@ SET @PUBLIC_ACCOUNT = '088e3bc0-7fb2-422e-b29a-71ca3ec907d2';
 SET @PUBLIC_GROUP = 'be851b5b-64f0-4298-b8c0-b5b3d4629d6e';
 
 CREATE DOMAIN molecule AS VARCHAR;
+CREATE domain IF NOT EXISTS jsonb AS VARCHAR;
 
 /*
  * Cloud
@@ -705,5 +706,63 @@ CREATE TABLE biomaterial(
     taxoid INTEGER NOT NULL REFERENCES taxonomy(id),
     tissueid INTEGER REFERENCES tissues(id)
 );
+CREATE TABLE experiments (
+    experimentid    SERIAL NOT NULL PRIMARY KEY,
+    code            VARCHAR,
+    description     VARCHAR,
+    template        BOOLEAN NOT NULL DEFAULT FALSE,
+    aclist_id       UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    ownerid         UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
 
+CREATE TABLE exp_records (
+    exprecordid     BIGSERIAL NOT NULL PRIMARY KEY,
+    experimentid    INTEGER NOT NULL REFERENCES experiments (experimentid) ON UPDATE CASCADE ON DELETE CASCADE,
+    changetime      TIMESTAMP,
+    creationtime    TIMESTAMP,
+    type            INTEGER,
+    revision        INTEGER NOT NULL DEFAULT 1,
+    next            BIGINT DEFAULT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+CREATE TABLE exp_sops (
+    sopid           SERIAL NOT NULL PRIMARY KEY,
+    description     VARCHAR,
+    documentid      UUID REFERENCES files(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+/*
+ * Note: either materialid or itemid must be set
+ *
+ * ToDo: xxxxx additional indexing for outcome column (example see below)
+ */
+CREATE TABLE exp_assay_records (
+    recordid        BIGSERIAL NOT NULL PRIMARY KEY,
+    exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    materialid      INTEGER REFERENCES materials(materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    itemid          INTEGER REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    rank            INTEGER DEFAULT 0,
+    type            INTEGER NOT NULL,
+    outcome         JSONB
+);
+
+/*
+ * B-tree index example:
+ * CREATE INDEX i_exp_assay_outcome_val ON exp_assay_outcomes (((outcome->>'val')::DOUBLE PRECISION))
+ *      WHERE (outcome->>'val') IS NOT NULL;
+ */
+
+CREATE TABLE exp_assays (
+    exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    outcometype     INTEGER NOT NULL,
+    remarks         VARCHAR,
+    targetid        INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE SET NULL,
+    units           VARCHAR
+);
+
+/* ToDo: xxxxx create fulltext index on exp_texts! */
+CREATE TABLE exp_texts (
+    exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    text            VARCHAR 
+);
 

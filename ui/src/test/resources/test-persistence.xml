@@ -31,6 +31,11 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!--    <class>de.ipb_halle.lbac.api.ACObject</class> -->
+        <class>de.ipb_halle.lbac.exp.ExpRecordEntity</class>
+        <class>de.ipb_halle.lbac.exp.ExperimentEntity</class>
+        <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
+        
+        
         <class>de.ipb_halle.lbac.project.ProjectEntity</class>
         <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity</class>
