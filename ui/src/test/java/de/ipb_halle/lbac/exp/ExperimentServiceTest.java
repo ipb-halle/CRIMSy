@@ -22,8 +22,11 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextService;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.service.ItemService;
 import java.util.Date;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -31,6 +34,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +50,8 @@ public class ExperimentServiceTest extends TestBase {
     private ExperimentService experimentService;
 
     @Inject
-    private TextService textService;
+    private ExpRecordService recordService;
+
     private User publicUser;
     private ACList publicReadAcl;
 
@@ -65,24 +70,37 @@ public class ExperimentServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadExp() {
-        Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment", false, publicReadAcl, publicUser, new Date());
-        experimentService.save(exp);
-//        Text text1 = new Text();
-//        text1.setChangeTime(new Date());
-//        text1.setCreationTime(new Date());
-//        text1.setExperiment(exp);
-//        text1.setRevision(1);
-//        text1.setText("Hallo");
-//        textService.saveText(text1);
+        Date creationDate=new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment", false, publicReadAcl, publicUser, creationDate);
+        exp=experimentService.save(exp);
+        Text text1 = new Text();
+        text1.setChangeTime(new Date());
+        text1.setCreationTime(new Date());
+        text1.setExperiment(exp);
+        text1.setRevision(1);
+        text1.setText("Hallo");
+        recordService.save(text1);
+        
+        Experiment loadedExperiment=experimentService.loadById(exp.getExperimentId());
+        Assert.assertEquals(exp.getExperimentId(),loadedExperiment.getExperimentId());
+        Assert.assertEquals(exp.getCode(),loadedExperiment.getCode());
+        Assert.assertEquals(exp.getDescription(),loadedExperiment.getDescription());
+        Assert.assertEquals(exp.getTemplate(),loadedExperiment.getTemplate());
+        Assert.assertEquals(publicReadAcl.getId(),loadedExperiment.getACList().getId());
+        Assert.assertEquals(publicUser.getId(),loadedExperiment.getOwner().getId());
+        Assert.assertEquals(creationDate,loadedExperiment.getCreationTime());
 
     }
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ExperimentServiceTest.war")
+                .addClass(ExpRecordService.class)
                 .addClass(TextService.class)
+                .addClass(AssayService.class)
+                .addClass(ItemService.class)
                 .addClass(ExperimentService.class);
-        return UserBeanDeployment.add(deployment);
+        return UserBeanDeployment.add(ItemDeployment.add(deployment));
     }
 
 }

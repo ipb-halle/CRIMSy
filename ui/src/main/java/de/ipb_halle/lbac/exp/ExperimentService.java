@@ -54,9 +54,9 @@ public class ExperimentService implements Serializable {
     public final static String TEMPLATE_FLAG = "TEMPLATE_FLAG";
 
     private final static String SQL_LOAD = "SELECT e.experimentid, e.code, e.description, "
-        + "e.template, e.aclist_id, e.ownerid FROM experiments AS e "
-        + "WHERE (e.template = :TEMPLATE_FLAG OR :TEMPLATE_FLAG IS NULL) "
-        + "ORDER BY e.code";
+            + "e.template, e.aclist_id, e.ownerid FROM experiments AS e "
+            + "WHERE (e.template = :TEMPLATE_FLAG OR :TEMPLATE_FLAG IS NULL) "
+            + "ORDER BY e.code";
 
     @Inject
     private ACListService aclistService;
@@ -80,7 +80,7 @@ public class ExperimentService implements Serializable {
         }
     }
 
-   /**
+    /**
      * build
      */
     public Query createExperimentQuery(String rawSql, Map<String, Object> cmap, Class targetClass) {
@@ -91,7 +91,7 @@ public class ExperimentService implements Serializable {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
 
-        return q.setParameter(TEMPLATE_FLAG, cmap.getOrDefault(TEMPLATE_FLAG, null)); 
+        return q.setParameter(TEMPLATE_FLAG, cmap.getOrDefault(TEMPLATE_FLAG, null));
     }
 
     /**
@@ -102,7 +102,7 @@ public class ExperimentService implements Serializable {
     public List<Experiment> load(Map<String, Object> cmap) {
         List<Experiment> result = new ArrayList<>();
         Query q = createExperimentQuery(SQL_LOAD,
-                (cmap == null) ? new HashMap<String, Object> () : cmap,
+                (cmap == null) ? new HashMap<String, Object>() : cmap,
                 ExperimentEntity.class);
         // q.setParameter("USERID", xxxxx);
         // q.setFirstResult();
@@ -119,6 +119,9 @@ public class ExperimentService implements Serializable {
 
     /**
      * load an experiment by id
+     *
+     * NOTE: the Experiment DTO does NOT include its experiment records. Records
+     * MUST be handled separately.
      *
      * @param id experiment Id
      * @return the Experiment object

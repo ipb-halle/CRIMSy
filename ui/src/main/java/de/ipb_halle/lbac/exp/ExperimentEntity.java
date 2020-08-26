@@ -59,8 +59,15 @@ public class ExperimentEntity implements Serializable {
     @Column
     private boolean template;
 
+    @Column
+    private Date ctime;
+
     public String getCode() {
         return this.code;
+    }
+
+    public Date getCtime() {
+        return ctime;
     }
 
     public String getDescription() {
@@ -85,6 +92,11 @@ public class ExperimentEntity implements Serializable {
 
     public ExperimentEntity setCode(String code) {
         this.code = code;
+        return this;
+    }
+
+    public ExperimentEntity setCtime(Date ctime) {
+        this.ctime = ctime;
         return this;
     }
 

@@ -24,25 +24,11 @@ package de.ipb_halle.lbac.exp.text;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
-import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class TextService implements Serializable {

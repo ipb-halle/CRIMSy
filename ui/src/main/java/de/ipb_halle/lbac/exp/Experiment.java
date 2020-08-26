@@ -56,9 +56,8 @@ public class Experiment implements DTO {
     private String description;
 
     /**
-     * template flag
-     * templates hold no experiment data but can be cloned (copied)
-     * to save users from repetitions
+     * template flag templates hold no experiment data but can be cloned
+     * (copied) to save users from repetitions
      */
     private boolean template;
 
@@ -99,7 +98,7 @@ public class Experiment implements DTO {
      * constructor
      *
      * @param e ExperimentEntity to construct from
-     * @param acList 
+     * @param acList
      * @param owner
      */
     public Experiment(ExperimentEntity e,
@@ -111,7 +110,7 @@ public class Experiment implements DTO {
         this.template = e.getTemplate();
         this.acList = acList;
         this.owner = owner;
-
+        this.creationTime=e.getCtime();
     }
 
     @Override
@@ -122,6 +121,7 @@ public class Experiment implements DTO {
                 .setDescription(this.description)
                 .setTemplate(this.template)
                 .setACListId(this.acList.getId())
+                .setCtime(creationTime)
                 .setOwnerId(this.owner.getId());
     }
 
@@ -131,6 +131,10 @@ public class Experiment implements DTO {
 
     public String getCode() {
         return this.code;
+    }
+
+    public Date getCreationTime() {
+        return creationTime;
     }
 
     public String getDescription() {
@@ -149,8 +153,8 @@ public class Experiment implements DTO {
         return owner;
     }
 
-    public void setACList(ACList acList) { 
-        this.acList = acList; 
+    public void setACList(ACList acList) {
+        this.acList = acList;
     }
 
     public void setCode(String code) {
@@ -161,8 +165,8 @@ public class Experiment implements DTO {
         this.creationTime = creationTime;
     }
 
-    public void setExperimentId(Integer experimentid) { 
-        this.experimentid = experimentid; 
+    public void setExperimentId(Integer experimentid) {
+        this.experimentid = experimentid;
     }
 
     public void setOwner(User owner) {
