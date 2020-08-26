@@ -51,12 +51,6 @@ CREATE TABLE exp_records (
     next            BIGINT DEFAULT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
-CREATE TABLE exp_sops (
-    sopid           SERIAL NOT NULL PRIMARY KEY,
-    description     VARCHAR,
-    documentid      UUID REFERENCES files(id) ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 /*
  * Note: either materialid or itemid must be set
  *
