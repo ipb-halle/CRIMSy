@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.forum;
 
+import de.ipb_halle.lbac.util.HTMLInputFilter;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.entity.Cloud;

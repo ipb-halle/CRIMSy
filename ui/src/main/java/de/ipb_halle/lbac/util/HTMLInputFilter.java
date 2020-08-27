@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.forum;
+package de.ipb_halle.lbac.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;

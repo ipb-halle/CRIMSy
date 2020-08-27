@@ -15,30 +15,35 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.globals;
+package de.ipb_halle.lbac.util;
 
-import de.ipb_halle.lbac.forum.HTMLInputFilter;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  *
  * @author fmauz
  */
-@FacesConverter("InputConverter")
-public class InputConverter implements Converter {
+@FacesConverter("RichTextConverter")
+public class RichTextConverter implements Converter {
 
     private HTMLInputFilter filter = new HTMLInputFilter(false, true);
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
+        this.logger.info("getAsObject(): {}", string);
         return filter.filter(string);
     }
 
     @Override
     public String getAsString(FacesContext fc, UIComponent uic, Object o) {
+        this.logger.info("getAsString() {}", o.toString());
         return o == null ? "" : filter.filter(o.toString());
     }
 

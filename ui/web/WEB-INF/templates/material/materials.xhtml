@@ -24,7 +24,8 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <crimsy:acobjectModal
             acobjectController="#{materialOverviewBean.acObjectController}"
@@ -64,7 +65,9 @@
                                         label="#{msgs.materialOverview_tableheader_name}">
                                         <h:outputText
                                             escape="false"
-                                            value="#{material.getPrintableNames()}"/>
+                                            value="#{material.getPrintableNames()}">
+                                            <f:converter converterId="InputConverter" />
+                                        </h:outputText>
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         label="#{msgs.materialOverview_tableheader_type}"

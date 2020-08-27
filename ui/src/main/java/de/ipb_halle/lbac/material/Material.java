@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.forum.HTMLInputFilter;
+import de.ipb_halle.lbac.util.HTMLInputFilter;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;

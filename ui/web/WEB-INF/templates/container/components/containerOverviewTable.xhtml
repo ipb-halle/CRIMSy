@@ -19,7 +19,8 @@ limitations under the License.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <b:form id="containerTableId">
             <b:dataTable
@@ -48,7 +49,9 @@ limitations under the License.
                     label="#{msgs.container_table_title_location}">
                     <h:outputText
                         escape="false"
-                        value="#{container.getLocation(true,true)}"/>
+                        value="#{container.getLocation(true,true)}">
+                        <f:converter converterId="InputConverter" />
+                    </h:outputText>
                 </b:dataTableColumn>
                 <b:dataTableColumn
                     label="#{msgs.container_table_title_project}">

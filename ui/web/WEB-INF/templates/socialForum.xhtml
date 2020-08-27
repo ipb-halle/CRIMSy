@@ -114,10 +114,7 @@
                                 <b:column span="5">
                                     <h:outputText
                                         value="#{forumBean.getTopicName()}"
-                                        styleClass="topicHeaderText"
-                                        escape="false"/>
-
-
+                                        styleClass="topicHeaderText"/>
                                 </b:column>
                                 <b:column span="7">
                                     <p:scrollPanel 
@@ -131,13 +128,12 @@
                                             <b:row>
                                                 <b:column span="8">
                                                     <h:outputText
-                                                        value="#{posting. getUserTag()}"
-                                                        escape="false"
-                                                        styleClass="userStyle"> </h:outputText>
+                                                        value="#{posting.getUserTag()}"
+                                                        styleClass="userStyle"/> 
                                                 </b:column>
 
                                                 <b:column span="4">
-                                                    <h:outputText value="#{posting.getCreated()}" escape="false">
+                                                    <h:outputText value="#{posting.getCreated()}">
                                                         <f:convertDateTime
                                                             pattern="dd-MM-yyyy HH:mm"
                                                             timeZone="CET"/></h:outputText>
@@ -148,20 +144,18 @@
                                                     <h:outputText
                                                         value="#{posting.getText()}"
                                                         escape="false"
-                                                        styleClass="postingText"> </h:outputText>
+                                                        styleClass="postingText"> 
+                                                        <f:converter converterId="RichTextConverter"/>
+                                                    </h:outputText>
                                                 </b:column>
                                             </b:row>
-
-
-
                                         </ui:repeat>
-
                                     </p:scrollPanel>
                                 </b:column>
                             </b:row>
                             <b:row>
                                 <b:column span="6">
-                                    <p:textEditor 
+                                    <p:textEditor
                                         styleClass="textEditorStyleClass"
                                         rendered="#{forumBean.isPostingAllowed()}"
                                         value="#{forumBean.postingText}"
@@ -178,13 +172,12 @@
                                             <span class="ql-formats">
                                                 <select class="ql-color" />
                                             </span>
-
                                             <span class="ql-formats">
                                                 <button class="ql-list" value="ordered" />
                                                 <button class="ql-list" value="bullet" />
                                             </span>
                                         </f:facet>
-
+                                        <f:converter converterId="RichTextConverter"/>
                                     </p:textEditor>
                                 </b:column>
                                 <b:column span="1">

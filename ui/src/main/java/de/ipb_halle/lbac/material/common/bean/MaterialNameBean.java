@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.forum.HTMLInputFilter;
+import de.ipb_halle.lbac.util.HTMLInputFilter;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.NameListOperation.Button;

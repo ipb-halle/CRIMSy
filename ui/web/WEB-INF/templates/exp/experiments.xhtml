@@ -70,7 +70,7 @@
                             </ui:insert>
 
                             <b:panel collapsible="false" 
-                                     title="#{experimentBean.templateMode ? '#{msgs.expTemplates}' : '#{msgs.expExperiments}'}">
+                                     title="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
 
                                 <ui:insert name="experimentList">
                                     <ui:include src="experimentList.xhtml"/>

@@ -89,7 +89,7 @@
                     </b:container>
                 </b:panel>
                 <p:tabView styleClass="itemEditTabView">
-                     <p:tab title="Informationen">
+                    <p:tab title="Informationen">
                         <b:panel
                             collapsible="false"
                             styleClass="itemEditPanel"
@@ -229,7 +229,7 @@
                             </b:container>
                         </b:panel>
                     </p:tab>
-                   
+
                     <p:tab title="Project">
                         <b:panel
                             collapsible="false"
@@ -279,7 +279,7 @@
                             </b:container>
                         </b:panel>
                     </p:tab>
-                   
+
                     <p:tab title="Standort">
                         <b:panel
                             collapsible="false"
@@ -340,7 +340,9 @@
                                                 <b:column span="2" >
                                                     <h:outputText 
                                                         escape="false"
-                                                        value="#{itemBean.getContainerLocation()}"/>
+                                                        value="#{itemBean.getContainerLocation()}">
+                                                        <f:converter converterId="InputConverter" />
+                                                    </h:outputText>
                                                 </b:column>
                                             </b:row>
                                             <b:row>
@@ -404,7 +406,7 @@
                             </b:container>
                         </b:panel>
                     </p:tab>
-                     <p:tab title="Print">
+                    <p:tab title="Print">
                         <b:panel
                             styleClass="itemEditPanel"
                             collapsible="false">

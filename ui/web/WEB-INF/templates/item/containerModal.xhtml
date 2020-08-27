@@ -21,7 +21,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <ui:composition>
             <b:modal
@@ -45,7 +46,9 @@
                         label="#{msgs.container_dialog_label}"/>
                     <b:dataTableColumn 
                         label="#{msgs.container_dialog_location}">
-                        <h:outputText escape="false" value="#{container.getLocation(true,true)}"/>
+                        <h:outputText escape="false" value="#{container.getLocation(true,true)}">
+                            <f:converter converterId="InputConverter" />
+                        </h:outputText>
                     </b:dataTableColumn>
                     <b:dataTableColumn 
                         value="#{container.type.getLocalizedName()}"

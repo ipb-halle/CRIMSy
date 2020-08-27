@@ -22,7 +22,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <h:body>
     <ui:composition>
@@ -30,11 +31,13 @@
             <b:row styleClass="globalinfo">
                 <b:column span="4" offset="2">
                     <h:outputText value="LBAC-Version: #{versions.buildNumber} &lt;br /&gt;"
-                                  escape="false"/>
-                    <h:outputLink value="dsgvo.xhtml" target="_blank">Datenschutzerklärung</h:outputLink>
+                                  escape="false">
+                         <f:converter converterId="InputConverter" />
+                    </h:outputText>
+                    <h:outputLink value="dsgvo.xhtml" target="_blank">#{msgs.footer_GDPR_link}</h:outputLink>
                 </b:column>
                 <b:column span="4" offset="2">
-                    <h:outputText value="&#xA9; 2020 Leibniz-Institut für Pflanzenbiochemie  &lt;br /&gt;"
+                    <h:outputText value="&#xA9; 2020 Leibniz-Institut fÃ¼r Pflanzenbiochemie  &lt;br /&gt;"
                                   escape="false"/>
                     <h:outputText value="Licensed under the ">
                     </h:outputText>

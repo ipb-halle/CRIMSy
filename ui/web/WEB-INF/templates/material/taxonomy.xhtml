@@ -38,7 +38,9 @@
                         <h:outputText 
                             escape="false"
                             value="#{taxonomyBean.renderController.getCurrentAction()}"
-                            styleClass="taxonomyInfos taxonomy-action-panel"/>
+                            styleClass="taxonomyInfos taxonomy-action-panel">
+                            <f:converter converterId="InputConverter" />
+                        </h:outputText>
 
                     </b:column>
                     <b:column span="1"
@@ -57,7 +59,9 @@
                         <h:outputText 
                             escape="false"
                             value="#{taxonomyBean.historyController.getHistoryText()}"
-                            rendered="#{taxonomyBean.renderController.isHistoryVisible()}"/>
+                            rendered="#{taxonomyBean.renderController.isHistoryVisible()}">
+                            <f:converter converterId="InputConverter" />
+                        </h:outputText>
 
                     </b:column>
                     <b:column span="1"

@@ -15,8 +15,9 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.forum;
+package de.ipb_halle.lbac.util;
 
+import de.ipb_halle.lbac.util.HTMLInputFilter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

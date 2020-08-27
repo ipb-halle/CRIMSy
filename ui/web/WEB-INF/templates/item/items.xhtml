@@ -179,7 +179,9 @@
                                             label="#{msgs.itemOverview_tableheader_material}">
                                             <h:outputText
                                                 escape="false"
-                                                value="#{itemOverviewBean.getMaterialName(item)}"/>
+                                                value="#{itemOverviewBean.getMaterialName(item)}">
+                                                <f:converter converterId="InputConverter" />
+                                            </h:outputText>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_projectOwner}"
@@ -201,7 +203,9 @@
                                             label="#{msgs.itemOverview_tableheader_dates}">
                                             <h:outputText
                                                 escape="false"
-                                                value="#{itemOverviewBean.getDatesOfItem(item)}"/>
+                                                value="#{itemOverviewBean.getDatesOfItem(item)}">
+                                                <f:converter converterId="InputConverter" />
+                                            </h:outputText>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.materialOverview_tableheader_actions}">
@@ -213,16 +217,16 @@
                                                              action="#{itemOverviewBean.actionStartItemEdit(item)}"
                                                              />
                                             <b:commandButton style="padding: 0 4px;"
-                                                 icon="glyphicon glyphicon-user"
-                                                 look="link"
-                                                 ajax="true"
-                                                 process="@this"
-                                                 tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                                 update="@(.acoEditModal)"
-                                                 type="button"
-                                                 onclick="ajax:itemOverviewBean.actionStartAclChange(item)"
-                                                 oncomplete="PF('dlgAcl').show();"
-                                                 disabled="false"/>
+                                                             icon="glyphicon glyphicon-user"
+                                                             look="link"
+                                                             ajax="true"
+                                                             process="@this"
+                                                             tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                                             update="@(.acoEditModal)"
+                                                             type="button"
+                                                             onclick="ajax:itemOverviewBean.actionStartAclChange(item)"
+                                                             oncomplete="PF('dlgAcl').show();"
+                                                             disabled="false"/>
                                         </b:dataTableColumn>
                                     </b:dataTable>
                                 </b:column> 

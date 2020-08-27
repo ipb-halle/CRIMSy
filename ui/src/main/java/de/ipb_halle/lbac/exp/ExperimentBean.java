@@ -286,7 +286,7 @@ public class ExperimentBean implements Serializable {
      */
     public String getExperimentEditLabel() {
         if (this.experiment.getExperimentId() == null) {
-            return Messages.getString(MESSAGE_BUNDLE, "searchBtnDlg", null);
+            return Messages.getString(MESSAGE_BUNDLE, "NewBtnDlg", null);
         }
         if (this.templateMode) {
             return Messages.getString(MESSAGE_BUNDLE, "expEditCloneDlg", null);
