@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.items.bean.ContainerController;
 import de.ipb_halle.lbac.items.bean.ItemState;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,13 +50,10 @@ public class HistoryOperation {
         itemState.setCurrentHistoryDate(itemState.getPreviousKey(itemState.getCurrentHistoryDate()));
 
         for (ItemDifference diff : orderDifferences(itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()))) {
-
             if (diff instanceof ItemHistory) {
-
                 applyNegativeItemHistory((ItemHistory) diff);
             }
             if (diff instanceof ItemPositionHistoryList) {
-
                 applyNegativePositionDiff((ItemPositionHistoryList) diff);
             }
         }
@@ -74,25 +72,24 @@ public class HistoryOperation {
     }
 
     private void applyPositivePositionDiff(ItemPositionHistoryList diffs) {
-        for (ItemPositionsHistory diff : diffs.getPositionHistories()) {
-            if (diff.getColNew() != null) {
-                containerController.setItemAtPosition(diff.getRowNew(), diff.getColNew());
-            }
-            if (diff.getColOld() != null) {
-                containerController.removeItemFromPosition(diff.getRowOld(), diff.getColOld());
-            }
+        for (ItemPositionsHistory diff : diffs.getPositionRemoves()) {
+            containerController.removeItemFromPosition(diff.getRowOld(), diff.getColOld());
+        }
+        for (ItemPositionsHistory diff : diffs.getPositionAdds()) {
+            containerController.setItemAtPosition(diff.getRowNew(), diff.getColNew());
+
         }
     }
 
     private void applyNegativePositionDiff(ItemPositionHistoryList diffs) {
-        for (ItemPositionsHistory diff : diffs.getPositionHistories()) {
-            if (diff.getColNew() != null) {
-                containerController.removeItemFromPosition(diff.getRowNew(), diff.getColNew());
-            }
-            if (diff.getColOld() != null) {
-                containerController.setItemAtPosition(diff.getRowOld(), diff.getColOld());
-            }
+        for (ItemPositionsHistory diff : diffs.getPositionAdds()) {
+            containerController.removeItemFromPosition(diff.getRowNew(), diff.getColNew());
         }
+        for (ItemPositionsHistory diff : diffs.getPositionRemoves()) {
+            containerController.setItemAtPosition(diff.getRowOld(), diff.getColOld());
+
+        }
+
     }
 
     private void applyPositiveItemHistory(ItemHistory history) {
@@ -148,12 +145,11 @@ public class HistoryOperation {
             }
         }
         for (ItemDifference d : unorderedDiffs) {
-            if (!(d instanceof ItemPositionsHistory)) {
+            if (!(d instanceof ItemHistory)) {
                 orderedDiffs.add(d);
             }
         }
         return orderedDiffs;
-
     }
 
 }

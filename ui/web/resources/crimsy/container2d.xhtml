@@ -38,7 +38,7 @@
     <composite:implementation >
 
 
-        <p:panelGrid >
+        <p:panelGrid styleClass="containerCheckBoxes">
             <p:row>
                 <p:column>
                     <p:repeat 
@@ -68,8 +68,9 @@
                                 styleClass="checkbox-round"
                                 value="#{itemBean.containerController.itemPositions[x][y]}"
                                 disabled="#{itemBean.containerController.isContainerPlaceDisabled(x, y)}"
-                                title="#{itemBean.containerController.getToolTipForContainerPlace(x,y)}"
-                                />
+                                title="#{itemBean.containerController.getToolTipForContainerPlace(x,y)}">
+                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.clickCheckBox(x,y)}" />
+                            </p:selectBooleanCheckbox>
                         </p:column>
                     </p:repeat>
                 </p:row>

@@ -46,8 +46,8 @@ public class ContainerPositionService {
             + "VALUES("
             + ":itemid,"
             + ":containerid,"
-            + ":posY,"
-            + ":posX)";
+            + ":posX,"
+            + ":posY)";
 
     private final String SQL_DELETE_ITEM_IN_CONTAINER
             = "DELETE FROM item_positions "
@@ -56,8 +56,8 @@ public class ContainerPositionService {
     private final String SQL_CHECK_ITEM_AT_POSITION
             = "SELECT itemid "
             + "FROM item_positions "
-            + "WHERE itemrow=:row "
-            + "AND itemcol=:col "
+            + "WHERE itemcol=:row "
+            + "AND itemrow=:col "
             + "AND containerid=:containerid";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")

@@ -300,7 +300,7 @@ public class ContainerService implements Serializable {
             Integer x = (Integer) entity[1];
             Integer y = (Integer) entity[2];
             Item i = itemService.loadItemByIdWithoutContainer(itemid);
-            items[x][y][0] = i;
+            items[y][x][0] = i;
 
         }
 

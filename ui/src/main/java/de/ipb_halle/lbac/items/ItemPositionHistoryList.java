@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.items;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -27,19 +28,41 @@ import java.util.List;
  */
 public class ItemPositionHistoryList implements ItemDifference {
 
-    private List<ItemPositionsHistory> positionHistories = new ArrayList<>();
+    private List<ItemPositionsHistory> positionAdds = new ArrayList<>();
+    private List<ItemPositionsHistory> positionRemoves = new ArrayList<>();
 
     @Override
     public Date getMdate() {
-        return positionHistories.get(0).getmDate();
+        if (positionAdds.size() > 0) {
+            return positionAdds.get(0).getmDate();
+        } else {
+            return positionRemoves.get(0).getmDate();
+        }
+    }
+
+    public List<ItemPositionsHistory> getPositionAdds() {
+        return positionAdds;
     }
 
     public void addHistory(ItemPositionsHistory history) {
-        positionHistories.add(history);
+        if (Objects.equals(history.getRowNew(), null)) {
+            positionRemoves.add(history);
+
+        } else {
+            positionAdds.add(history);
+        }
     }
 
-    public List<ItemPositionsHistory> getPositionHistories() {
-        return positionHistories;
+    public void setPositionAdds(List<ItemPositionsHistory> positionAdds) {
+        this.positionAdds = positionAdds;
+    }
+
+    public List<ItemPositionsHistory> getPositionRemoves() {
+        return positionRemoves;
+    }
+
+    public void setPositionRemoves(List<ItemPositionsHistory> positionRemoves) {
+        this.positionRemoves = positionRemoves;
     }
 
 }

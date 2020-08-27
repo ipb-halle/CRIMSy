@@ -378,12 +378,15 @@ public class ItemServiceTest extends TestBase {
                 Assert.assertEquals(1.25, history.getAmountNew(), 0.001);
             } else {
                 ItemPositionHistoryList history = (ItemPositionHistoryList) d;
-                Assert.assertEquals(3, history.getPositionHistories().size());
-                for (ItemPositionsHistory h : history.getPositionHistories()) {
+                Assert.assertEquals(3, history.getPositionAdds().size() + history.getPositionRemoves().size());
+                for (ItemPositionsHistory h : history.getPositionRemoves()) {
                     boolean x = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 1) && Objects.equals(h.getRowOld(), 1);
                     boolean y = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 2) && Objects.equals(h.getRowOld(), 1);
+                    Assert.assertTrue(x || y);
+                }
+                for (ItemPositionsHistory h : history.getPositionAdds()) {
                     boolean z = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 1) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
-                    Assert.assertTrue(x || y || z);
+                    Assert.assertTrue(z);
                 }
             }
         }
@@ -406,8 +409,8 @@ public class ItemServiceTest extends TestBase {
                 Assert.assertEquals(c1.getId(), history.getParentContainerOld().getId());
             } else {
                 ItemPositionHistoryList history = (ItemPositionHistoryList) d;
-                Assert.assertEquals(1, history.getPositionHistories().size());
-                for (ItemPositionsHistory h : history.getPositionHistories()) {
+                Assert.assertEquals(1, history.getPositionRemoves().size());
+                for (ItemPositionsHistory h : history.getPositionRemoves()) {
                     boolean x = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 1) && Objects.equals(h.getRowOld(), 1);
                     Assert.assertTrue(x);
                 }
@@ -469,8 +472,8 @@ public class ItemServiceTest extends TestBase {
                 Assert.assertEquals(c1.getId(), history.getParentContainerOld().getId());
             } else {
                 ItemPositionHistoryList l = (ItemPositionHistoryList) d;
-                Assert.assertEquals(2, l.getPositionHistories().size());
-                for (ItemPositionsHistory h : l.getPositionHistories()) {
+                Assert.assertEquals(2, l.getPositionAdds().size());
+                for (ItemPositionsHistory h : l.getPositionAdds()) {
                     boolean x = Objects.equals(h.getColNew(), 0) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
                     boolean y = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
                     Assert.assertTrue(x || y);
@@ -506,8 +509,8 @@ public class ItemServiceTest extends TestBase {
                 Assert.assertNull(history.getParentContainerOld());
             } else {
                 ItemPositionHistoryList l = (ItemPositionHistoryList) d;
-                Assert.assertEquals(2, l.getPositionHistories().size());
-                for (ItemPositionsHistory h : l.getPositionHistories()) {
+                Assert.assertEquals(2, l.getPositionAdds().size());
+                for (ItemPositionsHistory h : l.getPositionAdds()) {
                     boolean x = Objects.equals(h.getColNew(), 0) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
                     boolean y = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
                     Assert.assertTrue(x || y);

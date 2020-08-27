@@ -128,6 +128,13 @@ public class ContainerController {
         }
     }
 
+    public void clickCheckBox(int x, int y) {
+        if (itemPositions[x][y]) {
+            itemPositions = new boolean[container.getDimensionIndex()[0]][container.getDimensionIndex()[1]];
+            itemPositions[x][y] = true;
+        }
+    }
+
     public String getToolTipForContainerPlace(int x, int y) {
         if (container.getItemAtPos(x, y, 0) != null) {
             return "ID: " + container.getItemAtPos(x, y, 0).getId();
@@ -150,17 +157,16 @@ public class ContainerController {
         }
     }
 
-    public void setItemAtPosition(int x, int y) {
+    public void setItemAtPosition(int y, int x) {
         itemPositions[x][y] = true;
     }
 
-    public void removeItemFromPosition(int x, int y) {
+    public void removeItemFromPosition(int y, int x) {
         itemPositions[x][y] = false;
     }
 
     public Container getContainer() {
         return container;
     }
-    
-    
+
 }
