@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.service;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
@@ -26,7 +29,7 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
@@ -115,19 +118,17 @@ public class CollectionServiceTest extends TestBase {
 
         ACList acl = new ACList();
         acl.setName("test");
-        acl.setId(UUID.randomUUID());
         acl.addACE(u, ACPermission.values());
 
         Collection col = new Collection();
         col.setNode(this.nodeService.getLocalNode());
         col.setName("Test_Collection1");
         col.setDescription("Test_Collection1_Description");
-        col.setId(UUID.randomUUID());
         col.setIndexPath("/doc/test.pdf");
         col.setACList(acl);
         col.setOwner(u);
 
-        collectionService.save(col);
+        col=collectionService.save(col);
         HashMap<String, Object> crits = new HashMap<>();
         crits.put("name", "Test_Collection1");
         List<Collection> loadedCols = collectionService.load(crits);

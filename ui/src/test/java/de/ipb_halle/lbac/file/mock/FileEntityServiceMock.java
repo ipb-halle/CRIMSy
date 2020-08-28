@@ -33,8 +33,8 @@ public class FileEntityServiceMock extends FileEntityService {
     }
 
     @Override
-    public void save(FileObject fileEntity) {
-
+    public FileObject save(FileObject fileEntity) {
+        return null;
     }
 
 }

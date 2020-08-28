@@ -30,13 +30,13 @@ import javax.persistence.Embeddable;
 public class ItemHistoryId implements Serializable {
 
     private int itemid;
-    private UUID actorid;
+    private Integer actorid;
     private Date mdate;
 
     public ItemHistoryId() {
     }
 
-    public ItemHistoryId(int itemid, UUID actorid, Date mdate) {
+    public ItemHistoryId(int itemid, Integer actorid, Date mdate) {
         this.itemid = itemid;
         this.actorid = actorid;
         this.mdate = mdate;
@@ -50,11 +50,11 @@ public class ItemHistoryId implements Serializable {
         this.itemid = itemid;
     }
 
-    public UUID getActorid() {
+    public Integer getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(Integer actorid) {
         this.actorid = actorid;
     }
 

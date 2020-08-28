@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.FileObject;
 import de.ipb_halle.lbac.entity.TermVector;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -83,19 +83,17 @@ public class FileEntityServiceTest extends TestBase {
 
         ACList acl = new ACList();
         acl.setName("test");
-        acl.setId(UUID.randomUUID());
         acl.addACE(u, ACPermission.values());
 
         Collection col = new Collection();
         col.setNode(this.nodeService.getLocalNode());
         col.setName("Test_Collection1");
         col.setDescription("Test_Collection1_Description");
-        col.setId(UUID.randomUUID());
         col.setIndexPath("/doc/test.pdf");
         col.setACList(acl);
         col.setOwner(u);
 
-        collectionService.save(col);
+        col=collectionService.save(col);
 
         FileObject fE = new FileObject();
         fE.setCollection(col);
@@ -104,10 +102,9 @@ public class FileEntityServiceTest extends TestBase {
         fE.setFilename("testFile.pdf");
         fE.setHash("testHash");
         fE.setName("testFile");
-        fE.setId(UUID.randomUUID());
         fE.setUser(u);
 
-        fileEntityService.save(fE);
+        fE=fileEntityService.save(fE);
 
         TermVector tv = new TermVector("testWord", fE.getId(), 3);
         fileEntityService.saveTermVectors(Arrays.asList(tv));
@@ -116,7 +113,6 @@ public class FileEntityServiceTest extends TestBase {
         termVectorEntityService.getTermVector(ids, 10);
 
         int sumOfWords = termVectorEntityService.getSumOfAllWordsFromAllDocs();
-        int i = 0;
 
         List<FileObject> lfo = fileEntityService.getAllFilesInCollection(col);
         assertEquals("Found one file", 1, lfo.size());

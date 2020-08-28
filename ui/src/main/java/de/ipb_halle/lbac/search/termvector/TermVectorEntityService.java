@@ -42,7 +42,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class TermVectorEntityService implements Serializable {
@@ -157,10 +158,10 @@ public class TermVectorEntityService implements Serializable {
      * hibernate except UUIDs only, can't cast Strings to UUIDs
      */
     @SuppressWarnings("unchecked")
-    public Map<UUID, Map<String, Integer>> getTermVectorForSearch(
-            List<UUID> docIds,
+    public Map<Integer, Map<String, Integer>> getTermVectorForSearch(
+            List<Integer> docIds,
             Set<String> searchTerms) {
-        Map<UUID, Map<String, Integer>> back = new HashMap<>();
+        Map<Integer, Map<String, Integer>> back = new HashMap<>();
 
         try {
             if (docIds.isEmpty()) {
@@ -254,7 +255,7 @@ public class TermVectorEntityService implements Serializable {
      */
     public void saveUnstemmedWordsOfDocument(
             List<StemmedWordOrigin> wordOrigins,
-            UUID documentId) {
+            Integer documentId) {
         for (StemmedWordOrigin swo : wordOrigins) {
             for (String s : swo.getOriginalWord()) {
                 this.em.createNativeQuery(SQL_INSERT_UNSTEMMED_WORD)
@@ -275,7 +276,7 @@ public class TermVectorEntityService implements Serializable {
      * @return
      */
     public List<StemmedWordOrigin> loadUnstemmedWordsOfDocument(
-            UUID documentId,
+            Integer documentId,
             String wordRoot) {
         List<StemmedWordOrigin> stemmedWords = new ArrayList<>();
 
@@ -303,7 +304,7 @@ public class TermVectorEntityService implements Serializable {
      * @return
      */
     public List<StemmedWordOrigin> loadUnstemmedWordsOfDocument(
-            UUID documentId,
+            Integer documentId,
             List<String> wordRoot) {
         List<StemmedWordOrigin> stemmedWords = new ArrayList<>();
         @SuppressWarnings("unchecked")

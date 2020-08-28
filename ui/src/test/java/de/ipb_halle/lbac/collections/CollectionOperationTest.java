@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.collections.mock.FileServiceMock;
 import de.ipb_halle.lbac.collections.mock.SolarAdminServiceMock;
 
 import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SolrSearcher;

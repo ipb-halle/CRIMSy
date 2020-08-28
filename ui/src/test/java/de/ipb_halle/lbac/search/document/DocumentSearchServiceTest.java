@@ -23,14 +23,14 @@ package de.ipb_halle.lbac.search.document;
  */
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.util.HashSet;

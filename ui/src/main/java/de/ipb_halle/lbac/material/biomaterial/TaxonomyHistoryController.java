@@ -18,12 +18,12 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;

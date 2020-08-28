@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -74,8 +74,8 @@ public class TaxonomyServiceTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         // Initialisieng the userbean for ownership of material
         UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
-        owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
         ownerid = owner.getId().toString();
         materialService.setUserBean(userBean);

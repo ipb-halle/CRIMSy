@@ -17,12 +17,12 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.lbac.admission.Member;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-
 
 public class ACList implements Serializable, Obfuscatable, DTO {
 
@@ -41,7 +41,7 @@ public class ACList implements Serializable, Obfuscatable, DTO {
      */
     private final static long serialVersionUID = 1L;
 
-    private UUID id;
+    private Integer id;
 
     /**
      * ACLists could be named
@@ -55,15 +55,12 @@ public class ACList implements Serializable, Obfuscatable, DTO {
      */
     private int permCode;
 
-    private Map<UUID, ACEntry> acEntries = new HashMap<>();
-
-    ;
+    private Map<Integer, ACEntry> acEntries = new HashMap<>();
 
     /**
-     * default constructor
+     * default contructor
      */
     public ACList() {
-        this.id = UUID.randomUUID();
     }
 
     public ACList(ACListEntity entity) {
@@ -71,8 +68,7 @@ public class ACList implements Serializable, Obfuscatable, DTO {
         this.name = entity.getName();
         this.permCode = entity.getPermCode();
     }
-    
-    
+
     /**
      * add a new ACE to the the ACList. If an ACEntry for Member m already
      * exists, it gets replaced.
@@ -93,10 +89,10 @@ public class ACList implements Serializable, Obfuscatable, DTO {
     public ACListEntity createEntity() {
         updatePermCode();
         return new ACListEntity()
-          .setId(id)
-          .setName(name)
-          .setPermCode(permCode);
-        
+                .setId(id)
+                .setName(name)
+                .setPermCode(permCode);
+
     }
 
     /**
@@ -104,7 +100,7 @@ public class ACList implements Serializable, Obfuscatable, DTO {
      *
      * @return
      */
-    public Map<UUID, ACEntry> getACEntries() {
+    public Map<Integer, ACEntry> getACEntries() {
         return this.acEntries;
     }
 
@@ -113,7 +109,7 @@ public class ACList implements Serializable, Obfuscatable, DTO {
      *
      * @return id
      */
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -188,7 +184,7 @@ public class ACList implements Serializable, Obfuscatable, DTO {
         if (acl.getACEntries().keySet().size() != this.acEntries.keySet().size()) {
             return false;
         }
-        Iterator<Map.Entry<UUID, ACEntry>> iter = this.acEntries.entrySet().iterator();
+        Iterator<Map.Entry<Integer, ACEntry>> iter = this.acEntries.entrySet().iterator();
         while (iter.hasNext()) {
             if (!acl.permContains(iter.next().getValue())) {
                 return false;
@@ -196,7 +192,8 @@ public class ACList implements Serializable, Obfuscatable, DTO {
         }
         return true;
     }
-/*
+
+    /*
      * @aces collection of ACEntries
      */
     public ACList setACEntries(java.util.Collection<ACEntry> aces) {
@@ -216,7 +213,7 @@ public class ACList implements Serializable, Obfuscatable, DTO {
      *
      * @return Returns the acList for chaining
      */
-    public ACList setId(UUID i) {
+    public ACList setId(Integer i) {
         this.id = i;
         return this;
     }
@@ -256,7 +253,7 @@ public class ACList implements Serializable, Obfuscatable, DTO {
      */
     public void updatePermCode() {
         int p = 0;
-        Iterator<Map.Entry<UUID, ACEntry>> iter = this.acEntries.entrySet().iterator();
+        Iterator<Map.Entry<Integer, ACEntry>> iter = this.acEntries.entrySet().iterator();
         while (iter.hasNext()) {
             p += iter.next().getValue().permCode();
         }

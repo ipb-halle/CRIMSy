@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.util.RichTextConverter;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.entity.Cloud;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CloudService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class ForumBean implements Serializable {
      * Triggers a new search for local and remote topics with their postings
      */
     public void refreshForumState() {
-        UUID idOfActiveTopic = null;
+        Integer idOfActiveTopic = null;
         if (activeTopic != null) {
             idOfActiveTopic = activeTopic.getId();
         }
@@ -246,7 +246,7 @@ public class ForumBean implements Serializable {
         return availableClouds;
     }
 
-    private void restoreActiveTopicFromId(UUID id) {
+    private void restoreActiveTopicFromId(Integer id) {
         if (id != null) {
             for (Topic t : searchState.getReadableTopics()) {
                 if (t.getId().equals(id)) {

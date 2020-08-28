@@ -61,23 +61,24 @@ public class ItemBean implements Serializable {
     private HistoryOperation historyOperation;
 
     @Inject
-    private PrintBean printBean;
+    protected PrintBean printBean;
 
     @Inject
-    private ItemOverviewBean itemOverviewBean;
-    @Inject
-    private ProjectService projectService;
+    protected ItemOverviewBean itemOverviewBean;
 
     @Inject
-    private ContainerService containerService;
-    @Inject
-    private ContainerPositionService containerPositionService;
+    protected ProjectService projectService;
 
     @Inject
-    private Navigator navigator;
+    protected ContainerService containerService;
+    @Inject
+    protected ContainerPositionService containerPositionService;
 
     @Inject
-    private ItemService itemService;
+    protected Navigator navigator;
+
+    @Inject
+    protected ItemService itemService;
 
     private ContainerController containerController;
 
@@ -90,7 +91,7 @@ public class ItemBean implements Serializable {
 
     private boolean commercialMaterial;
     @Inject
-    private UserBean userBean;
+    protected UserBean userBean;
 
     private Project project;
     //private Container container;
@@ -116,7 +117,7 @@ public class ItemBean implements Serializable {
     private boolean directContainer;
 
     private String containerName;
-    private Mode mode;
+    protected Mode mode;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -491,7 +492,11 @@ public class ItemBean implements Serializable {
             if (containerTypes.get(i).getRank() > 0) {
                 containerTypes.remove(i);
             } else {
-                containerTypes.get(i).setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + containerTypes.get(i).getName(), null));
+                try {
+                    containerTypes.get(i).setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + containerTypes.get(i).getName(), null));
+                } catch (Exception e) {
+                    logger.error("Could not set localized containerTypeName");
+                }
             }
         }
     }

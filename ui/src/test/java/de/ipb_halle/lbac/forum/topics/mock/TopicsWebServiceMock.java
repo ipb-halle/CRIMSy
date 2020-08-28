@@ -62,7 +62,7 @@ public class TopicsWebServiceMock {
         
         Posting p = new Posting();
         p.setCreated(new Date());
-        p.setId(UUID.randomUUID());
+        p.setId(100000);
         p.setOwner(request.getUser());
         p.setText("TestBeitrag");
         p.setTopic(t);

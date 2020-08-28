@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.container.bean;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;

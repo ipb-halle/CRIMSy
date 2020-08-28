@@ -63,7 +63,7 @@ public class CollectionWebServiceMock {
         CollectionList result = new CollectionList();
         Collection c = new Collection();
         c.setNode(nodeService.getLocalNode());
-        c.setId(UUID.randomUUID());
+        c.setId(-100000);
         
         c.setName("testCollectionFromRemote");
         result.setCollectionList(Arrays.asList(c));

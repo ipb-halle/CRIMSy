@@ -38,8 +38,7 @@ public class StorageClassHistoryEntity implements Serializable {
     private StorageClassHistoryId id;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID actorid;
+    private Integer actorid;
 
     @Column
     private String digest;
@@ -64,11 +63,11 @@ public class StorageClassHistoryEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getActorid() {
+    public Integer getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(Integer actorid) {
         this.actorid = actorid;
     }
 

@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.forum.postings;
 
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.forum.Posting;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;

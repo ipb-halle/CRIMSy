@@ -19,12 +19,11 @@ package de.ipb_halle.lbac.collections.mock;
 
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  *
@@ -49,7 +48,7 @@ public class FileEntityServiceMock extends FileEntityService {
     }
 
     @Override
-    public FileObject getFileEntity(UUID uuid) {
+    public FileObject getFileEntity(Integer id) {
         return new FileObject();
     }
 
@@ -68,12 +67,13 @@ public class FileEntityServiceMock extends FileEntityService {
     }
 
     @Override
-    public void save(FileObject fileEntity) {
-
+    public FileObject save(FileObject fileEntity) {
+        return null;
     }
+
     @Override
     public void delete(Collection collection) {
-        
+
     }
 
 }

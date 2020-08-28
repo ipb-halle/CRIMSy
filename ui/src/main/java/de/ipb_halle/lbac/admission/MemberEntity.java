@@ -15,32 +15,23 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
-
-import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.admission.IAdmissionSubSystem;
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
+package de.ipb_halle.lbac.admission;
 
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.EnumType;
-import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
  * Base class for users and groups Users and groups are managed hierarchically,
@@ -55,16 +46,18 @@ import org.apache.johnzon.mapper.JohnzonConverter;
 @DiscriminatorColumn(name = "memberType", discriminatorType = DiscriminatorType.STRING, length = 1)
 public abstract class MemberEntity {
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private UUID id;
+    private Integer id;
 
     @Column
     private String name;
 
     /**
-     * keeps track of the node id which is authoritative for this MemberEntity object
+     * keeps track of the node id which is authoritative for this MemberEntity
+     * object
      */
-    @Column(name="node_id")
+    @Column(name = "node_id")
     private UUID node;
 
     /**
@@ -94,7 +87,6 @@ public abstract class MemberEntity {
      * default constructor
      */
     public MemberEntity() {
-        this.id = UUID.randomUUID();
         this.modified = new Date();
     }
 
@@ -125,7 +117,7 @@ public abstract class MemberEntity {
         return getId() != null ? getId().hashCode() : 0;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -157,7 +149,7 @@ public abstract class MemberEntity {
 
     public abstract boolean isUser();
 
-    public void setId(UUID i) {
+    public void setId(Integer i) {
         this.id = i;
     }
 

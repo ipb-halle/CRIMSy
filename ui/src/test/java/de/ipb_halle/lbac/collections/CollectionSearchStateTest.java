@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.entity.Collection;
 import java.util.Arrays;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,11 +29,11 @@ import org.junit.Test;
 public class CollectionSearchStateTest {
 
     @Test
-    public void addCollectionsTest() {
+    public void addSameCollectionsTest() {
         CollectionSearchState collSearchState = new CollectionSearchState();
-        UUID id = UUID.randomUUID();
+     
         Collection coll1 = new Collection();
-        coll1.setId(id);
+        coll1.setId(-1000);
         coll1.setCountDocs(0L);
         coll1.setDescription("Test Collection");
         coll1.setIndexPath("none");
@@ -44,7 +43,7 @@ public class CollectionSearchStateTest {
         coll1.setStoragePath("none");
 
         Collection coll2 = new Collection();
-        coll2.setId(id);
+        coll2.setId(-1000);
         coll2.setCountDocs(0L);
         coll2.setDescription("Test Collection");
         coll2.setIndexPath("none");

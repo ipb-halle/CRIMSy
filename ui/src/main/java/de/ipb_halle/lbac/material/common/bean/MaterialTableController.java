@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.HashMap;

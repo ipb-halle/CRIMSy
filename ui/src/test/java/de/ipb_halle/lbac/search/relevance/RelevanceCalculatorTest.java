@@ -119,7 +119,7 @@ public class RelevanceCalculatorTest {
             n.setId(UUID.randomUUID());
             n.setInstitution(institut);
             Collection c = new Collection();
-            c.setId(UUID.randomUUID());
+            c.setId(100000);
             c.setName("TestColl" + i);
             d.setCollection(c);
             d.setCollectionId(c.getId());

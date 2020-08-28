@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +34,7 @@ public class MaterialIndexDifference implements MaterialDifference {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private int materialId;
     protected Date mDate;
-    protected UUID actorID;
+    protected Integer actorID;
     protected List<String> valuesOld = new ArrayList<>();
     protected List<String> valuesNew = new ArrayList<>();
     protected List<String> languageOld = new ArrayList<>();
@@ -68,12 +67,12 @@ public class MaterialIndexDifference implements MaterialDifference {
     }
 
     @Override
-    public UUID getUserId() {
+    public Integer getUserId() {
         return actorID;
     }
 
     @Override
-    public void initialise(int materialId, UUID actorID, Date mDate) {
+    public void initialise(int materialId, Integer actorID, Date mDate) {
         this.materialId = materialId;
         this.mDate = mDate;
         this.actorID = actorID;
@@ -168,7 +167,7 @@ public class MaterialIndexDifference implements MaterialDifference {
     public List<MaterialIndexHistoryEntity> createDbEntities(
             int materialId,
             Date mDate,
-            UUID userID) {
+            Integer userID) {
         List<MaterialIndexHistoryEntity> dbEntities = new ArrayList<>();
         for (int i = 0; i < getEntries(); i++) {
             MaterialIndexHistoryEntity entity = new MaterialIndexHistoryEntity();
@@ -197,7 +196,7 @@ public class MaterialIndexDifference implements MaterialDifference {
         return mDate;
     }
 
-    public UUID getActorID() {
+    public Integer getActorID() {
         return actorID;
     }
 

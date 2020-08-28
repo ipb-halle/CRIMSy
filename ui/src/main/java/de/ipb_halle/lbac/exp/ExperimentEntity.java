@@ -51,10 +51,10 @@ public class ExperimentEntity implements Serializable {
     private String description;
 
     @Column
-    private UUID ownerid;
+    private Integer ownerid;
 
     @Column
-    private UUID aclist_id;
+    private Integer aclist_id;
 
     @Column
     private boolean template;
@@ -78,11 +78,11 @@ public class ExperimentEntity implements Serializable {
         return this.experimentid;
     }
 
-    public UUID getOwnerId() {
+    public Integer getOwnerId() {
         return ownerid;
     }
 
-    public UUID getACListId() {
+    public Integer getACListId() {
         return aclist_id;
     }
 
@@ -110,12 +110,12 @@ public class ExperimentEntity implements Serializable {
         return this;
     }
 
-    public ExperimentEntity setOwnerId(UUID ownerid) {
+    public ExperimentEntity setOwnerId(Integer ownerid) {
         this.ownerid = ownerid;
         return this;
     }
 
-    public ExperimentEntity setACListId(UUID aclist_id) {
+    public ExperimentEntity setACListId(Integer aclist_id) {
         this.aclist_id = aclist_id;
         return this;
     }

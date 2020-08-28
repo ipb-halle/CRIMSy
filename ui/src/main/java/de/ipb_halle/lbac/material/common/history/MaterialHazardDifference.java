@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialHistEntity
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 public class MaterialHazardDifference implements MaterialDifference {
     
     protected int materialID;
-    protected UUID actorID;
+    protected Integer actorID;
     protected Date mDate;
     protected String digest;
     protected ModificationType action;
@@ -94,7 +93,7 @@ public class MaterialHazardDifference implements MaterialDifference {
     }
     
     @Override
-    public void initialise(int materialId, UUID actorID, Date mDate) {
+    public void initialise(int materialId, Integer actorID, Date mDate) {
         this.materialID = materialId;
         this.actorID = actorID;
         this.mDate = mDate;
@@ -113,11 +112,11 @@ public class MaterialHazardDifference implements MaterialDifference {
         this.materialID = materialID;
     }
     
-    public UUID getActorID() {
+    public Integer getActorID() {
         return actorID;
     }
     
-    public void setActorID(UUID actorID) {
+    public void setActorID(Integer actorID) {
         this.actorID = actorID;
     }
     
@@ -180,7 +179,7 @@ public class MaterialHazardDifference implements MaterialDifference {
     }
 
     @Override
-    public UUID getUserId() {
+    public Integer getUserId() {
         return actorID;
     }
     

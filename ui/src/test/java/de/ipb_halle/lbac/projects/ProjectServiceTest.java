@@ -23,8 +23,8 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -65,8 +65,8 @@ public class ProjectServiceTest extends TestBase {
         p.setBudget(1000d);
         p.setDescription("Description of biochemical test project");
 
-        Group g = memberService.loadGroupById(UUID.fromString(GlobalAdmissionContext.PUBLIC_GROUP_ID));
-        User u = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        Group g = memberService.loadGroupById(GlobalAdmissionContext.PUBLIC_GROUP_ID);
+        User u = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
         ACList projectAcList = new ACList();
 

@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
@@ -55,8 +55,8 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -503,8 +503,8 @@ public class MaterialService implements Serializable {
     public void saveEditedMaterial(
             Material newMaterial,
             Material oldMaterial,
-            UUID projectAcl,
-            UUID actorId) throws Exception {
+            Integer projectAcl,
+            Integer actorId) throws Exception {
         Date modDate = new Date();
 
         List<MaterialDifference> diffs = comparator.compareMaterial(oldMaterial, newMaterial);
@@ -533,9 +533,9 @@ public class MaterialService implements Serializable {
      */
     public void saveMaterialToDB(
             Material m,
-            UUID projectAclId,
+            Integer projectAclId,
             Map<MaterialDetailType, ACList> detailTemplates,
-            UUID onwerId) {
+            Integer onwerId) {
 
         saveMaterialOverview(m, projectAclId, onwerId);
         saveMaterialNames(m);
@@ -565,7 +565,7 @@ public class MaterialService implements Serializable {
      */
     public void saveMaterialToDB(
             Material m,
-            UUID projectAclId,
+            Integer projectAclId,
             Map<MaterialDetailType, ACList> detailTemplates) {
         saveMaterialToDB(
                 m,
@@ -583,9 +583,10 @@ public class MaterialService implements Serializable {
      *
      * @param m
      * @param projectAclId
+     * @param ownerId
      * @return
      */
-    protected Material saveMaterialOverview(Material m, UUID projectAclId, UUID ownerId) {
+    protected Material saveMaterialOverview(Material m, Integer projectAclId, Integer ownerId) {
         MaterialEntity mE = new MaterialEntity();
         mE.setCtime(new Date());
         mE.setMaterialtypeid(m.getType().getId());
@@ -686,8 +687,8 @@ public class MaterialService implements Serializable {
      */
     protected void updateMaterialOverview(
             Material m,
-            UUID projectAclId,
-            UUID userId) {
+            Integer projectAclId,
+            Integer userId) {
         MaterialEntity mE = new MaterialEntity();
         mE.setMaterialid(m.getId());
         mE.setCtime(m.getCreationTime());

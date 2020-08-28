@@ -44,8 +44,7 @@ public class MaterialDetailRightEntity implements Serializable {
     private int materialid;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID aclistid;
+    private Integer aclistid;
 
     @Column
     private int materialtypeid;
@@ -66,11 +65,11 @@ public class MaterialDetailRightEntity implements Serializable {
         this.materialid = materialid;
     }
 
-    public UUID getAclistid() {
+    public Integer getAclistid() {
         return aclistid;
     }
 
-    public void setAclistid(UUID aclistid) {
+    public void setAclistid(Integer aclistid) {
         this.aclistid = aclistid;
     }
 

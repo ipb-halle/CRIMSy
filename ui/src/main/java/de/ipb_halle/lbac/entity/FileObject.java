@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -25,7 +26,7 @@ import java.util.UUID;
 public class FileObject implements Serializable, DTO {
 
     private final static long serialVersionUID = 1L;
-    private UUID id;
+    private Integer id;
     private String name;
     private String filename;
     private String hash;
@@ -38,7 +39,7 @@ public class FileObject implements Serializable, DTO {
      * default constructor
      */
     public FileObject() {
-        this.id = UUID.randomUUID();
+     
     }
 
     /**
@@ -75,11 +76,11 @@ public class FileObject implements Serializable, DTO {
     /*
      * getter & setter
      */
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

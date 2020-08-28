@@ -261,7 +261,7 @@ public class DocumentServlet extends HttpServlet {
 
         UUID nodeId = UUID.fromString(request.getParameterMap().get("nodeId")[0]);
 
-        UUID collectionId = UUID.fromString(request.getParameterMap().get("collectionId")[0]);
+        Integer collectionId =Integer.valueOf(request.getParameterMap().get("collectionId")[0]);
 
         String path = request.getParameterMap().get("path")[0];
         if (path == null) {

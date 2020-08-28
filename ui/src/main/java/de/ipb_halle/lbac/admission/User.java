@@ -15,17 +15,17 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.entity.Obfuscatable;
 import java.io.Serializable;
-import java.util.UUID;
-
-import static de.ipb_halle.lbac.admission.GlobalAdmissionContext.PUBLIC_ACCOUNT_ID;
+import java.util.Objects;
 
 public class User extends Member implements Serializable, Obfuscatable, DTO {
 
     private final static long serialVersionUID = 1L;
-    private final static UUID publicAccountId = UUID.fromString(PUBLIC_ACCOUNT_ID);
 
     private String email;
 
@@ -38,7 +38,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO {
     /* default constructor */
     public User() {
         super();
-     }
+    }
 
     /*
      * DTO constructor
@@ -84,7 +84,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO {
     }
 
     public boolean isPublicAccount() {
-        return getId().equals(User.publicAccountId);
+        return Objects.equals(getId(), GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
     @Override

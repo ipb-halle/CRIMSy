@@ -22,11 +22,11 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -207,9 +207,9 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void removeAceFromProjectACL(ACEntry ace) {
-        UUID entryToRemove = null;
+        Integer entryToRemove = null;
 
-        for (UUID id : this.projectACL.getACEntries().keySet()) {
+        for (Integer id : this.projectACL.getACEntries().keySet()) {
             if (this.projectACL.getACEntries().get(id).getMemberId().equals(ace.getMemberId())) {
                 entryToRemove = id;
             }
@@ -221,9 +221,9 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void removeAceFromRoleTemplateACL(ACEntry ace, String materialDetail) {
-        UUID entryToRemove = null;
+        Integer entryToRemove = null;
         ACList aclInFocus = detailTemplates.get(MaterialDetailType.valueOf(materialDetail));
-        for (UUID id : aclInFocus.getACEntries().keySet()) {
+        for (Integer id : aclInFocus.getACEntries().keySet()) {
             if (aclInFocus.getACEntries().get(id).getMemberId().equals(ace.getMemberId())) {
                 entryToRemove = id;
             }

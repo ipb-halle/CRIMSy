@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.service;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
@@ -25,9 +28,9 @@ import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
@@ -61,7 +64,7 @@ public class ACListServiceTest extends TestBase {
 
     private User[] users;
     private Group[] groups;
-    private UUID[] aclIds;
+    private Integer[] aclIds;
 
     @Inject
     protected MembershipService membershipService;
@@ -160,7 +163,7 @@ public class ACListServiceTest extends TestBase {
     }
 
     private void createACLs() {
-        UUID[] a = new UUID[2];
+        Integer[] a = new Integer[2];
 
         // Admin has full access; deptA can READ,EDIT,CREATE, deptA head can also DELETE
         ACList acl = new ACList().addACE(this.users[0], new ACPermission[]{

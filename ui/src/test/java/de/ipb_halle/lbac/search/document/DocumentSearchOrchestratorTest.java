@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.search.mocks.DocumentSearchEndpointMock;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,12 +36,9 @@ import org.junit.Test;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
@@ -98,7 +94,7 @@ public class DocumentSearchOrchestratorTest extends TestBase {
         nodeService.save(node);
 
         Collection col = new Collection();
-        col.setId(UUID.randomUUID());
+        col.setId(-100000);
 
         col.setNode(node);
         collList.add(col);

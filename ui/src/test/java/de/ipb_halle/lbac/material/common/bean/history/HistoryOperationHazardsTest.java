@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,6 +55,7 @@ public class HistoryOperationHazardsTest {
     HistoryOperation instance;
     MaterialIndexDifference mid;
     MaterialIndexBean mib;
+    Random random=new Random();
 
     @Before
     public void init() {
@@ -67,7 +69,8 @@ public class HistoryOperationHazardsTest {
         mib = new MaterialIndexBean();
         s.setIndices(indices);
         mid = new MaterialIndexDifference();
-        mid.initialise(0, UUID.randomUUID(), currentDate);
+       
+        mid.initialise(0,random.nextInt(100000), currentDate);
         instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageClassInformation());
     }
 
@@ -81,7 +84,7 @@ public class HistoryOperationHazardsTest {
     public void test01_HazardDifferenceOperations() {
         Calendar c = Calendar.getInstance();
         c.setTime(currentDate);
-        UUID userID = UUID.randomUUID();
+        Integer userID = random.nextInt(100000);
 
         //First edit: add corrosive
         MaterialHazardDifference d1 = new MaterialHazardDifference();

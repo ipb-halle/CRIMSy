@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 
 /**
  *

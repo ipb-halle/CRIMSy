@@ -17,9 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.MemberType;
-import de.ipb_halle.lbac.entity.User;
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -51,7 +49,7 @@ public class LdapObject implements Serializable {
     /**
      * LBAC id (may be null for users not yet known to LBAC)
      */
-    private UUID id;
+    private Integer id;
 
     /**
      * list of DN's, this object is memberOf
@@ -164,7 +162,7 @@ public class LdapObject implements Serializable {
     /**
      * @return id
      */
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -207,7 +205,7 @@ public class LdapObject implements Serializable {
         return this;
     }
 
-    public LdapObject setId(UUID u) {
+    public LdapObject setId(Integer u) {
         this.id = u;
         return this;
     }

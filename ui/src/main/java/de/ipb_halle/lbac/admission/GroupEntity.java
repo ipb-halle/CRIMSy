@@ -15,42 +15,23 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
 /**
  * Represents a List of Users or other Groups as members
  *
  * @author fbroda
  */
-public class Group extends Member implements Serializable, DTO {
+@Entity
+@DiscriminatorValue("G")
+public class GroupEntity extends MemberEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
-
-    /* default constructor */
-    public Group() {
-        super();
-    }
-
-    /*
-     * DTO constructor
-     */
-    public Group(GroupEntity ge, Node node) {
-        super((MemberEntity) ge, node);
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public GroupEntity createEntity() {
-        GroupEntity g = new GroupEntity();
-        setMemberEntity(g);
-        return g;
-    }
 
     @Override
     public boolean isGroup() {

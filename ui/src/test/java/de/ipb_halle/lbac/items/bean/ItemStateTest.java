@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
@@ -120,7 +120,7 @@ public class ItemStateTest {
         Project project = new Project();
         project.setId(1);
         ACList acl = new ACList();
-        acl.setId(UUID.randomUUID());
+        acl.setId(1000);
         acl.setName("test-acl");
         Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
         Item item = new Item();
@@ -134,7 +134,7 @@ public class ItemStateTest {
         item.setDescription("description");
         item.setMaterial(s);
         User u = new User();
-        u.setId(UUID.randomUUID());
+        u.setId(1001);
         u.setName("testUser");
         item.setOwner(u);
         item.setProject(project);

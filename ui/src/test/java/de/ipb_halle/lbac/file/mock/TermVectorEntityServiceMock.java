@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.file.mock;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.util.List;
-import java.util.UUID;
 
 /**
  *
@@ -29,7 +28,7 @@ import java.util.UUID;
 public class TermVectorEntityServiceMock extends TermVectorEntityService {
 
     @Override
-    public void saveUnstemmedWordsOfDocument(List<StemmedWordOrigin> wordOrigins, UUID uuid) {
+    public void saveUnstemmedWordsOfDocument(List<StemmedWordOrigin> wordOrigins, Integer id) {
 
     }
 }

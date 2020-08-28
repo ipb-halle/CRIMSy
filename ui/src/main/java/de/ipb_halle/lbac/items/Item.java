@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.device.print.LabelType;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.project.Project;

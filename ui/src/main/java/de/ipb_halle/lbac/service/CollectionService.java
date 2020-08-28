@@ -20,11 +20,13 @@ package de.ipb_halle.lbac.service;
 /**
  * CollectionService provides service to load, save, update collections.
  */
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.CollectionEntity;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import java.math.BigInteger;
 
 import java.util.ArrayList;
@@ -50,6 +52,10 @@ import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class CollectionService {
+
+    String SQL_FILE_COUNT = "SELECT COUNT(*) "
+            + "FROM FILES "
+            + "WHERE collection_id=:collectionId";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -106,12 +112,8 @@ public class CollectionService {
      * @param collectionId
      * @return
      */
-    public long getFileCount(UUID collectionId) {
-        String sql = "SELECT COUNT(*) "
-                + "FROM FILES "
-                + "WHERE collection_id=:collectionId";
-
-        BigInteger cnt = (BigInteger) this.em.createNativeQuery(sql)
+    public long getFileCount(Integer collectionId) {
+        BigInteger cnt = (BigInteger) this.em.createNativeQuery(SQL_FILE_COUNT)
                 .setParameter("collectionId", collectionId)
                 .getSingleResult();
         return cnt.longValue();
@@ -216,7 +218,7 @@ public class CollectionService {
      * @param id the collectionId
      * @return the Collection object
      */
-    public Collection loadById(UUID id) {
+    public Collection loadById(Integer id) {
         CollectionEntity entity = this.em.find(CollectionEntity.class, id);
         if (entity == null) {
             throw new NullPointerException("No local collection found with id " + id.toString());

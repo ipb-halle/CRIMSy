@@ -22,12 +22,12 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.postings.PostingWebClient;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -59,6 +59,8 @@ public class ForumServiceTest extends TestBase {
     @Inject
     private MembershipService memberShipService;
 
+    private User publicUser;
+
     public ForumServiceTest() {
 
     }
@@ -70,18 +72,18 @@ public class ForumServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("DELETE FROM topics");
         entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id>1");
         entityManagerService.doSqlUpdate("DELETE FROM clouds WHERE id>1");
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
     @Test
     public void test01_createNewTopic() throws Exception {
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         assert (instance != null);
         assert (memberService != null);
         assert (memberShipService != null);
 
         Cloud cloud = cloudService.load().get(0);
 
-        UUID id = instance.createNewTopic(
+        Integer id = instance.createNewTopic(
                 "Test Topic",
                 TopicCategory.OTHER,
                 publicUser,
@@ -94,8 +96,8 @@ public class ForumServiceTest extends TestBase {
                 + "cast(id as VARCHAR), "
                 + "name,"
                 + "category, "
-                + "cast(owner_id as VARCHAR), "
-                + "cast(aclist_id as VARCHAR), "
+                + "owner_id , "
+                + "aclist_id ), "
                 + "cast(node_id as VARCHAR), "
                 + "cloud_name FROM topics");
         Assert.assertEquals("Exact one topic must be found", 1, o.size());
@@ -106,10 +108,10 @@ public class ForumServiceTest extends TestBase {
         Assert.assertEquals("name does not match", "Test Topic", name);
         String category = (String) z[2];
         Assert.assertEquals("category does not match", "OTHER", category);
-        String user_id = (String) z[3];
-        Assert.assertEquals("Owner-ID does not match", publicUser.getId(), UUID.fromString(user_id));
-        String owner_id = (String) z[4];
-        Assert.assertEquals("ACL-ID does not match", instance.getPublicReadWriteList().getId(), UUID.fromString(owner_id));
+        Integer user_id = (Integer) z[3];
+        Assert.assertEquals("Owner-ID does not match", publicUser.getId(), user_id);
+        Integer owner_id = (Integer) z[4];
+        Assert.assertEquals("ACL-ID does not match", instance.getPublicReadWriteList().getId(), owner_id);
         String node_id = (String) z[5];
         Assert.assertEquals("Node-ID does not match", nodeService.getLocalNode().getId(), UUID.fromString(node_id));
         String cloud_name = (String) z[6];
@@ -122,7 +124,6 @@ public class ForumServiceTest extends TestBase {
      */
     @Test
     public void test02_addPostingToTopic() throws Exception {
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         User idOfUser2 = createUser(
                 "forumuser1",
                 "forumuser1");
@@ -148,9 +149,6 @@ public class ForumServiceTest extends TestBase {
     @SuppressWarnings("unchecked")
     @Test
     public void test03_loadReadableTopics() {
-
-        // entityManagerService.doSqlQuery("DELETE FROM ")
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         Cloud cloud1 = cloudService.load().get(0);
         Cloud cloud2 = new Cloud();
         cloud2.setName("Cloud2");

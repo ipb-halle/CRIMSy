@@ -15,18 +15,19 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.service;
+package de.ipb_halle.lbac.admission;
 
 /**
  * MemberService provides service to load, save, update users and groups.
  */
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.GroupEntity;
-import de.ipb_halle.lbac.entity.Member;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.GroupEntity;
+import de.ipb_halle.lbac.admission.Member;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.entity.UserEntity;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.UserEntity;
+import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -234,7 +235,7 @@ public class MemberService implements Serializable {
      * @param id group id
      * @return the Group object
      */
-    public Group loadGroupById(UUID id) {
+    public Group loadGroupById(Integer id) {
         GroupEntity ge = this.em.find(GroupEntity.class, id);
         if (ge != null) {
             Node node = this.nodeService.loadById(ge.getNode());
@@ -249,7 +250,7 @@ public class MemberService implements Serializable {
      * @param id user id
      * @return the User object
      */
-    public User loadUserById(UUID id) {
+    public User loadUserById(Integer id) {
         UserEntity ue = this.em.find(UserEntity.class, id);
         if (ue != null) {
             Node node = this.nodeService.loadById(ue.getNode());
@@ -263,7 +264,7 @@ public class MemberService implements Serializable {
      * @param id
      * @return
      */
-    public Member loadMemberById(UUID id) {
+    public Member loadMemberById(Integer id) {
         Member member = loadGroupById(id);
         if (member == null) {
             return loadUserById(id);

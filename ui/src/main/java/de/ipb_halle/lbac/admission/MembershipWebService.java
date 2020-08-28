@@ -30,12 +30,8 @@ package de.ipb_halle.lbac.admission;
  * <li> passwords and other sensitive information is wiped
  * </ul>
  */
-import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
@@ -56,7 +52,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Provides a webservice endpoint for propagating user and groups from a local
@@ -208,7 +205,7 @@ public class MembershipWebService extends LbacWebService {
             Set<Group> gs,
             Node localNode) {
         try {
-            Map<UUID, Membership> nonLocalGroupMemberships = this.membershipService.loadMemberOf(remoteUser)
+            Map<Integer, Membership> nonLocalGroupMemberships = this.membershipService.loadMemberOf(remoteUser)
                     .stream()
                     .filter(m -> m.getGroup().isGroup()) // only Membership objects with groups
                     .filter(m -> !m.getGroup().getNode().equals(localNode)) // only Memberships with non-local group 

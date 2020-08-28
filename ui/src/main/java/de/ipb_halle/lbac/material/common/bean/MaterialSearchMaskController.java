@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.V2000;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

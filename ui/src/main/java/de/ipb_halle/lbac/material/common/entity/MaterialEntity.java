@@ -53,12 +53,10 @@ public class MaterialEntity implements Serializable {
     private Date ctime;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID aclist_id;
+    private Integer aclist_id;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID ownerid;
+    private Integer ownerid;
 
     @Column
     private boolean deactivated;
@@ -89,19 +87,19 @@ public class MaterialEntity implements Serializable {
         this.ctime = ctime;
     }
 
-    public UUID getAclist_id() {
+    public Integer getAclist_id() {
         return aclist_id;
     }
 
-    public void setAclist_id(UUID aclist_id) {
+    public void setAclist_id(Integer aclist_id) {
         this.aclist_id = aclist_id;
     }
 
-    public UUID getOwnerid() {
+    public Integer getOwnerid() {
         return ownerid;
     }
 
-    public void setOwnerid(UUID ownerid) {
+    public void setOwnerid(Integer ownerid) {
         this.ownerid = ownerid;
     }
 

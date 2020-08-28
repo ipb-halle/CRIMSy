@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.container.service;
 
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerNesting;
 import de.ipb_halle.lbac.container.ContainerType;

@@ -19,12 +19,7 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 
-import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.Membership;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
@@ -38,7 +33,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Named("userMgrBean")
 @SessionScoped
@@ -126,7 +122,7 @@ public class UserMgrBean implements Serializable {
         this.user = this.memberService.save(this.user);
         this.tempPassword = "";
         Group publicGroup = memberService.loadGroupById(
-                UUID.fromString(GlobalAdmissionContext.PUBLIC_GROUP_ID));
+                GlobalAdmissionContext.PUBLIC_GROUP_ID);
 
         this.membershipService.addMembership(publicGroup, user);
         initUser();

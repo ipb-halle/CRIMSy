@@ -25,13 +25,13 @@ import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.Membership;
@@ -148,7 +148,7 @@ public class MembershipWebServiceTest extends TestBase {
         assert (webService != null);
 
         Cloud c = cloudService.loadByName(TESTCLOUD);
-        CloudNode cn = cloudNodeService.loadCloudNode(c, nodeService.getLocalNode()); 
+        CloudNode cn = cloudNodeService.loadCloudNode(c, nodeService.getLocalNode());
         final WebClient wc = SecureWebClientBuilder.createWebClient(
                 cn,
                 "members");
@@ -168,11 +168,10 @@ public class MembershipWebServiceTest extends TestBase {
         User u = createUser("testUser", "testUser");
 
         Group group1 = createGroup("group1", n, memberService, membershipService);
-        membershipService.addMembership(group1,u);
+        membershipService.addMembership(group1, u);
 
-        UUID groupID = UUID.randomUUID();
         Group remoteGroup2 = new Group();
-        remoteGroup2.setId(groupID);
+        remoteGroup2.setId(-1000);
         remoteGroup2.setName("group2");
         remoteGroup2.setNode(n);
         remoteGroup2.setSubSystemData("/");
@@ -180,14 +179,14 @@ public class MembershipWebServiceTest extends TestBase {
         Set<Group> groupSet = new HashSet<>();
         groupSet.add(remoteGroup2);
 
-        Group publicGroup = memberService.loadGroupById(UUID.fromString(GlobalAdmissionContext.PUBLIC_GROUP_ID));
+        Group publicGroup = memberService.loadGroupById(GlobalAdmissionContext.PUBLIC_GROUP_ID);
         groupSet.add(publicGroup);
 
         Set<Membership> memberships = membershipService.loadMemberOf(u);
         for (Membership m : memberships) {
             membershipService.removeMembership(m);
         }
-        membershipService.addMembership(group1,u );
+        membershipService.addMembership(group1, u);
 
         LbacWebClient client = new LbacWebClient();
         WebRequestSignature signature = client.createWebRequestSignature(keymanager.getLocalPrivateKey(TESTCLOUD));

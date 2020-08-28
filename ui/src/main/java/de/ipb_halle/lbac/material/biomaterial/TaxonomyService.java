@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -132,13 +132,14 @@ public class TaxonomyService implements Serializable {
 
             Object[] o = (Object[]) materialEntity.get(0);
 
+            Integer userId = (Integer) (o[2]);
             Taxonomy t = new Taxonomy(
                     entity.getId(),
                     materialService.loadMaterialNamesById(entity.getId()),
                     new HazardInformation(),
                     new StorageClassInformation(),
                     taxonomyHierarchy,
-                    memberService.loadUserById(UUID.fromString((String) o[2])),
+                    memberService.loadUserById(userId),
                     new Date(((Timestamp) o[0]).getTime()));
             t.setLevel(new TaxonomyLevel(em.find(TaxonomyLevelEntity.class, entity.getLevel())));
 

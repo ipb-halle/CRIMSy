@@ -19,13 +19,7 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Member;
 import de.ipb_halle.lbac.entity.Membership;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;

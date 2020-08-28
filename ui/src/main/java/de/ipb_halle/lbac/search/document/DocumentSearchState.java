@@ -39,7 +39,7 @@ public class DocumentSearchState implements Serializable {
     private Logger LOGGER = LogManager.getLogger(DocumentSearchState.class);
     private int totalDocs = 0;
     private List<Document> foundDocuments = Collections.synchronizedList(new ArrayList<>());
-    private Set<UUID> unfinishedCollectionRequests = new HashSet<>();
+    private Set<Integer> unfinishedCollectionRequests = new HashSet<>();
     private SearchStatistic stats = new SearchStatistic();
 
     @PostConstruct
@@ -72,11 +72,11 @@ public class DocumentSearchState implements Serializable {
         this.foundDocuments = foundDocuments;
     }
 
-    public Set<UUID> getUnfinishedCollectionRequests() {
+    public Set<Integer> getUnfinishedCollectionRequests() {
         return unfinishedCollectionRequests;
     }
 
-    public void setUnfinishedCollectionRequests(Set<UUID> unfinishedNodeRequests) {
+    public void setUnfinishedCollectionRequests(Set<Integer> unfinishedNodeRequests) {
         this.unfinishedCollectionRequests = unfinishedNodeRequests;
     }
 

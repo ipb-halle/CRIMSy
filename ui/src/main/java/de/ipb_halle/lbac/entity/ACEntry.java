@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.lbac.admission.Member;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +158,7 @@ public class ACEntry implements DTO, Serializable, Obfuscatable {
      *
      * @return
      */
-    public UUID getACListId() {
+    public Integer getACListId() {
         return (this.aclist != null) ? this.aclist.getId() : null;
     }
 
@@ -171,7 +172,7 @@ public class ACEntry implements DTO, Serializable, Obfuscatable {
     /**
      * @return the member Id or null if member is not set.
      */
-    public UUID getMemberId() {
+    public Integer getMemberId() {
         return (this.member != null) ? this.member.getId() : null;
     }
 

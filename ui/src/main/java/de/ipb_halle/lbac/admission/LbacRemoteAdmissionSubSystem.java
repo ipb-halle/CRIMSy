@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.User;
-
 public class LbacRemoteAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
     private final AdmissionSubSystemType subSystemType;

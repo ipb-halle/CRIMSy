@@ -17,12 +17,9 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Member;
 import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.MemberType;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,7 +84,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             // in following steps
             u.setId(user.getId());
             // map the LdapObjects to Group, map might contain 'latent' objects
-            Map<UUID, Member> ldapUuidMap = getLdapGroups(ldapObjects, bean);
+            Map<Integer, Member> ldapUuidMap = getLdapGroups(ldapObjects, bean);
             ldapUuidMap.put(user.getId(), user);
 
             // compute the LDAP Memberships
@@ -147,7 +144,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * @param ldapUuidMap a map of LBAC objects mapped by id (UUID)
      * @return a map of memberships mapped by groupId|memberId
      */
-    private Map<String, Membership> getLdapMemberships(Map <String, LdapObject> ldapObjects, Map<UUID, Member> ldapUuidMap) {
+    private Map<String, Membership> getLdapMemberships(Map <String, LdapObject> ldapObjects, Map<Integer, Member> ldapUuidMap) {
         Map<String, Membership> ldapMemberships = new HashMap<String, Membership> ();
         Iterator<LdapObject> iter = ldapObjects.values().iterator();
         while(iter.hasNext()) {
@@ -177,7 +174,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * @param bean UserBean 
      * @return LBAC Group objects mapped by their UUID
      */
-    private Map<UUID, Member> getLdapGroups(Map<String, LdapObject> lo, UserBean bean) {
+    private Map<Integer, Member> getLdapGroups(Map<String, LdapObject> lo, UserBean bean) {
         return lo.values().stream()
           .filter(lg -> lg.getType() == MemberType.GROUP)
           .map(lg -> lookupLbacGroup(lg, bean))
@@ -300,7 +297,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * 
      * @param ldapUuidMap a map containing all member objects discovered by LDAP
      */
-    private void saveObjects(Map<UUID, Member> ldapUuidMap, UserBean bean) {
+    private void saveObjects(Map<Integer, Member> ldapUuidMap, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
         Iterator<Member> iter = ldapUuidMap.values().iterator();
         while(iter.hasNext()) {

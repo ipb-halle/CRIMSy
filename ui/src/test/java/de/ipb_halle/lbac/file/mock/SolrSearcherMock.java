@@ -30,12 +30,13 @@ import org.apache.solr.client.solrj.SolrServerException;
 public class SolrSearcherMock extends SolrSearcher {
 
     @Override
-    public Document getDocumentById(UUID documentId, UUID collectionId) throws SolrServerException, IOException {
+    public Document getDocumentById(Integer documentId, Integer collectionId) throws SolrServerException, IOException {
         Document d = new Document();
         d.setLanguage("en");
         return d;
     }
 
+    @Override
     public String getTermPositions(Document d, String collectionUri) {
         return "";
     }

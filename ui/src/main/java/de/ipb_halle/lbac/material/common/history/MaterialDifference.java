@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.common.history;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  *
@@ -27,9 +26,9 @@ import java.util.UUID;
  */
 public interface MaterialDifference extends Serializable{
 
-    public UUID getUserId();
+    public Integer getUserId();
 
-    public void initialise(int materialId, UUID actorID, Date mDate);
+    public void initialise(int materialId, Integer actorID, Date mDate);
 
     public Date getModificationDate();
 }

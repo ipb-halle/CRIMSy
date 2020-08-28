@@ -19,11 +19,9 @@ package de.ipb_halle.lbac.device.print;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.DTO;
 
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author fbroda
@@ -41,6 +39,9 @@ public class Printer extends ACObject implements DTO {
 
     /**
      * constructor
+     * @param entity
+     * @param aclist
+     * @param owner
      */
     public Printer(PrinterEntity entity, ACList aclist, User owner) {
         setACList(aclist);
@@ -55,6 +56,7 @@ public class Printer extends ACObject implements DTO {
         this.status = entity.getStatus();
     }
 
+    @Override
     public PrinterEntity createEntity() {
         return new PrinterEntity()
             .setACListId(this.getACList().getId())
@@ -112,6 +114,7 @@ public class Printer extends ACObject implements DTO {
         return this.status;
     }
 
+    @Override
     public int hashCode() {
         return getQueue() != null ? getQueue().hashCode() : 0;
     }

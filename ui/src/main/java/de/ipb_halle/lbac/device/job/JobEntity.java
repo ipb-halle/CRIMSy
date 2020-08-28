@@ -76,7 +76,7 @@ public class JobEntity implements Serializable {
     private byte[] output;
 
     @Column
-    private UUID ownerid;
+    private Integer ownerid;
 
     /**
      * destination queue name 
@@ -110,7 +110,7 @@ public class JobEntity implements Serializable {
         return this.output;
     }
 
-    public UUID getOwnerId() {
+    public Integer getOwnerId() {
         return this.ownerid;
     }
 
@@ -147,7 +147,7 @@ public class JobEntity implements Serializable {
         return this;
     }
 
-    JobEntity setOwnerId(UUID ownerid) {
+    JobEntity setOwnerId(Integer ownerid) {
         this.ownerid = ownerid;
         return this;
     }

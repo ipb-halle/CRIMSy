@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.common.history;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import java.util.Date;
 import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
@@ -35,15 +35,15 @@ public class MaterialOverviewDifference implements MaterialDifference {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private int materialID;
-    private UUID actorID;
+    private Integer actorID;
     private Date mDate;
     private ModificationType action;
     private ACList acListOld;
     private ACList acListNew;
     private Integer projectIdOld;
     private Integer projectIdNew;
-    private UUID ownerIdOld;
-    private UUID ownerIdNew;
+    private Integer ownerIdOld;
+    private Integer ownerIdNew;
     private String digest;
 
     public MaterialOverviewDifference() {
@@ -69,7 +69,7 @@ public class MaterialOverviewDifference implements MaterialDifference {
     }
 
     @Override
-    public UUID getUserId() {
+    public Integer getUserId() {
         return actorID;
     }
 
@@ -77,11 +77,11 @@ public class MaterialOverviewDifference implements MaterialDifference {
         this.materialID = materialID;
     }
 
-    public UUID getActorID() {
+    public Integer getActorID() {
         return actorID;
     }
 
-    public void setActorID(UUID actorID) {
+    public void setActorID(Integer actorID) {
         this.actorID = actorID;
     }
 
@@ -133,19 +133,19 @@ public class MaterialOverviewDifference implements MaterialDifference {
         this.projectIdNew = projectIdNew;
     }
 
-    public UUID getOwnerIdOld() {
+    public Integer getOwnerIdOld() {
         return ownerIdOld;
     }
 
-    public void setOwnerIdOld(UUID ownerIdOld) {
+    public void setOwnerIdOld(Integer ownerIdOld) {
         this.ownerIdOld = ownerIdOld;
     }
 
-    public UUID getOwnerIdNew() {
+    public Integer getOwnerIdNew() {
         return ownerIdNew;
     }
 
-    public void setOwnerIdNew(UUID ownerIdNew) {
+    public void setOwnerIdNew(Integer ownerIdNew) {
         this.ownerIdNew = ownerIdNew;
     }
 
@@ -160,7 +160,7 @@ public class MaterialOverviewDifference implements MaterialDifference {
     }
 
     @Override
-    public void initialise(int materialId, UUID actorID, Date mDate) {
+    public void initialise(int materialId, Integer actorID, Date mDate) {
         this.materialID = materialId;
         this.action = ModificationType.EDIT;
         this.actorID = actorID;

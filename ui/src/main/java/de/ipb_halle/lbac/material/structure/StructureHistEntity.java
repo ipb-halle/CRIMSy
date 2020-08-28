@@ -17,14 +17,11 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import java.io.Serializable;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
  *
@@ -38,8 +35,7 @@ public class StructureHistEntity implements Serializable {
     private StructureHistEntityId id;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID actorid;
+    private Integer actorid;
 
     @Column
     private String digest;
@@ -68,11 +64,11 @@ public class StructureHistEntity implements Serializable {
     @Column
     private Integer moleculeid_new;
 
-    public UUID getActorid() {
+    public Integer getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(Integer actorid) {
         this.actorid = actorid;
     }
 

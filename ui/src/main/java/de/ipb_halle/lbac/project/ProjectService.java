@@ -19,11 +19,11 @@ package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;

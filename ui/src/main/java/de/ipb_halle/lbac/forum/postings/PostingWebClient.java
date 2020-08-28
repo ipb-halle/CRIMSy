@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.forum.postings;
 
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.Topic;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.globals.KeyManager;

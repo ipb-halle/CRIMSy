@@ -59,7 +59,7 @@ public class PrinterEntity implements Serializable {
     private String queue;
 
     @Column
-    private UUID aclistid;
+    private Integer aclistid;
 
     @Column
     @NotNull
@@ -82,7 +82,7 @@ public class PrinterEntity implements Serializable {
     private String name;
 
     @Column
-    private UUID ownerid;
+    private Integer ownerid;
 
     @Column
     @NotNull
@@ -104,7 +104,7 @@ public class PrinterEntity implements Serializable {
         this.status = PrinterStatus.DISABLED;
     }
 
-    public UUID getACListId() {
+    public Integer getACListId() {
         return this.aclistid;
     }
 
@@ -128,7 +128,7 @@ public class PrinterEntity implements Serializable {
         return this.model;
     }
 
-    public UUID getOwnerId() {
+    public Integer getOwnerId() {
         return this.ownerid;
     }
 
@@ -144,7 +144,7 @@ public class PrinterEntity implements Serializable {
         return this.status;
     }
 
-    public PrinterEntity setACListId(UUID aclistid) {
+    public PrinterEntity setACListId(Integer aclistid) {
         this.aclistid = aclistid;
         return this;
     }
@@ -174,7 +174,7 @@ public class PrinterEntity implements Serializable {
         return this;
     }
 
-    public PrinterEntity setOwnerId(UUID ownerid) {
+    public PrinterEntity setOwnerId(Integer ownerid) {
         this.ownerid = ownerid;
         return this;
     }

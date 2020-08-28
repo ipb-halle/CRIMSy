@@ -15,23 +15,21 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import static de.ipb_halle.lbac.admission.GlobalAdmissionContext.PUBLIC_ACCOUNT_ID;
+import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("U")
 public class UserEntity extends MemberEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
-    private final static UUID publicAccountId = UUID.fromString(PUBLIC_ACCOUNT_ID);
 
     @Column
     private String email;
@@ -64,10 +62,6 @@ public class UserEntity extends MemberEntity implements Serializable {
     @Override
     public boolean isGroup() {
         return false;
-    }
-
-    public boolean isPublicAccount() {
-        return getId().equals(UserEntity.publicAccountId);
     }
 
     @Override

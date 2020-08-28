@@ -47,7 +47,7 @@ public class ItemPositionsHistoryEntity implements Serializable {
     @Column
     private int containerid;
     @Column
-    private UUID actorid;
+    private Integer actorid;
     @Column
     private Date mdate;
 
@@ -116,11 +116,11 @@ public class ItemPositionsHistoryEntity implements Serializable {
         this.containerid = containerid;
     }
 
-    public UUID getActorid() {
+    public Integer getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(Integer actorid) {
         this.actorid = actorid;
     }
 

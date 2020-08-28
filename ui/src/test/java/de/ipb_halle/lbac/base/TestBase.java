@@ -25,22 +25,23 @@ import de.ipb_halle.lbac.entity.ACListEntity;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
+import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.InfoObjectService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.net.URL;
@@ -72,6 +73,7 @@ public class TestBase implements Serializable {
     protected Logger logger;
     protected String LBAC_PROPERTIES_PATH = "target/test-classes/keystore/lbac_properties.xml";
     protected String TEST_ROOT = "target/test-classes/";
+    protected CreationTools creationTools;
 
     // per convention (defined in init.sql) test node == local node
     public final static UUID TEST_NODE_ID = UUID.fromString("986ad1be-9a3b-4a70-8600-c489c2a00da4");
@@ -183,15 +185,14 @@ public class TestBase implements Serializable {
         u.setName(name);
         u.setNode(nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        memberService.save(u);
+        u=memberService.save(u);
 
         Group g = new Group();
-        g.setId(UUID.randomUUID());
         g.setName("Group of user " + u.getLogin());
         g.setNode(nodeService.getLocalNode());
         g.setSubSystemData("L");
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        memberService.save(g);
+        g=memberService.save(g);
 
         membershipService.addMembership(u, u);
         membershipService.addMembership(g, u);
@@ -217,7 +218,7 @@ public class TestBase implements Serializable {
         g.setName(name);
         g.setNode(localNode);
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        memberService.save(g);
+        g = memberService.save(g);
         memberShipService.addMembership(g, g);
         return g;
     }
@@ -248,10 +249,9 @@ public class TestBase implements Serializable {
         col.setIndexPath("/");
         col.setName(name);
         col.setNode(node);
-        col.setId(UUID.randomUUID());
         col.setOwner(owner);
+        col = collectionService.save(col);
         collections.add(col);
-        collectionService.save(col);
         return collections;
     }
 
@@ -343,7 +343,7 @@ public class TestBase implements Serializable {
         List<User> users = memberService.loadUsers(new HashMap<>());
         users.stream().map((u) -> {
             return u;
-        }).filter((u) -> (!u.getName().equals("Public Account") && !u.getName().equals("Admin") && !u.getId().equals(UUID.fromString(GlobalAdmissionContext.OWNER_ACCOUNT_ID)))).forEachOrdered((u) -> {
+        }).filter((u) -> (!u.getName().equals("Public Account") && !u.getName().equals("Admin") && !u.getId().equals(GlobalAdmissionContext.OWNER_ACCOUNT_ID))).forEachOrdered((u) -> {
             // memberService.deleteUser(u.getId());
         });
     }

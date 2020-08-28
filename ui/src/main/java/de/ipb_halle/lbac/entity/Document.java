@@ -40,7 +40,7 @@ public class Document implements Serializable, Comparable<Document> {
     private Logger LOGGER = LogManager.getLogger(Document.class);
 
     @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID id;
+    private Integer id;
     private transient Node node;
 
     @JohnzonConverter(LocalUUIDConverter.class)
@@ -48,7 +48,7 @@ public class Document implements Serializable, Comparable<Document> {
     private transient Collection collection;
 
     @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID collectionId;
+    private Integer collectionId;
     private String contentType;
     private String path;
     private Long size;
@@ -66,11 +66,11 @@ public class Document implements Serializable, Comparable<Document> {
     }
 
     //*** getter & setter ***
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -86,7 +86,7 @@ public class Document implements Serializable, Comparable<Document> {
         return this.collection;
     }
 
-    public UUID getCollectionId() {
+    public Integer getCollectionId() {
         return this.collectionId;
     }
 
@@ -147,7 +147,7 @@ public class Document implements Serializable, Comparable<Document> {
         this.collection = c;
     }
 
-    public void setCollectionId(UUID id) {
+    public void setCollectionId(Integer id) {
         this.collectionId = id;
     }
 

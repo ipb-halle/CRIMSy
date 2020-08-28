@@ -38,7 +38,8 @@ import javax.ejb.Stateless;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -127,12 +128,12 @@ public class DocumentSearchService {
         }
         Set<String> normalizedTerms = getNormalizedWordsInAllLanguages(searchState.getFoundDocuments(), Arrays.asList(searchText.split(" ")));
 
-        List<UUID> docIds = new ArrayList<>();
+        List<Integer> docIds = new ArrayList<>();
         for (Document d : searchState.getFoundDocuments()) {
             docIds.add(d.getId());
         }
 
-        Map<UUID, Map<String, Integer>> totalTerms = termVectorEntityService.getTermVectorForSearch(
+        Map<Integer, Map<String, Integer>> totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
                 normalizedTerms);
 

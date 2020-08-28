@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.FileObject;
 import de.ipb_halle.lbac.entity.TermVector;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.service.CollectionService;
@@ -167,7 +167,7 @@ public class TermVectorEntityServiceTest extends TestBase {
         col.setNode(this.nodeService.getLocalNode());
         col.setName(name);
         col.setDescription(name);
-        col.setId(UUID.randomUUID());
+        col.setId(1000000);
         col.setIndexPath("/doc/test");
         col.setACList(acl);
         col.setOwner(owner);

@@ -50,8 +50,7 @@ public class HazardsMaterialHistEntity implements Serializable {
     private Date mDate;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID actorid;
+    private Integer actorid;
 
     @Column
     private String digest;
@@ -92,11 +91,11 @@ public class HazardsMaterialHistEntity implements Serializable {
         this.mDate = mDate;
     }
 
-    public UUID getActorid() {
+    public Integer getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(Integer actorid) {
         this.actorid = actorid;
     }
 

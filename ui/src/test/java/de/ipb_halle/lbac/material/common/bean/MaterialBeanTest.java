@@ -33,7 +33,7 @@ import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
@@ -64,7 +64,7 @@ import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -115,7 +115,7 @@ public class MaterialBeanTest extends TestBase {
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
-        publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         acl = new ACList();
         customUser = createUser("testUser", "testUser");
         acl.addACE(customUser, new ACPermission[]{ACPermission.permEDIT});
@@ -161,7 +161,7 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertTrue("testcase 001: In creation mode edit must be true ", instance.isProjectEditEnabled());
         instance.setMode(MaterialBean.Mode.EDIT);
         Assert.assertTrue("testcase 001: Owner must be able to edit project", instance.isProjectEditEnabled());
-        User admin = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.OWNER_ACCOUNT_ID));
+        User admin = memberService.loadUserById(GlobalAdmissionContext.OWNER_ACCOUNT_ID);
         userBean.setCurrentAccount(admin);
         Assert.assertFalse("testcase 001: No priviliged user must not  be able to edit project", instance.isProjectEditEnabled());
         userBean.setCurrentAccount(customUser);

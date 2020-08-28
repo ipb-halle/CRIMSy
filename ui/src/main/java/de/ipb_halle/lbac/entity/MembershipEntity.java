@@ -36,16 +36,16 @@ public class MembershipEntity implements Serializable {
     private final static long serialVersionUID = 1L;
 
     @Id
-    private UUID id;
+    private Integer id;
 
     @Column
     private boolean nested;
 
     @Column(name = "group_id")
-    private UUID group;
+    private Integer group;
 
     @Column(name = "member_id")
-    private UUID member;
+    private Integer member;
 
     public MembershipEntity() {
     }
@@ -68,15 +68,15 @@ public class MembershipEntity implements Serializable {
         return false;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public UUID getGroup() {
+    public Integer getGroup() {
         return this.group;
     }
 
-    public UUID getMember() {
+    public Integer getMember() {
         return this.member;
     }
 
@@ -93,15 +93,15 @@ public class MembershipEntity implements Serializable {
         return this.group.hashCode() + this.member.hashCode();
     }
 
-    public void setGroup(UUID m) {
+    public void setGroup(Integer m) {
         this.group = m;
     }
 
-    public void setMember(UUID m) {
+    public void setMember(Integer m) {
         this.member = m;
     }
 
-    public void setId(UUID i) {
+    public void setId(Integer i) {
         this.id = i;
     }
 

@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.TermFrequency;
 import de.ipb_halle.lbac.entity.TermFrequencyList;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebRequest;
 import java.util.UUID;
 import javax.ws.rs.Consumes;
@@ -54,7 +54,7 @@ public class WordCloudWebServiceMock {
         n.setPublicNode(false);
 
         User u = new User();
-        u.setId(UUID.randomUUID());
+        u.setId(10000);
         u.setName("remote User");
         u.setLogin("RU");
         u.setPassword("Should be obfuscated");
@@ -64,7 +64,7 @@ public class WordCloudWebServiceMock {
         Collection c = new Collection();
         c.setCountDocs(1L);
         c.setDescription("Collection from MockServer - Description");
-        c.setId(UUID.randomUUID());
+        c.setId(100000);
         c.setIndexPath("/");
         c.setName("Mock-Collection");
         c.setNode(n);
@@ -78,7 +78,7 @@ public class WordCloudWebServiceMock {
         tfl.getTermFreq().add(new TermFrequency("word4", 1));
 
         Document d = new Document();
-        d.setCollectionId(UUID.randomUUID());
+        d.setCollectionId(1000);
         d.setCollection(c);
         d.setCollectionId(c.getId());
         d.setLanguage("de");

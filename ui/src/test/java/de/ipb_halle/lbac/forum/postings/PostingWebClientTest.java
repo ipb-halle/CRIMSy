@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.forum.Topic;
 import de.ipb_halle.lbac.forum.postings.mock.PostingWebServiceMock;

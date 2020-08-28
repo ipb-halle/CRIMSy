@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +86,7 @@ public class ACObjectController {
         for (Group g : possibleGroupsToAdd) {
             groupsNotInAcList.add(g);
         }
-        for (UUID aceId : objectToChange.getACList().getACEntries().keySet()) {
+        for (Integer aceId : objectToChange.getACList().getACEntries().keySet()) {
             for (int i = groupsNotInAcList.size() - 1; i >= 0; i--) {
                 if (groupsNotInAcList.get(i).getId().equals(aceId)) {
                     groupsNotInAcList.remove(i);
@@ -133,7 +133,7 @@ public class ACObjectController {
     private ACList copyAcList(ACList original) {
         ACList newAcl = new ACList();
         newAcl.setName(original.getName());
-        for (UUID aceid : original.getACEntries().keySet()) {
+        for (Integer aceid : original.getACEntries().keySet()) {
             newAcl.addACE(
                     original.getACEntries().get(aceid).getMember(),
                     original.getACEntries().get(aceid).getAcPermissionArray()

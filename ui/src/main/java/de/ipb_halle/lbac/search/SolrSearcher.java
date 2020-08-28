@@ -44,7 +44,8 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -231,7 +232,7 @@ public class SolrSearcher {
      * @throws SolrServerException
      * @throws IOException
      */
-    public Document getDocumentById(UUID documentId, UUID collectionId) throws Exception {
+    public Document getDocumentById(Integer documentId, Integer collectionId) throws Exception {
         Collection c = collectionService.loadById(collectionId);
         HttpSolrClient solr = new HttpSolrClient.Builder(c.getIndexPath()).build();
         SolrQuery query = new SolrQuery();
@@ -254,12 +255,8 @@ public class SolrSearcher {
      * @return lbac document
      */
     private Document convertSolrDocToDoc(SolrDocument sdoc, Collection c) throws Exception {
-
         Document doc = new Document();
-
-        String ids = (String) sdoc.get("id");
-        UUID uuid = UUID.fromString(ids);
-        doc.setId(uuid);
+        doc.setId((Integer) sdoc.get("id"));
         doc.setCollectionId(c.getId());
         doc.setNodeId(c.getNode().getId());
         doc.setNode(nodeService.loadById(c.getNode().getId()));

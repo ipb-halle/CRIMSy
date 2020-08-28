@@ -20,12 +20,12 @@ package de.ipb_halle.lbac.forum.postings;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.CollectionService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
@@ -79,7 +79,7 @@ public class PostingWebServiceTest
 
     @Test
     public void testPostingWebService() throws Exception {
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        User publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         LbacWebClient client = new LbacWebClient();
         WebRequestSignature wrs = client.createWebRequestSignature(
                 keyManager.getLocalPrivateKey(TESTCLOUD)

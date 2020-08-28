@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.items.difference;
 
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.bean.history.ItemComparator;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.project.Project;
 import java.util.Date;

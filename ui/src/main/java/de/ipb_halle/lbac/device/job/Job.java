@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.device.job;
 
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 
 import java.io.Serializable;
 import java.util.Date;

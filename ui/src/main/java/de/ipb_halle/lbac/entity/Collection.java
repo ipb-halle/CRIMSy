@@ -21,6 +21,7 @@ package de.ipb_halle.lbac.entity;
  * Collection class represents a collection in the Bioactives Cloud. Model for
  * collection managment
  */
+import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
 
     private final static long serialVersionUID = 1L;
 
-    private UUID id;
+    private Integer id;
 
     private String description;
 
@@ -46,7 +47,7 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
      * default constructor
      */
     public Collection() {
-        this.id = UUID.randomUUID();
+       
     }
 
     /**
@@ -91,7 +92,7 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
     }
 
     //*** getter and setter ***
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -131,7 +132,7 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
 
     }
 
-    public void setId(UUID n) {
+    public void setId(Integer n) {
         this.id = n;
     }
 

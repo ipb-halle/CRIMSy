@@ -24,8 +24,8 @@ import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.SortedMap;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,14 +35,16 @@ import org.junit.Test;
  */
 public class MaterialHistoryTest {
 
+    Random random = new Random();
+
     @Test
     public void test01_addMaterialDifferences() {
 
         MaterialHistory hist = new MaterialHistory();
         Calendar c = Calendar.getInstance();
         c.set(2019, 2, 3, 12, 13, 25);
-        UUID userId1 = UUID.randomUUID();
-        UUID userId2 = UUID.randomUUID();
+        Integer userId1 = random.nextInt(100000);
+        Integer userId2 = random.nextInt(100000);
         Date d_20190203 = c.getTime();
         MaterialOverviewDifference diff1 = new MaterialOverviewDifference();
         diff1.initialise(1, userId1, d_20190203);

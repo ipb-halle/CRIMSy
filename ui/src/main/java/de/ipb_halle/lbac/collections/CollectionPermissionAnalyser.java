@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.ACListService;
 import java.io.Serializable;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 

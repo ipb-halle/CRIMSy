@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
@@ -39,7 +39,7 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class ContainerServiceTest extends TestBase {
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
-        publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         entityService.doSqlUpdate("delete from item_positions");
         entityService.doSqlUpdate("delete from items");
         entityService.doSqlUpdate("delete from containers");
@@ -224,7 +224,7 @@ public class ContainerServiceTest extends TestBase {
          * </ol>
          */
         Project p = creationTools.createProject();
-        User owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        User owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         String userGroups = p.getUserGroups().getId().toString();
         String ownerid = owner.getId().toString();
         createMaterial(userGroups, ownerid, p.getId());
@@ -286,7 +286,7 @@ public class ContainerServiceTest extends TestBase {
     @Test
     public void test006_loadContainersWithCmap() {
         Project project = new Project();
-        User user = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        User user = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         ACList oneUserAcl = new ACList();
         oneUserAcl.addACE(user, new ACPermission[]{ACPermission.permREAD});
         oneUserAcl = acListService.save(oneUserAcl);

@@ -38,15 +38,6 @@ public class ProjectTemplateEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    public ProjectTemplateEntity(int materialTypeId, UUID acListId, int projectId) {
-        this.materialDetailTypeId = materialTypeId;
-        this.acListId = acListId;
-        this.projectId = projectId;
-    }
-
-    public ProjectTemplateEntity() {
-    }
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
@@ -54,12 +45,20 @@ public class ProjectTemplateEntity implements Serializable {
     @Column
     private int materialDetailTypeId;
 
-    @JohnzonConverter(LocalUUIDConverter.class)
     @Column
-    private UUID acListId;
+    private Integer acListId;
 
     @Column
     private int projectId;
+
+    public ProjectTemplateEntity(int materialTypeId, Integer acListId, int projectId) {
+        this.materialDetailTypeId = materialTypeId;
+        this.acListId = acListId;
+        this.projectId = projectId;
+    }
+
+    public ProjectTemplateEntity() {
+    }
 
     public Integer getId() {
         return id;
@@ -69,11 +68,11 @@ public class ProjectTemplateEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getAcListId() {
+    public Integer getAcListId() {
         return acListId;
     }
 
-    public void setAcListId(UUID acListId) {
+    public void setAcListId(Integer acListId) {
         this.acListId = acListId;
     }
 

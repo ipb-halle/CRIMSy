@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.service;
+package de.ipb_halle.lbac.admission;
 
 /**
  * ACListService provides service to load, save, update access control lists
@@ -27,6 +27,8 @@ package de.ipb_halle.lbac.service;
  * This immutability is currently not enforced by implementation but it should
  * be part of convention.
  */
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.ACEntryEntity;
@@ -37,8 +39,9 @@ import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.entity.UserEntity;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.UserEntity;
+import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -104,7 +107,7 @@ public class ACListService implements Serializable {
      */
     public User getOwnerAccount() {
         if (this.ownerAccount == null) {
-            UserEntity ue = this.em.find(UserEntity.class, UUID.fromString(GlobalAdmissionContext.OWNER_ACCOUNT_ID));
+            UserEntity ue = this.em.find(UserEntity.class, GlobalAdmissionContext.OWNER_ACCOUNT_ID);
             if (ue != null) {
                 Node node = this.nodeService.loadById(ue.getNode());
                 this.ownerAccount = new User(ue, node);
@@ -221,7 +224,7 @@ public class ACListService implements Serializable {
      * @param ai acl id
      * @return the ACList object
      */
-    public ACList loadById(UUID ai) {
+    public ACList loadById(Integer ai) {
         ACListEntity entity = this.em.find(ACListEntity.class, ai);
         ACList acl = new ACList(entity);
         acl.setACEntries(loadACEntries(acl));

@@ -59,12 +59,10 @@ public class ProjectEntity implements Serializable {
     private int projectTypeId;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID ownerId;
+    private Integer ownerId;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID aclist_id;
+    private Integer aclist_id;
 
     @Column
     private String description;
@@ -131,19 +129,19 @@ public class ProjectEntity implements Serializable {
         this.projectTypeId = projectTypeId;
     }
 
-    public UUID getOwnerId() {
+    public Integer getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(UUID ownerId) {
+    public void setOwnerId(Integer ownerId) {
         this.ownerId = ownerId;
     }
 
-    public UUID getAclist_id() {
+    public Integer getAclist_id() {
         return aclist_id;
     }
 
-    public void setAclist_id(UUID aclist_id) {
+    public void setAclist_id(Integer aclist_id) {
         this.aclist_id = aclist_id;
     }
 

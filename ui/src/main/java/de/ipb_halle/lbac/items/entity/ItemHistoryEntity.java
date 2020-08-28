@@ -59,10 +59,10 @@ public class ItemHistoryEntity implements Serializable {
     private ItemHistoryId id;
 
     @Column
-    private UUID owner_new;
+    private Integer owner_new;
 
     @Column
-    private UUID owner_old;
+    private Integer owner_old;
 
     @Column
     private Integer projectid_new;
@@ -114,11 +114,11 @@ public class ItemHistoryEntity implements Serializable {
         return id;
     }
 
-    public UUID getOwner_new() {
+    public Integer getOwner_new() {
         return owner_new;
     }
 
-    public UUID getOwner_old() {
+    public Integer getOwner_old() {
         return owner_old;
     }
 
@@ -170,11 +170,11 @@ public class ItemHistoryEntity implements Serializable {
         this.id = id;
     }
 
-    public void setOwner_new(UUID owner_new) {
+    public void setOwner_new(Integer owner_new) {
         this.owner_new = owner_new;
     }
 
-    public void setOwner_old(UUID owner_old) {
+    public void setOwner_old(Integer owner_old) {
         this.owner_old = owner_old;
     }
 

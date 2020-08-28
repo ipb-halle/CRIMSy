@@ -15,14 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.service;
+package de.ipb_halle.lbac.admission;
 
 /**
  * MembershipService provides service to load, save, create and delete (group)
  * memberships. This includes creation or removal of nested groups
  */
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.entity.Member;
+import de.ipb_halle.lbac.admission.Member;
 import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.MembershipEntity;
 import de.ipb_halle.lbac.entity.NestingPath;
@@ -52,6 +52,12 @@ import org.apache.logging.log4j.LogManager;
 @Stateless
 public class MembershipService implements Serializable {
 
+    private static final String SQL_LOAD_NESTINGPATH_BY_MEMBERSHIP = 
+            "SELECT np.nestingpathsets_id, np.memberships_id "
+            + "FROM nestingpathset_memberships AS np "
+            + "JOIN (SELECT id FROM nestingpathsets "
+            + "WHERE membership_id=:membership_id) AS msnp "
+            + "ON msnp.id=np.nestingpathsets_id";
     private static final long serialVersionUID = 1L;
     private static final UUID NON_EXISTING_UUID = UUID.fromString("ab2abbee-3f3c-4cfe-9886-ba75e9eeaebc");
 
@@ -171,7 +177,7 @@ public class MembershipService implements Serializable {
      */
     private void resolveNestedPaths(Membership parent, Membership child, Membership direct, Membership nested) {
         Set<NestingPath> npSet = new HashSet<>();
-        Set<UUID> mSet = new HashSet<>();
+        Set<Integer> mSet = new HashSet<>();
         mSet.add(direct.getId());
 
         if ((parent != null) && parent.getNested()) {
@@ -196,7 +202,7 @@ public class MembershipService implements Serializable {
      * @param direct UUID of the nested membership
      * @param mSet path information which will be part of all new paths; this is
      */
-    private void resolveNestedChildPath(Set<NestingPath> npSet, Set<UUID> parentPath, Membership child, Set<UUID> mSet, UUID direct) {
+    private void resolveNestedChildPath(Set<NestingPath> npSet, Set<Integer> parentPath, Membership child, Set<Integer> mSet, Integer direct) {
         if ((child != null) && child.getNested()) {
             child.getNestingPathSet().forEach((cp) -> {
                 NestingPath np = new NestingPath();
@@ -300,16 +306,12 @@ public class MembershipService implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<NestingPath> loadNestingPathByMembership(UUID membershipId) {
-        List<NestingPathEntity> entities = em.createNativeQuery(
-                "SELECT np.nestingpathsets_id, np.memberships_id FROM nestingpathset_memberships AS np "
-                + "JOIN (SELECT id FROM nestingpathsets "
-                + "WHERE membership_id=:membership_id) AS msnp "
-                + "ON msnp.id=np.nestingpathsets_id", NestingPathEntity.class)
+    private Collection<NestingPath> loadNestingPathByMembership(Integer membershipId) {
+        List<NestingPathEntity> entities = em.createNativeQuery(SQL_LOAD_NESTINGPATH_BY_MEMBERSHIP, NestingPathEntity.class)
                 .setParameter("membership_id", membershipId)
                 .getResultList();
 
-        Map<UUID, NestingPath> map = new HashMap<>();
+        Map<Integer, NestingPath> map = new HashMap<>();
         for (NestingPathEntity e : entities) {
             NestingPath np = map.get(e.getId().getNestingpathsets_id());
             if (np == null) {
@@ -331,7 +333,7 @@ public class MembershipService implements Serializable {
      * @param id
      * @return
      */
-    public Membership loadById(UUID id) {
+    public Membership loadById(Integer id) {
         MembershipEntity entity = em.find(MembershipEntity.class, id);
         Member group = this.memberService.loadMemberById(entity.getGroup());
         Member member = this.memberService.loadMemberById(entity.getMember());
@@ -473,10 +475,16 @@ public class MembershipService implements Serializable {
      */
     private NestingPath save(NestingPath np) {
 
-        this.em.merge(
+        /* 
+         * xxxxxx REFACTOR THIS (id is not set automatically)
+        */
+        
+        NestingPathSetEntity npse=this.em.merge(
                 new NestingPathSetEntity(np.getId(),
                         np.getMembership()));
+        
         for (NestingPathEntity entity : np.createEntity()) {
+            entity.getId().setNestingpathsets_id(npse.getId());
             this.em.merge(entity);
         }
 

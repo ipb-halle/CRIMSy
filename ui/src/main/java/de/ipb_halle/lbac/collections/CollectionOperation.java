@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.service.CollectionService;

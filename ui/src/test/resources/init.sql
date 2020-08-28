@@ -79,7 +79,7 @@ INSERT INTO cloud_nodes (cloud_id, node_id) VALUES (1, CAST(@TESTNODE AS UUID));
  * Admission (users, groups, memberships, ACLs, ...)
  */
 CREATE TABLE usersGroups (
-    id                  UUID NOT NULL PRIMARY KEY,
+    id                  IDENTITY NOT NULL PRIMARY KEY,
     memberType          VARCHAR(1) NOT NULL,
     subSystemType       INTEGER,
     subSystemData       VARCHAR,

@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDifference;
@@ -36,8 +36,8 @@ import de.ipb_halle.lbac.items.entity.ItemPositionsHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -255,7 +255,7 @@ public class ItemService {
     }
 
     public Item saveEditedItem(Item editedItem, Item origItem, User user) {
-        return saveEditedItem(editedItem, origItem, user, new HashSet());
+        return saveEditedItem(editedItem, origItem, user, new HashSet<>());
     }
 
     public Item saveEditedItem(Item editedItem, Item origItem, User user, Set<int[]> newPositions) {
@@ -268,7 +268,7 @@ public class ItemService {
         }
 
         containerPositionService.moveItemToNewPosition(origItem, editedItem.getContainer(), newPositions, user, mdate);
-        if(editedItem.getContainer()!=null){
+        if (editedItem.getContainer() != null) {
             editedItem.setContainer(containerService.loadContainerById(editedItem.getContainer().getId()));
         }
         return editedItem;

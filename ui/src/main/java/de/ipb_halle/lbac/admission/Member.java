@@ -15,17 +15,13 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.admission.IAdmissionSubSystem;
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
+import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.entity.Obfuscatable;
 
 import java.util.Date;
-import java.util.Set;
-import java.util.UUID;
-
-import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
  * Base class for users and groups Users and groups are managed hierarchically,
@@ -36,7 +32,7 @@ import org.apache.johnzon.mapper.JohnzonConverter;
  */
 public abstract class Member implements Obfuscatable, DTO {
 
-    private UUID id;
+    private Integer id;
 
     private String name;
 
@@ -68,12 +64,15 @@ public abstract class Member implements Obfuscatable, DTO {
      * default constructor
      */
     public Member() {
-        this.id = UUID.randomUUID();
+
         this.modified = new Date();
     }
 
     /**
      * DTO constructor
+     *
+     * @param me
+     * @param node
      */
     public Member(MemberEntity me, Node node) {
         this.id = me.getId();
@@ -84,7 +83,6 @@ public abstract class Member implements Obfuscatable, DTO {
         this.modified = me.getModified();
     }
 
-    
     /**
      * The equals method returns true if<ol>
      * <li>o is non-null</li>
@@ -112,7 +110,7 @@ public abstract class Member implements Obfuscatable, DTO {
         return getId() != null ? getId().hashCode() : 0;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -153,7 +151,7 @@ public abstract class Member implements Obfuscatable, DTO {
         this.subSystemType = null;
     }
 
-    public void setId(UUID i) {
+    public void setId(Integer i) {
         this.id = i;
     }
 
@@ -166,7 +164,9 @@ public abstract class Member implements Obfuscatable, DTO {
     }
 
     /**
-     * set entity values 
+     * set entity values
+     *
+     * @param me
      */
     public void setMemberEntity(MemberEntity me) {
         me.setId(this.id);

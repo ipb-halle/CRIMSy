@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.forum;
 
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Obfuscatable;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -33,7 +33,7 @@ public class Posting implements Serializable, Comparable<Posting>, DTO,Obfuscata
 
     private final static long serialVersionUID = 1L;
 
-    private UUID id;
+    private Integer id;
 
     private Topic topic;
 
@@ -44,7 +44,7 @@ public class Posting implements Serializable, Comparable<Posting>, DTO,Obfuscata
     private Date created;
 
     public Posting() {
-        id = UUID.randomUUID();
+    
     }
 
     /**
@@ -71,11 +71,11 @@ public class Posting implements Serializable, Comparable<Posting>, DTO,Obfuscata
                 .setTopic(topic.getId());
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

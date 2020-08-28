@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.file.FileDeleteExec;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;

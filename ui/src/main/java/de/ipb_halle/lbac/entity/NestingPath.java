@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
+import java.util.Collection;
 
 public class NestingPath implements Serializable, DTO {
 
@@ -30,15 +30,14 @@ public class NestingPath implements Serializable, DTO {
      */
     private final static long serialVersionUID = 1L;
 
-    private UUID id;
-    private UUID membership;
-    private Set<UUID> path;
+    private Integer id;
+    private Integer membership;
+    private Set<Integer> path;
 
     /**
      * Default constructor. Generates a randomized id
      */
     public NestingPath() {
-        this.id = UUID.randomUUID();
         this.path = new HashSet<>();
     }
 
@@ -50,9 +49,9 @@ public class NestingPath implements Serializable, DTO {
      * @param path
      */
     public NestingPath(
-            UUID mebershipId,
-            UUID nestingPathId, 
-            java.util.Collection<UUID> path) {
+            Integer mebershipId,
+            Integer nestingPathId,
+            Collection<Integer> path) {
         this.path = new HashSet<>();
         this.path.addAll(path);
         this.id = nestingPathId;
@@ -61,7 +60,7 @@ public class NestingPath implements Serializable, DTO {
     @Override
     public Set<NestingPathEntity> createEntity() {
         Set<NestingPathEntity> result = new HashSet<>();
-        for (UUID m : path) {
+        for (Integer m : path) {
             result.add(
                     new NestingPathEntity(
                             new NestingPathEntityId(
@@ -100,22 +99,20 @@ public class NestingPath implements Serializable, DTO {
      *
      * @return
      */
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public UUID getMembership() {
+    public Integer getMembership() {
         return membership;
     }
 
-    public Set<UUID> getPath() {
+    public Set<Integer> getPath() {
         return path;
     }
 
-    public void setMembership(UUID membership) {
+    public void setMembership(Integer membership) {
         this.membership = membership;
     }
-
-   
 
 }

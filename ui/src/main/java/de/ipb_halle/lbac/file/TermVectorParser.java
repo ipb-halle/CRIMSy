@@ -45,7 +45,7 @@ public class TermVectorParser {
 
     public List<TermVector> parseTermVectorJson(
             String json,
-            UUID documentId) throws IOException {
+            Integer documentId) throws IOException {
 
         List<TermVector> result = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();

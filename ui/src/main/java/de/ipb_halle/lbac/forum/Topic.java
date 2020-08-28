@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
 
     private boolean editable;
 
-    private UUID id;
+    private Integer id;
 
     private String name;
 
@@ -56,7 +56,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
      * Default constructor
      */
     public Topic() {
-        id = UUID.randomUUID();
+        
     }
 
     /**
@@ -66,7 +66,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
      * @param category
      */
     public Topic(String name, TopicCategory category) {
-        this.id = UUID.randomUUID();
+       
         this.name = name;
         this.category = category;
     }
@@ -123,7 +123,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
         return category;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -163,7 +163,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
         this.editable = editable;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

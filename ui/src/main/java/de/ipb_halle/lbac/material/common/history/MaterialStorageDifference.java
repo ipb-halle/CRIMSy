@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +38,7 @@ public class MaterialStorageDifference implements MaterialDifference {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private int materialID;
-    private UUID actorID;
+    private Integer actorID;
     private Date mDate;
     private String descriptionOld;
     private String descriptionNew;
@@ -84,12 +83,12 @@ public class MaterialStorageDifference implements MaterialDifference {
     }
 
     @Override
-    public UUID getUserId() {
+    public Integer getUserId() {
         return actorID;
     }
 
     @Override
-    public void initialise(int materialId, UUID actorID, Date mDate) {
+    public void initialise(int materialId, Integer actorID, Date mDate) {
         this.materialID = materialId;
         this.actorID = actorID;
         this.mDate = mDate;

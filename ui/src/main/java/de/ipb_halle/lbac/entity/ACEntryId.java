@@ -30,8 +30,8 @@ public class ACEntryId implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    private UUID aclist_id;
-    private UUID member_id;
+    private Integer aclist_id;
+    private Integer member_id;
 
     /**
      *
@@ -45,7 +45,7 @@ public class ACEntryId implements Serializable {
      * @param ai Id of the ACList
      * @param m Id of the Member
      */
-    public ACEntryId(UUID ai, UUID m) {
+    public ACEntryId(Integer ai, Integer m) {
         this.aclist_id = ai;
         this.member_id = m;
     }
@@ -75,7 +75,7 @@ public class ACEntryId implements Serializable {
      *
      * @return acList id
      */
-    public UUID getAclId() {
+    public Integer getAclId() {
         return this.aclist_id;
     }
 
@@ -84,7 +84,7 @@ public class ACEntryId implements Serializable {
      *
      * @return memberid
      */
-    public UUID getMemberId() {
+    public Integer getMemberId() {
         return this.member_id;
     }
 
@@ -106,7 +106,7 @@ public class ACEntryId implements Serializable {
      *
      * @param ai id of AcList
      */
-    public void setAclId(UUID ai) {
+    public void setAclId(Integer ai) {
         this.aclist_id = ai;
     }
 
@@ -115,7 +115,7 @@ public class ACEntryId implements Serializable {
      *
      * @param m id of member
      */
-    public void setMemberId(UUID m) {
+    public void setMemberId(Integer m) {
         this.member_id = m;
     }
 

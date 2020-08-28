@@ -22,6 +22,8 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -43,9 +45,10 @@ public class ACListEntity implements Serializable {
      * not).
      */
     private final static long serialVersionUID = 1L;
-
+    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private UUID id;
+    private Integer id;
 
     /**
      * ACLists could be named?
@@ -61,19 +64,13 @@ public class ACListEntity implements Serializable {
     @Column
     private int permCode;
 
-    /**
-     * default constructor
-     */
-    public ACListEntity() {
-        this.id = UUID.randomUUID();
-    }
-
+   
     /**
      * Gets the Id of the ACList
      *
      * @return id
      */
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -102,7 +99,7 @@ public class ACListEntity implements Serializable {
      *
      * @return Returns the acList for chaining
      */
-    public ACListEntity setId(UUID i) {
+    public ACListEntity setId(Integer i) {
         this.id = i;
         return this;
     }
@@ -119,9 +116,9 @@ public class ACListEntity implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param permCode
-     * @return 
+     * @return
      */
     public ACListEntity setPermCode(int permCode) {
         this.permCode = permCode;

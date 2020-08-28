@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;

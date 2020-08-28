@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.items;
 
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.entity.ItemPositionsHistoryEntity;
 import java.util.Date;
 

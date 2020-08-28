@@ -23,12 +23,12 @@ import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.postings.PostingWebClient;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -217,7 +217,7 @@ public class ForumService implements Serializable{
     public ACList getPublicReadWriteList() {
         if (publicReadEditAcl == null) {
             Group g = memberService.loadGroupById(
-                    UUID.fromString(GlobalAdmissionContext.PUBLIC_GROUP_ID)
+                    GlobalAdmissionContext.PUBLIC_GROUP_ID
             );
             ACList publicReadWrite = new ACList();
             publicReadWrite.setName("Public Read/Edit ACL");

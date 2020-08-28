@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.entity.ACEntry;
 import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import java.util.List;
 
 /**

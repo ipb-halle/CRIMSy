@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.entity.ACEntry;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectBean;

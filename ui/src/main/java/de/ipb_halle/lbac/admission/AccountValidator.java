@@ -17,9 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 
 import java.util.HashMap;

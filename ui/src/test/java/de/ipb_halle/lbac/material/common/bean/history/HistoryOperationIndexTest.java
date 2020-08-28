@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -51,6 +51,7 @@ public class HistoryOperationIndexTest {
     HistoryOperation instance;
     MaterialIndexDifference mid;
     MaterialIndexBean mib;
+    Random random = new Random();
 
     @Before
     public void init() {
@@ -63,8 +64,8 @@ public class HistoryOperationIndexTest {
         mib = new MaterialIndexBean();
         s.setIndices(indices);
         mid = new MaterialIndexDifference();
-        mid.initialise(0, UUID.randomUUID(), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(),new StorageClassInformation());
+        mid.initialise(0, random.nextInt(100000), currentDate);
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageClassInformation());
     }
 
     @Test

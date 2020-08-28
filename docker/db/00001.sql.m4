@@ -141,7 +141,7 @@ LBAC_MASTER_SKIP  FROM clouds WHERE name='LBAC_PRIMARY_CLOUD';
  * users, groups, memberships 
  */
 CREATE TABLE usersGroups (
-    id                  UUID NOT NULL PRIMARY KEY,
+    id                  SERIAL NOT NULL PRIMARY KEY,
     memberType          VARCHAR(1) NOT NULL,
     subSystemType       INTEGER,
     subSystemData       VARCHAR,

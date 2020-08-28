@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.project;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -153,7 +153,7 @@ public class Project extends ACObject implements DTO,Serializable {
         this.detailTemplates = detailTemplates;
     }
 
-    public UUID getOwnerID() {
+    public Integer getOwnerID() {
         return this.getOwner().getId();
     }
 

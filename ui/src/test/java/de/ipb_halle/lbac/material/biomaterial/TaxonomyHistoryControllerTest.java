@@ -78,7 +78,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
 
     @Test
     public void test001_applyPositiveHistory() {
-        UUID actorid = UUID.randomUUID();
+        Integer actorid = 10001;
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("name_1", "de", 0));
         names.add(new MaterialName("name_2", "en", 1));

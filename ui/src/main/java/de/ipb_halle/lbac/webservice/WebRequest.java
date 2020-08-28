@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.webservice;
 
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import java.io.Serializable;
 import java.util.UUID;

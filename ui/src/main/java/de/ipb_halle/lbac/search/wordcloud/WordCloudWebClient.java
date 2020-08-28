@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
@@ -52,7 +52,7 @@ public class WordCloudWebClient extends LbacWebClient {
             User user,
             CloudNode cloudNode,
             Set<String> tags,
-            Set<UUID> collectionIDs) {
+            Set<Integer> collectionIDs) {
         WordCloudWebRequest request = new WordCloudWebRequest();;
         try {
             WebRequestSignature signature = createWebRequestSignature(

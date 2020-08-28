@@ -31,8 +31,8 @@ public class NestingPathEntityId implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    private UUID nestingpathsets_id;
-    private UUID memberships_id;
+    private Integer nestingpathsets_id;
+    private Integer memberships_id;
 
     /**
      * Default constructor
@@ -46,7 +46,7 @@ public class NestingPathEntityId implements Serializable {
      * @param nestingpathsets_id
      * @param memberships_id
      */
-    public NestingPathEntityId(UUID nestingpathsets_id, UUID memberships_id) {
+    public NestingPathEntityId(Integer nestingpathsets_id, Integer memberships_id) {
         this.nestingpathsets_id = nestingpathsets_id;
         this.memberships_id = memberships_id;
     }
@@ -81,7 +81,7 @@ public class NestingPathEntityId implements Serializable {
      *
      * @return
      */
-    public UUID getNestingpathsets_id() {
+    public Integer getNestingpathsets_id() {
         return nestingpathsets_id;
     }
 
@@ -89,7 +89,7 @@ public class NestingPathEntityId implements Serializable {
      *
      * @return
      */
-    public UUID getMemberships_id() {
+    public Integer getMemberships_id() {
         return memberships_id;
     }
 
@@ -109,7 +109,7 @@ public class NestingPathEntityId implements Serializable {
      *
      * @param nestingpathsets_id
      */
-    public void setNestingpathsets_id(UUID nestingpathsets_id) {
+    public void setNestingpathsets_id(Integer nestingpathsets_id) {
         this.nestingpathsets_id = nestingpathsets_id;
     }
 
@@ -117,7 +117,7 @@ public class NestingPathEntityId implements Serializable {
      *
      * @param memberships_id
      */
-    public void setMemberships_id(UUID memberships_id) {
+    public void setMemberships_id(Integer memberships_id) {
         this.memberships_id = memberships_id;
     }
 

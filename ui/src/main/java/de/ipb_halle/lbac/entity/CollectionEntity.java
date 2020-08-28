@@ -21,7 +21,6 @@ package de.ipb_halle.lbac.entity;
  * Collection class represents a collection in the Bioactives Cloud. Model for
  * collection managment
  */
-
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -33,8 +32,9 @@ public class CollectionEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private UUID id;
+    private Integer id;
 
     @Column
     @Size(min = 1, max = 255)
@@ -62,7 +62,7 @@ public class CollectionEntity extends ACObjectEntity implements Serializable {
     }
 
     //*** getter and setter ***
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -86,7 +86,7 @@ public class CollectionEntity extends ACObjectEntity implements Serializable {
         return this.node;
     }
 
-    public CollectionEntity setId(UUID n) {
+    public CollectionEntity setId(Integer n) {
         this.id = n;
         return this;
     }

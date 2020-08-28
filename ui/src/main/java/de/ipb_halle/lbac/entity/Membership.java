@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.lbac.admission.Member;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,7 +34,7 @@ public class Membership implements Serializable, DTO {
 
     private final static long serialVersionUID = 1L;
 
-    private UUID id;
+    private Integer id;
 
     private boolean nested;
 
@@ -80,7 +81,6 @@ public class Membership implements Serializable, DTO {
      * @param n true if it is a nested membership
      */
     public Membership(Member g, Member m, boolean n) {
-        this.id = UUID.randomUUID();
         setGroup(g);
         setMember(m);
         setNested(n);
@@ -130,7 +130,7 @@ public class Membership implements Serializable, DTO {
         return false;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return this.id;
     }
 
@@ -138,7 +138,7 @@ public class Membership implements Serializable, DTO {
         return this.group;
     }
 
-    public UUID getGroupId() {
+    public Integer getGroupId() {
         return this.group.getId();
     }
 
@@ -146,7 +146,7 @@ public class Membership implements Serializable, DTO {
         return this.member;
     }
 
-    public UUID getMemberId() {
+    public Integer getMemberId() {
         return this.member.getId();
     }
 
@@ -175,7 +175,7 @@ public class Membership implements Serializable, DTO {
         this.member = m;
     }
 
-    public void setId(UUID i) {
+    public void setId(Integer i) {
         this.id = i;
     }
 

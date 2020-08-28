@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.service;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.InfoObjectEntity;
 

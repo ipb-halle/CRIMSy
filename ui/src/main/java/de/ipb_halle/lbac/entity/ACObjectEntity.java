@@ -28,17 +28,17 @@ import javax.persistence.MappedSuperclass;
 public class ACObjectEntity {
 
     @Column(name = "aclist_id")
-    private UUID aclist;
+    private Integer aclist;
 
     @Column(name = "owner_id")
-    private UUID owner;
+    private Integer owner;
 
     /**
      * Gets the owner
      *
      * @return owner
      */
-    public UUID getOwner() {
+    public Integer getOwner() {
         return this.owner;
     }
 
@@ -47,7 +47,7 @@ public class ACObjectEntity {
      *
      * @return ACList
      */
-    public UUID getACList() {
+    public Integer getACList() {
         return this.aclist;
     }
 
@@ -57,7 +57,7 @@ public class ACObjectEntity {
      * @param acl ACList
      * @return ACObject for chaining
      */
-    public ACObjectEntity setACList(UUID acl) {
+    public ACObjectEntity setACList(Integer acl) {
         this.aclist = acl;
         return this;
     }
@@ -68,7 +68,7 @@ public class ACObjectEntity {
      * @param u User who will be owner
      * @return ACObject for chaining
      */
-    public ACObjectEntity setOwner(UUID u) {
+    public ACObjectEntity setOwner(Integer u) {
         this.owner = u;
         return this;
     }

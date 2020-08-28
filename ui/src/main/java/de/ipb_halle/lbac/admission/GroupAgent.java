@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.service.MemberService;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;

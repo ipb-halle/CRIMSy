@@ -48,7 +48,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

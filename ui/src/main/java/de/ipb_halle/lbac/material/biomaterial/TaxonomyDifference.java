@@ -31,7 +31,7 @@ import java.util.UUID;
  */
 public class TaxonomyDifference implements MaterialDifference, Serializable {
 
-    private UUID actorId;
+    private Integer actorId;
     private int materialId;
     private Date mDate;
 
@@ -40,14 +40,14 @@ public class TaxonomyDifference implements MaterialDifference, Serializable {
     private Integer oldLevelId;
 
     @Override
-    public void initialise(int materialId, UUID actorID, Date mDate) {
+    public void initialise(int materialId, Integer actorID, Date mDate) {
         this.materialId = materialId;
         this.actorId = actorID;
         this.mDate = mDate;
     }
 
     @Override
-    public UUID getUserId() {
+    public Integer getUserId() {
         return actorId;
     }
 
@@ -56,7 +56,7 @@ public class TaxonomyDifference implements MaterialDifference, Serializable {
         return mDate;
     }
 
-    public UUID getActorId() {
+    public Integer getActorId() {
         return actorId;
     }
 

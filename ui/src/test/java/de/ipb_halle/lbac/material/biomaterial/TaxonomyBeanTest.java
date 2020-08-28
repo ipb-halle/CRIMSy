@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
@@ -68,12 +68,12 @@ public class TaxonomyBeanTest extends TestBase {
         bean.init();
 
         UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
+        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         materialService.setUserBean(userBean);
         materialService.setEditedMaterialSaver(new MaterialEditSaverMock(materialService));
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
         bean.setMaterialService(materialService);
-        owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         String userGroups = GlobalAdmissionContext.getPublicReadACL().getId().toString();
         createTaxonomyTreeInDB(userGroups, owner.getId().toString());
 

@@ -22,6 +22,8 @@ import java.util.Date;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -35,17 +37,18 @@ public class PostingEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private UUID id;
+    private Integer id;
 
     @Column(name = "topic_id")
-    private UUID topic;
+    private Integer topic;
 
     @Column
     private String text;
 
     @Column(name = "owner_id")
-    private UUID owner;
+    private Integer owner;
 
     @Column
     private Date created;
@@ -53,11 +56,11 @@ public class PostingEntity implements Serializable {
     public PostingEntity() {
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public UUID getTopic() {
+    public Integer getTopic() {
         return topic;
     }
 
@@ -65,7 +68,7 @@ public class PostingEntity implements Serializable {
         return text;
     }
 
-    public UUID getOwner() {
+    public Integer getOwner() {
         return owner;
     }
 
@@ -78,12 +81,12 @@ public class PostingEntity implements Serializable {
         return this;
     }
 
-    public PostingEntity setId(UUID id) {
+    public PostingEntity setId(Integer id) {
         this.id = id;
         return this;
     }
 
-    public PostingEntity setOwner(UUID owner) {
+    public PostingEntity setOwner(Integer owner) {
         this.owner = owner;
         return this;
     }
@@ -93,7 +96,7 @@ public class PostingEntity implements Serializable {
         return this;
     }
 
-    public PostingEntity setTopic(UUID topic) {
+    public PostingEntity setTopic(Integer topic) {
         this.topic = topic;
         return this;
     }

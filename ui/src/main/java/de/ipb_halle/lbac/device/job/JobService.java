@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.device.job;
 /**
  * JobService loads, stores and deletes jobs.
  */
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -22,8 +22,6 @@ package de.ipb_halle.lbac.admission;
  * remote nodes. To make things manageable, nesting of memberships is not
  * supported on remote nodes.
  */
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.webservice.WebRequest;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;

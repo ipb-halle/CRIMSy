@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerNestingService;
@@ -46,6 +46,7 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.InputConverter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,7 +97,7 @@ public class ItemServiceTest extends TestBase {
     private Project project;
     private String ownerid;
     private String userGroups;
-    private CreationTools creationTools;
+
     String INSERT_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
             + "1,"
             + "1,"
@@ -160,6 +161,7 @@ public class ItemServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadItem() {
+
         instance.saveItem(createItem());
         Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
 
@@ -552,7 +554,7 @@ public class ItemServiceTest extends TestBase {
     }
 
     private void createAndSaveMaterial() {
-        owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         //Preparing project and material
         project = creationTools.createProject();
         userGroups = project.getUserGroups().getId().toString();

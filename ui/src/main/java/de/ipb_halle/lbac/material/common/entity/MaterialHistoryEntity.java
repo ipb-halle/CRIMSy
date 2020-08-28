@@ -38,8 +38,7 @@ public class MaterialHistoryEntity implements Serializable {
     private MaterialHistoryId id;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID actorid;
+    private Integer actorid;
 
     @Column
     private String digest;
@@ -48,12 +47,10 @@ public class MaterialHistoryEntity implements Serializable {
     private String action;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID aclistid_old;
+    private Integer aclistid_old;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID aclistid_new;
+    private Integer aclistid_new;
 
     @Column
     private Integer projectid_old;
@@ -62,12 +59,10 @@ public class MaterialHistoryEntity implements Serializable {
     private Integer projectid_new;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID ownerid_old;
+    private Integer ownerid_old;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID ownerid_new;
+    private Integer ownerid_new;
 
     public MaterialHistoryId getId() {
         return id;
@@ -77,11 +72,11 @@ public class MaterialHistoryEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getActorid() {
+    public Integer getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(Integer actorid) {
         this.actorid = actorid;
     }
 
@@ -101,19 +96,19 @@ public class MaterialHistoryEntity implements Serializable {
         this.action = action;
     }
 
-    public UUID getAclistid_old() {
+    public Integer getAclistid_old() {
         return aclistid_old;
     }
 
-    public void setAclistid_old(UUID aclistid_old) {
+    public void setAclistid_old(Integer aclistid_old) {
         this.aclistid_old = aclistid_old;
     }
 
-    public UUID getAclistid_new() {
+    public Integer getAclistid_new() {
         return aclistid_new;
     }
 
-    public void setAclistid_new(UUID aclistid_new) {
+    public void setAclistid_new(Integer aclistid_new) {
         this.aclistid_new = aclistid_new;
     }
 
@@ -133,19 +128,19 @@ public class MaterialHistoryEntity implements Serializable {
         this.projectid_new = projectid_new;
     }
 
-    public UUID getOwnerid_old() {
+    public Integer getOwnerid_old() {
         return ownerid_old;
     }
 
-    public void setOwnerid_old(UUID ownerid_old) {
+    public void setOwnerid_old(Integer ownerid_old) {
         this.ownerid_old = ownerid_old;
     }
 
-    public UUID getOwnerid_new() {
+    public Integer getOwnerid_new() {
         return ownerid_new;
     }
 
-    public void setOwnerid_new(UUID ownerid_new) {
+    public void setOwnerid_new(Integer ownerid_new) {
         this.ownerid_new = ownerid_new;
     }
 

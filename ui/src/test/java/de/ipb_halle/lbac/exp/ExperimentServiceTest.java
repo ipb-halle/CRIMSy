@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -62,7 +62,7 @@ public class ExperimentServiceTest extends TestBase {
     @Override
     public void setUp() {
         super.setUp();
-        publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
     }
 

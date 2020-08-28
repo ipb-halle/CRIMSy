@@ -25,6 +25,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -39,6 +41,10 @@ public class TopicEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
+
     @Column(name = "cloud_name")
     private String cloudName;
 
@@ -49,9 +55,6 @@ public class TopicEntity extends ACObjectEntity implements Serializable {
     @Column
     @Enumerated(EnumType.STRING)
     private TopicCategory category;
-
-    @Id
-    private UUID id;
 
     @Column(name = "node_id")
     private UUID node;
@@ -67,7 +70,7 @@ public class TopicEntity extends ACObjectEntity implements Serializable {
         return cloudName;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -89,7 +92,7 @@ public class TopicEntity extends ACObjectEntity implements Serializable {
         return this;
     }
 
-    public TopicEntity setId(UUID id) {
+    public TopicEntity setId(Integer id) {
         this.id = id;
         return this;
     }

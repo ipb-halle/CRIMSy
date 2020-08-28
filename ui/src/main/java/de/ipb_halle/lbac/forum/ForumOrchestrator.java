@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.forum;
 import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;

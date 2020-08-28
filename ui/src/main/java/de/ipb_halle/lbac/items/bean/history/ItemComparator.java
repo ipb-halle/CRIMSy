@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.items.bean.history;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.items.ItemHistory;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import java.math.BigDecimal;
 import java.util.Date;

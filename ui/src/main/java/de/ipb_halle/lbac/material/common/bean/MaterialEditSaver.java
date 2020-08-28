@@ -78,8 +78,8 @@ public class MaterialEditSaver implements Serializable{
     protected List<MaterialDifference> diffs;
     protected Material newMaterial;
     protected Material oldMaterial;
-    protected UUID projectAcl;
-    protected UUID actorId;
+    protected Integer projectAcl;
+    protected Integer actorId;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public void init(
@@ -87,8 +87,8 @@ public class MaterialEditSaver implements Serializable{
             List<MaterialDifference> diffs,
             Material newMaterial,
             Material oldMaterial,
-            UUID projectAcl,
-            UUID actorId) {
+            Integer projectAcl,
+            Integer actorId) {
         this.comparator = comparator;
         this.diffs = diffs;
         this.newMaterial = newMaterial;
@@ -282,8 +282,8 @@ public class MaterialEditSaver implements Serializable{
 
     protected void updateMaterialOverview(
             Material m,
-            UUID projectAclId,
-            UUID userId) {
+            Integer projectAclId,
+            Integer userId) {
         MaterialEntity mE = new MaterialEntity();
         mE.setMaterialid(m.getId());
         mE.setCtime(m.getCreationTime());

@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 
 import java.util.Date;
 import java.util.Objects;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +34,7 @@ public class MaterialStructureDifference implements MaterialDifference {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private Date modificationTime;
-    private UUID actorId;
+    private Integer actorId;
     private int materialId;
     private ModificationType action;
     private String sumFormula_old;
@@ -89,7 +88,7 @@ public class MaterialStructureDifference implements MaterialDifference {
     }
 
     @Override
-    public UUID getUserId() {
+    public Integer getUserId() {
         return actorId;
     }
 
@@ -101,11 +100,11 @@ public class MaterialStructureDifference implements MaterialDifference {
         this.modificationTime = modificationTime;
     }
 
-    public UUID getActorId() {
+    public Integer getActorId() {
         return actorId;
     }
 
-    public void setActorId(UUID actorId) {
+    public void setActorId(Integer actorId) {
         this.actorId = actorId;
     }
 
@@ -201,7 +200,7 @@ public class MaterialStructureDifference implements MaterialDifference {
     }
 
     @Override
-    public void initialise(int materialId, UUID actorID, Date mDate) {
+    public void initialise(int materialId, Integer actorID, Date mDate) {
         this.materialId = materialId;
         this.action = ModificationType.EDIT;
         this.actorId = actorID;

@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +56,6 @@ public class CollectionWebClientMock extends CollectionWebClient {
     /**
      * Simulates an webrequest for a List of readable collections
      *
-     * @param n Node from which the collections are requested
      * @param u User for who the collections are requested
      * @return List of readable collections for user u
      */
@@ -83,7 +82,7 @@ public class CollectionWebClientMock extends CollectionWebClient {
             readable.setIndexPath("/");
             readable.setName(String.format("READ-COL%d", i));
             readable.setNode(cn.getNode());
-            readable.setId(UUID.randomUUID());
+            readable.setId(-10000);
             readable.setOwner(u);
             collections.add(readable);
         }

@@ -18,11 +18,6 @@
 package de.ipb_halle.lbac.file;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ipb_halle.lbac.entity.TermVector;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -49,10 +44,10 @@ public class TermVectorParserTest {
     public void parseTermVectorJsonTest() throws IOException {
 
         String json = "{}";
-        List<TermVector> termsVectors = instance.parseTermVectorJson(json, UUID.randomUUID());
+        List<TermVector> termsVectors = instance.parseTermVectorJson(json, 10000);
         Assert.assertTrue(termsVectors.isEmpty());
         json = "{\"access\":{\"tf\":1},\"account\":{\"tf\":1}}";
-        termsVectors = instance.parseTermVectorJson(json, UUID.randomUUID());
+        termsVectors = instance.parseTermVectorJson(json,10001);
         Assert.assertEquals(2, termsVectors.size());
 
         //Realcase with a random text
@@ -63,13 +58,13 @@ public class TermVectorParserTest {
             text = row;
         }
         csvReader.close();
-        termsVectors = instance.parseTermVectorJson(text, UUID.randomUUID());
+        termsVectors = instance.parseTermVectorJson(text, 10002);
         Assert.assertEquals(4421, termsVectors.size());
 
         //Test with a broken json
         try {
             json = "{\"access\":{\"tf\":1},\"account\":{\"tf\":1}x}";
-            termsVectors = instance.parseTermVectorJson(json, UUID.randomUUID());
+            termsVectors = instance.parseTermVectorJson(json, 10003);
         } catch (Exception e) {
             Assert.assertEquals(JsonParseException.class, e.getClass());
         }

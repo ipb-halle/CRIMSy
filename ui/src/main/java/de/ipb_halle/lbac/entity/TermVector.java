@@ -28,7 +28,7 @@ import java.util.UUID;
 public class TermVector implements Serializable, DTO {
 
     private String wordRoot;
-    private UUID fileId;
+    private Integer fileId;
 
     private int termFrequency;
 
@@ -46,7 +46,7 @@ public class TermVector implements Serializable, DTO {
         this.termFrequency = entity.getTermFrequency();
     }
 
-    public TermVector(String wordRoot, UUID fileId, int termFrequency) {
+    public TermVector(String wordRoot, Integer fileId, int termFrequency) {
         this.wordRoot = wordRoot;
         this.fileId = fileId;
         this.termFrequency = termFrequency;
@@ -80,7 +80,7 @@ public class TermVector implements Serializable, DTO {
         return true;
     }
 
-    public UUID getFileId() {
+    public Integer getFileId() {
         return fileId;
     }
 
@@ -100,7 +100,7 @@ public class TermVector implements Serializable, DTO {
         return hash;
     }
 
-    public void setFileId(UUID fileId) {
+    public void setFileId(Integer fileId) {
         this.fileId = fileId;
     }
 

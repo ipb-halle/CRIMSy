@@ -21,7 +21,7 @@ import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.ACList;
@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,24 +71,24 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     private ACObjectController acObjectController;
     @Inject
-    private ItemService itemService;
+    protected ItemService itemService;
 
     @Inject
-    private ItemBean itemBean;
+    protected ItemBean itemBean;
 
     @Inject
-    private MemberService memberService;
+    protected MemberService memberService;
 
     @Inject
-    private Navigator navigator;
+    protected Navigator navigator;
 
     @Inject
-    private MaterialService materialService;
+    protected MaterialService materialService;
 
     @Inject
-    private ProjectService projectService;
+    protected ProjectService projectService;
     @Inject
-    private ContainerService containerService;
+    protected ContainerService containerService;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Item> items;

@@ -62,7 +62,7 @@ import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -113,7 +113,7 @@ public class MaterialCreationSaverTest extends TestBase {
         MaterialNameBean nameBean = new MaterialNameBean();
         MaterialCreationSaver saver = new MaterialCreationSaver(moleculeService, nameBean, materialService);
         UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)));
+        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         materialService.setUserBean(userBean);
         Project p = creationTools.createProject();
         MoleculeStructureModel moleculeModel = new V2000();

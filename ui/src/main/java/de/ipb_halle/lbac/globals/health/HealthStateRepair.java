@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
@@ -184,7 +184,6 @@ public class HealthStateRepair {
     private Collection createPublicCollectionInDb() {
         try {
             publicCollection = new Collection();
-            publicCollection.setId(UUID.randomUUID());
             publicCollection.setName(publicCollectionName);
             publicCollection.setStoragePath(String.format("%s/%s", FileService.getDefaultPath(), publicCollectionName));
             publicCollection.setIndexPath(String.format("%s/%s", SolrAdminService.getBaseURLSolr(), publicCollectionName));

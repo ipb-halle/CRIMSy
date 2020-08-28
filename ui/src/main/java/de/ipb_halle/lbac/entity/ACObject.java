@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.lbac.admission.User;
+
 /**
  * Abstract base class for an access controlled objects.
  */

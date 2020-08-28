@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ContainerOverviewBean.Mode;
 import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.io.Serializable;
 import java.util.ArrayList;

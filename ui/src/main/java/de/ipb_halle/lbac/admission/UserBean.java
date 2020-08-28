@@ -19,17 +19,12 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.InfoObjectService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;

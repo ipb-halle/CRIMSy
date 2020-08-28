@@ -46,7 +46,8 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Triggers remote search requests and puts the results into the @see
@@ -94,6 +95,11 @@ public class DocumentSearchOrchestrator implements Serializable {
             List<Collection> collections,
             String queryString,
             DocumentSearchState documentState) {
+
+        /**
+         * xxxxxxxxxxx Needs refactoring: request are identified by
+         * (node,collectionid) instead of collectionid
+         */
         if (development) {
             infoStart(collections, queryString, documentState);
         }
@@ -101,7 +107,7 @@ public class DocumentSearchOrchestrator implements Serializable {
 
             if (!collection.getNode().getLocal()) {
                 // any of the clouds is ok
-                List<CloudNode> cnl = this.cloudNodeService.load(null, collection.getNode()); 
+                List<CloudNode> cnl = this.cloudNodeService.load(null, collection.getNode());
                 if ((cnl == null || cnl.isEmpty())) {
                     continue;
                 }
@@ -114,7 +120,7 @@ public class DocumentSearchOrchestrator implements Serializable {
                         this.logger.info("orchestrate() collection: " + collection.getName());
                     }
                     return startRemoteSearch(
-                            createSearchRequest(queryString, collection, cloudNode), 
+                            createSearchRequest(queryString, collection, cloudNode),
                             cloudNode);
 
                 }, managedExecutorService)
@@ -189,7 +195,7 @@ public class DocumentSearchOrchestrator implements Serializable {
             wc.type(MediaType.APPLICATION_XML_TYPE);
             DocumentSearchRequest result = wc.post(searchRequest, DocumentSearchRequest.class);
             if (development) {
-                logger.info("startRemoteSearch() finished request: " + cloudNode.getNode().getBaseUrl()); 
+                logger.info("startRemoteSearch() finished request: " + cloudNode.getNode().getBaseUrl());
             }
             return result;
         } else {

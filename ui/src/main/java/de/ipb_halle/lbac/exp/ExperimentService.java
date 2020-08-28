@@ -23,8 +23,8 @@ package de.ipb_halle.lbac.exp;
  * The current implementation is rather a mock implementation as many important
  * aspects (permissions, history, filtering, ...) are missing.
  */
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;

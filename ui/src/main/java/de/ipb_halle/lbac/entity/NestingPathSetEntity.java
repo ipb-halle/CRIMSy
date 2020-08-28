@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -33,33 +35,34 @@ public class NestingPathSetEntity implements Serializable {
      */
     private final static long serialVersionUID = 1L;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private UUID id;
+    private Integer id;
 
     @Column(name = "membership_id")
-    private UUID membership_id;
+    private Integer membership_id;
 
     public NestingPathSetEntity() {
     }
 
-    public NestingPathSetEntity(UUID id, UUID membershipId) {
+    public NestingPathSetEntity(Integer id, Integer membershipId) {
         this.id = id;
         this.membership_id = membershipId;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public UUID getMembership_id() {
+    public Integer getMembership_id() {
         return membership_id;
     }
 
-    public void setMembership_id(UUID membership_id) {
+    public void setMembership_id(Integer membership_id) {
         this.membership_id = membership_id;
     }
 

@@ -17,17 +17,13 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrUpdate;
 import de.ipb_halle.lbac.collections.CollectionBean;
 
 import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.CollectionServiceMock;
 import de.ipb_halle.lbac.file.mock.FileEntityServiceMock;
@@ -37,10 +33,6 @@ import de.ipb_halle.lbac.file.mock.SolrTermVectorSearchMock;
 import de.ipb_halle.lbac.file.mock.SolrUpdateMock;
 import de.ipb_halle.lbac.file.mock.TermVectorEntityServiceMock;
 import de.ipb_halle.lbac.file.mock.TermVectorParserMock;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.service.CollectionService;
@@ -52,7 +44,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import javax.servlet.AsyncContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -88,11 +79,11 @@ public class FileUploadTest extends TestBase {
 
         Collection coll1 = new Collection();
         coll1.setCountDocs(1L);
-        coll1.setId(UUID.randomUUID());
+        coll1.setId(-1000);
         coll1.setName("Coll1");
         Collection coll2 = new Collection();
         coll2.setCountDocs(1L);
-        coll2.setId(UUID.randomUUID());
+        coll2.setId(-1001);
         coll2.setName("Coll2");
 
         CollectionBean collBean = new CollectionBean();

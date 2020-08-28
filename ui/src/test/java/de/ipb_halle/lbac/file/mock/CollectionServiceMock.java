@@ -34,7 +34,7 @@ public class CollectionServiceMock extends CollectionService {
     @Override
     public List<Collection> load(Map<String, Object> cmap) {
         Collection c = new Collection();
-        c.setId(UUID.randomUUID());
+        c.setId(-10000);
         Node n = new Node();
         n.setId(UUID.randomUUID());
         c.setNode(n);

@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.file;
 import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.cloud.solr.SolrUpdate;
@@ -53,7 +53,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class FileUpload implements Runnable {
 
@@ -169,18 +170,18 @@ public class FileUpload implements Runnable {
 
             destFile = saveFileInFinalFolder(digest, tmpFile);
 
-            UUID uuid = saveDocumentInSolr(fileName, destFile.toString());
+            Integer id = saveDocumentInSolr(fileName, destFile.toString());
 
             //Loads the document from solr because there are now more
             //information e.g. the language of the document
-            Document d = solrSearcher.getDocumentById(uuid, collection.getId());
+            Document d = solrSearcher.getDocumentById(id, collection.getId());
 
-            saveFileWithTermVectorInDB(uuid, fileName, digest, destFile, d);
+            saveFileWithTermVectorInDB(id, fileName, digest, destFile, d);
 
             try {
                 String x = solrSearcher.getTermPositions(d, collection.getIndexPath());
                 List<StemmedWordOrigin> wordOrigins = termVectorParser.parseTermVectorXmlToWordOrigins(d, x);
-                termVectorEntityService.saveUnstemmedWordsOfDocument(wordOrigins, uuid);
+                termVectorEntityService.saveUnstemmedWordsOfDocument(wordOrigins, id);
             } catch (Exception unstemmedWordException) {
                 logger.error(
                         "Error of getting unstemmed words for " + d.getOriginalName(),
@@ -189,7 +190,7 @@ public class FileUpload implements Runnable {
 
             updateCollectionCountInfos();
 
-            out.write(createJsonSuccessResponse(uuid, fileName));
+            out.write(createJsonSuccessResponse(id, fileName));
 
         } catch (Exception ex) {
             this.logger.warn("xxxx caught an exception:", (Throwable) ex);
@@ -226,10 +227,10 @@ public class FileUpload implements Runnable {
         logger.info("Finished File Upload");
     }
 
-    private String createJsonSuccessResponse(UUID newUUID, String fileName) {
+    private String createJsonSuccessResponse(Integer id, String fileName) {
         JsonObject json = Json.createObjectBuilder()
                 .add("success", true)
-                .add("newUuid", newUUID.toString())
+                .add("newUuid", id.toString())
                 .add("uploadName", fileName)
                 .build();
         return json.toString();
@@ -274,12 +275,17 @@ public class FileUpload implements Runnable {
         }
     }
 
-    public UUID saveDocumentInSolr(String fileName, String dest) throws Exception {
+    public Integer saveDocumentInSolr(String fileName, String dest) throws Exception {
+
+        /**
+         * xxxxxxx - Needs a massive refactoring: id must be set by database
+         * instead of random
+         */
         try {
-            UUID uuid = UUID.randomUUID();
+            Integer id = -1000;
 
             Document doc = new Document();
-            doc.setId(uuid);
+            doc.setId(id);
             doc.setCollectionId(collection.getId());
             doc.setCollection(collection);
             doc.setNodeId(collection.getNode().getId());
@@ -288,7 +294,7 @@ public class FileUpload implements Runnable {
             doc.setPath(dest);
 
             Map<String, String> params = new HashMap<>();
-            params.put("literal.id", uuid.toString());
+            params.put("literal.id", id.toString());
             params.put("literal.permission", "PERMISSION ALLES ERLAUBT");
 
             params.put("literal.original_name", fileName);
@@ -297,7 +303,7 @@ public class FileUpload implements Runnable {
 
             solrUpdate.update(doc, params);
 
-            return uuid;
+            return id;
         } catch (Exception e) {
             if (isLanguageUnsupported(e)) {
                 String language = e.getMessage().split(":")[e.getMessage().split(":").length - 1].trim();
@@ -337,9 +343,9 @@ public class FileUpload implements Runnable {
         return destFile;
     }
 
-    private void saveFileWithTermVectorInDB(UUID uuid, String fileName, byte[] digest, Path destFile, Document d) throws Exception {
+    private void saveFileWithTermVectorInDB(Integer id, String fileName, byte[] digest, Path destFile, Document d) throws Exception {
         FileObject fileEntity = new FileObject();
-        fileEntity.setId(uuid);
+        fileEntity.setId(id);
         fileEntity.setName(fileName);
         fileEntity.setHash(HexUtil.toHex(digest));
         fileEntity.setCreated(new Date());
@@ -352,7 +358,7 @@ public class FileUpload implements Runnable {
         fileEntityService.save(fileEntity);
 
         TermVectorParser tvParser = new TermVectorParser();
-        fileEntityService.saveTermVectors(tvParser.parseTermVectorJson(tvJsonString, uuid));
+        fileEntityService.saveTermVectors(tvParser.parseTermVectorJson(tvJsonString, id));
 
     }
 

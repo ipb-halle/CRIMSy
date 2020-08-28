@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.HazardInformation;

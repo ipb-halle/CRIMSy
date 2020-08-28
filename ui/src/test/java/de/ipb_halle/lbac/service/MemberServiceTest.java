@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.service;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
@@ -25,8 +28,8 @@ import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
@@ -102,9 +105,8 @@ public class MemberServiceTest extends TestBase {
         String name = "John Doe";
 
         User u = createUser("jdoe", name);
-        UUID id = u.getId();
 
-        User v = this.memberService.loadUserById(id);
+        User v = this.memberService.loadUserById(u.getId());
 
         assertEquals("testMemberService(): name mismatch ",
                 name, v.getName());

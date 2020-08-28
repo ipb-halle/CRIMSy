@@ -46,8 +46,7 @@ public class StorageConditionHistoryEntity implements Serializable {
     private int materialid;
 
     @Column
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID actorid;
+    private Integer actorid;
 
     @Column
     private String digest;
@@ -78,11 +77,11 @@ public class StorageConditionHistoryEntity implements Serializable {
         this.materialid = materialid;
     }
 
-    public UUID getActorid() {
+    public Integer getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(Integer actorid) {
         this.actorid = actorid;
     }
 

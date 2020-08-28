@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
@@ -111,7 +111,7 @@ public class ContainerPositionServiceTest extends TestBase {
     @Before
     @Override
     public void setUp() {
-        owner = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = creationTools.createProject();
         c0 = new Container();

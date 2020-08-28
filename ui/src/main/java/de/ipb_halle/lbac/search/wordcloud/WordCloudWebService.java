@@ -88,7 +88,7 @@ public class WordCloudWebService extends LbacWebService {
         }
         try {
             List<Collection> collections = new ArrayList<>();
-            for (UUID id : request.getIdsOfReadableCollections()) {
+            for (Integer id : request.getIdsOfReadableCollections()) {
                 collections.add(collectionService.loadById(id));
             }
 

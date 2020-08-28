@@ -38,7 +38,7 @@ public class WordCloudWebRequest extends WebRequest {
 
     private List<Document> documentsWithTerms = new ArrayList<>();
     private Set<String> terms = new HashSet<>();
-    private Set<UUID> idsOfReadableCollections = new HashSet<>();
+    private Set<Integer> idsOfReadableCollections = new HashSet<>();
     private Integer maxTerms = Integer.MAX_VALUE;
 
     public List<Document> getDocumentsWithTerms() {
@@ -57,11 +57,11 @@ public class WordCloudWebRequest extends WebRequest {
         this.terms = terms;
     }
 
-    public Set<UUID> getIdsOfReadableCollections() {
+    public Set<Integer> getIdsOfReadableCollections() {
         return idsOfReadableCollections;
     }
 
-    public void setIdsOfReadableCollections(Set<UUID> idsOfReadableCollections) {
+    public void setIdsOfReadableCollections(Set<Integer> idsOfReadableCollections) {
         this.idsOfReadableCollections = idsOfReadableCollections;
     }
 

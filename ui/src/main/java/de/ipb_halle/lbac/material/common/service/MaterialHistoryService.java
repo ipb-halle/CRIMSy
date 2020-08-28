@@ -39,7 +39,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,7 +47,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialHistoryService  implements Serializable{
+public class MaterialHistoryService implements Serializable {
 
     private final String SQL_GET_INDEX_HISTORY = "select"
             + " id,"
@@ -221,22 +220,22 @@ public class MaterialHistoryService  implements Serializable{
             MaterialOverviewDifference md = new MaterialOverviewDifference();
             md.setMaterialID((int) mhe[0]);
             md.setmDate((Date) mhe[1]);
-            md.setActorID(UUID.fromString((String) mhe[2]));
+            md.setActorID((Integer) mhe[2]);
             md.setDigest((String) mhe[3]);
             md.setAction(ModificationType.valueOf((String) mhe[4]));
             if (mhe[5] != null) {
-                md.setAcListOld(materialService.getAcListService().loadById(UUID.fromString((String) mhe[5])));
+                md.setAcListOld(materialService.getAcListService().loadById((Integer) mhe[5]));
             }
             if (mhe[6] != null) {
-                md.setAcListNew(materialService.getAcListService().loadById(UUID.fromString((String) mhe[6])));
+                md.setAcListNew(materialService.getAcListService().loadById((Integer) mhe[6]));
             }
             md.setProjectIdOld((Integer) mhe[7]);
             md.setProjectIdNew((Integer) mhe[8]);
             if (mhe[9] != null) {
-                md.setOwnerIdOld(UUID.fromString((String) mhe[9]));
+                md.setOwnerIdOld((Integer) mhe[9]);
             }
             if (mhe[10] != null) {
-                md.setOwnerIdNew(UUID.fromString((String) mhe[10]));
+                md.setOwnerIdNew((Integer) mhe[10]);
             }
             history.addDifference(md);
         }

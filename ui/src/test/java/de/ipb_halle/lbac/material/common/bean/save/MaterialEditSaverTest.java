@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
@@ -54,7 +54,7 @@ import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -105,7 +105,7 @@ public class MaterialEditSaverTest extends TestBase {
     public void init() {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
         p = new Project(ProjectType.BIOLOGICAL_PROJECT, "testProject");
-        u = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        u = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         aclist = new ACList();
         aclist.addACE(u, new ACPermission[]{ACPermission.permREAD});
         aclist = acListService.save(aclist);

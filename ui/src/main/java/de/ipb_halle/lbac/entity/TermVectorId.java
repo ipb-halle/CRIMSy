@@ -29,18 +29,18 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TermVectorId implements Serializable {
 
-    private UUID file_id;
+    private Integer file_id;
     private String wordroot;
 
     public TermVectorId() {
     }
 
-    public TermVectorId(String wordRoot, UUID fileId) {
+    public TermVectorId(String wordRoot, Integer fileId) {
         this.wordroot = wordRoot;
         this.file_id = fileId;
     }
 
-    public UUID getFile_id() {
+    public Integer getFile_id() {
         return file_id;
     }
 
@@ -48,7 +48,7 @@ public class TermVectorId implements Serializable {
         return wordroot;
     }
 
-    public void setFile_id(UUID file_id) {
+    public void setFile_id(Integer file_id) {
         this.file_id = file_id;
     }
 

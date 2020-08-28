@@ -69,7 +69,7 @@ public class ItemEntity implements Serializable {
     private String description;
 
     @Column
-    private UUID owner;
+    private Integer owner;
 
     @Column
     private Double containersize;
@@ -84,7 +84,7 @@ public class ItemEntity implements Serializable {
     private Date ctime;
 
     @Column
-    private UUID aclist_id;
+    private Integer aclist_id;
     
     @Column
     private Date expiry_date;
@@ -161,11 +161,11 @@ public class ItemEntity implements Serializable {
         this.description = description;
     }
 
-    public UUID getOwner() {
+    public Integer getOwner() {
         return owner;
     }
 
-    public void setOwner(UUID owner) {
+    public void setOwner(Integer owner) {
         this.owner = owner;
     }
 
@@ -209,11 +209,11 @@ public class ItemEntity implements Serializable {
         this.ctime = ctime;
     }
 
-    public UUID getAclist_id() {
+    public Integer getAclist_id() {
         return aclist_id;
     }
 
-    public void setAclist_id(UUID aclist_id) {
+    public void setAclist_id(Integer aclist_id) {
         this.aclist_id = aclist_id;
     }
 

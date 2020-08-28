@@ -46,8 +46,7 @@ public class DocumentSearchRequest extends WebRequest implements Cloneable, Seri
      * collection to which this request addresses or which provided the result
      * data
      */
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID collectionId;
+    private Integer collectionId;
 
     /**
      * return limit elements at maximum
@@ -123,7 +122,7 @@ public class DocumentSearchRequest extends WebRequest implements Cloneable, Seri
         return req;
     }
 
-    public UUID getCollectionId() {
+    public Integer getCollectionId() {
         return this.collectionId;
     }
 
@@ -151,7 +150,7 @@ public class DocumentSearchRequest extends WebRequest implements Cloneable, Seri
         return this.totalResultCount;
     }
 
-    public void setCollectionId(UUID id) {
+    public void setCollectionId(Integer id) {
         this.collectionId = id;
     }
 

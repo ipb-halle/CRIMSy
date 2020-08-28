@@ -29,9 +29,10 @@ import java.util.UUID;
 public class FileObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
-
+    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private UUID id;
+    private Integer id;
 
     @Size(min = 1, max = 255)
     private String name;
@@ -46,10 +47,10 @@ public class FileObjectEntity implements Serializable {
     private Timestamp created;
 
     @Column(name = "user_id")
-    private UUID user;
+    private Integer user;
 
     @Column(name = "collection_id")
-    private UUID collection;
+    private Integer collection;
 
     private String document_language;
 
@@ -62,7 +63,7 @@ public class FileObjectEntity implements Serializable {
     /*
      * getter & setter
      */
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -82,11 +83,11 @@ public class FileObjectEntity implements Serializable {
         return created;
     }
 
-    public UUID getUser() {
+    public Integer getUser() {
         return user;
     }
 
-    public UUID getCollection() {
+    public Integer getCollection() {
         return collection;
     }
 
@@ -94,7 +95,7 @@ public class FileObjectEntity implements Serializable {
         return document_language;
     }
 
-    public FileObjectEntity setCollection(UUID collection) {
+    public FileObjectEntity setCollection(Integer collection) {
         this.collection = collection;
         return this;
     }
@@ -119,7 +120,7 @@ public class FileObjectEntity implements Serializable {
         return this;
     }
     
-     public FileObjectEntity setId(UUID id) {
+     public FileObjectEntity setId(Integer id) {
         this.id = id;
         return this;
     }
@@ -134,7 +135,7 @@ public class FileObjectEntity implements Serializable {
         return this;
     }
 
-    public FileObjectEntity setUser(UUID user) {
+    public FileObjectEntity setUser(Integer user) {
         this.user = user;
         return this;
     }
