@@ -27,30 +27,30 @@ import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
 /**
- * FacesConverter which allows only a limited set of HTML tags 
- * to be used (b, em, i, strike, strong, sub, sup, u).
- * This is of utility for substance or organism names as 
- * "<i>tert</i>-Butanol" or "<i>Arabidopsis thaliana</i>".
+ * FacesConverter which allows only a limited set of HTML tags to be used (b,
+ * em, i, strike, strong, sub, sup, u). This is of utility for substance or
+ * organism names as "<i>tert</i>-Butanol" or "<i>Arabidopsis thaliana</i>".
  *
  * @author fmauz
  */
 @FacesConverter("InputConverter")
 public class InputConverter implements Converter {
 
-    private final static String[] blockElements = new String[] {
-            "b", "em", "i", "strike", "strong", "sub", "sup", "u" }; 
+    private final static String[] blockElements = new String[]{
+        "b", "em", "i", "s", "strong", "sub", "sup", "u"};
 
     private static PolicyFactory policy = new HtmlPolicyBuilder()
-                                        .allowElements(blockElements)
-                                        .allowTextIn(blockElements)
-                                        .toFactory();
+            .allowElements(blockElements)
+            .allowTextIn(blockElements)
+            .toFactory();
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
-     * Method to facilitate "mis-using" this class to sanitize data 
-     * coming over the network
-     * @param string 
+     * Method to facilitate "mis-using" this class to sanitize data coming over
+     * the network
+     *
+     * @param string
      * @return sanitized string
      */
     public String filter(String string) {
