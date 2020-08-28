@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.entity.ACList;
 import de.ipb_halle.lbac.entity.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.util.HTMLInputFilter;
+import de.ipb_halle.lbac.util.InputConverter;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
@@ -55,7 +55,7 @@ public abstract class Material extends ACObject implements DTO, Serializable {
     protected List<IndexEntry> indices = new ArrayList<>();
     protected List<MaterialDetailRight> detailRights = new ArrayList<>();
     protected MaterialHistory history = new MaterialHistory();
-    protected HTMLInputFilter vFilter;
+    protected InputConverter vFilter;
 
     public Material(
             int id,
@@ -68,7 +68,7 @@ public abstract class Material extends ACObject implements DTO, Serializable {
         this.projectId = projectId;
         this.hazards = hazards;
         this.storageInformation = storageInformation;
-        vFilter = new HTMLInputFilter(false, true);
+        vFilter = new InputConverter();
     }
 
     public void setId(int id) {

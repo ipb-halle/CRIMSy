@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.forum;
 
-import de.ipb_halle.lbac.util.HTMLInputFilter;
+import de.ipb_halle.lbac.util.RichTextConverter;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.entity.Cloud;
@@ -53,7 +53,7 @@ public class ForumBean implements Serializable {
     private Logger logger = LogManager.getLogger(ForumBean.class);
     private PostingTextTransformator postingTrafo = new PostingTextTransformator();
     private String fullTextSearch = "";
-    protected HTMLInputFilter vFilter;
+    protected RichTextConverter vFilter;
     protected final String TOPIC_HEADER_PRESTRING = "Topic: ";
 
     @Inject
@@ -73,7 +73,7 @@ public class ForumBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        vFilter = new HTMLInputFilter(true, true);
+        vFilter = new RichTextConverter(); 
     }
 
     /**

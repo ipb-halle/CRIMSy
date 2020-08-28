@@ -37,9 +37,11 @@
 
     <composite:implementation>
 
-        <h:outputText value="#{cc.attrs.text}" escape="false"> 
-            <f:converter converterId="InputConverter" />
-        </h:outputText>
+        <span class="ql-editor">
+            <h:outputText value="#{cc.attrs.text}" escape="false"> 
+                <f:converter converterId="RichTextConverter" />
+            </h:outputText>
+        </span>
 
     </composite:implementation>
 </html>

@@ -253,6 +253,13 @@
             <version>1.0</version>
         </dependency>
 
+        <!-- OWASP java HTML sanitizer -->
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>owasp-java-html-sanitizer</artifactId>
+            <version>20200713.1</version>
+        </dependency>
+
         <!-- barcoding: Google ZXing -->
         <dependency>
             <groupId>com.google.zxing</groupId>

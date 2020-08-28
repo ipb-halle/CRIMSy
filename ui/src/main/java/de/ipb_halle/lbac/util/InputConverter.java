@@ -21,24 +21,50 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.owasp.html.HtmlPolicyBuilder;
+import org.owasp.html.PolicyFactory;
 
 /**
+ * FacesConverter which allows only a limited set of HTML tags 
+ * to be used (b, em, i, strike, strong, sub, sup, u).
+ * This is of utility for substance or organism names as 
+ * "<i>tert</i>-Butanol" or "<i>Arabidopsis thaliana</i>".
  *
  * @author fmauz
  */
 @FacesConverter("InputConverter")
 public class InputConverter implements Converter {
 
-    private HTMLInputFilter filter = new HTMLInputFilter(false, true);
+    private final static String[] blockElements = new String[] {
+            "b", "em", "i", "strike", "strong", "sub", "sup", "u" }; 
+
+    private static PolicyFactory policy = new HtmlPolicyBuilder()
+                                        .allowElements(blockElements)
+                                        .allowTextIn(blockElements)
+                                        .toFactory();
+
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    /**
+     * Method to facilitate "mis-using" this class to sanitize data 
+     * coming over the network
+     * @param string 
+     * @return sanitized string
+     */
+    public String filter(String string) {
+        return policy.sanitize(string);
+    }
 
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
-        return filter.filter(string);
+        return policy.sanitize(string);
     }
 
     @Override
     public String getAsString(FacesContext fc, UIComponent uic, Object o) {
-        return o == null ? "" : filter.filter(o.toString());
+        return o == null ? "" : policy.sanitize(o.toString());
     }
 
 }
