@@ -93,17 +93,16 @@ public class ForumServiceTest extends TestBase {
         Assert.assertNotNull("Topic was not saved correctly", id);
 
         List<Object> o = entityManagerService.doSqlQuery("SELECT "
-                + "cast(id as VARCHAR), "
-                + "name,"
+                + "id , "
+                + "name, "
                 + "category, "
                 + "owner_id , "
-                + "aclist_id ), "
-                + "cast(node_id as VARCHAR), "
+                + "aclist_id , "
                 + "cloud_name FROM topics");
         Assert.assertEquals("Exact one topic must be found", 1, o.size());
         Object[] z = (Object[]) o.get(0);
-        String entityId = (String) z[0];
-        Assert.assertEquals("IDs do not match", id.toString(), entityId);
+        Integer entityId = (Integer)z[0];
+        Assert.assertEquals("IDs do not match", id, entityId);
         String name = (String) z[1];
         Assert.assertEquals("name does not match", "Test Topic", name);
         String category = (String) z[2];
@@ -112,9 +111,7 @@ public class ForumServiceTest extends TestBase {
         Assert.assertEquals("Owner-ID does not match", publicUser.getId(), user_id);
         Integer owner_id = (Integer) z[4];
         Assert.assertEquals("ACL-ID does not match", instance.getPublicReadWriteList().getId(), owner_id);
-        String node_id = (String) z[5];
-        Assert.assertEquals("Node-ID does not match", nodeService.getLocalNode().getId(), UUID.fromString(node_id));
-        String cloud_name = (String) z[6];
+        String cloud_name = (String) z[5];
         Assert.assertEquals("Cloud-ID does not match", cloud.getName(), cloud_name);
 
     }

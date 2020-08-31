@@ -184,7 +184,7 @@ public class ForumService implements Serializable {
         topic.setNode(nodeService.getLocalNode());
         topic.setOwner(owner);
 
-        em.merge(topic.createEntity());
+        topic.setId(em.merge(topic.createEntity()).getId());
 
         return topic;
     }
