@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.globals.KeyManager;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
@@ -27,8 +26,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
  * @author fbroda
  */
 public class UserBeanDeployment {
-
-
+    
     public static WebArchive add(WebArchive deployment) {
         return deployment
                 .addClass(KeyManager.class)

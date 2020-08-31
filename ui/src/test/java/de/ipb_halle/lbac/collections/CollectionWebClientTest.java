@@ -33,15 +33,11 @@ import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.service.CloudService;
-import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.io.IOException;
-import java.net.URL;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -49,8 +45,7 @@ import java.security.PublicKey;
 import java.util.Base64;
 import java.util.List;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
-import org.jboss.arquillian.container.test.api.Deployment;
+import org.apache.logging.log4j.Logger;import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -81,31 +76,25 @@ public class CollectionWebClientTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("CollectionWebClientTest.war")
-                .addPackage(CollectionService.class.getPackage())
+               
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(Updater.class)
                 .addClass(CollectionSearchState.class)
-                .addPackage(ACListService.class.getPackage())
+               
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(Navigator.class)
-                .addPackage(Logger.class.getPackage())
-                .addPackage(CollectionBean.class.getPackage())
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
-                .addPackage(WordCloudWebService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
-                .addPackage(SolrTermVectorSearch.class.getPackage())
-                .addPackage(SolrAdminService.class.getPackage())
+               
                 .addClass(CollectionWebClient.class)
                 .addClass(CollectionWebServiceMock.class)
-                .addPackage(WebRequestAuthenticator.class.getPackage())
+              
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class);
         return UserBeanDeployment.add(deployment);
     }
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         initializeBaseUrl();
