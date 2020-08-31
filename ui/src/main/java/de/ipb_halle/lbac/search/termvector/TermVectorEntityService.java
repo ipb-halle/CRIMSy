@@ -83,7 +83,7 @@ public class TermVectorEntityService implements Serializable {
 
     protected final String SQL_INSERT_UNSTEMMED_WORD
             = "insert into  unstemmed_words (unstemmed_word, file_id, wordroot) values"
-            + "(:usw,:did,:wr)";
+            + "(:unstemmed_word,:did,:stemmed_word)";
 
     protected final String SQL_LOAD_UNSTEMMED_WORD
             = "select unstemmed_word"
@@ -125,7 +125,7 @@ public class TermVectorEntityService implements Serializable {
      * hibernate except UUIDs only, can't cast Strings to UUIDs
      */
     @SuppressWarnings("unchecked")
-    public Map<String, Integer> getTermVector(List<String> docIds, Integer maxResult) {
+    public Map<String, Integer> getTermVector(List<Integer> docIds, Integer maxResult) {
         try {
             if (docIds.isEmpty()) {
                 return new HashMap<>();
@@ -259,9 +259,9 @@ public class TermVectorEntityService implements Serializable {
         for (StemmedWordOrigin swo : wordOrigins) {
             for (String s : swo.getOriginalWord()) {
                 this.em.createNativeQuery(SQL_INSERT_UNSTEMMED_WORD)
-                        .setParameter("usw", s)
+                        .setParameter("unstemmed_word", s)
                         .setParameter("did", documentId)
-                        .setParameter("wr", swo.getStemmedWord())
+                        .setParameter("stemmed_word", swo.getStemmedWord())
                         .executeUpdate();
                 this.em.flush();
             }
@@ -342,17 +342,17 @@ public class TermVectorEntityService implements Serializable {
      * @return
      */
     private List<TermVector> loadTermvectorsForDocuments(
-            List<String> docIds,
+            List<Integer> docIds,
             Integer maxResult) {
         List<TermVector> tvList = new ArrayList<>();
-        for (String id : docIds) {
+        for (Integer id : docIds) {
             // Loads the termvector for a documentid and limits 
             // the length by the given maximum result length
             @SuppressWarnings("unchecked")
             List<TermVectorEntity> entities = this.em.createNativeQuery(
                     SQL_TERMVECTORS_BY_ID,
                     TermVectorEntity.class)
-                    .setParameter("id", UUID.fromString(id))
+                    .setParameter("id", id)
                     .getResultList();
 
             List<TermVector> list = new ArrayList<>();

@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.search.termvector;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.file.FileObject;
@@ -31,11 +32,10 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Random;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -68,6 +68,11 @@ public class TermVectorEntityServiceTest extends TestBase {
     @Inject
     private FileEntityService fileEntityService;
 
+    @Inject
+    private ACListService aclistService;
+
+    private Random random = new Random();
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("TermVectorEntityServiceTest.war")
@@ -85,52 +90,50 @@ public class TermVectorEntityServiceTest extends TestBase {
                 "testuser",
                 "testuser");
 
-       
-
         termVectorEntityService.deleteTermVectors();
         ACList acl = new ACList();
         acl.setName("test");
         acl.addACE(u, ACPermission.values());
-
+        aclistService.save(acl);
         Collection col1 = createCollection("collection1", acl, u);
         Collection col2 = createCollection("collection2", acl, u);
-        collectionService.save(col1);
-        collectionService.save(col2);
+        col1 = collectionService.save(col1);
+        col2 = collectionService.save(col2);
 
         FileObject fE1 = createFileObject(col1, "en", "file1", u);
         FileObject fE2 = createFileObject(col1, "en", "file2", u);
         FileObject fE3 = createFileObject(col1, "de", "file3", u);
         FileObject fE4 = createFileObject(col2, "en", "file4", u);
 
-        fileEntityService.save(fE1);
-        fileEntityService.save(fE2);
-        fileEntityService.save(fE3);
-        fileEntityService.save(fE4);
+        fE1 = fileEntityService.save(fE1);
+        fE2 = fileEntityService.save(fE2);
+        fE3 = fileEntityService.save(fE3);
+        fE4 = fileEntityService.save(fE4);
 
         List<TermVector> vectors = new ArrayList<>();
 
-        vectors.add(new TermVector("testWord", fE1.getId(), 3));
-        vectors.add(new TermVector("testWord2", fE1.getId(), 4));
-        vectors.add(new TermVector("testWord", fE2.getId(), 5));
-        vectors.add(new TermVector("testWord3", fE3.getId(), 7));
-        vectors.add(new TermVector("testWord", fE4.getId(), 11));
+        vectors.add(new TermVector("testStemWord", fE1.getId(), 3));
+        vectors.add(new TermVector("testStemWord2", fE1.getId(), 4));
+        vectors.add(new TermVector("testStemWord", fE2.getId(), 5));
+        vectors.add(new TermVector("testStemWord3", fE3.getId(), 7));
+        vectors.add(new TermVector("testStemWord", fE4.getId(), 11));
 
         fileEntityService.saveTermVectors(vectors);
 
-        List<String> ids = new ArrayList<>();
+        List<Integer> ids = new ArrayList<>();
         Map<String, Integer> results = termVectorEntityService.getTermVector(ids, 10);
         Assert.assertTrue(results.isEmpty());
 
-        ids.add(fE1.getId().toString());
+        ids.add(fE1.getId());
         results = termVectorEntityService.getTermVector(ids, 10);
         Assert.assertEquals(2, results.keySet().size());
         int sum = 0;
         sum = results.values().stream().map((i) -> i).reduce(sum, Integer::sum);
         Assert.assertEquals(7, sum);
 
-        ids.add(fE2.getId().toString());
-        ids.add(fE3.getId().toString());
-        ids.add(fE4.getId().toString());
+        ids.add(fE2.getId());
+        ids.add(fE3.getId());
+        ids.add(fE4.getId());
         results = termVectorEntityService.getTermVector(ids, 10);
         Assert.assertEquals(3, results.keySet().size());
         sum = 0;
@@ -139,9 +142,9 @@ public class TermVectorEntityServiceTest extends TestBase {
 
         results = termVectorEntityService.getTermVector(ids, 2);
         Assert.assertEquals(2, results.keySet().size());
-        int mostFrequentWord = results.get("testWord");
-        Assert.assertEquals(19 , mostFrequentWord);
-        int secondMostFrequentWord = results.get("testWord3");
+        int mostFrequentWord = results.get("testStemWord");
+        Assert.assertEquals(19, mostFrequentWord);
+        int secondMostFrequentWord = results.get("testStemWord3");
         Assert.assertEquals(7, secondMostFrequentWord);
 
         int totalSum = termVectorEntityService.getSumOfAllWordsFromAllDocs();
@@ -152,11 +155,15 @@ public class TermVectorEntityServiceTest extends TestBase {
         Assert.assertEquals(19, totalSum);
 
         StemmedWordOrigin wordOrigin = new StemmedWordOrigin();
-        wordOrigin.setOriginalWord(Arrays.asList("originWord1", "originWord2", "originWord3"));
-        wordOrigin.setStemmedWord("stemmedWord");
+        wordOrigin.setOriginalWord(Arrays.asList("origalWord1", "origalWord2", "origalWord3"));
+        wordOrigin.setStemmedWord("testStemWord");
 
         termVectorEntityService.saveUnstemmedWordsOfDocument(Arrays.asList(wordOrigin), fE1.getId());
-        List< StemmedWordOrigin> words = termVectorEntityService.loadUnstemmedWordsOfDocument(fE1.getId(), "stemmedWord");
+        
+        
+        
+        
+        List< StemmedWordOrigin> words = termVectorEntityService.loadUnstemmedWordsOfDocument(fE1.getId(), "testStemWord");
         Assert.assertEquals("Loading of unstemmed words not correct", 1, words.size());
         Assert.assertEquals(3, words.get(0).getOriginalWord().size());
 
@@ -167,7 +174,6 @@ public class TermVectorEntityServiceTest extends TestBase {
         col.setNode(this.nodeService.getLocalNode());
         col.setName(name);
         col.setDescription(name);
-        col.setId(1000000);
         col.setIndexPath("/doc/test");
         col.setACList(acl);
         col.setOwner(owner);

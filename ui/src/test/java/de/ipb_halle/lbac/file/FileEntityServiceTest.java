@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -106,8 +105,8 @@ public class FileEntityServiceTest extends TestBase {
 
         TermVector tv = new TermVector("testWord", fE.getId(), 3);
         fileEntityService.saveTermVectors(Arrays.asList(tv));
-        List<String> ids = new ArrayList<>();
-        ids.add(fE.getId().toString());
+        List<Integer> ids = new ArrayList<>();
+        ids.add(fE.getId());
         termVectorEntityService.getTermVector(ids, 10);
 
         int sumOfWords = termVectorEntityService.getSumOfAllWordsFromAllDocs();

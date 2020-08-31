@@ -152,10 +152,10 @@ public class MaterialComparator implements Serializable {
             overviewDiff.setAcListNew(editedMat.getACList());
             overviewDiff.setAcListOld(originalMat.getACList());
         }
-        if (originalMat.getACList() == null || editedMat.getOwner() == null) {
+        if (originalMat.getOwner() == null || editedMat.getOwner() == null) {
             throw new Exception("Owner of material not set !");
         }
-        if (!originalMat.getOwner().getId().toString().equals(editedMat.getOwner().getId().toString())) {
+        if (!originalMat.getOwner().getId().equals(editedMat.getOwner().getId())) {
             overviewDiff.setOwnerIdNew(editedMat.getOwner().getId());
             overviewDiff.setOwnerIdOld(originalMat.getOwner().getId());
         }

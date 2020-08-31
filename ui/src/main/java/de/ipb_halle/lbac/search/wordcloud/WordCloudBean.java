@@ -281,7 +281,7 @@ public class WordCloudBean implements Serializable {
             d.setTermFreqList(
                     new TermFrequencyList(
                             termVectorService.getTermVector(
-                                    Arrays.asList(d.getId().toString()),
+                                    Arrays.asList(d.getId()),
                                     Integer.parseInt(maxTerms)
                             )
                     ));

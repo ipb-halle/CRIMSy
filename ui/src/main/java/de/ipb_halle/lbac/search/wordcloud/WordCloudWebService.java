@@ -103,7 +103,7 @@ public class WordCloudWebService extends LbacWebService {
                 d.setTermFreqList(
                         new TermFrequencyList(
                                 termVectorService.getTermVector(
-                                        Arrays.asList(d.getId().toString()),
+                                        Arrays.asList(d.getId()),
                                         request.getMaxTerms()
                                 )
                         ));

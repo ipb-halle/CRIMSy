@@ -54,6 +54,7 @@ public class MaterialComparatorTest {
     public void init() {
         instance = new MaterialComparator();
         user=new User();
+        user.setId(-1);
     }
 
     @Test(expected = Exception.class)
@@ -72,7 +73,6 @@ public class MaterialComparatorTest {
 
     @Test
     public void test002_compareMaterialWithoutDifference() throws Exception {
-        UUID ownerID = UUID.randomUUID();
         Assert.assertTrue(
                 "test002-List of differences must be empty",
                 instance.compareMaterial(
@@ -82,7 +82,6 @@ public class MaterialComparatorTest {
 
     @Test
     public void test003_compareMaterialWithNameDifference() throws Exception {
-        UUID ownerID = UUID.randomUUID();
         Structure oldStruc = createEmptyStructure(user);
         Structure newStruc = createEmptyStructure(user);
 
@@ -233,7 +232,6 @@ public class MaterialComparatorTest {
 
     @Test
     public void test005_compareMaterialWithStructureDifference() throws Exception {
-        UUID ownerID = UUID.randomUUID();
         Structure oldStruc = createEmptyStructure(user);
         Structure newStruc = createEmptyStructure(user);
         //Testcase 1 : remove information fro structure

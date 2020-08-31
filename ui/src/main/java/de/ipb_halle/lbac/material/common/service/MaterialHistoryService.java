@@ -67,15 +67,15 @@ public class MaterialHistoryService implements Serializable {
     private final String SQL_GET_OVERVIEW_HISTORY = "select "
             + "materialid,"
             + "mdate,"
-            + "cast(actorid as varchar),"
+            + "actorid,"
             + "digest,"
             + "action,"
-            + "cast(aclistid_old as varchar),"
-            + "cast(aclistid_new as varchar),"
+            + "aclistid_old,"
+            + "aclistid_new,"
             + "projectid_old,"
             + "projectid_new,"
-            + "cast(ownerid_old as varchar),"
-            + "cast(ownerid_new as varchar)"
+            + "ownerid_old,"
+            + "ownerid_new "
             + " from materials_hist where materialid=:mid";
 
     private final String SQL_GET_STRUCTURE_HISTORY
@@ -110,7 +110,15 @@ public class MaterialHistoryService implements Serializable {
             + " WHERE materialid=:mid";
 
     private final String SQL_GET_TAXONOMY_HISTORY
-            = "SELECT taxonomyid,actorid,mdate,action,digest,level_old,level_new,parentid_old,parentid_new "
+            = "SELECT taxonomyid,"
+            + "actorid,"
+            + "mdate,"
+            + "action,"
+            + "digest,"
+            + "level_old,"
+            + "level_new,"
+            + "parentid_old,"
+            + "parentid_new "
             + "FROM taxonomy_history "
             + "WHERE taxonomyid=:taxoid";
     private final String SQL_GET_MOLECULE = "SELECT "
@@ -120,8 +128,28 @@ public class MaterialHistoryService implements Serializable {
             + " FROM molecules "
             + " WHERE id=:mid";
 
-    private final String SQL_GET_STORAGE_CLASS_HISTORY = "SELECT materialid,mdate,actorid,digest,description_old,description_new,storageclass_old,storageclass_new from storages_hist where materialid=:mid";
-    private final String SQL_GET_STORAGE_CONDITION_HISTORY = "SELECT id,materialid,mdate,actorid,digest,conditionId_old,conditionId_new from storagesconditions_storages_hist where materialid=:mid";
+    private final String SQL_GET_STORAGE_CLASS_HISTORY = "SELECT"
+            + " materialid,"
+            + "mdate,"
+            + "actorid,"
+            + "digest,"
+            + "description_old,"
+            + "description_new,"
+            + "storageclass_old,"
+            + "storageclass_new "
+            + "FROM storages_hist "
+            + "WHERE materialid=:mid";
+
+    private final String SQL_GET_STORAGE_CONDITION_HISTORY = "SELECT "
+            + "id,"
+            + "materialid,"
+            + "mdate,"
+            + "actorid,"
+            + "digest,"
+            + "conditionId_old,"
+            + "conditionId_new "
+            + "FROM storagesconditions_storages_hist "
+            + "WHERE materialid=:mid";
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
     public MaterialService materialService;

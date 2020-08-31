@@ -98,8 +98,6 @@ public class MembershipWebServiceTest extends TestBase {
     public static WebArchive createDeployment() {
 
         return prepareDeployment("MembershipWebServiceTest.war")
-                .addPackage(MemberService.class.getPackage())
-                .addPackage(NodeService.class.getPackage())
                 .addClass(GlobalAdmissionContext.class)
                 .addClass(MembershipWebService.class)
                 .addClass(GlobalAdmissionContext.class)

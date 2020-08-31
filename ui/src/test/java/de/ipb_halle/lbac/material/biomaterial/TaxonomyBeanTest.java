@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
@@ -29,10 +28,7 @@ import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.project.ProjectService;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -74,8 +70,8 @@ public class TaxonomyBeanTest extends TestBase {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
         bean.setMaterialService(materialService);
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        String userGroups = GlobalAdmissionContext.getPublicReadACL().getId().toString();
-        createTaxonomyTreeInDB(userGroups, owner.getId().toString());
+        Integer userGroups = GlobalAdmissionContext.getPublicReadACL().getId();
+        createTaxonomyTreeInDB(userGroups, owner.getId());
 
     }
 

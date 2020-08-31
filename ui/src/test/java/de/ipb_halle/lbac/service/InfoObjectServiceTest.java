@@ -123,7 +123,7 @@ public class InfoObjectServiceTest extends TestBase {
         u.setName(name);
         u.setNode(this.nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        this.memberService.save(u);
+        u=this.memberService.save(u);
         this.membershipService.addMembership(u, u);
         return u;
     }
@@ -133,7 +133,7 @@ public class InfoObjectServiceTest extends TestBase {
         g.setName(name);
         g.setNode(this.nodeService.getLocalNode());
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        this.memberService.save(g);
+        g=this.memberService.save(g);
         this.membershipService.addMembership(g, g);
         return g;
     }

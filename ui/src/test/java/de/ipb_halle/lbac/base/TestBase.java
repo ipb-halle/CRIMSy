@@ -83,8 +83,8 @@ public class TestBase implements Serializable {
             + "%d,"
             + "7,"
             + "now(),"
-            + "cast('%s' as UUID),"
-            + "cast('%s' as UUID),"
+            + "%d, "
+            + "%d, "
             + "false,%d)";
 
     @ArquillianResource
@@ -160,7 +160,7 @@ public class TestBase implements Serializable {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
-    protected void createTaxanomy(int id, String name, int level, String userGroups, String ownerId, Integer... parents) {
+    protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {
         entityManagerService.doSqlUpdate(String.format(INSERT_TAXONOMY_MATERIAL_SQL, id, userGroups, ownerId, null));
         entityManagerService.doSqlUpdate(String.format("INSERT INTO taxonomy  VALUES(%d ,%d)", id, level));
         entityManagerService.doSqlUpdate(String.format("INSERT INTO storages VALUES(%d,1,'')", id));
@@ -302,7 +302,7 @@ public class TestBase implements Serializable {
         return acList;
     }
 
-    protected void createTaxonomyTreeInDB(String userGroups, String ownerId) {
+    protected void createTaxonomyTreeInDB(Integer userGroups, Integer ownerId) {
         createTaxanomy(1, "Leben", 1, userGroups, ownerId);
         createTaxanomy(2, "Pilze", 2, userGroups, ownerId, 1);
         createTaxanomy(3, "Agaricomycetes", 4, userGroups, ownerId, 1, 2);

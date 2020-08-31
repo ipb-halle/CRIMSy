@@ -87,10 +87,16 @@ public class ProjectEditBeanTest extends TestBase {
 
     @Test
     public void test01_addGroupToProjectACL() {
+
         ProjectEditBean projectEditBean = new ProjectEditBean();
         projectEditBean.setMemberService(memberService);
         projectEditBean.init();
-        projectEditBean.addGroupToProjectACL(new Group());
+        projectEditBean.addGroupToProjectACL(
+                createGroup("test01_addGroupToProjectACL",
+                        nodeService.getLocalNode(),
+                        memberService,
+                        membershipService)
+        );
 
         int sizeBeforeAdding = projectEditBean.getAddableGroupsForProject().size();
         Group groupToAdd = projectEditBean.getAddableGroupsForProject().get(0);
@@ -102,10 +108,16 @@ public class ProjectEditBeanTest extends TestBase {
 
     @Test
     public void test02_removeAceFromProjectACL() {
+
         ProjectEditBean projectEditBean = new ProjectEditBean();
         projectEditBean.setMemberService(memberService);
         projectEditBean.init();
-        projectEditBean.addGroupToProjectACL(new Group());
+        projectEditBean.addGroupToProjectACL(
+                createGroup("test02_removeAceFromProjectACL",
+                        nodeService.getLocalNode(),
+                        memberService,
+                        membershipService)
+        );
 
         int sizeBeforeAction = projectEditBean.getACEntriesOfProject().size();
         Group groupToAdd = projectEditBean.getAddableGroupsForProject().get(0);
@@ -150,4 +162,5 @@ public class ProjectEditBeanTest extends TestBase {
                 sizeAfterAction);
 
     }
+
 }

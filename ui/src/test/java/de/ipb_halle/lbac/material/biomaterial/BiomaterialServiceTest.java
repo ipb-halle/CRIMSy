@@ -98,7 +98,7 @@ public class BiomaterialServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadBioMaterials() {
-        createTaxonomyTreeInDB(project.getUserGroups().getId().toString(), owner.getId().toString());
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
 
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("Wurzel", "de", 1));

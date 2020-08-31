@@ -36,12 +36,10 @@ import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,8 +54,8 @@ public class TissueServiceTest extends TestBase {
 
     Project project;
     User owner;
-    String userGroups;
-    String ownerid;
+    Integer userGroups;
+    Integer ownerid;
 
     @Inject
     private TaxonomyService taxoService;
@@ -79,14 +77,14 @@ public class TissueServiceTest extends TestBase {
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
-        ownerid = owner.getId().toString();
+        ownerid = owner.getId();
         materialService.setUserBean(userBean);
         project = creationTools.createProject();
     }
 
     @Test
     public void test001_saveAndloadTissues() {
-        createTaxonomyTreeInDB(project.getUserGroups().getId().toString(), owner.getId().toString());
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("Wurzel", "de", 1));
         names.add(new MaterialName("Root", "en", 2));

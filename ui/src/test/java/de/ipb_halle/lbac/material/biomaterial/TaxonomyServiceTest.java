@@ -53,8 +53,8 @@ public class TaxonomyServiceTest extends TestBase {
 
     Project project;
     User owner;
-    String userGroups;
-    String ownerid;
+    Integer userGroups;
+    Integer ownerid;
 
     @Inject
     private TaxonomyNestingService nestingService;
@@ -77,7 +77,7 @@ public class TaxonomyServiceTest extends TestBase {
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
-        ownerid = owner.getId().toString();
+        ownerid = owner.getId();
         materialService.setUserBean(userBean);
     }
 
@@ -90,7 +90,7 @@ public class TaxonomyServiceTest extends TestBase {
     @Test
     public void test002_loadTaxonomies() {
         project = creationTools.createProject();
-        createTaxonomyTreeInDB(project.getUserGroups().getId().toString(), owner.getId().toString());
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
         Assert.assertEquals("test001: 21 taxonomies must be found", 21, taxonomies.size());
 
@@ -124,8 +124,8 @@ public class TaxonomyServiceTest extends TestBase {
     public void test003_saveEditedTaxonomy() throws Exception {
         List<TaxonomyLevel> levels = service.loadTaxonomyLevel();
         project = creationTools.createProject();
-        userGroups = project.getUserGroups().getId().toString();
-        createTaxonomyTreeInDB(userGroups, owner.getId().toString());
+        userGroups = project.getUserGroups().getId();
+        createTaxonomyTreeInDB(userGroups, owner.getId());
 
         List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
 
@@ -196,14 +196,14 @@ public class TaxonomyServiceTest extends TestBase {
     @Test
     public void test004_moveTaxonomy() throws Exception {
         project = creationTools.createProject();
-        userGroups = project.getUserGroups().getId().toString();
-        createTaxanomy(0, "T0", 1, userGroups, owner.getId().toString());
-        createTaxanomy(1, "T1", 2, userGroups, owner.getId().toString(), 0);
-        createTaxanomy(2, "T2", 2, userGroups, owner.getId().toString(), 0);
-        createTaxanomy(3, "T3", 14, userGroups, owner.getId().toString(), 0, 1);
-        createTaxanomy(4, "T4", 18, userGroups, owner.getId().toString(), 0, 1, 3);
-        createTaxanomy(5, "T5", 18, userGroups, owner.getId().toString(), 0, 1, 3);
-        createTaxanomy(6, "T6", 18, userGroups, owner.getId().toString(), 0, 1, 3);
+        userGroups = project.getUserGroups().getId();
+        createTaxanomy(0, "T0", 1, userGroups, owner.getId());
+        createTaxanomy(1, "T1", 2, userGroups, owner.getId(), 0);
+        createTaxanomy(2, "T2", 2, userGroups, owner.getId(), 0);
+        createTaxanomy(3, "T3", 14, userGroups, owner.getId(), 0, 1);
+        createTaxanomy(4, "T4", 18, userGroups, owner.getId(), 0, 1, 3);
+        createTaxanomy(5, "T5", 18, userGroups, owner.getId(), 0, 1, 3);
+        createTaxanomy(6, "T6", 18, userGroups, owner.getId(), 0, 1, 3);
 
         Taxonomy t3 = service.loadTaxonomyById(3);
         Taxonomy t2 = service.loadTaxonomyById(2);
