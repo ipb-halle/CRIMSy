@@ -404,7 +404,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
         Assert.assertEquals(testDesc + "Description must be item 1", "item 1", i.getDescription());
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId().toString());
+        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
         Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
         Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
         Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
@@ -422,7 +422,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
         Assert.assertEquals(testDesc + "Description must be item 2", "item 2", i.getDescription());
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId().toString());
+        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
         Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
         Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
         Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
@@ -440,7 +440,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
         Assert.assertEquals(testDesc + "Description must be item 3", "item 3", i.getDescription());
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId().toString());
+        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
         Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
         Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
         Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
@@ -451,8 +451,8 @@ public class ContainerServiceTest extends TestBase {
                 + "1,"
                 + "1,"
                 + "now(),"
-                + "cast('" + userGroups + "' as UUID),"
-                + "cast('" + ownerid + "' as UUID),"
+                + " " + userGroups + ", "
+                + " " + ownerid + ", "
                 + "false,"
                 + projectid + ")";
 
@@ -470,8 +470,8 @@ public class ContainerServiceTest extends TestBase {
                 + "containerid,ctime,aclist_id) "
                 + "values("
                 + "1,1,10,null,null,0,'kg','unknown',null,'item 1', "
-                + "cast('" + ownerid + "' as UUID),null,null," + c0.getId() + ",now(), "
-                + "cast('" + globalContext.getAdminOnlyACL().getId() + "' AS UUID))";
+                + " " + ownerid + " ,null,null," + c0.getId() + ",now(), "
+                + " " + globalContext.getAdminOnlyACL().getId() + "  )";
 
         entityManagerService
                 .doSqlUpdate(sql);
@@ -479,16 +479,16 @@ public class ContainerServiceTest extends TestBase {
                 + " (id,materialid,amount, articleid,projectid,concentration, "
                 + "unit,purity,solventid,description,owner,containersize,containertype, "
                 + "containerid,ctime,aclist_id) "
-                + "values(2,1,5,null,null,0,'g','pure',null,'item 2',cast('" + ownerid + "' as UUID),null,null," + c0.getId() + ",now(), "
-                + "cast('" + globalContext.getAdminOnlyACL().getId() + "' AS UUID))";
+                + "values(2,1,5,null,null,0,'g','pure',null,'item 2', " + ownerid + " ,null,null," + c0.getId() + ",now(), "
+                + " " + globalContext.getAdminOnlyACL().getId() + " )";
 
         entityManagerService.doSqlUpdate(sql);
         sql = "INSERT INTO items "
                 + " (id,materialid,amount, articleid,projectid,concentration, "
                 + "unit,purity,solventid,description,owner,containersize,containertype, "
                 + "containerid,ctime,aclist_id) "
-                + "values(3,1,11,null,null,0,'mg','xxx',null,'item 3',cast('" + ownerid + "' as UUID),null,null," + c1.getId() + ",now(), "
-                + "cast('" + globalContext.getAdminOnlyACL().getId() + "' AS UUID))";
+                + "values(3,1,11,null,null,0,'mg','xxx',null,'item 3', " + ownerid + " ,null,null," + c1.getId() + ",now(), "
+                + " " + globalContext.getAdminOnlyACL().getId() + " )";
         entityManagerService.doSqlUpdate(sql);
     }
 

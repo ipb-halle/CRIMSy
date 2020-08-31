@@ -82,8 +82,8 @@ public class ContainerPositionServiceTest extends TestBase {
             + "1,"
             + "1,"
             + "now(),"
-            + "cast('%s' as UUID),"
-            + "cast('%s' as UUID),"
+            + "%d,"
+            + "%d,"
             + "false,%d)";
 
     @Test
@@ -93,20 +93,9 @@ public class ContainerPositionServiceTest extends TestBase {
         createAndSaveMaterial();
         Item item=createItem();
         itemService.saveItem(item);
-
-        int i=0;
     }
     
-    @Test
-    public void test002() {
-        containerService.saveContainer(c0);
-        containerService.saveContainer(c1);
-        createAndSaveMaterial();
-        Item item=createItem();
-        itemService.saveItem(item);
-
-        int i=0;
-    }
+  
 
     @Before
     @Override
@@ -179,7 +168,7 @@ public class ContainerPositionServiceTest extends TestBase {
 
         entityManagerService.doSqlUpdate(String.format(
                 INSERT_MATERIAL_SQL,
-                project.getUserGroups().getId().toString(),
+                project.getUserGroups().getId(),
                 owner.getId(),
                 project.getId()));
         entityManagerService.doSqlUpdate("INSERT INTO structures  VALUES(1,'',0,0,null)");
