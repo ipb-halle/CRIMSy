@@ -15,18 +15,19 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.service;
+package de.ipb_halle.lbac.collections;
 
 /**
  * CollectionService provides service to load, save, update collections.
  */
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.CollectionEntity;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionEntity;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.service.NodeService;
 import java.math.BigInteger;
 
 import java.util.ArrayList;
@@ -203,7 +204,7 @@ public class CollectionService {
         for (CollectionEntity entity : entities) {
             results.add(new Collection(
                     entity,
-                    nodeService.loadById(entity.getNode()),
+                    nodeService.getLocalNode(),
                     aclistService.loadById(entity.getACList()),
                     memberService.loadUserById(entity.getOwner()),
                     getFileCount(entity.getId())));
@@ -225,7 +226,7 @@ public class CollectionService {
         }
         return new Collection(
                 entity,
-                nodeService.loadById(entity.getNode()),
+                nodeService.getLocalNode(),
                 aclistService.loadById(entity.getACList()),
                 memberService.loadUserById(entity.getOwner()),
                 getFileCount(id));

@@ -17,8 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.ACListService;
 import java.io.Serializable;

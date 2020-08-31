@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 
 import java.text.SimpleDateFormat;

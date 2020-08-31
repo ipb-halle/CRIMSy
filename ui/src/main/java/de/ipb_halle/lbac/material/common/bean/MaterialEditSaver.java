@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;

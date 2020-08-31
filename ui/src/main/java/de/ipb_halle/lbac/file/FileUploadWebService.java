@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 
 import java.io.IOException;

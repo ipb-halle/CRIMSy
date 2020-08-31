@@ -30,14 +30,6 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.entity.ACEntry;
-import de.ipb_halle.lbac.entity.ACEntryEntity;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACListEntity;
-
-import de.ipb_halle.lbac.entity.ACObject;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserEntity;
@@ -242,12 +234,14 @@ public class ACListService implements Serializable {
         ACList r = loadExisting(acl);
         if (r == null) {
             ACListEntity entity = acl.createEntity();
-            this.em.merge(entity);
+            entity = this.em.merge(entity);
+            acl.setId(entity.getId());
             for (ACEntry ae : acl.getACEntries().values()) {
                 this.em.merge(ae.createEntity());
             }
             return acl;
         }
+        
         return r;
     }
 

@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Membership;
-import de.ipb_halle.lbac.entity.MemberType;
 import de.ipb_halle.lbac.entity.Node;
 
 import java.util.HashMap;

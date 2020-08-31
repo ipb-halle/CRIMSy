@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.IndexService;

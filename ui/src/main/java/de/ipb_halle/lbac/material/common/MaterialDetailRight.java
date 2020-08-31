@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common;
 
-import de.ipb_halle.lbac.entity.ACEntry;
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACEntry;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import java.io.Serializable;

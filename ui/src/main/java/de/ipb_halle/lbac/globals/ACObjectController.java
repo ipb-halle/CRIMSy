@@ -19,10 +19,10 @@ package de.ipb_halle.lbac.globals;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.ACObjectBean;
-import de.ipb_halle.lbac.entity.ACEntry;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACObject;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACEntry;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.Group;
 import java.util.ArrayList;
 import java.util.Collections;

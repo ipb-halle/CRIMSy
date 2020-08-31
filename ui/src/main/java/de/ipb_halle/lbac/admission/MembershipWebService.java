@@ -30,7 +30,6 @@ package de.ipb_halle.lbac.admission;
  * <li> passwords and other sensitive information is wiped
  * </ul>
  */
-import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.NodeService;
 

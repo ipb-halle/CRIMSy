@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import java.util.ArrayList;

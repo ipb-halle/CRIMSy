@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.forum;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
-import de.ipb_halle.lbac.entity.ACObject;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
@@ -56,7 +56,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
      * Default constructor
      */
     public Topic() {
-        
+
     }
 
     /**
@@ -66,7 +66,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
      * @param category
      */
     public Topic(String name, TopicCategory category) {
-       
+
         this.name = name;
         this.category = category;
     }
@@ -110,8 +110,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
                 .setCloudName(cloudName)
                 .setCategory(category)
                 .setId(id)
-                .setName(name)
-                .setNode(node.getId());
+                .setName(name);
 
     }
 

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.service;
 
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.MemberService;

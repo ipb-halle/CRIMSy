@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 
-import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;

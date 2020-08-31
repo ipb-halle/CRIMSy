@@ -24,7 +24,7 @@ package de.ipb_halle.lbac.search.document;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;

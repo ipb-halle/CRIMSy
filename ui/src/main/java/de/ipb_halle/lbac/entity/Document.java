@@ -20,6 +20,9 @@ package de.ipb_halle.lbac.entity;
 /**
  * This class stores information about a document.
  */
+import de.ipb_halle.lbac.file.TermFrequencyList;
+import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import org.apache.johnzon.mapper.JohnzonConverter;
 

@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.project;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.entity.ACEntry;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACEntry;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.MaterialType;

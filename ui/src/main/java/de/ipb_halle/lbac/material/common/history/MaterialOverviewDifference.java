@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
 import de.ipb_halle.lbac.admission.ACListService;

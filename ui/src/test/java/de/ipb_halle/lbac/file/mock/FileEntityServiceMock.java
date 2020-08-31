@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.file.FileEntityService;
 
 /**

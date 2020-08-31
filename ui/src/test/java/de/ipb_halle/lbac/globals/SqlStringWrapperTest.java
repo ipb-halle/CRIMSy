@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.globals;
 
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACPermission;
 import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;

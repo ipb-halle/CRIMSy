@@ -15,13 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -35,6 +36,7 @@ public class MembershipEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
 

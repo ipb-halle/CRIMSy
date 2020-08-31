@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.collections.mock;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.service.FileService;
 import java.nio.file.Path;
 import java.nio.file.Paths;

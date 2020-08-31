@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.forum.topics.mock;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.forum.Posting;
 import de.ipb_halle.lbac.forum.Topic;

@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.file;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import de.ipb_halle.lbac.entity.TermVector;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

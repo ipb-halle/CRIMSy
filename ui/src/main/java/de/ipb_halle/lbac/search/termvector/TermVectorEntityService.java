@@ -17,14 +17,14 @@
  */
 package de.ipb_halle.lbac.search.termvector;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.TermVector;
-import de.ipb_halle.lbac.entity.TermVectorEntity;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.file.FileObject;
+import de.ipb_halle.lbac.file.TermVector;
+import de.ipb_halle.lbac.file.TermVectorEntity;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.message.TermVectorMessage;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 
 import java.io.Serializable;
 import java.util.ArrayList;

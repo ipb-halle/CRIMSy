@@ -17,9 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.service.CollectionService;
 import java.io.Serializable;
 
 import java.util.HashMap;

@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.MemberType;
 import java.io.Serializable;
 
 import java.util.ArrayList;

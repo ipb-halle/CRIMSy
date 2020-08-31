@@ -155,9 +155,9 @@ CREATE TABLE usersGroups (
 );
 
 CREATE TABLE memberships (
-    id          UUID NOT NULL PRIMARY KEY,
-    group_id    UUID NOT NULL REFERENCES usersGroups (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    member_id   UUID NOT NULL REFERENCES usersGroups (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    id          SERIAL NOT NULL PRIMARY KEY,
+    group_id    INTEGER NOT NULL REFERENCES usersGroups (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    member_id   INTEGER NOT NULL REFERENCES usersGroups (id) ON UPDATE CASCADE ON DELETE CASCADE,
     nested      BOOLEAN NOT NULL DEFAULT FALSE,
     UNIQUE(group_id, member_id)
 );
@@ -167,13 +167,13 @@ CREATE INDEX i_memberships_member ON memberships (member_id);
 
 
 CREATE TABLE nestingpathsets (
-    id  UUID NOT NULL PRIMARY KEY,
-    membership_id UUID NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE 
+    id  SERIAL NOT NULL PRIMARY KEY,
+    membership_id INTEGER NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE 
 );
 
 CREATE TABLE membership_nestingpathsets (
-        membership_id           UUID NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE,
-        nestingpathset_id       UUID NOT NULL REFERENCES nestingpathsets(id) ON UPDATE CASCADE ON DELETE CASCADE,
+        membership_id           INTEGER NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE,
+        nestingpathset_id       INTEGER NOT NULL REFERENCES nestingpathsets(id) ON UPDATE CASCADE ON DELETE CASCADE,
         UNIQUE(nestingpathset_id, membership_id)
 );
 /* 
@@ -182,9 +182,9 @@ CREATE TABLE membership_nestingpathsets (
  * is manipulated out of band, because the table 'nestingpathsets' is not 
  * covered by referential integrity, i.e. deleting memberships via 
  * 'DELETE FROM memberships ...' will cover all other tables but not 
- * 'removtingpathsets'.
+ * 'nestingpathsets'.
  * 
- *   CREATE OR REPLACE FUNCTION cleanNestingPathSets ( id UUID ) RETURNS INTEGER
+ *   CREATE OR REPLACE FUNCTION cleanNestingPathSets ( id INTEGER ) RETURNS INTEGER
  *   ...
  *   CREATE TRIGGER ... AFTER DELETE ON membership_nestingpathsets EXECUTE PROCEDURE cleanNestingPathSets(OLD.nestingpathset_id); 
  *
@@ -196,8 +196,8 @@ CREATE TABLE membership_nestingpathsets (
  */
 
 CREATE TABLE nestingpathset_memberships (
-        nestingpathsets_id      UUID NOT NULL REFERENCES nestingpathsets(id) ON UPDATE CASCADE ON DELETE CASCADE,
-        memberships_id          UUID NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE,
+        nestingpathsets_id      INTEGER NOT NULL REFERENCES nestingpathsets(id) ON UPDATE CASCADE ON DELETE CASCADE,
+        memberships_id          INTEGER NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE,
         UNIQUE(nestingpathsets_id, memberships_id)
 );
 
@@ -206,14 +206,14 @@ CREATE TABLE nestingpathset_memberships (
  * ACLs
  */
 CREATE TABLE aclists (
-    id          UUID PRIMARY KEY,
+    id          SERIAL NOT NULL PRIMARY KEY,
     name        VARCHAR,
     permCode    INTEGER
 );
 
 CREATE TABLE acentries (
-    aclist_id   UUID NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    member_id   UUID NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    aclist_id   INTEGER NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    member_id   INTEGER NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     permRead    BOOLEAN NOT NULL DEFAULT FALSE,
     permEdit    BOOLEAN NOT NULL DEFAULT FALSE,
     permCreate  BOOLEAN NOT NULL DEFAULT FALSE,
@@ -230,8 +230,8 @@ CREATE TABLE acentries (
 CREATE TABLE info (
   key           VARCHAR NOT NULL PRIMARY KEY,
   value         VARCHAR,
-  owner_id      UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  aclist_id     UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE
+  owner_id      INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  aclist_id     INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 INSERT INTO info (key, value, owner_id, aclist_id) VALUES ('DBSchema Version', '00000', null, null);
@@ -240,42 +240,40 @@ INSERT INTO info (key, value, owner_id, aclist_id) VALUES ('DBSchema Version', '
  * Collections and other distributed resources
  */
 CREATE TABLE collections (
-  id          UUID NOT NULL PRIMARY KEY,
+  id          SERIAL NOT NULL PRIMARY KEY,
   description VARCHAR,
   name        VARCHAR,
   indexPath   VARCHAR,
   storagePath VARCHAR,
-  node_id     UUID NOT NULL REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
-  owner_id    UUID NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  aclist_id   UUID NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE
+  owner_id    INTEGER NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  aclist_id   INTEGER NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE files (
-  id            UUID    NOT NULL PRIMARY KEY,
+  id            SERIAL NOT NULL PRIMARY KEY,
   name          VARCHAR NOT NULL,
   filename      VARCHAR NOT NULL,
   hash          VARCHAR,
   created       TIMESTAMP DEFAULT now(),
-  user_id       UUID REFERENCES usersGroups (id) ON DELETE SET NULL,
-  collection_id UUID NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  user_id       INTEGER REFERENCES usersGroups (id) ON DELETE SET NULL,
+  collection_id INTEGER NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE,
   document_language VARCHAR NOT NULL DEFAULT 'en'
 );
 
 CREATE TABLE topics (
-  id            UUID NOT NULL PRIMARY KEY,
+  id            SERIAL NOT NULL PRIMARY KEY,
   name          VARCHAR,
   category      VARCHAR,
-  owner_id      UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  aclist_id     UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  node_id       UUID NOT NULL REFERENCES nodes (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  owner_id      INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  aclist_id     INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
   cloud_name    VARCHAR NOT NULL DEFAULT 'LBAC_PRIMARY_CLOUD' REFERENCES clouds(name) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE postings (
-  id            UUID NOT NULL PRIMARY KEY,
+  id            SERIAL NOT NULL PRIMARY KEY,
   text          VARCHAR,
-  owner_id      UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
-  topic_id      UUID REFERENCES topics(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  owner_id      INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+  topic_id      INTEGER REFERENCES topics(id) ON UPDATE CASCADE ON DELETE CASCADE,
   created       TIMESTAMP DEFAULT now()
 );
 
@@ -285,7 +283,7 @@ CREATE TABLE postings (
  */
 CREATE TABLE termvectors (
   wordroot    VARCHAR    NOT NULL,
-  file_id     UUID NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  file_id     INTEGER NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
   termfrequency INTEGER NOT NULL,
   PRIMARY KEY(wordroot, file_id)
 );
@@ -294,7 +292,7 @@ CREATE INDEX i_termvectors_file_id ON termvectors (file_id);
 
 CREATE TABLE unstemmed_words(
   wordroot VARCHAR NOT NULL,
-  file_id UUID NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
+  file_id INTEGER NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
   unstemmed_word VARCHAR NOT NULL,
   PRIMARY KEY(file_id, unstemmed_word),
   FOREIGN KEY (wordroot, file_id) REFERENCES termvectors (wordroot, file_id)

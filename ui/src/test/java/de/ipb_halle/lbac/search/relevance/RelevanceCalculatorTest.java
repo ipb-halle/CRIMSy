@@ -17,11 +17,11 @@
  */
 package de.ipb_halle.lbac.search.relevance;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.TermFrequency;
-import de.ipb_halle.lbac.entity.TermFrequencyList;
+import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.lbac.file.TermFrequencyList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

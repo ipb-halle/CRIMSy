@@ -15,25 +15,22 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.forum;
+package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.admission.User;
-import java.io.Serializable;
-import java.util.Date;
+public enum ACPermission {
 
-/**
- * Was needed before the refactoring of the datastructure in database. Now it
- * only gives the string unalterated back
- *
- * @author fmauz
- */
-public class PostingTextTransformator implements Serializable{
+    /**
+     * the names of the enum values correspond to the field names in the ACEntry
+     * class and the names of the table columns. This is necessary to compute
+     * the name of the respective column in the addPredicates(...) method in
+     * class ACListService.
+     */
+    permREAD,
+    permEDIT,
+    permCREATE,
+    permDELETE,
+    permCHOWN,
+    permGRANT,
+    permSUPER
 
-    public PostingTextTransformator() {
-
-    }
-
-    public String transformPostingText(String s, User u, Date d) {
-        return s;
-    }
 }

@@ -22,7 +22,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.cloud.solr.SolrUpdate;
 import de.ipb_halle.lbac.collections.CollectionBean;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.CollectionServiceMock;
@@ -35,7 +35,7 @@ import de.ipb_halle.lbac.file.mock.TermVectorEntityServiceMock;
 import de.ipb_halle.lbac.file.mock.TermVectorParserMock;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import java.io.File;
 import java.nio.file.Files;

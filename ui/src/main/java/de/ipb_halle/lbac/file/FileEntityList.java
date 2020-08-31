@@ -15,14 +15,28 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.file;
 
-public enum MemberType {
+import java.io.Serializable;
+import java.util.List;
 
-    /**
-     * Enum type for the different objects from LDAP and the user database.
-     * Unfortunately, Hibernate does not support DiscriminatorType "ENUM".
-     */
-    USER, GROUP, ROLE
+/**
+ * Collects File Entities into a list. Needed for transportation via the REST
+ * API.
+ *
+ * @author fbroda
+ */
+public class FileEntityList implements Serializable {
 
+    private final static long serialVersionUID = 1L;
+
+    List<FileObject> fileEntities;
+
+    public List<FileObject> getFileEntities() {
+        return fileEntities;
+    }
+
+    public void setFileEntities(List<FileObject> fileEntities) {
+        this.fileEntities = fileEntities;
+    }
 }

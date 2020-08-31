@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

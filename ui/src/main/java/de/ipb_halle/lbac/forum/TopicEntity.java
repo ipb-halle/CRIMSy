@@ -18,9 +18,8 @@
 package de.ipb_halle.lbac.forum;
 
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
-import de.ipb_halle.lbac.entity.ACObjectEntity;
+import de.ipb_halle.lbac.admission.ACObjectEntity;
 import java.io.Serializable;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -56,9 +55,6 @@ public class TopicEntity extends ACObjectEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private TopicCategory category;
 
-    @Column(name = "node_id")
-    private UUID node;
-
     public TopicEntity() {
     }
 
@@ -78,10 +74,6 @@ public class TopicEntity extends ACObjectEntity implements Serializable {
         return name;
     }
 
-    public UUID getNode() {
-        return node;
-    }
-
     public TopicEntity setCategory(TopicCategory category) {
         this.category = category;
         return this;
@@ -99,11 +91,6 @@ public class TopicEntity extends ACObjectEntity implements Serializable {
 
     public TopicEntity setName(String name) {
         this.name = name;
-        return this;
-    }
-
-    public TopicEntity setNode(UUID node) {
-        this.node = node;
         return this;
     }
 

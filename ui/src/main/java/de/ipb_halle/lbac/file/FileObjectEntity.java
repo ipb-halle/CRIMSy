@@ -15,14 +15,13 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.file;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Table(name = "files")

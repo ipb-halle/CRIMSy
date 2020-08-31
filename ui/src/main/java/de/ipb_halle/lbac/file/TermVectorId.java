@@ -15,28 +15,43 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.file;
 
 import java.io.Serializable;
-import java.util.List;
+import javax.persistence.Embeddable;
 
 /**
- * Collects File Entities into a list. Needed for transportation via the REST
- * API.
  *
- * @author fbroda
+ * @author fmauz
  */
-public class FileEntityList implements Serializable {
+@Embeddable
+public class TermVectorId implements Serializable {
 
-    private final static long serialVersionUID = 1L;
+    private Integer file_id;
+    private String wordroot;
 
-    List<FileObject> fileEntities;
-
-    public List<FileObject> getFileEntities() {
-        return fileEntities;
+    public TermVectorId() {
     }
 
-    public void setFileEntities(List<FileObject> fileEntities) {
-        this.fileEntities = fileEntities;
+    public TermVectorId(String wordRoot, Integer fileId) {
+        this.wordroot = wordRoot;
+        this.file_id = fileId;
     }
+
+    public Integer getFile_id() {
+        return file_id;
+    }
+
+    public String getWordroot() {
+        return wordroot;
+    }
+
+    public void setFile_id(Integer file_id) {
+        this.file_id = file_id;
+    }
+
+    public void setWordroot(String wordroot) {
+        this.wordroot = wordroot;
+    }
+
 }

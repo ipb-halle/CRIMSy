@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDifference;

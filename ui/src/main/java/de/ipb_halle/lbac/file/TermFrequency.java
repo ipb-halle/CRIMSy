@@ -15,45 +15,40 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
-
-import java.io.Serializable;
-import java.util.UUID;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+package de.ipb_halle.lbac.file;
 
 /**
+ * Stores a stemmed word with its frequency in a corpus.
  *
  * @author fmauz
  */
-@Embeddable
-public class TermVectorId implements Serializable {
+public class TermFrequency {
 
-    private Integer file_id;
-    private String wordroot;
+    private String term;
+    private Integer frequency;
 
-    public TermVectorId() {
+    public TermFrequency() {
     }
 
-    public TermVectorId(String wordRoot, Integer fileId) {
-        this.wordroot = wordRoot;
-        this.file_id = fileId;
+    public TermFrequency(String term, Integer frequency) {
+        this.term = term;
+        this.frequency = frequency;
     }
 
-    public Integer getFile_id() {
-        return file_id;
+    public String getTerm() {
+        return term;
     }
 
-    public String getWordroot() {
-        return wordroot;
+    public void setTerm(String term) {
+        this.term = term;
     }
 
-    public void setFile_id(Integer file_id) {
-        this.file_id = file_id;
+    public Integer getFrequency() {
+        return frequency;
     }
 
-    public void setWordroot(String wordroot) {
-        this.wordroot = wordroot;
+    public void setFrequency(Integer frequency) {
+        this.frequency = frequency;
     }
 
 }

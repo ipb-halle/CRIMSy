@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;

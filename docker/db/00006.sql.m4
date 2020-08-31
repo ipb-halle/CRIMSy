@@ -30,10 +30,13 @@ UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
 BEGIN TRANSACTION;
 
 CREATE TABLE projecttypes (
-	id INTEGER NOT NULL PRIMARY KEY,
-	type VARCHAR);
-	
-CREATE TABLE budgetreservationtypes (id INTEGER NOT NULL PRIMARY KEY);
+    id INTEGER NOT NULL PRIMARY KEY,
+    type VARCHAR
+);
+
+CREATE TABLE budgetreservationtypes (
+    id INTEGER NOT NULL PRIMARY KEY
+);
 
 CREATE TABLE materialtypes (
     id INTEGER NOT NULL PRIMARY KEY,
@@ -46,36 +49,39 @@ CREATE TABLE materialdetailtypes (
 );
 
 CREATE TABLE materialinformations (
-	id INTEGER NOT NULL PRIMARY KEY,
-	materialtypeid INTEGER NOT NULL REFERENCES materialtypes(id),
-	materialdetailtypeid INTEGER NOT NULL REFERENCES materialdetailtypes(id),
-        mandatory BOOLEAN NOT NULL);
-	
-	
+    id INTEGER NOT NULL PRIMARY KEY,
+    materialtypeid INTEGER NOT NULL REFERENCES materialtypes(id),
+    materialdetailtypeid INTEGER NOT NULL REFERENCES materialdetailtypes(id),
+    mandatory BOOLEAN NOT NULL
+);
+
 CREATE TABLE projects (
-	id SERIAL NOT NULL PRIMARY KEY,
-        name VARCHAR NOT NULL,
-	budget NUMERIC,
-        budgetBlocked BOOLEAN default false,
-	projecttypeid INTEGER NOT NULL REFERENCES projecttypes(id),
-	ownerid UUID NOT NULL REFERENCES usersgroups(id),
-        aclist_id UUID NOT NULL REFERENCES aclists(id),
-	description VARCHAR,
-	ctime TIMESTAMP  NOT NULL DEFAULT now(),
-	mtime TIMESTAMP  NOT NULL DEFAULT now());
+    id SERIAL NOT NULL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    budget NUMERIC,
+    budgetBlocked BOOLEAN default false,
+    projecttypeid INTEGER NOT NULL REFERENCES projecttypes(id),
+    ownerid INTEGER NOT NULL REFERENCES usersgroups(id),
+    aclist_id INTEGER NOT NULL REFERENCES aclists(id),
+    description VARCHAR,
+    ctime TIMESTAMP  NOT NULL DEFAULT now(),
+    mtime TIMESTAMP  NOT NULL DEFAULT now()
+);
 
 CREATE TABLE projecttemplates (
-	id SERIAL NOT NULL PRIMARY KEY,
-	materialdetailtypeid INTEGER NOT NULL REFERENCES materialdetailtypes(id),
-	aclistid UUID NOT NULL REFERENCES aclists(id),
-        projectid INTEGER NOT NULL REFERENCES projects(id));
-	
+    id SERIAL NOT NULL PRIMARY KEY,
+    materialdetailtypeid INTEGER NOT NULL REFERENCES materialdetailtypes(id),
+    aclistid INTEGER NOT NULL REFERENCES aclists(id),
+    projectid INTEGER NOT NULL REFERENCES projects(id)
+);
+
 CREATE TABLE budgetreservations (
-	id SERIAL NOT NULL PRIMARY KEY,
-	startDate DATE,
-	endDate DATE ,
-	type INTEGER  NOT NULL REFERENCES budgetreservationtypes(id),
-	budget NUMERIC NOT NULL);
+    id SERIAL NOT NULL PRIMARY KEY,
+    startDate DATE,
+    endDate DATE ,
+    type INTEGER  NOT NULL REFERENCES budgetreservationtypes(id),
+    budget NUMERIC NOT NULL
+);
 
 
 INSERT INTO materialtypes VALUES(1,'STRUCTURE');
@@ -127,8 +133,8 @@ CREATE TABLE materials (
         materialid SERIAL NOT NULL PRIMARY KEY,
         materialTypeId INTEGER NOT NULL REFERENCES materialtypes(id),
         ctime TIMESTAMP  NOT NULL DEFAULT now(),
-        aclist_id UUID NOT NULL REFERENCES aclists(id),
-        ownerId UUID NOT NULL REFERENCES usersgroups(id),
+        aclist_id INTEGER NOT NULL REFERENCES aclists(id),
+        ownerId INTEGER NOT NULL REFERENCES usersgroups(id),
         deactivated BOOLEAN NOT NULL,
         projectId INTEGER REFERENCES projects(id));
 
@@ -143,7 +149,7 @@ CREATE TABLE material_indices (
 CREATE TABLE materialdetailrights (
         id SERIAL NOT NULL PRIMARY KEY,
         materialid INTEGER NOT NULL REFERENCES materials(materialid),
-        aclistid UUID NOT NULL REFERENCES aclists(id),
+        aclistid INTEGER NOT NULL REFERENCES aclists(id),
         materialtypeid INTEGER NOT NULL REFERENCES materialdetailtypes(id));
 
 CREATE TABLE molecules (
@@ -160,7 +166,7 @@ CREATE TABLE structures (
 
 CREATE TABLE structures_hist (
         id INTEGER NOT NULL REFERENCES structures(id),
-        actorId UUID NOT NULL REFERENCES usersgroups(id),
+        actorId INTEGER NOT NULL REFERENCES usersgroups(id),
         mtime TIMESTAMP  NOT NULL,
         digest VARCHAR,
         sumformula_old VARCHAR,
@@ -200,11 +206,8 @@ CREATE TABLE  storages (
 CREATE TABLE  storageconditions_storages (
         conditionId INTEGER NOT NULL REFERENCES storageconditions(id),
         materialid INTEGER NOT NULL REFERENCES storages(materialid),
-        PRIMARY KEY (conditionId,materialid));
-
-
-
-
+        PRIMARY KEY (conditionId,materialid)
+);
 
 insert into storageconditions(id,name)values(1,'moistureSensitive');
 insert into storageconditions(id,name)values(2,'keepMoisture');
@@ -248,10 +251,6 @@ insert into storageclasses(id,name)values(21,'11');
 insert into storageclasses(id,name)values(22,'12');
 insert into storageclasses(id,name)values(23,'13');
 
-
-
-
-
 insert into hazards(id,name)values(1,'explosive');
 insert into hazards(id,name)values(2,'highlyFlammable');
 insert into hazards(id,name)values(3,'oxidizing');
@@ -268,16 +267,16 @@ insert into hazards(id,name)values(13,'precautionaryStatements');
 
 CREATE TABLE  materials_hist (
         materialid INTEGER NOT NULL REFERENCES materials(materialid),
-        actorId UUID NOT NULL REFERENCES usersgroups(id),
+        actorId INTEGER NOT NULL REFERENCES usersgroups(id),
         mDate TIMESTAMP,
         digest VARCHAR,
         action VARCHAR,
-        aclistid_old UUID REFERENCES aclists(id),
-        aclistid_new UUID REFERENCES aclists(id),
+        aclistid_old INTEGER REFERENCES aclists(id),
+        aclistid_new INTEGER REFERENCES aclists(id),
         projectid_old INTEGER REFERENCES projects(id),
         projectid_new INTEGER REFERENCES projects(id),
-        ownerid_old UUID REFERENCES usersgroups(id),
-        ownerid_new UUID REFERENCES usersgroups(id),
+        ownerid_old INTEGER REFERENCES usersgroups(id),
+        ownerid_new INTEGER REFERENCES usersgroups(id),
         PRIMARY KEY(materialid,mDate));
 
 CREATE TABLE  material_indices_hist (
@@ -285,7 +284,7 @@ CREATE TABLE  material_indices_hist (
     materialid INTEGER NOT NULL REFERENCES materials(materialid),
     typeid INTEGER NOT NULL REFERENCES indextypes(id),
     mDate TIMESTAMP NOT NULL,
-    actorId UUID NOT NULL REFERENCES usersgroups(id),
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
     digest VARCHAR,
     value_old VARCHAR,
     value_new VARCHAR,
@@ -298,7 +297,7 @@ CREATE TABLE  hazards_materials_hist (
     id SERIAL NOT NULL PRIMARY KEY,
     materialid INTEGER NOT NULL REFERENCES materials(materialid),
     mdate TIMESTAMP NOT NULL,
-    actorId UUID NOT NULL REFERENCES usersgroups(id),
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
     digest VARCHAR,
     typeid_old INTEGER REFERENCES hazards(id),
     typeid_new INTEGER REFERENCES hazards(id),
@@ -308,7 +307,7 @@ CREATE TABLE  hazards_materials_hist (
 CREATE TABLE  storages_hist (
     materialid INTEGER NOT NULL REFERENCES materials(materialid),
     mdate TIMESTAMP NOT NULL,
-    actorId UUID NOT NULL REFERENCES usersgroups(id),
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
     digest VARCHAR,
     description_old VARCHAR,
     description_new VARCHAR,
@@ -321,7 +320,7 @@ CREATE TABLE  storagesconditions_storages_hist (
     id SERIAL NOT NULL PRIMARY KEY,
     materialid INTEGER NOT NULL REFERENCES materials(materialid),
     mdate TIMESTAMP NOT NULL,
-    actorId UUID NOT NULL REFERENCES usersgroups(id),
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
     digest VARCHAR,
     conditionId_old INTEGER,
     conditionId_new INTEGER);
@@ -367,13 +366,13 @@ CREATE TABLE items(
     purity VARCHAR,
     solventid INTEGER REFERENCES solvents(id),
     description VARCHAR,
-    owner UUID  NOT NULL REFERENCES usersgroups(id),
+    owner INTEGER  NOT NULL REFERENCES usersgroups(id),
     containersize FLOAT,
     containertype VARCHAR REFERENCES containertypes(name),
     containerid INTEGER REFERENCES containers(id),
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
     expiry_date TIMESTAMP,
-    aclist_id UUID NOT NULL
+    aclist_id INTEGER NOT NULL
 );
 
 CREATE TABLE item_positions(
@@ -398,8 +397,8 @@ CREATE TABLE items_history(
     description_old VARCHAR,
     amount_old FLOAT,
     amount_new FLOAT,
-    owner_old UUID REFERENCES usersgroups(id),
-    owner_new UUID REFERENCES usersgroups(id),
+    owner_old INTEGER REFERENCES usersgroups(id),
+    owner_new INTEGER REFERENCES usersgroups(id),
     parent_containerid_new INTEGER REFERENCES containers(id),
     parent_containerid_old INTEGER REFERENCES containers(id),
     PRIMARY KEY(itemid,actorid,mdate));
@@ -409,7 +408,7 @@ CREATE TABLE item_positions_history(
     itemid INTEGER NOT NULL REFERENCES items(id),
     containerid INTEGER NOT NULL REFERENCES containers(id),
     mdate TIMESTAMP NOT NULL,
-    actorid UUID NOT NULL REFERENCES usersgroups(id),
+    actorid INTEGER NOT NULL REFERENCES usersgroups(id),
     row_old INTEGER,
     row_new INTEGER,
     col_old INTEGER,
@@ -452,7 +451,7 @@ CREATE TABLE effective_taxonomy(
 
 CREATE TABLE taxonomy_history(
     taxonomyid INTEGER NOT NULL REFERENCES materials(materialid),
-    actorid UUID NOT NULL REFERENCES usersgroups(id),
+    actorid INTEGER NOT NULL REFERENCES usersgroups(id),
     mdate TIMESTAMP NOT NULL,
     action VARCHAR NOT NULL,
     digest VARCHAR,

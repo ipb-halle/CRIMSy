@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.Arrays;

@@ -24,9 +24,9 @@ package de.ipb_halle.lbac.search;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequest;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.util.List;

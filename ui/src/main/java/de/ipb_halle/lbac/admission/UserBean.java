@@ -17,13 +17,12 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
 

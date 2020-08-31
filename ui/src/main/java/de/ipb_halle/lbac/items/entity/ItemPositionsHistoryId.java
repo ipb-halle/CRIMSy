@@ -31,24 +31,24 @@ public class ItemPositionsHistoryId implements Serializable {
 
     private int itemid;
     private int containerid;
-    private UUID actorid;
+    private int actorid;
     private Date mdate;
 
     public ItemPositionsHistoryId() {
     }
 
-    public ItemPositionsHistoryId(int itemid, int containerid, UUID actorid, Date mdate) {
+    public ItemPositionsHistoryId(int itemid, int containerid, int actorid, Date mdate) {
         this.itemid = itemid;
         this.containerid = containerid;
         this.actorid = actorid;
         this.mdate = mdate;
     }
 
-    public UUID getActorid() {
+    public int getActorid() {
         return actorid;
     }
 
-    public void setActorid(UUID actorid) {
+    public void setActorid(int actorid) {
         this.actorid = actorid;
     }
 

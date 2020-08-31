@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.collections.mock.FileEntityServiceMock;
 import de.ipb_halle.lbac.collections.mock.FileServiceMock;
 import de.ipb_halle.lbac.collections.mock.SolarAdminServiceMock;
 
-import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -34,7 +33,6 @@ import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.Updater;

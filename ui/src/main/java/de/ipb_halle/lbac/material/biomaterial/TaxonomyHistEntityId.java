@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 import javax.persistence.Embeddable;
 
 /**

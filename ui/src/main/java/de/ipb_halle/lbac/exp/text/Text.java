@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.exp.assay.AssayRecord;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;

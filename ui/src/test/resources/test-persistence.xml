@@ -66,21 +66,21 @@
         <class>de.ipb_halle.lbac.device.job.JobEntity</class>
         <class>de.ipb_halle.lbac.device.print.LabelEntity</class>
         <class>de.ipb_halle.lbac.device.print.PrinterEntity</class>
-        <class>de.ipb_halle.lbac.entity.ACEntryEntity</class>
-        <class>de.ipb_halle.lbac.entity.ACListEntity</class>
+        <class>de.ipb_halle.lbac.admission.ACEntryEntity</class>
+        <class>de.ipb_halle.lbac.admission.ACListEntity</class>
         <class>de.ipb_halle.lbac.entity.CloudEntity</class>
         <class>de.ipb_halle.lbac.entity.CloudNodeEntity</class>
-        <class>de.ipb_halle.lbac.entity.CollectionEntity</class>
-        <class>de.ipb_halle.lbac.entity.FileObjectEntity</class>
-        <class>de.ipb_halle.lbac.entity.GroupEntity</class>
+        <class>de.ipb_halle.lbac.collections.CollectionEntity</class>
+        <class>de.ipb_halle.lbac.file.FileObjectEntity</class>
+        <class>de.ipb_halle.lbac.admission.GroupEntity</class>
         <class>de.ipb_halle.lbac.entity.InfoObjectEntity</class>
-        <class>de.ipb_halle.lbac.entity.MemberEntity</class>
-        <class>de.ipb_halle.lbac.entity.MembershipEntity</class>
-        <class>de.ipb_halle.lbac.entity.NestingPathEntity</class>
-        <class>de.ipb_halle.lbac.entity.NestingPathSetEntity</class>
+        <class>de.ipb_halle.lbac.admission.MemberEntity</class>
+        <class>de.ipb_halle.lbac.admission.MembershipEntity</class>
+        <class>de.ipb_halle.lbac.admission.NestingPathEntity</class>
+        <class>de.ipb_halle.lbac.admission.NestingPathSetEntity</class>
         <class>de.ipb_halle.lbac.entity.NodeEntity</class>
-        <class>de.ipb_halle.lbac.entity.TermVectorEntity</class>
-        <class>de.ipb_halle.lbac.entity.UserEntity</class>
+        <class>de.ipb_halle.lbac.file.TermVectorEntity</class>
+        <class>de.ipb_halle.lbac.admission.UserEntity</class>
         <class>de.ipb_halle.lbac.forum.TopicEntity</class>
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
 

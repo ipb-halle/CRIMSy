@@ -17,11 +17,8 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.FileObjectEntity;
-import de.ipb_halle.lbac.entity.TermVector;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.math.BigInteger;

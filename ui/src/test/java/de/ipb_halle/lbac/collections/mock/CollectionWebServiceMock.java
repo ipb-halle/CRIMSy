@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.collections.mock;
 
 import de.ipb_halle.lbac.collections.CollectionWebRequest;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.CollectionList;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionList;
 import de.ipb_halle.lbac.service.NodeService;
 import java.util.Arrays;
 import java.util.UUID;

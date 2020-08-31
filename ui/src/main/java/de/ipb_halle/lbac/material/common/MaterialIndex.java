@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import java.util.ArrayList;
 import java.util.List;
 

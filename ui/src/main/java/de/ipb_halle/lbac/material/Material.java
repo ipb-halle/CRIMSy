@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.material;
 
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACObject;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.util.InputConverter;
 import de.ipb_halle.lbac.material.common.Hazard;

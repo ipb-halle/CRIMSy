@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.device.print;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACObject;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.DTO;
 

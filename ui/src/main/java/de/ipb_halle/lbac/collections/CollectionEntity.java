@@ -15,16 +15,21 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.collections;
 
 /**
  * Collection class represents a collection in the Bioactives Cloud. Model for
  * collection managment
  */
-import javax.persistence.*;
+import de.ipb_halle.lbac.admission.ACObjectEntity;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "collections")
@@ -43,9 +48,6 @@ public class CollectionEntity extends ACObjectEntity implements Serializable {
     @Column
     @Size(min = 3, max = 100)
     private String name;
-
-    @Column(name = "node_id")
-    private UUID node;
 
     @Column
     @Size(min = 0, max = 255)
@@ -82,10 +84,6 @@ public class CollectionEntity extends ACObjectEntity implements Serializable {
         return this.storagePath;
     }
 
-    public UUID getNode() {
-        return this.node;
-    }
-
     public CollectionEntity setId(Integer n) {
         this.id = n;
         return this;
@@ -111,8 +109,4 @@ public class CollectionEntity extends ACObjectEntity implements Serializable {
         return this;
     }
 
-    public CollectionEntity setNode(UUID n) {
-        this.node = n;
-        return this;
-    }
 }

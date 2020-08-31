@@ -17,16 +17,13 @@
  */
 package de.ipb_halle.lbac.material.common.entity;
 
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import java.io.Serializable;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
  *

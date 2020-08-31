@@ -34,7 +34,6 @@ import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;

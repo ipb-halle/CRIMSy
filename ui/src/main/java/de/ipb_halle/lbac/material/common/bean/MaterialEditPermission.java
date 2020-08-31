@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
-import static de.ipb_halle.lbac.entity.ACPermission.permEDIT;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
+import static de.ipb_halle.lbac.admission.ACPermission.permEDIT;
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.io.Serializable;

@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.material;
 
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;

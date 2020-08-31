@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.search.termvector;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
 
 import java.io.IOException;

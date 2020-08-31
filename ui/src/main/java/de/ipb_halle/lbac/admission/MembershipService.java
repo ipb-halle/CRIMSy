@@ -23,11 +23,6 @@ package de.ipb_halle.lbac.admission;
  */
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.Member;
-import de.ipb_halle.lbac.entity.Membership;
-import de.ipb_halle.lbac.entity.MembershipEntity;
-import de.ipb_halle.lbac.entity.NestingPath;
-import de.ipb_halle.lbac.entity.NestingPathEntity;
-import de.ipb_halle.lbac.entity.NestingPathSetEntity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -464,8 +459,8 @@ public class MembershipService implements Serializable {
      * @return the merged instance
      */
     private Membership save(Membership ms) {
-        this.em.merge(ms.createEntity());
-        return ms;
+        MembershipEntity mse = this.em.merge(ms.createEntity());
+        return loadById(mse.getId());
     }
 
     /**

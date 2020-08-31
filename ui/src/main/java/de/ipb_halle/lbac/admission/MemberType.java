@@ -15,40 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
-/**
- * Stores a stemmed word with its frequency in a corpus.
- *
- * @author fmauz
- */
-public class TermFrequency {
+public enum MemberType {
 
-    private String term;
-    private Integer frequency;
-
-    public TermFrequency() {
-    }
-
-    public TermFrequency(String term, Integer frequency) {
-        this.term = term;
-        this.frequency = frequency;
-    }
-
-    public String getTerm() {
-        return term;
-    }
-
-    public void setTerm(String term) {
-        this.term = term;
-    }
-
-    public Integer getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(Integer frequency) {
-        this.frequency = frequency;
-    }
+    /**
+     * Enum type for the different objects from LDAP and the user database.
+     * Unfortunately, Hibernate does not support DiscriminatorType "ENUM".
+     */
+    USER, GROUP, ROLE
 
 }

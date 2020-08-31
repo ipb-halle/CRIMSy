@@ -17,11 +17,10 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.entity.FileObject;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.cloud.solr.SolrUpdate;
 import de.ipb_halle.lbac.collections.CollectionBean;

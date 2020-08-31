@@ -17,15 +17,13 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;

@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.MemberType;
 import de.ipb_halle.lbac.util.HexUtil;
 
 import java.io.Serializable;

@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.forum;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.admission.Group;
@@ -44,14 +44,15 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
  * @author fmauz
  */
 @Stateless
-public class ForumService implements Serializable{
+public class ForumService implements Serializable {
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -102,7 +103,7 @@ public class ForumService implements Serializable{
                             entity,
                             acListService.loadById(entity.getACList()),
                             memberService.loadUserById(entity.getOwner()),
-                            nodeService.loadById(entity.getNode()),
+                            nodeService.getLocalNode(),
                             cloud.getName()
                     );
 

@@ -23,15 +23,13 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACObject;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.search.SolrSearcher;

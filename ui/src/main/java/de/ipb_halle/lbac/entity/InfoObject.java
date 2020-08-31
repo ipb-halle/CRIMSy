@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
 import javax.persistence.Column;
 import javax.persistence.Entity;

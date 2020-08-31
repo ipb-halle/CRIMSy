@@ -15,15 +15,19 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.collections;
 
 /**
  * Collection class represents a collection in the Bioactives Cloud. Model for
  * collection managment
  */
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.entity.Obfuscatable;
 import java.io.Serializable;
-import java.util.UUID;
 
 public class Collection extends ACObject implements Serializable, Obfuscatable, DTO {
 
@@ -87,7 +91,6 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
                 .setDescription(description)
                 .setIndexPath(indexPath)
                 .setName(name)
-                .setNode(node.getId())
                 .setStoragePath(storagePath);
     }
 

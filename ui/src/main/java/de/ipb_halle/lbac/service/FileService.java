@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.service;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 
 import java.io.File;
 import java.io.IOException;

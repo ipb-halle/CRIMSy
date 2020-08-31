@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.entity.FileObject;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 

@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.collections.mock;
 
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 
 /**
  *

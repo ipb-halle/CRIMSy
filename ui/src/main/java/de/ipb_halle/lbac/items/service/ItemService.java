@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.items.service;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.items.Item;

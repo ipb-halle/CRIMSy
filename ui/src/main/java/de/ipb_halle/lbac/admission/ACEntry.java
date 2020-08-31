@@ -15,9 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.admission.Member;
+import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.entity.Obfuscatable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

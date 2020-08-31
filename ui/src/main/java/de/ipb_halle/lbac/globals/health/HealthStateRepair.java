@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.globals.health;
 
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.FileService;
@@ -30,7 +30,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

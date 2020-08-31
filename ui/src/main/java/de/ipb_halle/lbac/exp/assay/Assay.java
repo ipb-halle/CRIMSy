@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.exp.assay;
 
 import com.corejsf.util.Messages;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;

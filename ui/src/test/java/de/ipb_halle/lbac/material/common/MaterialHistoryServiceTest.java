@@ -44,7 +44,7 @@ import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import javax.inject.Inject;

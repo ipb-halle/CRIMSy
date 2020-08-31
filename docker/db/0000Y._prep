@@ -37,8 +37,8 @@ CREATE TABLE experiments (
     code            VARCHAR,
     description     VARCHAR,
     template        BOOLEAN NOT NULL DEFAULT FALSE,
-    aclist_id       UUID REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    ownerid         UUID REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    aclist_id       INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    ownerid         INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     ctime           TIMESTAMP NOT NULL DEFAULT now()
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE jobs (
     jobdate     TIMESTAMP NOT NULL DEFAULT now(),
     jobtype     INTEGER NOT NULL,
     output      BYTEA,
-    ownerid     UUID REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    ownerid     INTEGER REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     queue       VARCHAR NOT NULL,
     status      INTEGER NOT NULL
 );
@@ -106,12 +106,12 @@ CREATE TABLE jobs (
 CREATE TABLE printers (
     queue       VARCHAR NOT NULL PRIMARY KEY,
     name        VARCHAR NOT NULL,
-    aclistid    UUID NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    aclistid    INTEGER NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     config      VARCHAR NOT NULL DEFAULT '',
     contact     VARCHAR NOT NULL DEFAULT '',
     driver      VARCHAR NOT NULL,
     model       VARCHAR NOT NULL DEFAULT '',
-    ownerid     UUID NOT NULL REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    ownerid     INTEGER NOT NULL REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     place       VARCHAR NOT NULL DEFAULT '',
     status      INTEGER NOT NULL DEFAULT 0
 );

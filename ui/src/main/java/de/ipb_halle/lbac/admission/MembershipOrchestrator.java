@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Membership;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.CloudNodeService;

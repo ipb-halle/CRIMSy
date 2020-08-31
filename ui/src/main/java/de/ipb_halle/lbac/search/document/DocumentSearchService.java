@@ -17,11 +17,11 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.entity.TermFrequency;
+import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;

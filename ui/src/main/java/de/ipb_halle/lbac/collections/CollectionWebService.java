@@ -17,11 +17,8 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.CollectionList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.ArrayList;

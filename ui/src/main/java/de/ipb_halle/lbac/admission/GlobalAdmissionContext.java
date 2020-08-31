@@ -19,8 +19,6 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.collections.CollectionBean;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.InfoObjectService;

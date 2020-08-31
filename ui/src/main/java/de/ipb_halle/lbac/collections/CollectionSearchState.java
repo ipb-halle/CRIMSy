@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.Collection;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACObject;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;

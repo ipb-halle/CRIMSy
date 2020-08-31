@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.cloud.solr;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 
 import java.io.IOException;
 import javax.ejb.Stateless;

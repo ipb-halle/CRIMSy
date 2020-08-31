@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;

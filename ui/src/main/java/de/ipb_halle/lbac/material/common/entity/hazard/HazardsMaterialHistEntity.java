@@ -17,10 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.entity.hazard;
 
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,7 +26,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
  *

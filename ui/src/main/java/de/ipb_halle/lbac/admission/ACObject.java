@@ -15,9 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.entity.Obfuscatable;
 
 /**
  * Abstract base class for an access controlled objects.

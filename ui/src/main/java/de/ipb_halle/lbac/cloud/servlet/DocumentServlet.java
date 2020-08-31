@@ -30,7 +30,7 @@ import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 

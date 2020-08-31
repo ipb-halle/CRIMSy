@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.Collection;
 import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;

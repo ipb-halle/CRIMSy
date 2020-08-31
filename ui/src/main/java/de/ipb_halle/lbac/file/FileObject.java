@@ -15,9 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.entity;
+package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.entity.DTO;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;

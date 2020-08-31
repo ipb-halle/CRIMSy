@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.globals.health;
 
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.FileService;
@@ -26,7 +26,7 @@ import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
