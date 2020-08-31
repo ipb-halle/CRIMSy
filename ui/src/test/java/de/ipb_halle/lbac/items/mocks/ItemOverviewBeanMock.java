@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
 
 /**
  *
@@ -32,33 +33,44 @@ import de.ipb_halle.lbac.admission.MemberService;
  */
 public class ItemOverviewBeanMock extends ItemOverviewBean {
 
-    public void setItemService(ItemService itemService) {
+    public ItemOverviewBeanMock setItemService(ItemService itemService) {
         this.itemService = itemService;
+        return this;
     }
 
-    public void setItemBean(ItemBean bean) {
+    public ItemOverviewBeanMock setItemBean(ItemBean bean) {
         this.itemBean = bean;
+        return this;
     }
 
-    public void setMemberService(MemberService memberService) {
+    public ItemOverviewBeanMock setMemberService(MemberService memberService) {
         this.memberService = memberService;
+        return this;
     }
 
-    public void setNavigator(Navigator navigator) {
+    public ItemOverviewBeanMock setNavigator(Navigator navigator) {
         this.navigator = navigator;
+        return this;
     }
 
-    public void setMaterialService(MaterialService materialService) {
+    public ItemOverviewBeanMock setMaterialService(MaterialService materialService) {
         this.materialService = materialService;
+        return this;
     }
 
-    public void setProjectService(ProjectService projectService) {
+    public ItemOverviewBeanMock setProjectService(ProjectService projectService) {
         this.projectService = projectService;
+        return this;
     }
 
-    public void ContainerService(ContainerService containerService) {
+    public ItemOverviewBeanMock ContainerService(ContainerService containerService) {
         this.containerService = containerService;
+        return this;
+    }
 
+    public ItemOverviewBeanMock setUser(User user) {
+        this.currentUser = user;
+        return this;
     }
 
 }

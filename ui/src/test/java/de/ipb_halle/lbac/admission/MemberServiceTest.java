@@ -15,7 +15,7 @@
  * limitations under the License.
  * 
  */
-package de.ipb_halle.lbac.service;
+package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -39,6 +39,8 @@ import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.service.FileService;
+import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.HashMap;
 import java.util.List;

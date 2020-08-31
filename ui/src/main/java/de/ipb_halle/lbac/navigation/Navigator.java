@@ -25,7 +25,6 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.DependsOn;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -40,7 +39,7 @@ public class Navigator implements Serializable {
     private String nextPage = NavigationConstants.LOGIN;
 
     @Inject
-    private UserBean userBean;
+    protected UserBean userBean;
 
     @Inject
     private SystemSettings systemSettings;

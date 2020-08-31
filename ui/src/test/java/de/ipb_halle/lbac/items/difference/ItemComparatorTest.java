@@ -35,7 +35,9 @@ public class ItemComparatorTest {
     @Test
     public void test001_calculateDifference() {
         User user1 = new User();
+        user1.setId(1);
         User user2 = new User();
+        user2.setId(2);
         Project project1 = new Project();
         Project project2 = new Project();
         project2.setId(2);
@@ -54,7 +56,7 @@ public class ItemComparatorTest {
         item2.setAmount(22d);
         item2.setConcentration(33d);
         item2.setDescription("Description-Item");
-        item2.setId(1);
+        item2.setId(2);
         item2.setOwner(user1);
         item2.setProject(project1);
         item2.setPurity("pure");

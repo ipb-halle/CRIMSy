@@ -29,6 +29,8 @@ import de.ipb_halle.lbac.device.print.PrintBean;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
+import de.ipb_halle.lbac.items.mocks.ItemOverviewBeanMock;
+import de.ipb_halle.lbac.items.mocks.NavigatorMock;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
@@ -69,13 +71,14 @@ public class ItemBeanTest extends TestBase {
     private ContainerService containerService;
     @Inject
     private ContainerPositionService containerPositionService;
-    @Inject
-    protected Navigator navigator;
+
     @Inject
     protected MaterialService materialService;
     protected Project project;
     protected Material structure;
     protected User user;
+
+    protected ItemOverviewBean itemOverviewBean;
 
     @Before
     @Override
@@ -90,18 +93,27 @@ public class ItemBeanTest extends TestBase {
         materialService.setEditedMaterialSaver(new MaterialEditSaverMock(materialService));
         materialService.saveMaterialToDB(structure, project.getUserGroups().getId(), new HashMap<>(), user.getId());
 
-        itemBean = new ItemBeanMock();
-        printBean = new PrintBean();
-        overviewBean = new ItemOverviewBean();
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(user);
+
+        itemBean = new ItemBeanMock();
+        printBean = new PrintBean();
+        overviewBean = new ItemOverviewBeanMock()
+                .setItemBean(itemBean)
+                .setItemService(itemService)
+                .setMaterialService(materialService)
+                .setMemberService(memberService)
+                .setNavigator(new NavigatorMock(userBean))
+                .setProjectService(projectService)
+                .setUser(user);
+
         itemBean.setItemService(itemService);
         itemBean.setPrintBean(printBean);
         itemBean.setItemOverviewBean(overviewBean);
         itemBean.setProjectService(projectService);
         itemBean.setContainerService(containerService);
         itemBean.setContainerPositionService(containerPositionService);
-        itemBean.setNavigator(navigator);
+        itemBean.setNavigator(new NavigatorMock(userBean));
         itemBean.setUserBean(userBean);
 
     }

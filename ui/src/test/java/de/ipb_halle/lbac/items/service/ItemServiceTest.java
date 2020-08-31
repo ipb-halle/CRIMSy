@@ -46,7 +46,6 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.util.InputConverter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,7 +55,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.UUID;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -95,15 +93,15 @@ public class ItemServiceTest extends TestBase {
     private ProjectService projectService;
     private User owner;
     private Project project;
-    private String ownerid;
-    private String userGroups;
+    private Integer ownerid;
+    private Integer userGroups;
 
     String INSERT_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
             + "1,"
             + "1,"
             + "now(),"
-            + "cast('%s' as UUID),"
-            + "cast('%s' as UUID),"
+            + " %d, "
+            + "%d, "
             + "false,%d)";
 
     @Before
@@ -557,8 +555,8 @@ public class ItemServiceTest extends TestBase {
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         //Preparing project and material
         project = creationTools.createProject();
-        userGroups = project.getUserGroups().getId().toString();
-        ownerid = owner.getId().toString();
+        userGroups = project.getUserGroups().getId();
+        ownerid = owner.getId();
 
         entityManagerService.doSqlUpdate(String.format(INSERT_MATERIAL_SQL, userGroups, ownerid, project.getId()));
         entityManagerService.doSqlUpdate("INSERT INTO structures  VALUES(1,'',0,0,null)");

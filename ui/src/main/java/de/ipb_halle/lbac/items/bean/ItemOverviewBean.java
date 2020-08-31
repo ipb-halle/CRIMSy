@@ -92,7 +92,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Item> items;
-    private User currentUser;
+    protected User currentUser;
 
     public List<Item> getItems() {
         return items;
