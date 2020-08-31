@@ -58,6 +58,10 @@ public class NestingPath implements Serializable, DTO {
         this.id = nestingPathId;
     }
 
+    /**
+     * returns a collection of nesting path elements
+     * @return Set<NestingPathEntity> - a set of path elments
+     */
     @Override
     public Set<NestingPathEntity> createEntity() {
         Set<NestingPathEntity> result = new HashSet<>();
@@ -110,6 +114,10 @@ public class NestingPath implements Serializable, DTO {
 
     public Set<Integer> getPath() {
         return path;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setMembership(Integer membership) {

@@ -31,7 +31,14 @@ import javax.persistence.Table;
 public class NestingPathSetEntity implements Serializable {
 
     /**
-     * identifies different path of nested memberships.
+     * This class associates a nesting path (i.e. a collection 
+     * of nesting path elements) to a nested membership. The nested 
+     * <code>Membership</code> is specified by the <code>membership_id</code>
+     * field. However, this class does NOT contain the single path elements, 
+     * as this part is covered by <code>NestingPathEntity</code>.
+     *
+     * A nested membership can be constituted by more than one 
+     * nesting path. 
      */
     private final static long serialVersionUID = 1L;
 

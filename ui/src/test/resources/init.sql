@@ -110,12 +110,6 @@ CREATE TABLE nestingpathsets (
     membership_id INTEGER NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE membership_nestingpathsets (
-        membership_id           INTEGER NOT NULL REFERENCES memberships(id) ON DELETE CASCADE,
-        nestingpathset_id       INTEGER NOT NULL REFERENCES nestingpathsets(id) ON DELETE CASCADE,
-        UNIQUE(nestingpathset_id, membership_id)
-);
-
 CREATE TABLE nestingpathset_memberships (
         nestingpathsets_id      INTEGER NOT NULL REFERENCES nestingpathsets(id) ON DELETE CASCADE,
         memberships_id          INTEGER NOT NULL REFERENCES memberships(id) ON DELETE CASCADE,

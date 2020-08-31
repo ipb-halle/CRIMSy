@@ -171,11 +171,6 @@ CREATE TABLE nestingpathsets (
     membership_id INTEGER NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE 
 );
 
-CREATE TABLE membership_nestingpathsets (
-        membership_id           INTEGER NOT NULL REFERENCES memberships(id) ON UPDATE CASCADE ON DELETE CASCADE,
-        nestingpathset_id       INTEGER NOT NULL REFERENCES nestingpathsets(id) ON UPDATE CASCADE ON DELETE CASCADE,
-        UNIQUE(nestingpathset_id, membership_id)
-);
 /* 
  * ToDo: Do some database sanitation for memberships.  
  * This cleanup / sanitation is necessary, when the membership table 
@@ -186,12 +181,12 @@ CREATE TABLE membership_nestingpathsets (
  * 
  *   CREATE OR REPLACE FUNCTION cleanNestingPathSets ( id INTEGER ) RETURNS INTEGER
  *   ...
- *   CREATE TRIGGER ... AFTER DELETE ON membership_nestingpathsets EXECUTE PROCEDURE cleanNestingPathSets(OLD.nestingpathset_id); 
+ *   CREATE TRIGGER ... AFTER DELETE ON nestingpathset_memberships EXECUTE PROCEDURE cleanNestingPathSets(OLD.nestingpathset_id); 
  *
  * Alternatively on could run the following SQL command manually:
  * 
  *   DELETE FROM nestingpathsets AS np USING (SELECT id FROM nestingpathsets 
- *   EXCEPT SELECT nestingpathset_id FROM membership_nestingpathsets) AS e WHERE np.id=e.id;
+ *   EXCEPT SELECT nestingpathset_id FROM nestingpathset_memberships) AS e WHERE np.id=e.id;
  *
  */
 

@@ -54,6 +54,7 @@ public class MembershipService implements Serializable {
             + "WHERE membership_id=:membership_id) AS msnp "
             + "ON msnp.id=np.nestingpathsets_id";
     private static final long serialVersionUID = 1L;
+    private static final int NON_EXISTING_ID = -1; 
     private static final UUID NON_EXISTING_UUID = UUID.fromString("ab2abbee-3f3c-4cfe-9886-ba75e9eeaebc");
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -110,8 +111,7 @@ public class MembershipService implements Serializable {
 
         // also add all the nested memberships of the (parent) group
         resolveNestedMemberships(ms);
-        save(ms);
-        return ms;
+        return save(ms);
     }
 
     /**
@@ -152,7 +152,8 @@ public class MembershipService implements Serializable {
                             child == null ? membership.getMember() : child.getMember());
 
                     resolveNestedPaths(parent, child, membership, ms);
-                    save(ms);
+                    // save should not be necessary here:
+                    // save(ms);
                 }
             }
         }
@@ -257,15 +258,15 @@ public class MembershipService implements Serializable {
                 + "JOIN nodes AS gn ON g.node_id = gn.id "
                 + "JOIN nodes AS mn ON m.node_id = mn.id "
                 + "WHERE (ms.nested = :nested OR True = :nested) "
-                + "AND (g.id = :group_id OR CAST('ab2abbee-3f3c-4cfe-9886-ba75e9eeaebc' AS UUID) = :group_id) "
-                + "AND (m.id = :member_id OR CAST('ab2abbee-3f3c-4cfe-9886-ba75e9eeaebc' AS UUID) = :member_id) "
+                + "AND (g.id = :group_id OR -1 = :group_id) "
+                + "AND (m.id = :member_id OR -1 = :member_id) "
                 + "AND (g.subSystemType = :gSST OR -1 = :gSST) "
                 + "AND (m.subSystemType = :mSST OR -1 = :mSST) "
                 + "AND (gn.id = :groupNode_id OR CAST('ab2abbee-3f3c-4cfe-9886-ba75e9eeaebc' AS UUID) = :groupNode_id) "
                 + "AND (mn.id = :memberNode_id OR CAST('ab2abbee-3f3c-4cfe-9886-ba75e9eeaebc' AS UUID) = :memberNode_id) ", MembershipEntity.class)
                 .setParameter("nested", cmap.keySet().contains("nested") ? cmap.get("nested") : Boolean.TRUE)
-                .setParameter("group_id", cmap.keySet().contains("group_id") ? cmap.get("group_id") : NON_EXISTING_UUID)
-                .setParameter("member_id", cmap.keySet().contains("member_id") ? cmap.get("member_id") : NON_EXISTING_UUID)
+                .setParameter("group_id", cmap.keySet().contains("group_id") ? cmap.get("group_id") : NON_EXISTING_ID)
+                .setParameter("member_id", cmap.keySet().contains("member_id") ? cmap.get("member_id") : NON_EXISTING_ID)
                 .setParameter("gSST", cmap.keySet().contains("group_subSystemType") ? ((AdmissionSubSystemType) cmap.get("group_subSystemType")).getIndex() : -1)
                 .setParameter("mSST", cmap.keySet().contains("member_subSystemType") ? ((AdmissionSubSystemType) cmap.get("member_subSystemType")).getIndex() : -1)
                 .setParameter("groupNode_id", cmap.keySet().contains("group_node") ? cmap.get("group_node") : NON_EXISTING_UUID)
@@ -460,24 +461,26 @@ public class MembershipService implements Serializable {
      */
     private Membership save(Membership ms) {
         MembershipEntity mse = this.em.merge(ms.createEntity());
-        return loadById(mse.getId());
+        return new Membership(mse,
+                ms.getGroup(),
+                ms.getMember(),
+                ms.getNestingPathSet());
+
+//              loadNestingPathByMembership(mse.getId()));
     }
 
     /**
      * merge a NestingPath instance into the database
-     *
+     * @param np a nesting path
      * @return the merged instance
      */
     private NestingPath save(NestingPath np) {
-
-        /* 
-         * xxxxxx REFACTOR THIS (id is not set automatically)
-        */
         
-        NestingPathSetEntity npse=this.em.merge(
+        NestingPathSetEntity npse = this.em.merge(
                 new NestingPathSetEntity(np.getId(),
                         np.getMembership()));
-        
+        np.setId(npse.getId());
+
         for (NestingPathEntity entity : np.createEntity()) {
             entity.getId().setNestingpathsets_id(npse.getId());
             this.em.merge(entity);
