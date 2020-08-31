@@ -21,12 +21,11 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 
 /**
  * Mocks the CollectionWebClient and simulates an request to a remote Server.
@@ -38,6 +37,7 @@ public class CollectionWebClientMock extends CollectionWebClient {
 
     private final int waitingDurationInMiliSec;
     private final int amountOfReadableColls;
+    private Random random=new Random();
 
     /**
      * Creates a WebClient Mock
@@ -79,10 +79,10 @@ public class CollectionWebClientMock extends CollectionWebClient {
                             u.getName()
                     )
             );
+            readable.setId(random.nextInt(1000000));
             readable.setIndexPath("/");
             readable.setName(String.format("READ-COL%d", i));
             readable.setNode(cn.getNode());
-            readable.setId(-10000);
             readable.setOwner(u);
             collections.add(readable);
         }

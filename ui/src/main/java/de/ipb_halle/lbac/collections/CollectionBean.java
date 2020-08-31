@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 
 import javax.enterprise.context.SessionScoped;
@@ -241,6 +242,9 @@ public class CollectionBean implements Serializable, ACObjectBean {
     public void actionCreate() {
 
         collectionOperation.createCollection(activeCollection, currentAccount);
+        Map<String,Object> cmap=new HashMap();
+        cmap.put("name", activeCollection.getName());
+        activeCollection=collectionService.load(cmap).get(0);
         collectionSearchState.getCollections().add(activeCollection);
 
     }

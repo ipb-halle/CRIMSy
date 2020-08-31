@@ -271,8 +271,9 @@ public class CollectionOperation implements Serializable{
         return OperationState.OPERATION_SUCCESS;
     }
 
-    public void updateCollection(Collection activeCollection, User currentAccount) {
-        collectionService.save(activeCollection);
+    public Collection updateCollection(Collection activeCollection, User currentAccount) {
+        activeCollection=collectionService.save(activeCollection);
+        return activeCollection;
     }
 
     private void log(String message, Collection activeCollection, User currentAccount) {

@@ -37,11 +37,12 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import javax.persistence.PersistenceContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -154,6 +155,7 @@ public class CollectionOperationTest extends TestBase {
         coll.setName(collName);
         coll.setDescription("testColl-description");
         CollectionOperation.OperationState state = instance.createCollection(coll, u);
+        coll = collectionService.load(nameCmap(collName)).get(0);
         Assert.assertTrue("Collection was not created", CollectionOperation.OperationState.OPERATION_SUCCESS == state);
         List<Collection> loadedColls = collectionService.load(nameCmap(collName));
         Assert.assertTrue(!loadedColls.isEmpty());
@@ -182,9 +184,11 @@ public class CollectionOperationTest extends TestBase {
         coll.setName(collName);
         coll.setDescription("testColl-description");
         instance.createCollection(coll, u);
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("name", coll.getName());
+        coll = collectionService.load(cmap).get(0);
 
         coll.setDescription(NEW_DESCRIPTION);
-
         instance.updateCollection(coll, u);
         List<Collection> loadedColls = collectionService.load(nameCmap(collName));
         Assert.assertTrue(!loadedColls.isEmpty());
