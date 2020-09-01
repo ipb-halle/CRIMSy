@@ -52,9 +52,9 @@ public class MembershipWebClient
      * information. The user will also be included in the public group of the
      * remote node.
      *
-     * @param u user to be announced
+     * @param u obfuscated user to be announced
      * @param cloudNode remote node where the user and groups will be announced
-     * @param groupsOfUser set with all groups of user
+     * @param groupsOfUser set of obfuscated local groups (not BUILTIN or LBAC_REMOTE; originating at local node) for user <code>u</code>
      * @param localNodeId
      * @param privateKey private rsa key for authentifivating the webrequest
      * @throws NoSuchAlgorithmException

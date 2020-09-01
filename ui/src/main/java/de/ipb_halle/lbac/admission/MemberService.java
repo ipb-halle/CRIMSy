@@ -55,6 +55,13 @@ import org.apache.openjpa.lib.rop.ResultList;
 @Stateless
 public class MemberService implements Serializable {
 
+    public final static String PARAM_MEMBER_ID = "id";
+    public final static String PARAM_NODE_ID = "node_id";
+    public final static String PARAM_SUBSYSTEM_TYPE ="subSystemType";
+    public final static String PARAM_SUBSYSTEM_DATA ="subSystemData";
+    public final static String PARAM_NAME = "name";
+    public final static String PARAM_LOGIN = "login";
+
     private static final long serialVersionUID = 1L;
     private final String SQL_GET_SIMILAR_NAMES
             = "SELECT name "
@@ -108,29 +115,29 @@ public class MemberService implements Serializable {
         criteriaQuery.select(groupRoot);
         List<Predicate> predicates = new ArrayList<>();
 
-        if (cmap.get("id") != null) {
-            predicates.add(builder.equal(groupRoot.get("id"), cmap.get("id")));
+        if (cmap.get(PARAM_MEMBER_ID) != null) {
+            predicates.add(builder.equal(groupRoot.get(PARAM_MEMBER_ID), cmap.get(PARAM_MEMBER_ID)));
         }
-        if (cmap.get("node_id") != null) {
-            predicates.add(builder.equal(groupRoot.get("node"), cmap.get("node_id")));
+        if (cmap.get(PARAM_NODE_ID) != null) {
+            predicates.add(builder.equal(groupRoot.get("node"), cmap.get(PARAM_NODE_ID)));
         }
-        if (cmap.get("name") != null) {
-            predicates.add(builder.equal(groupRoot.get("name"), cmap.get("name")));
+        if (cmap.get(PARAM_NAME) != null) {
+            predicates.add(builder.equal(groupRoot.get(PARAM_NAME), cmap.get(PARAM_NAME)));
         }
-        if (cmap.get("subSystemType") != null) {
-            if (cmap.get("subSystemType").getClass().equals(AdmissionSubSystemType.class)) {
+        if (cmap.get(PARAM_SUBSYSTEM_TYPE) != null) {
+            if (cmap.get(PARAM_SUBSYSTEM_TYPE).getClass().equals(AdmissionSubSystemType.class)) {
                 // single subsystem type
-                predicates.add(builder.equal(groupRoot.get("subSystemType"), cmap.get("subSystemType")));
+                predicates.add(builder.equal(groupRoot.get(PARAM_SUBSYSTEM_TYPE), cmap.get(PARAM_SUBSYSTEM_TYPE)));
             } else {
                 // list of subsystem types
-                List<Predicate> pl = Arrays.stream((AdmissionSubSystemType[]) cmap.get("subSystemType"))
-                        .map(t -> builder.equal(groupRoot.get("subSystemType"), t))
+                List<Predicate> pl = Arrays.stream((AdmissionSubSystemType[]) cmap.get(PARAM_SUBSYSTEM_TYPE))
+                        .map(t -> builder.equal(groupRoot.get(PARAM_SUBSYSTEM_TYPE), t))
                         .collect(Collectors.toList());
                 predicates.add(builder.or(pl.toArray(new Predicate[0])));
             }
         }
-        if (cmap.get("subSystemData") != null) {
-            predicates.add(builder.equal(groupRoot.get("subSystemData"), cmap.get("subSystemData")));
+        if (cmap.get(PARAM_SUBSYSTEM_DATA) != null) {
+            predicates.add(builder.equal(groupRoot.get(PARAM_SUBSYSTEM_DATA), cmap.get(PARAM_SUBSYSTEM_DATA)));
         }
 
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[0])));
@@ -194,29 +201,29 @@ public class MemberService implements Serializable {
         criteriaQuery.select(userRoot);
         List<Predicate> predicates = new ArrayList<>();
 
-        if (cmap.get("id") != null) {
-            predicates.add(builder.equal(userRoot.get("id"), cmap.get("id")));
+        if (cmap.get(PARAM_MEMBER_ID) != null) {
+            predicates.add(builder.equal(userRoot.get(PARAM_MEMBER_ID), cmap.get(PARAM_MEMBER_ID)));
         }
-        if (cmap.get("login") != null) {
-            predicates.add(builder.equal(userRoot.get("login"), cmap.get("login")));
+        if (cmap.get(PARAM_LOGIN) != null) {
+            predicates.add(builder.equal(userRoot.get(PARAM_LOGIN), cmap.get(PARAM_LOGIN)));
         }
-        if (cmap.get("node_id") != null) {
-            predicates.add(builder.equal(userRoot.get("node"), cmap.get("node_id")));
+        if (cmap.get(PARAM_NODE_ID) != null) {
+            predicates.add(builder.equal(userRoot.get("node"), cmap.get(PARAM_NODE_ID)));
         }
-        if (cmap.get("subSystemType") != null) {
-            if (cmap.get("subSystemType").getClass().equals(AdmissionSubSystemType.class)) {
+        if (cmap.get(PARAM_SUBSYSTEM_TYPE) != null) {
+            if (cmap.get(PARAM_SUBSYSTEM_TYPE).getClass().equals(AdmissionSubSystemType.class)) {
                 // single subsystem type
-                predicates.add(builder.equal(userRoot.get("subSystemType"), cmap.get("subSystemType")));
+                predicates.add(builder.equal(userRoot.get(PARAM_SUBSYSTEM_TYPE), cmap.get(PARAM_SUBSYSTEM_TYPE)));
             } else {
                 // list of subsystem types
-                List<Predicate> pl = Arrays.stream((AdmissionSubSystemType[]) cmap.get("subSystemType"))
-                        .map(t -> builder.equal(userRoot.get("subSystemType"), t))
+                List<Predicate> pl = Arrays.stream((AdmissionSubSystemType[]) cmap.get(PARAM_SUBSYSTEM_TYPE))
+                        .map(t -> builder.equal(userRoot.get(PARAM_SUBSYSTEM_TYPE), t))
                         .collect(Collectors.toList());
                 predicates.add(builder.or(pl.toArray(new Predicate[0])));
             }
         }
-        if (cmap.get("subSystemData") != null) {
-            predicates.add(builder.equal(userRoot.get("subSystemData"), cmap.get("subSystemData")));
+        if (cmap.get(PARAM_SUBSYSTEM_DATA) != null) {
+            predicates.add(builder.equal(userRoot.get(PARAM_SUBSYSTEM_DATA), cmap.get(PARAM_SUBSYSTEM_DATA)));
         }
 
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[]{})));

@@ -148,7 +148,6 @@ public abstract class Member implements Obfuscatable, DTO {
     @Override
     public void obfuscate() {
         this.subSystemData = null;
-        this.subSystemType = null;
     }
 
     public void setId(Integer i) {

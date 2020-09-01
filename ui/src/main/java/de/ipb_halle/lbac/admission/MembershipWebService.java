@@ -36,6 +36,9 @@ import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 
+import java.util.HashSet;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -116,21 +119,27 @@ public class MembershipWebService extends LbacWebService {
         Node node = this.nodeService.loadById(user.getNode().getId());
 
         // do not allow to update the local node
-        if ((node != null) && this.nodeService.isRemoteNode(node)) {
+        // and make sure the user originates from the node given in the request
+        if ((node != null) 
+                && this.nodeService.isRemoteNode(node)
+                && node.getId().equals(request.getNodeIdOfRequest())) {
 
-            boolean userAdded = handleUser(user, node);
-            boolean currentMembershipsSet = handleGroups(user, request.getGroups(), node);
-            boolean vanishedMembershipsCleared = clearVanishedMemberships(user, request.getGroups(), node);
+            user = handleUser(user, node);
 
-            result = userAdded
-                    && vanishedMembershipsCleared
-                    && currentMembershipsSet;
-
+            if (user != null) {
+                Set<Group> remoteGroupSet = handleGroups(user, request.getGroups(), node);
+                if (remoteGroupSet != null) {
+                    result = clearVanishedMemberships(user, remoteGroupSet, node);
+                }
+            }
         } else {
             this.logger.warn("handleRequest() received update request for illegal node");
         }
         if (!result) {
-            request.setStatusCode("500:Could not announce user" + user.getId().toString() + " at node " + node.getId());
+            request.setStatusCode("500:Could not announce user" 
+                    + user.getId().toString() 
+                    + " at node " 
+                    + node.getId().toString());
         }
 
         return Response.ok(request).build();
@@ -144,50 +153,49 @@ public class MembershipWebService extends LbacWebService {
      * the remote node of the user. No memberships from other remote nodes will
      * be recognized.
      *
-     * @param remoteUser the user
+     * @param user the user
      * @param gs the list of groups from webRequest
      * @param remoteNode the local database instance of the remote node
      * @return false on failure
      */
-    private boolean handleGroups(
-            User remoteUser,
+    private Set<Group> handleGroups(
+            User user,
             Set<Group> gs,
             Node remoteNode) {
 
+        Set<Group> groupSet = new HashSet<> ();
         for (Group group : gs) {
             try {
+                Map<String, Object> cmap = new HashMap<> ();
+                cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, group.getId().toString());
+                cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LBAC_REMOTE);
+                cmap.put(MemberService.PARAM_NODE_ID, remoteNode.getId());
+                List<Group> localGroupList = this.memberService.loadGroups(cmap);
+                Group localGroup = null;
 
-                boolean isPublicNode = group.getNode().getId()
-                        .toString().equals(GlobalAdmissionContext.PUBLIC_NODE_ID);
-                // if the node of the group to edit is not the node from the 
-                // request or the anonymus public node do nothing
-                if (!group.getNode().equals(remoteNode)
-                        && !isPublicNode) {
-                    throw new Exception(
-                            "handleGroups(): illegal node on remote group "
-                            + remoteNode.getInstitution()
-                            + " Group " + group.getName());
-                }
-
-                // load the local represantation of the remote group
-                Group localGroup = this.memberService.loadGroupById(group.getId());
-
-                if (isPublicNode) {
-
-                } else if (localGroup != null && localGroup.getNode().equals(remoteNode)) {
-                    //throw new Exception(String.format("handleGroups(): remote group would illegally override local group"));
+                if ((localGroupList != null) && (localGroupList.size() == 1)) {
+                    localGroup = localGroupList.get(0);
+                    groupSet.add(localGroup);
                 } else {
-                    mergeGroupAsRemoteGroup(group, remoteNode);
+                    if ((group.getId() != null)
+                            && (group.getSubSystemType() != AdmissionSubSystemType.BUILTIN)
+                            && (group.getSubSystemType() != AdmissionSubSystemType.LBAC_REMOTE)
+                            && (remoteNode.getId().equals(group.getNode().getId()))) {
+                        localGroup = mergeGroup(group, remoteNode);
+                    }
                 }
 
-                this.membershipService.addMembership(group, remoteUser);
+                if (localGroup != null) {
+                    this.membershipService.addMembership(localGroup, user);
+                    groupSet.add(localGroup);
+                }
 
             } catch (Exception e) {
                 this.logger.error(e.getMessage());
             }
 
         }
-        return true;
+        return groupSet;
     }
 
     /**
@@ -196,18 +204,18 @@ public class MembershipWebService extends LbacWebService {
      *
      * @param remoteUser
      * @param gs
-     * @param localNode
+     * @param remoteNode
      * @return
      */
     private boolean clearVanishedMemberships(
             User remoteUser,
             Set<Group> gs,
-            Node localNode) {
+            Node remoteNode) {
         try {
             Map<Integer, Membership> nonLocalGroupMemberships = this.membershipService.loadMemberOf(remoteUser)
                     .stream()
                     .filter(m -> m.getGroup().isGroup()) // only Membership objects with groups
-                    .filter(m -> !m.getGroup().getNode().equals(localNode)) // only Memberships with non-local group 
+                    .filter(m -> m.getGroup().getSubSystemType().equals(AdmissionSubSystemType.LBAC_REMOTE))
                     .collect(Collectors.toMap(k -> k.getGroup().getId(), v -> v));
 
             for (Group group : gs) {
@@ -226,46 +234,57 @@ public class MembershipWebService extends LbacWebService {
     }
 
     /**
-     * Saves the group in the datavase as a remote group
-     *
+     * Saves the group in the database as a remote group
+     * The SubSystemType is changed to LBAC_REMOTE and SubSystemData is 
+     * set with the groupId from the remote system.
      * @param group
      * @param n home node of the group
+     * @return the persisted group
      */
-    private void mergeGroupAsRemoteGroup(Group group, Node n) {
-        // update group (e.g. name changes)
-        group.obfuscate();
-        group.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
-        group.setNode(n);
-        this.memberService.save(group);
-        this.membershipService.addMembership(group, group);
+    private Group mergeGroup(Group remoteGroup, Node n) {
+        Group localGroup = new Group(remoteGroup.createEntity(), n);
+        localGroup.obfuscate();
+        localGroup.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+        localGroup.setSubSystemData(localGroup.getId().toString());
+        localGroup.setId(null);
+        localGroup.setNode(n);
+        this.memberService.save(localGroup);
+        this.membershipService.addMembership(localGroup, localGroup);
+        return localGroup;
     }
 
     /**
      * check user object for plausibility and persist object in the database.
      * Add also standard memberships (i.e. publicGroup and the user itself).
      *
-     * @param u the user
+     * @param u the remote user (id must not be empty!)
      * @param n the local database instance of the remote node
-     * @return false on failure
+     * @return the persisted local user DTO
      */
-    private boolean handleUser(User u, Node n) {
+    private User handleUser(User u, Node n) {
 
-        User localUser = this.memberService.loadUserById(u.getId());
-
-        if (localUser != null) {
-
-            if ((!localUser.getNode().equals(n))
-                    || (localUser.getSubSystemType() != AdmissionSubSystemType.LBAC_REMOTE)) {
-                return false;
-            }
+        if (u.getId() == null) {
+            this.logger.warn("handleUser(): Attempt to announce remote user without Id");
+            return null;
         }
+
+        Map<String, Object> cmap = new HashMap<> ();
+        cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, u.getId().toString());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LBAC_REMOTE);
+        cmap.put(MemberService.PARAM_NODE_ID, n.getId());
+        List<User> localUserList = this.memberService.loadUsers(cmap);
+        if ((localUserList != null) && (localUserList.size() ==  1)) {
+            return localUserList.get(0);
+        }
+
         u.obfuscate();
+        u.setSubSystemData(u.getId().toString());
         u.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
-        u.setNode(n);
-        this.memberService.save(u);
-        this.membershipService.addMembership(u, u);
-        this.membershipService.addMembership(this.globalAdmissionContext.getPublicGroup(), u);
-        return true;
+        u.setId(null);
+        User localUser = this.memberService.save(u);
+        this.membershipService.addMembership(localUser, localUser);
+        this.membershipService.addMembership(this.globalAdmissionContext.getPublicGroup(), localUser);
+        return localUser;
     }
 
 }

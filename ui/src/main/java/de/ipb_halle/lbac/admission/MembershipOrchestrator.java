@@ -62,6 +62,10 @@ public class MembershipOrchestrator implements Serializable {
     private CloudNodeService cloudNodeService;
 
     public void startMemberShipAnnouncement(User user) {
+        User obfuscatedUser = new User(user.createEntity(), user.getNode());
+        obfuscatedUser.obfuscate();
+        Set<Group> obfuscatedGroups = getGroupsOfUser(user);
+
         for (Node node : nodeService.load(null, false)) {
 
             List<CloudNode> cnl = cloudNodeService.load(null, node);
@@ -70,7 +74,7 @@ public class MembershipOrchestrator implements Serializable {
             }
 
             CompletableFuture.supplyAsync(() -> {
-                return startAnnouncment(user, cnl.get(0), getGroupsOfUser(user));
+                return startAnnouncment(obfuscatedUser, cnl.get(0), obfuscatedGroups);
             }, managedExecutorService);
         }
     }
@@ -105,8 +109,9 @@ public class MembershipOrchestrator implements Serializable {
     }
 
     /**
-     * Returns the groups of a user which are located at the public node or the
-     * local node. All other groups are excluded
+     * Returns an obfuscated set of groups for a given user. The returned 
+     * groups are located at the local node. Groups of subsystem type 
+     * <code>BUILTIN</code> and <code>LBAC_REMOTE</code> are excluded.
      *
      * @param u
      * @return
@@ -120,7 +125,9 @@ public class MembershipOrchestrator implements Serializable {
                 if (m.getGroup() instanceof Group) {
                     Group g = (Group) m.getGroup();
                     if (g.getNode().equals(nodeService.getLocalNode())
-                            || g.getNode().getPublicNode()) {
+                            && (g.getSubSystemType() != AdmissionSubSystemType.BUILTIN)
+                            && (g.getSubSystemType() != AdmissionSubSystemType.LBAC_REMOTE)) {
+                        g.obfuscate();
                         groups.add(g);
                     }
                 }
