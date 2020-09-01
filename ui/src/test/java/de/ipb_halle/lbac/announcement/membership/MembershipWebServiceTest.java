@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.announcement.membership;
 
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.announcement.membership.mock.MembershipWebServiceMock;
 import de.ipb_halle.lbac.admission.MembershipWebRequest;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.base.TestBase;
@@ -41,20 +40,16 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
-import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
-import java.net.URL;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
@@ -199,16 +194,20 @@ public class MembershipWebServiceTest extends TestBase {
 
         wc.post(webRequest);
 
-        memberships = membershipService.loadMemberOf(u);
+        Integer remoteId = (Integer) entityManagerService.doSqlQuery(
+                String.format("SELECT id FROM usersgroups ug WHERE ug.subsystemdata ='%s'",
+                        u.getId().toString())).get(0);
+        memberships = membershipService.loadMemberOf(memberService.loadUserById(remoteId));
+
         Assert.assertEquals(3, memberships.size());
         boolean publicGroupFlag = false;
         boolean group2Flag = false;
 
         for (Membership m : memberships) {
+            System.out.println("Groupid " + m.getGroup().getId() + " -> " + m.getGroup().getName());
             if (m.getGroup().equals(publicGroup)) {
                 publicGroupFlag = true;
-            }
-            if (m.getGroup().equals(remoteGroup2)) {
+            } else if (m.getGroup().getSubSystemData().equals(remoteGroup2.getId().toString())) {
                 group2Flag = true;
             }
         }

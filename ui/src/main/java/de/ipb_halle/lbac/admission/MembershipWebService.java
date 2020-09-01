@@ -248,7 +248,7 @@ public class MembershipWebService extends LbacWebService {
         localGroup.setSubSystemData(localGroup.getId().toString());
         localGroup.setId(null);
         localGroup.setNode(n);
-        this.memberService.save(localGroup);
+        localGroup=this.memberService.save(localGroup);
         this.membershipService.addMembership(localGroup, localGroup);
         return localGroup;
     }
