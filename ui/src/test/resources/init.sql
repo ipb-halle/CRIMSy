@@ -510,7 +510,7 @@ CREATE TABLE containertypes(
 
 CREATE TABLE containers(
     id SERIAL NOT NULL PRIMARY KEY,
-    parentcontainer INTEGER REFERENCES containers(id),
+    parentcontainer INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE SET NULL,
     label VARCHAR NOT NULL,
     projectid INTEGER REFERENCES projects(id),
     dimension VARCHAR,
@@ -521,8 +521,8 @@ CREATE TABLE containers(
     deactivated BOOLEAN NOT NULL DEFAULT false);
 
 CREATE TABLE nested_containers(
-    sourceid INTEGER NOT NULL REFERENCES containers(id),
-    targetid INTEGER NOT NULL REFERENCES containers(id),
+    sourceid INTEGER NOT NULL REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    targetid INTEGER NOT NULL REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
     nested BOOLEAN NOT NULL,
     PRIMARY KEY(sourceid,targetid));
 
@@ -545,21 +545,21 @@ CREATE TABLE items(
     owner INTEGER  NOT NULL REFERENCES usersgroups(id),
     containersize DOUBLE ,
     containertype VARCHAR REFERENCES containertypes(name),
-    containerid INTEGER REFERENCES containers(id),
+    containerid INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE SET NULL,
     aclist_id INTEGER NOT NULL,
     expiry_date TIMESTAMP,
     ctime TIMESTAMP  NOT NULL DEFAULT now());
 
 CREATE TABLE item_positions(
     id SERIAL NOT NULL PRIMARY KEY,
-    itemid INTEGER REFERENCES items(id),
-    containerid INTEGER NOT NULL REFERENCES containers(id),
+    itemid INTEGER REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    containerid INTEGER NOT NULL REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
     itemrow INTEGER ,
     itemcol INTEGER );
 
 
 CREATE TABLE items_history(
-    itemid INTEGER NOT NULL REFERENCES items(id),
+    itemid INTEGER NOT NULL REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
     mdate TIMESTAMP NOT NULL,
     actorid INTEGER NOT NULL REFERENCES usersgroups(id),
     action VARCHAR NOT NULL,
@@ -575,14 +575,14 @@ CREATE TABLE items_history(
     amount_new FLOAT,
     owner_old INTEGER REFERENCES usersgroups(id),
     owner_new INTEGER REFERENCES usersgroups(id),
-    parent_containerid_new INTEGER REFERENCES containers(id),
-    parent_containerid_old INTEGER REFERENCES containers(id),
+    parent_containerid_new INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    parent_containerid_old INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
     PRIMARY KEY(itemid,actorid,mdate));
 
 CREATE TABLE item_positions_history(
     id SERIAL PRIMARY KEY,
-    itemid INTEGER NOT NULL REFERENCES items(id),
-    containerid INTEGER NOT NULL REFERENCES containers(id),
+    itemid INTEGER NOT NULL REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    containerid INTEGER NOT NULL REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
     mdate TIMESTAMP NOT NULL,
     actorid INTEGER NOT NULL REFERENCES usersgroups(id),
     row_old INTEGER,

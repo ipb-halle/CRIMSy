@@ -56,8 +56,7 @@ public class ContainerNestingServiceTest extends TestBase {
 
     @After
     public void cleanUp() {
-        entityManagerService.doSqlUpdate("DELETE FROM nested_containers");
-        entityManagerService.doSqlUpdate("DELETE FROM containers");
+       
     }
 
     @Test

@@ -61,6 +61,7 @@ public class InputValidatorTest extends TestBase {
     @Before
     @Override
     public void setUp() {
+        super.setUp();
         validator = new InputValidator(containerService);
         validator.setContainerService(containerService);
         messagePresenter = new ErrorMessagePresenterMock();
@@ -72,7 +73,7 @@ public class InputValidatorTest extends TestBase {
         c.setGmosavety("S0");
         c.setLabel("R302");
         c.setType(new ContainerType("ROOM", 100,false,true));
-        entityManagerService.doSqlUpdate("DELETE FROM containers");
+       
     }
 
     @Test

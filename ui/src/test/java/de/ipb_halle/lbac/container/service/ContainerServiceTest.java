@@ -97,9 +97,7 @@ public class ContainerServiceTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        entityService.doSqlUpdate("delete from item_positions");
-        entityService.doSqlUpdate("delete from items");
-        entityService.doSqlUpdate("delete from containers");
+       
 
         c0 = new Container();
         c0.setBarCode(null);
