@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.SystemSettings;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
@@ -49,10 +50,14 @@ public class ProjectServiceTest extends TestBase {
     @Inject
     private ProjectService instance;
 
+    @Inject
+    private ACListService aclistService;
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("ProjectServiceTest.war")
                 .addClass(SystemSettings.class)
+                .addClass(ACListService.class)
                 .addClass(ProjectService.class);
 
     }
@@ -84,6 +89,7 @@ public class ProjectServiceTest extends TestBase {
 
         p.setOwner(u);
         p.setUserGroups(projectAcList);
+        projectAcList = aclistService.save(projectAcList);
 
         p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.STORAGE_CLASSES, projectAcList);
@@ -108,9 +114,9 @@ public class ProjectServiceTest extends TestBase {
         // Clean up the database to ensure idempotence
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
-        entityManagerService.doSqlUpdate("delete from acentries where aclist_id='" + projectAcList.getId().toString() + "'");
+        entityManagerService.doSqlUpdate("delete from acentries where aclist_id=" + projectAcList.getId().toString());
         entityManagerService.doSqlUpdate("delete from projects where id=" + p.getId());
-        entityManagerService.doSqlUpdate("delete from aclists where id='" + projectAcList.getId().toString() + "'");
+        entityManagerService.doSqlUpdate("delete from aclists where id=" + projectAcList.getId().toString());
         entityManagerService.deleteUserWithAllMemberships(user2.getId().toString());
         entityManagerService.doSqlUpdate("delete from usersgroups where name='" + user2.getName() + "'");
 
