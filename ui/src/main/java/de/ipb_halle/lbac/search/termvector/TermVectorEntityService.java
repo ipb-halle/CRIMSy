@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -121,8 +120,6 @@ public class TermVectorEntityService implements Serializable {
      * @param docIds - document ids
      * @param maxResult - return top max. rows for result set
      * @return - list (String word, Integer wordCount)
-     *
-     * hibernate except UUIDs only, can't cast Strings to UUIDs
      */
     @SuppressWarnings("unchecked")
     public Map<String, Integer> getTermVector(List<Integer> docIds, Integer maxResult) {
@@ -155,7 +152,6 @@ public class TermVectorEntityService implements Serializable {
      * @param searchTerms
      * @return - list (String word, Integer wordCount)
      *
-     * hibernate except UUIDs only, can't cast Strings to UUIDs
      */
     @SuppressWarnings("unchecked")
     public Map<Integer, Map<String, Integer>> getTermVectorForSearch(

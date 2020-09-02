@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.admission.ACPermission;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,7 +42,7 @@ public class SqlStringWrapperTest {
                 + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
-                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
+                + "AND (:userid=me.member_id OR m.ownerid=:userid) "
                 + "AND a.id=0", enchantedString);
 
         originalString = String.format("SELECT a.a,a.b FROM columns a %s WHERE %s", SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
@@ -58,7 +57,7 @@ public class SqlStringWrapperTest {
                 + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
-                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID))"
+                + "AND (:userid=me.member_id OR m.ownerid=:userid)"
         );
 
         originalString = String.format("SELECT a.a,a.b FROM columns a %s WHERE %s GROUP BY a.x", SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
@@ -70,7 +69,7 @@ public class SqlStringWrapperTest {
                 + "ON ace.aclist_id=a.aclistid "
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
-                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
+                + "AND (:userid=me.member_id OR m.ownerid=:userid) "
                 + "GROUP BY a.x", enchantedString);
 
         originalString = String.format("SELECT a.a,a.b FROM columns a %s WHERE %s AND a=0 GROUP BY a.x", SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
@@ -82,7 +81,7 @@ public class SqlStringWrapperTest {
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
                 + "AND ace.permedit=true "
-                + "AND (CAST(:userid AS UUID)=me.member_id OR m.ownerid=CAST(:userid AS UUID)) "
+                + "AND (:userid=me.member_id OR m.ownerid=:userid) "
                 + "AND a=0 "
                 + "GROUP BY a.x", enchantedString);
 

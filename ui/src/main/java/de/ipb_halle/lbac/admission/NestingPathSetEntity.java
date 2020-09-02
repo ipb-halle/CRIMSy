@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

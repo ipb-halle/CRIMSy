@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 public class ACList implements Serializable, Obfuscatable, DTO {
 

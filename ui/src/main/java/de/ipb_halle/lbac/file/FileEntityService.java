@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -188,7 +187,7 @@ public class FileEntityService implements Serializable {
             cmap = new HashMap<>();
         }
         if (cmap.get("id") != null) {
-            predicates.add(builder.equal(fileObjectRoot.get("id"), UUID.fromString(cmap.get("id").toString())));
+            predicates.add(builder.equal(fileObjectRoot.get("id"), cmap.get("id")));
         }
         if (cmap.get("name") != null) {
             predicates.add(builder.like(builder.lower(

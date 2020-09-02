@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.admission;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 import javax.persistence.Embeddable;
 
 /**

@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
 import de.ipb_halle.lbac.admission.ACListService;
 import java.util.Date;
-import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

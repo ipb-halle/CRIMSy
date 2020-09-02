@@ -150,6 +150,9 @@ public class GroupMgrBean implements Serializable {
      */
     public List<Membership> getMembershipList() {
         Map<String, Object> cmap = new HashMap<String, Object>();
+        if (this.group.getId() == null) {
+            return new ArrayList<Membership> ();
+        }
         cmap.put("group_id", this.group.getId());
 
         // nestedFlag == true means show all (nested & direct)!

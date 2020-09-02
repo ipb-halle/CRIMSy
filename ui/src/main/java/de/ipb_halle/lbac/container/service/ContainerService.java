@@ -94,10 +94,10 @@ public class ContainerService implements Serializable {
             + "LEFT JOIN memberships ms ON ms.group_id=ace.member_id "
             + "LEFT JOIN nested_containers nc ON nc.sourceid=c.id "
             + "LEFT JOIN containers c2 ON c2.id=nc.targetid "
-            + "WHERE (ace.permread=true OR c.projectid IS NULL OR CAST(p.ownerid AS VARCHAR)=:userid) "
+            + "WHERE (ace.permread=true OR c.projectid IS NULL OR p.ownerid=:userid) "
             + "AND (c.id=:id OR :id=-1) "
-            + "AND (CAST(ms.member_id AS VARCHAR)=:userid  OR c.projectid IS NULL) "
-            + "AND (p.name=CAST(:project AS VARCHAR) OR CAST(:project AS VARCHAR) ='no_project') "
+            + "AND (ms.member_id=:userid  OR c.projectid IS NULL) "
+            + "AND (p.name=:project OR :project='no_project') "
             + "AND (LOWER(c.label) LIKE LOWER(:label) OR :label = 'no_label') "
             + "AND (c2.label=:location OR :location ='no_location') "
             + "AND c.deactivated =FALSE "
@@ -222,7 +222,7 @@ public class ContainerService implements Serializable {
             Map<String, Object> cmap) {
         List<ContainerEntity> dbEntities
                 = em.createNativeQuery(SQL_LOAD_CONTAINERS, ContainerEntity.class)
-                        .setParameter("userid", u.getId().toString())
+                        .setParameter("userid", u.getId())
                         .setParameter("id", cmap.containsKey("id") ? cmap.get("id") : -1)
                         .setParameter("project", cmap.containsKey("project") ? cmap.get("project") : "no_project")
                         .setParameter("label", cmap.containsKey("label") ? "%" + cmap.get("label") + "%" : "no_label")

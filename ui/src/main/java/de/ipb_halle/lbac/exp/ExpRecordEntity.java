@@ -18,11 +18,9 @@
 package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.exp.ExpRecordType;
-import de.ipb_halle.lbac.message.LocalUUIDConverter;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

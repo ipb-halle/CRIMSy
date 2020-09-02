@@ -22,11 +22,11 @@ import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -224,6 +224,9 @@ public class UserMgrBean implements Serializable {
      */
     public List<Membership> getMembershipList() {
         Map<String, Object> cmap = new HashMap<>();
+        if (this.user.getId() == null) {
+            return new ArrayList<Membership>();
+        }
         cmap.put("member_id", this.user.getId());
 
         // nestedFlag == true means show all (nested & direct)!

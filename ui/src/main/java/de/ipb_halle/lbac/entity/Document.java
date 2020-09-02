@@ -42,7 +42,6 @@ public class Document implements Serializable, Comparable<Document> {
     private final static String UI_PATH = "/ui";
     private Logger LOGGER = LogManager.getLogger(Document.class);
 
-    @JohnzonConverter(LocalUUIDConverter.class)
     private Integer id;
     private transient Node node;
 
@@ -50,7 +49,6 @@ public class Document implements Serializable, Comparable<Document> {
     private UUID nodeId;
     private transient Collection collection;
 
-    @JohnzonConverter(LocalUUIDConverter.class)
     private Integer collectionId;
     private String contentType;
     private String path;

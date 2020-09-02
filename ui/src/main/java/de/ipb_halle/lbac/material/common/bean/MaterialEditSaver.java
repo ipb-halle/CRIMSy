@@ -52,7 +52,6 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.faces.model.SelectItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

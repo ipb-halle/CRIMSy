@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.entity.DTO;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.Collection;
 
 public class NestingPath implements Serializable, DTO {

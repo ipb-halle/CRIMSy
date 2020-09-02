@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.file;
 import de.ipb_halle.lbac.entity.DTO;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  *

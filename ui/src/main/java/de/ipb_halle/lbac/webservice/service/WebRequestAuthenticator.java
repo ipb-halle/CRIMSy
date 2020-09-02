@@ -25,7 +25,6 @@ import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
-import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;

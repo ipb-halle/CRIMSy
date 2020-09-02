@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.project;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  *
@@ -27,5 +26,5 @@ import java.util.UUID;
 public class RoleTemplate implements Serializable{
     protected int id;
     protected int projectId;
-    protected UUID aclistId;
+    protected Integer aclistId;
 }

@@ -29,7 +29,6 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import java.util.Set;
-import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;

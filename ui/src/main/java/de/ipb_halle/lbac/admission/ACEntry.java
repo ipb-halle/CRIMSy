@@ -23,7 +23,6 @@ import de.ipb_halle.lbac.entity.Obfuscatable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Access control entry An access control entry (ACEntry) belongs to a specific

@@ -385,7 +385,7 @@ CREATE TABLE item_positions(
 CREATE TABLE items_history(
     itemid INTEGER NOT NULL REFERENCES items(id),
     mdate TIMESTAMP NOT NULL,
-    actorid UUID NOT NULL REFERENCES usersgroups(id),
+    actorid INTEGER NOT NULL REFERENCES usersgroups(id),
     action VARCHAR NOT NULL,
     projectid_old INTEGER REFERENCES projects(id),
     projectid_new INTEGER REFERENCES projects(id),

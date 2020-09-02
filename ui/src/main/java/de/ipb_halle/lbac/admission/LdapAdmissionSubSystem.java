@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
@@ -139,7 +138,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     /**
      * build a map of Memberships from the ldapObjects map
      * @param ldapObjects a map of LDAP objects mapped by DN
-     * @param ldapUuidMap a map of LBAC objects mapped by id (UUID)
+     * @param ldapUuidMap a map of LBAC objects mapped by id 
      * @return a map of memberships mapped by groupId|memberId
      */
     private Map<String, Membership> getLdapMemberships(Map <String, LdapObject> ldapObjects, Map<Integer, Member> ldapUuidMap) {
@@ -170,7 +169,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * to LBAC
      * @param lo the LdapObjects mapped by their DN
      * @param bean UserBean 
-     * @return LBAC Group objects mapped by their UUID
+     * @return LBAC Group objects mapped by their id
      */
     private Map<Integer, Member> getLdapGroups(Map<String, LdapObject> lo, UserBean bean) {
         return lo.values().stream()
@@ -206,7 +205,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     /**
      * lookup LBAC group by LDAP uniqueId
      * @param lo the LDAP group object. If lookup is successful, the id property
-     * of this object will be modified to contain the UUID of the corresponding
+     * of this object will be modified to contain the id of the corresponding
      * LBAC object
      * @param bean the current sessions UserBean 
      * @return the Group object from the database or a 'latent' Group object which will
@@ -235,7 +234,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * lookup LBAC user by LDAP uniqueId
      * @param bean UserBean 
      * @param lo the LDAP user object. If lookup is successful, the id property
-     * of this object will be modified to contain the UUID of the corresponding
+     * of this object will be modified to contain the id of the corresponding
      * LBAC object
      * @return the User object from the database or a 'latent' User object which will 
      * be persisted upon successful authentication

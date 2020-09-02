@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 

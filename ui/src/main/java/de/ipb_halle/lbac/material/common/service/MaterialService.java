@@ -65,7 +65,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -155,7 +154,7 @@ public class MaterialService implements Serializable {
 
     private final String SQL_UPDATE_MATERIAL_ACL
             = "UPDATE materials "
-            + "SET aclist_id =CAST(:aclid AS UUID)"
+            + "SET aclist_id =:aclid"
             + "WHERE materialid=:mid";
 
     protected MaterialHistoryService materialHistoryService;

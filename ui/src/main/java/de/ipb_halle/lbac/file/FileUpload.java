@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.UUID;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.servlet.AsyncContext;
@@ -281,7 +280,7 @@ public class FileUpload implements Runnable {
          * instead of random
          */
         try {
-            Integer id = -1000;
+            Integer id = 10001234;
 
             Document doc = new Document();
             doc.setId(id);

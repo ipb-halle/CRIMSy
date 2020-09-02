@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.container.entity;
 
 import java.io.Serializable;
-import java.util.UUID;
 import javax.persistence.Embeddable;
 
 /**

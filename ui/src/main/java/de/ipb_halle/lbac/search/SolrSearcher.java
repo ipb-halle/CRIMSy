@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.service.NodeService;
 
 import java.util.List;
 import java.util.ListIterator;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -256,7 +255,7 @@ public class SolrSearcher {
      */
     private Document convertSolrDocToDoc(SolrDocument sdoc, Collection c) throws Exception {
         Document doc = new Document();
-        doc.setId((Integer) sdoc.get("id"));
+        doc.setId(Integer.valueOf(sdoc.get("id").toString()));
         doc.setCollectionId(c.getId());
         doc.setNodeId(c.getNode().getId());
         doc.setNode(nodeService.loadById(c.getNode().getId()));

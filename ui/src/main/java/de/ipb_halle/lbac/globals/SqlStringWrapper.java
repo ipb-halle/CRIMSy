@@ -54,8 +54,8 @@ public class SqlStringWrapper {
             back += " AND ";
         }
 
-        back += "(CAST(:userid AS UUID)=me.member_id "
-                + "OR " + ownerColumn + "=CAST(:userid AS UUID)) ";
+        back += "(:userid=me.member_id "
+                + "OR " + ownerColumn + "=:userid) ";
         return back;
     }
 }
