@@ -195,7 +195,7 @@
                                                  process="@this"
                                                  update="growlMsg modalCollection frmModalCollection"
                                                  rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}" 
-                                                 onclick="ajax:collectionBean.setEditMode('CREATE');"
+                                                 onclick="ajax:collectionBean.actionShowNewCollectionDlg();"
                                                  oncomplete="$('.modalCollection').modal()"/>
                                 <b:commandButton styleClass="refreshButtonClass pull-right"
                                                  style="margin:0 2px;"
