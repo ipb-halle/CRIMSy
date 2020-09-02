@@ -58,7 +58,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.materialSearchName}"
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.materialName}"
                                                     maxResults="10"
                                                     completeMethod="#{itemOverviewBean.getSimilarMaterialNames}"
                                                     styleClass="itemFilterInputfield"/>
@@ -74,7 +74,7 @@
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
                                     <b:inputText
-                                        value="#{itemOverviewBean.itemSearchId}"
+                                        value="#{itemOverviewBean.searchMaskValues.itemId}"
                                         styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>
@@ -87,7 +87,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.searchUserName}"
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.userName}"
                                                     maxResults="10"
                                                     completeMethod="#{itemOverviewBean.getSimilarUserNames}"
                                                     styleClass="itemFilterInputfield"/>
@@ -102,7 +102,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.searchProject}"
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.projectName}"
                                                     maxResults="10"
                                                     completeMethod="#{itemOverviewBean.getSimilarProjectNames}"
                                                     styleClass="itemFilterInputfield"/>
@@ -117,7 +117,7 @@
                             <b:row
                                 styleClass="itemFilterRow">  
                                 <b:column span="2">
-                                    <p:autoComplete value="#{itemOverviewBean.searchLocation}"
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.location}"
                                                     maxResults="10"
                                                     forceSelection="true"
                                                     completeMethod="#{itemOverviewBean.getSimilarContainerNames}"
@@ -133,7 +133,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <b:inputText value="#{itemOverviewBean.searchDescription}"
+                                    <b:inputText value="#{itemOverviewBean.searchMaskValues.description}"
                                                  styleClass="itemFilterInputfield"/>
                                 </b:column>
                             </b:row>

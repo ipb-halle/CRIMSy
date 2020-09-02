@@ -122,8 +122,8 @@ public class ItemService {
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1) "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
-            + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
-            + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
+            + "AND (c2.label ILIKE(:LOCATION_NAME) OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
+            + "AND (i.description ILIKE(:DESCRIPTION) OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "ORDER BY i.id";
 
@@ -140,9 +140,9 @@ public class ItemService {
             + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
-            + "AND (i.description=:DESCRIPTION OR :DESCRIPTION='no_description_filter') "
+            + "AND (i.description ILIKE(:DESCRIPTION) OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
-            + "AND (c2.label=:LOCATION_NAME OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
+            + "AND (c2.label ILIKE(:LOCATION_NAME) OR :LOCATION_NAME='no_location_filter' OR c.label=:LOCATION_NAME) "
             + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1)";
 
     /**

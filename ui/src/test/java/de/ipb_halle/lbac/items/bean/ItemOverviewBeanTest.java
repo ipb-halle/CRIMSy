@@ -18,34 +18,26 @@
 package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.device.print.PrintBean;
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
 import de.ipb_halle.lbac.items.mocks.ItemOverviewBeanMock;
 import de.ipb_halle.lbac.items.mocks.NavigatorMock;
 import de.ipb_halle.lbac.items.service.ItemService;
-import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
-import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import java.util.HashMap;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,60 +47,43 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class ItemBeanTest extends TestBase {
+public class ItemOverviewBeanTest extends TestBase {
 
+    private ItemOverviewBeanMock itemOverviewBean;
     private ItemBeanMock itemBean;
-    private PrintBean printBean;
-    private ItemOverviewBean overviewBean;
     private UserBeanMock userBean;
-
+    private User user;
     @Inject
     private ItemService itemService;
     @Inject
+    private MaterialService materialService;
+    @Inject
     private ProjectService projectService;
-    @Inject
+     @Inject
     private ContainerService containerService;
-    @Inject
+     @Inject
     private ContainerPositionService containerPositionService;
-
-    @Inject
-    protected MaterialService materialService;
-    protected Project project;
-    protected Material structure;
-    protected User user;
-
-    protected ItemOverviewBean itemOverviewBean;
-
     @Before
     @Override
     public void setUp() {
         super.setUp();
-        creationTools = new CreationTools("", "", "", memberService, projectService);
-        project = creationTools.createProject();
-        structure = creationTools.createStructure(project);
-        structure.setACList(project.getACList());
         user = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
-        materialService.setEditedMaterialSaver(new MaterialEditSaverMock(materialService));
-        materialService.saveMaterialToDB(structure, project.getUserGroups().getId(), new HashMap<>(), user.getId());
-
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(user);
-
         itemBean = new ItemBeanMock();
-        printBean = new PrintBean();
-        overviewBean = new ItemOverviewBeanMock()
+         
+         
+        itemOverviewBean = new ItemOverviewBeanMock()
                 .setItemBean(itemBean)
                 .setItemService(itemService)
                 .setMaterialService(materialService)
-                .setMemberService(memberService)
                 .setNavigator(new NavigatorMock(userBean))
                 .setProjectService(projectService)
                 .setUser(user);
-
+        
         itemBean.setItemService(itemService);
-        itemBean.setPrintBean(printBean);
-        itemBean.setItemOverviewBean(overviewBean);
+        itemBean.setPrintBean(new PrintBean());
+        itemBean.setItemOverviewBean(itemOverviewBean);
         itemBean.setProjectService(projectService);
         itemBean.setContainerService(containerService);
         itemBean.setContainerPositionService(containerPositionService);
@@ -118,25 +93,13 @@ public class ItemBeanTest extends TestBase {
     }
 
     @Test
-    public void test001_createNewItem() {
-        itemBean.actionStartItemCreation(structure);
-        itemBean.getState().getEditedItem().setAmount(20d);
-        itemBean.getState().getEditedItem().setUnit("g");
-        itemBean.setBasicContainerType(new ContainerType("GLAS_FLASK", 0, false, false));
-        itemBean.getState().getEditedItem().setConcentration(.5d);
-        itemBean.getState().getEditedItem().setContainerSize(40d);
-        itemBean.setProject(project);
-        itemBean.getState().getEditedItem().setPurity("pure");
-
-        Assert.assertEquals(ItemBean.Mode.CREATE, itemBean.mode);
-
-        itemBean.actionSave();
+    public void test001_xxx() {
 
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ItemBeanTest.war")
+        WebArchive deployment = prepareDeployment("ItemOverviewBeanTest.war")
                 .addClass(Navigator.class)
                 .addClass(ProjectService.class);
         return UserBeanDeployment.add(ItemDeployment.add(deployment));
