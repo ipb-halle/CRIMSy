@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.globals.health;
 
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
@@ -189,7 +190,7 @@ public class HealthStateRepair {
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
-            collectionService.save(publicCollection);
+            publicCollection=collectionService.save(publicCollection);
             return publicCollection;
         } catch (Exception e) {
             logger.error("Could not create public collection", e);
@@ -207,7 +208,7 @@ public class HealthStateRepair {
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
 
-            collectionService.save(publicCollection);
+            publicCollection=collectionService.save(publicCollection);
             return true;
 
         } catch (Exception e) {

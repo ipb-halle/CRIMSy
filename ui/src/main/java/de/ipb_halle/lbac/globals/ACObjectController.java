@@ -65,6 +65,9 @@ public class ACObjectController {
     public String getTitleOfModal() {
         return Messages.getString(MESSAGE_BUNDLE, MESG_KEY_TITLE, new String[]{title});
     }
+    public ACList getOriginalAcList(){
+        return originalAcl;
+    }
 
     public List<ACEntry> getAcEntries() {
         ArrayList<ACEntry> results = new ArrayList<>(objectToChange.getACList().getACEntries().values());
@@ -131,6 +134,7 @@ public class ACObjectController {
 
     private ACList copyAcList(ACList original) {
         ACList newAcl = new ACList();
+        newAcl.setId(original.getId());
         newAcl.setName(original.getName());
         for (Integer aceid : original.getACEntries().keySet()) {
             newAcl.addACE(

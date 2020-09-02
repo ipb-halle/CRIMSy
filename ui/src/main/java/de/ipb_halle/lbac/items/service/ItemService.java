@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.service;
 
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
@@ -253,6 +254,8 @@ public class ItemService {
         item.setId(entity.getId());
         return item;
     }
+    
+   
 
     public Item saveEditedItem(Item editedItem, Item origItem, User user) {
         return saveEditedItem(editedItem, origItem, user, new HashSet<>());
@@ -310,6 +313,8 @@ public class ItemService {
             User ownerOld = e.getOwner_old() == null ? null : memberService.loadUserById(e.getOwner_old());
             Project projectOld = e.getProjectid_old() == null ? null : projectService.loadProjectById(e.getProjectid_old());
             Project projectNew = e.getProjectid_new() == null ? null : projectService.loadProjectById(e.getProjectid_new());
+            ACList aclistNew = e.getAclistid_new() == null ? null : aclistService.loadById(e.getAclistid_new());
+            ACList aclistOld = e.getAclistid_old() == null ? null : aclistService.loadById(e.getAclistid_old());
             ItemHistory history = new ItemHistory(
                     e,
                     actor,
@@ -319,7 +324,10 @@ public class ItemService {
                     projectOld,
                     projectNew,
                     loadParentContainer(e.getParent_containerid_old()),
-                    loadParentContainer(e.getParent_containerid_new()));
+                    loadParentContainer(e.getParent_containerid_new()),
+                    aclistOld,
+                    aclistNew
+            );
             history.setAction(e.getAction());
             history.setAmountNew(e.getAmount_new());
             history.setAmountOld(e.getAmount_old());

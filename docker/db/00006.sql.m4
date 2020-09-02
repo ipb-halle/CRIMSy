@@ -401,6 +401,8 @@ CREATE TABLE items_history(
     owner_new INTEGER REFERENCES usersgroups(id),
     parent_containerid_new INTEGER REFERENCES containers(id),
     parent_containerid_old INTEGER REFERENCES containers(id),
+    aclistid_old INTEGER REFERENCES aclists(id),
+    aclistid_new INTEGER REFERENCES aclists(id),
     PRIMARY KEY(itemid,actorid,mdate));
 
 CREATE TABLE item_positions_history(

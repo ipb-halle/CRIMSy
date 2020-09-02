@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items;
 
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
@@ -29,10 +30,12 @@ import java.util.Date;
  *
  * @author fmauz
  */
-public class ItemHistory implements DTO,ItemDifference {
+public class ItemHistory implements DTO, ItemDifference {
 
     protected String action;
     protected User actor;
+    protected ACList acListNew;
+    protected ACList acListOld;
     protected Double amountNew;
     protected Double amountOld;
     protected Double concentrationNew;
@@ -65,6 +68,9 @@ public class ItemHistory implements DTO,ItemDifference {
      * @param projectNew
      * @param oldParentContainer
      * @param newParentContainer
+     * @param aclistOld
+     * @param aclistNew
+     *
      */
     public ItemHistory(ItemHistoryEntity entity,
             User actor,
@@ -74,7 +80,9 @@ public class ItemHistory implements DTO,ItemDifference {
             Project projectOld,
             Project projectNew,
             Container oldParentContainer,
-            Container newParentContainer) {
+            Container newParentContainer,
+            ACList aclistOld,
+            ACList aclistNew) {
         this.actor = actor;
         this.ownerNew = ownerNew;
         this.ownerOld = ownerOld;
@@ -93,6 +101,8 @@ public class ItemHistory implements DTO,ItemDifference {
         this.mdate = entity.getId().getMdate();
         this.parentContainerOld = oldParentContainer;
         this.parentContainerNew = newParentContainer;
+        this.acListNew = aclistNew;
+        this.acListOld = aclistOld;
 
     }
 
@@ -131,6 +141,12 @@ public class ItemHistory implements DTO,ItemDifference {
         }
         if (parentContainerOld != null) {
             entity.setParent_containerid_old(parentContainerOld.getId());
+        }
+        if (acListNew != null) {
+            entity.setAclistid_new(acListNew.getId());
+        }
+        if (acListOld != null) {
+            entity.setAclistid_old(acListOld.getId());
         }
         return entity;
     }
@@ -277,6 +293,11 @@ public class ItemHistory implements DTO,ItemDifference {
 
     public void setParentContainerOld(Container parentContainerOld) {
         this.parentContainerOld = parentContainerOld;
+    }
+
+    public void setAcListChange(ACList oldAcl, ACList newAcl) {
+        this.acListNew = newAcl;
+        this.acListOld = oldAcl;
     }
 
 }

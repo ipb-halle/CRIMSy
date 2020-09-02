@@ -81,6 +81,20 @@ public class ItemHistoryEntity implements Serializable {
     @Column
     private Integer parent_containerid_old;
 
+    @Column
+    private Integer aclistid_old;
+
+    @Column
+    private Integer aclistid_new;
+
+    public Integer getAclistid_old() {
+        return aclistid_old;
+    }
+
+    public Integer getAclistid_new() {
+        return aclistid_new;
+    }
+
     public String getAction() {
         return action;
     }
@@ -135,6 +149,14 @@ public class ItemHistoryEntity implements Serializable {
 
     public String getPurity_old() {
         return purity_old;
+    }
+
+    public void setAclistid_old(Integer aclistid_old) {
+        this.aclistid_old = aclistid_old;
+    }
+
+    public void setAclistid_new(Integer aclistid_new) {
+        this.aclistid_new = aclistid_new;
     }
 
     public void setAction(String action) {

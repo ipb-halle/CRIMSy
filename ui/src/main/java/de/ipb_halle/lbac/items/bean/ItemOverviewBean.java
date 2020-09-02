@@ -33,9 +33,11 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.items.ItemHistory;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -322,6 +324,14 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     @Override
     public void applyAclChanges(int acobjectid, ACList newAcList) {
         itemService.saveItem(itemInFocus);
+        ItemHistory h=new ItemHistory();
+        h.setAction("EDIT");
+        h.setActor(currentUser);
+        h.setItem(itemInFocus);
+        h.setMdate(new Date());
+        h.setAcListChange(acObjectController.getOriginalAcList(), itemInFocus.getACList());
+        itemService.saveItemHistory(h);
+        
         reloadItems();
     }
 
