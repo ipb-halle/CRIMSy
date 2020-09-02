@@ -242,9 +242,9 @@ public class CollectionBean implements Serializable, ACObjectBean {
     public void actionCreate() {
 
         collectionOperation.createCollection(activeCollection, currentAccount);
-        Map<String,Object> cmap=new HashMap();
+        Map<String, Object> cmap = new HashMap();
         cmap.put("name", activeCollection.getName());
-        activeCollection=collectionService.load(cmap).get(0);
+        activeCollection = collectionService.load(cmap).get(0);
         collectionSearchState.getCollections().add(activeCollection);
 
     }
@@ -376,6 +376,11 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     public String getEditMode() {
         return this.mode.toString();
+    }
+
+    public void actionShowNewCollectionDlg() {
+        setEditMode("CREATE");
+        initCollection();
     }
 
     public void setEditMode(String editModeString) {
