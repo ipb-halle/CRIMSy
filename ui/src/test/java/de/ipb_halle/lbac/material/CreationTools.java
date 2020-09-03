@@ -122,7 +122,7 @@ public class CreationTools {
         p.getDetailTemplates().put(MaterialDetailType.INDEX, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.TAXONOMY, projectAcList);
 
-        projectService.saveProjectToDb(p);
+        p=projectService.saveProjectToDb(p);
         return p;
     }
 

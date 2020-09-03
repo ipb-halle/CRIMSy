@@ -48,7 +48,7 @@ public class Structure extends Material {
             Double exactMolarMass,
             int id,
             List<MaterialName> names,
-            int projectId,
+            Integer projectId,
             HazardInformation hazards,
             StorageClassInformation storageInfos,
             Molecule molecule) {

@@ -29,7 +29,7 @@ public class DataTableNavigationController implements Serializable{
 
     private final int CHUNK_SIZE = 10;
     private int firstResult;
-    private int maxResults;
+    private int maxResultsAvailable;
     private final String noResultsFoundPattern;
     private final String resultsFoundPattern;
     private final TableController controller;
@@ -50,7 +50,7 @@ public class DataTableNavigationController implements Serializable{
         this.controller = controller;
         this.noResultsFoundPattern = noResultsFoundPattern;
         this.resultsFoundPattern = resultsFoundPattern;
-        this.maxResults = maxResults;
+        this.maxResultsAvailable = maxResults;
         this.firstResult = 0;
     }
 
@@ -66,7 +66,7 @@ public class DataTableNavigationController implements Serializable{
      * Sets the shown chunk to the last possible chunk
      */
     public void actionLastResult() {
-        firstResult = maxResults - CHUNK_SIZE;
+        firstResult = maxResultsAvailable - CHUNK_SIZE;
         firstResult = Math.max(0, firstResult);
         controller.reloadDataTableItems();
     }
@@ -76,7 +76,7 @@ public class DataTableNavigationController implements Serializable{
      */
     public void actionNextResults() {
         firstResult += CHUNK_SIZE;
-        firstResult = Math.min(firstResult, maxResults - CHUNK_SIZE);
+        firstResult = Math.min(firstResult, maxResultsAvailable - CHUNK_SIZE);
         controller.reloadDataTableItems();
     }
 
@@ -106,41 +106,24 @@ public class DataTableNavigationController implements Serializable{
         return firstResult;
     }
 
-    /**
-     * Sets the maximal count of shown objects
-     *
-     * @param maxResults
-     */
-    public void setMaxResults(int maxResults) {
-        this.maxResults = maxResults;
+    public void setMaxResults(int maxResultsAvailable) {
+        this.maxResultsAvailable = maxResultsAvailable;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getNavigationInfos() {
         int leftBorder = firstResult + 1;
-        int rightBorder = (int) Math.min(CHUNK_SIZE + firstResult, maxResults);
-        if (maxResults > 0) {
-            return String.format(resultsFoundPattern, leftBorder, rightBorder, maxResults);
+        int rightBorder = (int) Math.min(CHUNK_SIZE + firstResult, maxResultsAvailable);
+        if (maxResultsAvailable > 0) {
+            return String.format(resultsFoundPattern, leftBorder, rightBorder, maxResultsAvailable);
         } else {
             return noResultsFoundPattern;
         }
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isNextButtonGroupDisabled() {
-        return (maxResults - firstResult) <= CHUNK_SIZE;
+        return (maxResultsAvailable - firstResult) <= CHUNK_SIZE;
     }
 
-    /**
-     *
-     * @return
-     */
     public boolean isPriorButtonGroupDisabled() {
         return firstResult == 0;
     }

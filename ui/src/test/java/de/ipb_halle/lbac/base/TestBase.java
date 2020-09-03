@@ -74,6 +74,8 @@ public class TestBase implements Serializable {
     protected String LBAC_PROPERTIES_PATH = "target/test-classes/keystore/lbac_properties.xml";
     protected String TEST_ROOT = "target/test-classes/";
     protected CreationTools creationTools;
+    protected MaterialCreator materialCreator;
+    protected ItemCreator itemCreator;
 
     // per convention (defined in init.sql) test node == local node
     public final static UUID TEST_NODE_ID = UUID.fromString("986ad1be-9a3b-4a70-8600-c489c2a00da4");
@@ -122,7 +124,7 @@ public class TestBase implements Serializable {
     @Inject
     protected MembershipService membershipService;
 
-    ACList acListReadable, acListNonReadable;
+    protected ACList acListReadable, acListNonReadable;
 
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
@@ -156,7 +158,9 @@ public class TestBase implements Serializable {
         cleanItemsFromDb();
         this.entityManagerService.doSqlUpdate("Delete from containers");
         cleanMaterialsFromDB();
-
+        materialCreator = new MaterialCreator(entityManagerService);
+        itemCreator = new ItemCreator(entityManagerService);
+        acListReadable = GlobalAdmissionContext.getPublicReadACL();
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
@@ -185,14 +189,14 @@ public class TestBase implements Serializable {
         u.setName(name);
         u.setNode(nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        u=memberService.save(u);
+        u = memberService.save(u);
 
         Group g = new Group();
         g.setName("Group of user " + u.getLogin());
         g.setNode(nodeService.getLocalNode());
         g.setSubSystemData("L");
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        g=memberService.save(g);
+        g = memberService.save(g);
 
         membershipService.addMembership(u, u);
         membershipService.addMembership(g, u);
