@@ -91,7 +91,11 @@ public class CreationTools {
     }
 
     public Project createProject() {
-        Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "biochemical-test-project");
+        return createProject("biochemical-test-project");
+    }
+
+    public Project createProject(String projectname) {
+        Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, projectname);
         p.setBudget(1000d);
         p.setDescription("Description of biochemical test project");
 
@@ -122,7 +126,7 @@ public class CreationTools {
         p.getDetailTemplates().put(MaterialDetailType.INDEX, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.TAXONOMY, projectAcList);
 
-        p=projectService.saveProjectToDb(p);
+        p = projectService.saveProjectToDb(p);
         return p;
     }
 

@@ -33,6 +33,11 @@ import de.ipb_halle.lbac.admission.User;
  */
 public class ItemOverviewBeanMock extends ItemOverviewBean {
 
+    public ItemOverviewBeanMock setContainerService(ContainerService containerService) {
+        this.containerService = containerService;
+        return this;
+    }
+
     public ItemOverviewBeanMock setItemService(ItemService itemService) {
         this.itemService = itemService;
         return this;

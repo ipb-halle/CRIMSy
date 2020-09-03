@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
@@ -43,6 +44,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import java.util.List;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -79,7 +81,7 @@ public class ItemOverviewBeanTest extends TestBase {
 
     private ACList aclist;
     private Integer materialid_1, materialid_2, materialid_3;
-    private Integer itemid_1, itemid_2, itemid_3, restrictedItemId, itemid_project, itemid_container;
+    private Integer itemid_1, itemid_2, itemid_3, restrictedItemId, itemid_project, itemid_container, itemid_containerAndProject;
     protected ContainerCreator containerCreator;
 
     @Before
@@ -103,6 +105,7 @@ public class ItemOverviewBeanTest extends TestBase {
                 .setNavigator(new NavigatorMock(userBean))
                 .setProjectService(projectService)
                 .setMemberService(memberService)
+                .setContainerService(containerService)
                 .setUser(user);
 
         itemBean.setItemService(itemService);
@@ -120,6 +123,8 @@ public class ItemOverviewBeanTest extends TestBase {
     public void test001_reloadItems() {
         createAndSaveItems();
         //Load items without restrictions
+        itemOverviewBean.setCurrentAccount(new LoginEvent(user));
+
         itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
 
@@ -175,6 +180,10 @@ public class ItemOverviewBeanTest extends TestBase {
         itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
+
+        itemOverviewBean.getSearchMaskValues().setDescription("X");
+        itemOverviewBean.actionApplySearchFilter();
+        Assert.assertEquals("no items with active filters found", itemOverviewBean.getItemNavigationInfo());
     }
 
     @Test
@@ -191,6 +200,7 @@ public class ItemOverviewBeanTest extends TestBase {
         //Initial table content
         itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(10, itemOverviewBean.getItems().size());
+        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
         Assert.assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
         Assert.assertTrue(itemOverviewBean.isBackDeactivated());
         Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
@@ -236,7 +246,6 @@ public class ItemOverviewBeanTest extends TestBase {
         Item item = itemService.loadItemById(itemid_1);
 
         itemOverviewBean.actionStartAclChange(item);
-
         ACList acl = new ACList();
         item.setACList(acl);
         itemOverviewBean.getAcObjectController().actionApplyChanges();
@@ -245,6 +254,65 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertTrue(loadedItem.getACList().getACEntries().isEmpty());
         ItemHistory history = (ItemHistory) loadedItem.getHistory().get(loadedItem.getHistory().firstKey()).get(0);
         Assert.assertEquals(aclist.getId(), history.getAcListOld().getId());
+        
+        itemOverviewBean.cancelAclChanges();
+    }
+
+    @Test
+    public void test004_startItemEdit() {
+        materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser");
+        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+        Item item = itemService.loadItemById(itemid_1);
+        itemOverviewBean.actionStartItemEdit(item);
+    }
+
+    @Test
+    public void test005_testItemLocalisation() {
+        materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser", "water");
+        itemid_containerAndProject = createItemWithProjectAndContainer();
+        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+        Item item = itemService.loadItemById(itemid_1);
+        Item item2 = itemService.loadItemById(itemid_containerAndProject);
+        item.setUnit("g");
+        Assert.assertEquals("0.0 g", itemOverviewBean.getAmountString(item));
+        Assert.assertEquals("Wasser<br/>water<br/>", itemOverviewBean.getMaterialName(item));
+        Assert.assertEquals("biochemical-test-project/Public Account", itemOverviewBean.getOwnerString(item2)); // mit und ohne Project
+        Assert.assertEquals("/Public Account", itemOverviewBean.getOwnerString(item)); // mit und ohne Project
+        Assert.assertEquals("", itemOverviewBean.getLocationOfItem(item)); // mit nested containern
+        Assert.assertEquals("ROOM.BOX", itemOverviewBean.getLocationOfItem(item2));
+        itemOverviewBean.getDatesOfItem(item); // mit historie 
+    }
+
+    @Test
+    public void test006_getSimilarNames() {
+
+        materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser", "water");
+        materialid_2 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasserstoff");
+        
+        Project p1 = creationTools.createProject("Project_X");
+        Project p2 = creationTools.createProject("Project_XY");
+        Project p3 = creationTools.createProject("Project_Z");
+
+        Container room = containerCreator.createAndSaveContainer("ROOM", null);
+        Container box = containerCreator.createAndSaveContainer("BOX", room);
+
+        List<String> containerNames = itemOverviewBean.getSimilarContainerNames("BO");
+        Assert.assertEquals(1, containerNames.size());
+        Assert.assertEquals("BOX", containerNames.get(0));
+
+        List<String> projectNames = itemOverviewBean.getSimilarProjectNames("Project_X");
+        Assert.assertEquals(2, projectNames.size());
+        Assert.assertEquals("Project_X", projectNames.get(0));
+        Assert.assertEquals("Project_XY", projectNames.get(1));
+
+        List<String> usernames = itemOverviewBean.getSimilarUserNames("public");
+        Assert.assertEquals(1, usernames.size());
+        Assert.assertEquals("Public Account", usernames.get(0));
+
+        List<String> materialNames = itemOverviewBean.getSimilarMaterialNames("Wasser");
+        Assert.assertEquals(2, materialNames.size());
+        Assert.assertEquals("Wasser", materialNames.get(0));
+        Assert.assertEquals("Wasserstoff", materialNames.get(1));
     }
 
     @Deployment
@@ -300,5 +368,14 @@ public class ItemOverviewBeanTest extends TestBase {
         Container box = containerCreator.createAndSaveContainer("BOX", room);
         room.getContainerHierarchy().add(box);
         itemid_container = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "ContainerItem", box);
+    }
+
+    protected int createItemWithProjectAndContainer() {
+        Container room = containerCreator.createAndSaveContainer("ROOM", null);
+        Container box = containerCreator.createAndSaveContainer("BOX", room);
+        room.getContainerHierarchy().add(box);
+        Project p = creationTools.createProject();
+        return itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "ContainerProjectItem", p, box);
+
     }
 }

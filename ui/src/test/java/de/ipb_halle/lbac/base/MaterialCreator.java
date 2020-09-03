@@ -36,7 +36,7 @@ public class MaterialCreator {
         entityManagerService.doSqlUpdate(
                 String.format(
                         SQL_INSERT_MATERIAL,
-                        MaterialType.STRUCTURE.getId(), userid, aclid, projectid));
+                        MaterialType.STRUCTURE.getId(),  aclid,userid, projectid));
 
         Integer materialid = (Integer) entityManagerService.doSqlQuery(MAX_MATERIAL_ID).get(0);
         entityManagerService.doSqlUpdate("INSERT INTO structures  VALUES(" + materialid + ",'',0,0,null)");

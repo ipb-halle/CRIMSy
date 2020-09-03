@@ -52,7 +52,8 @@ public class ProjectService implements Serializable {
             + "FROM projects p "
             + SqlStringWrapper.JOIN_KEYWORD + " "
             + "WHERE p.name ILIKE :name "
-            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " ";
+            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
+            + "ORDER BY p.name";
 
     private final String SQL_LOAD_PROJECT_BY_NAME
             = "SELECT p.id "

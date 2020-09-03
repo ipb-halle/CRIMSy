@@ -57,4 +57,10 @@ public class ItemCreator {
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
+    public int createItem(int userid, int aclid, Integer materialid, String desc, Project p, Container c) {
+        entityManagerService.doSqlUpdate(
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), c.getId()));
+        return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
+    }
+
 }

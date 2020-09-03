@@ -42,8 +42,8 @@ public class SqlStringWrapper {
 
     private static String join(String aclColumn) {
         return String.format(
-                " JOIN acentries ace ON ace.aclist_id=%s "
-                + " JOIN memberships me ON ace.member_id=me.group_id ",
+                " LEFT JOIN acentries ace ON ace.aclist_id=%s "
+                + " LEFT JOIN memberships me ON ace.member_id=me.group_id ",
                 aclColumn);
     }
 

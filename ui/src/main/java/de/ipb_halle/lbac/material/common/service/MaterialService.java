@@ -330,7 +330,7 @@ public class MaterialService implements Serializable {
     public List<String> getSimilarMaterialNames(String name, User user) {
         return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.aclist_id", "m.ownerid", ACPermission.permREAD))
                 .setParameter("name", "%" + name + "%")
-                .setParameter("userid", userBean.getCurrentAccount().getId())
+                .setParameter("userid", user.getId())
                 .getResultList();
     }
 

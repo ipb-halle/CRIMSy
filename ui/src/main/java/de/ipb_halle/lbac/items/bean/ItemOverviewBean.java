@@ -180,10 +180,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         return itemAmount;
     }
     
-    public void setItemAmount(int itemAmount) {
-        this.itemAmount = itemAmount;
-    }
-    
     public boolean isBackDeactivated() {
         return firstResult == 0;
     }
