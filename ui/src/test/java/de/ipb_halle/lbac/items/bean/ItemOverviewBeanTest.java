@@ -111,68 +111,120 @@ public class ItemOverviewBeanTest extends TestBase {
         itemBean.setNavigator(new NavigatorMock(userBean));
         itemBean.setUserBean(userBean);
 
-        createAndSaveItems();
-
     }
 
     @Test
     public void test001_reloadItems() {
+        createAndSaveItems();
         //Load items without restrictions
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
 
         //Load items with restriction to materialname
         itemOverviewBean.getSearchMaskValues().setMaterialName("Wasserstoff");
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(1, itemOverviewBean.getItems().size());
 
         //Load items after clearing restrictions
         itemOverviewBean.actionClearSearchFilter();
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
 
         //Load items with a restricted item
         createAndSaveRestrictedItem();
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
 
         //Load item by id
         itemOverviewBean.getSearchMaskValues().setItemId(itemid_1.toString());
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by user
         itemOverviewBean.getSearchMaskValues().setUserName(user.getName());
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by project
         createItemWithProject();
         itemOverviewBean.getSearchMaskValues().setProjectName("biochemical-test-project");
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by direct location
         createItemWithContainer();
         itemOverviewBean.getSearchMaskValues().setLocation("BOX");
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by nested location
         itemOverviewBean.getSearchMaskValues().setLocation("ROOM");
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
 
         //Load items by description 
         itemOverviewBean.getSearchMaskValues().setDescription("TestItem");
-        itemOverviewBean.reloadItems();
+        itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
+    }
+
+    @Test
+    public void test002_itemTableNavigation() {
+        materialid_1 = this.materialCreator.createStructure(
+                user.getId(),
+                aclist.getId(),
+                null,
+                "Wasser");
+        for (int i = 0; i < 106; i++) {
+            itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem " + i);
+        }
+
+        //Initial table content
+        itemOverviewBean.actionApplySearchFilter();
+        Assert.assertEquals(10, itemOverviewBean.getItems().size());
+        Assert.assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
+        Assert.assertTrue(itemOverviewBean.isBackDeactivated());
+        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
+        Assert.assertEquals("1 - 10 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+
+        //go one step forward
+        itemOverviewBean.actionNextItems();
+        Assert.assertEquals(10, itemOverviewBean.getItems().size());
+        Assert.assertEquals("TestItem 10", itemOverviewBean.getItems().get(0).getDescription());
+        Assert.assertFalse(itemOverviewBean.isBackDeactivated());
+        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
+        Assert.assertEquals("11 - 20 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+
+        //go to the end of the list
+        itemOverviewBean.actionEndItems();
+        Assert.assertEquals(10, itemOverviewBean.getItems().size());
+        Assert.assertEquals("TestItem 96", itemOverviewBean.getItems().get(0).getDescription());
+        Assert.assertFalse(itemOverviewBean.isBackDeactivated());
+        Assert.assertTrue(itemOverviewBean.isForwardDeactivated());
+        Assert.assertEquals("97 - 106 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+
+        //go one step back
+        itemOverviewBean.actionLastItems();
+        Assert.assertEquals(10, itemOverviewBean.getItems().size());
+        Assert.assertEquals("TestItem 86", itemOverviewBean.getItems().get(0).getDescription());
+        Assert.assertFalse(itemOverviewBean.isBackDeactivated());
+        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
+        Assert.assertEquals("87 - 96 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+
+        //go to first item
+        itemOverviewBean.actionFirstItems();
+        Assert.assertEquals(10, itemOverviewBean.getItems().size());
+        Assert.assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
+        Assert.assertTrue(itemOverviewBean.isBackDeactivated());
+        Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
+        Assert.assertEquals("1 - 10 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+
     }
 
     @Deployment

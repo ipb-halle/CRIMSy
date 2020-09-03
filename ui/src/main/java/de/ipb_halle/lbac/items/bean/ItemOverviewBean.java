@@ -189,7 +189,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
     
     public boolean isForwardDeactivated() {
-        return (itemAmount - firstResult) < PAGE_SIZE;
+        return (itemAmount - firstResult) <= PAGE_SIZE;
     }
     
     public String getItemNavigationInfo() {
