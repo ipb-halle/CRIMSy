@@ -151,6 +151,14 @@ public class ItemHistory implements DTO, ItemDifference {
         return entity;
     }
 
+    public ACList getAcListNew() {
+        return acListNew;
+    }
+
+    public ACList getAcListOld() {
+        return acListOld;
+    }
+
     public String getAction() {
         return action;
     }
@@ -187,6 +195,7 @@ public class ItemHistory implements DTO, ItemDifference {
         return item;
     }
 
+    @Override
     public Date getMdate() {
         return mdate;
     }

@@ -31,7 +31,9 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.device.print.PrintBean;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
 import de.ipb_halle.lbac.items.mocks.ItemOverviewBeanMock;
 import de.ipb_halle.lbac.items.mocks.NavigatorMock;
@@ -100,6 +102,7 @@ public class ItemOverviewBeanTest extends TestBase {
                 .setMaterialService(materialService)
                 .setNavigator(new NavigatorMock(userBean))
                 .setProjectService(projectService)
+                .setMemberService(memberService)
                 .setUser(user);
 
         itemBean.setItemService(itemService);
@@ -224,7 +227,24 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertTrue(itemOverviewBean.isBackDeactivated());
         Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
         Assert.assertEquals("1 - 10 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+    }
 
+    @Test
+    public void test003_applyAclChanges() {
+        materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser");
+        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+        Item item = itemService.loadItemById(itemid_1);
+
+        itemOverviewBean.actionStartAclChange(item);
+
+        ACList acl = new ACList();
+        item.setACList(acl);
+        itemOverviewBean.getAcObjectController().actionApplyChanges();
+
+        Item loadedItem = itemService.loadItemById(item.getId());
+        Assert.assertTrue(loadedItem.getACList().getACEntries().isEmpty());
+        ItemHistory history = (ItemHistory) loadedItem.getHistory().get(loadedItem.getHistory().firstKey()).get(0);
+        Assert.assertEquals(aclist.getId(), history.getAcListOld().getId());
     }
 
     @Deployment
