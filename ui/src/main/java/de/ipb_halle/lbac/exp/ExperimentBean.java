@@ -45,42 +45,42 @@ import org.primefaces.model.chart.BarChartModel;
 @SessionScoped
 @Named
 public class ExperimentBean implements Serializable {
-    
+
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-    
+
     @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
-    
-    @Inject    
-    private ExperimentService experimentService;
-    
+    protected GlobalAdmissionContext globalAdmissionContext;
+
     @Inject
-    private ExpRecordService expRecordService;
-    
-    private Experiment experiment;    
-    
+    protected ExperimentService experimentService;
+
+    @Inject
+    protected ExpRecordService expRecordService;
+
+    private Experiment experiment;
+
     private List<ExpRecord> expRecords;
-    
+
     private ExpRecordController expRecordController;
-    
+
     private String newRecordType;
-    
+
     private boolean templateMode = false;
-    
+
     private BarChartModel barChart;
-    
+
     private int expRecordIndex;
-    
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     @PostConstruct
-    private void experimentBeanInit() {
+    protected void experimentBeanInit() {
         /*
          * ToDo: create an experiment with real user and ACL
          */
         cleanup();
         this.expRecords = new ArrayList<ExpRecord>();
-        
+
         this.experiment = new Experiment(
                 null, // experiment id
                 "code", // code
@@ -97,12 +97,12 @@ public class ExperimentBean implements Serializable {
      * as last record
      */
     public void actionAppendRecord(int delta) {
-        
+
         if (this.experiment == null) {
             this.logger.info("actionAppendRecord(): experiment not set");
             return;
         }
-        
+
         createExpRecordController(this.newRecordType);
         if (this.expRecordController != null) {
             ExpRecord record = this.expRecordController.getNewRecord();
@@ -114,12 +114,12 @@ public class ExperimentBean implements Serializable {
                 delta = 0;
             }
             int index = this.expRecordIndex + delta;
-            
+
             if ((index < 0) || (index > this.expRecords.size())) {
                 this.logger.info("actionAppendRecord() out of range");
                 return;
             }
-            
+
             if (index < (this.expRecords.size())) {
                 // link to the following record
                 record.setNext(this.expRecords.get(index).getExpRecordId());
@@ -192,7 +192,7 @@ public class ExperimentBean implements Serializable {
             createExpRecordController(record.getType().toString());
         }
     }
-    
+
     public void actionLog() {
         this.logger.info("actionLog()");
     }
@@ -203,7 +203,7 @@ public class ExperimentBean implements Serializable {
     public void actionNewExperiment() {
         experimentBeanInit();
     }
-    
+
     public void actionSaveExperiment() {
         this.experimentService.save(this.experiment);
     }
@@ -218,8 +218,7 @@ public class ExperimentBean implements Serializable {
             if (exp.getExperimentId().equals(this.experiment.getExperimentId())) {
                 experimentBeanInit();
                 return;
-            }            
-            
+            }
             this.experiment = exp;
             try {
                 loadExpRecords();
@@ -252,11 +251,11 @@ public class ExperimentBean implements Serializable {
         this.barChart = null;
         this.expRecordIndex = -1;
     }
-    
+
     public void createExpRecordController(String recordType) {
         switch (recordType) {
             case "ASSAY":
-                this.expRecordController = new AssayController(this);                
+                this.expRecordController = new AssayController(this);
                 break;
             case "TEXT":
                 this.expRecordController = new TextController(this);
@@ -265,7 +264,7 @@ public class ExperimentBean implements Serializable {
                 this.expRecordController = new NullController(this);
         }
     }
-    
+
     public BarChartModel getBarChart() {
         return this.barChart;
     }
@@ -276,7 +275,7 @@ public class ExperimentBean implements Serializable {
     public boolean getCopyEnabled() {
         return this.templateMode && (this.experiment.getExperimentId() != null);
     }
-    
+
     public Experiment getExperiment() {
         return this.experiment;
     }
@@ -293,14 +292,14 @@ public class ExperimentBean implements Serializable {
         }
         return Messages.getString(MESSAGE_BUNDLE, "editBtnDlg", null);
     }
-    
+
     public List<Experiment> getExperiments() {
         Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
-        
+
         return experimentService.load(cmap);
     }
-    
+
     public ExpRecordController getExpRecordController() {
         return this.expRecordController;
     }
@@ -311,11 +310,11 @@ public class ExperimentBean implements Serializable {
     protected int getExpRecordIndex() {
         return this.expRecordIndex;
     }
-    
+
     public List<ExpRecord> getExpRecords() {
         return this.expRecords;
     }
-    
+
     public String getExpRecordStyle(boolean edit, boolean even) {
         if (edit) {
             return "expRecordEdit";
@@ -325,11 +324,11 @@ public class ExperimentBean implements Serializable {
         }
         return "expRecordOdd";
     }
-    
+
     public String getNewRecordType() {
         return "";
     }
-    
+
     public boolean getTemplateMode() {
         return this.templateMode;
     }
@@ -379,24 +378,24 @@ public class ExperimentBean implements Serializable {
     public ExpRecord saveExpRecord(ExpRecord record) {
         return this.expRecordService.save(record);
     }
-    
+
     public void setBarChartModel(int rank) {
         this.barChart = this.expRecords.get(rank).getBarChart();
     }
-    
+
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
     }
-    
+
     public void setExpRecordIndex(int index) {
         this.logger.info("setExpRecordIndex() index = {}", index);
         this.expRecordIndex = index;
     }
-    
+
     public void setNewRecordType(String newRecordType) {
         this.newRecordType = newRecordType;
     }
-    
+
     public void setTemplateMode(boolean templateMode) {
         this.templateMode = templateMode;
     }
