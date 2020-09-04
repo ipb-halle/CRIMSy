@@ -1,0 +1,51 @@
+Java Spell checker
+==================
+Source: https://stackoverflow.com/questions/20888326/using-aspell-library-in-java
+
+* Jazzy - http://sourceforge.net/projects/jazzy/
+
+* JaSpell - http://sourceforge.net/projects/jaspell/
+  and its fork: https://github.com/GateNLP/jaspell/ 
+    - strong reference to Brazilian Portugese
+
+* JOrtho - http://sourceforge.net/projects/jortho/
+
+Convert aspell dictionary to word list
+======================================
+Source: https://superuser.com/questions/137957/how-to-convert-aspell-dictionary-to-simple-list-of-words
+
+    aspell -d de dump master | aspell -l de expand | \
+    sed -e $'s/ /\\n/g' > my.dict
+
+Dictionaries can become quite large:
+
+    lang    #lines
+    ------- ------
+    en      130k
+    de      400k
+    fr      630k
+    pt      1M
+    es      1.3M
+    it      22M
+
+
+Bloom-Filter
+============
+http://pages.cs.wisc.edu/~cao/papers/summary-cache/node8.html#tab:bf-config-1
+
+- coefficient (size / number_of_entries) should be in the range 30 ... 10 to
+  obtain false positive rates between 10 ppm and 1 percent respectively.
+
+- need a set of (cheap) hash functions (>5; e.g. Rabin Fingerprints) 
+  (see: https://github.com/themadcreator/rabinfingerprint)
+
+- could be implemented using java.util.BitSet:
+
+        Scanner sc = new Scanner("{8, 11, 25, 34}").useDelimiter(Pattern.compile("[{}, ]+"));
+        BitSet bs = new BitSet();
+        while (sc.hasNextInt()) {
+            bs.set(sc.nextInt());
+        }
+        System.out.println(bs.toString());
+
+
