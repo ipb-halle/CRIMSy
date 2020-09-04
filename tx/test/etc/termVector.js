@@ -4,7 +4,7 @@
         "comment" : "First chain",
         "chain" : [ {
             "type" : "AggregatingFilter",
-            "aggregationLength" : 100000
+            "aggregationLength" : 3000000
             },{
             "type" : "PatternFilter",
             "patternConfig" : [ {
@@ -19,6 +19,10 @@
                     "comment" : "remove sequences of whitespace",
                     "pattern" : " \\s{2,}",
                     "replacement" : " "
+                }, {
+                    "comment" : "remove PostScript junk",
+                    "pattern" : "ASCII85EncodePage(.)*setpagedevice",
+                    "replacement" : ""
                 } ]
             },{
             "type" : "WordDetectorFilter"
