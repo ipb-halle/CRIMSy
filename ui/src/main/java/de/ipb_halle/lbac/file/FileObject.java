@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.entity.DTO;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import de.ipb_halle.lbac.file.save.AttachmentHolder;
 
 public class FileObject implements Serializable, DTO {
 
@@ -33,14 +34,15 @@ public class FileObject implements Serializable, DTO {
     private String hash;
     private Date created;
     private User user;
-    private Collection collection;
+    private AttachmentHolder collection;
     private String document_language;
 
     /**
      * default constructor
      */
     public FileObject() {
-     
+        created = new Date();
+        document_language = "en";
     }
 
     /**
@@ -129,11 +131,11 @@ public class FileObject implements Serializable, DTO {
         this.user = user;
     }
 
-    public Collection getCollection() {
+    public AttachmentHolder getCollection() {
         return collection;
     }
 
-    public void setCollection(Collection collection) {
+    public void setCollection(AttachmentHolder collection) {
         this.collection = collection;
     }
 

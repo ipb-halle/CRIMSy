@@ -28,30 +28,34 @@ import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
 import java.io.Serializable;
+import java.nio.file.Paths;
+import de.ipb_halle.lbac.file.save.AttachmentHolder;
 
-public class Collection extends ACObject implements Serializable, Obfuscatable, DTO {
+public class Collection extends ACObject implements Serializable, Obfuscatable, DTO, AttachmentHolder {
 
-    private final static long serialVersionUID = 1L;
+    protected final static long serialVersionUID = 1L;
 
-    private Integer id;
+    protected Integer id;
 
-    private String description;
+    public String COLLECTIONS_BASE_FOLDER = "/data/ui/collections";
 
-    private String name;
+    protected String description;
 
-    private Node node;
+    protected String name;
 
-    private String indexPath;
+    protected Node node;
 
-    private String storagePath;
+    protected String indexPath;
 
-    private Long countDocs = -1L;
+    protected String storagePath;
+
+    protected Long countDocs = -1L;
 
     /**
      * default constructor
      */
     public Collection() {
-       
+
     }
 
     /**
@@ -95,6 +99,7 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
     }
 
     //*** getter and setter ***
+    @Override
     public Integer getId() {
         return this.id;
     }
@@ -181,6 +186,11 @@ public class Collection extends ACObject implements Serializable, Obfuscatable, 
         sb.append(this.countDocs);
         sb.append("\n");
         return sb.toString();
+    }
+
+    @Override
+    public String getBaseFolder() {
+        return Paths.get(COLLECTIONS_BASE_FOLDER, getName()).toString();
     }
 
 }

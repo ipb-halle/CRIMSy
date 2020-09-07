@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.collections.mock;
 
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.file.save.AttachmentHolder;
 
 /**
  *
@@ -72,7 +73,7 @@ public class SolarAdminServiceMock extends SolrAdminService {
     }
 
     @Override
-    public boolean deleteDocumentbyID(Collection collection, String id) {
+    public boolean deleteDocumentbyID(AttachmentHolder collection, String id) {
         return deleteSuccess;
     }
 

@@ -56,9 +56,9 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class FileUploadTest extends TestBase {
+public class UploadToColTest extends TestBase {
 
-    private FileUpload instance;
+    private FileUploadOld instance;
 
     @Test
     public void fileUploadTest() throws Exception {
@@ -93,7 +93,7 @@ public class FileUploadTest extends TestBase {
 
         ResourceBundle mybundle = ResourceBundle.getBundle("de.ipb_halle.lbac.i18n.messages", Locale.ENGLISH);
         User user = new User();
-        instance = new FileUpload(
+        instance = new FileUploadOld(
                 asyncMock,
                 collServMock,
                 fileServiceMock,

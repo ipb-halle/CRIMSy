@@ -220,50 +220,50 @@ public class CollectionOperation implements Serializable{
                 LOGGER.info(String.format("reIndex collection: delete all documents %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
             }
 
-            if (cleanedSolrIndex) {
-                List<FileObject> fileEntityList = fileEntityService.getAllFilesInCollection(activeCollection);
-                termVectorEntityService.deleteTermVectorOfCollection(activeCollection);
-
-                fileEntityList.stream().parallel().forEach(c -> {
-                    HttpSolrClient solr = new HttpSolrClient.Builder(c.getCollection().getIndexPath()).build();
-                    ContentStreamUpdateRequest req = new ContentStreamUpdateRequest("/update/extract");
-                    ContentStreamBase cs = new ContentStreamBase.FileStream(new File(c.getFilename()));
-                    req.addContentStream(cs);
-                    req.setParam("literal.id", c.getId().toString());
-                    req.setParam("literal.permission", "PERMISSION ALLES ERLAUBT");
-                    req.setParam("literal.original_name", c.getName());
-                    req.setParam("literal.upload_date", c.getCreated().toString());
-                    req.setParam("literal.storage_location", c.getFilename());
-                    req.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true);
-                    solr.setUseMultiPartPost(true);
-                    try {
-                        solr.request(req);
-
-                        //*** update termvector ***
-                        FileObject fileEntity = fileEntityService.getFileEntity(c.getId());
-                        Document d = documentSearchService.getDocumentById(c.getId(), activeCollection.getId());
-
-                        fileEntityService.save(fileEntity);
-                        String tvJsonString = solrTermVectorSearch.getTermVector(d);
-                        TermVectorParser tvParser = new TermVectorParser();
-                        fileEntityService.saveTermVectors(tvParser.parseTermVectorJson(tvJsonString, fileEntity.getId()));
-
-                        try {
-                            String x = solrSearcher.getTermPositions(d, activeCollection.getIndexPath());
-                            TermVectorParser termVectorParser = new TermVectorParser();
-                            List<StemmedWordOrigin> wordOrigins = termVectorParser.parseTermVectorXmlToWordOrigins(d, x);
-                            termVectorEntityService.saveUnstemmedWordsOfDocument(wordOrigins, d.getId());
-                        } catch (Exception unstemmedWordException) {
-                            LOGGER.error(
-                                    "Error of getting unstemmed words for " + d.getOriginalName(),
-                                    unstemmedWordException);
-                        }
-
-                    } catch (Exception e) {
-                        LOGGER.error(e.getMessage());
-                    }
-                });
-            }
+//            if (cleanedSolrIndex) {
+//                List<FileObject> fileEntityList = fileEntityService.getAllFilesInCollection(activeCollection);
+//                termVectorEntityService.deleteTermVectorOfCollection(activeCollection);
+//
+//                fileEntityList.stream().parallel().forEach(c -> {
+//                    HttpSolrClient solr = new HttpSolrClient.Builder(c.getCollection().getIndexPath()).build();
+//                    ContentStreamUpdateRequest req = new ContentStreamUpdateRequest("/update/extract");
+//                    ContentStreamBase cs = new ContentStreamBase.FileStream(new File(c.getFilename()));
+//                    req.addContentStream(cs);
+//                    req.setParam("literal.id", c.getId().toString());
+//                    req.setParam("literal.permission", "PERMISSION ALLES ERLAUBT");
+//                    req.setParam("literal.original_name", c.getName());
+//                    req.setParam("literal.upload_date", c.getCreated().toString());
+//                    req.setParam("literal.storage_location", c.getFilename());
+//                    req.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true);
+//                    solr.setUseMultiPartPost(true);
+//                    try {
+//                        solr.request(req);
+//
+//                        //*** update termvector ***
+//                        FileObject fileEntity = fileEntityService.getFileEntity(c.getId());
+//                        Document d = documentSearchService.getDocumentById(c.getId(), activeCollection.getId());
+//
+//                        fileEntityService.save(fileEntity);
+//                        String tvJsonString = solrTermVectorSearch.getTermVector(d);
+//                        TermVectorParser tvParser = new TermVectorParser();
+//                        fileEntityService.saveTermVectors(tvParser.parseTermVectorJson(tvJsonString, fileEntity.getId()));
+//
+//                        try {
+//                            String x = solrSearcher.getTermPositions(d, activeCollection.getIndexPath());
+//                            TermVectorParser termVectorParser = new TermVectorParser();
+//                            List<StemmedWordOrigin> wordOrigins = termVectorParser.parseTermVectorXmlToWordOrigins(d, x);
+//                            termVectorEntityService.saveUnstemmedWordsOfDocument(wordOrigins, d.getId());
+//                        } catch (Exception unstemmedWordException) {
+//                            LOGGER.error(
+//                                    "Error of getting unstemmed words for " + d.getOriginalName(),
+//                                    unstemmedWordException);
+//                        }
+//
+//                    } catch (Exception e) {
+//                        LOGGER.error(e.getMessage());
+//                    }
+//                });
+//            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
 

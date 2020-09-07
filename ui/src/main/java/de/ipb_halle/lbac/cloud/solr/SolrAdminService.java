@@ -28,6 +28,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.request.CoreAdminRequest;
 import org.apache.solr.client.solrj.response.CoreAdminResponse;
+import de.ipb_halle.lbac.file.save.AttachmentHolder;
 
 /**
  * api functions to handle solr collections (crud)
@@ -239,16 +240,16 @@ public class SolrAdminService {
      * @param id
      * @return
      */
-    public boolean deleteDocumentbyID(Collection collection, String id) {
-        HttpSolrClient solr = new HttpSolrClient.Builder(getBaseURLSolr()).build();
-        try {
-            solr.deleteById(collection.getName(), id);
-            return true;
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public boolean deleteDocumentbyID(AttachmentHolder collection, String id) {
+//        HttpSolrClient solr = new HttpSolrClient.Builder(getBaseURLSolr()).build();
+//        try {
+//           // solr.deleteById(collection.getName(), id);
+//            return true;
+//        } catch (SolrServerException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         return false;
     }
 }

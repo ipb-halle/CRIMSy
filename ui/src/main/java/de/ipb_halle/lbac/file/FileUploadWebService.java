@@ -83,7 +83,7 @@ public class FileUploadWebService extends HttpServlet {
 
             //*** set timeout to 30 minutes
             asyncContext.setTimeout(UPLOAD_TIMEOUT);
-            asyncContext.start(new FileUpload(
+            asyncContext.start(new FileUploadOld(
                     asyncContext,
                     collectionService,
                     fileService,

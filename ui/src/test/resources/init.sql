@@ -162,7 +162,7 @@ CREATE TABLE files (
   created       TIMESTAMP DEFAULT now(),
   user_id       INTEGER REFERENCES usersGroups (id) ON DELETE SET NULL,
   document_language VARCHAR NOT NULL DEFAULT 'en',
-  collection_id INTEGER NOT NULL REFERENCES collections (id)
+  collection_id INTEGER NOT NULL REFERENCES collections (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 

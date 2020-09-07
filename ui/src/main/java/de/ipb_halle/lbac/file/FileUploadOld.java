@@ -38,7 +38,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +53,7 @@ import javax.servlet.http.Part;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-public class FileUpload implements Runnable {
+public class FileUploadOld implements Runnable {
 
     private final String TMP = "tmp";
     private final String PARTNAME = "qqfile";
@@ -82,7 +81,7 @@ public class FileUpload implements Runnable {
 
     private TermVectorParser termVectorParser = new TermVectorParser();
 
-    public FileUpload(
+    public FileUploadOld(
             AsyncContext asyncContext,
             CollectionService collectionService,
             FileService fileService,
@@ -95,7 +94,7 @@ public class FileUpload implements Runnable {
             TermVectorEntityService termVectorEntityService,
             User user) throws Exception {
 
-        this.logger = LogManager.getLogger(FileUpload.class);
+        this.logger = LogManager.getLogger(FileUploadOld.class);
         this.asyncContext = asyncContext;
         final HttpServletRequest request = (HttpServletRequest) asyncContext.getRequest();
 
@@ -377,5 +376,7 @@ public class FileUpload implements Runnable {
     public void setTermVectorParser(TermVectorParser termVectorParser) {
         this.termVectorParser = termVectorParser;
     }
+    
+   
 
 }
