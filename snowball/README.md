@@ -28,3 +28,4 @@ deployment to central repositories (Maven Central Repository etc.)!
 # Licensing 
 This code is released under the same BSD-3-Clause license as the snowball stemmer code
 [https://github.com/snowballstem/snowball](https://github.com/snowballstem/snowball)
+See COPYING
