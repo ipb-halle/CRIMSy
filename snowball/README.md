@@ -20,8 +20,10 @@ The snowball stemmer can then be used by including
 
 into the `pom.xml`. 
 
-**Note:** The artifact will be only available locally; there is currently no 
+**Note 1:** The artifact will be only available locally; there is currently no 
 deployment to central repositories (Maven Central Repository etc.)!
+
+**Note 2:** The download of the .tgz archive via [https://github.com/snowballstem/snowballstem.github.io/blob/master/dist/libstemmer_java.tgz?raw=true](https://github.com/snowballstem/snowballstem.github.io/blob/master/dist/libstemmer_java.tgz?raw=true) did not work in GitHub Actions (failure with error 404). Therefore we placed a fallback copy of the .tgz archive in this directory and added some workaround to the `pom.xml` file.
 
 # Licensing 
 This code is released under the same BSD-3-Clause license as the snowball stemmer code
