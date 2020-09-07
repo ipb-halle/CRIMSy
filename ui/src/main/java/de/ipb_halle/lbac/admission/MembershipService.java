@@ -21,8 +21,6 @@ package de.ipb_halle.lbac.admission;
  * MembershipService provides service to load, save, create and delete (group)
  * memberships. This includes creation or removal of nested groups
  */
-import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.admission.Member;
 
 import java.io.Serializable;
 import java.util.ArrayList;

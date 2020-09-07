@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.Obfuscatable;
 
 /**

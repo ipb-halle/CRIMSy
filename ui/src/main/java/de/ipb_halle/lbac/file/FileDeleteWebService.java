@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.file;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.file.FileDeleteExec;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 
 import java.util.HashMap;

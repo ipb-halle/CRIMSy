@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

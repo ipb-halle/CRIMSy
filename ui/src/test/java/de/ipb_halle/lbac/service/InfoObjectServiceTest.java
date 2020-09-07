@@ -47,7 +47,6 @@ import de.ipb_halle.lbac.webservice.Updater;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,11 +54,8 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**

@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.file;
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.cloud.solr.SolrUpdate;
-import de.ipb_halle.lbac.file.FileUpload;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;

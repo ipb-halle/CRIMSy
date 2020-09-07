@@ -27,12 +27,7 @@ package de.ipb_halle.lbac.admission;
  * This immutability is currently not enforced by implementation but it should
  * be part of convention.
  */
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.admission.MembershipService;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.admission.UserEntity;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;

@@ -20,13 +20,7 @@ package de.ipb_halle.lbac.admission;
 /**
  * MemberService provides service to load, save, update users and groups.
  */
-import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.admission.Group;
-import de.ipb_halle.lbac.admission.GroupEntity;
-import de.ipb_halle.lbac.admission.Member;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.admission.UserEntity;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;

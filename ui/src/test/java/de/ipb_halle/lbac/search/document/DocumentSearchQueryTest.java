@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import de.ipb_halle.lbac.search.document.DocumentSearchQuery;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

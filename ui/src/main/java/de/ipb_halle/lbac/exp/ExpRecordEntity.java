@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.exp;
 
-import de.ipb_halle.lbac.exp.ExpRecordType;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,9 +26,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.apache.johnzon.mapper.JohnzonConverter;
 
 /**
  * @author fbroda

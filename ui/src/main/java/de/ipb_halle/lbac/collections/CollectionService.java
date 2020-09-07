@@ -23,8 +23,6 @@ package de.ipb_halle.lbac.collections;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.ACList;
-import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.collections.CollectionEntity;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.NodeService;
