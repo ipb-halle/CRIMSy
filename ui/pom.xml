@@ -206,7 +206,7 @@
                     <failOnMissingWebXml>true</failOnMissingWebXml>
                     <warName>ui</warName>
                     
-                                  
+                   
                     
                     <archive>
                         <manifest>
@@ -337,9 +337,9 @@
 
         <!-- PrimeFaces FontAwesome 5.x -->
         <dependency>
-             <groupId>org.webjars</groupId>
-             <artifactId>font-awesome</artifactId>
-             <version>5.12.0</version>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>5.12.0</version>
         </dependency>
         
         <!-- PrimeFaces Bootstrap Theme. Has its own repository -->
@@ -414,13 +414,13 @@
             <artifactId>gson</artifactId>
             <version>2.8.6</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20180130</version>
-        </dependency>
--->
+        <!--
+                <dependency>
+                    <groupId>org.json</groupId>
+                    <artifactId>json</artifactId>
+                    <version>20180130</version>
+                </dependency>
+        -->
         
         <!-- tomee javaEE api-->
         <dependency>
@@ -502,6 +502,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
             <version>1.2.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>de.ipb_halle</groupId>
+            <artifactId>tx</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
 </project> 

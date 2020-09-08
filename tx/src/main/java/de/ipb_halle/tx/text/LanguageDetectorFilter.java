@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -53,6 +55,7 @@ public class LanguageDetectorFilter extends AbstractFilter {
 
     public final static String FILTER_TYPE = "LanguageDetectorFilter";
     public final static String LANGUAGES = "languages";
+    public final static String LANGUAGE_PROP = "language";
 
     private Logger                      logger;
     private String                      config;
@@ -60,6 +63,7 @@ public class LanguageDetectorFilter extends AbstractFilter {
     private BlockingQueue<TextRecord>   outputQueue;
     private FilterState                 filterState;
     private TextRecord                  textRecord;
+    private Set<Language>               languageProperties;
     private String[] languages;
     private Set<?>[] dictionaries;
 
@@ -129,7 +133,9 @@ public class LanguageDetectorFilter extends AbstractFilter {
                     currentLang = detectedLang;
                     currentStart = 0;
                 } else {
-                    rec.addProperty(new Language(currentStart, sentence.getStart() , currentLang));
+                    Language lang = new Language(currentStart, sentence.getStart() , currentLang);
+                    rec.addProperty(lang);
+                    this.languageProperties.add(lang);
                     currentStart = sentence.getStart();
                     currentLang = detectedLang;
                 }
@@ -137,7 +143,9 @@ public class LanguageDetectorFilter extends AbstractFilter {
             s++;
         }
         if (currentLang != null) {
-            rec.addProperty(new Language(currentStart, rec.length(), currentLang));
+            Language lang = new Language(currentStart, rec.length(), currentLang);
+            rec.addProperty(lang);
+            this.languageProperties.add(lang);
         }
     }
 
@@ -222,6 +230,8 @@ public class LanguageDetectorFilter extends AbstractFilter {
 
         this.outputQueue.clear();
         this.filterState = FilterState.READY; 
+        this.languageProperties = new TreeSet<> ();
+        getFilterData().setValue(LANGUAGE_PROP, this.languageProperties);
         return this.filterState;
     }
 

@@ -17,8 +17,9 @@
  */
 package de.ipb_halle.lbac.file;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -27,7 +28,15 @@ import java.util.List;
 public class StemmedWordOrigin {
 
     private String stemmedWord;
-    private List<String> originalWord = new ArrayList<>();
+    private Set<String> originalWord = new HashSet<>();
+
+    public StemmedWordOrigin(String stemmedWord, Set<String> originalWords) {
+        this.stemmedWord = stemmedWord;
+        this.originalWord = originalWords;
+    }
+
+    public StemmedWordOrigin() {
+    }
 
     public String getStemmedWord() {
         return stemmedWord;
@@ -37,23 +46,15 @@ public class StemmedWordOrigin {
         this.stemmedWord = stemmedWord;
     }
 
-    public List<String> getOriginalWord() {
+    public Set<String> getOriginalWord() {
         return originalWord;
     }
 
     public void addOriginWord(String word) {
-        boolean alreadyIn = false;
-        for (String s : originalWord) {
-            if (s.toLowerCase().equals(word.toLowerCase())) {
-                alreadyIn = true;
-            }
-        }
-        if (!alreadyIn) {
-            originalWord.add(word);
-        }
+        originalWord.add(word);
     }
 
-    public void setOriginalWord(List<String> originalWord) {
+    public void setOriginalWord(Set<String> originalWord) {
         this.originalWord = originalWord;
     }
 

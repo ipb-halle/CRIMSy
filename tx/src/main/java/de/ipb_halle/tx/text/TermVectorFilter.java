@@ -27,7 +27,9 @@ import java.io.FileReader;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Pattern;
@@ -54,7 +56,7 @@ public class TermVectorFilter extends AbstractFilter {
     private Logger                      logger;
     private BlockingQueue<TextRecord>   inputQueue;
     private Map<String, Integer>        termVector;
-    private Map<String, String>         stemDict;
+    private Map<String, Set<String>>    stemDict;
     private FilterState                 filterState;
 
 
@@ -90,13 +92,18 @@ public class TermVectorFilter extends AbstractFilter {
             for(TextProperty prop : rec.getProperties(Word.TYPE)) { 
                 Word word = (Word) prop;
                 String wordString = text.substring(word.getStart(), word.getEnd());
-                if (! word.getStopWord()) {
+                if (! (word.getStopWord() 
+                        || wordString.trim().isEmpty())) {
                     String stem = word.getStem();
                     if (stem == null) {
                         stem = wordString;
-                    } else {
-                        stemDict.put(wordString, stem);
                     }
+                    Set<String> dictEntry = stemDict.get(stem);
+                    if (dictEntry == null){
+                        dictEntry=new HashSet<>();
+                        stemDict.put(stem, dictEntry);
+                    }
+                    dictEntry.add(wordString);
                     Integer count = this.termVector.get(stem);
                     if (count == null) {
                         count = Integer.valueOf(0);
@@ -127,7 +134,7 @@ public class TermVectorFilter extends AbstractFilter {
     public FilterState init() {
         this.filterState = FilterState.READY;
         this.termVector = new HashMap<String, Integer> ();
-        this.stemDict = new HashMap<String, String> ();
+        this.stemDict = new HashMap<String, Set<String>> ();
         getFilterData().setValue(TERM_VECTOR,  this.termVector);
         getFilterData().setValue(STEM_DICT, this.stemDict);
         return this.filterState;

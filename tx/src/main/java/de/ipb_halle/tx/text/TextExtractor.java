@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOError;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -79,7 +80,7 @@ public class TextExtractor implements TxModule {
      * Dump the TermVector from filterData
      */
     @SuppressWarnings("unchecked")
-    private void dumpTermVector() {
+    public void dumpTermVector() {
         for(Map.Entry<String, Integer> e 
           : ((Map<String, Integer>) this.parseTool
                 .getFilterData()
@@ -89,12 +90,15 @@ public class TextExtractor implements TxModule {
             System.out.printf("%6d\t%s\n", e.getValue(), e.getKey());
         }
 
-        for(Map.Entry<String, String> e
-          : ((Map<String, String>) this.parseTool
+        Map<String, Set<String>> stemDict = (Map) this.parseTool
                 .getFilterData()
-                .getValue(TermVectorFilter.STEM_DICT))
-                .entrySet()) {
-            System.out.printf("%24s\t %s\n", e.getValue(), e.getKey());
+                .getValue(TermVectorFilter.STEM_DICT);
+        for(String stem : stemDict.keySet()) {
+            System.out.printf("%s -->", stem);
+            for (String word : stemDict.get(stem)) {
+                System.out.printf("%s ", word);
+            }
+            System.out.println();
         }
     }
 
@@ -152,4 +156,10 @@ public class TextExtractor implements TxModule {
             throw new IOError(e);
         }
     }
+
+    public void setParseTool(ParseTool parseTool) {
+        this.parseTool = parseTool;
+    }
+    
+    
 }

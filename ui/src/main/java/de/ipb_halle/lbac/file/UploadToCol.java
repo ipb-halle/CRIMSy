@@ -51,13 +51,13 @@ public class UploadToCol implements Runnable {
     @Override
     public void run() {
         try {
-            fileSaver.saveFile(
+            Integer fileId = fileSaver.saveFile(
                     getAttachmentTarget(),
                     getFileNameFromRequest(),
                     request.getPart(HTTP_PART_FILENAME).getInputStream());
-            
-            fileAnalyser.analyseFile(fileSaver.getFileLocation().toString());
-            
+
+            fileAnalyser.analyseFile(fileSaver.getFileLocation().toString(), fileId);
+
             saveTermVector(fileAnalyser.getTermVector());
             saveOriginalWords(fileAnalyser.getWordOrigins());
             fileSaver.updateLanguageOfFile(fileAnalyser.getLanguage());
