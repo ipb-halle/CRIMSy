@@ -185,18 +185,18 @@ CREATE TABLE postings (
 );
 
 CREATE TABLE termvectors (
-  wordroot    VARCHAR    NOT NULL,
+  wordroot    VARCHAR    NOT NULL ,
   file_id     INTEGER     NOT NULL,
   termfrequency INTEGER NOT NULL,
  PRIMARY KEY(wordroot, file_id)
 );
 
 CREATE TABLE unstemmed_words(
-  wordroot VARCHAR NOT NULL,
-  file_id INTEGER NOT NULL REFERENCES files (id),
+  stemmed_word VARCHAR NOT NULL,
+  file_id INTEGER NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
   unstemmed_word VARCHAR NOT NULL,
-  PRIMARY KEY(file_id, unstemmed_word),
-  FOREIGN KEY (wordroot, file_id) REFERENCES termvectors (wordroot, file_id)
+  PRIMARY KEY(stemmed_word,file_id, unstemmed_word),
+  FOREIGN KEY (stemmed_word, file_id) REFERENCES termvectors (wordroot, file_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 

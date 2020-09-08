@@ -23,7 +23,6 @@ import de.ipb_halle.tx.text.LanguageDetectorFilter;
 import de.ipb_halle.tx.text.ParseTool;
 import de.ipb_halle.tx.text.TermVectorFilter;
 import de.ipb_halle.tx.text.properties.Language;
-import de.ipb_halle.tx.text.properties.TextProperty;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

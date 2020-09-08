@@ -81,20 +81,20 @@ public class TermVectorEntityService implements Serializable {
             = "delete from termvectors tv where tv.file_id in(:fileId)";
 
     protected final String SQL_INSERT_UNSTEMMED_WORD
-            = "insert into  unstemmed_words (unstemmed_word, file_id, wordroot) values"
+            = "insert into  unstemmed_words (unstemmed_word, file_id, stemmed_word) values"
             + "(:unstemmed_word,:did,:stemmed_word)";
 
     protected final String SQL_LOAD_UNSTEMMED_WORD
             = "select unstemmed_word"
             + " from unstemmed_words"
             + " where file_id in (:id)"
-            + "AND wordroot=:wr";
+            + "AND stemmed_word=:wr";
 
     protected final String SQL_LOAD_UNSTEMMED_WORDS
-            = "select wordroot,unstemmed_word"
+            = "select stemmed_word,unstemmed_word"
             + " from unstemmed_words"
             + " where file_id in (:id)"
-            + "AND wordroot in (:wr)";
+            + "AND stemmed_word in (:wr)";
 
     protected final String SQL_DELETE_ALL_UNSTEMMED_WORDS
             = "delete from unstemmed_words";

@@ -48,9 +48,11 @@ import javax.servlet.http.Part;
 public class HttpServletRequestMock implements HttpServletRequest {
 
     private final File file;
+    private String collectionName;
 
-    public HttpServletRequestMock(File f) {
+    public HttpServletRequestMock(File f, String colName) {
         this.file = f;
+        this.collectionName = colName;
 
     }
 
@@ -252,7 +254,7 @@ public class HttpServletRequestMock implements HttpServletRequest {
 
     @Override
     public String getParameter(String name) {
-        return "Coll1";
+        return collectionName;
     }
 
     @Override

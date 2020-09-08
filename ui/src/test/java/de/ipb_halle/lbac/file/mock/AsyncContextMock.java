@@ -32,14 +32,17 @@ import javax.servlet.ServletResponse;
 public class AsyncContextMock implements AsyncContext {
 
     private final File file;
+    protected String collectionname;
 
-    public AsyncContextMock(File f) {
+    public AsyncContextMock(File f, String collectionName) {
         this.file = f;
+        this.collectionname = collectionName;
+
     }
 
     @Override
     public ServletRequest getRequest() {
-        return new HttpServletRequestMock(file);
+        return new HttpServletRequestMock(file,collectionname);
     }
 
     @Override

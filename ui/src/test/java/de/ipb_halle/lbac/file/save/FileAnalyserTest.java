@@ -21,7 +21,10 @@ import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.file.TermVector;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -71,12 +74,50 @@ public class FileAnalyserTest {
 
         Assert.assertEquals("undefined", analyser.getLanguage());
 
-        analyser.getWordOrigins();
-        analyser.analyseFile(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf", 1);
-        tvs = analyser.getTermVector();
-
-        Assert.assertEquals("de", analyser.getLanguage());
-
     }
 
+    @Test
+    public void test002_analyseGermanXls() throws FileNotFoundException {
+        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        analyser.analyseFile(examplaDocsRootFolder + "TestTabelle.xlsx", 1);
+        Assert.assertEquals(11, analyser.getWordOrigins().size());
+        Assert.assertEquals(11, analyser.getTermVector().size());
+        Assert.assertEquals("de", analyser.getLanguage());
+    }
+
+    @Test
+    public void test003_analyseFrenchWord() throws FileNotFoundException {
+        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        analyser.analyseFile(examplaDocsRootFolder + "Document_FR.docx", 1);
+        Assert.assertEquals(210, analyser.getWordOrigins().size());
+        Assert.assertEquals(210, analyser.getTermVector().size());
+        Assert.assertEquals("fr", analyser.getLanguage());
+    }
+
+    @Test
+    public void test004_analyseStemming() throws FileNotFoundException {
+        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        analyser.analyseFile(examplaDocsRootFolder + "Document_wordStemming.docx", 1);
+        Assert.assertEquals(12, analyser.getWordOrigins().size());
+        Assert.assertEquals(12, analyser.getTermVector().size());
+        for (StemmedWordOrigin swo : analyser.getWordOrigins()) {
+            if (swo.getStemmedWord().equals("saur")) {
+                Set<String> originWords = swo.getOriginalWord();
+                Assert.assertEquals(2, originWords.size());
+                for (String s : originWords) {
+                    Assert.assertTrue(s.equals("säuren") || s.equals("säure"));
+                }
+            }
+        }
+        Assert.assertEquals("de", analyser.getLanguage());
+    }
+
+    @Test
+    public void test005_checkUniqueWordOrigins() throws FileNotFoundException, Exception {
+        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        analyser.analyseFile(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf", 1);
+        List<TermVector> tvs = analyser.getTermVector();
+        Assert.assertEquals(5428, tvs.size());
+        Assert.assertEquals("de", analyser.getLanguage());
+    }
 }
