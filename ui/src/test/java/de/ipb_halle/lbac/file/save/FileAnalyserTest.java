@@ -68,14 +68,14 @@ public class FileAnalyserTest {
             }
             throw new Exception("Unexpected stemmed word found:" + swo.getStemmedWord());
         }
-        
-       // Assert.assertEquals("en",analyser.getLanguage());
+
+        Assert.assertEquals("undefined", analyser.getLanguage());
 
         analyser.getWordOrigins();
         analyser.analyseFile(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf", 1);
         tvs = analyser.getTermVector();
-        
-           Assert.assertEquals("en",analyser.getLanguage());
+
+        Assert.assertEquals("de", analyser.getLanguage());
 
     }
 

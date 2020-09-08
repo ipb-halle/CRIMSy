@@ -33,9 +33,11 @@ import de.ipb_halle.lbac.service.FileService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -155,14 +157,13 @@ public class TermVectorEntityServiceTest extends TestBase {
         Assert.assertEquals(19, totalSum);
 
         StemmedWordOrigin wordOrigin = new StemmedWordOrigin();
-        wordOrigin.setOriginalWord(Arrays.asList("origalWord1", "origalWord2", "origalWord3"));
+        Set<String> set = new HashSet<>();
+        set.addAll(Arrays.asList("origalWord1", "origalWord2", "origalWord3"));
+        wordOrigin.setOriginalWord(set);
         wordOrigin.setStemmedWord("testStemWord");
 
         termVectorEntityService.saveUnstemmedWordsOfDocument(Arrays.asList(wordOrigin), fE1.getId());
-        
-        
-        
-        
+
         List< StemmedWordOrigin> words = termVectorEntityService.loadUnstemmedWordsOfDocument(fE1.getId(), "testStemWord");
         Assert.assertEquals("Loading of unstemmed words not correct", 1, words.size());
         Assert.assertEquals(3, words.get(0).getOriginalWord().size());

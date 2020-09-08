@@ -54,7 +54,7 @@ public class FileAnalyser {
                 .getValue(LanguageDetectorFilter.LANGUAGE_PROP);
         Map<String, Integer> countMap = new HashMap<> ();
         int maxCount = 0;
-        String maxLang = "";
+        String maxLang = null;
         for (Language lang : languages) {
             String langString = lang.getLanguage();
             int count = lang.getEnd() - lang.getStart();

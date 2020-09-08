@@ -107,7 +107,7 @@ public class TermFrequencyList {
         for (StemmedWordOrigin swo : unstemmedWords) {
             
             if (swo.getStemmedWord().equals(wordRoot)) {
-                return swo.getOriginalWord().get(0);
+                return swo.getOriginalWord().iterator().next();
             }
         }
         return wordRoot;
