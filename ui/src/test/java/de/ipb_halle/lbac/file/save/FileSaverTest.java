@@ -136,6 +136,7 @@ public class FileSaverTest extends TestBase {
         fo = fileEntityService.load(cmap).get(0);
         Assert.assertEquals(col.getId(), fo.getCollection().getId());
         Assert.assertEquals("de", fo.getDocument_language());
+        Assert.assertEquals("0d64aa1e3809778038fee35f92f543c688d2b4e3631108dc2e5ddbdb9706fbe50a6d834498f2de6bead4d05d383e94e277b3cd3d7cb846e68b3ea164123784ca", fo.getHash());
         Assert.assertEquals("TestTabelle.xlsx", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
         // Assert.assertEquals(fileSaver.getFileLocation(), Paths.get(col.getBaseFolder(), "0", "0", fo.getFilename()).toString());

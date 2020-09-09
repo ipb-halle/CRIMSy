@@ -17,15 +17,10 @@
  */
 package de.ipb_halle.lbac.file;
 
-import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.cloud.solr.SolrUpdate;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.service.FileService;
+import java.io.File;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -40,7 +35,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @WebServlet(name = "FileUploadWebService", urlPatterns = {"/uploaddocs/*"}, asyncSupported = true)
 @MultipartConfig(maxFileSize = 1024 * 1024 * 500, maxRequestSize = 1024 * 1024 * 1000)
@@ -49,6 +45,7 @@ public class FileUploadWebService extends HttpServlet {
     private final static long serialVersionUID = 1L;
     private final static long UPLOAD_TIMEOUT = 30L * 60L * 1000L;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private final String FILTER_DEFINITION = "fileParserFilterDefinition.json";
 
     private final Logger logger = LogManager.getLogger(FileUploadWebService.class);
 
@@ -56,23 +53,11 @@ public class FileUploadWebService extends HttpServlet {
     private CollectionService collectionService;
 
     @Inject
-    private FileService fileService;
-
-    @Inject
-    private SolrTermVectorSearch solrTermVectorService;
-
-    @Inject
     private FileEntityService fileEntityService;
 
     @Inject
-    private CollectionBean collectionBean;
-
-    @Inject
-    private SolrSearcher solrSearcher;
-
-    @Inject
     private TermVectorEntityService termVectorEntityService;
-    
+
     @Inject
     private UserBean userBean;
 
@@ -82,21 +67,20 @@ public class FileUploadWebService extends HttpServlet {
         try {
 
             //*** set timeout to 30 minutes
+            File f = new File(this.getClass().getResource(FILTER_DEFINITION).toString().split(":")[1]);
+            logger.info(f.getAbsolutePath() + ":" + f.exists());
+
             asyncContext.setTimeout(UPLOAD_TIMEOUT);
-            asyncContext.start(new FileUploadOld(
+
+            asyncContext.start(new UploadToCol(
+                    f.getAbsolutePath(),
+                    fileEntityService,
+                    userBean.getCurrentAccount(),
                     asyncContext,
                     collectionService,
-                    fileService,
-                    solrTermVectorService,
-                    fileEntityService,
-                    collectionBean,
-                    solrSearcher,
-                    new SolrUpdate(),
-                    Messages.getBundle(MESSAGE_BUNDLE),
-                    termVectorEntityService,
-                    userBean.getCurrentAccount()
-            ));
+                    termVectorEntityService));
         } catch (Exception e) {
+
             logger.error(e);
             asyncContext.complete();
         }
