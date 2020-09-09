@@ -17,10 +17,13 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +33,16 @@ import javax.servlet.http.HttpServletResponse;
  * @author fmauz
  */
 public class HttpServletResponseMock implements HttpServletResponse {
+
+    PrintWriter writer;
+
+    public HttpServletResponseMock() {
+        try {
+            writer = new WriterMock("WriterMock");
+        } catch (FileNotFoundException ex) {
+
+        }
+    }
 
     @Override
     public void addCookie(Cookie cookie) {
@@ -156,7 +169,7 @@ public class HttpServletResponseMock implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        return new PrintWriter(System.out, true);
+        return writer;
     }
 
     @Override
@@ -217,6 +230,24 @@ public class HttpServletResponseMock implements HttpServletResponse {
     @Override
     public Locale getLocale() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public class WriterMock extends PrintWriter {
+
+        private String json;
+
+        public WriterMock(String fileName) throws FileNotFoundException {
+            super(fileName);
+        }
+
+        @Override
+        public void write(String json) {
+            this.json = json;
+        }
+
+        public String getJson() {
+            return json;
+        }
     }
 
 }

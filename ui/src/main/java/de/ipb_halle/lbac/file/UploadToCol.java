@@ -34,12 +34,17 @@ import de.ipb_halle.lbac.file.save.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.File;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author fmauz
  */
 public class UploadToCol implements Runnable {
-    
+
     protected CollectionService collectionService;
     protected HttpServletRequest request;
     protected HttpServletResponse response;
@@ -52,7 +57,8 @@ public class UploadToCol implements Runnable {
     protected TermVectorEntityService termVectorService;
     protected Integer fileId;
     protected FileEntityService fileEntityService;
-    
+    private final Logger logger;
+
     public UploadToCol(
             String filterDefinition,
             FileEntityService fileEntityService,
@@ -68,47 +74,26 @@ public class UploadToCol implements Runnable {
         this.response = (HttpServletResponse) asyncContext.getResponse();
         this.termVectorService = termVectorService;
         this.fileEntityService = fileEntityService;
+        this.logger = LogManager.getLogger(FileUploadOld.class);
     }
-    
-    @Override
-    public void run() {
-        try {
-            fileId = fileSaver.saveFile(
-                    getAttachmentTarget(),
-                    getFileNameFromRequest(),
-                    request.getPart(HTTP_PART_FILENAME).getInputStream());
-            
-            fileAnalyser.analyseFile(fileSaver.getFileLocation().toString(), fileId);
-            
-            saveTermVector(fileAnalyser.getTermVector());
-            saveOriginalWords(fileAnalyser.getWordOrigins());
-            fileSaver.updateLanguageOfFile(fileAnalyser.getLanguage());
-            
-        } catch (Exception e) {
-            handleError(e);
-        } finally {
-            asyncContext.complete();
-        }
-        
+
+    private String createJsonErrorResponse(String errorMessage) {
+        JsonObject json = Json.createObjectBuilder()
+                .add("success", false)
+                .add("error", errorMessage)
+                .build();
+        return json.toString();
     }
-    
-    protected void saveTermVector(List<TermVector> termVector) {
-        fileEntityService.saveTermVectors(termVector);
+
+    private String createJsonSuccessResponse(Integer id, String fileName) {
+        JsonObject json = Json.createObjectBuilder()
+                .add("success", true)
+                .add("newUuid", id.toString())
+                .add("uploadName", fileName)
+                .build();
+        return json.toString();
     }
-    
-    protected void saveOriginalWords(List<StemmedWordOrigin> originals) {
-        termVectorService.saveUnstemmedWordsOfDocument(originals, fileId);
-    }
-    
-    protected String getFileNameFromRequest() throws IOException, ServletException {
-        request = (HttpServletRequest) asyncContext.getRequest();
-        return request.getPart(HTTP_PART_FILENAME).getSubmittedFileName();
-    }
-    
-    protected void handleError(Exception e) {
-        
-    }
-    
+
     protected AttachmentHolder getAttachmentTarget() throws Exception {
         request = (HttpServletRequest) asyncContext.getRequest();
         final String collectionName = asyncContext.getRequest().getParameter(HTTP_PARAMETER_COLLECTION);
@@ -121,5 +106,42 @@ public class UploadToCol implements Runnable {
         }
         return cl.get(0);
     }
-    
+
+    protected String getFileNameFromRequest() throws IOException, ServletException {
+        request = (HttpServletRequest) asyncContext.getRequest();
+        return request.getPart(HTTP_PART_FILENAME).getSubmittedFileName();
+    }
+
+    @Override
+    public void run() {
+        try {
+            try {
+                fileId = fileSaver.saveFile(
+                        getAttachmentTarget(),
+                        getFileNameFromRequest(),
+                        request.getPart(HTTP_PART_FILENAME).getInputStream());
+
+                fileAnalyser.analyseFile(fileSaver.getFileLocation().toString(), fileId);
+                saveTermVector(fileAnalyser.getTermVector());
+                saveOriginalWords(fileAnalyser.getWordOrigins());
+                fileSaver.updateLanguageOfFile(fileAnalyser.getLanguage());
+                response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
+            } catch (Exception e) {
+                response.getWriter().write(createJsonErrorResponse(e.getMessage()));
+            } finally {
+                asyncContext.complete();
+            }
+        } catch (IOException e2) {
+            logger.error("Could not write response message", e2);
+        }
+    }
+
+    protected void saveOriginalWords(List<StemmedWordOrigin> originals) {
+        termVectorService.saveUnstemmedWordsOfDocument(originals, fileId);
+    }
+
+    protected void saveTermVector(List<TermVector> termVector) {
+        fileEntityService.saveTermVectors(termVector);
+    }
+
 }
