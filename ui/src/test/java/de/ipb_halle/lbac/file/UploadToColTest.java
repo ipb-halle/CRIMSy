@@ -110,7 +110,7 @@ public class UploadToColTest extends TestBase {
 
         WriterMock writermock = ((WriterMock) upload.response.getWriter());
         String json = writermock.getJson();
-        Assert.assertEquals("{\"success\":true,\"newUuid\":\"1\",\"uploadName\":\"IPB_Jahresbericht_2004.pdf\"}", json);
+        Assert.assertEquals(String.format("{\"success\":true,\"newUuid\":\"%s\",\"uploadName\":\"IPB_Jahresbericht_2004.pdf\"}",upload.fileId), json);
 
     }
 
