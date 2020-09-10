@@ -237,7 +237,7 @@ public class HttpServletResponseMock implements HttpServletResponse {
         private String json;
 
         public WriterMock(String fileName) throws FileNotFoundException {
-            super(fileName);
+            super(System.out);
         }
 
         @Override

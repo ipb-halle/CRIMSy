@@ -52,36 +52,36 @@ import org.apache.logging.log4j.LogManager;
  */
 @Stateless
 public class DocumentSearchService {
-
+    
     private final Logger LOGGER = LogManager.getLogger(DocumentSearchService.class);
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
+    
     @Inject
     private FileEntityService fileEntityService;
-
+    
     @Inject
     private SolrSearcher solrSearcher;
-
+    
     @Inject
     private NodeService nodeService;
-
+    
     @Inject
     private CollectionService collectionService;
-
+    
     @Inject
     private MemberService memberService;
-
+    
     @Inject
     private TermVectorEntityService termVectorEntityService;
-
+    
     private final int MAX_TERMS = Integer.MAX_VALUE;
-
+    
     private boolean development = false;
-
+    
     private String uriOfPublicColl;
-
+    
     protected String SQL_LOAD_DOCUMENTS = "SELECT DISTINCT "
             + "f.id, "
             + "f.name,"
@@ -95,7 +95,7 @@ public class DocumentSearchService {
             + "JOIN termvectors tv ON tv.file_id=f.id "
             + "WHERE f.collection_id=:collectionid "
             + "#words#";
-
+    
     public DocumentSearchState actionStartDocumentSearch(
             DocumentSearchState searchState,
             List<Collection> collsToSearchIn,
@@ -115,7 +115,7 @@ public class DocumentSearchService {
             if (coll.getNode().equals(nodeService.getLocalNode())) {
                 FileSearchRequest searchRequest = new FileSearchRequest();
                 searchRequest.holder = coll;
-                searchRequest.wordsToSearchFor.add(searchText);
+                searchRequest.wordsToSearchFor.put(searchText, Arrays.asList(searchText));
                 Set<Document> foundDocs = loadDocuments(searchRequest, limit);
                 searchState.getFoundDocuments().addAll(foundDocs);
                 searchState.addToTotalDocs(foundDocs.size());
@@ -145,18 +145,18 @@ public class DocumentSearchService {
             }
         }
         Set<String> normalizedTerms = getNormalizedWordsInAllLanguages(searchState.getFoundDocuments(), Arrays.asList(searchText.split(" ")));
-
+        
         List<Integer> docIds = new ArrayList<>();
         for (Document d : searchState.getFoundDocuments()) {
             docIds.add(d.getId());
         }
-
+        
         Map<Integer, Map<String, Integer>> totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
                 normalizedTerms);
-
+        
         String normalizedSearchTerm = String.join("-", normalizedTerms);
-
+        
         for (Document d : searchState.getFoundDocuments()) {
             if (development) {
                 LOGGER.info("FOUND: " + d.getOriginalName());
@@ -174,7 +174,7 @@ public class DocumentSearchService {
         if (development) {
             //infoCollection(searchState.getFoundDocuments(), searchState.getTotalDocs());
         }
-
+        
         return searchState;
     }
 
@@ -186,14 +186,14 @@ public class DocumentSearchService {
     public long getSumOfWordsOfAllDocs() {
         return termVectorEntityService.getSumOfAllWordsFromAllDocs();
     }
-
+    
     @PostConstruct
     public void init() {
         if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development) {
             development = true;
         }
     }
-
+    
     private void infoStart(List<Collection> colls, String searchText) {
         LOGGER.info("");
         LOGGER.info(String.format("Start documentsearch in %d collections with searchtext: %s", colls.size(), searchText));
@@ -222,23 +222,23 @@ public class DocumentSearchService {
         for (String s : tagList) {
             back += " AND " + s;
         }
-
+        
         back = back.substring(4, back.length());
         return back.trim();
     }
-
+    
     public String getUriOfPublicCollection() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("name", "public");
         List<Collection> colls = collectionService.load(cmap);
-
+        
         String restUri = null;
         if (colls != null && colls.size() > 0) {
             restUri = colls.get(0).getIndexPath();
         }
         return restUri;
     }
-
+    
     private Set<String> getNormalizedWordsInAllLanguages(List<Document> docs, List<String> splittedTerms) {
         Set<String> normalizedWords = new HashSet<>();
         for (Document d : docs) {
@@ -246,9 +246,9 @@ public class DocumentSearchService {
         }
         return normalizedWords;
     }
-
+    
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
-
+        
         Set<Document> documents = new HashSet<>();
         String adjustedSql = SQL_LOAD_DOCUMENTS.replace("#words#", createSqlReplaceString(request.wordsToSearchFor));
         List<FileObjectEntity> results = this.em.createNativeQuery(adjustedSql, FileObjectEntity.class)
@@ -268,7 +268,7 @@ public class DocumentSearchService {
         }
         return documents;
     }
-
+    
     private Document convertFileObjectToDocument(FileObject fo) {
         Document d = new Document();
         d.setId(fo.getId());
@@ -281,18 +281,25 @@ public class DocumentSearchService {
         d.setContentType(fo.getName().split("\\.")[fo.getName().split("\\.").length - 1]);
         d.setOriginalName(fo.getName());
         return d;
-
+        
     }
-
-    public String createSqlReplaceString(Set<String> stemmedWords) {
+    
+    public String createSqlReplaceString(Map<String, List<String>> stemmedWords) {
         if (stemmedWords.isEmpty()) {
             return "";
         }
         List<String> subClauses = new ArrayList<>();
-        for (String word : stemmedWords) {
-            subClauses.add(String.format(" tv.wordroot='%s' ", word));
+        for (String word : stemmedWords.keySet()) {
+            List<String> stemmedWordsWithQuotationMark = new ArrayList<>();
+            for (String w : stemmedWords.get(word)) {
+                stemmedWordsWithQuotationMark.add("'" + w + "'");
+            }
+            
+            subClauses.add(
+                    String.format(" tv.wordroot IN (%s) ",
+                            String.join(",", stemmedWordsWithQuotationMark)));
         }
-
+        
         return " AND " + String.join(" AND ", subClauses);
     }
 }

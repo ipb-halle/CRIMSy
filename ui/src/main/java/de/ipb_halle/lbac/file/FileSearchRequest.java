@@ -18,8 +18,9 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.lbac.file.save.AttachmentHolder;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -28,6 +29,7 @@ import java.util.Set;
 public class FileSearchRequest {
 
     public AttachmentHolder holder;
-    public Set<String> wordsToSearchFor = new HashSet<>();
-
+    public Map<String, List<String>> wordsToSearchFor = new HashMap<>();
+    
+    
 }
