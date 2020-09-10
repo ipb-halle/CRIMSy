@@ -30,7 +30,7 @@ public class FileObject implements Serializable, DTO {
     private final static long serialVersionUID = 1L;
     private Integer id;
     private String name;
-    private String filename;
+    private String fileLocation;
     private String hash;
     private Date created;
     private User user;
@@ -55,7 +55,7 @@ public class FileObject implements Serializable, DTO {
     public FileObject(FileObjectEntity entity, Collection col, User u) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.filename = entity.getFilename();
+        this.fileLocation = entity.getFilename();
         this.hash = entity.getHash();
         this.created = entity.getCreated();
         this.document_language = entity.getDocument_language();
@@ -69,7 +69,7 @@ public class FileObject implements Serializable, DTO {
                 .setCollection(collection.getId())
                 .setCreatedFromDate(created)
                 .setDocument_language(document_language)
-                .setFilename(filename)
+                .setFilename(fileLocation)
                 .setHash(hash)
                 .setName(name)
                 .setUser(user.getId())
@@ -95,12 +95,12 @@ public class FileObject implements Serializable, DTO {
         this.name = name;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getFileLocation() {
+        return fileLocation;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 
     public String getHash() {

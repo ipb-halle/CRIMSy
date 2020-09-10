@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.UploadToCol;
 import de.ipb_halle.lbac.file.save.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import java.io.InputStream;
 import javax.servlet.AsyncContext;
 
 /**
@@ -35,7 +36,7 @@ public class UploadToColMock extends UploadToCol {
     protected String fileBaseFolder;
 
     public UploadToColMock(
-            String filterDefinition,
+            InputStream filterDefinition,
             FileEntityService fileEntityService,
             User user,
             AsyncContext asyncContext,

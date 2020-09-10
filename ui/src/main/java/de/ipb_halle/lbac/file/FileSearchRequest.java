@@ -15,27 +15,19 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.file.mock;
+package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import java.io.IOException;
-import java.util.UUID;
-import org.apache.solr.client.solrj.SolrServerException;
+import de.ipb_halle.lbac.file.save.AttachmentHolder;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author fmauz
  */
-public class SolrSearcherMock extends SolrSearcher {
+public class FileSearchRequest {
 
-    @Override
-    public Document getDocumentById(Integer documentId, Integer collectionId) throws SolrServerException, IOException {
-        Document d = new Document();
-        d.setLanguage("en");
-        return d;
-    }
-
-   
+    public AttachmentHolder holder;
+    public Set<String> wordsToSearchFor = new HashSet<>();
 
 }

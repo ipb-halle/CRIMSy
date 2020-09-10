@@ -66,7 +66,7 @@ public class FileDeleteExec implements Runnable {
             response.setContentType("text/html");
 
             try {
-                fs.deleteFile(fileEntity.getFilename());
+                fs.deleteFile(fileEntity.getFileLocation());
                 this.logger.info(String.format("File %s in repository deleted.", fileEntity.getName()));
             } catch (Exception e) {
                 this.logger.warn(String.format("Error deleting file %s in repository.", fileEntity.getName()));

@@ -68,19 +68,16 @@ public class FileUploadWebService extends HttpServlet {
 
             //*** set timeout to 30 minutes
             File f = new File(this.getClass().getResource(FILTER_DEFINITION).toString().split(":")[1]);
-            logger.info(f.getAbsolutePath() + ":" + f.exists());
-
             asyncContext.setTimeout(UPLOAD_TIMEOUT);
-
+            
             asyncContext.start(new UploadToCol(
-                    f.getAbsolutePath(),
+                    this.getClass().getResourceAsStream(FILTER_DEFINITION),
                     fileEntityService,
                     userBean.getCurrentAccount(),
                     asyncContext,
                     collectionService,
                     termVectorEntityService));
         } catch (Exception e) {
-
             logger.error(e);
             asyncContext.complete();
         }

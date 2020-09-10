@@ -21,8 +21,6 @@ package de.ipb_halle.lbac.search;
  * SolrSearcher
  * Query the local Solr server
  */
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequest;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
@@ -36,12 +34,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.MediaType;
-import org.apache.cxf.jaxrs.client.WebClient;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -188,37 +181,38 @@ public class SolrSearcher {
             String collectionUri,
             String language) {
         Set<String> normalizedTerms = new HashSet<>();
-        try {
-            String termsAsString = terms.get(0);
-            for (int i = 1; i < terms.size(); i++) {
-                termsAsString += "+" + terms.get(i);
-            }
-            String fieldName = "text_" + language;
-            String restPoint = collectionUri
-                    + "/analysis/field?analysis.fieldname="
-                    + fieldName + "&analysis.fieldvalue="
-                    + termsAsString
-                    + "&wt=json";
-
-            WebClient wc = WebClient.create(restPoint);
-            String jsonResponse = wc.get(String.class);
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode actualObj = mapper.readTree(jsonResponse);
-            JsonNode lastAnalyzeStep = null;
-            Iterator<JsonNode> iter = actualObj.get("analysis").get("field_names").get(fieldName).get("index").elements();
-            while (iter.hasNext()) {
-                lastAnalyzeStep = iter.next();
-            }
-
-            iter = lastAnalyzeStep.elements();
-            while (iter.hasNext()) {
-                JsonNode node = iter.next();
-                normalizedTerms.add(node.get("text").asText());
-            }
-            normalizedTerms.addAll(terms);
-        } catch (Exception e) {
-            logger.error(e);
-        }
+        normalizedTerms.addAll(terms);
+//        try {
+//            String termsAsString = terms.get(0);
+//            for (int i = 1; i < terms.size(); i++) {
+//                termsAsString += "+" + terms.get(i);
+//            }
+//            String fieldName = "text_" + language;
+//            String restPoint = collectionUri
+//                    + "/analysis/field?analysis.fieldname="
+//                    + fieldName + "&analysis.fieldvalue="
+//                    + termsAsString
+//                    + "&wt=json";
+//
+//            WebClient wc = WebClient.create(restPoint);
+//            String jsonResponse = wc.get(String.class);
+//            ObjectMapper mapper = new ObjectMapper();
+//            JsonNode actualObj = mapper.readTree(jsonResponse);
+//            JsonNode lastAnalyzeStep = null;
+//            Iterator<JsonNode> iter = actualObj.get("analysis").get("field_names").get(fieldName).get("index").elements();
+//            while (iter.hasNext()) {
+//                lastAnalyzeStep = iter.next();
+//            }
+//
+//            iter = lastAnalyzeStep.elements();
+//            while (iter.hasNext()) {
+//                JsonNode node = iter.next();
+//                normalizedTerms.add(node.get("text").asText());
+//            }
+//            normalizedTerms.addAll(terms);
+//        } catch (Exception e) {
+//            logger.error(e);
+//        }
         return normalizedTerms;
     }
 
@@ -299,18 +293,5 @@ public class SolrSearcher {
         return finalQuery.trim();
     }
 
-    public String getTermPositions(Document d, String collectionUri) {
-
-        Client client = ClientBuilder.newClient();
-        return client.target(collectionUri)
-                .path("tvrh")
-                .queryParam("q", "id:" + d.getId().toString())
-                .queryParam("tv.offsets", true)
-                .queryParam("tv.fl", "text_" + d.getLanguage())
-                .queryParam("wt", "xml")
-                .queryParam("indent", "off")
-                .queryParam("json.nl", "map")
-                .request(MediaType.TEXT_XML)
-                .get(String.class);
-    }
+   
 }

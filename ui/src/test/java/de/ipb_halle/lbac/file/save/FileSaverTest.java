@@ -59,7 +59,7 @@ public class FileSaverTest extends TestBase {
     @Inject
     private FileEntityService fileEntityService;
     
-    private String examplaDocsRootFolder = "target/test-classes/exampledocs/";
+    private String exampleDocsRootFolder = "target/test-classes/exampledocs/";
     
     private User publicUser;
     private Collection col;
@@ -92,7 +92,7 @@ public class FileSaverTest extends TestBase {
         col = collectionService.save(col);
         col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
         
-        File f = new File(examplaDocsRootFolder + "Document1.pdf");
+        File f = new File(exampleDocsRootFolder + "Document1.pdf");
         FileInputStream stream = new FileInputStream(f);
         Integer id = fileSaver.saveFile(col, "Document1.pdf", stream);
         
@@ -105,7 +105,7 @@ public class FileSaverTest extends TestBase {
         Assert.assertEquals("Document1.pdf", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
         
-        f = new File(examplaDocsRootFolder + "DocumentX.docx");
+        f = new File(exampleDocsRootFolder + "DocumentX.docx");
         stream = new FileInputStream(f);
         id = fileSaver.saveFile(col, "DocumentX.docx", stream);
         Assert.assertEquals(2, fileEntityService.getDocumentCount(col));
@@ -116,7 +116,7 @@ public class FileSaverTest extends TestBase {
         Assert.assertEquals("DocumentX.docx", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
         
-        f = new File(examplaDocsRootFolder + "TestTabelle.xlsx");
+        f = new File(exampleDocsRootFolder + "TestTabelle.xlsx");
         stream = new FileInputStream(f);
         id = fileSaver.saveFile(col, "TestTabelle.xlsx", stream);
         Assert.assertEquals(3, fileEntityService.getDocumentCount(col));
@@ -127,7 +127,7 @@ public class FileSaverTest extends TestBase {
         Assert.assertEquals("TestTabelle.xlsx", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
         
-        f = new File(examplaDocsRootFolder + "TestTabelle.xlsx");
+        f = new File(exampleDocsRootFolder + "TestTabelle.xlsx");
         stream = new FileInputStream(f);
         id = fileSaver.saveFile(col, "TestTabelle.xlsx", stream);
         fileSaver.updateLanguageOfFile("de");
@@ -136,7 +136,7 @@ public class FileSaverTest extends TestBase {
         fo = fileEntityService.load(cmap).get(0);
         Assert.assertEquals(col.getId(), fo.getCollection().getId());
         Assert.assertEquals("de", fo.getDocument_language());
-        Assert.assertEquals("0d64aa1e3809778038fee35f92f543c688d2b4e3631108dc2e5ddbdb9706fbe50a6d834498f2de6bead4d05d383e94e277b3cd3d7cb846e68b3ea164123784ca", fo.getHash());
+        Assert.assertEquals("a9eed28584c7e6df1d061c77884820524a7d2b4c6644ef5d13b0c2daedaf4d10d040b7c7380df448f91a28eb7fba94cf0b4a964ae141032c63a0b571aeaa5ccf", fo.getHash());
         Assert.assertEquals("TestTabelle.xlsx", fo.getName());
         Assert.assertEquals(publicUser.getId(), fo.getUser().getId());
         // Assert.assertEquals(fileSaver.getFileLocation(), Paths.get(col.getBaseFolder(), "0", "0", fo.getFilename()).toString());

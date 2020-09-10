@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.file.save;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.file.TermVector;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test001_analyseEnglishPdf() throws FileNotFoundException, Exception {
-        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "Document1.pdf", 1);
         List<TermVector> tvs = analyser.getTermVector();
         Assert.assertEquals(2, tvs.size());
@@ -78,16 +79,16 @@ public class FileAnalyserTest {
 
     @Test
     public void test002_analyseGermanXls() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "TestTabelle.xlsx", 1);
-        Assert.assertEquals(11, analyser.getWordOrigins().size());
-        Assert.assertEquals(11, analyser.getTermVector().size());
+        Assert.assertEquals(20, analyser.getWordOrigins().size());
+        Assert.assertEquals(20, analyser.getTermVector().size());
         Assert.assertEquals("de", analyser.getLanguage());
     }
 
     @Test
     public void test003_analyseFrenchWord() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "Document_FR.docx", 1);
        // Assert.assertEquals(210, analyser.getWordOrigins().size());
        // Assert.assertEquals(210, analyser.getTermVector().size());
@@ -96,7 +97,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test004_analyseStemming() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "Document_wordStemming.docx", 1);
       //  Assert.assertEquals(12, analyser.getWordOrigins().size());
       //  Assert.assertEquals(12, analyser.getTermVector().size());
@@ -114,7 +115,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test005_checkUniqueWordOrigins() throws FileNotFoundException, Exception {
-        FileAnalyser analyser = new FileAnalyser(new File(filterDefinition));
+        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf", 1);
         List<TermVector> tvs = analyser.getTermVector();
       //  Assert.assertEquals(5428, tvs.size());

@@ -186,7 +186,7 @@ public class TermVectorEntityServiceTest extends TestBase {
         fO.setCollection(col);
         fO.setCreated(new Date());
         fO.setDocument_language(language);
-        fO.setFilename(fileName);
+        fO.setFileLocation(fileName);
         fO.setHash(fileName);
         fO.setName(fileName);
         fO.setUser(owner);

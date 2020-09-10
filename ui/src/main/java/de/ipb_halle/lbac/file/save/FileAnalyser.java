@@ -26,6 +26,7 @@ import de.ipb_halle.tx.text.properties.Language;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +41,10 @@ import java.util.SortedSet;
 public class FileAnalyser {
 
     protected ParseTool parseTool = new ParseTool();
-    protected File filterDefinition;
+    protected InputStream filterDefinition;
     protected Integer fileId;
 
-    public FileAnalyser(File filterDefinition) {
+    public FileAnalyser(InputStream filterDefinition) {
         this.filterDefinition = filterDefinition;
     }
 
@@ -74,7 +75,7 @@ public class FileAnalyser {
     }
 
     public void analyseFile(String location, Integer fileId) throws FileNotFoundException {
-        parseTool.setFilterDefinition(new FileInputStream(filterDefinition));
+        parseTool.setFilterDefinition(filterDefinition);
         parseTool.setInputStream(new FileInputStream(
                 new File(location)));
         parseTool.initFilter();

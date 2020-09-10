@@ -17,12 +17,10 @@
  */
 package de.ipb_halle.lbac.file.save;
 
-import com.google.common.io.ByteStreams;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.util.HexUtil;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +37,7 @@ import java.util.Date;
  * @author fmauz
  */
 public class FileSaver {
-    
+
     protected Path fileLocation;
     protected Integer fileId;
     protected AttachmentHolder objectOfAttachedFile;
@@ -49,28 +47,28 @@ public class FileSaver {
     protected static final String HASH_ALGO = "SHA-512";
     protected Integer MAX_FILES_IN_FOLDER = 100;
     protected FileObject fileObject;
-    
+
     public FileSaver(FileEntityService fileEntityService, User user) {
         this.fileEntityService = fileEntityService;
         this.user = user;
     }
-    
+
     public Integer saveFile(
             AttachmentHolder objectOfAttachedFile,
             String fileName,
             InputStream fileStream) throws NoSuchAlgorithmException, IOException {
-        
+
         fileId = saveFileInDB(objectOfAttachedFile, fileName);
         fileLocation = calculateFileLocation(objectOfAttachedFile);
         saveFileToFileSystem(fileStream, fileLocation);
         updateFileInDB(fileLocation, hash);
-        
+
         return fileId;
     }
-    
+
     protected Integer saveFileInDB(AttachmentHolder objectOfAttachedFile, String fileName) {
         fileObject = new FileObject();
-        fileObject.setFilename("to be set");
+        fileObject.setFileLocation("to be set");
         fileObject.setName(fileName);
         fileObject.setCreated(new Date());
         fileObject.setUser(user);
@@ -79,20 +77,20 @@ public class FileSaver {
         fileObject = fileEntityService.save(fileObject);
         return fileObject.getId();
     }
-    
+
     protected Path calculateFileLocation(AttachmentHolder objectOfAttachedFile) {
         String folder1 = ((Integer) (fileId / (MAX_FILES_IN_FOLDER * MAX_FILES_IN_FOLDER))).toString();
         String folder2 = ((Integer) (fileId / (MAX_FILES_IN_FOLDER))).toString();
         return Paths.get(objectOfAttachedFile.getBaseFolder(), folder1, folder2, fileId.toString());
-        
+
     }
-    
+
     protected void updateFileInDB(Path fileName, String hash) {
-        fileObject.setFilename(fileName.toString());
+        fileObject.setFileLocation(fileName.toString());
         fileObject.setHash(hash);
         fileEntityService.save(fileObject);
     }
-    
+
     protected void saveFileToFileSystem(InputStream inputStream, Path fileLocation) throws IOException, NoSuchAlgorithmException {
         File f = fileLocation.toFile();
         if (!f.getParentFile().exists()) {
@@ -100,16 +98,16 @@ public class FileSaver {
         }
         MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
         DigestInputStream dis = new DigestInputStream(inputStream, md);
-        
+
         Files.copy(dis, fileLocation);
         hash = HexUtil.toHex(md.digest());
     }
-    
+
     public void updateLanguageOfFile(String language) {
         fileObject.setDocument_language(language);
         fileEntityService.save(fileObject);
     }
-    
+
     public Path getFileLocation() {
         return fileLocation;
     }

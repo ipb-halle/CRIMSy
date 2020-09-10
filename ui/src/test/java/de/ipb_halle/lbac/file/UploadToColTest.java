@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class UploadToColTest extends TestBase {
     public void test001_fileUploadTest() throws Exception {
         createAndSaveNewCol();
         UploadToColMock upload = new UploadToColMock(
-                filterDefinition,
+                new FileInputStream(new File(filterDefinition)),
                 fileEntityService,
                 publicUser,
                 new AsyncContextMock(
@@ -110,14 +111,14 @@ public class UploadToColTest extends TestBase {
 
         WriterMock writermock = ((WriterMock) upload.response.getWriter());
         String json = writermock.getJson();
-        Assert.assertEquals(String.format("{\"success\":true,\"newUuid\":\"%s\",\"uploadName\":\"IPB_Jahresbericht_2004.pdf\"}",upload.fileId), json);
+        Assert.assertEquals(String.format("{\"success\":true,\"newUuid\":\"%s\",\"uploadName\":\"IPB_Jahresbericht_2004.pdf\"}", upload.fileId), json);
 
     }
 
     @Test
     public void test002_fileUploadTestNoCollectionFound() throws Exception {
         UploadToColMock upload = new UploadToColMock(
-                filterDefinition,
+                new FileInputStream(new File(filterDefinition)),
                 fileEntityService,
                 publicUser,
                 new AsyncContextMock(

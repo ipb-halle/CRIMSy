@@ -33,6 +33,8 @@ import javax.servlet.http.HttpServletResponse;
 import de.ipb_halle.lbac.file.save.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -60,13 +62,13 @@ public class UploadToCol implements Runnable {
     private final Logger logger;
 
     public UploadToCol(
-            String filterDefinition,
+            InputStream filterDefinition,
             FileEntityService fileEntityService,
             User user,
             AsyncContext asyncContext,
             CollectionService collectionService,
             TermVectorEntityService termVectorService) {
-        fileAnalyser = new FileAnalyser(new File(filterDefinition));
+        fileAnalyser = new FileAnalyser(filterDefinition);
         fileSaver = new FileSaver(fileEntityService, user);
         this.asyncContext = asyncContext;
         this.collectionService = collectionService;
@@ -74,7 +76,7 @@ public class UploadToCol implements Runnable {
         this.response = (HttpServletResponse) asyncContext.getResponse();
         this.termVectorService = termVectorService;
         this.fileEntityService = fileEntityService;
-        this.logger = LogManager.getLogger(FileUploadOld.class);
+        this.logger = LogManager.getLogger(UploadToCol.class);
     }
 
     private String createJsonErrorResponse(String errorMessage) {

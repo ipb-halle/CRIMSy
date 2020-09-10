@@ -96,7 +96,7 @@ public class FileEntityServiceTest extends TestBase {
         fE.setCollection(col);
         fE.setCreated(new Date());
         fE.setDocument_language("en");
-        fE.setFilename("testFile.pdf");
+        fE.setFileLocation("testFile.pdf");
         fE.setHash("testHash");
         fE.setName("testFile");
         fE.setUser(u);
@@ -113,7 +113,7 @@ public class FileEntityServiceTest extends TestBase {
 
         List<FileObject> lfo = fileEntityService.getAllFilesInCollection(col);
         assertEquals("Found one file", 1, lfo.size());
-        assertEquals("Filename of file matches", "testFile.pdf", lfo.get(0).getFilename());
+        assertEquals("Filename of file matches", "testFile.pdf", lfo.get(0).getFileLocation());
         assertEquals("Document count matches", 1, fileEntityService.getDocumentCount(col));
     }
 }
