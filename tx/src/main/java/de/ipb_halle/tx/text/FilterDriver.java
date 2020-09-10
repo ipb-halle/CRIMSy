@@ -172,10 +172,13 @@ public class FilterDriver extends AbstractFilter {
     }
 
     /**
-     * @return the FilterDriver has no output queue
+     * @return the FilterDriver returns the output queue of 
+     * the first filter chain as an output queue
      */
     public BlockingQueue<TextRecord> getOutputQueue() {
-        return null; 
+        List<Filter> chain = this.filterChains.get(0);
+        int lastFilter = chain.size() - 1;
+        return chain.get(lastFilter).getOutputQueue();
     }
 
     /**

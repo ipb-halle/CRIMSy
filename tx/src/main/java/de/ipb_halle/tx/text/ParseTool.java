@@ -108,6 +108,16 @@ public class ParseTool {
         }
     }
 
+    /**
+     * @param process a single TextRecord through a predefined filter chain
+     * @param the annotated TextRecord
+     */
+    public TextRecord parseSingleTextRecord(TextRecord rec) {
+        this.inputQueue.offer(rec);
+        this.filter.filter(FilterOperation.NORMAL);
+        this.filter.filter(FilterOperation.FLUSH);
+        return this.filter.getOutputQueue.poll();
+    }
 
     public void setInputStream(InputStream is) { this.inputStream = is; }
     public void setFilterDefinition(InputStream is) { this.filterDefinition = is; }

@@ -109,7 +109,7 @@ public class StemmingFilter extends AbstractFilter {
             if ((! word.getStopWord()) && (e < len) && (s < len)) {
                 stemmer.setCurrent(this.textRecord.getText().substring(s,e));
                 stemmer.stem();
-                word.setStem(stemmer.getCurrent());
+                word.addStem(stemmer.getCurrent());
             }
         }
     }

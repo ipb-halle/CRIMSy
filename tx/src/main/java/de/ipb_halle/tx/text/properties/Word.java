@@ -27,6 +27,7 @@ public class Word extends TextPropertyBase {
     private boolean stopWord;
 
     private String stem;
+    private Set<String> stemSet;
 
     /*
      * default constructor
@@ -44,11 +45,45 @@ public class Word extends TextPropertyBase {
     }
 
     /**
+     * @param stem the stem of this word as determined by a stemming algorithm
+     */
+    public void addStem(String stem) {
+        if ((this.stem == null) && (this.stemSet == null)) {
+            this.stem = stem;
+        } else {
+            if (this.stemSet == null) {
+                this.stemSet = new HashSet<> ();
+                this.stemSet.add(this.stem);
+                this.stem = null;
+            }
+            this.stemSet.add(stem);
+        }
+    }
+
+    /**
      * @return returns the stem of this Word, if one has been set 
      * by a stemming algorithm
      */
     public String getStem() {
+        if (this.stemSet != null) {
+            throw new IllegalStateException("call to getStem() when multiple stems are present");
+        }
         return this.stem;
+    }
+
+    /**
+     * @return a set of stems if at least on stem has been set
+     */
+    public Set<String> getStemSet() {
+        if (this.stemSet == null) {
+            if (this.stem != null) {
+                Set<String> s = new HashSet<> ();
+                s.add(this.stem);
+                return s;
+            } 
+            return null;
+        }
+        return this.stemSet;
     }
 
     public boolean getStopWord() {
@@ -57,13 +92,6 @@ public class Word extends TextPropertyBase {
 
     public String getType() {
         return TYPE;
-    }
-
-    /**
-     * @param stem the stem of this word as determined by a stemming algorithm
-     */
-    public void setStem(String stem) {
-        this.stem = stem;
     }
 
     /**
