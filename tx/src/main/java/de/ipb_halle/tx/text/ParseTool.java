@@ -116,7 +116,7 @@ public class ParseTool {
         this.inputQueue.offer(rec);
         this.filter.filter(FilterOperation.NORMAL);
         this.filter.filter(FilterOperation.FLUSH);
-        return this.filter.getOutputQueue.poll();
+        return this.filter.getOutputQueue().poll();
     }
 
     public void setInputStream(InputStream is) { this.inputStream = is; }

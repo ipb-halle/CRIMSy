@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.tx.text.properties;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Word extends TextPropertyBase {
 
     public final static String TYPE = "WORD";
