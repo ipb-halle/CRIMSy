@@ -1,4 +1,4 @@
-# Fachlicher Kontext
+
 Dieses Kapitel listet alle beteiligten Kommunikationspartner (Nutzer und IT-Systeme) auf und beschreibt die verwendeten Ein- und Ausgabedaten sowie die verwendeten Protokolle. Die Darstellung beginnt mit dem Blick auf das Gesamtsystem geht im weiteren Verlauf auf die Details ein.
 
 ![Cloud Architecture](img/BigPicture.svg "Big picture: cloud architecture")
@@ -40,7 +40,6 @@ Die Kommunikation innerhalb eines Cloud-Knotens kann nach aktueller Einschätzun
 Die Kommunikation innerhalb eines Knotens umfasst folgende Anwendungsfälle:
 
 * JDBC-Datenbankverbindung zu einer PostgreSQL-Instanz
-* REST-API von SOLR
 * HTTP-Kommunikation der TomEE-Webapplikation mit dem Reverse HTTPS-Proxy
 
 ## Nutzer-Kommunikation
@@ -71,8 +70,6 @@ Wie bereits in der Knoten-Sicht erkennbar besteht ein Knoten aus in Docker-Conta
   Der Apache HTTP Server nimmt als Proxy (mit Ausnahme einiger weniger dokumentierter Fälle) alle eingehenden Verbindungsanfragen entgegen.
 * **TomEE Web und EE Application Server**
   Im TomEE Server verbirgt sich der Hauptteil der Cloudlogik. Die Webanwendung steuert und organisiert im Verbund mit den anderen Knoten die Cloud und verarbeitet Suchanfragen, Upload- und Download-Requests und alle sonstigen Nutzeranforderungen. Sie arbeitet dazu mit den übrigen Komponenten (v.a. s.u.) zusammen.
-* **Apache SOLR**
-  Apache SOLR übernimmt die Indexierung und das Retrieval von Dokumenten und stellt hierzu eine REST-Schnittstelle zur Verfügung. In späteren Projektphasen wird SOLR voraussichtlich um Funktionen zur semantischen Annotation (oder ggf. ähnlich gelagerte Funktionen) ergänzt werden.
 * **PostgreSQL**
   Stellt eine fortgeschrittene relationale Datenbank zur Verfügung, auf die von der Webanwendung mittels JDBC-Schnittstelle (bzw. JPA / JPA2) zugegriffen wird.
 

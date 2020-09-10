@@ -8,7 +8,7 @@ Option              Erläuterung
 ------------------- -------------------------------------------------------------
 `--help`            Zeigt einen Hilfetext an und beendet das Programm ohne weitere Aktionen
 
-`--debug`           Öffnet die Ports der Datenbank (5432), von Solr (8983) und TomEE (8080) für direkte Zugriffe auf die Docker-Container. Damit werden insbesondere die Management-Funktionen von Solr zugänglich.
+`--debug`           Öffnet die Ports der Datenbank (5432) und TomEE (8080) für direkte Zugriffe auf die Docker-Container. 
 
 `--noproxy`         Überschreibt die Einstellungen des Konfigurationsskripts und installiert einen Knoten ohne Proxy. In diesem Fall muss ein externer Proxy eingerichtet werden.
 

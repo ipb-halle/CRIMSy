@@ -25,6 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -37,13 +38,13 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1261"
+     inkscape:window-width="1895"
      inkscape:window-height="980"
      id="namedview130"
      showgrid="false"
      inkscape:zoom="1.1856284"
-     inkscape:cx="414.49219"
-     inkscape:cy="287.80762"
+     inkscape:cx="173.24864"
+     inkscape:cy="326.9702"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -122,20 +123,6 @@
        pointer-events="none"
        id="path20" />
     <path
-       d="M 313 180 L 313 200 L 228 200 L 228 213.63"
-       fill="none"
-       stroke="#000000"
-       stroke-miterlimit="10"
-       pointer-events="none"
-       id="path22" />
-    <path
-       d="M 228 218.88 L 224.5 211.88 L 228 213.63 L 231.5 211.88 Z"
-       fill="#000000"
-       stroke="#000000"
-       stroke-miterlimit="10"
-       pointer-events="none"
-       id="path24" />
-    <path
        d="M 403 180 L 403 200 L 468 200 L 468 213.63"
        fill="none"
        stroke="#000000"
@@ -173,6 +160,7 @@
              style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 138px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
             <xhtml:div
                style="display:inline-block;text-align:inherit;text-decoration:inherit;white-space:normal;">TomEE<xhtml:br />
+
 EE Application Container</xhtml:div>
           </xhtml:div>
         </foreignObject>
@@ -217,63 +205,20 @@ EE Application Container</xhtml:div>
             <xhtml:div
                style="display:inline-block;text-align:inherit;text-decoration:inherit;white-space:normal;"><xhtml:div
    align="center">PostgreSQL</xhtml:div>
+
 Datenbank</xhtml:div>
           </xhtml:div>
         </foreignObject>
       </switch>
     </g>
-    <path
-       d="M 228 280 L 228 305 L 377 305 L 377 331.63"
-       fill="none"
-       stroke="#000000"
-       stroke-miterlimit="10"
-       pointer-events="none"
-       id="path50" />
-    <path
-       d="M 377 336.88 L 373.5 329.88 L 377 331.63 L 380.5 329.88 Z"
-       fill="#000000"
-       stroke="#000000"
-       stroke-miterlimit="10"
-       pointer-events="none"
-       id="path52" />
     <rect
-       x="168"
-       y="220"
+       x="151.97475"
+       y="217.89142"
        width="120"
        height="60"
-       fill="#ffe6cc"
-       stroke="#d79b00"
        pointer-events="none"
-       id="rect54" />
-    <g
-       transform="translate(211.5,243.5)"
-       id="g60">
-      <switch
-         id="switch58">
-        <foreignObject
-           style="overflow:visible;"
-           pointer-events="all"
-           width="33"
-           height="12"
-           requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
-          <xhtml:div
-             style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; vertical-align: top; width: 34px; white-space: nowrap; overflow-wrap: normal; text-align: center;">
-            <xhtml:div
-               style="display:inline-block;text-align:inherit;text-decoration:inherit;white-space:normal;">
-              <xhtml:div
-                 align="center">SOLR<xhtml:br />
-</xhtml:div>
-            </xhtml:div>
-          </xhtml:div>
-        </foreignObject>
-        <text
-           x="17"
-           y="12"
-           font-size="12px"
-           id="text56"
-           style="font-size:12px;font-family:Helvetica;text-anchor:middle;fill:#000000">SOLR</text>
-      </switch>
-    </g>
+       id="rect54"
+       style="fill:#b6d3fb;stroke:#80a0ce;fill-opacity:1;stroke-opacity:1" />
     <path
        d="M 338 362 C 338 319.33 598 319.33 598 362 L 598 458 C 598 500.67 338 500.67 338 458 Z"
        fill="#ffcc99"
@@ -345,6 +290,7 @@ Datenbank</xhtml:div>
                style="display:inline-block;text-align:inherit;text-decoration:inherit;white-space:normal;">
               <xhtml:div
                  align="center">Basissystem /<xhtml:br />
+
 Docker Host<xhtml:br />
 </xhtml:div>
             </xhtml:div>
@@ -553,6 +499,22 @@ Docker Host<xhtml:br />
        stroke-miterlimit="10"
        pointer-events="none"
        id="path124" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="212.15027"
+       y="243.89258"
+       id="text4572"><tspan
+         sodipodi:role="line"
+         id="tspan4570"
+         x="212.15027"
+         y="243.89258"
+         style="text-align:center;text-anchor:middle">Apache SolR</tspan><tspan
+         sodipodi:role="line"
+         x="212.15027"
+         y="262.64258"
+         id="tspan4574"
+         style="text-align:center;text-anchor:middle">(entfallen)</tspan></text>
   </g>
   <text
      xml:space="preserve"

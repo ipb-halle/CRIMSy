@@ -35,7 +35,6 @@ LBAC_OFFICIAL_PWFILE=official_cert.passwd
 
 LBAC_M4=dist/etc/config_m4.inc
 LBAC_PGSQL_PORT_ENABLE="dnl"
-LBAC_SOLR_PORT_ENABLE="dnl"
 LBAC_TOMEE_PORT_ENABLE="dnl"
 LBAC_HSTS_ENABLE="dnl"
 LBAC_CLOUD_MODE="AUTO";
@@ -48,7 +47,7 @@ LBAC_SKIP_SNAPSHOT="OFF"
 function cleanDist {
     pushd dist > /dev/null
     # ToDo: remove folder pgchem in future revisions
-    rm -rf bin db extralib pgchem proxy solr ui
+    rm -rf bin db extralib pgchem proxy ui
     popd > /dev/null
     
 }
@@ -188,7 +187,6 @@ function keySetup {
 function makeDataDir {
 	mkdir -p "$LBAC_DATASTORE/data/db"
 	mkdir -p "$LBAC_DATASTORE/data/htdocs"
-	mkdir -p "$LBAC_DATASTORE/data/solr"
 	mkdir -p "$LBAC_DATASTORE/data/ui"
 }
 
@@ -233,7 +231,6 @@ define(\`LBAC_MASTER_INSTITUTION', \`$LBAC_MASTER_INSTITUTION')dnl
 define(\`LBAC_NODE_ID',\`$LBAC_NODE_ID')dnl
 define(\`LBAC_NODE_RANK',\`$LBAC_NODE_RANK')dnl
 define(\`LBAC_PGSQL_PORT_ENABLE',\`$LBAC_PGSQL_PORT_ENABLE')dnl
-define(\`LBAC_SOLR_PORT_ENABLE',\`$LBAC_SOLR_PORT_ENABLE')dnl
 define(\`LBAC_TOMEE_PORT_ENABLE',\`$LBAC_TOMEE_PORT_ENABLE')dnl
 define(\`LBAC_HSTS_ENABLE',\`$LBAC_HSTS_ENABLE')dnl
 define(\`LBAC_PRIMARY_CLOUD',\`$LBAC_CLOUD')dnl
@@ -366,7 +363,6 @@ for i in $* ; do
         --debug)
             echo "Activating debug mode ..."
             LBAC_PGSQL_PORT_ENABLE=" "
-            LBAC_SOLR_PORT_ENABLE=" "
             LBAC_TOMEE_PORT_ENABLE=" "
             ;;
         --help)

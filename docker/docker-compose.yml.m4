@@ -60,19 +60,3 @@ LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
     volumes:
       - LBAC_DATASTORE/dist/proxy/htdocs:/usr/local/apache2/htdocs
 
-  lbacsolr:
-    build:
-      context: .
-      dockerfile: ./solr/Dockerfile
-    entrypoint: 
-      - /bin/bash
-      - /install/setup.sh
-    labels:
-      de.ipb-halle.lbac.docker-container: "lbacsolr"
-    networks:
-      - lbac_private
-LBAC_SOLR_PORT_ENABLE   ports:
-LBAC_SOLR_PORT_ENABLE     - "8983:8983"
-    volumes:
-      - LBAC_DATASTORE/data/solr:/data/solr
-

@@ -21,7 +21,6 @@ Die Grafik zeigt eine schematische Darstellung eines Knotens mit den Beziehungen
 * Storage
 * PostgreSQL-Datenbank
 * Proxy (Apache HTTP Server)
-* Solr
 * TomEE (Web Application Server)
 
 Darüberhinaus wird der im TomEE Web Application Server laufenden Java-Web-Anwendung ein eigener Abschnitt gewidmet.
@@ -56,7 +55,7 @@ Es wäre wünschenswert, das System durch Erweiterungen wie beispielsweise SELin
 Die Docker-Performance und insbesondere der Speicherplatzbedarf sind von verwendeten Docker-Storage-Subsystem abhängig. Siehe nachfolgenden Abschnitt: Storage.
 
 ### Storage
-Beim Speichersubsystem des Knotens handelt es sich um ein einfaches Verzeichnis in einem normalen Linux-Dateisystem (XFS, Ext4, ...). Das SOLR-Handbuch warnt ausdrücklich davor, den Speicher als Netzwerkdateisystem (z. B. NFS oder CIFS) zur Verfügung zu stellen. Entsprechende Empfehlungen existieren auch für PostgreSQL. Unsere Empfehlung lautet daher, den Speicher als internen Plattenspeicher, DAS oder SAN-Speicher zur Verfügung zu stellen.
+Beim Speichersubsystem des Knotens handelt es sich um ein einfaches Verzeichnis in einem normalen Linux-Dateisystem (XFS, Ext4, ...). Das PostgreSQL-Handbuch warnt ausdrücklich davor, den Speicher als Netzwerkdateisystem (z. B. NFS oder CIFS) zur Verfügung zu stellen. Unsere Empfehlung lautet daher, den Speicher als internen Plattenspeicher, DAS oder SAN-Speicher zur Verfügung zu stellen.
 
 > **Tip:**
 > _Um spätere Erweiterungen des Speicherplatzes zu erleichtern, sollte das Verzeichnis für die Cloud-Daten in einem separaten Dateisystem mit darunterliegendem Volume-Management angelegt werden. Über die Natur dieses Managements (LVM, ZFS, Feature des SAN-Systems) werden keine Annahmen getroffen. Für den Anfang kann zunächst auch in der Root-Partition des Knotens gearbeitet werden._
@@ -74,9 +73,8 @@ Während der Konfiguration und anschließenden Installation werden in dem von de
 * `bin/`
   Für diverse Skripte (Installation, Backup, ...).
 * `data/`
-  Die Daten der Cloud (Dokumente, SOLR-Indices, PostgreSQL-Datenbanken usw.); unterhalb von /data werden entsprechend Unterverzeichnisse erzeugt:
+  Die Daten der Cloud (Dokumente, PostgreSQL-Datenbanken usw.); unterhalb von /data werden entsprechend Unterverzeichnisse erzeugt:
   - `data/db/`
-  - `data/solr/`
   - `data/ui/`
 * `dist/`
   Die Softwaredistribution (Bibliotheken, WAR-Dateien, Konfiguration der Docker Container, usw.). Aus diesem Verzeichnis werden die Docker-Container instantiiert.
@@ -95,7 +93,7 @@ Die Konfiguration des PostgreSQL-Containers ergänzt das offizielle Docker-Image
 
 Aus der Webanwendung wird über Hibernate auf die Datenbank zugegriffen. Es hat sich gezeigt, dass aufgrund der Komplexität der Datenstrukturen und der vielfältigen Verknüpfungen (lokal und remote), innerhalb der Anwendung eine Zwischenschicht, nämlich Datatransferobjekte, eingeführt werden mussten. 
 
-Das Backup der Datenbank sowie Datenbank-Dumps vor Softwareupdates müssen extern organisiert werden. Beide Funktionen werden vom Skript `$LBAC_DATASTORE/bin/backup.sh` wahrgenommen, dass auch die Sicherung der übrigen Datenquellen (Solr, ui) übernimmt. Der Aufruf erfolgt entweder durch CRON oder während der Installation durch das Setup-Skript. Die Sicherung erfolgt in das Verzeichnis `$LBAC_DATASTORE/backup`. 
+Das Backup der Datenbank sowie Datenbank-Dumps vor Softwareupdates müssen extern organisiert werden. Beide Funktionen werden vom Skript `$LBAC_DATASTORE/bin/backup.sh` wahrgenommen, dass auch die Sicherung der übrigen Datenquellen (ui) übernimmt. Der Aufruf erfolgt entweder durch CRON oder während der Installation durch das Setup-Skript. Die Sicherung erfolgt in das Verzeichnis `$LBAC_DATASTORE/backup`. 
 
 Die Datenbank wird momentan nicht im ArchiveLog-Modus betrieben.
 
@@ -171,11 +169,6 @@ Die vom Proxy benötigten Zertifikate und Schlüssel werden bei der Installation
 
 > **Achtung:**
 > _Die Gültigkeit der Zertifikatssperrliste ist auf wenige Tage beschränkt. Die Zertifikatssperrliste (CRL) muss deshalb täglich aktualisiert werden. Die aktuelle Zertifkatssperrliste kann jeweils unter der URL `$LBAC_DISTRIBUTION_POINT/crl.pem` heruntergeladen werden. Der Wert der Variable `$LBAC_DISTRIBUTION_POINT` kann der Konfigurationsdatei `$LBAC_DATASTORE/etc/config.sh` entnommen werden._
-
-### SolR
-Der Baustein Solr übernimmt die Indexierung (und zukünftig semantische Annotation) der Dokumente. Die Dokumenten werden dabei über den `/update/extract`-Mechanismus in Solr hochgeladen. Dabei durchlaufen sie eine komplexe Analyse-Pipeline. Zunächst wird mit Apache Tika eine Konvertierung der unterschiedlichen Formate (PDF, Microsoft .doc, ...) in einen Textstream vorgenommen. Anschließend werden die relevanten Informationen durch Sprachanalyse, Tokenizing, Stemming, Stoppwort-Filterung und ggf. weitere Schritte bestimmt. Schließlich wird ein Index erzeugt, der Text gespeichert und ein Termvector erzeugt. Die exakte Abfolge der Analyseschritte und die gespeicherten Daten und Metadaten wird durch die Dateien solrconfig.xml und managed-schema (sowie damit verbundene Stoppwort-Listen usw.) gesteuert.
-
-Ein Problem stellte die Analyse und Speicherung von Dokumenten in mehreren Sprachen (mit der Vereinfachung: eine Sprache pro Dokument!) dar, da dieser Fall in SolR nach unserem Verständnis schwierig zu handhaben ist. Bei der Abarbeitung der Analysepipeline werden die (Text-)Daten sprachabhängig in unterschiedlichen Feldern gespeichert, z. B. `text_en`, `text_de` usw. Dies führt zur Abfragezeit dazu, dass Termvektoren, Textpositionen usw. aus verschiedenen Feldern zusammengesucht werden müssen. Die Speicherung in einem gemeinsamen Feld (z.B. `_general_`) ist nicht möglich, es sei denn, man verzichtet bei der Analyse (Stemming, Stopwort-Filterung, ...) auf sprachspezifische Eigenheiten. Das führt aber zu häßlichen Artefakten und unbrauchbaren Suchergebnissen in der *Word Cloud Suche*. Perspektivisch ist daher geplant, SolR durch eine andere Lösung zu ersetzen. Die Ersatzlösung wird dabei voraussichtlich schlechter skalieren als SolR; dessen Leistungsfähigkeit ist im von uns anvisierten Einsatzszenario jedoch bei weitem überdimensioniert.
 
 ### TomEE
 Die spezifische Anwendungslogik der Leibniz Bioactives Cloud befindet sich größtenteils in der Webanwendung ui, die vom Baustein "TomEE Web Application Server" gehostet wird. Beim TomEE Web Application Server handelt sich um einen Docker-Container mit "Apache TomEE Plume", der seinerseits als JavaEE Container für die Webanwendung fungiert. Die Konfiguration des Docker-Containers stützt sich auf das offizielle TomEE-Plume Image (Stand 2020-03-12: `tomee:8-jre-7.1.0-plume`) und modifiziert dieses wie folgt:

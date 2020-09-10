@@ -20,4 +20,4 @@ Systemarchitektur Handbuch
    10_Risikoanalyse.md
    11_TechnSchulden.md
    12_Glossar.md
-   13_Lizenz.md
+   13_Legal.md

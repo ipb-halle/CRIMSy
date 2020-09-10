@@ -47,48 +47,6 @@ Suchanfragen
 
 Eine Suchanfrage wird parallel an alle verfügbaren Nodes der Cloud verteilt und ausgeführt. Jeder Node liefert als Ergebnis eine Liste mit Dokumenten, die im Browser Frontend zusammengeführt und dargestellt wird. Die Liste lässt sich anschliessend nach Spalten sortieren. 
 
-
-.. note:: Die Indexierung der Dokumente erfolgt durch SolR; Syntax und Grammatik der Anfragen sind daher durch SolR vorgegeben. Die Implementierung der Wordcloudsuche und einer globalen Relevanzmetrik haben jedoch einige tiefgreifende Änderungen im Mechanismus der Anfrage-Behandlung erfordert. Einige der hier beschriebenen Abfrageoperationen funktionieren daher nicht mehr.
-
-Eine Suchanfrage besteht grundsätzlich aus einem oder mehreren Suchbegriffen. Die zusätzliche Verknüpfung durch logische Operatoren ( AND, OR, NOT ) ist aktuell leider nicht mehr möglich.
-
-Platzhalter
-"""""""""""
-Die Suchbegriffe können folgende Platzhalterzeichen (Wildcards), z.B. Fragezeichen (`?`) oder Asterisk (`*`) enthalten:
-
-    **Beispiel:** `?`: der Suchbegriff `Te?t` liefert als mögliche Ergebnisse `Text`, `Test` usw.
-
-    **Beispiel:** `*`: der Suchbegriff `Text*` liefert als mögliche Ergebnisse `Text`, `Texte`, `Texter`, `Textstelle` usw.
-
-Unscharfe Suche (*fuzzy search*)
-""""""""""""""""""""""""""""""""
-Darüberhinaus kann man mit unscharfen Suchbegriffen operieren. Die unscharfe Suche basiert auf dem Levenshtein-Distanz Algorithmus. Der Suchbegriff besteht aus einem Wort gefolgt vom Tilde-Symbol. Zusätzlich läßt sich noch Schwellenfaktor zwischen 0 (ungenau) und 1 (sehr genau)  hinzufügen. Standard ist 0.5
-
-    **Beispiel:** der Suchbegriff `Tier~` liefert als mögliche Ergebnisse auch `Tiere`, `Tor`, `Thor` oder auch `Hier`. Durch Angabe eines Gewichts kann die Toleranz des Algorithmus angepasst werden: `Tier~0.8`; der Standardwert beträgt 0.5
-
-Nachbarschaftssuche (*proximity search*)
-""""""""""""""""""""""""""""""""""""""""
-mehrere Suchbegriffe, die in einem bestimmten Wortabstand zueinander stehen. Die Suchbegriffe werden durch doppelte Hochkomma eingeschlossen gefolgt durch das Tilde-Symbol und der Wortabstand.
-
-    **Beispiel:** der Suchbegriff `"Analyse Chloroplasten"~2` liefert als mögliches Ergebnis eine Textstelle wie `Analyse in den Chloroplasten ..`
-
-Wichtung der Suchbegriffe
-"""""""""""""""""""""""""
-Die Relevanz eines Suchbegriffes läßt sich Angabe eines Faktors erhöhen. Dazu wird der Suchbegriff mit `^` und einer Zahl versehen.
-
-    **Beispiel:** der Suchbegriff `"arabidopsis thaliana"^4` `"Acker-Schmalwand"^2` liefert bevorzugt Ergebnisse mit `arabidopsis thaliana` 
-
-Suche mit logischen Operatoren
-""""""""""""""""""""""""""""""
-mehrere Suchbegriffe lassen sich logische Operatoren miteinander verknüpfen (derzeit nicht möglich):
-
-    **Beispiel:**
-    Suchbegriff: `Analyse AND Chloroplast*` - liefert alle Dokumente, die beide Begriffe enthalten
-    
-    Suchbegriff: `Calcium  OR Phospor` - liefert alle Dokumente, die mindestens einen der beiden Begriffe enthalten
-    
-    Suchbegriff: `"arabidopsis thaliana" NOT 2013` - liefert alle Dokumente mit der Wortgruppe `arabidopsis thaliana`, aber ohne `2013`
-
 Wordcloud-Suche
 ^^^^^^^^^^^^^^^
 .. image:: img/lbac_usecase_wordcloud.svg
@@ -144,50 +102,10 @@ $$score_T = (0.5 - | {D_T \over D} - 0.5|) * F_T$$
 | $D$      | Gesamtanzahl der Dokumente                |
 +----------+-------------------------------------------+
 
-Datenbank-Support
-"""""""""""""""""
-Nach der Erzeugung des Termvector, was automatisch mit dem Upload des Dokumentes zum Solr erfolgt, wird der Termvector im JSON-Format gelesen und als zusätzliche Meta-Information zum Dokument in der Datenbank-Tabelle files im Feld termvectors abgespeichert. Das Feld ist vom Datentyp jsonb. Das wird aus Performance-Gründen getan, da die Aggregation und Sortierung der Schlagwörter mehrerer Termvectoren direkt auf der Datenbank dank JSON-Unterstützung (Index GIN, lateral joins & spezielle Operatoren)  erfolgen kann. Im Controller wird nur das Endergebnis (Topliste der Schlagwörter) weitergereicht.
-
-Folgende SQL-Anweisung aggregiert und sortiert die Termvectoren der gefundenen Dokumente zu einem Vector. Dabei wird von der JSON-Unterstützung des Postgres-Servers Gebrauch gemacht.  Ein direkter Abruf des Termvectors vom Solr-Server wäre möglich, müsste aber anschließend in Java aufwendig weiter verarbeitet werden. 
-::
-
-        SELECT
-          tv.key as word,
-          SUM(CAST((tv.value->>'tf') AS BIGINT)) as wc
-        FROM files
-           cross join lateral jsonb_each(termvectors) tv
-        WHERE id in ( IDs der Dokumente )
-        GROUP by tv.key
-        ORDER by wc desc
-
-
-Für den JSON-Support im Hibernate Umfeld mussten neue Spalten-Typen registriert werden. Siehe dazu `de.ipb_halle.lbac.cloud.hibernatePG`
-
 Ausblick
 """"""""
-**Natural Language Prozessing (NLP)** Ab der Solr-Version 7.3 wird NLP direkt unterstützt. Es ist möglich, die Inhalte der Texte direkt mit trainierten neuronalen Netzen zu analysieren. Es bietet die Möglichkeit grammatikalische Strukturen und inhaltliche Zusammenhänge der Texte besser zu erkennen. z.B. Abgrenzung nach Sätzen, erkennen Satzgliedern (Subjekt, Prädikat , Objekt, ...).
+**Natural Language Prozessing (NLP)**: Im September 2020 ist die Komponente Apache Solr entfallen, da die Dokumentenindexierung auf anderem Weg effizienter gestaltet werden konnte. Trotzdem ist die Ergänzung und Erweiterung der Analysepipeline weiterhin Teil der Roadmap (zugegebenermaßen mit niedriger Priorität). Sobald ausreichende Entwicklungskapazitäten zur Verfügung stehen, würden wir unser Projekt gern um die Anwendung von Ontologien, die Analyse von Tabellen und chemischen Formeln, den Einsatz künstlicher neuronaler Netze zur semantischen Textanalyse usw. erweitern. 
 
-Weiterhin sind somit folgende Szenarien denkbar: Einsatz von Ontologien, Analyse chemischer Formeln, auf künstliche neuronale Netze gestützte Textanalyse, Word-Vectoren usw. 
-
-Als Demo wurde folgende Konfiguration erfolgreich getestet. (proof of concept):
-::
-
-    <fieldType name="text_lbac_nlp" class="solr.TextField" 
-                positionIncrementGap="100" >
-      <analyzer>
-        <tokenizer class="solr.OpenNLPTokenizerFactory" 
-             sentenceModel="en-sent.bin" tokenizerModel="en-tokenizer.bin"/>
-        <filter class="solr.OpenNLPPOSFilterFactory" 
-             posTaggerModel="en-pos-maxent.bin"/>
-        <filter class="solr.TypeAsPayloadFilterFactory"/>
-        <filter class="solr.TypeTokenFilterFactory" 
-             types="lang/stop.pos.txt"/>
-        ...
-      </analyzer>
-    </fieldType>
-
-
-.. todo:: Neugestaltung der Analysepipeline, ggf. ohne SolR; Analyse von Tabellen, Bildern und gedruckten chemischen Formeln 
 
 Upload von Dokumenten
 ^^^^^^^^^^^^^^^^^^^^^

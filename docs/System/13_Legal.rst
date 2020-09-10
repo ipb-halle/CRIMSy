@@ -1,7 +1,37 @@
-# Lizenzierung
-Das Leibniz-Institut für Pflanzenbiochemie lizenziert die Software "Cloud Resource & Information Management System - CRIMSy" (vormals _Leibniz Bioactives Cloud_) unter der Apache License Version 2.0. Der Lizenztext ist nachfolgend wiedergegeben (Irrtümer vorbehalten) und kann im Original unter [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0) abgerufen werden.
+Förderer
+========
+
+Leibniz-Institut für Pflanzenbiochemie
+--------------------------------------
+.. image:: img/ipb_logo.png
+    :width: 35%
+    :align: left
+    :alt: Leibniz-Institut für Pflanzenbiochemie
+Das Leibniz-Institut für Pflanzenbiochemie in Halle (Saale) trägt von Beginn an die Lohnkosten für einen Entwickler und finanziert den Großteil der für die Entwicklung benötigten Infrastruktur.
 
 
+Europäischer Fonds für regionale Entwicklung (EFRE)
+---------------------------------------------------
+.. image:: img/efre_logo.jpg
+    :width: 90%
+    :align: left
+    :alt: Europäischer Fonds für regionale Entwicklung (EFRE)
+Seit November 2019 unterstützt der Europäische Fonds für regionale Entwicklung (EFRE) die Entwicklung des "Cloud Resource and Information Management System" im Rahmen des Projekts "ProCognito - Pflanzliche Wirkstoffe zum Erhalt der kognitiven Leistungsfähigkeit im Alter".
+
+
+Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie"
+---------------------------------------------------------
+.. image:: img/lfv_logo.png
+    :width: 30%
+    :align: left
+    :alt: Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie"
+Das Projekt wurde 2016 als "Leibniz Bioactives Cloud" vom Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie" initiiert und bis 2020 aus Mitteln des Leibniz-Senatsausschuss Strategie (SAS) unterstützt.
+
+
+Lizenzierung
+============
+Das Leibniz-Institut für Pflanzenbiochemie lizenziert die Software "Cloud Resource & Information Management System - CRIMSy" (vormals *Leibniz Bioactives Cloud*) unter der Apache License Version 2.0. Der Lizenztext ist nachfolgend wiedergegeben und kann im Original unter https://www.apache.org/licenses/LICENSE-2.0 abgerufen werden (Irrtümer vorbehalten).
+:: 
                                      Apache License
                                Version 2.0, January 2004
                             http://www.apache.org/licenses/

@@ -228,7 +228,6 @@ function setInstallDir {
 function setPermissions {
     chown 5432 "$LBAC_DATASTORE/data/db"
     chown 80 "$LBAC_DATASTORE/data/htdocs"
-    chown 8983 "$LBAC_DATASTORE/data/solr"
     chown 8080 "$LBAC_DATASTORE/data/ui"
 }
 
@@ -253,7 +252,6 @@ function snapshotFunc {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService proxy 
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService ui
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService solr
 
     "$LBAC_DATASTORE/dist/bin/backup.sh"
 }

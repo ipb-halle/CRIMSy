@@ -880,12 +880,14 @@ function runDialogs {
 #
 #
 # - from 2 to 3 --> renaming of certificate files, MultiCloud, hierarchical PKI
-# - from 3 to 4 --> removal of pgchem
+# - from 3 to 4 --> removal of pgchem and SolR
 #
 function upgradeOldConfig {
 	if test x$LBAC_CONFIG_VERSION = x4 ; then
 
                 rm -rf "$LBAC_DATASTORE/dist/pgchem" 
+                rm -rf "$LBAC_DATASTORE/dist/solr"
+                sudo rm -rf "$LBAC_DATASTORE/data/solr"
 
                 # this time no need to remove the entire dist directory
                 # touch $LBAC_DATASTORE/dist/dirty

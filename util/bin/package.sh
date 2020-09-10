@@ -190,7 +190,6 @@ function copyCert {
 function copyDocker {
 	cp docker/docker-compose.yml.m4 target/dist
 	cp -r docker/db target/dist
-	cp -r docker/solr target/dist
 	cp -r docker/proxy target/dist
 	cp -r docker/ui target/dist
 }

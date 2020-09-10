@@ -33,8 +33,9 @@
                     <h:outputText value="LBAC-Version: #{versions.buildNumber} &lt;br /&gt;"
                                   escape="false">
                          <f:converter converterId="InputConverter" />
-                    </h:outputText>
-                    <h:outputLink value="dsgvo.xhtml" target="_blank">#{msgs.footer_GDPR_link}</h:outputLink>
+                    </h:outputText><br/>
+                    <h:outputLink value="dsgvo.xhtml" target="_blank">#{msgs.footer_GDPR_link}</h:outputLink> /
+                    <h:outputLink value="funding.xhtml" target="_blank">#{msgs.footer_Funding_link}</h:outputLink>
                 </b:column>
                 <b:column span="4" offset="2">
                     #{msgs.CopyrightNotice}<br/>
