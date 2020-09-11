@@ -30,7 +30,6 @@ import de.ipb_halle.lbac.service.NodeService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.junit.Test;
 
@@ -39,6 +38,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 /**
@@ -79,7 +79,6 @@ public class DocumentSearchOrchestratorTest extends TestBase {
     public void orchestrateTest()
             throws IOException, Exception {
 
-        
         searchState = new DocumentSearchState();
         DocumentSearchRequest searchReq = new DocumentSearchRequest();
         searchReq.setSearchQuery(new DocumentSearchQuery("java"));
@@ -88,7 +87,7 @@ public class DocumentSearchOrchestratorTest extends TestBase {
 
         // remote node; no RSA key because REST-API gets mocked.
         Cloud cloud = cloudService.loadByName(TESTCLOUD);
-        Node node = createNode(nodeService, "remove this argument"); 
+        Node node = createNode(nodeService, "remove this argument");
         node.setBaseUrl(baseUrl.toString());
         cloudNodeService.save(new CloudNode(cloud, node));
         nodeService.save(node);

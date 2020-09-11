@@ -112,7 +112,6 @@ public class DocumentSearchOrchestrator implements Serializable {
                     continue;
                 }
                 CloudNode cloudNode = cnl.get(0);
-
                 documentState.getUnfinishedCollectionRequests().add(collection.getId());
                 final CompletableFuture<DocumentSearchRequest> doCall = CompletableFuture.supplyAsync(() -> {
                     // Triggering the remote searches
@@ -185,10 +184,15 @@ public class DocumentSearchOrchestrator implements Serializable {
                 logger.info("startRemoteSearch() making request: " + cloudNode.getNode().getBaseUrl());
             }
             // any cloud is okay here.
-            final WebClient wc = SecureWebClientBuilder.createWebClient(
-                    cloudNode,
-                    REST_PATH
-            );
+            WebClient wc = null;
+            try {
+                wc = SecureWebClientBuilder.createWebClient(
+                        cloudNode,
+                        REST_PATH
+                );
+            } catch (Exception e) {
+                int i = 0;
+            }
             //*** prepare XML format in header ***
             //*** JSON possible too ***
             wc.accept(MediaType.APPLICATION_XML_TYPE);

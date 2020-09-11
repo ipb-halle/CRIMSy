@@ -29,13 +29,14 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
+import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.cxf.jaxrs.impl.ResponseImpl;
+
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -43,6 +44,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 
 /**
  *
@@ -55,10 +57,8 @@ public class MembershipWebClientTest extends TestBase {
     public static WebArchive createDeployment() {
         
         return prepareDeployment("MembershipWebServiceTest.war")
-                .addClass(GlobalAdmissionContext.class)
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addClass(MembershipWebServiceMock.class)
+                .addPackage(MembershipWebServiceMock.class.getPackage())
                 .addClass(Updater.class)
                 .addClass(KeyManager.class)
                 .addClass(FileService.class)

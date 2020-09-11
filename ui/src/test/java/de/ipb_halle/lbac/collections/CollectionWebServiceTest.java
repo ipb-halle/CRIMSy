@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.admission.User;
@@ -32,7 +31,6 @@ import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
@@ -91,11 +89,9 @@ public class CollectionWebServiceTest
                 .addPackage(WordCloudBean.class.getPackage())
                 .addPackage(WordCloudWebService.class.getPackage())
                 .addPackage(CollectionBean.class.getPackage())
-                .addPackage(SolrAdminService.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
                 .addPackage(Navigator.class.getPackage())
                 .addPackage(Updater.class.getPackage())
-                .addClass(SolrTermVectorSearch.class)
                 .addClass(FileService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(FileEntityService.class);

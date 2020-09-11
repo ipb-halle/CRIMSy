@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.FileService;
@@ -33,7 +32,6 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
@@ -143,9 +141,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
     private NodeService nodeService;
 
     @Inject
-    private SolrAdminService solrAdminService;
-
-    @Inject
     private FileService fileService;
 
     @Inject
@@ -153,9 +148,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
-
-    @Inject
-    private SolrTermVectorSearch solrTermVectorSearch;
 
     private CollectionSearchState collectionSearchState = new CollectionSearchState();
 
@@ -176,11 +168,9 @@ public class CollectionBean implements Serializable, ACObjectBean {
                 fileService,
                 fileEntityService,
                 globalAdmissionContext,
-                solrAdminService,
                 nodeService,
                 collectionService,
                 PUBLIC_COLLECTION_NAME,
-                solrTermVectorSearch,
                 termVectorEntityService);
 
         collPermAnalyser = new CollectionPermissionAnalyser(

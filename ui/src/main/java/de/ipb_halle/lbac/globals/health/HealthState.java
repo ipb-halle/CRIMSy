@@ -31,13 +31,10 @@ public class HealthState {
     public State localNodeDbState = State.UNCHECKED;
     public State publicCollectionDbState = State.UNCHECKED;
     public State publicCollectionFileState = State.UNCHECKED;
-    public State publicCollectionSolrSyncState = State.UNCHECKED;
     public State publicCollectionFileSyncState = State.UNCHECKED;
-    public State publicCollectionSolrState = State.UNCHECKED;
     public State rootTaxonomy = State.UNCHECKED;
 
     public Map<String, State> collectionFileSyncList = new HashMap<>();
-    public Map<String, State> collectionSolrSyncList = new HashMap<>();
 
     public enum State {
         UNCHECKED,

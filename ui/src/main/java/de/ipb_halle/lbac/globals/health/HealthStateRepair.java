@@ -17,9 +17,7 @@
  */
 package de.ipb_halle.lbac.globals.health;
 
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.admission.ACList;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
@@ -55,7 +53,6 @@ public class HealthStateRepair {
     private ACList publicReadAcl;
     private User adminAccount;
     private FileService fileService;
-    private SolrAdminService solrAdminService;
     private MaterialService materialService;
 
     public HealthStateRepair(String publicCollectionName,
@@ -65,7 +62,6 @@ public class HealthStateRepair {
             ACList publicReadAcl,
             User adminAccount,
             FileService fileService,
-            SolrAdminService solrAdminService,
             MaterialService materialService) {
 
         this.publicCollectionName = publicCollectionName;
@@ -75,7 +71,6 @@ public class HealthStateRepair {
         this.publicReadAcl = publicReadAcl;
         this.adminAccount = adminAccount;
         this.fileService = fileService;
-        this.solrAdminService = solrAdminService;
         this.publicCollection = collectionService.getPublicCollectionFromDb();
         this.materialService = materialService;
 
@@ -98,7 +93,6 @@ public class HealthStateRepair {
         if (healthState.publicCollectionDbState == State.FAILED) {
             logger.info("Start creation of new public collection");
             publicCollection = createPublicCollectionInDb();
-            healthState.publicCollectionSolrSyncState = State.OK;
             healthState.publicCollectionFileSyncState = State.OK;
         }
         try {
@@ -109,15 +103,8 @@ public class HealthStateRepair {
                     healthState.publicCollectionFileSyncState = State.OK;
                 }
             }
-            if (healthState.publicCollectionSolrState == State.FAILED) {
-                repairPublicCollectionInSolR();
-                if (updatePublicCollectionInDb()) {
-                    healthState.publicCollectionSolrState = State.OK;
-                    healthState.publicCollectionSolrSyncState = State.OK;
-                }
-            }
         } catch (Exception e) {
-            logger.error("Could not vreate solr or file sync", e);
+            logger.error("Could not create file sync", e);
         }
         return healthState;
     }
@@ -126,10 +113,8 @@ public class HealthStateRepair {
      * The repair is nessecary if one of the following conditions is met
      * <ul>
      * <li> no public collection was found in db</li>
-     * <li> the public collection is not in sync with the filesystem or
-     * solr</li>
+     * <li> the public collection is not in sync with the filesystem</li>
      * <li> there is no folder for the collection in the filesystem</li>
-     * <li> there is no collection in the solr instance for the collection</li>
      * </ul>
      *
      * @return true if repair is needed
@@ -137,9 +122,7 @@ public class HealthStateRepair {
     public boolean isRepairOfPublicCollectionNeeded() {
         if (healthState.publicCollectionDbState == State.FAILED
                 || healthState.publicCollectionFileState == State.FAILED
-                || healthState.publicCollectionFileSyncState == State.FAILED
-                || healthState.publicCollectionSolrState == State.FAILED
-                || healthState.publicCollectionSolrSyncState == State.FAILED) {
+                || healthState.publicCollectionFileSyncState == State.FAILED) {
             return true;
         }
         return false;
@@ -171,26 +154,15 @@ public class HealthStateRepair {
         }
     }
 
-    private void repairPublicCollectionInSolR() {
-        if (!solrAdminService.collectionExists(publicCollection)) {
-            if (solrAdminService.createCollection(publicCollectionName)) {
-                logger.info(String.format("solr standard collection  %s created.", publicCollectionName));
-            } else {
-                logger.error(String.format("solr standard collection  %s could not created.", publicCollectionName));
-            }
-        }
-    }
-
     private Collection createPublicCollectionInDb() {
         try {
             publicCollection = new Collection();
             publicCollection.setName(publicCollectionName);
             publicCollection.setStoragePath(String.format("%s/%s", FileService.getDefaultPath(), publicCollectionName));
-            publicCollection.setIndexPath(String.format("%s/%s", SolrAdminService.getBaseURLSolr(), publicCollectionName));
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
-            publicCollection=collectionService.save(publicCollection);
+            publicCollection = collectionService.save(publicCollection);
             return publicCollection;
         } catch (Exception e) {
             logger.error("Could not create public collection", e);
@@ -203,12 +175,11 @@ public class HealthStateRepair {
         try {
             publicCollection.setName(publicCollectionName);
             publicCollection.setStoragePath(String.format("%s/%s", FileService.getDefaultPath(), publicCollectionName));
-            publicCollection.setIndexPath(String.format("%s/%s", SolrAdminService.getBaseURLSolr(), publicCollectionName));
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
 
-            publicCollection=collectionService.save(publicCollection);
+            publicCollection = collectionService.save(publicCollection);
             return true;
 
         } catch (Exception e) {

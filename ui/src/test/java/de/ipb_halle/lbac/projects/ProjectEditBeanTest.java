@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.projects;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
@@ -36,7 +35,6 @@ import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.SearchWebService;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -74,10 +72,8 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(SearchWebService.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(SolrAdminService.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
-                .addClass(SolrTermVectorSearch.class)
                 .addClass(Updater.class)
                 .addClass(ProjectEditBean.class);
         return UserBeanDeployment.add(deployment);

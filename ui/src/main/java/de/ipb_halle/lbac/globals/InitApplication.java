@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.globals;
 import de.ipb_halle.lbac.globals.health.HealthState;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.MembershipWebService;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.InfoObjectService;
@@ -50,44 +49,41 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 @Startup
 @DependsOn("globalAdmissionContext")
 public class InitApplication {
-    
+
     private final static long serialVersionUID = 1L;
     private final static String PUBLIC_COLLECTION_NAME = "public";
-    
+
     @Resource
     private ManagedExecutorService managedExecutorService;
-    
+
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
-    
+
     @Inject
     private InfoObjectService infoObjectService;
-    
+
     @Inject
     private CollectionService collectionService;
-    
+
     @Inject
     private NodeService nodeService;
-    
-    @Inject
-    private SolrAdminService solrAdminService;
-    
+
     @Inject
     private FileService fs;
     private Logger logger = LogManager.getLogger(InitApplication.class);
-    
+
     @Inject
     private KeyManager keyManager;
-    
+
     @Inject
     private TaxonomyService taxonomyService;
-    
+
     @Inject
     private MaterialService materialService;
-    
+
     @PostConstruct
     public void init() {
-        
+
         logInititaliseStart();
         try {
             healthCheck();
@@ -97,20 +93,19 @@ public class InitApplication {
         restCheck();
         initialiseKeyManager();
         logger.info("---Finished initialisation.---");
-        
+
     }
-    
+
     private void logInititaliseStart() {
         logger.info("-----------------------");
         logger.info("-- LBAC startup init --");
         logger.info("-----------------------");
         logger.info("--- 1. check LBAC basics  -------------");
     }
-    
+
     private void healthCheck() {
         HealthStateCheck healthChecker = new HealthStateCheck(
                 infoObjectService,
-                solrAdminService,
                 fs,
                 PUBLIC_COLLECTION_NAME,
                 nodeService,
@@ -126,27 +121,26 @@ public class InitApplication {
                 this.globalAdmissionContext.getPublicReadACL(),
                 this.globalAdmissionContext.getAdminAccount(),
                 fs,
-                solrAdminService,
                 materialService);
-        
+
         if (healthRepairer.isRepairOfPublicCollectionNeeded()) {
             healthRepairer.repairPublicCollection();
         }
-        
+
         if (healthRepairer.isTaxonomyRepairNeeded()) {
             healthRepairer.repairRootTaxonomy();
         }
     }
-    
+
     private void restCheck() {
-        logger.info("--- 2. check rest api ---");        
+        logger.info("--- 2. check rest api ---");
         logger.info("REST CollectionWebService: " + getRestApiDefaultPath(CollectionWebService.class));
         logger.info("REST CloudNodeWebService: " + getRestApiDefaultPath(CloudNodeWebService.class));
         logger.info("REST MembershipWebService: " + getRestApiDefaultPath(MembershipWebService.class));
         logger.info("REST TermVectorWebService: " + getRestApiDefaultPath(WordCloudWebService.class));
-        
+
     }
-    
+
     private void initialiseKeyManager() {
         try {
             if (keyManager == null) {

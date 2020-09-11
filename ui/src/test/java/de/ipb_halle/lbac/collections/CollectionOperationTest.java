@@ -20,17 +20,13 @@ package de.ipb_halle.lbac.collections;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.collections.mock.FileEntityServiceMock;
 import de.ipb_halle.lbac.collections.mock.FileServiceMock;
-import de.ipb_halle.lbac.collections.mock.SolarAdminServiceMock;
-
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -69,16 +65,12 @@ public class CollectionOperationTest extends TestBase {
     @Inject
     GlobalAdmissionContext globalAdmissionContext;
 
-    @Inject
-    SolrTermVectorSearch solrTermVectorSearch;
-
     @Before
     public void init() {
 
         Assert.assertNotNull("NodeService not injected", nodeService);
         Assert.assertNotNull("CollectionService not injected", collectionService);
 
-        SolarAdminServiceMock solarAdminMock = new SolarAdminServiceMock();
         FileServiceMock fileServiceMock = new FileServiceMock();
         FileEntityServiceMock fileEntityMock = new FileEntityServiceMock();
 
@@ -86,11 +78,9 @@ public class CollectionOperationTest extends TestBase {
                 fileServiceMock,
                 fileEntityMock,
                 globalAdmissionContext,
-                solarAdminMock,
                 nodeService,
                 collectionService,
                 PUBLIC_COLL_NAME,
-                solrTermVectorSearch,
                 termVectorEntityService);
 
         resetDB(memberService);
@@ -205,7 +195,6 @@ public class CollectionOperationTest extends TestBase {
                 .addClass(Navigator.class)
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(CollectionSearchState.class)
-                .addPackage(SolrAdminService.class.getPackage())
                 .addPackage(DocumentSearchBean.class.getPackage())
                 .addPackage(WordCloudBean.class.getPackage())
                 .addClass(TermVectorEntityService.class)
@@ -213,8 +202,7 @@ public class CollectionOperationTest extends TestBase {
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class)
                 .addClass(CollectionService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(SolrTermVectorSearch.class);
+                .addClass(TermVectorEntityService.class);
         return UserBeanDeployment.add(deployment);
     }
 

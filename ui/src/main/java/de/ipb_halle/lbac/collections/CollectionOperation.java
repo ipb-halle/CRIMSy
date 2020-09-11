@@ -18,9 +18,7 @@
 package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
@@ -42,10 +40,8 @@ public class CollectionOperation implements Serializable {
     private final FileEntityService fileEntityService;
     private final GlobalAdmissionContext globalAdmissionContext;
     private final Logger LOGGER = LogManager.getLogger(CollectionOperation.class);
-    private final SolrAdminService solrAdminService;
     private final NodeService nodeService;
     private final CollectionService collectionService;
-    private final SolrTermVectorSearch solrTermVectorSearch;
     private final TermVectorEntityService termVectorEntityService;
     private final String PUBLIC_COLLECTION_NAME;
     private final String COLL_NOT_UNIQUE = "name %s for a new collection  is not unique. (user: %s)";
@@ -59,21 +55,17 @@ public class CollectionOperation implements Serializable {
             FileService fileService,
             FileEntityService fileEntityService,
             GlobalAdmissionContext globalAdmissionContext,
-            SolrAdminService solrAdminService,
             NodeService nodeService,
             CollectionService collectionService,
             String publicCollectionName,
-            SolrTermVectorSearch solrTermVectorSearch,
             TermVectorEntityService termVectorEntityService) {
 
         this.fileService = fileService;
         this.fileEntityService = fileEntityService;
         this.globalAdmissionContext = globalAdmissionContext;
-        this.solrAdminService = solrAdminService;
         this.nodeService = nodeService;
         this.collectionService = collectionService;
         this.PUBLIC_COLLECTION_NAME = publicCollectionName;
-        this.solrTermVectorSearch = solrTermVectorSearch;
         this.termVectorEntityService = termVectorEntityService;
     }
 
@@ -111,11 +103,6 @@ public class CollectionOperation implements Serializable {
             fileEntityService.delete(activeCollection);
             LOGGER.info(String.format("collection delete all file entities: %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
 
-            if (solrAdminService.collectionExists(activeCollection)) {
-                solrAdminService.deleteAllDocuments(activeCollection);
-                LOGGER.info(String.format("collection delete all documents: %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
-            }
-
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
             return OperationState.CLEAR_ERROR;
@@ -138,11 +125,6 @@ public class CollectionOperation implements Serializable {
         if (activeCollection.getName().equalsIgnoreCase(PUBLIC_COLLECTION_NAME)) {
             log(COLL_DELETE_FORBIDDEN, activeCollection, currentAccount);
             return OperationState.DELETE_FORBIDDEN;
-        }
-
-        if (activeCollection.getNode().getLocal() && solrAdminService.collectionExists(activeCollection)) {
-            solrAdminService.unloadCollection(activeCollection);
-
         }
 
         clearCollection(activeCollection, currentAccount);
@@ -184,11 +166,6 @@ public class CollectionOperation implements Serializable {
             fileService.createDir(activeCollection.getName());
         }
         activeCollection.setStoragePath(fileService.getStoragePath(activeCollection.getName()));
-        //*** create solr collection and check ***
-        if (!solrAdminService.collectionExists(activeCollection)) {
-            solrAdminService.createCollection(activeCollection);
-        }
-        activeCollection.setIndexPath(solrAdminService.getSolrIndexPath(activeCollection));
 
         collectionService.save(activeCollection);
         return OperationState.OPERATION_SUCCESS;

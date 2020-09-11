@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
@@ -28,7 +27,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -96,9 +94,7 @@ public class CollectionPermissionAnalyserTest extends TestBase {
                 .addPackage(WordCloudBean.class.getPackage())
                 .addClass(Updater.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(SolrTermVectorSearch.class)
                 .addClass(CollectionSearchState.class)
-                .addPackage(SolrAdminService.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
                 .addPackage(CollectionSearchState.class.getPackage());
         return UserBeanDeployment.add(deployment);

@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,23 +27,23 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 public class FileDeleteExec implements Runnable {
 
     private AsyncContext asyncContext;
-    private FileObject   fileEntity;
-    private Logger       logger;
+    private FileObject fileEntity;
+    private Logger logger;
 
     private FileEntityService fileEntityService;
-    private SolrAdminService  solrAdminService;
-    private FileService       fs;
+    private FileService fs;
 
-    public FileDeleteExec(FileObject fe, FileEntityService fes, SolrAdminService s, AsyncContext asyncContext) {
+    public FileDeleteExec(FileObject fe, FileEntityService fes, AsyncContext asyncContext) {
 
         this.logger = LogManager.getLogger(FileDeleteExec.class);
         this.asyncContext = asyncContext;
-        this.solrAdminService = s;
+
         this.fileEntity = fe;
         this.fileEntityService = fes;
 
@@ -54,11 +53,11 @@ public class FileDeleteExec implements Runnable {
     @Override
     public void run() {
 
-        final HttpServletRequest  request      = (HttpServletRequest) asyncContext.getRequest();
-        final HttpServletResponse response     = (HttpServletResponse) asyncContext.getResponse();
-        OutputStream              outputStream = null;
-        InputStream               inputStream  = null;
-        PrintWriter               out          = null;
+        final HttpServletRequest request = (HttpServletRequest) asyncContext.getRequest();
+        final HttpServletResponse response = (HttpServletResponse) asyncContext.getResponse();
+        OutputStream outputStream = null;
+        InputStream inputStream = null;
+        PrintWriter out = null;
 
         try {
 
@@ -72,13 +71,7 @@ public class FileDeleteExec implements Runnable {
                 this.logger.warn(String.format("Error deleting file %s in repository.", fileEntity.getName()));
                 this.logger.warn(e.getMessage());
             }
-            try {
-                solrAdminService.deleteDocumentbyID(fileEntity.getCollection(), fileEntity.getId().toString());
-                this.logger.info(String.format("document %s in solr deleted.", fileEntity.getName()));
-            } catch (Exception e) {
-                this.logger.warn(String.format("Error deleting document %s in solr.", fileEntity.getName()));
-                this.logger.warn(e.getMessage());
-            }
+
             try {
                 fileEntityService.delete(fileEntity);
                 this.logger.info(String.format("file %s in db deleted.", fileEntity.getName()));

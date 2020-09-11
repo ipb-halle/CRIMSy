@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.collections;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.TESTCLOUD;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
@@ -29,7 +28,6 @@ import de.ipb_halle.lbac.collections.mock.CollectionWebClientMock;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.service.FileService;
@@ -65,7 +63,6 @@ public class CollectionOrchestratorTest extends TestBase {
                 .addPackage(NodeService.class.getPackage())
                 .addPackage(Logger.class.getPackage())
                 .addPackage(Updater.class.getPackage())
-                .addPackage(SolrAdminService.class.getPackage())
                 .addClass(Navigator.class)
                 .addPackage(CollectionBean.class.getPackage())
                 .addClass(WebRequestAuthenticator.class)
@@ -73,7 +70,6 @@ public class CollectionOrchestratorTest extends TestBase {
                 .addClass(FileEntityService.class)
                 .addPackage(DocumentSearchBean.class.getPackage())
                 .addPackage(WordCloudBean.class.getPackage())
-                .addClass(SolrTermVectorSearch.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionWebServiceMock.class);
         return UserBeanDeployment.add(deployment);

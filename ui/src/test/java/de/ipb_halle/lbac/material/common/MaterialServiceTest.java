@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
@@ -53,7 +52,6 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
@@ -650,10 +648,8 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(CollectionBean.class)
                 .addClass(CollectionService.class)
-                .addClass(SolrAdminService.class)
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class)
-                .addClass(SolrTermVectorSearch.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(EntityManagerService.class)
                 .addClass(TermVectorEntityService.class)
