@@ -1,0 +1,14 @@
+{ "comment" : "single filter chain for multi language query stemming",
+  "type" : "FilterDriver",
+  "chains" : [ {
+        "comment" : "First chain",
+        "chain" : [ {
+            "type" : "WordDetectorFilter"
+            },{
+            "type" : "LowerCaseFilter"
+            },{
+            "type" : "StemmingFilter"
+            } ]
+        } 
+    ]
+}

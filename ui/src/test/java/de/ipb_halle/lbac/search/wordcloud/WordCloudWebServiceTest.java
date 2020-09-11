@@ -21,10 +21,8 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
@@ -37,17 +35,11 @@ import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
-import de.ipb_halle.lbac.util.HexUtil;
-import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
-import java.util.Calendar;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,7 +82,6 @@ public class WordCloudWebServiceTest extends TestBase {
         return prepareDeployment("WordCloudWebServiceTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(FileEntityService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(NodeService.class)
                 .addClass(CloudService.class)
                 .addClass(CloudNodeService.class)
@@ -106,7 +97,6 @@ public class WordCloudWebServiceTest extends TestBase {
                 .addClass(WordCloudWebService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(FileEntityService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(WordCloudWebServiceMock.class);
 

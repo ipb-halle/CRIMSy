@@ -21,10 +21,10 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.Serializable;
@@ -32,9 +32,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -44,7 +44,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -63,10 +64,11 @@ public class DocumentSearchBean implements Serializable {
     private final List<Document> shownDocs = new ArrayList<>();
     protected SimpleDateFormat SDF = new SimpleDateFormat("mm:ss:SSSS");
     private DocumentSearchState documentSearchState = new DocumentSearchState();
-    private RelevanceCalculator relevanceCalculator = new RelevanceCalculator(); 
+    private RelevanceCalculator relevanceCalculator = new RelevanceCalculator();
     private String searchFieldText;
     private boolean develop = false;
     private boolean delayedPresentationEnabled = false;
+    protected SearchQueryStemmer searchQueryStemmer;
 
     @Inject
     private DocumentSearchService documentSearchService;
@@ -85,9 +87,6 @@ public class DocumentSearchBean implements Serializable {
 
     @Inject
     private TermVectorEntityService termVectorEntityService;
-
-    @Inject
-    private SolrSearcher solrSearcher;
 
     @Inject
     private NodeService nodeService;
@@ -124,6 +123,7 @@ public class DocumentSearchBean implements Serializable {
         documentSearchState.clearState();
         pollCounter = 0;
         shownDocs.clear();
+        searchQueryStemmer = new SearchQueryStemmer();
 
         //The solR request must be without brackets (syntax request of solr)
         // the OR Operator is implicite
@@ -224,21 +224,13 @@ public class DocumentSearchBean implements Serializable {
      * @param terms
      * @return
      */
-    private HashMap<String, Set<String>> getNormalizedSearchTerms(
+    private Map<String, Set<String>> getNormalizedSearchTerms(
             List<Document> docs,
             List<String> terms) {
 
-        HashMap<String, Set<String>> normalizedTermMap = new HashMap<>();
+        Map<String, Set<String>> normalizedTermMap
+                = searchQueryStemmer.stemmQuery(String.join(" ", terms));
 
-        Set<String> languages = getLanguagesOfDocs(docs);
-        for (String lang : languages) {
-            normalizedTermMap.put(lang,
-                    solrSearcher.getNormalizedSearchTerms(
-                            terms,
-                            documentSearchService.getUriOfPublicCollection(),
-                            lang)
-            );
-        }
         return normalizedTermMap;
     }
 
@@ -277,7 +269,7 @@ public class DocumentSearchBean implements Serializable {
     public void refreshDocumentsToShow(ActionEvent event) {
         pollCounter++;
         int newDocumentsToShow = documentSearchState.getFoundDocuments().size() - shownDocs.size();
-        if (newDocumentsToShow > 0 && pollCounter == 1&&delayedPresentationEnabled) {
+        if (newDocumentsToShow > 0 && pollCounter == 1 && delayedPresentationEnabled) {
             try {
 
                 addNewSearchResultsToTable();

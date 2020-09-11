@@ -109,7 +109,7 @@ public class StopWordFilter extends AbstractFilter {
         SortedSet<TextProperty> wordSet = this.textRecord
                 .getProperties(Word.TYPE)
                 .tailSet(new Word(start, start))
-                .headSet(new Word(end + 1, end + 1));
+                .headSet(new Word(end, end));
 
         // this.logger.info("markStopWords({}, {}) size={}", start, end, wordSet.size());
         int len = this.textRecord.getText().length();

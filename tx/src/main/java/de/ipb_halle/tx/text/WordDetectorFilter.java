@@ -83,7 +83,9 @@ public class WordDetectorFilter extends AbstractFilter {
                 int end = this.breakIterator.current();
                 while (end != BreakIterator.DONE) {
                     if (start != end) {
-                        rec.addProperty(new Word(start, end));
+                        if((end-start != 1) || (rec.getText().charAt(start) != ' ')) {
+                            rec.addProperty(new Word(start, end));
+                        }
                     }
                     start = end;
                     end = this.breakIterator.next();

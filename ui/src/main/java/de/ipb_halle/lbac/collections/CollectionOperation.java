@@ -19,34 +19,24 @@ package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
-import de.ipb_halle.lbac.file.TermVectorParser;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
-import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
-import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
-import org.apache.solr.common.util.ContentStreamBase;
 
 /**
  *
  * @author fmauz
  */
-public class CollectionOperation implements Serializable{
+public class CollectionOperation implements Serializable {
 
     private final FileService fileService;
     private final FileEntityService fileEntityService;
@@ -57,7 +47,6 @@ public class CollectionOperation implements Serializable{
     private final CollectionService collectionService;
     private final SolrTermVectorSearch solrTermVectorSearch;
     private final TermVectorEntityService termVectorEntityService;
-    private final SolrSearcher solrSearcher;
     private final String PUBLIC_COLLECTION_NAME;
     private final String COLL_NOT_UNIQUE = "name %s for a new collection  is not unique. (user: %s)";
     private final String COLL_RESERVED = "name %s for a new collection  is a reserved name. (user: %s)";
@@ -75,8 +64,7 @@ public class CollectionOperation implements Serializable{
             CollectionService collectionService,
             String publicCollectionName,
             SolrTermVectorSearch solrTermVectorSearch,
-            TermVectorEntityService termVectorEntityService,
-            SolrSearcher solrSearcher) {
+            TermVectorEntityService termVectorEntityService) {
 
         this.fileService = fileService;
         this.fileEntityService = fileEntityService;
@@ -87,7 +75,6 @@ public class CollectionOperation implements Serializable{
         this.PUBLIC_COLLECTION_NAME = publicCollectionName;
         this.solrTermVectorSearch = solrTermVectorSearch;
         this.termVectorEntityService = termVectorEntityService;
-        this.solrSearcher = solrSearcher;
     }
 
     public enum OperationState {
@@ -209,61 +196,9 @@ public class CollectionOperation implements Serializable{
 
     public OperationState reindexCollection(
             Collection activeCollection,
-            User currentAccount,
-            SolrSearcher documentSearchService) {
+            User currentAccount) {
         try {
 
-            boolean cleanedSolrIndex = false;
-
-            if (activeCollection.getNode().getLocal() && solrAdminService.collectionExists(activeCollection)) {
-                cleanedSolrIndex = solrAdminService.deleteAllDocuments(activeCollection);
-                LOGGER.info(String.format("reIndex collection: delete all documents %s:%s by %s", activeCollection.getName(), activeCollection.getIndexPath(), currentAccount.getLogin()));
-            }
-
-//            if (cleanedSolrIndex) {
-//                List<FileObject> fileEntityList = fileEntityService.getAllFilesInCollection(activeCollection);
-//                termVectorEntityService.deleteTermVectorOfCollection(activeCollection);
-//
-//                fileEntityList.stream().parallel().forEach(c -> {
-//                    HttpSolrClient solr = new HttpSolrClient.Builder(c.getCollection().getIndexPath()).build();
-//                    ContentStreamUpdateRequest req = new ContentStreamUpdateRequest("/update/extract");
-//                    ContentStreamBase cs = new ContentStreamBase.FileStream(new File(c.getFilename()));
-//                    req.addContentStream(cs);
-//                    req.setParam("literal.id", c.getId().toString());
-//                    req.setParam("literal.permission", "PERMISSION ALLES ERLAUBT");
-//                    req.setParam("literal.original_name", c.getName());
-//                    req.setParam("literal.upload_date", c.getCreated().toString());
-//                    req.setParam("literal.storage_location", c.getFilename());
-//                    req.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true);
-//                    solr.setUseMultiPartPost(true);
-//                    try {
-//                        solr.request(req);
-//
-//                        //*** update termvector ***
-//                        FileObject fileEntity = fileEntityService.getFileEntity(c.getId());
-//                        Document d = documentSearchService.getDocumentById(c.getId(), activeCollection.getId());
-//
-//                        fileEntityService.save(fileEntity);
-//                        String tvJsonString = solrTermVectorSearch.getTermVector(d);
-//                        TermVectorParser tvParser = new TermVectorParser();
-//                        fileEntityService.saveTermVectors(tvParser.parseTermVectorJson(tvJsonString, fileEntity.getId()));
-//
-//                        try {
-//                            String x = solrSearcher.getTermPositions(d, activeCollection.getIndexPath());
-//                            TermVectorParser termVectorParser = new TermVectorParser();
-//                            List<StemmedWordOrigin> wordOrigins = termVectorParser.parseTermVectorXmlToWordOrigins(d, x);
-//                            termVectorEntityService.saveUnstemmedWordsOfDocument(wordOrigins, d.getId());
-//                        } catch (Exception unstemmedWordException) {
-//                            LOGGER.error(
-//                                    "Error of getting unstemmed words for " + d.getOriginalName(),
-//                                    unstemmedWordException);
-//                        }
-//
-//                    } catch (Exception e) {
-//                        LOGGER.error(e.getMessage());
-//                    }
-//                });
-//            }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
 
@@ -272,7 +207,7 @@ public class CollectionOperation implements Serializable{
     }
 
     public Collection updateCollection(Collection activeCollection, User currentAccount) {
-        activeCollection=collectionService.save(activeCollection);
+        activeCollection = collectionService.save(activeCollection);
         return activeCollection;
     }
 

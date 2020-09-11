@@ -30,7 +30,6 @@ import de.ipb_halle.lbac.collections.CollectionSearchState;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -43,7 +42,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -93,7 +91,6 @@ public class ACListServiceTest extends TestBase {
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
                 .addClass(NodeService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(SolrAdminService.class)
                 .addClass(CollectionBean.class)
                 .addClass(SolrTermVectorSearch.class)

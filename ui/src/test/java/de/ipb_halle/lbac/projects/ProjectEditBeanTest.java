@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import javax.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -75,7 +74,6 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(SearchWebService.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(SolrAdminService.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)

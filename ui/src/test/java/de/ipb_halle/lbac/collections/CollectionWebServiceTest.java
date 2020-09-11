@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -91,7 +90,6 @@ public class CollectionWebServiceTest
                 .addPackage(DocumentSearchBean.class.getPackage())
                 .addPackage(WordCloudBean.class.getPackage())
                 .addPackage(WordCloudWebService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
                 .addPackage(CollectionBean.class.getPackage())
                 .addPackage(SolrAdminService.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)

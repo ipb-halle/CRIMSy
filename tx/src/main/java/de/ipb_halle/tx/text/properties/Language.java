@@ -25,7 +25,8 @@ public class Language extends TextPropertyBase {
      * iso language code, may also read "default"
      */
     private String language;
-
+    private int rank;
+    
     /**
      * default constructor
      */
@@ -44,10 +45,32 @@ public class Language extends TextPropertyBase {
      * constructor
      */
     public Language(int start, int end, String lang) {
+        this(start, end, lang, 0);
+    }
+    
+    public Language(int start, int end, String lang, int rank) {
         super(start, end);
         this.language = lang;
+        this.rank = rank;
     }
-
+    
+    /**
+     * Compare two TextProperties. Comparison starts with the
+     * property type, continues with the start property and 
+     * finally compares the end property to obtain an order of 
+     * TextProperty objects.
+     * @param prop the other property
+     * @return -1, 0, 1 as defined in <code>interface Comparable</code>
+     */
+    @Override
+    public int compareTo(TextProperty prop) {
+        int outcome = super.compareTo(prop);
+        if (outcome != 0) {
+            return outcome;
+        }
+        return Integer.signum(this.rank - ((Language) prop).getRank());
+    }
+    
     @Override
     public String dump(String text) {
         if ((getEnd() - getStart()) < 200) {
@@ -62,5 +85,9 @@ public class Language extends TextPropertyBase {
 
     public String getType() {
         return TYPE;
+    }
+    
+    public int getRank() {
+        return this.rank;
     }
 }

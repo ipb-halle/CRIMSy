@@ -4,7 +4,7 @@
         "comment" : "First chain",
         "chain" : [ {
             "type" : "AggregatingFilter",
-            "aggregationLength" : 3000000
+            "aggregationLength" : 300000000
             },{
             "type" : "PatternFilter",
             "patternConfig" : [ {

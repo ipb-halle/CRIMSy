@@ -54,7 +54,6 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -68,7 +67,6 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -149,7 +147,6 @@ public class MaterialCreationSaverTest extends TestBase {
                         .addClass(TermVectorEntityService.class)
                         .addClass(DocumentSearchBean.class)
                         .addClass(DocumentSearchService.class)
-                        .addClass(SolrSearcher.class)
                         .addClass(MoleculeService.class)
                         .addClass(ProjectBean.class)
                         .addClass(IndexService.class)

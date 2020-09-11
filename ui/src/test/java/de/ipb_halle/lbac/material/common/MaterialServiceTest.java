@@ -50,7 +50,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -661,7 +660,6 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(ACListService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(MoleculeService.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)

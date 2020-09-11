@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -167,9 +166,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
     private ACListService acListService;
 
     @Inject
-    private SolrSearcher solrSearcher;
-
-    @Inject
     private TermVectorEntityService termVectorEntityService;
 
     @PostConstruct
@@ -185,8 +181,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
                 collectionService,
                 PUBLIC_COLLECTION_NAME,
                 solrTermVectorSearch,
-                termVectorEntityService,
-                solrSearcher);
+                termVectorEntityService);
 
         collPermAnalyser = new CollectionPermissionAnalyser(
                 PUBLIC_COLLECTION_NAME,
@@ -277,7 +272,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
     public void actionReindex() {
         boolean isOwner = currentAccount.equals(activeCollection.getOwner());
         if (isOwner || acListService.isPermitted(ACPermission.permEDIT, activeCollection, currentAccount)) {
-            collectionOperation.reindexCollection(activeCollection, currentAccount, solrSearcher);
+            collectionOperation.reindexCollection(activeCollection, currentAccount);
         } else {
             UIMessage.info(MESSAGE_BUNDLE, "collMgr_reindex_no_permission");
         }

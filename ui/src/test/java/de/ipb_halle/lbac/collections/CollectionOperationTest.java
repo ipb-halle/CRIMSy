@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.collections.mock.SolarAdminServiceMock;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
@@ -92,8 +91,7 @@ public class CollectionOperationTest extends TestBase {
                 collectionService,
                 PUBLIC_COLL_NAME,
                 solrTermVectorSearch,
-                termVectorEntityService,
-                null);
+                termVectorEntityService);
 
         resetDB(memberService);
     }
@@ -208,7 +206,6 @@ public class CollectionOperationTest extends TestBase {
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(CollectionSearchState.class)
                 .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
                 .addPackage(DocumentSearchBean.class.getPackage())
                 .addPackage(WordCloudBean.class.getPackage())
                 .addClass(TermVectorEntityService.class)

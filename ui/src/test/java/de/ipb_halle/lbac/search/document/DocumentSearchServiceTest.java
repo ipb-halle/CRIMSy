@@ -22,7 +22,6 @@ package de.ipb_halle.lbac.search.document;
  * @author fmauz
  */
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
@@ -145,7 +144,6 @@ public class DocumentSearchServiceTest extends TestBase {
         return prepareDeployment("WordCloudWebServiceTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(FileEntityService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(CloudService.class)
                 .addClass(CloudNodeService.class)
                 .addClass(NodeService.class)

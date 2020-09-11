@@ -43,7 +43,6 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -99,7 +98,6 @@ public class MaterialIndexBeanTest extends TestBase {
                         .addClass(TermVectorEntityService.class)
                         .addClass(DocumentSearchBean.class)
                         .addClass(DocumentSearchService.class)
-                        .addClass(SolrSearcher.class)
                         .addClass(MoleculeService.class)
                         .addClass(ProjectService.class)
                         .addClass(CollectionWebClient.class)

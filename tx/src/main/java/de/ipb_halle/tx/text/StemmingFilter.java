@@ -98,7 +98,7 @@ public class StemmingFilter extends AbstractFilter {
         SortedSet<TextProperty> wordSet = this.textRecord
                 .getProperties(Word.TYPE)
                 .tailSet(new Word(start, start))
-                .headSet(new Word(end + 1, end + 1));
+                .headSet(new Word(end , end));
 
         int len = this.textRecord.getText().length();
         for(TextProperty prop : wordSet) {
@@ -106,7 +106,7 @@ public class StemmingFilter extends AbstractFilter {
             int s = word.getStart();
             int e = word.getEnd();
 
-            if ((! word.getStopWord()) && (e < len) && (s < len)) {
+            if ((! word.getStopWord()) && (e <= len) && (s <= len)) {
                 stemmer.setCurrent(this.textRecord.getText().substring(s,e));
                 stemmer.stem();
                 word.addStem(stemmer.getCurrent());

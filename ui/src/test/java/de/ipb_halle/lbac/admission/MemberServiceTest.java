@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -82,7 +81,6 @@ public class MemberServiceTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(SolrAdminService.class)
                 .addClass(CollectionBean.class)
                 .addClass(SolrTermVectorSearch.class)

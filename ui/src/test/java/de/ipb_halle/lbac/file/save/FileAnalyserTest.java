@@ -90,8 +90,8 @@ public class FileAnalyserTest {
     public void test003_analyseFrenchWord() throws FileNotFoundException {
         FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "Document_FR.docx", 1);
-       // Assert.assertEquals(210, analyser.getWordOrigins().size());
-       // Assert.assertEquals(210, analyser.getTermVector().size());
+        // Assert.assertEquals(210, analyser.getWordOrigins().size());
+        // Assert.assertEquals(210, analyser.getTermVector().size());
         Assert.assertEquals("fr", analyser.getLanguage());
     }
 
@@ -99,8 +99,8 @@ public class FileAnalyserTest {
     public void test004_analyseStemming() throws FileNotFoundException {
         FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "Document_wordStemming.docx", 1);
-      //  Assert.assertEquals(12, analyser.getWordOrigins().size());
-      //  Assert.assertEquals(12, analyser.getTermVector().size());
+        //  Assert.assertEquals(12, analyser.getWordOrigins().size());
+        //  Assert.assertEquals(12, analyser.getTermVector().size());
         for (StemmedWordOrigin swo : analyser.getWordOrigins()) {
             if (swo.getStemmedWord().equals("saur")) {
                 Set<String> originWords = swo.getOriginalWord();
@@ -118,7 +118,29 @@ public class FileAnalyserTest {
         FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
         analyser.analyseFile(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf", 1);
         List<TermVector> tvs = analyser.getTermVector();
-      //  Assert.assertEquals(5428, tvs.size());
+        //  Assert.assertEquals(5428, tvs.size());
         Assert.assertEquals("de", analyser.getLanguage());
+    }
+
+    @Test
+    public void test006_analyseRealWorldText() throws FileNotFoundException, Exception {
+
+        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+        analyser.analyseFile(examplaDocsRootFolder + "ShortRealText.docx", 1);
+//       analyser.analyseFile(examplaDocsRootFolder + "understandingsoftware.pdf", 1);
+
+analyser.getTermVector();
+
+int i=0;
+        for (StemmedWordOrigin sw : analyser.getWordOrigins()) {
+            System.out.println(sw.getOriginalWord().iterator().next() + " -> " + sw.getStemmedWord());
+        }
+
+//        analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+//        analyser.analyseFile(examplaDocsRootFolder + "understandingsoftware.pdf", 1);
+//        for (StemmedWordOrigin sw : analyser.getWordOrigins()) {
+//            System.out.println(sw.getOriginalWord().iterator().next() + " -> " + sw.getStemmedWord());
+//        }
+
     }
 }

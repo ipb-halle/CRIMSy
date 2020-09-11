@@ -37,14 +37,12 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * The <code>TermVectorFilter</code> expects a <code>TextRecord</code>
- * with annotated <code>Word</code>s as input and collects how often 
- * each word occurs. If word stems have been assigned to the words, 
- * (e.g. by the <code>StemmingFilter</code> it will collect the number 
- * of occurence of each stem and build a dictionary mapping the stem
- * to each original word. 
+ * The <code>TermVectorFilter</code> expects a <code>TextRecord</code> with
+ * annotated <code>Word</code>s as input and collects how often each word
+ * occurs. If word stems have been assigned to the words, (e.g. by the
+ * <code>StemmingFilter</code> it will collect the number of occurence of each
+ * stem and build a dictionary mapping the stem to each original word.
  */
 public class TermVectorFilter extends AbstractFilter {
 
@@ -52,13 +50,11 @@ public class TermVectorFilter extends AbstractFilter {
     public final static String TERM_VECTOR = "TermVectorFilter.termVector";
     public final static String STEM_DICT = "TermVectorFilter.stemDict";
 
-
-    private Logger                      logger;
-    private BlockingQueue<TextRecord>   inputQueue;
-    private Map<String, Integer>        termVector;
-    private Map<String, Set<String>>    stemDict;
-    private FilterState                 filterState;
-
+    private Logger logger;
+    private BlockingQueue<TextRecord> inputQueue;
+    private Map<String, Integer> termVector;
+    private Map<String, Set<String>> stemDict;
+    private FilterState filterState;
 
     /**
      * constructor
@@ -71,14 +67,15 @@ public class TermVectorFilter extends AbstractFilter {
 
     /**
      * apply filter operation
-     * @param op is ignored for this class 
+     *
+     * @param op is ignored for this class
      * @return INPUT_STALL or FLUSHED
      */
     public FilterState filter(FilterOperation op) {
         if (this.filterState == FilterState.NOT_INITIALIZED) {
             return this.filterState;
         }
-        while(true) {
+        while (true) {
 
             TextRecord rec = this.inputQueue.poll();
             if (rec == null) {
@@ -87,20 +84,25 @@ public class TermVectorFilter extends AbstractFilter {
                 }
                 return FilterState.INPUT_STALL;
             }
-       
+
             String text = rec.getText();
-            for(TextProperty prop : rec.getProperties(Word.TYPE)) { 
+            for (TextProperty prop : rec.getProperties(Word.TYPE)) {
                 Word word = (Word) prop;
                 String wordString = text.substring(word.getStart(), word.getEnd());
-                if (! (word.getStopWord() 
+                if (!(word.getStopWord()
                         || wordString.trim().isEmpty())) {
-                    String stem = word.getStem();
+                    String stem = "";
+                    try {
+                        stem = word.getStem();
+                    } catch (Exception e) {
+                        this.logger.warn("filter(): caught an exception", (Throwable) e);
+                    }
                     if (stem == null) {
                         stem = wordString;
                     }
                     Set<String> dictEntry = stemDict.get(stem);
-                    if (dictEntry == null){
-                        dictEntry=new HashSet<>();
+                    if (dictEntry == null) {
+                        dictEntry = new HashSet<>();
                         stemDict.put(stem, dictEntry);
                     }
                     dictEntry.add(wordString);
@@ -125,7 +127,7 @@ public class TermVectorFilter extends AbstractFilter {
      * @return this filter does not produce output
      */
     public BlockingQueue<TextRecord> getOutputQueue() {
-        return null; 
+        return null;
     }
 
     /**
@@ -133,9 +135,9 @@ public class TermVectorFilter extends AbstractFilter {
      */
     public FilterState init() {
         this.filterState = FilterState.READY;
-        this.termVector = new HashMap<String, Integer> ();
-        this.stemDict = new HashMap<String, Set<String>> ();
-        getFilterData().setValue(TERM_VECTOR,  this.termVector);
+        this.termVector = new HashMap<String, Integer>();
+        this.stemDict = new HashMap<String, Set<String>>();
+        getFilterData().setValue(TERM_VECTOR, this.termVector);
         getFilterData().setValue(STEM_DICT, this.stemDict);
         return this.filterState;
     }

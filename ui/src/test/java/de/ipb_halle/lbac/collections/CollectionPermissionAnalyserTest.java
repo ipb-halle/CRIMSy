@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -43,7 +42,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -100,7 +99,6 @@ public class CollectionPermissionAnalyserTest extends TestBase {
                 .addClass(SolrTermVectorSearch.class)
                 .addClass(CollectionSearchState.class)
                 .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
                 .addPackage(CollectionSearchState.class.getPackage());
         return UserBeanDeployment.add(deployment);

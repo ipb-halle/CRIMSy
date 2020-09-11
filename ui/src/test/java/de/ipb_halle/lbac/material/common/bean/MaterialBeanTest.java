@@ -56,7 +56,6 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -69,7 +68,6 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.HashMap;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -203,7 +201,6 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertEquals("Edited-name-1", instance.getMaterialNameBean().getNames().get(2).getValue());
         Assert.assertEquals("Edited-name-2", instance.getMaterialNameBean().getNames().get(3).getValue());
 
-        int i = 0;
     }
 
     @Deployment
@@ -222,7 +219,6 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(TermVectorEntityService.class)
                         .addClass(DocumentSearchBean.class)
                         .addClass(DocumentSearchService.class)
-                        .addClass(SolrSearcher.class)
                         .addClass(MoleculeService.class)
                         .addClass(ProjectBean.class)
                         .addClass(IndexService.class)

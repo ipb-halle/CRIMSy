@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -41,7 +40,6 @@ import de.ipb_halle.lbac.webservice.Updater;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -53,7 +51,6 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.Assert;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -92,7 +89,6 @@ public class CollectionServiceTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(SolrAdminService.class)
                 .addClass(CollectionBean.class)
                 .addClass(SolrTermVectorSearch.class)

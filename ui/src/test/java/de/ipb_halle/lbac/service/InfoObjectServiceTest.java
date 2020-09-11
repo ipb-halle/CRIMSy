@@ -39,7 +39,6 @@ import de.ipb_halle.lbac.collections.CollectionSearchState;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -53,7 +52,6 @@ import org.junit.runner.RunWith;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
-
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -101,7 +99,6 @@ public class InfoObjectServiceTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(SolrAdminService.class)
                 .addClass(CollectionBean.class)
                 .addClass(SolrTermVectorSearch.class)
@@ -111,7 +108,7 @@ public class InfoObjectServiceTest extends TestBase {
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(MembershipOrchestrator.class);
     }
-    
+
     @Override
     public User createUser(String login, String name) {
         User u = new User();
@@ -119,7 +116,7 @@ public class InfoObjectServiceTest extends TestBase {
         u.setName(name);
         u.setNode(this.nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        u=this.memberService.save(u);
+        u = this.memberService.save(u);
         this.membershipService.addMembership(u, u);
         return u;
     }
@@ -129,7 +126,7 @@ public class InfoObjectServiceTest extends TestBase {
         g.setName(name);
         g.setNode(this.nodeService.getLocalNode());
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        g=this.memberService.save(g);
+        g = this.memberService.save(g);
         this.membershipService.addMembership(g, g);
         return g;
     }

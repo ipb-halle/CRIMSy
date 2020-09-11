@@ -27,21 +27,17 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.collections.mock.CollectionWebClientMock;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
-import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
-import java.util.UUID;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -79,8 +75,7 @@ public class CollectionOrchestratorTest extends TestBase {
                 .addPackage(WordCloudBean.class.getPackage())
                 .addClass(SolrTermVectorSearch.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(CollectionWebServiceMock.class)
-                .addPackage(SolrSearcher.class.getPackage());
+                .addClass(CollectionWebServiceMock.class);
         return UserBeanDeployment.add(deployment);
     }
 
