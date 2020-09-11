@@ -17,14 +17,11 @@
  */
 package de.ipb_halle.lbac.file.save;
 
+import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.file.TermVector;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,12 +32,11 @@ import org.junit.Test;
  */
 public class FileAnalyserTest {
 
-    protected String filterDefinition = "target/test-classes/fileParserFilterDefinition.json";
     protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
 
     @Test
     public void test001_analyseEnglishPdf() throws FileNotFoundException, Exception {
-        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
         analyser.analyseFile(examplaDocsRootFolder + "Document1.pdf", 1);
         List<TermVector> tvs = analyser.getTermVector();
         Assert.assertEquals(2, tvs.size());
@@ -79,7 +75,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test002_analyseGermanXls() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
         analyser.analyseFile(examplaDocsRootFolder + "TestTabelle.xlsx", 1);
         //Assert.assertEquals(20, analyser.getWordOrigins().size());
         //Assert.assertEquals(20, analyser.getTermVector().size());
@@ -88,7 +84,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test003_analyseFrenchWord() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
         analyser.analyseFile(examplaDocsRootFolder + "Document_FR.docx", 1);
         // Assert.assertEquals(210, analyser.getWordOrigins().size());
         // Assert.assertEquals(210, analyser.getTermVector().size());
@@ -97,7 +93,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test004_analyseStemming() throws FileNotFoundException {
-        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
         analyser.analyseFile(examplaDocsRootFolder + "Document_wordStemming.docx", 1);
         //  Assert.assertEquals(12, analyser.getWordOrigins().size());
         //  Assert.assertEquals(12, analyser.getTermVector().size());
@@ -115,7 +111,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test005_checkUniqueWordOrigins() throws FileNotFoundException, Exception {
-        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
         analyser.analyseFile(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf", 1);
         List<TermVector> tvs = analyser.getTermVector();
         //  Assert.assertEquals(5428, tvs.size());
@@ -124,23 +120,7 @@ public class FileAnalyserTest {
 
     @Test
     public void test006_analyseRealWorldText() throws FileNotFoundException, Exception {
-
-        FileAnalyser analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
+        FileAnalyser analyser = new FileAnalyser(FilterDefinitionInputStreamFactory.getFilterDefinition());
         analyser.analyseFile(examplaDocsRootFolder + "ShortRealText.docx", 1);
-//       analyser.analyseFile(examplaDocsRootFolder + "understandingsoftware.pdf", 1);
-
-analyser.getTermVector();
-
-int i=0;
-        for (StemmedWordOrigin sw : analyser.getWordOrigins()) {
-            System.out.println(sw.getOriginalWord().iterator().next() + " -> " + sw.getStemmedWord());
-        }
-
-//        analyser = new FileAnalyser(new FileInputStream(new File(filterDefinition)));
-//        analyser.analyseFile(examplaDocsRootFolder + "understandingsoftware.pdf", 1);
-//        for (StemmedWordOrigin sw : analyser.getWordOrigins()) {
-//            System.out.println(sw.getOriginalWord().iterator().next() + " -> " + sw.getStemmedWord());
-//        }
-
     }
 }

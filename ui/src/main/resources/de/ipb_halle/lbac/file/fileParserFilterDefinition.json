@@ -16,13 +16,13 @@
                     "pattern" : " \\d{1,3}",
                     "replacement" : " "
                 }, {
+                    "comment" : "remove PostScript junk",
+                    "pattern" : "ASCII85EncodePage.*?setpagedevice",
+                    "replacement" : ""
+                }, {
                     "comment" : "remove sequences of whitespace",
                     "pattern" : " \\s{2,}",
                     "replacement" : " "
-                }, {
-                    "comment" : "remove PostScript junk",
-                    "pattern" : "ASCII85EncodePage(.)*setpagedevice",
-                    "replacement" : ""
                 } ]
             },{
             "type" : "WordDetectorFilter"
