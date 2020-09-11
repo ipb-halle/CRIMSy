@@ -142,7 +142,7 @@
                     <dependency>
                         <groupId>org.hibernate</groupId>
                         <artifactId>hibernate-jpamodelgen</artifactId>
-                        <version>5.2.10.Final</version>
+                        <version>5.3.6.Final</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -308,7 +308,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>5.2.10.Final</version>
+            <version>5.3.6.Final</version>
             <scope>provided</scope>
         </dependency>
         
@@ -361,14 +361,14 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>5.2.10.Final</version>
+            <version>5.3.6.Final</version>
         </dependency>
 
         <!-- hibernate stuff -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.2.10.Final</version>
+            <version>5.3.6.Final</version>
         </dependency>
         
         <!-- Hibernate Validator Engine Relocation Artifact -->
@@ -383,14 +383,14 @@
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>1.0.0.Final</version>
+            <version>1.0.2.Final</version>
         </dependency>
         
         <!-- org.postgresql/postgresql JDBC 4.2 -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.1.4</version>
+            <version>42.2.16</version>
         </dependency>
         
         <!--hibernate support for postgres json, jsonb field types -->
