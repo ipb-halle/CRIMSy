@@ -56,7 +56,6 @@ public class UploadToColTest extends TestBase {
     @Inject
     private FileEntityService fileEntityService;
 
-    protected String filterDefinition = "target/test-classes/fileParserFilterDefinition.json";
     protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
     protected Collection col;
@@ -83,7 +82,7 @@ public class UploadToColTest extends TestBase {
     public void test001_fileUploadTest() throws Exception {
         createAndSaveNewCol();
         UploadToColMock upload = new UploadToColMock(
-                new FileInputStream(new File(filterDefinition)),
+                FilterDefinitionInputStreamFactory.getFilterDefinition(),
                 fileEntityService,
                 publicUser,
                 new AsyncContextMock(
@@ -118,7 +117,7 @@ public class UploadToColTest extends TestBase {
     @Test
     public void test002_fileUploadTestNoCollectionFound() throws Exception {
         UploadToColMock upload = new UploadToColMock(
-                new FileInputStream(new File(filterDefinition)),
+               FilterDefinitionInputStreamFactory.getFilterDefinition(),
                 fileEntityService,
                 publicUser,
                 new AsyncContextMock(

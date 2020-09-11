@@ -35,6 +35,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.file.FileSearchRequest;
+import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.lbac.service.NodeService;
@@ -64,25 +65,24 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class DocumentSearchServiceTest extends TestBase {
-    
+
     @Inject
     private DocumentSearchService documentSearchService;
-    
+
     protected Collection col;
-    
-    protected String filterDefinition = "target/test-classes/fileParserFilterDefinition.json";
+
     protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
-    
+
     @Before
     @Override
     public void setUp() {
         super.setUp();
         Files.delete(Paths.get("target/test-classes/collections").toFile());
-        
+
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
-    
+
     @After
     public void cleanUp() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
@@ -92,11 +92,11 @@ public class DocumentSearchServiceTest extends TestBase {
             entityManagerService.doSqlUpdate("DELETE FROM collections WHERE id=" + col.getId());
         }
     }
-    
+
     @Test
     public void test002_loadDocuments() throws FileNotFoundException {
         createAndSaveNewCol();
-        
+
         uploadDocument("Document1.pdf");
         uploadDocument("Document2.pdf");
         uploadDocument("Document3.pdf");
@@ -106,24 +106,24 @@ public class DocumentSearchServiceTest extends TestBase {
         Set<Document> documents = documentSearchService.loadDocuments(request, 10);
         Assert.assertEquals(2, documents.size());
     }
-    
+
     @Test
     public void test003_createSqlWhereClause() {
         Map<String, List<String>> stemmedWords = new HashMap<>();
-        
+
         Assert.assertEquals("", documentSearchService.createSqlReplaceString(stemmedWords));
-        
+
         stemmedWords.put("java", Arrays.asList("java"));
         String trimmedString = documentSearchService.createSqlReplaceString(stemmedWords).replace("  ", " ").trim();
         Assert.assertEquals("AND tv.wordroot IN ('java')", trimmedString);
-        
+
         stemmedWords.put("hibernate", Arrays.asList("hibernate"));
         trimmedString = documentSearchService.createSqlReplaceString(stemmedWords).replace("  ", " ").trim();
         boolean p1 = "AND tv.wordroot IN ('java') AND tv.wordroot IN ('hibernate')".equals(trimmedString);
         boolean p2 = "AND tv.wordroot IN ('hibernate') AND tv.wordroot IN ('java')".equals(trimmedString);
         Assert.assertTrue(p1 || p2);
     }
-    
+
     @Test
     public void getTagStringForSeachRequestTest() {
         assertEquals("", documentSearchService.getTagStringForSeachRequest(null));
@@ -138,7 +138,7 @@ public class DocumentSearchServiceTest extends TestBase {
                 "term1 AND term2".equals(result)
                 || "term2 AND term1".equals(result));
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("WordCloudWebServiceTest.war")
@@ -154,7 +154,7 @@ public class DocumentSearchServiceTest extends TestBase {
                 .addClass(MemberService.class)
                 .addClass(TermVectorEntityService.class);
     }
-    
+
     private void createAndSaveNewCol() {
         col = new Collection();
         col.setACList(GlobalAdmissionContext.getPublicReadACL());
@@ -167,10 +167,10 @@ public class DocumentSearchServiceTest extends TestBase {
         col = collectionService.save(col);
         col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
     }
-    
+
     private void uploadDocument(String documentName) throws FileNotFoundException {
         UploadToColMock upload = new UploadToColMock(
-                new FileInputStream(new File(filterDefinition)),
+                FilterDefinitionInputStreamFactory.getFilterDefinition(),
                 fileEntityService,
                 publicUser,
                 new AsyncContextMock(
@@ -179,7 +179,7 @@ public class DocumentSearchServiceTest extends TestBase {
                 collectionService,
                 termVectorEntityService,
                 "target/test-classes/collections");
-        
+
         upload.run();
     }
 }
