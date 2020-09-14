@@ -34,7 +34,6 @@
                      expert="false"
                      shortDescription="material edit dialog">
         <composite:attribute name="agent" required="true" />
-        <composite:attribute name="holder" required="true" />
     </composite:interface>
 
     <composite:implementation >
@@ -66,16 +65,16 @@
                     <p:outputLabel id="molEditorLabel" 
                             for="molEditor" 
                             value="Substructure" 
-                            rendered="#{cc.attrs.holder.showMolEditor}"/>
+                            rendered="#{cc.attrs.agent.showMolEditor}"/>
                     <nwc:molPlugin id="molEditor"
-                            rendered="#{cc.attrs.holder.showMolEditor}"
+                            rendered="#{cc.attrs.agent.showMolEditor}"
                             value="#{cc.attrs.agent.moleculeSearch}" 
                             plugintype="MolPaintJS"
                             edit="true"/>
 
                     <p:commandButton id="submitButton" 
                         value="Update" 
-                        rendered="#{cc.attrs.holder.showMolEditor}"
+                        rendered="#{cc.attrs.agent.showMolEditor}"
                         onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
                         update="@(.materialEdit)" />
 
@@ -88,7 +87,6 @@
                                 name="cmdActionSetMaterial" 
                                 update="@all" 
                                 action="#{cc.attrs.agent.actionSetMaterial}" >
-                            <f:setPropertyActionListener target="#{cc.attrs.agent.materialHolder}" value="#{cc.attrs.holder}" />
                         </p:remoteCommand>
                     </p:fragment>
 
@@ -98,7 +96,7 @@
                 <h:panelGroup id="materialTablePanelGrp">
                     <p:outputLabel id="materialTableLabel" for="materialTable" value="Material" />
                     <p:dataTable id="materialTable" 
-                            value="#{cc.attrs.agent.getMaterialList(cc.attrs.holder)}" 
+                            value="#{cc.attrs.agent.materialList}" 
                             var="material" >
                         <p:column id="col0" width="80%">
                             <f:facet name="header">

@@ -27,7 +27,8 @@
     <h:body>
 
         <!-- plugin modules -->
-        <crimsy:dlgMaterialEdit id="ccDlgMaterialEdit" agent="#{materialAgent}" holder="#{experimentBean.expRecordController}" />
+        <crimsy:dlgMaterialEdit id="ccDlgMaterialEdit" 
+                agent="#{experimentBean.materialAgent}" />
 
         <ui:insert name="barChartPanel">
             <ui:include src="dlgBarChart.xhtml" >

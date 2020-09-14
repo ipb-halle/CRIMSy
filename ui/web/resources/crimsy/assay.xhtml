@@ -59,7 +59,6 @@
                         rendered="#{cc.attrs.assay.editTemplate}"
                         update="@this" > 
                     <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
-                    <f:setPropertyActionListener target="#{cc.attrs.materialAgent.materialHolder}" value="#{cc.attrs.bean.expRecordController}" />
                     <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
                     <span class="fa fa-cog"> </span>
                 </h:commandLink>

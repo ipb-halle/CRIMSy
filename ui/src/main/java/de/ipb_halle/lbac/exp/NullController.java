@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class NullController extends ExpRecordController {
 
-    private ExperimentBean bean;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     protected NullController(ExperimentBean bean) {

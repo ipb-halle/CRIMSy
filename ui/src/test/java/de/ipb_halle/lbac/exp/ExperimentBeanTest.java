@@ -21,16 +21,19 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.mocks.ExperimentBeanMock;
+import de.ipb_halle.lbac.exp.mocks.MaterialAgentMock;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.Date;
 import javax.inject.Inject;
@@ -59,8 +62,12 @@ public class ExperimentBeanTest extends TestBase {
 
     @Inject
     private ExpRecordService expRecordService;
+
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
+
+    @Inject
+    private MaterialService materialService;
 
     private ExperimentBeanMock experimentBean;
     private User publicUser;
@@ -73,10 +80,26 @@ public class ExperimentBeanTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
+
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(publicUser);
+
+        MaterialAgent materialAgentMock = new MaterialAgentMock()
+                .setGlobalAdmissionContext(globalAdmissionContext)
+                .setMaterialService(this.materialService)
+                .setUserBean(userBean);
+
         experimentBean = new ExperimentBeanMock()
                 .setExpRecordService(expRecordService)
                 .setExperimentService(experimentService)
-                .setGlobalAdmissionContext(globalAdmissionContext);
+                .setGlobalAdmissionContext(globalAdmissionContext)
+                .setMaterialAgent(materialAgentMock);
+
+/*
+                .setMaterialAgent(new MaterialAgentMock()
+                    .setGlobalAdmissionContext(globalAdmissionContext)
+                    .set
+*/
     }
 
     @After
@@ -146,11 +169,13 @@ public class ExperimentBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ItemBeanTest.war")
+        WebArchive deployment = prepareDeployment("ExperimentBeanTest.war")
                 .addClass(ExperimentService.class)
                 .addClass(ExpRecordService.class)
+                .addClass(MaterialAgent.class)
                 .addClass(AssayService.class)
                 .addClass(TextService.class)
+                .addClass(MaterialService.class)
                 .addClass(ProjectService.class);
         return UserBeanDeployment.add(ItemDeployment.add(deployment));
     }

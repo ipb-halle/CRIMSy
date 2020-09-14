@@ -48,6 +48,7 @@ public class ExperimentBean implements Serializable {
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
+    /* access set to 'protected' to facilitate mocking during unit tests */
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
 
@@ -56,6 +57,9 @@ public class ExperimentBean implements Serializable {
 
     @Inject
     protected ExpRecordService expRecordService;
+
+    @Inject
+    protected MaterialAgent materialAgent;
 
     private Experiment experiment;
 
@@ -323,6 +327,10 @@ public class ExperimentBean implements Serializable {
             return "expRecordEven";
         }
         return "expRecordOdd";
+    }
+
+    public MaterialAgent getMaterialAgent() {
+        return this.materialAgent;
     }
 
     public String getNewRecordType() {

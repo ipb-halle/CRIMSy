@@ -33,6 +33,7 @@ public abstract class ExpRecordController {
 
     protected ExpRecordController(ExperimentBean bean) {
         this.bean = bean;
+        bean.getMaterialAgent().setMaterialHolder(null);
     }
 
     public void actionCancel() {
@@ -71,6 +72,10 @@ public abstract class ExpRecordController {
         return false;
     }
 
+    public ExperimentBean getExperimentBean() {
+        return this.bean;
+    }
+
     public ExpRecord getExpRecord() {
         int i = this.bean.getExpRecordIndex();
         if ((i >= 0) && (i < this.bean.getExpRecords().size())) {
@@ -81,12 +86,4 @@ public abstract class ExpRecordController {
 
     public abstract ExpRecord getNewRecord();
 
-    /**
-     * display mol editor in search dialog; method may be overwritten 
-     * by child classes
-     * @return false
-     */
-    public boolean getShowMolEditor() {
-        return false;
-    }
 }

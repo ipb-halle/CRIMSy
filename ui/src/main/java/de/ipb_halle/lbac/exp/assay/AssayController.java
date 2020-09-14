@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.exp.assay;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
+import de.ipb_halle.lbac.exp.MaterialHolder;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 
@@ -36,7 +37,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class AssayController extends ExpRecordController implements MaterialHolder {
 
-    private ExperimentBean bean;
     private AssayRecord assayRecord;
     private String materialTarget;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -46,6 +46,7 @@ public class AssayController extends ExpRecordController implements MaterialHold
      */
     public AssayController(ExperimentBean bean) {
         super(bean);
+        bean.getMaterialAgent().setMaterialHolder(this);
         this.materialTarget = "";
     }
 
@@ -93,11 +94,6 @@ public class AssayController extends ExpRecordController implements MaterialHold
         return rec; 
     }
 
-    @Override
-    public boolean getShowMolEditor() {
-        return this.materialTarget.equals("RECORD");
-    }
-
     public void setMaterial(Material material) {
         switch (this.materialTarget) {
             case "TARGET" :
@@ -113,6 +109,14 @@ public class AssayController extends ExpRecordController implements MaterialHold
 
     public  void setMaterialTarget(String target) {
         this.materialTarget = target;
+        switch(target) {
+            case "TARGET" :
+                getExperimentBean().getMaterialAgent().setShowMolEditor(false);
+                break;
+            case "RECORD" :
+                getExperimentBean().getMaterialAgent().setShowMolEditor(true);
+                break;
+        }
         this.logger.info("setMaterialTarget() {}", target);
     }
 

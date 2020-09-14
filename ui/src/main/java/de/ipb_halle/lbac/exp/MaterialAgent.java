@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.assay;
+package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
@@ -31,10 +31,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,23 +43,25 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-@RequestScoped
-@Named
-public class MaterialAgent {
+@Dependent
+public class MaterialAgent implements Serializable {
+
+    private final static long   serialVersionUID = 1L;
 
     @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
+    protected GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
-    UserBean userBean;
+    protected UserBean userBean;
 
     @Inject
-    private MaterialService materialService;
+    protected MaterialService materialService;
 
     private String materialSearch = "";
     private String moleculeSearch = "";
 
     private MaterialHolder materialHolder;
+    private boolean showMolEditor = false;
 
     private Integer materialId;
 
@@ -89,13 +90,7 @@ public class MaterialAgent {
     /**
      * get the list of appropriate materials
      */
-    public List<Material> getMaterialList(ExpRecordController holder) {
-        if (holder instanceof MaterialHolder) {
-            this.materialHolder = (MaterialHolder) holder;
-        } else {
-            return null;
-        }
-
+    public List<Material> getMaterialList() {
         if ( this.materialHolder != null ) {
             try {
                 HashMap<String, Object> cmap = new HashMap<String, Object> ();
@@ -122,9 +117,7 @@ public class MaterialAgent {
             } catch (Exception e) {
                 this.logger.warn("getMaterialList() caught an exception: ", (Throwable) e);
             }
-        } else {
-            this.logger.info("getMaterialList() MaterialHolder is null");
-        }
+        } 
         return new ArrayList<Material>();
     }
 
@@ -141,8 +134,11 @@ public class MaterialAgent {
         return this.moleculeSearch;
     }
 
+    public boolean getShowMolEditor() {
+        return this.showMolEditor; 
+    }
+
     public void setMaterialHolder(MaterialHolder materialHolder) {
-        this.logger.info("setMaterialHolder() {}", materialHolder);
         this.materialHolder = materialHolder;
     }
 
@@ -158,5 +154,9 @@ public class MaterialAgent {
     public void setMoleculeSearch(String moleculeSearch) {
         this.logger.info("setMoleculeSearch() len={}", moleculeSearch.length());
         this.moleculeSearch = moleculeSearch;
+    }
+
+    public void setShowMolEditor(boolean show) {
+        this.showMolEditor = show;
     }
 }
