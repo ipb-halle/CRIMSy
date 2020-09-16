@@ -57,7 +57,9 @@ public abstract class ExpRecord implements DTO {
     private Long            next;
     private int             revision;
     private SimpleDateFormat dateFormatter;
-    private transient boolean   edit = false;
+    private transient boolean isEdit = false;
+    private transient boolean isFirst = false;
+    private transient boolean isLast =  false;
     private transient int       index;
 
     protected ExpRecord() {
@@ -101,7 +103,7 @@ public abstract class ExpRecord implements DTO {
      * @return true if the record is in edit mode
      */
     public boolean getEdit() {
-        return this.edit;
+        return this.isEdit;
     }
 
     /**
@@ -109,7 +111,7 @@ public abstract class ExpRecord implements DTO {
      * of an experiment template
      */
     public boolean getEditRecord() {
-        return (this.edit && (! getTemplate()));
+        return (this.isEdit && (! getTemplate()));
     }
 
     /**
@@ -117,7 +119,7 @@ public abstract class ExpRecord implements DTO {
      * an experiment template
      */
     public boolean getEditTemplate() {
-        return (this.edit && getTemplate());
+        return (this.isEdit && getTemplate());
     }
 
     public Experiment getExperiment() { 
@@ -127,6 +129,10 @@ public abstract class ExpRecord implements DTO {
     public String getExpRecordDetails() {
         // Messages.getString(MESSAGE_BUNDLE, "expBean_ChangeTime", null);
         return "Changed: " + this.dateFormatter.format(this.changetime);
+    }
+
+    public Long getExpRecordId() {
+        return this.exprecordid;
     }
 
     public String getExpRecordInfo() {
@@ -145,11 +151,41 @@ public abstract class ExpRecord implements DTO {
         return this.type.toString();
     }
 
+    public boolean getFirst() {
+        return this.isFirst;
+    }
+
     /**
      * the index in a list of ExpRecords
      */
     public int getIndex() {
         return this.index;
+    }
+
+    public boolean getLast() {
+        return this.isLast;
+    }
+
+    public Long getNext() {
+        return this.next;
+    }
+
+    public int getRevision() {
+        return this.revision;
+    }
+
+    /**
+     * whether to disable the MoveDown button (move record to higher index) 
+     */
+    public boolean getMoveDownDisabled() {
+        return (! this.isEdit) || this.isLast;
+    }
+
+    /**
+     * whether to disable the MoveUp button (move record to lower index) 
+     */
+    public boolean getMoveUpDisabled() {
+        return (! this.isEdit) || this.isFirst;
     }
 
     /**
@@ -163,6 +199,10 @@ public abstract class ExpRecord implements DTO {
         return false;
     }
 
+    public ExpRecordType getType() {
+        return this.type;
+    }
+
     /**
      * increment the revision of this record and update 
      * the changetime.
@@ -170,6 +210,21 @@ public abstract class ExpRecord implements DTO {
     public void incrementRevision() {
         this.changetime =  new Date();
         this.revision += 1;
+    }
+
+    public ExpRecord setCreationTime(Date creationtime) {
+        this.creationtime = creationtime;
+        return this;
+    }
+
+    public ExpRecord setEdit(boolean isEdit) {
+        this.isEdit = isEdit;
+        return this;
+    }
+
+    public ExpRecord setExperiment(Experiment experiment) { 
+        this.experiment = experiment;
+        return this;
     }
 
     /**
@@ -187,45 +242,22 @@ public abstract class ExpRecord implements DTO {
         return this;
     }
 
-    public Long getExpRecordId() {
-        return this.exprecordid;
-    }
-
-    public Long getNext() {
-        return this.next;
-    }
-
-    public int getRevision() {
-        return this.revision;
-    }
-
-    public ExpRecordType getType() {
-        return this.type;
-    }
-
-    public ExpRecord setCreationTime(Date creationtime) {
-        this.creationtime = creationtime;
-        return this;
-    }
-
-    public ExpRecord setEdit(boolean edit) {
-        this.edit = edit;
-        return this;
-    }
-
-    public ExpRecord setExperiment(Experiment experiment) { 
-        this.experiment = experiment;
-        return this;
-    }
-
     public ExpRecord setExpRecordId(Long exprecordid) { 
         this.exprecordid = exprecordid; 
         return this;
     }
 
+    public void setFirst(boolean isFirst) {
+        this.isFirst = isFirst;
+    }
+
     public ExpRecord setIndex(int index) {
         this.index = index;
         return this;
+    }
+
+    public  void setLast(boolean isLast) {
+        this.isLast = isLast;
     }
 
     public ExpRecord setNext(Long next) {

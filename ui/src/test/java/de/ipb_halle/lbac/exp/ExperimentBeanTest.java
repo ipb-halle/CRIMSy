@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.mocks.ExperimentBeanMock;
 import de.ipb_halle.lbac.exp.mocks.MaterialAgentMock;
+import de.ipb_halle.lbac.exp.nul.NullController;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -137,6 +138,7 @@ public class ExperimentBeanTest extends TestBase {
         Experiment exp3 = createAndSaveExperiment("EXP-3", "EXP-3-DESC", publicReadAcl, publicUser, true);
         experimentBean.setExperiment(exp1);
 
+        // whe have 4 records in experiment exp1
         experimentBean.saveExpRecord(createTextrecord(exp1, "Overview"));
         experimentBean.saveExpRecord(createTextrecord(exp1, "Section 1"));
         experimentBean.saveExpRecord(createTextrecord(exp1, "Section 2"));
@@ -149,20 +151,25 @@ public class ExperimentBeanTest extends TestBase {
         Assert.assertTrue(experimentBean.getTemplateMode());
         Assert.assertEquals(1, experimentBean.getExperiments().size());
         experimentBean.loadExpRecords();
-        Assert.assertEquals(4, experimentBean.getExpRecords().size());
+
+        // we get 5 records (4 + NullRecord)
+        Assert.assertEquals(5, experimentBean.getExpRecords().size());
         experimentBean.setTemplateMode(false);
         experimentBean.actionToggleExperiment(exp1);
-        //Deselect the experiment 
+
+        // deselect the experiment (0 records)
         Assert.assertEquals(0, experimentBean.getExpRecords().size());
+
+        // select exp2 (only NullRecord)
         experimentBean.actionToggleExperiment(exp2);
-        Assert.assertEquals(0, experimentBean.getExpRecords().size());
+        Assert.assertEquals(1, experimentBean.getExpRecords().size());
         experimentBean.actionToggleExperiment(exp1);
         experimentBean.reIndex();
 
         experimentBean.setNewRecordType("TEXT");
-        //Append at last position
-        experimentBean.actionAppendRecord(-1);
-        Assert.assertEquals(5, experimentBean.getExpRecords().size());
+        // append at last position
+        experimentBean.actionAppendRecord(experimentBean.getExpRecords().size() - 1);
+        Assert.assertEquals(6, experimentBean.getExpRecords().size());
         experimentBean.actionCancel();
        
     }

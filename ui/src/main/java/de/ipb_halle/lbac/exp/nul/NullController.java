@@ -15,8 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp;
+package de.ipb_halle.lbac.exp.nul;
 
+import de.ipb_halle.lbac.exp.ExperimentBean;
+import de.ipb_halle.lbac.exp.ExpRecordController;
+import de.ipb_halle.lbac.exp.ExpRecord;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +33,7 @@ public class NullController extends ExpRecordController {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    protected NullController(ExperimentBean bean) {
+    public NullController(ExperimentBean bean) {
         super(bean);
     }
 

@@ -31,11 +31,12 @@ package de.ipb_halle.lbac.exp;
  * @author fbroda
  */
 public enum ExpRecordType {
-    ASSAY(0),
-    ATTACHMENT(1),
-    COMPOUND_DATA(2),
-    REACTION(3),
-    TEXT(4);
+    NULL(0),
+    ASSAY(1),
+    ATTACHMENT(2),
+    COMPOUND_DATA(3),
+    REACTION(4),
+    TEXT(5);
 
     private int typeId;
 

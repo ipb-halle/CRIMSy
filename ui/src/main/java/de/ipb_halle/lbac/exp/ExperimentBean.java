@@ -20,6 +20,8 @@ package de.ipb_halle.lbac.exp;
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.exp.assay.AssayController;
+import de.ipb_halle.lbac.exp.nul.NullController;
+import de.ipb_halle.lbac.exp.nul.NullRecord;
 import de.ipb_halle.lbac.exp.text.TextController;
 
 import java.io.Serializable;
@@ -97,12 +99,12 @@ public class ExperimentBean implements Serializable {
     }
 
     /**
-     * @param delta 0 = actually prepend record, 1 = append record, -1 = append
-     * as last record
+     * insert a record
+     * @param index insert position - 1 (i.e. index of the preceding record)
      */
-    public void actionAppendRecord(int delta) {
+    public void actionAppendRecord(int index) {
 
-        if (this.experiment == null) {
+        if ((this.experiment == null) || (this.experiment.getExperimentId() == null)) {
             this.logger.info("actionAppendRecord(): experiment not set");
             return;
         }
@@ -112,21 +114,23 @@ public class ExperimentBean implements Serializable {
             ExpRecord record = this.expRecordController.getNewRecord();
             record.setExperiment(this.experiment);
 
-            // where to insert?
-            if (delta < 0) {
-                this.expRecordIndex = this.expRecords.size();
-                delta = 0;
-            }
-            int index = this.expRecordIndex + delta;
-
             if ((index < 0) || (index > this.expRecords.size())) {
                 this.logger.info("actionAppendRecord() out of range");
                 return;
             }
 
-            if (index < (this.expRecords.size())) {
-                // link to the following record
-                record.setNext(this.expRecords.get(index).getExpRecordId());
+            switch(this.expRecords.size() - index) {
+                case 0:
+                        // NullRecord at end of ExpRecord list
+                        break;
+                case 1:
+                        // last real record in ExpRecord list
+                        index++;
+                        break;
+                default:
+                        // start or middle of the list; link to the following record
+                        index++;
+                        record.setNext(this.expRecords.get(index).getExpRecordId());
             }
 
             // remember index (initially id is null)
@@ -206,6 +210,61 @@ public class ExperimentBean implements Serializable {
      */
     public void actionNewExperiment() {
         experimentBeanInit();
+    }
+
+    /**
+     * rearranges a record record in the list. Needs to update links 
+     * and to reIndex all records
+     * @param delta number of positions to move the record up or down
+     */
+    public void actionRearrangeRecord(int delta) {
+        ExpRecord other;
+        int size = this.expRecords.size();
+        int newPosition = this.expRecordIndex + delta;
+        if ((this.expRecordIndex > -1) 
+                && (this.expRecordIndex < size)
+                && (newPosition > -1) 
+                && (newPosition < size)) {
+
+            ExpRecord record = this.expRecords.remove(this.expRecordIndex);
+            List<ExpRecord> saveList = new ArrayList<> ();
+
+            if ((this.expRecordIndex == (size - 1)) 
+                    && (size > 1)) {
+                // set next field to null for new last record 
+                other = this.expRecords.get(this.expRecordIndex - 1);
+                other.setNext(null);
+                saveList.add(other);
+            } else {
+                if (this.expRecordIndex > 0) {
+                    // no action if first record has been removed
+                    other = this.expRecords.get(this.expRecordIndex - 1);
+                    other.setNext(this.expRecords.get(this.expRecordIndex).getExpRecordId());
+                    saveList.add(other);
+                }
+            }
+            if (newPosition == (size - 1)) { 
+                record.setNext(null);
+            } else {
+                if (newPosition > 0) {
+                    other = this.expRecords.get(newPosition - 1);
+                    other.setNext(record.getExpRecordId());
+                    saveList.add(other);
+                }
+                other = this.expRecords.get(newPosition);
+                record.setNext(other.getExpRecordId());
+            }
+
+            // save affected records
+            for(ExpRecord rec : saveList) {
+                this.expRecordService.saveOnly(rec);
+            }
+            record = this.expRecordService.save(record);
+            this.expRecords.add(newPosition, record);
+
+            reIndex();
+            cleanup();
+        }
     }
 
     public void actionSaveExperiment() {
@@ -316,6 +375,12 @@ public class ExperimentBean implements Serializable {
     }
 
     public List<ExpRecord> getExpRecords() {
+        if (this.experiment.getExperimentId() != null) {
+            List<ExpRecord> list = new ArrayList<ExpRecord> (this.expRecords);
+            list.add(new NullRecord().setIndex(list.size()));
+            return list;
+        } 
+        // should be an empty list
         return this.expRecords;
     }
 
@@ -366,14 +431,20 @@ public class ExperimentBean implements Serializable {
     }
 
     /**
-     * re-index all records (and clear edit flag)
+     * re-index all records, clear edit flag and set last and first properties
      */
     public void reIndex() {
         int i = 0;
         for (ExpRecord rec : this.expRecords) {
             rec.setEdit(false);
             rec.setIndex(i);
+            if (i == 0) {
+                rec.setFirst(true);
+            }
             i++;
+        }
+        if (i > 0) {
+            this.expRecords.get(i-1).setLast(true);
         }
     }
 

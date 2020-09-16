@@ -33,9 +33,23 @@
             <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
 
+                <p:commandLink title="#{msgs.MoveUp}"
+                               update="@all"
+                               disabled="#{rec.moveUpDisabled}"
+                               action="#{experimentBean.actionRearrangeRecord(-1)}">
+                    <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                    <span class="fa fa-angle-up"> </span>
+                </p:commandLink>
+                <p:commandLink title="#{msgs.MoveDown}"
+                               update="@all"
+                               disabled="#{rec.moveDownDisabled}"
+                               action="#{experimentBean.actionRearrangeRecord(1)}">
+                    <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                    <span class="fa fa-angle-down"> </span>
+                </p:commandLink>
                 <p:commandLink title="#{msgs.Edit}" 
                                update="@all"
-                               rendered="#{experimentBean.expRecordController.edit}"
+                               rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
                                action="#{experimentBean.actionEditRecord}">
                     <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
                     <span class="fa fa-pencil"> </span>
@@ -45,7 +59,7 @@
                     <f:selectItem itemLabel="#{msgs.expAddRecord}" itemValue="" />
                     <f:selectItem itemLabel="#{msgs.expText}" itemValue="TEXT" />
                     <f:selectItem itemLabel="#{msgs.expAssay}" itemValue="ASSAY" />
-                    <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(-1)}" update="expRecordsForm" />
+                    <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(rec.index)}" update="expRecordsForm" />
                 </p:selectOneMenu>
                 <br/>
             </div>

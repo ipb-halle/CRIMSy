@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +25,9 @@ import java.util.Map;
  *
  * @author fmauz
  */
-public class CMapFactory {
+public class CMapFactory implements Serializable {
+
+    private final static long serialVersionUID = 1L;
 
     public Map<String, String> createCmap(SearchMaskValues searchMaskValues) {
         Map<String, String> cmap = new HashMap<>();
