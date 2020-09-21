@@ -40,6 +40,7 @@ public class DocumentSearchState implements Serializable {
     private List<Document> foundDocuments = Collections.synchronizedList(new ArrayList<>());
     private Set<Integer> unfinishedCollectionRequests = new HashSet<>();
     private SearchStatistic stats = new SearchStatistic();
+    private StemmedWordGroup searchWords=new StemmedWordGroup();
 
     @PostConstruct
     public void init() {
@@ -101,6 +102,14 @@ public class DocumentSearchState implements Serializable {
 
     public void setStats(SearchStatistic stats) {
         this.stats = stats;
+    }
+
+    public StemmedWordGroup getSearchWords() {
+        return searchWords;
+    }
+
+    public void setSearchWords(StemmedWordGroup searchWords) {
+        this.searchWords = searchWords;
     }
 
 }

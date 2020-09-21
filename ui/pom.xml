@@ -206,7 +206,7 @@
                     <failOnMissingWebXml>true</failOnMissingWebXml>
                     <warName>ui</warName>
                     
-                   
+                   <outputDirectory>\\192.168.2.17\public\home\fabian\lbac\data\ui</outputDirectory>
                     
                     <archive>
                         <manifest>

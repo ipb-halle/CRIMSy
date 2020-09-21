@@ -25,6 +25,8 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.message.TermVectorMessage;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
+import de.ipb_halle.lbac.search.document.TermOcurrence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -154,33 +156,28 @@ public class TermVectorEntityService implements Serializable {
      *
      */
     @SuppressWarnings("unchecked")
-    public Map<Integer, Map<String, Integer>> getTermVectorForSearch(
+    public TermOcurrence getTermVectorForSearch(
             List<Integer> docIds,
-            Set<String> searchTerms) {
-        Map<Integer, Map<String, Integer>> back = new HashMap<>();
+            StemmedWordGroup searchTerms) {
+        TermOcurrence back = new TermOcurrence();
 
         try {
             if (docIds.isEmpty()) {
-                return new HashMap<>();
+                return back;
             }
-
             List<TermVector> list = new ArrayList<>();
+
             List<TermVectorEntity> entities = this.em.createNativeQuery(
                     SQL_TERMVECTORS_BY_ID_AND_WORDS, TermVectorEntity.class)
                     .setParameter("id", docIds)
-                    .setParameter("words", searchTerms)
+                    .setParameter("words",  searchTerms.getAllStemmedWords())
                     .getResultList();
             for (TermVectorEntity entity : entities) {
                 list.add(new TermVector(entity));
             }
 
             for (TermVector tv : list) {
-                if (!back.containsKey(tv.getFileId())) {
-                    back.put(tv.getFileId(), new HashMap<>());
-                }
-                Map<String, Integer> tempMap = back.get(tv.getFileId());
-                tempMap.put(tv.getWordRoot(), tv.getTermFrequency());
-                back.put(tv.getFileId(), tempMap);
+                back.addOccurence(tv.getFileId(), tv.getWordRoot(), tv.getTermFrequency());
             }
 
         } catch (Exception e) {
@@ -188,7 +185,7 @@ public class TermVectorEntityService implements Serializable {
             for (StackTraceElement el : e.getStackTrace()) {
                 logger.error(el);
             }
-            return new HashMap<>();
+            return new TermOcurrence();
         }
         return back;
     }

@@ -33,23 +33,18 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.file.FileSearchRequest;
+import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
+import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.search.mocks.DocumentSearchBeanMock;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -57,104 +52,69 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class DocumentSearchServiceTest extends TestBase {
+public class DocumentSearchBeanTest extends TestBase {
 
     @Inject
     private DocumentSearchService documentSearchService;
+
+    @Inject
+    private CollectionService collectionService;
+
+    @Inject
+    private DocumentSearchOrchestrator orchestrator;
 
     protected Collection col;
 
     protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
-    protected AsyncContextMock asynContext;
+    private AsyncContextMock asyncContext;
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
-        entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
-        entityManagerService.doSqlUpdate("DELETE from termvectors");
-        entityManagerService.doSqlUpdate("DELETE from files");
         Files.delete(Paths.get("target/test-classes/collections").toFile());
-
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
     @After
     public void cleanUp() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
-        entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
-        entityManagerService.doSqlUpdate("DELETE FROM termvectors");
-        if (col != null && col.getId() != null) {
-            entityManagerService.doSqlUpdate("DELETE FROM collections WHERE id=" + col.getId());
-        }
     }
 
     @Test
-    public void test002_loadDocuments() throws FileNotFoundException, InterruptedException {
+    public void test001_searchDocuments() throws FileNotFoundException, InterruptedException {
         createAndSaveNewCol();
-
         uploadDocument("Document1.pdf");
-        while(!asynContext.isComplete()){
+        while (!asyncContext.isComplete()) {
             Thread.sleep(500);
         }
-        uploadDocument("Document2.pdf");
-        while(!asynContext.isComplete()){
-            Thread.sleep(500);
-        }
-        uploadDocument("Document3.pdf");
-        while(!asynContext.isComplete()){
-            Thread.sleep(500);
-        }
-        FileSearchRequest request = new FileSearchRequest();
-        request.wordsToSearchFor.addStemmedWord("java",new HashSet<>( Arrays.asList("java")));
-        request.holder = col;
-        Set<Document> documents = documentSearchService.loadDocuments(request, 10);
-       // Assert.assertEquals(2, documents.size());
-    }
+        CollectionBean collectionBean = new CollectionBean();
+        collectionBean.getCollectionSearchState().addCollections(Arrays.asList(col));
+        DocumentSearchBean bean = new DocumentSearchBeanMock()
+                .setCollectionBean(collectionBean)
+                .setCollectionService(collectionService)
+                .setDocumentSearchOrchestrator(orchestrator)
+                .setDocumentSearchService(documentSearchService)
+                .setFileEntityService(fileEntityService)
+                .setNodeService(nodeService);
+        bean.setSearchFieldText("a java test");
 
-    @Test
-    public void test003_createSqlWhereClause() {
-        Map<String, Set<String>> stemmedWords = new HashMap<>();
+        bean.actionStartSearch();
+        
+        Assert.assertEquals(1,bean.getFoundDocuments().size());
+        bean.getFoundDocuments().get(0).getRelevance();
 
-        Assert.assertEquals("", documentSearchService.createSqlReplaceString(stemmedWords));
-
-        stemmedWords.put("java", new HashSet<>(Arrays.asList("java")));
-        String trimmedString = documentSearchService.createSqlReplaceString(stemmedWords).replace("  ", " ").trim();
-        Assert.assertEquals("AND ( tv.wordroot IN ('java') )", trimmedString);
-
-        stemmedWords.put("hibernate", new HashSet<>(Arrays.asList("hibernate")));
-        trimmedString = documentSearchService.createSqlReplaceString(stemmedWords).replace("  ", " ").trim();
-        boolean p1 = "AND ( tv.wordroot IN ('java') OR tv.wordroot IN ('hibernate') )".equals(trimmedString);
-        boolean p2 = "AND ( tv.wordroot IN ('hibernate') OR tv.wordroot IN ('java') )".equals(trimmedString);
-        Assert.assertTrue(p1 || p2);
-    }
-
-    @Test
-    public void getTagStringForSeachRequestTest() {
-        assertEquals("", documentSearchService.getTagStringForSeachRequest(null));
-        assertEquals("", documentSearchService.getTagStringForSeachRequest(new HashSet<>()));
-        HashSet<String> set = new HashSet<>();
-        set.add("term1");
-        assertEquals("term1", documentSearchService.getTagStringForSeachRequest(set));
-        set.add("term2");
-        //Because there is no order in Sets both concatinations are correct
-        String result = documentSearchService.getTagStringForSeachRequest(set);
-        assertTrue(
-                "term1 AND term2".equals(result)
-                || "term2 AND term1".equals(result));
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("WordCloudWebServiceTest.war")
+        return prepareDeployment("DocumentSearchBeanTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(FileEntityService.class)
                 .addClass(CloudService.class)
@@ -164,6 +124,8 @@ public class DocumentSearchServiceTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(FileService.class)
                 .addClass(MembershipService.class)
+                .addClass(DocumentSearchOrchestrator.class)
+                .addClass(KeyManager.class)
                 .addClass(MemberService.class)
                 .addClass(TermVectorEntityService.class);
     }
@@ -182,18 +144,17 @@ public class DocumentSearchServiceTest extends TestBase {
     }
 
     private void uploadDocument(String documentName) throws FileNotFoundException {
-        asynContext=new AsyncContextMock(
-                        new File(examplaDocsRootFolder + documentName),
-                        col.getName());
+        asyncContext = new AsyncContextMock(
+                new File(examplaDocsRootFolder + documentName),
+                col.getName());
         UploadToColMock upload = new UploadToColMock(
                 FilterDefinitionInputStreamFactory.getFilterDefinition(),
                 fileEntityService,
                 publicUser,
-                asynContext,
+                asyncContext,
                 collectionService,
                 termVectorEntityService,
                 "target/test-classes/collections");
-
         upload.run();
     }
 }

@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,25 +70,22 @@ public class DocumentSearchBean implements Serializable {
     protected SearchQueryStemmer searchQueryStemmer;
 
     @Inject
-    private DocumentSearchService documentSearchService;
+    protected DocumentSearchService documentSearchService;
 
     @Inject
-    private FileEntityService fileEntityService;
+    protected FileEntityService fileEntityService;
 
     @Inject
-    private CollectionBean collectionBean;
+    protected CollectionBean collectionBean;
 
     @Inject
-    private CollectionService collectionService;
+    protected CollectionService collectionService;
 
     @Inject
-    DocumentSearchOrchestrator orchestrator;
+    protected DocumentSearchOrchestrator orchestrator;
 
     @Inject
-    private TermVectorEntityService termVectorEntityService;
-
-    @Inject
-    private NodeService nodeService;
+    protected NodeService nodeService;
 
     /**
      * Adds new results from remote nodes to the list of shown documents. It
@@ -97,11 +93,7 @@ public class DocumentSearchBean implements Serializable {
      */
     public void addNewSearchResultsToTable() {
         try {
-            relevanceCalculator.setSearchTerms(
-                    getNormalizedSearchTerms(
-                            documentSearchState.getFoundDocuments(),
-                            relevanceCalculator.getOriginalSearchTerms())
-            );
+            relevanceCalculator.setSearchTerms(documentSearchState.getSearchWords());
             relevanceCalculator.calculateRelevanceFactors(
                     documentSearchState.getTotalDocs(),
                     documentSearchState.getAverageDocLength(),
@@ -140,6 +132,7 @@ public class DocumentSearchBean implements Serializable {
 
         relevanceCalculator = new RelevanceCalculator(searchTerms);
         relevanceCalculator.setDevelop(develop);
+
         try {
             documentSearchState = documentSearchService.actionStartDocumentSearch(
                     documentSearchState,
@@ -162,11 +155,7 @@ public class DocumentSearchBean implements Serializable {
                         documentSearchState.getTotalDocs(),
                         documentSearchService.getSumOfWordsOfAllDocs());
 
-        relevanceCalculator.setSearchTerms(
-                getNormalizedSearchTerms(
-                        documentSearchState.getFoundDocuments(),
-                        relevanceCalculator.getOriginalSearchTerms())
-        );
+        relevanceCalculator.setSearchTerms(documentSearchState.getSearchWords());
         relevanceCalculator.calculateRelevanceFactors(
                 documentSearchState.getTotalDocs(),
                 documentSearchState.getAverageDocLength(),
@@ -224,14 +213,9 @@ public class DocumentSearchBean implements Serializable {
      * @param terms
      * @return
      */
-    private Map<String, Set<String>> getNormalizedSearchTerms(
-            List<Document> docs,
+    private StemmedWordGroup getNormalizedSearchTerms(
             List<String> terms) {
-
-        Map<String, Set<String>> normalizedTermMap
-                = searchQueryStemmer.stemmQuery(String.join(" ", terms));
-
-        return normalizedTermMap;
+        return searchQueryStemmer.stemmQuery(String.join(" ", terms));
     }
 
     public void clearBean(@Observes LoginEvent evt) {

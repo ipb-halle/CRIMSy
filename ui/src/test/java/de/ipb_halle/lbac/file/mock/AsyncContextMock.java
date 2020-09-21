@@ -33,16 +33,18 @@ public class AsyncContextMock implements AsyncContext {
 
     private final File file;
     protected String collectionname;
+    private boolean complete;
 
     public AsyncContextMock(File f, String collectionName) {
         this.file = f;
         this.collectionname = collectionName;
+        complete = false;
 
     }
 
     @Override
     public ServletRequest getRequest() {
-        return new HttpServletRequestMock(file,collectionname);
+        return new HttpServletRequestMock(file, collectionname);
     }
 
     @Override
@@ -72,6 +74,11 @@ public class AsyncContextMock implements AsyncContext {
 
     @Override
     public void complete() {
+        complete = true;
+    }
+
+    public boolean isComplete() {
+        return complete;
 
     }
 

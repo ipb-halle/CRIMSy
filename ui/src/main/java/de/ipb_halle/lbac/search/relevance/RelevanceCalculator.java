@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search.relevance;
 
 import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,13 +38,13 @@ import org.apache.logging.log4j.LogManager;
  */
 public class RelevanceCalculator implements Serializable {
 
-    private Map<String, Set<String>> searchTerms;
+    private StemmedWordGroup searchTerms;
     private final Logger logger;
     private boolean develop;
     private List<String> originalSearchTerms;
 
     public RelevanceCalculator() {
-        this.searchTerms = new HashMap<>();
+        this.searchTerms = new StemmedWordGroup();
         this.logger = LogManager.getLogger(this.getClass().getName());
         this.develop = false;
         this.originalSearchTerms = new ArrayList<>();
@@ -80,22 +81,18 @@ public class RelevanceCalculator implements Serializable {
 
         for (Document d : docsToUpdate) {
             d.setRelevance(0);
-            if (searchTerms.containsKey(d.getLanguage())) {
-
-                for (String word : searchTerms.get(d.getLanguage())) {
-                    int fq = d.getTermFreqList().getFreqOf(word);
-                    if (fq > 0) {
-                        double nf = (double) (d.getWordCount() / averageDocLength);
-                        double rh = (fq * (k1 + 1)) / (fq + k1 * (1 - b + b * (nf)));
-                        d.setRelevance(d.getRelevance() + (idf * rh));
-                        if (develop) {
-                            infoDocument(d.getOriginalName(), word, nf, rh, d.getRelevance());
-                        }
+            for (String word : searchTerms.getAllStemmedWords()) {
+                int fq = d.getTermFreqList().getFreqOf(word);
+                if (fq > 0) {
+                    double nf = (double) (d.getWordCount() / averageDocLength);
+                    double rh = (fq * (k1 + 1)) / (fq + k1 * (1 - b + b * (nf)));
+                    d.setRelevance(d.getRelevance() + (idf * rh));
+                    if (develop) {
+                        infoDocument(d.getOriginalName(), word, nf, rh, d.getRelevance());
                     }
                 }
-            } else {
-                logger.error("Document " + d.getOriginalName() + " with language " + d.getLanguage() + " has no normalized search terms.");
             }
+
         }
         return docsToUpdate;
     }
@@ -109,18 +106,16 @@ public class RelevanceCalculator implements Serializable {
     private double getDocAmountWithHit(List<Document> docsToUpdate) {
         double docs = 0;
         for (Document d : docsToUpdate) {
-            if (searchTerms.containsKey(d.getLanguage())) {
-                for (String s : searchTerms.get(d.getLanguage())) {
-                    int fq = d.getTermFreqList().getFreqOf(s);
-                    if (fq > 0) {
-                        docs++;
-                        break;
-                    }
+
+            for (String s : searchTerms.getAllStemmedWords()) {
+                int fq = d.getTermFreqList().getFreqOf(s);
+                if (fq > 0) {
+                    docs++;
+                    break;
                 }
-            } else {
-                logger.error("Document " + d.getOriginalName() + " with language " + d.getLanguage() + " has no normalized search terms.");
             }
         }
+
         return docs;
     }
 
@@ -140,13 +135,6 @@ public class RelevanceCalculator implements Serializable {
         for (String o : originalSearchTerms) {
             logger.info(o);
         }
-        for (String lan : searchTerms.keySet()) {
-            logger.info("-- " + lan);
-            for (String s : searchTerms.get(lan)) {
-                logger.info(s);
-            }
-        }
-
     }
 
     private void infoDocument(String doc, String term, double nf, double rh, double relevance) {
@@ -156,11 +144,11 @@ public class RelevanceCalculator implements Serializable {
         logger.info("---- RELEVANCE: " + relevance);
     }
 
-    public Map<String, Set<String>> getSearchTerms() {
+    public StemmedWordGroup getSearchTerms() {
         return searchTerms;
     }
 
-    public void setSearchTerms(Map<String, Set<String>> searchTerms) {
+    public void setSearchTerms(StemmedWordGroup searchTerms) {
         this.searchTerms = searchTerms;
     }
 

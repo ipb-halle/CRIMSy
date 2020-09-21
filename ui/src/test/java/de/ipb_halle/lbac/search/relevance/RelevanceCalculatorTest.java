@@ -22,15 +22,12 @@ import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.file.TermFrequencyList;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import org.junit.Assert;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -51,10 +48,8 @@ public class RelevanceCalculatorTest {
     @Test
     public void calculateRelevanceFactorsTest() {
         instance = new RelevanceCalculator(Arrays.asList("java"));
-        Map<String, Set<String>> normalizedTerms = new HashMap<>();
-        HashSet<String> term = new HashSet<>();
-        term.add("java");
-        normalizedTerms.put("en", term);
+        StemmedWordGroup normalizedTerms = new StemmedWordGroup();
+        normalizedTerms.addStemmedWord("java", new HashSet<>(Arrays.asList("java","jav")));
         instance.setSearchTerms(normalizedTerms);
         int totalDocsInFirstIteration = 10;
         double averageWordsInCollection = 55;

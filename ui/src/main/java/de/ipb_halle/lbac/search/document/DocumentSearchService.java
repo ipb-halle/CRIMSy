@@ -101,50 +101,39 @@ public class DocumentSearchService {
             int limit,
             int offSet,
             String uriOfPublicColl) throws Exception {
-        if (development) {
-            infoStart(collsToSearchIn, searchText);
-        }
         this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
-
+        searchQueryStemmer = new SearchQueryStemmer();
         // fetches all documents of the collection and adds the total 
         // number of documents in the collection to the search state
+        StemmedWordGroup normalizedTerms = searchQueryStemmer.stemmQuery(searchText);
+        searchState.setSearchWords(normalizedTerms);
         for (Collection coll : collsToSearchIn) {
             if (coll.getNode().equals(nodeService.getLocalNode())) {
                 FileSearchRequest searchRequest = new FileSearchRequest();
                 searchRequest.holder = coll;
-                searchRequest.wordsToSearchFor.put(searchText, Arrays.asList(searchText));
+                searchRequest.wordsToSearchFor = normalizedTerms;
                 Set<Document> foundDocs = loadDocuments(searchRequest, limit);
                 searchState.getFoundDocuments().addAll(foundDocs);
                 searchState.addToTotalDocs(foundDocs.size());
             }
 
         }
-        Map<String,Set<String>> normalizedTerms = searchQueryStemmer.stemmQuery(searchText);
 
         List<Integer> docIds = new ArrayList<>();
         for (Document d : searchState.getFoundDocuments()) {
             docIds.add(d.getId());
         }
 
-        Map<Integer, Map<String, Integer>> totalTerms = termVectorEntityService.getTermVectorForSearch(
+        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
-                normalizedTerms.get(normalizedTerms.keySet().iterator().next()));
-
-        String normalizedSearchTerm = String.join("-", normalizedTerms.get(normalizedTerms.keySet().iterator().next()));
+                normalizedTerms);
 
         for (Document d : searchState.getFoundDocuments()) {
-            if (development) {
-                LOGGER.info("FOUND: " + d.getOriginalName());
-            }
-            Map<String, Integer> terms = totalTerms.get(d.getId());
-            if (terms != null) {
-                for (String key : terms.keySet()) {
-                    d.setWordCount(d.getWordCount() + terms.get(key));
-                    if (normalizedSearchTerm.toLowerCase().contains(key)) {
-                        d.getTermFreqList().getTermFreq().add(new TermFrequency(key, terms.get(key)));
-                    }
-                }
+            d.setWordCount(totalTerms.getTotalWordsOfFile(d.getId()));
+            Map<String, Integer> words = totalTerms.getTermsOfDocument(d.getId());
+            for (String s : words.keySet()) {
+                d.getTermFreqList().getTermFreq().add(new TermFrequency(s, words.get(s)));
             }
         }
         if (development) {
@@ -218,7 +207,7 @@ public class DocumentSearchService {
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
 
         Set<Document> documents = new HashSet<>();
-        String adjustedSql = SQL_LOAD_DOCUMENTS.replace("#words#", createSqlReplaceString(request.wordsToSearchFor));
+        String adjustedSql = SQL_LOAD_DOCUMENTS.replace("#words#", createSqlReplaceString(request.wordsToSearchFor.getStemmedWords()));
         List<FileObjectEntity> results = this.em.createNativeQuery(adjustedSql, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
                 .getResultList();
@@ -252,7 +241,7 @@ public class DocumentSearchService {
 
     }
 
-    public String createSqlReplaceString(Map<String, List<String>> stemmedWords) {
+    public String createSqlReplaceString(Map<String, Set<String>> stemmedWords) {
         if (stemmedWords.isEmpty()) {
             return "";
         }
@@ -268,6 +257,6 @@ public class DocumentSearchService {
                             String.join(",", stemmedWordsWithQuotationMark)));
         }
 
-        return " AND " + String.join(" AND ", subClauses);
+        return " AND (" + String.join(" OR ", subClauses) + ")";
     }
 }

@@ -18,9 +18,7 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.lbac.file.save.AttachmentHolder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 
 /**
  *
@@ -29,7 +27,7 @@ import java.util.Map;
 public class FileSearchRequest {
 
     public AttachmentHolder holder;
-    public Map<String, List<String>> wordsToSearchFor = new HashMap<>();
+    public StemmedWordGroup wordsToSearchFor=new StemmedWordGroup();
     
     
 }

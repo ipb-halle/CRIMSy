@@ -17,12 +17,12 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.tx.text.ParseTool;
 import de.ipb_halle.tx.text.TextRecord;
 import de.ipb_halle.tx.text.properties.Language;
 import de.ipb_halle.tx.text.properties.TextProperty;
 import de.ipb_halle.tx.text.properties.Word;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -35,12 +35,8 @@ public class SearchQueryStemmer {
 
     protected String filterDefinition = "queryParserFilterDefinition.json";
 
-    public SearchQueryStemmer() {
-        this.filterDefinition = filterDefinition;
-    }
-
-    public Map<String, Set<String>> stemmQuery(String queryString) {
-        Map<String, Set<String>> results = new HashMap<>();
+    public StemmedWordGroup stemmQuery(String queryString) {
+        StemmedWordGroup back = new StemmedWordGroup();
         TextRecord tr = new TextRecord(queryString);
         int rank = 0;
         for (String lang : new String[]{"en", "de", "fr", "es", "pt"}) {
@@ -54,10 +50,10 @@ public class SearchQueryStemmer {
         for (TextProperty prop : tr.getProperties(Word.TYPE)) {
             Word w = (Word) prop;
             String wStr = queryString.substring(w.getStart(), w.getEnd());
-            if (wStr.trim().length() >0) {
-                results.put(wStr, w.getStemSet());
+            if (wStr.trim().length() > 0) {
+                back.addStemmedWord(wStr, w.getStemSet());
             }
         }
-        return results;
+        return back;
     }
 }
