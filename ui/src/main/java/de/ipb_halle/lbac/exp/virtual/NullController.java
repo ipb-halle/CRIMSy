@@ -15,45 +15,43 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.nul;
+package de.ipb_halle.lbac.exp.virtual;
 
-import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.exp.ExperimentBean;
+import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.ExpRecord;
-import de.ipb_halle.lbac.exp.ExpRecordType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
+ * a void experiment record controller
+ *
  * @author fbroda
  */
-public class NullRecord extends ExpRecord implements DTO {
+public class NullController extends ExpRecordController {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    /**
-     * default constructor
-     */
-    public NullRecord() {
-        super();
-        setType(ExpRecordType.NULL);
+    public NullController(ExperimentBean bean) {
+        super(bean);
     }
 
     @Override
-    public NullRecord createEntity() {
-        throw new UnsupportedOperationException("Impossible to create an entity from NullRecord.");
+    public boolean getEdit() {
+        return true;
     }
 
     @Override
-    public String getExpRecordDetails() {
-        // Messages.getString(MESSAGE_BUNDLE, "expBean_xxxxx", null);
-        return "";
+    public ExpRecord getExpRecord() {
+        return null;
     }
 
-    @Override
-    public String getExpRecordInfo() {
-        return " # -- # ";
+    public ExpRecord getNewRecord() {
+        return null;
     }
 
+    public ExpRecordController setExpRecord(ExpRecord expRecord) {
+        return this;
+    }
 }

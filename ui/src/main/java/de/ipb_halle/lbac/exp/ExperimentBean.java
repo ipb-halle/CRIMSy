@@ -20,9 +20,9 @@ package de.ipb_halle.lbac.exp;
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.exp.assay.AssayController;
-import de.ipb_halle.lbac.exp.nul.NullController;
-import de.ipb_halle.lbac.exp.nul.NullRecord;
 import de.ipb_halle.lbac.exp.text.TextController;
+import de.ipb_halle.lbac.exp.virtual.NullController;
+import de.ipb_halle.lbac.exp.virtual.NullRecord;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -59,6 +59,9 @@ public class ExperimentBean implements Serializable {
 
     @Inject
     protected ExpRecordService expRecordService;
+
+    @Inject
+    protected ItemAgent itemAgent;
 
     @Inject
     protected MaterialAgent materialAgent;
@@ -136,6 +139,7 @@ public class ExperimentBean implements Serializable {
             // remember index (initially id is null)
             record.setIndex(index);
             this.expRecords.add(index, record);
+            this.expRecordIndex = index;
             reIndex();
             record.setEdit(true);
         }
@@ -392,6 +396,10 @@ public class ExperimentBean implements Serializable {
             return "expRecordEven";
         }
         return "expRecordOdd";
+    }
+
+    public ItemAgent getItemAgent() {
+        return this.itemAgent;
     }
 
     public MaterialAgent getMaterialAgent() {

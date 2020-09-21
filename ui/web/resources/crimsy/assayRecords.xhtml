@@ -39,7 +39,6 @@
                 <composite:attribute name="edit" />
             </composite:attribute>
         </composite:attribute>
-        <composite:attribute name="materialAgent" required="true" />
     </composite:interface>
 
     <composite:implementation >
@@ -49,17 +48,25 @@
             <tr>
                 <td class="assayTableCell">
                     <crimsy:materialView material="#{assayRec.material}" />
-
                     <h:commandLink title="Action"
                             id="materialEditLink"
-                            rendered="#{assayRec.edit}"
+                            rendered="#{assayRec.edit and (assayRec.item == null)}"
                             update="@this" >
                         <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="RECORD" />
                         <p:ajax oncomplete="PF('dlg_materialEdit').show();" process="@namingcontainer" update="@(.materialEdit)" />
                         <span class="fa fa-pencil"> </span>
                     </h:commandLink>
-
-                </td><td class="assayTableCell">Item currently omitted</td>
+                </td><td class="assayTableCell">
+                    <crimsy:itemView item="#{assayRec.item}" />
+                    <h:commandLink title="Action"
+                            id="itemEditLink"
+                            rendered="#{assayRec.edit}"
+                            update="@this" >
+                        <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="RECORD" />
+                        <p:ajax oncomplete="PF('dlg_itemEdit').show();" process="@namingcontainer" update="@(.itemEdit)" />
+                        <span class="fa fa-pencil"> </span>
+                    </h:commandLink>
+                </td>
 
                 <crimsy:singlepointView id="SPview" outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and (! assayRec.edit)}" />
                 <crimsy:singlepointEdit id="SPedit" outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and assayRec.edit}" />

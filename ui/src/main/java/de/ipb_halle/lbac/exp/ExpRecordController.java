@@ -79,7 +79,7 @@ public abstract class ExpRecordController {
     public ExpRecord getExpRecord() {
         int i = this.bean.getExpRecordIndex();
         if ((i >= 0) && (i < this.bean.getExpRecords().size())) {
-            return this.bean.getExpRecords().get(this.bean.getExpRecordIndex());
+            return this.bean.getExpRecords().get(i); 
         }
         return null;
     }

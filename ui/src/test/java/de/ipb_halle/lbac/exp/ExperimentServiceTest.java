@@ -147,6 +147,7 @@ public class ExperimentServiceTest extends TestBase {
                 .addClass(ItemService.class)
                 .addClass(ExperimentBean.class)
                 .addClass(ExperimentService.class)
+                .addClass(ItemAgent.class)
                 .addClass(MaterialAgent.class);
         return UserBeanDeployment.add(ItemDeployment.add(deployment));
     }

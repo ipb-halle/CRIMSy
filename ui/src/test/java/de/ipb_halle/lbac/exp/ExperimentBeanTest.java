@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.mocks.ExperimentBeanMock;
 import de.ipb_halle.lbac.exp.mocks.MaterialAgentMock;
-import de.ipb_halle.lbac.exp.nul.NullController;
+import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -179,6 +179,7 @@ public class ExperimentBeanTest extends TestBase {
         WebArchive deployment = prepareDeployment("ExperimentBeanTest.war")
                 .addClass(ExperimentService.class)
                 .addClass(ExpRecordService.class)
+                .addClass(ItemAgent.class)
                 .addClass(MaterialAgent.class)
                 .addClass(AssayService.class)
                 .addClass(TextService.class)

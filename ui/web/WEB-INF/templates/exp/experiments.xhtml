@@ -30,6 +30,9 @@
         <crimsy:dlgMaterialEdit id="ccDlgMaterialEdit" 
                 agent="#{experimentBean.materialAgent}" />
 
+        <crimsy:dlgItemEdit id="ccDlgItemEdit"
+            agent="#{experimentBean.itemAgent}" />
+
         <ui:insert name="barChartPanel">
             <ui:include src="dlgBarChart.xhtml" >
                 <ui:param name="chartController" value="#{experimentBean}" />

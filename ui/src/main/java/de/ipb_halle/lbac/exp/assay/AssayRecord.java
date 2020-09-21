@@ -133,13 +133,31 @@ public class AssayRecord implements DTO {
         return this;
     }
 
+    /**
+     * Sets the item and additionally updates the 
+     * material if item is not null
+     * @param item the item for this record
+     * @return this
+     */
     public AssayRecord setItem(Item item) {
         this.item = item;
+        if (item != null) {
+            this.material = item.getMaterial();
+        }
         return this;
     }
 
+    /**
+     * set the material for this AssayRecord; this method will 
+     * only succeed if item is not set. Otherwise the item 
+     * associated material takes precedence.
+     * @param material the new material
+     * @return this
+     */
     public AssayRecord setMaterial(Material material) {
-        this.material = material;
+        if (this.item == null) {
+            this.material = material;
+        }
         return this;
     }
 

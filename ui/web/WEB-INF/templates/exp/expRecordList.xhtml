@@ -84,7 +84,6 @@
             <ui:fragment rendered="#{rec.edit}">
                 <p:commandButton value="#{msgs.Cancel}" action="#{experimentBean.expRecordController.actionCancel}" update="@form" process="@this" />
                 <p:commandButton value="#{msgs.Save}" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@form" />
-
             </ui:fragment>
 
         </ui:repeat>
