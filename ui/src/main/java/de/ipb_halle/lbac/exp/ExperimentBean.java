@@ -378,7 +378,20 @@ public class ExperimentBean implements Serializable {
         return this.expRecordIndex;
     }
 
+    /**
+     * @return the current list of ExpRecords 
+     */
     public List<ExpRecord> getExpRecords() {
+        return this.expRecords;
+    }
+
+    /**
+     * @return if <code>expRecords</code> is not empty, returns a copy 
+     * of the list of <code>expRecords</code> with an added 
+     * NullRecord. The NullRecord allows to append records to an empty 
+     * list and is also a graphical termination of a non-empty list of ExpRecords.
+     */
+    public List<ExpRecord> getExpRecordsWithNullRecord() {
         if (this.experiment.getExperimentId() != null) {
             List<ExpRecord> list = new ArrayList<ExpRecord> (this.expRecords);
             list.add(new NullRecord().setIndex(list.size()));

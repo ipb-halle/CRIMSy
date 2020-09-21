@@ -27,12 +27,14 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.mocks.ExperimentBeanMock;
+import de.ipb_halle.lbac.exp.mocks.ItemAgentMock;
 import de.ipb_halle.lbac.exp.mocks.MaterialAgentMock;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -68,6 +70,9 @@ public class ExperimentBeanTest extends TestBase {
     private GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
+    private ItemService itemService;
+
+    @Inject
     private MaterialService materialService;
 
     private ExperimentBeanMock experimentBean;
@@ -90,17 +95,18 @@ public class ExperimentBeanTest extends TestBase {
                 .setMaterialService(this.materialService)
                 .setUserBean(userBean);
 
+        ItemAgent itemAgentMock = new ItemAgentMock()
+                .setGlobalAdmissionContext(globalAdmissionContext)
+                .setItemService(this.itemService)
+                .setUserBean(userBean);
+
         experimentBean = new ExperimentBeanMock()
                 .setExpRecordService(expRecordService)
                 .setExperimentService(experimentService)
                 .setGlobalAdmissionContext(globalAdmissionContext)
-                .setMaterialAgent(materialAgentMock);
+                .setMaterialAgent(materialAgentMock)
+                .setItemAgent(itemAgentMock);
 
-/*
-                .setMaterialAgent(new MaterialAgentMock()
-                    .setGlobalAdmissionContext(globalAdmissionContext)
-                    .set
-*/
     }
 
     @After
@@ -153,23 +159,23 @@ public class ExperimentBeanTest extends TestBase {
         experimentBean.loadExpRecords();
 
         // we get 5 records (4 + NullRecord)
-        Assert.assertEquals(5, experimentBean.getExpRecords().size());
+        Assert.assertEquals(5, experimentBean.getExpRecordsWithNullRecord().size());
         experimentBean.setTemplateMode(false);
         experimentBean.actionToggleExperiment(exp1);
 
         // deselect the experiment (0 records)
-        Assert.assertEquals(0, experimentBean.getExpRecords().size());
+        Assert.assertEquals(0, experimentBean.getExpRecordsWithNullRecord().size());
 
         // select exp2 (only NullRecord)
         experimentBean.actionToggleExperiment(exp2);
-        Assert.assertEquals(1, experimentBean.getExpRecords().size());
+        Assert.assertEquals(1, experimentBean.getExpRecordsWithNullRecord().size());
         experimentBean.actionToggleExperiment(exp1);
         experimentBean.reIndex();
 
         experimentBean.setNewRecordType("TEXT");
         // append at last position
-        experimentBean.actionAppendRecord(experimentBean.getExpRecords().size() - 1);
-        Assert.assertEquals(6, experimentBean.getExpRecords().size());
+        experimentBean.actionAppendRecord(experimentBean.getExpRecordsWithNullRecord().size() - 1);
+        Assert.assertEquals(6, experimentBean.getExpRecordsWithNullRecord().size());
         experimentBean.actionCancel();
        
     }

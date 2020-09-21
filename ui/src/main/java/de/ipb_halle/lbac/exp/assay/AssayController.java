@@ -20,7 +20,9 @@ package de.ipb_halle.lbac.exp.assay;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
+import de.ipb_halle.lbac.exp.ItemHolder;
 import de.ipb_halle.lbac.exp.MaterialHolder;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 
@@ -35,7 +37,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public class AssayController extends ExpRecordController implements MaterialHolder {
+public class AssayController extends ExpRecordController implements ItemHolder, MaterialHolder {
 
     private AssayRecord assayRecord;
     private String materialTarget;
@@ -47,6 +49,7 @@ public class AssayController extends ExpRecordController implements MaterialHold
     public AssayController(ExperimentBean bean) {
         super(bean);
         bean.getMaterialAgent().setMaterialHolder(this);
+        bean.getItemAgent().setItemHolder(this);
         this.materialTarget = "";
     }
 
@@ -66,6 +69,13 @@ public class AssayController extends ExpRecordController implements MaterialHold
 
     public AssayRecord getAssayRecord() {
         return this.assayRecord;
+    }
+
+    public Item getItem() {
+        if (this.assayRecord != null) {
+            return this.assayRecord.getItem();
+        }
+        return null;
     }
 
     public Material getMaterial() {
@@ -92,6 +102,12 @@ public class AssayController extends ExpRecordController implements MaterialHold
         ExpRecord rec = new Assay();
         rec.setEdit(true);
         return rec; 
+    }
+
+    public void setItem(Item item) {
+        if (this.assayRecord != null) {
+            this.assayRecord.setItem(item);
+        }
     }
 
     public void setMaterial(Material material) {

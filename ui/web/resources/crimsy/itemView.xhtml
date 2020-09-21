@@ -36,9 +36,7 @@
     </composite:interface>
 
     <composite:implementation >
-        <div title="xxxxx Place, Amount, ..."> 
-            #{cc.attrs.item.getId().toString()}
-        </div>
+        <span title="#{cc.attrs.item.nestedLocation} / #{cc.attrs.item.amount} #{cc.attrs.item.unit}">#{cc.attrs.item.getId().toString()}</span>
     </composite:implementation>
 
 </html>

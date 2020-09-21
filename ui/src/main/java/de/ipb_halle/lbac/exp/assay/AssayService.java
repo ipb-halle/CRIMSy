@@ -83,12 +83,16 @@ public class AssayService implements Serializable {
 
             Material material = null;
             Item item = null;
-            if (e.getMaterialId() != null) {
-                material = this.materialService.loadMaterialById(e.getMaterialId()); 
-            }
+
             if (e.getItemId() != null) {
                 item = this.itemService.loadItemById(e.getItemId());
+                material = item.getMaterial();
+            } else {
+                if (e.getMaterialId() != null) {
+                    material = this.materialService.loadMaterialById(e.getMaterialId());
+                }
             }
+
             result.add(new AssayRecord(e, assay,  material, item)); 
         }
         return result;

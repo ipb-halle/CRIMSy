@@ -18,41 +18,28 @@
 package de.ipb_halle.lbac.exp.mocks;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.exp.ExpRecordService;
-import de.ipb_halle.lbac.exp.ExperimentBean;
-import de.ipb_halle.lbac.exp.ExperimentService;
+import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.exp.ItemAgent;
-import de.ipb_halle.lbac.exp.MaterialAgent;
+import de.ipb_halle.lbac.items.service.ItemService;
 
 /**
  *
- * @author fmauz
+ * @author fbroda
  */
-public class ExperimentBeanMock extends ExperimentBean {
+public class ItemAgentMock extends ItemAgent {
 
-    public ExperimentBeanMock setGlobalAdmissionContext(GlobalAdmissionContext context) {
+    public ItemAgentMock setGlobalAdmissionContext(GlobalAdmissionContext context) {
         this.globalAdmissionContext = context;
         return this;
     }
 
-    public ExperimentBeanMock setExperimentService(ExperimentService service) {
-        this.experimentService = service;
+    public ItemAgentMock setItemService(ItemService service) {
+        this.itemService = service;
         return this;
     }
 
-    public ExperimentBeanMock setExpRecordService(ExpRecordService service) {
-        this.expRecordService = service;
+    public ItemAgentMock setUserBean(UserBean bean) {
+        this.userBean = bean;
         return this;
     }
-
-    public ExperimentBeanMock setItemAgent(ItemAgent agent) {
-        this.itemAgent = agent;
-        return this;
-    }
-
-    public ExperimentBeanMock setMaterialAgent(MaterialAgent agent) {
-        this.materialAgent = agent;
-        return this;
-    }
-
 }

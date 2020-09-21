@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.items.bean;
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.items.Item;
+import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +29,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class ItemLocaliser {
+public class ItemLocaliser implements Serializable {
+
+    private final static long serialVersionUID = 1L;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
