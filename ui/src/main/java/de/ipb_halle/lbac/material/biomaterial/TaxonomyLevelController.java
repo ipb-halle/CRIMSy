@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.biomaterial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.primefaces.model.TreeNode;
 
 /**
  *
@@ -45,7 +46,8 @@ public class TaxonomyLevelController implements Serializable {
                 t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
             }
             for (TaxonomyLevel l : levels) {
-                if (l.getRank() > t.getLevel().getRank()) {
+                if (l.getRank() > t.getLevel().getRank()
+                        && l.getRank() < getHighestPossibleRank()) {
                     valideLevels.add(l);
                 }
             }
@@ -53,6 +55,18 @@ public class TaxonomyLevelController implements Serializable {
         } else {
             return levels;
         }
+    }
+
+    private int getHighestPossibleRank() {
+        int highestLevel = 1000;
+        if (taxonomyBean.getSelectedTaxonomy() == null) {
+            return highestLevel;
+        }
+        for (TreeNode b : taxonomyBean.getSelectedTaxonomy().getChildren()) {
+            Taxonomy t = (Taxonomy) b.getData();
+            highestLevel = Math.min(highestLevel, t.getLevel().getRank());
+        }
+        return highestLevel;
     }
 
     public TaxonomyLevel getSelectedLevel() {
@@ -63,15 +77,20 @@ public class TaxonomyLevelController implements Serializable {
         this.selectedLevel = selectedLevel;
     }
 
-    public int getLeastRank(){
-       return levels.get(levels.size()-1).getRank();
+    public int getLeastRank() {
+        return levels.get(levels.size() - 1).getRank();
     }
-    public int getHighestRank(){
+
+    public int getHighestRank() {
         return levels.get(0).getRank();
     }
-    
+
     public void setLevels(List<TaxonomyLevel> levels) {
         this.levels = levels;
+    }
+    
+    public TaxonomyLevel getRootLevel(){
+        return levels.get(0);
     }
 
 }

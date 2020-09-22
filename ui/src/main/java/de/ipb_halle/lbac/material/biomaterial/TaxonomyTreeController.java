@@ -182,7 +182,7 @@ public class TaxonomyTreeController implements Serializable {
             Map<String, Object> cmap = new HashMap<>();
             shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
             Taxonomy rootTaxo = createNewTaxonomy();
-            rootTaxo.setLevel(levelController.getLevels().get(0));
+            rootTaxo.setLevel(levelController.getRootLevel());
             taxonomyTree = new DefaultTreeNode(rootTaxo, null);
             for (Taxonomy t : shownTaxonomies) {
                 TreeNode newNode = null;

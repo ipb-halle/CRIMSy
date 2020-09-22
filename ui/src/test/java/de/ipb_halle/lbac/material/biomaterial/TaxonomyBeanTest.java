@@ -29,14 +29,18 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectService;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.behavior.BehaviorBase;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
 /**
@@ -55,6 +59,7 @@ public class TaxonomyBeanTest extends TestBase {
     protected TaxonomyBean bean;
 
     protected User owner;
+    protected TreeNode nodeToOperateOn;
 
     @Before
     public void init() {
@@ -88,6 +93,51 @@ public class TaxonomyBeanTest extends TestBase {
         TreeNode tree = bean.getTreeController().getTaxonomyTree();
 
         int i = 0;
+    }
+
+    @Test
+    public void test002_editTaxonomy() {
+        LoginEvent event = new LoginEvent(owner);
+        bean.setCurrentAccount(event);
+        bean.getTreeController().reloadTreeNode();
+        TreeNode tree = bean.getTreeController().getTaxonomyTree();
+
+        bean.onTaxonomySelect(createSelectEvent("Pilze_de", tree));
+        Taxonomy taxonomy = (Taxonomy) bean.getSelectedTaxonomy().getData();
+        Assert.assertEquals("Pilze_de", taxonomy.getFirstName());
+
+        bean.actionClickFirstButton();
+        Assert.assertEquals(TaxonomyBean.Mode.EDIT, bean.getMode());
+        bean.actionClickFirstButton();
+        Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
+
+        bean.actionClickFirstButton();
+        Assert.assertEquals(TaxonomyBean.Mode.EDIT, bean.getMode());
+       
+        bean.onTaxonomySelect(createSelectEvent("Leben_de", tree));
+
+        bean.actionClickFirstButton();
+        Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
+
+    }
+
+    private NodeSelectEvent createSelectEvent(String nameOfTaxToSelect, TreeNode tree) {
+        setTaxonomyFromTree(nameOfTaxToSelect, tree);
+
+        return new NodeSelectEvent(
+                new UIViewRoot(),
+                new BehaviorBase(),
+                nodeToOperateOn
+        );
+    }
+
+    private void setTaxonomyFromTree(String name, TreeNode tree) {
+        if (((Taxonomy) tree.getData()).getFirstName().equals(name)) {
+            nodeToOperateOn = tree;
+        }
+        for (TreeNode n : tree.getChildren()) {
+            setTaxonomyFromTree(name, n);
+        }
     }
 
     @Deployment
