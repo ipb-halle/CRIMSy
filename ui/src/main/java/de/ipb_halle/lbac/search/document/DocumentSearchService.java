@@ -237,7 +237,7 @@ public class DocumentSearchService {
         d.setNode(nodeService.getLocalNode());
         d.setLanguage(fo.getDocument_language());
         d.setCollection((Collection) fo.getCollection());
-        d.setPath(fo.getName());
+        d.setPath(fo.getFileLocation());
         d.setContentType(fo.getName().split("\\.")[fo.getName().split("\\.").length - 1]);
         d.setOriginalName(fo.getName());
         return d;
