@@ -135,6 +135,7 @@ public class TaxonomyBean implements Serializable {
             if (mode == Mode.CREATE) {
                 if (validityController.checkInputValidity()) {
                     saveNewTaxonomy();
+                    treeController.reloadTreeNode();
                     mode = Mode.SHOW;
                 }
             }
