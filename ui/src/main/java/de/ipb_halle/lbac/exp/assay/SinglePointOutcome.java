@@ -18,9 +18,9 @@
 package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.UnitsValidator;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,7 +35,7 @@ public class SinglePointOutcome extends AssayOutcome {
     private String              unit;
     private String              remarks;
 
-    // private transient Logger logger = LogManager.getLogger(this.getClass().getName());
+    private transient Logger logger = LogManager.getLogger(this.getClass().getName());
 
 
     public SinglePointOutcome() {
@@ -58,12 +58,23 @@ public class SinglePointOutcome extends AssayOutcome {
         return this.unit;
     }
 
-    public List<Unit> getUnits() {
+    public Set<Unit> getUnits() {
+        try {
+            return UnitsValidator.getUnitSet(
+                getAssay()
+                    .getUnits());
+        } catch(Exception e) {
+            this.logger.warn("getUnits() caught an exception", (Throwable) e);
+        }
+        return null;
+
+/*
         List<Unit> units = new ArrayList<Unit> ();
         for(String u : new String[] {"mM", "µM", "nM", "pM"}) {
             units.add(Unit.getUnit(u));
         }
         return units;
+*/
     }
 
     public double getValue() {

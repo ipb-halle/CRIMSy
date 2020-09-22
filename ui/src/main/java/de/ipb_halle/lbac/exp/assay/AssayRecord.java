@@ -57,7 +57,8 @@ public class AssayRecord implements DTO {
         this.edit = true;
         this.outcomeType = assay.getOutcomeType();
         this.rank = rank;
-        this.outcome = new SinglePointOutcome();
+        this.outcome = new SinglePointOutcome()
+            .setAssay(assay);
     }
 
     /**
@@ -71,7 +72,8 @@ public class AssayRecord implements DTO {
         this.rank = entity.getRank();
         this.recordid = entity.getRecordId();
         this.outcomeType = assay.getOutcomeType();
-        this.outcome = AssayOutcome.fromString(this.outcomeType, entity.getOutcome());
+        this.outcome = AssayOutcome.fromString(this.outcomeType, entity.getOutcome())
+            .setAssay(assay);
     }
 
     public AssayRecordEntity createEntity() {
@@ -112,7 +114,7 @@ public class AssayRecord implements DTO {
     }
 
     public AssayOutcome getOutcome() {
-        return this.outcome;
+        return this.outcome.setAssay(this.assay);
     }
 
     public int getRank() {
@@ -125,6 +127,9 @@ public class AssayRecord implements DTO {
 
     public AssayRecord setAssay(Assay assay) {
         this.assay = assay;
+        if (this.outcome != null) {
+            this.outcome.setAssay(assay);
+        }
         return this;
     }
 
@@ -162,7 +167,7 @@ public class AssayRecord implements DTO {
     }
 
     public AssayRecord setOutcome(AssayOutcome outcome) {
-        this.outcome = outcome;
+        this.outcome = outcome.setAssay(this.assay);
         // this.outcomeType = outcome.getType();
         return this;
     }

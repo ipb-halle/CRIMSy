@@ -47,16 +47,22 @@
 
         <h:panelGrid columns="2">
             <h:outputText value="Remarks:" />
-            <p:inputText value="#{cc.attrs.assay.remarks}" />
+            <p:inputText value="#{cc.attrs.assay.remarks}" disabled="#{! cc.attrs.assay.edit}"/>
             <h:outputText value="Standard units:" />
             <h:panelGroup>
-                <p:inputText value="#{cc.attrs.assay.units}" disabled="#{! cc.attrs.assay.editTemplate}"/>
+                <p:inputText
+                        id="assayUnitsList"
+                        value="#{cc.attrs.assay.units}" 
+                        disabled="#{(! cc.attrs.assay.edit) or (cc.attrs.assay.getRecords().size() gt 0)}">
+                    <f:validator validatorId="UnitsValidator" />
+                </p:inputText>
+                <p:message for="assayUnitsList" />
             </h:panelGroup>
             <h:outputText value="Target:" />
             <h:panelGroup>
                 <crimsy:materialView material="#{cc.attrs.assay.target}" />
                 <h:commandLink title="Action"
-                        rendered="#{cc.attrs.assay.editTemplate}"
+                        rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getRecords().size() == 0)}"
                         update="@this" > 
                     <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
                     <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />

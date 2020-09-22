@@ -53,6 +53,9 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         this.materialTarget = "";
     }
 
+    /**
+     * append an AssayRecord to the current Assay
+     */
     public void actionAppendAssayRecord() {
         this.logger.info("actionAppendAssayRecord()");
         try {

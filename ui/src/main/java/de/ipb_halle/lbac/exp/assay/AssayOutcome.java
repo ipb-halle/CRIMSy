@@ -24,6 +24,8 @@ import com.google.gson.Gson;
  */
 public abstract class AssayOutcome {
 
+    private transient Assay       assay;
+
     public static AssayOutcome fromString(AssayOutcomeType type, String outcome) {
         Gson gson = new Gson();
         switch(type) {
@@ -32,7 +34,16 @@ public abstract class AssayOutcome {
         throw new IllegalArgumentException("fromString() illegal arguments");
     }
 
+    public Assay getAssay() {
+        return this.assay;
+    }
+
     public abstract AssayOutcomeType getType(); 
+
+    public AssayOutcome setAssay(Assay assay) {
+        this.assay = assay;
+        return this;
+    }
 
     public String toString() {
         Gson gson = new Gson();

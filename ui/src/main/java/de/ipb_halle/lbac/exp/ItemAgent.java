@@ -91,12 +91,18 @@ public class ItemAgent implements Serializable {
      */
     public List<Item> getItemList() {
         ArrayList<Item> result = new ArrayList<> ();
-        if ( this.itemHolder != null ) {
+        if ( (this.itemHolder != null) 
+                && (this.itemSearch != null) 
+                && (! this.itemSearch.isEmpty())) {
             try {
-                Item item = this.itemService.loadItemById(Integer.parseInt(this.itemSearch));
+                int id = Integer.parseInt(this.itemSearch);
+                Item item = this.itemService.loadItemById(id); 
                 if (item != null) {
                     result.add(item);
                 }
+            } catch (NumberFormatException nfe) {
+                // ignore and return an empty list
+                return result;
             } catch (Exception e) {
                 this.logger.warn("getItemList() caught an exception: ", (Throwable) e);
             }

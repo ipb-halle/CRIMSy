@@ -116,6 +116,15 @@ public class Unit {
         unitsByUnit.put(unit.getUnit(), unit);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ((o != null) && (o instanceof Unit)) {
+            Unit u = (Unit) o;
+            return this.unit.equals(u.getUnit());
+        }
+        return false;
+    }
+
     public double getFactor() {
         return this.factor;
     }
@@ -134,6 +143,10 @@ public class Unit {
             throw new IllegalArgumentException("getUnit() attempt to fetch unknown unit");
         }
         return u;
+    }
+
+    public int hashCode() {
+        return this.unit.hashCode();
     }
 
     /**
