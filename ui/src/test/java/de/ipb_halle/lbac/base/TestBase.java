@@ -161,6 +161,10 @@ public class TestBase implements Serializable {
         itemCreator = new ItemCreator(entityManagerService);
         acListReadable = GlobalAdmissionContext.getPublicReadACL();
         this.logger = LogManager.getLogger(this.getClass().getName());
+        
+        entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
+        entityManagerService.doSqlUpdate("DELETE FROM termvectors");
+        entityManagerService.doSqlUpdate("DELETE FROM files");
     }
 
     protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {

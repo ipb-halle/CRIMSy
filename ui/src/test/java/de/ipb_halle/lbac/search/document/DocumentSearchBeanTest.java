@@ -93,6 +93,7 @@ public class DocumentSearchBeanTest extends TestBase {
                 .setDocumentSearchService(documentSearchService)
                 .setFileEntityService(fileEntityService)
                 .setNodeService(nodeService);
+
     }
 
     @After
@@ -103,12 +104,38 @@ public class DocumentSearchBeanTest extends TestBase {
     @Test
     public void test001_searchDocuments() throws FileNotFoundException, InterruptedException {
         bean.setSearchFieldText("a java test");
-        
+
         uploadDocument("Document1.pdf");
         bean.actionStartSearch();
+        bean.addNewSearchResultsToTable();
 
         Assert.assertEquals(1, bean.getFoundDocuments().size());
         Assert.assertEquals(0.473, getDocumentByName(bean.getFoundDocuments(), "Document1.pdf").getRelevance(), 0.01);
+
+        uploadDocument("Document2.pdf");
+
+        bean.actionStartSearch();
+        Assert.assertEquals(2, bean.getFoundDocuments().size());
+        Assert.assertEquals(0.520, getDocumentByName(bean.getFoundDocuments(), "Document1.pdf").getRelevance(), 0.01);
+        Assert.assertEquals(0.369, getDocumentByName(bean.getFoundDocuments(), "Document2.pdf").getRelevance(), 0.01);
+
+        uploadDocument("Document10.pdf");
+        bean.actionStartSearch();
+        Assert.assertEquals(2, bean.getFoundDocuments().size());
+        Assert.assertEquals(0.681, getDocumentByName(bean.getFoundDocuments(), "Document1.pdf").getRelevance(), 0.01);
+        Assert.assertEquals(0.475, getDocumentByName(bean.getFoundDocuments(), "Document2.pdf").getRelevance(), 0.01);
+
+        bean.setSearchFieldText("nothing to find");
+        bean.actionStartSearch();
+        Assert.assertEquals(0, bean.getFoundDocuments().size());
+
+        uploadDocument("Document18.pdf");
+        bean.setSearchFieldText("a tiny java");
+        bean.actionStartSearch();
+        Assert.assertEquals(3, bean.getFoundDocuments().size());
+        Assert.assertEquals(0.604, getDocumentByName(bean.getFoundDocuments(), "Document1.pdf").getRelevance(), 0.01);
+        Assert.assertEquals(0.394, getDocumentByName(bean.getFoundDocuments(), "Document2.pdf").getRelevance(), 0.01);
+        Assert.assertEquals(1.688, getDocumentByName(bean.getFoundDocuments(), "Document18.pdf").getRelevance(), 0.01);
 
     }
 

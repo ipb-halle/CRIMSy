@@ -23,9 +23,6 @@ import de.ipb_halle.tx.text.TextRecord;
 import de.ipb_halle.tx.text.properties.Language;
 import de.ipb_halle.tx.text.properties.TextProperty;
 import de.ipb_halle.tx.text.properties.Word;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *

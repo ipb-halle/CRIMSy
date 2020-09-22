@@ -69,24 +69,17 @@ public class RelevanceCalculator implements Serializable {
             double averageDocLength,
             List<Document> docsToUpdate) {
 
-        double docsWithHit = getDocAmountWithHit(docsToUpdate);
-        double idf = Math.log10(1 + (totalDocuments / docsWithHit));
-
-        if (develop) {
-            infoStart(docsWithHit, idf, averageDocLength, totalDocuments);
-        }
-
         for (Document d : docsToUpdate) {
             d.setRelevance(0);
             for (String word : searchTerms.getAllStemmedWords()) {
+                double docsWithHit = getDocAmountWithHit(docsToUpdate, word);
+                double idf = Math.log10(1 + (totalDocuments / docsWithHit));
                 int fq = d.getTermFreqList().getFreqOf(word);
                 if (fq > 0) {
                     double nf = (double) (d.getWordCount() / averageDocLength);
                     double rh = (fq * (k1 + 1)) / (fq + k1 * (1 - b + b * (nf)));
                     d.setRelevance(d.getRelevance() + (idf * rh));
-                    if (develop) {
-                        infoDocument(d.getOriginalName(), word, nf, rh, d.getRelevance());
-                    }
+
                 }
             }
 
@@ -100,16 +93,11 @@ public class RelevanceCalculator implements Serializable {
      * @param docsToUpdate
      * @return amount of docs with at least one search term hit
      */
-    private double getDocAmountWithHit(List<Document> docsToUpdate) {
+    private double getDocAmountWithHit(List<Document> docsToUpdate, String term) {
         double docs = 0;
         for (Document d : docsToUpdate) {
-
-            for (String s : searchTerms.getAllStemmedWords()) {
-                int fq = d.getTermFreqList().getFreqOf(s);
-                if (fq > 0) {
-                    docs++;
-                    break;
-                }
+            if (d.getTermFreqList().getFreqOf(term) > 0) {
+                docs++;
             }
         }
 

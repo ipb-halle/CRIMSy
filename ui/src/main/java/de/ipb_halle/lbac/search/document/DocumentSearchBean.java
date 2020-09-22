@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -190,19 +189,7 @@ public class DocumentSearchBean implements Serializable {
         return shownDocs;
     }
 
-    /**
-     * Gets all different languages of a list of documents.
-     *
-     * @param docs
-     * @return
-     */
-    private Set<String> getLanguagesOfDocs(List<Document> docs) {
-        Set<String> languages = new HashSet<>();
-        for (Document d : docs) {
-            languages.add(d.getLanguage());
-        }
-        return languages;
-    }
+    
 
     /**
      * Normalizes the search terms for all languages of the documents with the
