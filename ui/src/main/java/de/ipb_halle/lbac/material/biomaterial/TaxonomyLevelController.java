@@ -59,7 +59,7 @@ public class TaxonomyLevelController implements Serializable {
 
     private int getHighestPossibleRank() {
         int highestLevel = 1000;
-        if (taxonomyBean.getSelectedTaxonomy() == null) {
+        if (taxonomyBean.getSelectedTaxonomy() == null||taxonomyBean.getMode()==TaxonomyBean.Mode.CREATE) {
             return highestLevel;
         }
         for (TreeNode b : taxonomyBean.getSelectedTaxonomy().getChildren()) {
