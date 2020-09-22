@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionBean;
+import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
@@ -45,6 +46,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -73,6 +75,7 @@ public class DocumentSearchBeanTest extends TestBase {
     protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
     private AsyncContextMock asyncContext;
+    DocumentSearchBean bean;
 
     @Before
     @Override
@@ -80,6 +83,16 @@ public class DocumentSearchBeanTest extends TestBase {
         super.setUp();
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        createAndSaveNewCol();
+        CollectionBean collectionBean = new CollectionBean();
+        collectionBean.getCollectionSearchState().addCollections(Arrays.asList(col));
+        bean = new DocumentSearchBeanMock()
+                .setCollectionBean(collectionBean)
+                .setCollectionService(collectionService)
+                .setDocumentSearchOrchestrator(orchestrator)
+                .setDocumentSearchService(documentSearchService)
+                .setFileEntityService(fileEntityService)
+                .setNodeService(nodeService);
     }
 
     @After
@@ -89,26 +102,13 @@ public class DocumentSearchBeanTest extends TestBase {
 
     @Test
     public void test001_searchDocuments() throws FileNotFoundException, InterruptedException {
-        createAndSaveNewCol();
-        uploadDocument("Document1.pdf");
-        while (!asyncContext.isComplete()) {
-            Thread.sleep(500);
-        }
-        CollectionBean collectionBean = new CollectionBean();
-        collectionBean.getCollectionSearchState().addCollections(Arrays.asList(col));
-        DocumentSearchBean bean = new DocumentSearchBeanMock()
-                .setCollectionBean(collectionBean)
-                .setCollectionService(collectionService)
-                .setDocumentSearchOrchestrator(orchestrator)
-                .setDocumentSearchService(documentSearchService)
-                .setFileEntityService(fileEntityService)
-                .setNodeService(nodeService);
         bean.setSearchFieldText("a java test");
-
-        bean.actionStartSearch();
         
-        Assert.assertEquals(1,bean.getFoundDocuments().size());
-        bean.getFoundDocuments().get(0).getRelevance();
+        uploadDocument("Document1.pdf");
+        bean.actionStartSearch();
+
+        Assert.assertEquals(1, bean.getFoundDocuments().size());
+        Assert.assertEquals(0.473, getDocumentByName(bean.getFoundDocuments(), "Document1.pdf").getRelevance(), 0.01);
 
     }
 
@@ -130,6 +130,15 @@ public class DocumentSearchBeanTest extends TestBase {
                 .addClass(TermVectorEntityService.class);
     }
 
+    private Document getDocumentByName(List<Document> docs, String name) {
+        for (Document d : docs) {
+            if (d.getOriginalName().equals(name)) {
+                return d;
+            }
+        }
+        return null;
+    }
+
     private void createAndSaveNewCol() {
         col = new Collection();
         col.setACList(GlobalAdmissionContext.getPublicReadACL());
@@ -143,7 +152,7 @@ public class DocumentSearchBeanTest extends TestBase {
         col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
     }
 
-    private void uploadDocument(String documentName) throws FileNotFoundException {
+    private void uploadDocument(String documentName) throws FileNotFoundException, InterruptedException {
         asyncContext = new AsyncContextMock(
                 new File(examplaDocsRootFolder + documentName),
                 col.getName());
@@ -156,5 +165,8 @@ public class DocumentSearchBeanTest extends TestBase {
                 termVectorEntityService,
                 "target/test-classes/collections");
         upload.run();
+        while (!asyncContext.isComplete()) {
+            Thread.sleep(500);
+        }
     }
 }

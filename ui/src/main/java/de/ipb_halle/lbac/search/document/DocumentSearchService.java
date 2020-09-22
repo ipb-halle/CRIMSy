@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.file.FileSearchRequest;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -94,6 +95,11 @@ public class DocumentSearchService {
             + "WHERE f.collection_id=:collectionid "
             + "#words#";
 
+    protected String SQL_LOAD_DOCUMENT_LENGTH
+            = "SELECT sum(termfrequency) "
+            + "FROM termvectors "
+            + "WHERE file_id=:file_id";
+
     public DocumentSearchState actionStartDocumentSearch(
             DocumentSearchState searchState,
             List<Collection> collsToSearchIn,
@@ -130,7 +136,7 @@ public class DocumentSearchService {
                 normalizedTerms);
 
         for (Document d : searchState.getFoundDocuments()) {
-            d.setWordCount(totalTerms.getTotalWordsOfFile(d.getId()));
+            d.setWordCount(getLengthOfDocument(d.getId()));
             Map<String, Integer> words = totalTerms.getTermsOfDocument(d.getId());
             for (String s : words.keySet()) {
                 d.getTermFreqList().getTermFreq().add(new TermFrequency(s, words.get(s)));
@@ -159,14 +165,10 @@ public class DocumentSearchService {
         }
     }
 
-    private void infoStart(List<Collection> colls, String searchText) {
-        LOGGER.info("");
-        LOGGER.info(String.format("Start documentsearch in %d collections with searchtext: %s", colls.size(), searchText));
-        LOGGER.info("Searching in ");
-        for (Collection c : colls) {
-            LOGGER.info("--> " + c.getName() + ":" + c.getNode().getInstitution());
-        }
-        LOGGER.info("----");
+    private int getLengthOfDocument(int documentId) {
+        return ((BigInteger) em.createNativeQuery(SQL_LOAD_DOCUMENT_LENGTH)
+                .setParameter("file_id", documentId).getResultList()
+                .get(0)).intValue();
     }
 
     /**
@@ -211,6 +213,7 @@ public class DocumentSearchService {
         List<FileObjectEntity> results = this.em.createNativeQuery(adjustedSql, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
                 .getResultList();
+
         int count = 0;
         for (FileObjectEntity foe : results) {
             if (count < limit) {
