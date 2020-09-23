@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.UIMessagePresenter;
 import java.io.Serializable;
 import java.util.HashMap;
 import javax.annotation.PostConstruct;
@@ -50,25 +51,25 @@ public class TaxonomyBean implements Serializable {
         CREATE, SHOW, EDIT, HISTORY
     }
     @Inject
-    private MaterialService materialService;
+    protected MaterialService materialService;
     @Inject
-    private MemberService memberService;
+    protected MemberService memberService;
     @Inject
-    private TaxonomyService taxonomyService;
+    protected TaxonomyService taxonomyService;
 
-    private User currentUser;
+    protected User currentUser;
     protected TaxonomyHistoryController historyController;
     protected TaxonomyLevelController levelController;
-    private final Logger logger = LogManager.getLogger(this.getClass().getName());
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    protected final Logger logger = LogManager.getLogger(this.getClass().getName());
+    protected final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     protected TaxonomyNameController nameController;
-    private Mode mode;
-    private Taxonomy parentOfNewTaxo;
-    private TreeNode selectedTaxonomy;
+    protected Mode mode;
+    protected Taxonomy parentOfNewTaxo;
+    protected TreeNode selectedTaxonomy;
     protected TaxonomyRenderController renderController;
-    private Taxonomy taxonomyBeforeEdit;
-    private Taxonomy taxonomyToCreate;
-    private Taxonomy taxonomyToEdit;
+    protected Taxonomy taxonomyBeforeEdit;
+    protected Taxonomy taxonomyToCreate;
+    protected Taxonomy taxonomyToEdit;
     protected TaxonomyTreeController treeController;
     protected TaxonomyValidityController validityController;
 
@@ -77,7 +78,7 @@ public class TaxonomyBean implements Serializable {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
-        validityController = new TaxonomyValidityController(this);
+        validityController = new TaxonomyValidityController(this,UIMessagePresenter.getInstance());
         historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
         renderController = new TaxonomyRenderController(this, nameController, levelController, memberService);
         treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
@@ -107,7 +108,7 @@ public class TaxonomyBean implements Serializable {
         if (mode == Mode.CREATE || mode == Mode.EDIT) {
             mode = Mode.SHOW;
             treeController.reloadTreeNode();
-            
+
         } else if (mode == Mode.SHOW) {
             try {
                 mode = Mode.EDIT;

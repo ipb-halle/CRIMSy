@@ -315,6 +315,8 @@ public class MaterialBean implements Serializable {
         materialEditState.getMaterialToEdit().setHazards(hazards);
         materialEditState.getMaterialToEdit().setStorageInformation(storageClassInformation);
         
+        
+        
         if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
             Structure s = (Structure) materialEditState.getMaterialToEdit();
             Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
@@ -336,6 +338,11 @@ public class MaterialBean implements Serializable {
             s.setExactMolarMass(structureInfos.getExactMolarMass());
             s.setMolarMass(structureInfos.getMolarMass());
             s.setSumFormula(structureInfos.getSumFormula());
+        }
+        
+        if(materialEditState.getMaterialToEdit().getType()==MaterialType.BIOMATERIAL){
+            BioMaterial biomaterial=(BioMaterial)materialEditState.getMaterialToEdit();
+            biomaterial.setTaxonomy((Taxonomy)taxonomyController.getSelectedTaxonomy());
         }
         
         try {

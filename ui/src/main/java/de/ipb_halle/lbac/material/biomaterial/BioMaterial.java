@@ -84,6 +84,12 @@ public class BioMaterial extends Material {
     public Taxonomy getTaxonomy() {
         return taxonomy;
     }
+
+    public void setTaxonomy(Taxonomy taxonomy) {
+        this.taxonomy = taxonomy;
+    }
+    
+    
     
     public String getTissueName(){
         if(tissue!=null){

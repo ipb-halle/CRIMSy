@@ -17,35 +17,40 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
+import de.ipb_halle.lbac.material.UIMessagePresenter;
 
 /**
  *
  * @author fmauz
  */
-public class TaxonomyValidityController implements Serializable{
+public class TaxonomyValidityController implements Serializable {
+
+    protected MessagePresenter messagePresenter;
 
     protected TaxonomyBean taxonomyBean;
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    public TaxonomyValidityController(TaxonomyBean taxonomyBean) {
+    public TaxonomyValidityController(
+            TaxonomyBean taxonomyBean,
+            MessagePresenter messagePresenter) {
         this.taxonomyBean = taxonomyBean;
+        this.messagePresenter = messagePresenter;
     }
 
     public boolean checkInputValidity() {
         if (taxonomyBean.getMode() == TaxonomyBean.Mode.CREATE) {
             if (taxonomyBean.getTaxonomyToCreate() != null) {
                 if (taxonomyBean.getSelectedTaxonomy() == null) {
-                    UIMessage.error(MESSAGE_BUNDLE, "taxonomy_no_valide_parent");
+                    messagePresenter.error("taxonomy_no_valide_parent");
                     return false;
                 }
 
                 if (!isNameSet()) {
-                    UIMessage.error(MESSAGE_BUNDLE, "taxonomy_no_valide_input");
+                    messagePresenter.error("taxonomy_no_valide_input");
                     return false;
                 } else {
-                    UIMessage.info(MESSAGE_BUNDLE, "taxonomy_saved");
+                    messagePresenter.info("taxonomy_saved");
                     return true;
                 }
             }

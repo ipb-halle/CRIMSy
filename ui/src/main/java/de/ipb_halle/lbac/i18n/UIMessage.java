@@ -22,10 +22,6 @@ import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-/*
-import net.bootsfaces.utils.FacesMessages;
- */
-
 /**
  * This class provides global a message notification. Messages will be published
  * in bootstrap growl style (@see &lt;b:growl/&gt; tag). This replaces the
