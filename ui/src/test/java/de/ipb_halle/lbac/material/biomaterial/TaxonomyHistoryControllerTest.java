@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,7 +71,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("name_1", "de", 0));
         names.add(new MaterialName("name_2", "en", 1));
-        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(),null,null);
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), null, null);
         bean = new TaxonomyBean();
         TreeNode node = new DefaultTreeNode(t);
         bean.setSelectedTaxonomy(node);
@@ -101,7 +102,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         TaxonomyNameController nameController = new TaxonomyNameController(bean);
         historyController = new TaxonomyHistoryController(bean, nameController, taxonomyService, memberService);
         levelController = new TaxonomyLevelController(bean);
-        renderController = new TaxonomyRenderController(bean, nameController, levelController,memberService);
+        renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService);
         TaxonomyTreeController tc = new TaxonomyTreeController(node, taxonomyService, levelController);
 
         bean.setHistoryController(historyController);
@@ -112,7 +113,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         bean.setRenderController(renderController);
         bean.setTaxonomyService(taxonomyService);
         bean.setTreeController(tc);
-        bean.setValidityController(new TaxonomyValidityController(bean));
+        bean.setValidityController(new TaxonomyValidityController(bean, new MessagePresenterMock()));
 
         bean.initHistoryDate();
 

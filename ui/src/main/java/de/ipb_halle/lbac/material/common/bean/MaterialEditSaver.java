@@ -334,5 +334,7 @@ public class MaterialEditSaver implements Serializable{
     protected void saveMaterialStrcutureDifferences(MaterialStructureDifference diff) {
         this.materialService.getEm().persist(diff.createDbInstance());
     }
+    
+   
 
 }

@@ -26,9 +26,12 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectService;
+import java.util.HashMap;
+import java.util.List;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.BehaviorBase;
 import javax.inject.Inject;
@@ -64,7 +67,7 @@ public class TaxonomyBeanTest extends TestBase {
     @Before
     public void init() {
 
-        bean = new TaxonomyBean();
+        bean = new TaxonomyBeanMock();
         bean.setTaxonomyService(taxonomyService);
         bean.init();
 
@@ -113,10 +116,54 @@ public class TaxonomyBeanTest extends TestBase {
 
         bean.actionClickFirstButton();
         Assert.assertEquals(TaxonomyBean.Mode.EDIT, bean.getMode());
-       
+
         bean.onTaxonomySelect(createSelectEvent("Leben_de", tree));
 
         bean.actionClickFirstButton();
+        Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
+
+    }
+
+    @Test
+    public void test003_newTaxonomy() {
+        LoginEvent event = new LoginEvent(owner);
+        bean.setCurrentAccount(event);
+        bean.getTreeController().reloadTreeNode();
+
+        bean.actionClickSecondButton();
+        TreeNode tree = bean.getTreeController().getTaxonomyTree();
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de", tree));
+
+        Assert.assertEquals(4, bean.getLevelController().getLevels().size());
+        Assert.assertEquals(600, (int) bean.getLevelController().getLevels().get(0).getRank());
+
+        bean.nameController.getNames().get(0).setValue("test003_de");
+        bean.nameController.getNames().get(0).setLanguage("de");
+        bean.nameController.addNewEmptyName(bean.nameController.getNames());
+        bean.nameController.getNames().get(1).setLanguage("en");
+        bean.nameController.getNames().get(1).setValue("test003_en");
+        bean.getLevelController().setSelectedLevel(bean.getLevelController().getLevels().get(0));
+
+        List<Taxonomy> taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        Assert.assertEquals(21, taxos.size());
+        bean.actionClickSecondButton();
+
+        taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        Assert.assertEquals(22, taxos.size());
+        tree = bean.getTreeController().getTaxonomyTree();
+        nodeToOperateOn = null;
+        createSelectEvent("test003_de", tree);
+
+        Taxonomy newTaxo = (Taxonomy) nodeToOperateOn.getData();
+        Assert.assertNotNull(newTaxo);
+
+        bean.actionClickSecondButton();
+        bean.nameController.getNames().get(0).setValue("toCancel");
+        bean.nameController.getNames().get(0).setLanguage("en");
+        bean.getLevelController().setSelectedLevel(bean.getLevelController().getLevels().get(0));
+        bean.actionClickFirstButton();
+        taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        Assert.assertEquals(22, taxos.size());
         Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
 
     }
@@ -132,7 +179,9 @@ public class TaxonomyBeanTest extends TestBase {
     }
 
     private void setTaxonomyFromTree(String name, TreeNode tree) {
-        if (((Taxonomy) tree.getData()).getFirstName().equals(name)) {
+        Taxonomy taxo = (Taxonomy) tree.getData();
+        System.out.println(taxo.getFirstName());
+        if (taxo.getFirstName().equals(name)) {
             nodeToOperateOn = tree;
         }
         for (TreeNode n : tree.getChildren()) {
