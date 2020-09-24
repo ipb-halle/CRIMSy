@@ -114,7 +114,6 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         bean.setTaxonomyService(taxonomyService);
         bean.setTreeController(tc);
         bean.setValidityController(new TaxonomyValidityController(bean, new MessagePresenterMock()));
-
         bean.initHistoryDate();
 
         Assert.assertEquals(d2, historyController.getDateOfShownHistory());

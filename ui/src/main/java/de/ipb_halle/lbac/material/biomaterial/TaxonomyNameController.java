@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class TaxonomyNameController implements Serializable{
+public class TaxonomyNameController implements Serializable {
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
@@ -41,7 +41,7 @@ public class TaxonomyNameController implements Serializable{
         this.taxonomyBean = taxonomyBean;
     }
 
-    public void addNewEmptyName(List<MaterialName> taxonomyNames) {
+    protected void addNewEmptyName(List<MaterialName> taxonomyNames) {
         nameListOperation.addNewEmptyName(taxonomyNames);
     }
 

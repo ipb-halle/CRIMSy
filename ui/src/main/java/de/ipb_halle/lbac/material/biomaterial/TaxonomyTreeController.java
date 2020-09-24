@@ -82,16 +82,17 @@ public class TaxonomyTreeController implements Serializable {
      * @param taxoToEdit
      */
     public void disableTreeNodeEntries(Taxonomy taxoToEdit) {
-        reloadTreeNode();
+        reloadTreeNode(); //Really neccessary ?
         List<TreeNode> nodes = getAllChildren(taxonomyTree);
         for (TreeNode n : nodes) {
             Taxonomy t = (Taxonomy) n.getData();
             boolean leaf = t.getLevel().getRank() == levelController.getLeastRank();
             boolean targetGotLowerRank = taxoToEdit.getLevel().getRank() > t.getLevel().getRank();
-            n.setSelectable(!leaf
+            boolean selectable = !leaf
                     && t.getId() != taxoToEdit.getId()
                     && targetGotLowerRank
-                    && isTaxonomyInHierarchy(taxoToEdit.getId(), t));
+                    && isTaxonomyInHierarchy(taxoToEdit.getId(), t);
+            n.setSelectable(selectable);
         }
     }
 

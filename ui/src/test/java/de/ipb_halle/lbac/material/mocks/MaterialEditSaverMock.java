@@ -40,6 +40,9 @@ public class MaterialEditSaverMock extends MaterialEditSaver {
 
     @Override
     public void saveEditedMaterialStructure() {
+        if (!(newMaterial instanceof Structure)) {
+            return;
+        }
         Structure structure = (Structure) newMaterial;
         MaterialStructureDifference strucDiff = comparator.getDifferenceOfType(diffs, MaterialStructureDifference.class);
         if (strucDiff != null) {

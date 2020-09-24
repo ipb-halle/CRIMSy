@@ -103,24 +103,60 @@ public class TaxonomyBeanTest extends TestBase {
         LoginEvent event = new LoginEvent(owner);
         bean.setCurrentAccount(event);
         bean.getTreeController().reloadTreeNode();
+        Assert.assertTrue(bean.getRenderController().isFirstButtonDisabled());
         TreeNode tree = bean.getTreeController().getTaxonomyTree();
 
-        bean.onTaxonomySelect(createSelectEvent("Pilze_de", tree));
-        Taxonomy taxonomy = (Taxonomy) bean.getSelectedTaxonomy().getData();
-        Assert.assertEquals("Pilze_de", taxonomy.getFirstName());
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de", tree));
+
+        Assert.assertFalse(bean.getRenderController().isFirstButtonDisabled());
+        Assert.assertTrue(bean.getRenderController().isHistoryVisible());
+        Assert.assertFalse(bean.getRenderController().isParentVisible());
+        bean.actionClickFirstButton();
+
+        Assert.assertFalse(bean.getRenderController().isFirstButtonDisabled());
+        Assert.assertFalse(bean.getRenderController().isHistoryVisible());
+        assertNotSelectable("Champignonartige_de");
+        assertNotSelectable("Wulstlingsverwandte_de");
+        assertNotSelectable("Wulstlingsverwandte_de");
+        assertNotSelectable("Wulstlinge_de");
+        assertNotSelectable("Schleimschirmlinge_de");
+        assertSelectable("Agaricomycetes_de");
+        assertSelectable("Dacrymycetes_de");
+        assertSelectable("Pilze_de");
+        assertSelectable("Pflanzen_de");
+        assertSelectable("Bakterien_de");
+        assertSelectable("Leben_de");
+        bean.getRenderController().getCategoryOfChoosenTaxo();
+        Assert.assertEquals(1, bean.getLevelController().getLevels().size());
+
+        bean.getNameController().addNewName();
+        bean.getNameController().getNames().get(1).setValue("Champignonartige_de_edited");
 
         bean.actionClickFirstButton();
-        Assert.assertEquals(TaxonomyBean.Mode.EDIT, bean.getMode());
-        bean.actionClickFirstButton();
+
+        assertSelectable("Champignonartige_de");
+        assertSelectable("Wulstlingsverwandte_de");
+        assertSelectable("Wulstlingsverwandte_de");
+        assertSelectable("Wulstlinge_de");
+        assertSelectable("Schleimschirmlinge_de");
+        assertSelectable("Agaricomycetes_de");
+        assertSelectable("Dacrymycetes_de");
+        assertSelectable("Pilze_de");
+        assertSelectable("Pflanzen_de");
+        assertSelectable("Bakterien_de");
+        assertSelectable("Leben_de");
         Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
 
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de", tree));
         bean.actionClickFirstButton();
-        Assert.assertEquals(TaxonomyBean.Mode.EDIT, bean.getMode());
 
-        bean.onTaxonomySelect(createSelectEvent("Leben_de", tree));
+        bean.getNameController().addNewName();
+        Assert.assertEquals(2, bean.getNameController().getNames().size());
+        bean.getNameController().getNames().get(1).setValue("Champignonartige_de_edited");
+        bean.getNameController().swapPosition(bean.getNameController().getNames().get(1), "HIGHER");
 
-        bean.actionClickFirstButton();
-        Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
+        bean.actionClickSecondButton();
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de_edited", getTree()));
 
     }
 
@@ -131,15 +167,18 @@ public class TaxonomyBeanTest extends TestBase {
         bean.getTreeController().reloadTreeNode();
 
         bean.actionClickSecondButton();
+
         TreeNode tree = bean.getTreeController().getTaxonomyTree();
         bean.onTaxonomySelect(createSelectEvent("Champignonartige_de", tree));
 
+        Assert.assertEquals("Champignonartige_de", bean.getRenderController().getParentFirstName());
+        bean.getRenderController().getLabelForParentTaxonomy();
         Assert.assertEquals(4, bean.getLevelController().getLevels().size());
         Assert.assertEquals(600, (int) bean.getLevelController().getLevels().get(0).getRank());
 
         bean.nameController.getNames().get(0).setValue("test003_de");
         bean.nameController.getNames().get(0).setLanguage("de");
-        bean.nameController.addNewEmptyName(bean.nameController.getNames());
+        bean.nameController.addNewName();
         bean.nameController.getNames().get(1).setLanguage("en");
         bean.nameController.getNames().get(1).setValue("test003_en");
         bean.getLevelController().setSelectedLevel(bean.getLevelController().getLevels().get(0));
@@ -165,12 +204,24 @@ public class TaxonomyBeanTest extends TestBase {
         taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
         Assert.assertEquals(22, taxos.size());
         Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
+    }
 
+    private void assertNotSelectable(String nameOfTaxo) {
+        selectTaxonomyFromTree(nameOfTaxo, bean.getTreeController().getTaxonomyTree());
+        Assert.assertFalse(nodeToOperateOn.isSelectable());
+    }
+
+    private void assertSelectable(String nameOfTaxo) {
+        selectTaxonomyFromTree(nameOfTaxo, bean.getTreeController().getTaxonomyTree());
+        Assert.assertTrue(nodeToOperateOn.isSelectable());
     }
 
     private NodeSelectEvent createSelectEvent(String nameOfTaxToSelect, TreeNode tree) {
-        setTaxonomyFromTree(nameOfTaxToSelect, tree);
-
+        nodeToOperateOn = null;
+        selectTaxonomyFromTree(nameOfTaxToSelect, tree);
+        if (nodeToOperateOn == null) {
+            throw new RuntimeException("Could not find " + nameOfTaxToSelect + " in tree");
+        }
         return new NodeSelectEvent(
                 new UIViewRoot(),
                 new BehaviorBase(),
@@ -178,15 +229,18 @@ public class TaxonomyBeanTest extends TestBase {
         );
     }
 
-    private void setTaxonomyFromTree(String name, TreeNode tree) {
+    private void selectTaxonomyFromTree(String name, TreeNode tree) {
         Taxonomy taxo = (Taxonomy) tree.getData();
-        System.out.println(taxo.getFirstName());
         if (taxo.getFirstName().equals(name)) {
             nodeToOperateOn = tree;
         }
         for (TreeNode n : tree.getChildren()) {
-            setTaxonomyFromTree(name, n);
+            selectTaxonomyFromTree(name, n);
         }
+    }
+
+    private TreeNode getTree() {
+        return bean.getTreeController().getTaxonomyTree();
     }
 
     @Deployment
