@@ -107,7 +107,7 @@ public class TaxonomyHistoryController implements Serializable{
     private String getVersionBasicLabel(TaxonomyDifference diffTaxonomy, MaterialIndexDifference diffNames) {
         try {
             MaterialDifference diff = diffTaxonomy != null ? diffTaxonomy : diffNames;
-            User user = memberService.loadUserById(diff.getUserId());
+            User user = memberService.loadUserById(diff.getActorId());
             String historyText = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_at", null) + " " + SDF.format(diff.getModificationDate()) + "<br>";
             historyText += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_by", null) + " " + user.getName();
             return historyText;

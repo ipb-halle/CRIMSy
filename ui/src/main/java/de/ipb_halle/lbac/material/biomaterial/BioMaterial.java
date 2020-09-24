@@ -63,7 +63,7 @@ public class BioMaterial extends Material {
                 projectId,
                 hazards.copy(),
                 storageInformation.copy(),
-                taxonomy.copyMaterial(),
+                taxonomy==null?null:taxonomy.copyMaterial(),
                 tissue == null ? null : tissue.copyMaterial());
         b.setACList(getACList());
         b.setOwner(getOwner());
@@ -88,15 +88,25 @@ public class BioMaterial extends Material {
     public void setTaxonomy(Taxonomy taxonomy) {
         this.taxonomy = taxonomy;
     }
-    
-    
-    
-    public String getTissueName(){
-        if(tissue!=null){
+
+    public String getTissueName() {
+        if (tissue != null) {
             return tissue.getFirstName();
-        }else{
+        } else {
             return "";
         }
+    }
+
+    public void setTissue(Tissue tissue) {
+        this.tissue = tissue;
+    }
+
+    public Integer getTissueId() {
+        return tissue == null ? null : tissue.getId();
+    }
+
+    public Integer getTaxonomyId() {
+        return taxonomy == null ? null : taxonomy.getId();
     }
 
 }

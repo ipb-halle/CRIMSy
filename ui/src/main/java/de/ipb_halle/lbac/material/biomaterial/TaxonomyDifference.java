@@ -46,17 +46,13 @@ public class TaxonomyDifference implements MaterialDifference, Serializable {
     }
 
     @Override
-    public Integer getUserId() {
+    public Integer getActorId() {
         return actorId;
     }
 
     @Override
     public Date getModificationDate() {
         return mDate;
-    }
-
-    public Integer getActorId() {
-        return actorId;
     }
 
     public int getMaterialId() {

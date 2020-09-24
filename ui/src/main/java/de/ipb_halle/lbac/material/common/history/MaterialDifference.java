@@ -26,7 +26,7 @@ import java.util.Date;
  */
 public interface MaterialDifference extends Serializable{
 
-    public Integer getUserId();
+    public Integer getActorId();
 
     public void initialise(int materialId, Integer actorID, Date mDate);
 

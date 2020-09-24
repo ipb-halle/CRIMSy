@@ -21,6 +21,8 @@ import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -106,6 +108,11 @@ public class MaterialComparator implements Serializable {
                     (Taxonomy) originalMat,
                     (Taxonomy) editedMat);
         }
+        if (originalMat.getType() == MaterialType.BIOMATERIAL) {
+            addBioMaterialDifference(differences,
+                    (BioMaterial) originalMat,
+                    (BioMaterial) editedMat);
+        }
 
         return differences;
 
@@ -128,6 +135,33 @@ public class MaterialComparator implements Serializable {
             }
         }
         return null;
+    }
+
+    protected void addBioMaterialDifference(
+            List<MaterialDifference> differences,
+            Material originalMat,
+            Material editedMat) throws Exception {
+        BioMaterialDifference biomaterialDiff = new BioMaterialDifference();
+
+        BioMaterial biomat_orig = (BioMaterial) originalMat;
+        BioMaterial biomat_edited = (BioMaterial) editedMat;
+
+        if (!Objects.equals(
+                biomat_orig.getTaxonomyId(),
+                biomat_edited.getTaxonomyId())) {
+            biomaterialDiff.addTaxonomyDiff(
+                    biomat_orig.getTaxonomyId(), biomat_edited.getTaxonomyId());
+        }
+        if (!Objects.equals(
+                biomat_orig.getTissueId(),
+                biomat_edited.getTissueId())) {
+            biomaterialDiff.addTissueDiff(
+                    biomat_orig.getTissueId(), biomat_edited.getTissueId());
+        }
+
+        if (biomaterialDiff.differenceFound()) {
+            differences.add(biomaterialDiff);
+        }
     }
 
     /**
