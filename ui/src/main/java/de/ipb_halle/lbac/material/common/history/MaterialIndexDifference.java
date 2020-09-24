@@ -67,7 +67,7 @@ public class MaterialIndexDifference implements MaterialDifference {
     }
 
     @Override
-    public Integer getUserId() {
+    public Integer getActorId() {
         return actorID;
     }
 

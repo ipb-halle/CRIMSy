@@ -88,7 +88,7 @@ public class MaterialStructureDifference implements MaterialDifference {
     }
 
     @Override
-    public Integer getUserId() {
+    public Integer getActorId() {
         return actorId;
     }
 
@@ -98,10 +98,6 @@ public class MaterialStructureDifference implements MaterialDifference {
 
     public void setModificationTime(Date modificationTime) {
         this.modificationTime = modificationTime;
-    }
-
-    public Integer getActorId() {
-        return actorId;
     }
 
     public void setActorId(Integer actorId) {
