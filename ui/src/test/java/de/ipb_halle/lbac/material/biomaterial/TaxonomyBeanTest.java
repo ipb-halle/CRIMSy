@@ -43,6 +43,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.primefaces.event.NodeCollapseEvent;
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
@@ -83,19 +85,18 @@ public class TaxonomyBeanTest extends TestBase {
 
     }
 
-    @After
-    public void finish() {
-
-    }
-
     @Test
-    public void test001_reloadTaxonomies() {
+    public void test001_expandCollapseTaxonomies() {
         LoginEvent event = new LoginEvent(owner);
         bean.setCurrentAccount(event);
         bean.getTreeController().reloadTreeNode();
-        TreeNode tree = bean.getTreeController().getTaxonomyTree();
-
-        int i = 0;
+        assertNotExpanded("Champignonartige_de");
+        NodeExpandEvent expandEvent = createExpandEvent("Champignonartige_de");
+        bean.onTaxonomyExpand(expandEvent);
+        assertExpanded("Champignonartige_de");
+        assertNotExpanded("Seerosenartige_de");
+        bean.onTaxonomyCollapse(createCollapseEvent("Champignonartige_de"));
+        assertNotExpanded("Champignonartige_de");
     }
 
     @Test
@@ -104,9 +105,8 @@ public class TaxonomyBeanTest extends TestBase {
         bean.setCurrentAccount(event);
         bean.getTreeController().reloadTreeNode();
         Assert.assertTrue(bean.getRenderController().isFirstButtonDisabled());
-        TreeNode tree = bean.getTreeController().getTaxonomyTree();
 
-        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de", tree));
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de"));
 
         Assert.assertFalse(bean.getRenderController().isFirstButtonDisabled());
         Assert.assertTrue(bean.getRenderController().isHistoryVisible());
@@ -147,7 +147,7 @@ public class TaxonomyBeanTest extends TestBase {
         assertSelectable("Leben_de");
         Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
 
-        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de", tree));
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de"));
         bean.actionClickFirstButton();
 
         bean.getNameController().addNewName();
@@ -156,7 +156,7 @@ public class TaxonomyBeanTest extends TestBase {
         bean.getNameController().swapPosition(bean.getNameController().getNames().get(1), "HIGHER");
 
         bean.actionClickSecondButton();
-        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de_edited", getTree()));
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de_edited"));
 
     }
 
@@ -168,8 +168,7 @@ public class TaxonomyBeanTest extends TestBase {
 
         bean.actionClickSecondButton();
 
-        TreeNode tree = bean.getTreeController().getTaxonomyTree();
-        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de", tree));
+        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de"));
 
         Assert.assertEquals("Champignonartige_de", bean.getRenderController().getParentFirstName());
         bean.getRenderController().getLabelForParentTaxonomy();
@@ -189,9 +188,9 @@ public class TaxonomyBeanTest extends TestBase {
 
         taxos = taxonomyService.loadTaxonomy(new HashMap<>(), true);
         Assert.assertEquals(22, taxos.size());
-        tree = bean.getTreeController().getTaxonomyTree();
+
         nodeToOperateOn = null;
-        createSelectEvent("test003_de", tree);
+        createSelectEvent("test003_de");
 
         Taxonomy newTaxo = (Taxonomy) nodeToOperateOn.getData();
         Assert.assertNotNull(newTaxo);
@@ -205,6 +204,8 @@ public class TaxonomyBeanTest extends TestBase {
         Assert.assertEquals(22, taxos.size());
         Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
     }
+    
+    
 
     private void assertNotSelectable(String nameOfTaxo) {
         selectTaxonomyFromTree(nameOfTaxo, bean.getTreeController().getTaxonomyTree());
@@ -216,13 +217,49 @@ public class TaxonomyBeanTest extends TestBase {
         Assert.assertTrue(nodeToOperateOn.isSelectable());
     }
 
-    private NodeSelectEvent createSelectEvent(String nameOfTaxToSelect, TreeNode tree) {
+    private void assertNotExpanded(String nameOfTaxo) {
+        selectTaxonomyFromTree(nameOfTaxo, bean.getTreeController().getTaxonomyTree());
+        Assert.assertFalse(nodeToOperateOn.isExpanded());
+    }
+
+    private void assertExpanded(String nameOfTaxo) {
+        selectTaxonomyFromTree(nameOfTaxo, bean.getTreeController().getTaxonomyTree());
+        Assert.assertTrue(nodeToOperateOn.isExpanded());
+    }
+
+    private NodeSelectEvent createSelectEvent(String nameOfTaxToSelect) {
         nodeToOperateOn = null;
-        selectTaxonomyFromTree(nameOfTaxToSelect, tree);
+        selectTaxonomyFromTree(nameOfTaxToSelect, bean.getTreeController().getTaxonomyTree());
         if (nodeToOperateOn == null) {
             throw new RuntimeException("Could not find " + nameOfTaxToSelect + " in tree");
         }
         return new NodeSelectEvent(
+                new UIViewRoot(),
+                new BehaviorBase(),
+                nodeToOperateOn
+        );
+    }
+
+    private NodeExpandEvent createExpandEvent(String nameOfTaxToSelect) {
+        nodeToOperateOn = null;
+        selectTaxonomyFromTree(nameOfTaxToSelect, bean.getTreeController().getTaxonomyTree());
+        if (nodeToOperateOn == null) {
+            throw new RuntimeException("Could not find " + nameOfTaxToSelect + " in tree");
+        }
+        return new NodeExpandEvent(
+                new UIViewRoot(),
+                new BehaviorBase(),
+                nodeToOperateOn
+        );
+    }
+
+    private NodeCollapseEvent createCollapseEvent(String nameOfTaxToSelect) {
+        nodeToOperateOn = null;
+        selectTaxonomyFromTree(nameOfTaxToSelect, bean.getTreeController().getTaxonomyTree());
+        if (nodeToOperateOn == null) {
+            throw new RuntimeException("Could not find " + nameOfTaxToSelect + " in tree");
+        }
+        return new NodeCollapseEvent(
                 new UIViewRoot(),
                 new BehaviorBase(),
                 nodeToOperateOn
