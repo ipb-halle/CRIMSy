@@ -83,6 +83,7 @@
         <class>de.ipb_halle.lbac.admission.UserEntity</class>
         <class>de.ipb_halle.lbac.forum.TopicEntity</class>
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
+        <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

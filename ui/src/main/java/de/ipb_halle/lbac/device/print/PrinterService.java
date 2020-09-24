@@ -68,7 +68,7 @@ public class PrinterService implements Serializable {
     }
 
     /**
-     * This needs to be complemented by means to select:
+     * ToDo: needs to be complemented by means to select:
      * <ul>
      * <li>printers a user can print to</li>
      * <li>printers a user is allowed to manage</li>

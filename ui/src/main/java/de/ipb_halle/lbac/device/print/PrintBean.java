@@ -27,6 +27,8 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
 import de.ipb_halle.lbac.util.HexUtil;
+import de.ipb_halle.lbac.util.pref.Preference;
+import de.ipb_halle.lbac.util.pref.PreferenceService;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
@@ -130,6 +132,8 @@ import org.apache.logging.log4j.LogManager;
 @Dependent
 public class PrintBean implements Serializable {
 
+    private final static String PREFERRED_QUEUE = "LABEL_PRINTER";
+
     @Inject
     private JobService jobService;
 
@@ -140,9 +144,14 @@ public class PrintBean implements Serializable {
     private LabelService labelService;
 
     @Inject
-    private UserBean userBean;
+    private PreferenceService preferenceService;
+
+    @Inject
+    protected UserBean userBean;
 
     private Object labelDataObject;
+
+    private Preference preferredQueue;
 
     private String printerQueue;
 
@@ -173,6 +182,8 @@ public class PrintBean implements Serializable {
                     this.printerService.loadById(this.printerQueue));
                 parseLabelConfig(driver);
                 submitJob(driver);
+                this.preferredQueue.setValue(this.printerQueue);
+                this.preferredQueue = this.preferenceService.save(this.preferredQueue);
             } catch (Exception e) {
                 this.logger.warn("actionPrintLabel() caught an exception", (Throwable) e);
             }
@@ -218,22 +229,43 @@ public class PrintBean implements Serializable {
         return null;
     }
 
+    private Preference getPreferredQueue() {
+        if (this.preferredQueue == null) {
+            this.preferredQueue = this.preferenceService.getPreference(
+                this.userBean.getCurrentAccount(),
+                PREFERRED_QUEUE,
+                null);
+        }
+        return this.preferredQueue;
+    }
+
     public String getPrinterQueue() { 
         return this.printerQueue; 
     }
 
     /**
      * return a list of available printers
+     * @return a SelectItem list of accessible printers
      */
     public List<SelectItem> getPrinters() {
         /*
          * ToDo: xxxxx limit accessible printers
          */
-        List<SelectItem> printers = new ArrayList<SelectItem> ();
-        for (Printer p : printerService.load()) {
-            printers.add(new SelectItem(p.getQueue(), p.getName(), p.getPlace()));
+        List<SelectItem> menu = new ArrayList<SelectItem> ();
+        List<Printer>  printers = printerService.load();
+        for (Printer p : printers) {
+            if (p.getQueue().equals(getPreferredQueue().getValue())) {
+                this.printerQueue = p.getQueue();
+            }
+            menu.add(new SelectItem(p.getQueue(), p.getName(), p.getPlace()));
         }
-        return printers;
+
+        // failsafe, if preferences is not contained in actual printer list
+        if ((this.printerQueue == null) && (printers.size() > 0)) {
+            this.printerQueue = printers.get(0).getQueue();
+        }
+
+        return menu;
     }
 
     private String getPrinterModel() {

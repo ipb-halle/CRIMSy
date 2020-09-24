@@ -754,3 +754,11 @@ CREATE TABLE exp_texts (
     text            VARCHAR 
 );
 
+CREATE TABLE preferences (
+    id          SERIAL NOT NULL PRIMARY KEY,
+    user_id     INTEGER NOT NULL REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    key         VARCHAR NOT NULL,
+    value       VARCHAR
+);
+
+

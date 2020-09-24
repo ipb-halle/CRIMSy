@@ -17,16 +17,10 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
-
-
 /**
  *
  * @author fmauz
  */
-@SessionScoped
-@Named("userBean")
 public class UserBeanMock extends UserBean {
 
     private User currentAccount;
