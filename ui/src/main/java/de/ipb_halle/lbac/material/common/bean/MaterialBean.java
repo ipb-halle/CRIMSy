@@ -69,85 +69,84 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class MaterialBean implements Serializable {
-    
+
     @Inject
     protected ProjectService projectService;
-    
+
     @Inject
     protected MoleculeService moleculeService;
-    
+
     @Inject
     protected MaterialService materialService;
-    
+
     @Inject
     protected ProjectBean projectBean;
-    
+
     @Inject
     protected ACListService acListService;
-    
+
     @Inject
     protected Navigator navigator;
-    
+
     @Inject
     protected UserBean userBean;
-    
+
     @Inject
     protected MaterialOverviewBean overviewBean;
-    
+
     @Inject
     protected MaterialNameBean materialNameBean;
-    
+
     @Inject
     protected MaterialIndexBean materialIndexBean;
-    
+
     @Inject
     protected TaxonomyService taxonomyService;
-    
+
     @Inject
     protected TissueService tissueService;
-    
+
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     protected MaterialType currentMaterialType = null;
-    
+
     protected List<Project> possibleProjects = new ArrayList<>();
     protected Mode mode;
     protected MoleculeStructureModel strcutureModel;
     protected HazardInformation hazards;
     protected StorageClassInformation storageClassInformation;
-    
+
     protected StructureInformation structureInfos;
-    
+
     protected List<String> errorMessages = new ArrayList<>();
-    
+
     private boolean calculateFormulaAndMassesByDb = true;
-    
+
     private MaterialEditState materialEditState = new MaterialEditState();
     private HistoryOperation historyOperation;
-    
+
     private MaterialEditPermission permission;
-    
+
     private MaterialCreationSaver creationSaver;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-    
+
     TaxonomySelectionController taxonomyController;
-    
+
     public enum Mode {
         CREATE, EDIT, HISTORY
     };
-    
+
     @PostConstruct
     public void init() {
         strcutureModel = new V2000();
         permission = new MaterialEditPermission(this);
-        taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService);
-        
+
     }
-    
+
     public void setCurrentAccount(@Observes LoginEvent evt) {
-        
+
     }
-    
+
     public void startMaterialCreation() {
         try {
             initState();
@@ -159,9 +158,9 @@ public class MaterialBean implements Serializable {
         } catch (Exception e) {
             logger.error(e);
         }
-        
+
     }
-    
+
     public void startMaterialEdit(Material m) {
         try {
             initState();
@@ -180,7 +179,7 @@ public class MaterialBean implements Serializable {
             materialIndexBean.getIndices().addAll(m.getIndices());
             storageClassInformation = new StorageClassInformation(m, initStorageClassNames());
             storageClassInformation.setRemarks(m.getStorageInformation().getRemarks());
-            
+
             if (m.getType() == MaterialType.STRUCTURE) {
                 Structure struc = (Structure) m;
                 structureInfos = new StructureInformation(m);
@@ -191,7 +190,7 @@ public class MaterialBean implements Serializable {
             }
             if (m.getType() == MaterialType.BIOMATERIAL) {
                 BioMaterial bm = (BioMaterial) m;
-                taxonomyController.setSelectedTaxonomy(bm.getTaxonomy());
+                taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, bm.getTaxonomy());
             }
             historyOperation = new HistoryOperation(materialEditState, projectBean, materialNameBean, materialIndexBean, structureInfos, storageClassInformation);
             mode = Mode.EDIT;
@@ -200,7 +199,7 @@ public class MaterialBean implements Serializable {
             logger.error(e);
         }
     }
-    
+
     private void initState() {
         hazards = new HazardInformation();
         storageClassInformation = new StorageClassInformation(initStorageClassNames());
@@ -208,19 +207,19 @@ public class MaterialBean implements Serializable {
         materialNameBean.init();
         materialIndexBean.init();
         currentMaterialType = MaterialType.CONSUMABLE;
-        
+
         creationSaver = new MaterialCreationSaver(
                 moleculeService,
                 materialNameBean,
                 materialService);
     }
-    
+
     public List<MaterialType> getMaterialTypes() {
         try {
             if (materialEditState.getCurrentProject() == null) {
                 return new ArrayList<>();
             } else {
-                
+
                 return materialEditState.getCurrentProject().getProjectType().getMaterialTypes();
             }
         } catch (Exception e) {
@@ -229,7 +228,7 @@ public class MaterialBean implements Serializable {
         }
         return new ArrayList<>();
     }
-    
+
     public String getCreateButtonText() {
         if (mode == Mode.CREATE) {
             return Messages.getString(MESSAGE_BUNDLE, "materialCreation_buttonText_create", null);
@@ -237,53 +236,53 @@ public class MaterialBean implements Serializable {
             return Messages.getString(MESSAGE_BUNDLE, "materialCreation_buttonText_save", null);
         }
     }
-    
+
     public MaterialType getCurrentMaterialType() {
         return currentMaterialType;
     }
-    
+
     public void setCurrentMaterialType(MaterialType currentMaterialType) {
         this.currentMaterialType = currentMaterialType;
     }
-    
+
     public Project getCurrentProject() {
         return materialEditState.getCurrentProject();
     }
-    
+
     public void setCurrentProject(Project currentProject) {
         try {
             this.materialEditState.setCurrentProject(currentProject);
             currentMaterialType = currentProject.getProjectType().getMaterialTypes().get(0);
-            
+
         } catch (Exception e) {
             logger.info("Error in setCurrentProject(): " + currentProject.getName());
             logger.warn(e);
         }
-        
+
     }
-    
+
     public List<Project> getPossibleProjects() {
         return possibleProjects;
     }
-    
+
     public HazardInformation getHazards() {
         return hazards;
     }
-    
+
     public void setHazards(HazardInformation hazards) {
         this.hazards = hazards;
     }
-    
+
     public StorageClassInformation getStorageClassInformation() {
         return storageClassInformation;
     }
-    
+
     public void setStorageClassInformation(StorageClassInformation storageClassInformation) {
         this.storageClassInformation = storageClassInformation;
     }
-    
+
     public void saveNewMaterial() {
-        
+
         if (checkInputValidity()) {
             if (currentMaterialType == MaterialType.STRUCTURE) {
                 creationSaver.saveNewStructure(
@@ -307,16 +306,14 @@ public class MaterialBean implements Serializable {
             }
         }
     }
-    
+
     public void saveEditedMaterial() {
         materialEditState.getMaterialToEdit().setProjectId(materialEditState.getCurrentProject().getId());
         materialEditState.getMaterialToEdit().setNames(materialNameBean.getNames());
         materialEditState.getMaterialToEdit().setIndices(materialIndexBean.getIndices());
         materialEditState.getMaterialToEdit().setHazards(hazards);
         materialEditState.getMaterialToEdit().setStorageInformation(storageClassInformation);
-        
-        
-        
+
         if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
             Structure s = (Structure) materialEditState.getMaterialToEdit();
             Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
@@ -339,12 +336,12 @@ public class MaterialBean implements Serializable {
             s.setMolarMass(structureInfos.getMolarMass());
             s.setSumFormula(structureInfos.getSumFormula());
         }
-        
-        if(materialEditState.getMaterialToEdit().getType()==MaterialType.BIOMATERIAL){
-            BioMaterial biomaterial=(BioMaterial)materialEditState.getMaterialToEdit();
-            biomaterial.setTaxonomy((Taxonomy)taxonomyController.getSelectedTaxonomy().getData());
+
+        if (materialEditState.getMaterialToEdit().getType() == MaterialType.BIOMATERIAL) {
+            BioMaterial biomaterial = (BioMaterial) materialEditState.getMaterialToEdit();
+            biomaterial.setTaxonomy((Taxonomy) taxonomyController.getSelectedTaxonomy().getData());
         }
-        
+
         try {
             materialService.saveEditedMaterial(
                     materialEditState.getMaterialToEdit(),
@@ -356,50 +353,50 @@ public class MaterialBean implements Serializable {
             logger.error(e);
         }
     }
-    
+
     public void actionSaveMaterial() {
         if (mode == Mode.CREATE) {
             saveNewMaterial();
             UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_new_completed");
-            
+
         } else {
             saveEditedMaterial();
             UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_edit_completed");
-            
+
         }
         overviewBean.getTableController().reloadDataTableItems();
         navigator.navigate("/material/materials");
-        
+
     }
-    
+
     public StructureInformation getStructureInfos() {
         return structureInfos;
     }
-    
+
     public void setStructureInfos(StructureInformation structureInfos) {
         this.structureInfos = structureInfos;
     }
-    
+
     public MaterialNameBean getMaterialNameBean() {
         return materialNameBean;
     }
-    
+
     public MaterialIndexBean getMaterialIndexBean() {
         return materialIndexBean;
     }
-    
+
     public void setMaterialNameBean(MaterialNameBean materialNameBean) {
         this.materialNameBean = materialNameBean;
     }
-    
+
     public void setMaterialIndexBean(MaterialIndexBean materialIndexBean) {
         this.materialIndexBean = materialIndexBean;
     }
-    
+
     public boolean isValideProjectChoosen() {
         return materialEditState.getCurrentProject().getProjectType() != ProjectType.DUMMY_PROJECT;
     }
-    
+
     public boolean isCreationAllowed() {
         if (mode == HISTORY) {
             return false;
@@ -407,38 +404,38 @@ public class MaterialBean implements Serializable {
         if (materialEditState.getCurrentProject() == null || materialEditState.getCurrentProject().getProjectType() == ProjectType.DUMMY_PROJECT) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public boolean checkInputValidity() {
         boolean isValide = true;
         errorMessages.clear();
         int count = 1;
         for (MaterialName mn : materialNameBean.getNames()) {
-            
+
             if (mn.getValue().isEmpty()) {
                 isValide = false;
                 errorMessages.add("Materialname at position " + count + " must not be empty");
             }
             count++;
-            
+
         }
         return isValide;
     }
-    
+
     public String getErrorMessages() {
         return String.join(" ", errorMessages);
     }
-    
+
     public boolean isCalculateFormulaAndMassesByDb() {
         return calculateFormulaAndMassesByDb;
     }
-    
+
     public void setCalculateFormulaAndMassesByDb(boolean calculateFormulaAndMassesByDb) {
         this.calculateFormulaAndMassesByDb = calculateFormulaAndMassesByDb;
     }
-    
+
     public boolean isTypeChoiseDisabled() {
         return mode == Mode.EDIT || mode == Mode.HISTORY;
     }
@@ -462,17 +459,17 @@ public class MaterialBean implements Serializable {
                 return isOnwer || hastRights;
         }
     }
-    
+
     public boolean areRevisionElementsVisible() {
         return mode != Mode.CREATE;
     }
-    
+
     public void switchOneVersionBack() {
         historyOperation.applyNextNegativeDifference();
         mode = Mode.HISTORY;
-        
+
     }
-    
+
     public void switchOneVersionForward() {
         historyOperation.applyNextPositiveDifference();
         mode = Mode.HISTORY;
@@ -480,11 +477,11 @@ public class MaterialBean implements Serializable {
             mode = Mode.EDIT;
         }
     }
-    
+
     public MaterialEditState getMaterialEditState() {
         return materialEditState;
     }
-    
+
     private List<StorageClass> initStorageClassNames() {
         List<StorageClass> classes = materialService.loadStorageClasses();
         for (StorageClass sc : classes) {
@@ -500,33 +497,33 @@ public class MaterialBean implements Serializable {
         }
         return classes;
     }
-    
+
     public HistoryOperation getHistoryOperation() {
         return historyOperation;
     }
-    
+
     public MaterialEditPermission getPermission() {
         return permission;
     }
-    
+
     public Mode getMode() {
         return mode;
     }
-    
+
     public void setMode(Mode mode) {
         this.mode = mode;
     }
-    
+
     public ACListService getAcListService() {
         return acListService;
     }
-    
+
     public UserBean getUserBean() {
         return userBean;
     }
-    
+
     public TaxonomySelectionController getTaxonomyController() {
         return taxonomyController;
     }
-    
+
 }

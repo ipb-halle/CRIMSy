@@ -40,7 +40,7 @@ import org.primefaces.model.TreeNode;
  */
 public class TaxonomyTreeController implements Serializable {
 
-    private final Set<Integer> expandedTreeNodes = new HashSet<>();
+    private Set<Integer> expandedTreeNodes = new HashSet<>();
     private Integer idOfSelectedTaxonomy;
     protected TaxonomyLevelController levelController;
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -204,9 +204,6 @@ public class TaxonomyTreeController implements Serializable {
 
     }
 
-    /**
-     *
-     */
     private void saveExpandedAndSelectedTreeNodes() {
         expandedTreeNodes.clear();
         idOfSelectedTaxonomy = null;
@@ -226,11 +223,27 @@ public class TaxonomyTreeController implements Serializable {
             Taxonomy ta = (Taxonomy) n.getData();
             if (ta.getId() == t.getId()) {
                 n.setSelected(true);
+                selectedTaxonomy = n;
                 expandTree();
             } else {
                 n.setSelected(false);
             }
         }
+    }
+
+    public void initSelectionAndExpanseState() {
+        idOfSelectedTaxonomy = ((Taxonomy) selectedTaxonomy.getData()).getId();
+        expandedTreeNodes = getAllParents(selectedTaxonomy);
+        expandTree();
+    }
+
+    private Set<Integer> getAllParents(TreeNode selectedTaxonomy) {
+        Set<Integer> ids = new HashSet<>();
+        while (selectedTaxonomy.getParent() != null) {
+            ids.add(((Taxonomy) selectedTaxonomy.getData()).getId());
+            selectedTaxonomy = selectedTaxonomy.getParent();
+        }
+        return ids;
     }
 
     /**

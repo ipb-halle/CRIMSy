@@ -39,9 +39,17 @@ public class TaxonomySelectionController implements Serializable {
 
     public TaxonomySelectionController(
             TaxonomyService taxonomyService,
-            TissueService tissueService) {
+            TissueService tissueService,
+            Taxonomy taxonomyOfMaterial) {
         this.tissueService = tissueService;
-        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, new SimpleTaxonomyLevelController(taxonomyService.loadTaxonomyLevel()));
+        treeController = new TaxonomyTreeController(
+                selectedTaxonomy,
+                taxonomyService,
+                new SimpleTaxonomyLevelController(taxonomyService.loadTaxonomyLevel()));
+        
+        treeController.selectTaxonomy(taxonomyOfMaterial);
+        treeController.initSelectionAndExpanseState();
+
     }
 
     public TaxonomyTreeController getTreeController() {
@@ -50,7 +58,6 @@ public class TaxonomySelectionController implements Serializable {
 
     public void onTaxonomySelect(NodeSelectEvent event) {
         selectedTaxonomy = event.getTreeNode();
-        logger.info("Choosing new Taxo "+selectedTaxonomy);
     }
 
     public TreeNode getSelectedTaxonomy() {
@@ -61,8 +68,8 @@ public class TaxonomySelectionController implements Serializable {
 
         this.selectedTaxonomy = selectedTaxonomy;
     }
-    
-    public void setSelectedTaxonomy(Taxonomy t){
+
+    public void setSelectedTaxonomy(Taxonomy t) {
         treeController.selectTaxonomy(t);
     }
 
