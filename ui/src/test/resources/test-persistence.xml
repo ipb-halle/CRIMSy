@@ -39,10 +39,12 @@
         <class>de.ipb_halle.lbac.project.ProjectEntity</class>
         <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TissueEntity</class>
+        
         <class>de.ipb_halle.lbac.material.common.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity</class>

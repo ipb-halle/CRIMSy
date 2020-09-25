@@ -342,7 +342,7 @@ public class MaterialBean implements Serializable {
         
         if(materialEditState.getMaterialToEdit().getType()==MaterialType.BIOMATERIAL){
             BioMaterial biomaterial=(BioMaterial)materialEditState.getMaterialToEdit();
-            biomaterial.setTaxonomy((Taxonomy)taxonomyController.getSelectedTaxonomy());
+            biomaterial.setTaxonomy((Taxonomy)taxonomyController.getSelectedTaxonomy().getData());
         }
         
         try {

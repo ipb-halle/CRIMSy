@@ -699,6 +699,21 @@ CREATE TABLE biomaterial(
     taxoid INTEGER NOT NULL REFERENCES taxonomy(id),
     tissueid INTEGER REFERENCES tissues(id)
 );
+
+CREATE TABLE biomaterial_history(
+    id INTEGER NOT NULL REFERENCES biomaterial(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    actorid INTEGER NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    mtime TIMESTAMP NOT NULL,
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    tissueid_old INTEGER REFERENCES tissues(id)  ON UPDATE CASCADE ON DELETE CASCADE,
+    tissueid_new INTEGER REFERENCES tissues(id)  ON UPDATE CASCADE ON DELETE CASCADE,
+    taxoid_old INTEGER REFERENCES taxonomy(id)  ON UPDATE CASCADE ON DELETE CASCADE,
+    taxoid_new INTEGER REFERENCES taxonomy(id)  ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY(id,actorid,mtime)
+);
+
+
 CREATE TABLE experiments (
     experimentid    SERIAL NOT NULL PRIMARY KEY,
     code            VARCHAR,

@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
@@ -60,7 +62,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialEditSaver implements Serializable{
+public class MaterialEditSaver implements Serializable {
 
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
     protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_storages WHERE materialid=:mid";
@@ -260,6 +262,20 @@ public class MaterialEditSaver implements Serializable{
         }
     }
 
+    public void saveEditedBiomaterial() {
+
+        BioMaterialDifference diff = comparator.getDifferenceOfType(diffs, BioMaterialDifference.class);
+        if (diff != null) {
+            materialService.getEm().merge(diff.createEntity());
+            updateBioMaterialOverview();
+        }
+    }
+
+    protected void updateBioMaterialOverview() {
+        BioMaterial b = (BioMaterial) newMaterial;
+        materialService.getEm().merge(b.createEntity());
+    }
+
     protected void saveMaterialOverviewDifference(MaterialOverviewDifference diff) {
         MaterialHistoryEntity entity = new MaterialHistoryEntity();
         ACList acl = null;
@@ -334,7 +350,5 @@ public class MaterialEditSaver implements Serializable{
     protected void saveMaterialStrcutureDifferences(MaterialStructureDifference diff) {
         this.materialService.getEm().persist(diff.createDbInstance());
     }
-    
-   
 
 }

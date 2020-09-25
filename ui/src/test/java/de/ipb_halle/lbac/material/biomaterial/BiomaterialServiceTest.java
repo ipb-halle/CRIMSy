@@ -39,6 +39,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,9 +60,6 @@ public class BiomaterialServiceTest extends TestBase {
     private TaxonomyService taxonomyService;
 
     @Inject
-    private TissueService tissueService;
-
-    @Inject
     private MaterialService materialService;
 
     @Inject
@@ -73,7 +71,9 @@ public class BiomaterialServiceTest extends TestBase {
     private CreationTools creationTools;
 
     @Before
-    public void init() {
+    @Override
+    public void setUp() {
+        super.setUp();
         creationTools = new CreationTools("", "", "", memberService, projectService);
         // Initialisieng the userbean for ownership of material
         UserBeanMock userBean = new UserBeanMock();
@@ -82,6 +82,7 @@ public class BiomaterialServiceTest extends TestBase {
         ownerid = owner.getId().toString();
         materialService.setUserBean(userBean);
         project = creationTools.createProject();
+        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
     }
 
     @After
@@ -91,21 +92,50 @@ public class BiomaterialServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadBioMaterials() {
-        createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
 
-        List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName("Wurzel", "de", 1));
-        names.add(new MaterialName("Root", "en", 2));
-        names.add(new MaterialName("Radix", "la", 3));
         Taxonomy taxo = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(15);
-        Tissue tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
-
-        names = new ArrayList<>();
+        Tissue tissue = saveTissueInDB(taxo);
+        List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("Löwnzahn", "de", 1));
         BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
         materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>());
 
+    }
+
+    @Test
+    public void test002_editBioMaterial() throws Exception {
+
+        Taxonomy taxo = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(15);
+        Tissue tissue = saveTissueInDB(taxo);
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("Löwnzahn", "de", 1));
+        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        biomaterial.setACList(project.getUserGroups());
+        biomaterial.setOwner(owner);
+
+        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>());
+
+        BioMaterial editedBioMaterial = biomaterial.copyMaterial();
+        editedBioMaterial.setTissue(null);
+        Taxonomy newTaxonomy = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(12);
+        editedBioMaterial.setTaxonomy(newTaxonomy);
+        materialService.saveEditedMaterial(editedBioMaterial, biomaterial, project.getUserGroups().getId(), owner.getId());
+
+        BioMaterial m = (BioMaterial) materialService.loadMaterialById(editedBioMaterial.getId());
+        Assert.assertEquals(newTaxonomy.getId(), m.getTaxonomy().getId());
+        Assert.assertNull(m.getTissueId());
+
+        Assert.assertFalse(m.getHistory().getChanges().isEmpty());
+    }
+
+    private Tissue saveTissueInDB(Taxonomy taxo) {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("Wurzel", "de", 1));
+        names.add(new MaterialName("Root", "en", 2));
+        names.add(new MaterialName("Radix", "la", 3));
+        Tissue tissue = new Tissue(100, names, taxo);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+        return tissue;
     }
 
     @Deployment

@@ -50,7 +50,7 @@ public class TaxonomySelectionController implements Serializable {
 
     public void onTaxonomySelect(NodeSelectEvent event) {
         selectedTaxonomy = event.getTreeNode();
-        logger.info("Choosing new Taxo");
+        logger.info("Choosing new Taxo "+selectedTaxonomy);
     }
 
     public TreeNode getSelectedTaxonomy() {

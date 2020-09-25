@@ -38,6 +38,7 @@
         <class>de.ipb_halle.lbac.exp.assay.SOPEntity</class>
         <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity</class>
+        <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>

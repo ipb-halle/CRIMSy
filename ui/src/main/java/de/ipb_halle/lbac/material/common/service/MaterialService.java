@@ -520,7 +520,7 @@ public class MaterialService implements Serializable {
         editedMaterialSaver.saveEditedMaterialHazards();
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
-     //   editedMaterialSaver.saveEditedBiomaterial();
+        editedMaterialSaver.saveEditedBiomaterial();
 
     }
 

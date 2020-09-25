@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.material.common.service;
 
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialHistoryEntity;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialHistoryEntity_;
 import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
@@ -151,6 +154,19 @@ public class MaterialHistoryService implements Serializable {
             + "FROM storagesconditions_storages_hist "
             + "WHERE materialid=:mid";
 
+    private final String SQL_GET_BIOMATERIAL_HISTORY = "SELECT "
+            + "id, "
+            + "actorid, "
+            + "mtime, "
+            + "digest, "
+            + "action, "
+            + "tissueid_old, "
+            + "tissueid_new, "
+            + "taxoid_old, "
+            + "taxoid_new "
+            + "FROM biomaterial_history "
+            + "WHERE id=:material_id";
+
     Logger logger = LogManager.getLogger(this.getClass().getName());
     public MaterialService materialService;
 
@@ -169,6 +185,7 @@ public class MaterialHistoryService implements Serializable {
             loadHazardHistory(materialId, history);
             loadStorageHistory(materialId, history);
             loadTaxonomyHistory(materialId, history);
+            loadBioMaterialHistory(materialId, history);
         } catch (Exception e) {
             StackTraceElement t = e.getStackTrace()[0];
             logger.info(t.getClassName() + ":" + t.getMethodName() + ":" + t.getLineNumber());
@@ -193,6 +210,17 @@ public class MaterialHistoryService implements Serializable {
         }
     }
 
+    public void loadBioMaterialHistory(int materialId, MaterialHistory history) {
+        List<BioMaterialHistoryEntity> dbEntities = materialService.
+                getEm().
+                createNativeQuery(SQL_GET_BIOMATERIAL_HISTORY, BioMaterialHistoryEntity.class)
+                .setParameter("material_id", materialId)
+                .getResultList();
+        for (BioMaterialHistoryEntity dbentity : dbEntities) {
+            history.addDifference(new BioMaterialDifference(dbentity));
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private void loadStructureHistory(
             int materialId,
@@ -213,7 +241,6 @@ public class MaterialHistoryService implements Serializable {
         } catch (Exception e) {
             logger.error(e);
         }
-
     }
 
     @SuppressWarnings("unchecked")

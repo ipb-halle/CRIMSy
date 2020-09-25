@@ -474,6 +474,19 @@ CREATE TABLE biomaterial(
     tissueid INTEGER REFERENCES tissues(id)
 );
 
+CREATE TABLE biomaterial_history(
+    id INTEGER NOT NULL REFERENCES biomaterial(id),
+    actorid INTEGER NOT NULL REFERENCES usersGroups(id),
+    mtime TIMESTAMP NOT NULL,
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    tissueid_old INTEGER REFERENCES tissues(id),
+    tissueid_new INTEGER REFERENCES tissues(id),
+    taxoid_old INTEGER REFERENCES taxonomy(id),
+    taxoid_new INTEGER REFERENCES taxonomy(id),
+    PRIMARY KEY(id,actorid,mtime)
+);
+
 INSERT INTO taxonomy_level VALUES(1,'domain',100);
 INSERT INTO taxonomy_level VALUES(2,'kingdom',200);
 INSERT INTO taxonomy_level VALUES(3,'subkingdom',300);
