@@ -22,16 +22,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
->
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
 
 <h:body>
-    <ui:composition>
-        <b:panelGrid colSpans="9,3" size="sm" id="printerPanelId">
-            <b:form id="printerSettings" horizontal="true" method="post">
-                <b:panel title="#{msgs.PrinterSettings}" collapsible="false" look="info">
+
+        <crimsy:acobjectModal
+            id="dlgPrinterAcl"
+            acobjectController="#{printAdminBean.acObjectController}"
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="printerSettingsPanel" />
+
+        <b:form id="printerSettings" horizontal="true" method="post">
+
+            <b:panelGrid id="printerPanelId" 
+                    colSpans="12"
+                    styleClass="printerSettingsPanel"
+                    size="sm">
+                <b:panel id="panelSettings" title="#{msgs.PrinterSettings}" collapsible="false" look="info">
 
                     <b:dataTable id="printerList"
                                  value="#{printAdminBean.printers}"
@@ -61,12 +70,26 @@
                         <b:dataTableColumn value="#{pl.place}"/>
                         <b:dataTableColumn value="#{msgs['PrinterStatus_'.concat(pl.status)]}" />
                         <b:dataTableColumn>
-                            <b:commandButton style="padding: 0 4px;"
+                            <b:commandButton id="btnSelectPrinter"
+                                             style="padding: 0 4px;"
                                              icon="pencil"
                                              look="link"
                                              type="submit"
                                              action="#{printAdminBean.actionSelectPrinter(pl)}" />
-                            <p:commandButton style="padding: 0 4px;"
+                            <b:commandButton id="btnAclPrinter"
+                                             style="padding: 0 4px;"
+                                             icon="glyphicon glyphicon-user"
+                                             look="link"
+                                             ajax="true"
+                                             process="@this"
+                                             tooltip="#{msgs.PrinterPermission_tooltip}"
+                                             update="@form @(.acoEditModal .acoEditModalForm)"
+                                             type="button"
+                                             action="#{printAdminBean.actionStartAclChange(pl)}"
+                                             oncomplete="PF('dlgAcl').show();" 
+                                             disabled="false" />
+                            <p:commandButton id="btnDeletePrinter"
+                                             style="padding: 0 4px;"
                                              styleClass="btn btn-link"
                                              icon="fa fa-trash"
                                              action="#{printAdminBean.actionDelete(pl)}"
@@ -79,12 +102,17 @@
                     </b:dataTable>
 
                     <b:row>
-                        <b:commandButton type="submit" iconAwesome="plus" style="margin-right:3px;"
-                                action="#{printAdminBean.actionAddPrinter}" value="#{msgs.PrinterAddPrinter}"/>
+                        <b:commandButton 
+                                id="btnAddPrinter"
+                                type="submit" 
+                                iconAwesome="plus" 
+                                style="margin-right:3px;"
+                                action="#{printAdminBean.actionAddPrinter}" 
+                                value="#{msgs.PrinterAddPrinter}"/>
                     </b:row>
                 </b:panel>
 
-               <b:panel title="#{msgs.LabelSettings}" collapsible="false" look="info">
+               <b:panel id="panelLabelSettings" title="#{msgs.LabelSettings}" collapsible="false" look="info">
 
                     <b:dataTable id="labelList"
                                  value="#{printAdminBean.labels}"
@@ -108,12 +136,14 @@
                         <b:dataTableColumn value="#{ll.labelType}"/>
                         <b:dataTableColumn value="#{ll.printerModel}"/>
                         <b:dataTableColumn>
-                            <b:commandButton style="padding: 0 4px;"
+                            <b:commandButton id="btnSelectLabel"
+                                             style="padding: 0 4px;"
                                              icon="pencil"
                                              look="link"
                                              type="submit"
                                              action="#{printAdminBean.actionSelectLabel(ll)}" />
-                            <p:commandButton style="padding: 0 4px;"
+                            <p:commandButton id="btnDeleteLabel"
+                                             style="padding: 0 4px;"
                                              styleClass="btn btn-link"
                                              icon="fa fa-trash"
                                              action="#{printAdminBean.actionDelete(ll)}"
@@ -126,19 +156,22 @@
                     </b:dataTable>
 
                     <b:row>
-                        <b:commandButton type="submit" iconAwesome="plus" style="margin-right:3px;"
-                                action="#{printAdminBean.actionAddLabel}" value="#{msgs.LabelAddLabel}"/>
+                        <b:commandButton  id="btnAddLabel"
+                                type="submit" 
+                                iconAwesome="plus" 
+                                style="margin-right:3px;"
+                                action="#{printAdminBean.actionAddLabel}" 
+                                value="#{msgs.LabelAddLabel}"/>
                     </b:row>
                 </b:panel>
 
-            </b:form>
-        </b:panelGrid>
+            </b:panelGrid>
 
-        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-            <p:commandButton value="#{msgs.Ok}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
-            <p:commandButton value="#{msgs.Cancel}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
-        </p:confirmDialog>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="btnConfirmOk" value="#{msgs.Ok}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                <p:commandButton id="btnConfirmCancel" value="#{msgs.Cancel}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+            </p:confirmDialog>
 
-    </ui:composition>
+        </b:form>
 </h:body>
 </html>

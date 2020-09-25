@@ -211,8 +211,8 @@ public class UserMgrBean implements Serializable {
      */
     public List<Group> getGroupList() {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put("node_id", this.nodeService.getLocalNode().getId());
-        cmap.put("subSystemType", AdmissionSubSystemType.LOCAL);
+        cmap.put(MemberService.PARAM_NODE_ID, this.nodeService.getLocalNode().getId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LOCAL);
         // TODO: filter out groups, the current user is already a member of
         return this.memberService.loadGroups(cmap);
     }
@@ -270,8 +270,9 @@ public class UserMgrBean implements Serializable {
      */
     public List<User> getUserList() {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put("node", this.nodeService.getLocalNode());
-        cmap.put("subSystemType", new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
+        cmap.put(MemberService.PARAM_NODE_ID, this.nodeService.getLocalNode().getId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, 
+                new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
         List<User> users = this.memberService.loadUsers(cmap);
         for (int i = users.size() - 1; i >= 0; i--) {
             if (users.get(i).getName().equals(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER)) {

@@ -17,8 +17,15 @@
  */
 package de.ipb_halle.lbac.device.print;
 
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACObjectBean;
+import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
@@ -45,7 +52,7 @@ import org.apache.logging.log4j.LogManager;
  */
 @SessionScoped
 @Named
-public class PrintAdminBean implements Serializable {
+public class PrintAdminBean implements ACObjectBean, Serializable {
 
     private final static String PRINTER_LIST = NavigationConstants.TEMPLATE_FOLDER + "print/printerList.xhtml";
     private final static String PRINTER_DETAILS = NavigationConstants.TEMPLATE_FOLDER + "print/printerDetails.xhtml";
@@ -65,8 +72,12 @@ public class PrintAdminBean implements Serializable {
     private PrinterService printerService;
 
     @Inject
+    private MemberService memberService;
+
+    @Inject
     private UserBean userBean;
 
+    private ACObjectController acObjectController;
     private String currentPage;
     private String driverType;
     private Printer printer; 
@@ -89,6 +100,7 @@ public class PrintAdminBean implements Serializable {
                 globalAdmissionContext.getAdminAccount());
         this.label = new Label(new LabelEntity());
     }
+
 
     public void actionAddLabel() {
         this.label = new Label(new LabelEntity());
@@ -152,6 +164,40 @@ public class PrintAdminBean implements Serializable {
         currentPage = PRINTER_JOBS;
     }
 
+    public void actionStartAclChange(ACObject aco) { 
+        try {
+            this.printer = (Printer) aco;
+
+            Map<String, Object> cmap = new HashMap<> ();
+            cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, new AdmissionSubSystemType[] {
+                    AdmissionSubSystemType.BUILTIN, 
+                    AdmissionSubSystemType.LOCAL, 
+                    AdmissionSubSystemType.LDAP });
+
+            List<Group> ml = memberService.loadGroups(cmap);
+            this.logger.info("actionStartAclChange(): queue={} #grouplist={}", this.printer.getQueue(), ml.size());
+            this.acObjectController = new ACObjectController(
+                    this.printer,
+                    ml,
+                    this, 
+                    this.printer.getName());
+        } catch(Exception e) {
+            this.logger.warn("actionStartAclChange() caught an Exception", (Throwable) e);
+        }
+    }
+
+    public void applyAclChanges(int acobjectid, ACList newACList) { 
+        this.printer.setACList(newACList);
+        this.printer = printerService.save(this.printer);
+    }
+
+    public void cancelAclChanges() { 
+        // do nothing 
+    }
+
+    public ACObjectController getAcObjectController() { 
+        return this.acObjectController;
+    }
 
     public String getDriverType() {
         return this.driverType;

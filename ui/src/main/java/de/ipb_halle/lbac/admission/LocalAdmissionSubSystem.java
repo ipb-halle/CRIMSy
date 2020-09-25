@@ -76,9 +76,9 @@ public class LocalAdmissionSubSystem extends AbstractAdmissionSubSystem {
     @Override
     public User lookup(String login, UserBean bean) {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put("login", login);
-        cmap.put("node_id", bean.getNodeService().getLocalNodeId());
-        cmap.put("subSystemType", getSubSystemType());
+        cmap.put(MemberService.PARAM_LOGIN, login);
+        cmap.put(MemberService.PARAM_NODE_ID, bean.getNodeService().getLocalNodeId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, getSubSystemType());
         List<User> lu = bean.getMemberService().loadUsers(cmap);
         if (lu != null && lu.isEmpty()) {
             logger.warn("No user found with login: " + login);

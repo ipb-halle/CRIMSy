@@ -214,9 +214,9 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     private Group lookupLbacGroup(LdapObject lo, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
         Map<String, Object> cmap = new HashMap<String, Object> ();
-        cmap.put("subSystemType", AdmissionSubSystemType.LDAP);
-        cmap.put("subSystemData", lo.getUniqueId());
-        cmap.put("node_id", node.getId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP);
+        cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, lo.getUniqueId());
+        cmap.put(MemberService.PARAM_NODE_ID, node.getId());
         List<Group> groups = bean.getMemberService().loadGroups(cmap);
         Group g;
 
@@ -242,9 +242,9 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     private User lookupLbacUser(LdapObject lo, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
         Map<String, Object> cmap = new HashMap<String, Object> ();
-        cmap.put("subSystemType", AdmissionSubSystemType.LDAP); 
-        cmap.put("subSystemData", lo.getUniqueId());
-        cmap.put("node", node);
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP); 
+        cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, lo.getUniqueId());
+        cmap.put(MemberService.PARAM_NODE_ID, node.getId());
 
         List<User> users = bean.getMemberService().loadUsers(cmap);
         if((users != null) && (users.size() == 1)) {

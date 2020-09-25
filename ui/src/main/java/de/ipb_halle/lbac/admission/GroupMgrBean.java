@@ -188,7 +188,8 @@ public class GroupMgrBean implements Serializable {
      */
     public List<Member> getMemberList() {
         HashMap<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put("subSystemType", new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP, AdmissionSubSystemType.LBAC_REMOTE});
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, 
+                new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP, AdmissionSubSystemType.LBAC_REMOTE});
         List<Member> members = new ArrayList<Member>();
 
         List<User> users = this.memberService.loadUsers(cmap);

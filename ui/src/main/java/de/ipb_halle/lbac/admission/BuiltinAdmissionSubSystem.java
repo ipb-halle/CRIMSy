@@ -56,9 +56,9 @@ public class BuiltinAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     public User lookup(String login, UserBean bean) {
         Map<String, Object> cmap = new HashMap<String, Object> ();
-        cmap.put("login", login);
-        cmap.put("node_id", bean.getNodeService().getLocalNodeId());
-        cmap.put("subSystemType", getSubSystemType());
+        cmap.put(MemberService.PARAM_LOGIN, login);
+        cmap.put(MemberService.PARAM_NODE_ID, bean.getNodeService().getLocalNodeId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, getSubSystemType());
         List<User> lu = bean.getMemberService().loadUsers(cmap);
         if ((lu != null) && (lu.size() == 1)) {
             return lu.get(0);

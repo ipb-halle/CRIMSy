@@ -254,7 +254,8 @@ public class PrintBean implements Serializable {
         List<SelectItem> menu = new ArrayList<SelectItem> ();
         List<Printer>  printers = printerService.load();
         for (Printer p : printers) {
-            if (p.getQueue().equals(getPreferredQueue().getValue())) {
+            if ((this.printerQueue == null) 
+                    && p.getQueue().equals(getPreferredQueue().getValue())) {
                 this.printerQueue = p.getQueue();
             }
             menu.add(new SelectItem(p.getQueue(), p.getName(), p.getPlace()));

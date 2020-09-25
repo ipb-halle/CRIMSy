@@ -65,8 +65,9 @@ public class AccountValidator implements Validator,Serializable {
      */
     private void checkDuplicateAccount(String login) throws ValidatorException {
         Map<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put("login", login);
-        cmap.put("subSystemType", new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
+        cmap.put(MemberService.PARAM_LOGIN, login);
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, 
+                new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
 
         List<User> list = this.memberService.loadUsers(cmap);
         if (list != null) {
