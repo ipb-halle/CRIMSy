@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
@@ -107,6 +108,21 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public MaterialTableController getTableController() {
         return tableController;
+    }
+
+    public String getWrappedNames(Material material, int maxNamesShown) {
+        String back = "";
+        for (int i = 0; i < Math.min(material.getNames().size(), maxNamesShown); i++) {
+            back += material.getNames().get(i).getValue() + "<br>";
+        }
+        if (material.getNames().size() > maxNamesShown) {
+            back += "...";
+        }
+
+        if (back.endsWith("<br>")) {
+            back = back.substring(0, back.length() - "<br>".length());
+        }
+        return back;
     }
 
     public List<Material> getReadableMaterials() {

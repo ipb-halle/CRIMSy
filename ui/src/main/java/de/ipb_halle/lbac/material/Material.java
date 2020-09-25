@@ -109,15 +109,6 @@ public abstract class Material extends ACObject implements DTO, Serializable {
         return type;
     }
 
-    public String getPrintableNames() {
-
-        String back = "";
-        for (MaterialName s : names) {
-            back += vFilter.filter(s.getValue()) + "<br>";
-        }
-        return back;
-    }
-
     public String getSecurityInformation() {
         return "danger";
     }

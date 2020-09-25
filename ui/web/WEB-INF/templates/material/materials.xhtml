@@ -25,7 +25,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <h:body>
         <crimsy:acobjectModal
             acobjectController="#{materialOverviewBean.acObjectController}"
@@ -53,22 +54,33 @@
                             </b:row>
                             <b:row>
                                 <b:dataTable
+
                                     styleClass="materialDataTable"
                                     paginated="false"
                                     value="#{materialOverviewBean.readableMaterials}"
                                     searching="false"
                                     var="material">
-                                    <b:dataTableColumn
-                                        value="#{material.id}">
-                                    </b:dataTableColumn>
+
                                     <b:dataTableColumn
                                         label="#{msgs.materialOverview_tableheader_name}">
                                         <h:outputText
+                                            id="materialNames"
                                             escape="false"
-                                            value="#{material.getPrintableNames()}">
-                                            <f:converter converterId="InputConverter" />
+                                            value="#{materialOverviewBean.getWrappedNames(material, 3)}">
+                                            <f:converter converterId="RichTextConverter" />
                                         </h:outputText>
+                                        <p:tooltip for="materialNames"  position="right">
+                                            <h:outputText 
+                                                 escape="false"
+                                                value="#{materialOverviewBean.getWrappedNames(material, 20)}" >
+                                                <f:converter converterId="RichTextConverter" />
+                                            </h:outputText>
+
+                                        </p:tooltip>
                                     </b:dataTableColumn>
+
+
+
                                     <b:dataTableColumn
                                         label="#{msgs.materialOverview_tableheader_type}"
                                         value="#{material.type}">
