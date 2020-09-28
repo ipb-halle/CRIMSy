@@ -110,6 +110,8 @@ public class ExperimentBeanTest extends TestBase {
                 .setMaterialAgent(materialAgentMock)
                 .setMemberService(memberService)
                 .setItemAgent(itemAgentMock);
+        
+         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE name NOT IN('Public Group','Admin Group') AND membertype='G'");
 
     }
 
@@ -221,7 +223,7 @@ public class ExperimentBeanTest extends TestBase {
 
         experimentBean.actionStartAclChange(loadedExp);
         Assert.assertEquals(1, experimentBean.getAcObjectController().getGroupsNotInAcList().size());
-        Assert.assertEquals(2, experimentBean.getAcObjectController().getPossibleGroupsToAdd());
+        Assert.assertEquals(2, experimentBean.getAcObjectController().getPossibleGroupsToAdd().size());
         experimentBean.getAcObjectController().addGroupToAcList(experimentBean.getAcObjectController().getGroupsNotInAcList().get(0));
         Assert.assertEquals(0, experimentBean.getAcObjectController().getGroupsNotInAcList().size());
         getACEntryByName("Public Group", experimentBean.getAcObjectController().getAcEntries()).setPermRead(true);

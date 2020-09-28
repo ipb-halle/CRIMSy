@@ -186,8 +186,8 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
         }
     }
 
-    public void applyAclChanges(int acobjectid, ACList newACList) { 
-        this.printer.setACList(newACList);
+    public void applyAclChanges() { 
+        this.printer.setACList(printer.getACList());
         this.printer = printerService.save(this.printer);
     }
 
