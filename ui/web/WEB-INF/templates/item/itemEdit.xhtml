@@ -280,6 +280,7 @@
                         </b:panel>
                     </p:tab>
 
+
                     <p:tab title="Standort">
                         <b:panel
                             collapsible="false"
@@ -341,7 +342,7 @@
                                                     <h:outputText 
                                                         escape="false"
                                                         value="#{itemBean.getContainerLocation()}">
-                                                        <f:converter converterId="InputConverter" />
+                                                        <f:converter converterId="RichTextConverter" />
                                                     </h:outputText>
                                                 </b:column>
                                             </b:row>
@@ -406,19 +407,22 @@
                             </b:container>
                         </b:panel>
                     </p:tab>
-                    <p:tab title="Print">
-                        <b:panel
-                            styleClass="itemEditPanel"
-                            collapsible="false">
-                            <b:container>
-                                <b:row>
-                                    <crimsy:label id="labelPrintUI" 
-                                                  rendered="#{itemBean.labelPrintingEnabled}" 
-                                                  printbean="#{itemBean.printBean}" />
-                                </b:row>
-                            </b:container>
-                        </b:panel>
-                    </p:tab>
+
+                   
+                                        <p:tab title="Print">
+                                            <b:panel
+                                                styleClass="itemEditPanel"
+                                                collapsible="false">
+                                                <b:container>
+                                                    <b:row>
+                                                        <crimsy:label id="labelPrintUI" 
+                                                                      rendered="#{itemBean.labelPrintingEnabled}" 
+                                                                      printbean="#{itemBean.printBean}" />
+                                                    </b:row>
+                                                </b:container>
+                                            </b:panel>
+                                        </p:tab>
+                    
                 </p:tabView>
             </b:form>
         </ui:composition>

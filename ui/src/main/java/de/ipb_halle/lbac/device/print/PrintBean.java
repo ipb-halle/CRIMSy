@@ -51,57 +51,55 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-
 /**
- * Bean for label printing. This bean provides a list of 
- * available printers and labels and manages the printing 
- * of labels 
- * 
+ * Bean for label printing. This bean provides a list of available printers and
+ * labels and manages the printing of labels
+ *
  *
  * <h2>JSON label configuration</h2>
  *
  * <h3>Attributes</h3>
  *
  * <pre>
- *   type         LABEL, PICTURE, INTERLEAVE25, CODE39, CODE128, QR, DATAMATRIX  
+ *   type         LABEL, PICTURE, INTERLEAVE25, CODE39, CODE128, QR, DATAMATRIX
  *   fonts        MONOSPACED, SANS_SERIF (default),  SERIF
  *   style        PLAIN (default), BOLD, ITALIC, BOLD_ITALIC
  *   size         default 10
  *   x, y         position on label
  *   w, h         size (where applicable), e.g. for form, picture or barcode elements
  *   data         static data: String for labels and barcodes, hex String (inside raster element) for pictures
- *   field        name of the annotated field or a JSON object (name, param) specifiying the field name 
+ *   field        name of the annotated field or a JSON object (name, param) specifiying the field name
  *                and a parameter; field takes precedence over data or raster
  *   name         the name of the LabelData annotation of a method
  *   param        a String parameter to the annotated method (e.g. format string; see method documentation)
  *   raster       JSON object (w, h, data)
  * </pre>
  *
- * Implementation for picture is currently missing. Some attributes and default 
- * to printer defaults when omitted (<code>w</code> and <code>h</code> for 
- * the <code>form</code> element; <code>font, style</code> and <code>size</code>
- * for <code>label</code> elements.
- * 
+ * Implementation for picture is currently missing. Some attributes and default
+ * to printer defaults when omitted (<code>w</code> and <code>h</code> for the
+ * <code>form</code> element; <code>font, style</code> and <code>size</code> for
+ * <code>label</code> elements.
+ *
  * <h3>Example</h3>
  *
- *  <pre>
- *   { "form" : { 
+ * <pre>
+ *   { "form" : {
  *       "w" : 200,
  *       "h" : 80,
  *       "elements" : [
- *           {   
+ *           {
  *               "type" : "LABEL",
  *               "x" : 10,
  *               "y" : 20,
  *               "data" : "Hello World",
  *               "font" : "SANS_SERIF",
  *               "size" : 10,
- *               "style" : "BOLD" 
- *           }, {   
+ *               "style" : "BOLD"
+ *           }, {
  *               "type" : "LABEL",
  *               "x" : 10,
  *               "y" : 40,
- *               "field" : "itemMaterialName" 
+ *               "field" : "itemMaterialName"
  *           }, {
  *               "type" : "LABEL",
  *               "x" : 10,
@@ -120,15 +118,14 @@ import org.apache.logging.log4j.LogManager;
  *               "y" : 50,
  *               "raster" : { "w":3, "h":3, "data": "ffffffff00ffffffff" }
  *           }
- *       ] } 
+ *       ] }
  *   }
- *  </pre>
+ * </pre>
  *
  * ToDo: remember the last used printer and label type via user preferences
  *
  * @author fbroda
  */
-
 @Dependent
 public class PrintBean implements Serializable {
 
@@ -173,13 +170,13 @@ public class PrintBean implements Serializable {
 
     public void actionPrintLabel() {
         this.logger.info("actionPrintLabel() called");
-        if ((this.labelDataObject != null) && 
-                (this.printerQueue != null) && (this.printerQueue.length() > 0) &&
-                (this.labelId != null)) {
+        if ((this.labelDataObject != null)
+                && (this.printerQueue != null) && (this.printerQueue.length() > 0)
+                && (this.labelId != null)) {
             this.logger.info("actionPrintLabel() printerQueue={} labelId={}", this.printerQueue, this.labelId);
             try {
                 PrintDriver driver = PrintDriverFactory.buildPrintDriver(
-                    this.printerService.loadById(this.printerQueue));
+                        this.printerService.loadById(this.printerQueue));
                 parseLabelConfig(driver);
                 submitJob(driver);
                 this.preferredQueue.setValue(this.printerQueue);
@@ -195,26 +192,26 @@ public class PrintBean implements Serializable {
     }
 
     public List<SelectItem> getLabels() {
-        Map<String, Object> cmap = new HashMap<String, Object> ();
+        Map<String, Object> cmap = new HashMap<String, Object>();
         String printerModel = getPrinterModel();
         if ((printerModel == null) || (printerModel.length() == 0)) {
             this.logger.info("getLabels(): empty printer model");
-            return new ArrayList<SelectItem> ();
+            return new ArrayList<SelectItem>();
         }
-        cmap.put(LabelService.PRINTER_MODEL, printerModel); 
-
+        cmap.put(LabelService.PRINTER_MODEL, printerModel);
 
         String labelType = getLabelType();
         if (labelType == null) {
             this.logger.info("getLabels(): empty label type");
-            return new ArrayList<SelectItem> ();
+            return new ArrayList<SelectItem>();
         }
         cmap.put(LabelService.LABEL_TYPE, labelType);
 
-        List<SelectItem> items = new ArrayList<SelectItem> ();
+        List<SelectItem> items = new ArrayList<SelectItem>();
         for (Label l : this.labelService.load(cmap)) {
             items.add(new SelectItem(l.getId(), l.getName(), l.getDescription()));
         }
+
         return items;
     }
 
@@ -222,8 +219,8 @@ public class PrintBean implements Serializable {
     private String getLabelType() {
         if (this.labelDataObject != null) {
             Class c = this.labelDataObject.getClass();
-            if( c.isAnnotationPresent( LabelType.class ) ) {
-                return ((LabelType) c.getAnnotation( LabelType.class )).name();
+            if (c.isAnnotationPresent(LabelType.class)) {
+                return ((LabelType) c.getAnnotation(LabelType.class)).name();
             }
         }
         return null;
@@ -232,29 +229,31 @@ public class PrintBean implements Serializable {
     private Preference getPreferredQueue() {
         if (this.preferredQueue == null) {
             this.preferredQueue = this.preferenceService.getPreference(
-                this.userBean.getCurrentAccount(),
-                PREFERRED_QUEUE,
-                null);
+                    this.userBean.getCurrentAccount(),
+                    PREFERRED_QUEUE,
+                    null);
         }
         return this.preferredQueue;
     }
 
-    public String getPrinterQueue() { 
-        return this.printerQueue; 
+    public String getPrinterQueue() {
+        return this.printerQueue;
     }
 
     /**
      * return a list of available printers
+     *
      * @return a SelectItem list of accessible printers
      */
     public List<SelectItem> getPrinters() {
+
         /*
          * ToDo: xxxxx limit accessible printers
          */
-        List<SelectItem> menu = new ArrayList<SelectItem> ();
-        List<Printer>  printers = printerService.load();
+        List<SelectItem> menu = new ArrayList<SelectItem>();
+        List<Printer> printers = printerService.load();
         for (Printer p : printers) {
-            if ((this.printerQueue == null) 
+            if ((this.printerQueue == null)
                     && p.getQueue().equals(getPreferredQueue().getValue())) {
                 this.printerQueue = p.getQueue();
             }
@@ -265,7 +264,6 @@ public class PrintBean implements Serializable {
         if ((this.printerQueue == null) && (printers.size() > 0)) {
             this.printerQueue = printers.get(0).getQueue();
         }
-
         return menu;
     }
 
@@ -282,7 +280,7 @@ public class PrintBean implements Serializable {
             double y = parseDimension(obj, "y");
             double w = parseDimension(obj, "w");
             double h = parseDimension(obj, "h");
-        
+
             String data = "";
             JsonElement field = obj.get("field");
             if (field != null) {
@@ -315,26 +313,26 @@ public class PrintBean implements Serializable {
                 JsonObject obj = e.getAsJsonObject();
                 String type = parseString(obj, "type");
                 if (type != null) {
-                    switch (type) { 
-                        case "LABEL" :
+                    switch (type) {
+                        case "LABEL":
                             parseLabel(obj, driver);
                             break;
-                        case "INTERLEAVE25" :
+                        case "INTERLEAVE25":
                             parseBarcode(obj, driver, BarcodeType.INTERLEAVE25);
                             break;
-                        case "CODE39" :
+                        case "CODE39":
                             parseBarcode(obj, driver, BarcodeType.CODE39);
                             break;
-                        case "CODE128" :
+                        case "CODE128":
                             parseBarcode(obj, driver, BarcodeType.CODE128);
                             break;
-                        case "QR" :
+                        case "QR":
                             parseBarcode(obj, driver, BarcodeType.QR);
                             break;
-                        case "DATAMATRIX" :
+                        case "DATAMATRIX":
                             parseBarcode(obj, driver, BarcodeType.DATAMATRIX);
                             break;
-                        case "PICTURE" :
+                        case "PICTURE":
                             parsePicture(obj, driver);
                             break;
                     }
@@ -363,15 +361,15 @@ public class PrintBean implements Serializable {
         String style = parseString(obj, "style");
         if (style != null) {
             switch (style) {
-                case "PLAIN" :
+                case "PLAIN":
                     return AbstractPrintDriver.PLAIN;
-                case "BOLD" :
+                case "BOLD":
                     return AbstractPrintDriver.BOLD;
-                case "ITALIC" :
+                case "ITALIC":
                     return AbstractPrintDriver.ITALIC;
-                case "BOLD_ITALIC" :
+                case "BOLD_ITALIC":
                     return AbstractPrintDriver.BOLD
-                        + AbstractPrintDriver.ITALIC;
+                            + AbstractPrintDriver.ITALIC;
             }
         }
         return driver.getDefaultFontStyle();
@@ -390,7 +388,7 @@ public class PrintBean implements Serializable {
             JsonElement field = obj.get("field");
             if (field != null) {
                 data = readLabelData(field, String.class);
-            } else { 
+            } else {
                 data = parseString(obj, "data");
             }
 
@@ -403,28 +401,28 @@ public class PrintBean implements Serializable {
     }
 
     /**
-     * parse the label configuration and consecutively print the label
-     * using the given driver
+     * parse the label configuration and consecutively print the label using the
+     * given driver
      */
     private void parseLabelConfig(PrintDriver driver) {
         Label label = this.labelService.loadById(this.labelId);
         JsonElement jsonTree = JsonParser.parseString(label.getConfig());
 
-        if(jsonTree.isJsonObject()) {
+        if (jsonTree.isJsonObject()) {
             JsonElement formElement = jsonTree.getAsJsonObject().get("form");
             if ((formElement != null) && formElement.isJsonObject()) {
                 JsonObject form = formElement.getAsJsonObject();
                 try {
                     double w = parseDimension(form, "w");
                     driver.setDefault("width", Double.toString(w));
-                } catch(NoSuchFieldException ex) {
+                } catch (NoSuchFieldException ex) {
                     // ignore, use driver default
                 }
 
                 try {
                     double h = parseDimension(form, "h");
                     driver.setDefault("height", Double.toString(h));
-                } catch(NoSuchFieldException ex) {
+                } catch (NoSuchFieldException ex) {
                     // ignore, use driver default
                 }
                 JsonElement e = form.get("elements");
@@ -450,7 +448,7 @@ public class PrintBean implements Serializable {
             }
 
             if (raster != null) {
-                driver.printPicture(x, y, raster); 
+                driver.printPicture(x, y, raster);
             }
         } catch (NoSuchFieldException e) {
             this.logger.warn("parsePicture() label config did not contain dimension");
@@ -477,7 +475,7 @@ public class PrintBean implements Serializable {
             if ((data != null) && (data.length > 0) && (w > 0) && (h > 0)) {
                 BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_BINARY);
                 WritableRaster raster = img.getRaster();
-                raster.setDataElements(0, 0, w, h, data); 
+                raster.setDataElements(0, 0, w, h, data);
                 return raster;
             }
         }
@@ -507,7 +505,7 @@ public class PrintBean implements Serializable {
         if (elem.isJsonObject()) {
             name = parseString(elem.getAsJsonObject(), "name");
             param = parseString(elem.getAsJsonObject(), "param");
-        } 
+        }
         if (elem.isJsonPrimitive()) {
             name = elem.getAsJsonPrimitive().getAsString();
         }
@@ -517,30 +515,30 @@ public class PrintBean implements Serializable {
         }
 
         Method[] methods = this.labelDataObject.getClass().getMethods();
-        for( Method m : methods ) {
-            if( m.isAnnotationPresent( LabelData.class ) ) {
+        for (Method m : methods) {
+            if (m.isAnnotationPresent(LabelData.class)) {
                 try {
-                    LabelData annotation = m.getAnnotation( LabelData.class );
+                    LabelData annotation = m.getAnnotation(LabelData.class);
                     if (name.equals(annotation.name())) {
                         if (param == null) {
                             return (T) m.invoke(this.labelDataObject);
-                        } 
+                        }
                         return (T) m.invoke(this.labelDataObject, param);
                     }
-                } catch(IllegalAccessException noAccess) {
-                    this.logger.warn("readLabelData() method {} not accessible on class {}", 
-                            m.getName(), 
+                } catch (IllegalAccessException noAccess) {
+                    this.logger.warn("readLabelData() method {} not accessible on class {}",
+                            m.getName(),
                             this.labelDataObject.getClass().getName());
-                } catch(IllegalArgumentException illegalArgument) {
+                } catch (IllegalArgumentException illegalArgument) {
                     this.logger.warn("readLabelData() argument error for method {} in class {}",
-                            m.getName(), 
+                            m.getName(),
                             this.labelDataObject.getClass().getName());
-                } catch(InvocationTargetException invokationError) {
-                    this.logger.warn("readLabelData() caught exception from target method", 
+                } catch (InvocationTargetException invokationError) {
+                    this.logger.warn("readLabelData() caught exception from target method",
                             (Throwable) invokationError);
-                } catch(NullPointerException npError) {
-                    this.logger.warn("readLabelData() null pointer", (Throwable) npError); 
-                } catch(ExceptionInInitializerError iniError) {
+                } catch (NullPointerException npError) {
+                    this.logger.warn("readLabelData() null pointer", (Throwable) npError);
+                } catch (ExceptionInInitializerError iniError) {
                     this.logger.warn("readLabelData() exception in initialization", (Throwable) iniError);
                 }
             }
@@ -557,7 +555,7 @@ public class PrintBean implements Serializable {
     }
 
     /**
-     * set the currently selected label 
+     * set the currently selected label
      */
     public void setLabelId(Integer labelId) {
         this.logger.info("setLabelId() {}", labelId);
@@ -585,6 +583,6 @@ public class PrintBean implements Serializable {
     private void submitJob(PrintDriver driver) {
         Job job = driver.createJob();
         job.setOwner(userBean.getCurrentAccount());
-        this.jobService.save(job); 
+        this.jobService.save(job);
     }
 }
