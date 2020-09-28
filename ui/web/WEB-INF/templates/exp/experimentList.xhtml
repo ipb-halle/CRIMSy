@@ -30,10 +30,22 @@
 
         <ui:repeat value="#{experimentBean.experiments}" var="experiment">
             <div title="#{experiment.description}" 
-                class="#{experiment.experimentId eq experimentBean.getExperiment().experimentId ? 'expSelectedEntry' : 'expNormalEntry'}" >
+                 class="#{experiment.experimentId eq experimentBean.getExperiment().experimentId ? 'expSelectedEntry' : 'expNormalEntry'}" >
                 <p:commandLink action="#{experimentBean.actionToggleExperiment(experiment)}" ajax="false">
-                        <span class="fa fa-search" > #{experiment.code}</span>
-                </p:commandLink><br/>
+                    <span class="fa fa-search" > #{experiment.code}</span>
+                </p:commandLink>
+                <b:commandButton style="padding: 0 4px;"
+                                 icon="glyphicon glyphicon-user"
+                                 look="link"
+                                 ajax="true"
+                                 process="@this"
+                                 tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                 update="@(.acoEditModal)"
+                                 type="button"
+                                 onclick="ajax:experimentBean.actionStartAclChange(experiment)"
+                                 oncomplete="PF('dlgAcl').show();"
+                                 disabled="false"/>
+                <br/>
             </div>
         </ui:repeat>
     </ui:composition>

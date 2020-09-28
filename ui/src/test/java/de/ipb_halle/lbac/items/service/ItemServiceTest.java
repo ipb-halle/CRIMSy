@@ -175,7 +175,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertNotNull("Testcase 001: Parent container must be not null", loadedItem.getContainer());
         Assert.assertEquals("Testcase 001: containersize must be 100", 100d, loadedItem.getContainerSize(), 0);
         Assert.assertEquals("Testcase 001: Description must be 'description'", "description", loadedItem.getDescription());
-        Assert.assertEquals("Testcase 001: Material id must be 1", 1, loadedItem.getMaterial().getId());
+        Assert.assertEquals("Testcase 001: Material id must be 1", 1, (int)loadedItem.getMaterial().getId());
         Assert.assertEquals("Testcase 001: Owner-id must be " + ownerid, owner.getId(), loadedItem.getOwner().getId());
         Assert.assertEquals("Testcase 001: Project-id must be " + project.getId(), project.getId(), loadedItem.getProject().getId());
         Assert.assertEquals("Testcase 001: Purity must be 'rein'", "rein", loadedItem.getPurity());

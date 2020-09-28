@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
@@ -245,7 +246,7 @@ public class ForumBean implements Serializable {
     private void restoreActiveTopicFromId(Integer id) {
         if (id != null) {
             for (Topic t : searchState.getReadableTopics()) {
-                if (t.getId().equals(id)) {
+                if (Objects.equals(t.getId(), id)) {
                     activeTopic = t;
                 }
             }

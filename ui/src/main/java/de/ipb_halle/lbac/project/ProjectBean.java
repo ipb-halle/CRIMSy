@@ -101,7 +101,7 @@ public class ProjectBean implements Serializable, ACObjectBean {
     }
 
     @Override
-    public void applyAclChanges(int acobjectid, ACList newAcList) {
+    public void applyAclChanges() {
         projectService.saveEditedProjectToDb(projectInFocus);
         reloadReadableProjects();
     }

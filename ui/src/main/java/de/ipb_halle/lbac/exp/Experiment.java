@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
 
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public class Experiment implements DTO {
+public class Experiment extends ACObject implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -110,7 +111,7 @@ public class Experiment implements DTO {
         this.template = e.getTemplate();
         this.acList = acList;
         this.owner = owner;
-        this.creationTime=e.getCtime();
+        this.creationTime = e.getCtime();
     }
 
     @Override
@@ -125,6 +126,7 @@ public class Experiment implements DTO {
                 .setOwnerId(this.owner.getId());
     }
 
+    @Override
     public ACList getACList() {
         return acList;
     }
@@ -149,12 +151,15 @@ public class Experiment implements DTO {
         return this.experimentid;
     }
 
+    @Override
     public User getOwner() {
         return owner;
     }
 
-    public void setACList(ACList acList) {
+    @Override
+    public ACObject setACList(ACList acList) {
         this.acList = acList;
+        return this;
     }
 
     public void setCode(String code) {
@@ -169,8 +174,10 @@ public class Experiment implements DTO {
         this.experimentid = experimentid;
     }
 
-    public void setOwner(User owner) {
+    @Override
+    public ACObject setOwner(User owner) {
         this.owner = owner;
+        return this;
     }
 
     public void setDescription(String description) {
@@ -180,4 +187,9 @@ public class Experiment implements DTO {
     public void setTemplate(boolean template) {
         this.template = template;
     }
+
+    public Integer getId() {
+        return experimentid;
+    }
+
 }

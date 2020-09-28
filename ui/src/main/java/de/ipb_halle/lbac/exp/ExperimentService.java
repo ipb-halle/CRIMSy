@@ -23,6 +23,7 @@ package de.ipb_halle.lbac.exp;
  * The current implementation is rather a mock implementation as many important
  * aspects (permissions, history, filtering, ...) are missing.
  */
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
 
@@ -38,9 +39,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -48,11 +46,11 @@ import org.apache.logging.log4j.LogManager;
 // import javax.persistence.Persistence;
 @Stateless
 public class ExperimentService implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     public final static String TEMPLATE_FLAG = "TEMPLATE_FLAG";
-
+    
     private final static String SQL_LOAD = "SELECT "
             + "e.experimentid, "
             + "e.code, "
@@ -64,22 +62,27 @@ public class ExperimentService implements Serializable {
             + "FROM experiments AS e "
             + "WHERE (e.template = :TEMPLATE_FLAG OR :TEMPLATE_FLAG IS NULL) "
             + "ORDER BY e.code";
-
+    
+    private final static String SQL_UPDATE_ACL
+            = "UPDATE experiments "
+            + "SET aclist_id=:aclist_id "
+            + "WHERE experimentid=:exp_id";
+    
     @Inject
     private ACListService aclistService;
-
+    
     @Inject
     private MemberService memberService;
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
+    
     private Logger logger;
-
+    
     public ExperimentService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
-
+    
     @PostConstruct
     public void ExperimentServiceInit() {
         if (em == null) {
@@ -97,7 +100,7 @@ public class ExperimentService implements Serializable {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
-
+        
         return q.setParameter(TEMPLATE_FLAG, cmap.getOrDefault(TEMPLATE_FLAG, null));
     }
 
@@ -138,6 +141,22 @@ public class ExperimentService implements Serializable {
         return new Experiment(
                 entity, aclistService.loadById(entity.getACListId()),
                 memberService.loadUserById(entity.getOwnerId()));
+    }
+    
+    public void updateExperimentAcl(int experimentid, ACList newAcList) {
+        try {
+            // TO DO: save History 
+            ACList acl = aclistService.save(newAcList);
+            logger.info("new aclist id " + acl.getId());
+            logger.info("exp id " +experimentid);
+            this.em.createNativeQuery(SQL_UPDATE_ACL)
+                    .setParameter("aclist_id", acl.getId())
+                    .setParameter("exp_id", experimentid)
+                    .executeUpdate();
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        
     }
 
     /**

@@ -174,7 +174,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     }
 
     @Override
-    public void applyAclChanges(int acobjectid, ACList newAcList) {
+    public void applyAclChanges() {
         materialService.updateMaterialAcList(materialInFocus);
         searchController.actionStartMaterialSearch();
         materialInFocus = null;

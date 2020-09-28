@@ -18,11 +18,16 @@
 package de.ipb_halle.lbac.exp;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
+import de.ipb_halle.lbac.globals.ACObjectController;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,10 +51,10 @@ import org.primefaces.model.chart.BarChartModel;
  */
 @SessionScoped
 @Named
-public class ExperimentBean implements Serializable {
+public class ExperimentBean implements Serializable, ACObjectBean {
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
+    protected ACObjectController acoController;
     /* access set to 'protected' to facilitate mocking during unit tests */
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
@@ -66,6 +71,9 @@ public class ExperimentBean implements Serializable {
     @Inject
     protected MaterialAgent materialAgent;
 
+    @Inject
+    protected MemberService memberService;
+
     private Experiment experiment;
 
     private List<ExpRecord> expRecords;
@@ -81,6 +89,7 @@ public class ExperimentBean implements Serializable {
     private int expRecordIndex;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private Experiment experimentInFocus;
 
     @PostConstruct
     protected void experimentBeanInit() {
@@ -103,6 +112,7 @@ public class ExperimentBean implements Serializable {
 
     /**
      * insert a record
+     *
      * @param index insert position - 1 (i.e. index of the preceding record)
      */
     public void actionAppendRecord(int index) {
@@ -122,18 +132,18 @@ public class ExperimentBean implements Serializable {
                 return;
             }
 
-            switch(this.expRecords.size() - index) {
+            switch (this.expRecords.size() - index) {
                 case 0:
-                        // NullRecord at end of ExpRecord list
-                        break;
+                    // NullRecord at end of ExpRecord list
+                    break;
                 case 1:
-                        // last real record in ExpRecord list
-                        index++;
-                        break;
+                    // last real record in ExpRecord list
+                    index++;
+                    break;
                 default:
-                        // start or middle of the list; link to the following record
-                        index++;
-                        record.setNext(this.expRecords.get(index).getExpRecordId());
+                    // start or middle of the list; link to the following record
+                    index++;
+                    record.setNext(this.expRecords.get(index).getExpRecordId());
             }
 
             // remember index (initially id is null)
@@ -217,23 +227,24 @@ public class ExperimentBean implements Serializable {
     }
 
     /**
-     * rearranges a record record in the list. Needs to update links 
-     * and to reIndex all records
+     * rearranges a record record in the list. Needs to update links and to
+     * reIndex all records
+     *
      * @param delta number of positions to move the record up or down
      */
     public void actionRearrangeRecord(int delta) {
         ExpRecord other;
         int size = this.expRecords.size();
         int newPosition = this.expRecordIndex + delta;
-        if ((this.expRecordIndex > -1) 
+        if ((this.expRecordIndex > -1)
                 && (this.expRecordIndex < size)
-                && (newPosition > -1) 
+                && (newPosition > -1)
                 && (newPosition < size)) {
 
             ExpRecord record = this.expRecords.remove(this.expRecordIndex);
-            List<ExpRecord> saveList = new ArrayList<> ();
+            List<ExpRecord> saveList = new ArrayList<>();
 
-            if ((this.expRecordIndex == (size - 1)) 
+            if ((this.expRecordIndex == (size - 1))
                     && (size > 1)) {
                 // set next field to null for new last record 
                 other = this.expRecords.get(this.expRecordIndex - 1);
@@ -247,7 +258,7 @@ public class ExperimentBean implements Serializable {
                     saveList.add(other);
                 }
             }
-            if (newPosition == (size - 1)) { 
+            if (newPosition == (size - 1)) {
                 record.setNext(null);
             } else {
                 if (newPosition > 0) {
@@ -260,7 +271,7 @@ public class ExperimentBean implements Serializable {
             }
 
             // save affected records
-            for(ExpRecord rec : saveList) {
+            for (ExpRecord rec : saveList) {
                 this.expRecordService.saveOnly(rec);
             }
             record = this.expRecordService.save(record);
@@ -379,24 +390,24 @@ public class ExperimentBean implements Serializable {
     }
 
     /**
-     * @return the current list of ExpRecords 
+     * @return the current list of ExpRecords
      */
     public List<ExpRecord> getExpRecords() {
         return this.expRecords;
     }
 
     /**
-     * @return if <code>expRecords</code> is not empty, returns a copy 
-     * of the list of <code>expRecords</code> with an added 
-     * NullRecord. The NullRecord allows to append records to an empty 
-     * list and is also a graphical termination of a non-empty list of ExpRecords.
+     * @return if <code>expRecords</code> is not empty, returns a copy of the
+     * list of <code>expRecords</code> with an added NullRecord. The NullRecord
+     * allows to append records to an empty list and is also a graphical
+     * termination of a non-empty list of ExpRecords.
      */
     public List<ExpRecord> getExpRecordsWithNullRecord() {
         if (this.experiment.getExperimentId() != null) {
-            List<ExpRecord> list = new ArrayList<ExpRecord> (this.expRecords);
+            List<ExpRecord> list = new ArrayList<ExpRecord>(this.expRecords);
             list.add(new NullRecord().setIndex(list.size()));
             return list;
-        } 
+        }
         // should be an empty list
         return this.expRecords;
     }
@@ -465,7 +476,7 @@ public class ExperimentBean implements Serializable {
             i++;
         }
         if (i > 0) {
-            this.expRecords.get(i-1).setLast(true);
+            this.expRecords.get(i - 1).setLast(true);
         }
     }
 
@@ -498,5 +509,33 @@ public class ExperimentBean implements Serializable {
 
     public void setTemplateMode(boolean templateMode) {
         this.templateMode = templateMode;
+    }
+
+    @Override
+    public void applyAclChanges() {
+        experimentService.updateExperimentAcl(
+                experimentInFocus.getId(),
+                experimentInFocus.getACList());
+    }
+
+    @Override
+    public void cancelAclChanges() {
+
+    }
+
+    @Override
+    public void actionStartAclChange(ACObject aco) {
+        experimentInFocus = (Experiment) aco;
+        acoController = new ACObjectController(
+                aco,
+                memberService.loadGroups(new HashMap<>()),
+                this,
+                ((Experiment) aco).getCode());
+
+    }
+
+    @Override
+    public ACObjectController getAcObjectController() {
+        return acoController;
     }
 }

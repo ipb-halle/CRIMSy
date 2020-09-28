@@ -36,8 +36,6 @@ import org.primefaces.event.CloseEvent;
  * @author fmauz
  */
 public class ACObjectController {
-
-    private ACList acList;
     private final String MESG_KEY_TITLE = "aclEdit_modal_title";
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Logger logger = LogManager.getLogger(ACObjectController.class);
@@ -104,7 +102,7 @@ public class ACObjectController {
     }
 
     public void actionApplyChanges() {
-        bean.applyAclChanges(0, acList);
+        bean.applyAclChanges();
     }
 
     public void actionCancelChanges() {
@@ -144,5 +142,4 @@ public class ACObjectController {
         }
         return newAcl;
     }
-
 }

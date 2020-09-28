@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.forum;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.admission.ACObject;
-import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;

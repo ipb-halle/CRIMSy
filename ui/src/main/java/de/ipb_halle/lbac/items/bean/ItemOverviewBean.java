@@ -226,7 +226,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
     
     @Override
-    public void applyAclChanges(int acobjectid, ACList newAcList) {
+    public void applyAclChanges() {
         itemService.saveItem(itemInFocus);
         ItemHistory h = new ItemHistory();
         h.setAction("EDIT");

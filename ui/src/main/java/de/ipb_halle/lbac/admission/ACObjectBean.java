@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.globals.ACObjectController;
  */
 public interface ACObjectBean {
 
-    public void applyAclChanges(int acobjectid, ACList newAcList);
+    public void applyAclChanges();
 
     public void cancelAclChanges();
 

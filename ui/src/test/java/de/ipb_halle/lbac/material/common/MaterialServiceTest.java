@@ -139,7 +139,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertNotNull("Creation Date of material must be set", material[1]);
         Assert.assertEquals("ID of general rights not expected one", idOfMatGeneralRights.toString(), material[2]);
         Assert.assertEquals("ID of owner not expected one", ownerId, material[3]);
-        Assert.assertEquals("ID of project not expected one", p.getId(), (int) material[4]);
+        Assert.assertEquals("ID of project not expected one", (int)p.getId(), (int) material[4]);
 
         //Checking the structure  table entry
         List structures = entityManagerService.doSqlQuery("select sumformula,molarmass,exactmolarmass,moleculeid from structures");

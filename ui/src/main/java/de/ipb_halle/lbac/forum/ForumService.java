@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -243,7 +244,7 @@ public class ForumService implements Serializable {
         ListIterator<Topic> li = oldTopics.listIterator();
         while (li.hasNext()) {
             Topic tmp = li.next();
-            if (tmp.getId().equals(newTopic.getId())) {
+            if (Objects.equals(tmp.getId(), newTopic.getId())) {
                 li.set(newTopic); // replace the last element returned by next()
                 isNew = false;
             }

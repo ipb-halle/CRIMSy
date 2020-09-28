@@ -27,11 +27,18 @@
     <h:body>
 
         <!-- plugin modules -->
-        <crimsy:dlgMaterialEdit id="ccDlgMaterialEdit" 
-                agent="#{experimentBean.materialAgent}" />
+        <crimsy:dlgMaterialEdit
+            id="ccDlgMaterialEdit" 
+            agent="#{experimentBean.materialAgent}" />
 
-        <crimsy:dlgItemEdit id="ccDlgItemEdit"
+        <crimsy:dlgItemEdit
+            id="ccDlgItemEdit"
             agent="#{experimentBean.itemAgent}" />
+
+        <crimsy:acobjectModal
+            acobjectController="#{experimentBean.acObjectController}"
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="shownExperiments"/>
 
         <ui:insert name="barChartPanel">
             <ui:include src="dlgBarChart.xhtml" >
@@ -40,7 +47,10 @@
         </ui:insert>
 
         <!-- content -->
-        <b:panel id="experiments" title="#{msgs.expExperiments}">
+        <b:panel
+            id="experiments"
+            title="#{msgs.expExperiments}"
+            styleClass="shownExperiments">
             <p:outputPanel deferred="false">
                 <b:row>
 

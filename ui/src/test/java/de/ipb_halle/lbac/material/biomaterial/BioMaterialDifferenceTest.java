@@ -116,7 +116,7 @@ public class BioMaterialDifferenceTest {
         bioDiff.initialise(biomaterial_original.getId(), user.getId(), mDate);
 
         Assert.assertEquals(user.getId(), bioDiff.getActorId());
-        Assert.assertEquals(biomaterial_original.getId(), bioDiff.getMaterialId());
+        Assert.assertEquals((int)biomaterial_original.getId(),(int) bioDiff.getMaterialId());
         Assert.assertEquals(mDate, bioDiff.getModificationDate());
 
     }
