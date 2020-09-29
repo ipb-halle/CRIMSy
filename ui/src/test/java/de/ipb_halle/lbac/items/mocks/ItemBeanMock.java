@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.service.NodeService;
 
 /**
  *
@@ -64,4 +65,5 @@ public class ItemBeanMock extends ItemBean {
     public void setUserBean(UserBean u) {
         this.userBean = u;
     }
+
 }

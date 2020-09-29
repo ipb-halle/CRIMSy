@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +41,7 @@ import java.util.TreeMap;
  * @author fmauz
  */
 @LabelType(name = "Item")
-public class Item extends ACObject implements DTO, Serializable {
+public class Item extends ACObject implements DTO, Serializable,Searchable {
 
     private Integer id;
     private Double amount;

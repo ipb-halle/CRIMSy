@@ -104,6 +104,7 @@ public class ItemBeanTest extends TestBase {
                 .setMemberService(memberService)
                 .setNavigator(new NavigatorMock(userBean))
                 .setProjectService(projectService)
+                .setNodeService(nodeService)
                 .setUser(user);
 
         itemBean.setItemService(itemService);

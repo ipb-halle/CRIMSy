@@ -26,11 +26,14 @@ import java.util.List;
  */
 public interface SearchResult {
 
-    public List<Searchable> getAllFoundObjects();
+    public List<NetObject> getAllFoundObjects();
+
     public List<Searchable> getAllFoundObjects(Node n);
 
-    public <T> List<T > getAllFoundObjects(Class T); //T nur Searchable
-    public <T> List<T > getAllFoundObjects(Class T,Node n); //T nur Searchable
-    
-    
+    public <T> List<NetObject> getAllFoundObjects(Class T); //T nur Searchable
+
+    public <T> List<T> getAllFoundObjects(Class T, Node n); //T nur Searchable
+
+    public void addResults(Node n, List<Searchable> foundObjects);
+
 }

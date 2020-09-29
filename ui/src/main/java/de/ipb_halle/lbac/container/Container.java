@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Container implements DTO, Serializable {
+public class Container implements DTO, Serializable,Searchable {
 
     public enum DimensionType {
         NONE,

@@ -106,6 +106,7 @@ public class ItemOverviewBeanTest extends TestBase {
                 .setProjectService(projectService)
                 .setMemberService(memberService)
                 .setContainerService(containerService)
+                .setNodeService(nodeService)
                 .setUser(user);
 
         itemBean.setItemService(itemService);
@@ -254,7 +255,7 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertTrue(loadedItem.getACList().getACEntries().isEmpty());
         ItemHistory history = (ItemHistory) loadedItem.getHistory().get(loadedItem.getHistory().firstKey()).get(0);
         Assert.assertEquals(aclist.getId(), history.getAcListOld().getId());
-        
+
         itemOverviewBean.cancelAclChanges();
     }
 
@@ -288,7 +289,7 @@ public class ItemOverviewBeanTest extends TestBase {
 
         materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser", "water");
         materialid_2 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasserstoff");
-        
+
         Project p1 = creationTools.createProject("Project_X");
         Project p2 = creationTools.createProject("Project_XY");
         Project p3 = creationTools.createProject("Project_Z");

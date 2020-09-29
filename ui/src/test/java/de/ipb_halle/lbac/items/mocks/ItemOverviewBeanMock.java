@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.service.NodeService;
 
 /**
  *
@@ -75,6 +76,11 @@ public class ItemOverviewBeanMock extends ItemOverviewBean {
 
     public ItemOverviewBeanMock setUser(User user) {
         this.currentUser = user;
+        return this;
+    }
+
+    public ItemOverviewBeanMock setNodeService(NodeService nodeService) {
+        this.nodeService = nodeService;
         return this;
     }
 

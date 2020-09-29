@@ -39,8 +39,12 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.service.NodeService;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -66,31 +70,34 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class ItemService {
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
+    
     @Inject
     private ArticleService articleService;
-
+    
     @Inject
     private ContainerService containerService;
-
+    
     @Inject
     private ContainerPositionService containerPositionService;
-
+    
     @Inject
     private MaterialService materialService;
-
+    
     @Inject
     private MemberService memberService;
-
+    
     @Inject
     private ProjectService projectService;
-
+    
     @Inject
     private ACListService aclistService;
-
+    
+    @Inject    
+    private NodeService nodeService;
+    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private final String SQL_LOAD_ITEMS = "Select DISTINCT i.id,"
             + "i.materialid,"
@@ -126,7 +133,7 @@ public class ItemService {
             + "AND (i.description ILIKE(:DESCRIPTION) OR :DESCRIPTION='no_description_filter') "
             + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
             + "ORDER BY i.id";
-
+    
     private final String SQL_LOAD_ITEMS_AMOUNT = "Select COUNT(DISTINCT(i.id)) "
             + "FROM items i "
             + "JOIN material_indices mi ON mi.materialid=i.materialid "
@@ -154,15 +161,16 @@ public class ItemService {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public List<Item> loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
-        List<Item> result = new ArrayList<>();
-
+    public SearchResult loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
+        
+        SearchResult result = new SearchResultImpl();
+        
         Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS, "i.aclist_id", "i.owner", ACPermission.permREAD), cmap, ItemEntity.class);
         q.setParameter("userid", u.getId());
         q.setFirstResult(firstResult);
         q.setMaxResults(maxResults);
         List<ItemEntity> entities = q.getResultList();
-
+        
         for (ItemEntity entity : entities) {
             Item i = new Item(entity,
                     entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
@@ -175,18 +183,19 @@ public class ItemService {
                     aclistService.loadById(entity.getAclist_id())
             );
             i.setHistory(loadHistoryOfItem(i));
-            result.add(i);
+            
+            result.addResults(nodeService.getLocalNode(), Arrays.asList(i));
         }
         return result;
     }
-
+    
     public int getItemAmount(User u, Map<String, String> cmap) {
         Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS_AMOUNT, "i.aclist_id", "i.owner", ACPermission.permREAD), cmap, null);
         q.setParameter("userid", u.getId());
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();
     }
-
+    
     private Query createItemQuery(String rawSql, Map<String, String> cmap, Class targetClass) {
         Query q;
         if (targetClass == null) {
@@ -194,7 +203,7 @@ public class ItemService {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
-
+        
         return q
                 .setParameter("DESCRIPTION", cmap.getOrDefault("DESCRIPTION", "no_description_filter"))
                 .setParameter("MATERIAL_NAME", cmap.getOrDefault("MATERIAL_NAME", "no_name_filter"))
@@ -203,7 +212,7 @@ public class ItemService {
                 .setParameter("LOCATION_NAME", cmap.getOrDefault("LOCATION_NAME", "no_location_filter"))
                 .setParameter("ITEM_ID", cmap.containsKey("ITEM_ID") ? Integer.parseInt(cmap.get("ITEM_ID")) : -1);
     }
-
+    
     public Item loadItemById(int id) {
         ItemEntity entity = this.em.find(ItemEntity.class, id);
         Item item = new Item(entity,
@@ -218,7 +227,7 @@ public class ItemService {
         item.setHistory(loadHistoryOfItem(item));
         return item;
     }
-
+    
     public Item loadItemByIdWithoutContainer(int id) {
         ItemEntity entity = this.em.find(ItemEntity.class, id);
         return new Item(entity,
@@ -255,12 +264,10 @@ public class ItemService {
         return item;
     }
     
-   
-
     public Item saveEditedItem(Item editedItem, Item origItem, User user) {
         return saveEditedItem(editedItem, origItem, user, new HashSet<>());
     }
-
+    
     public Item saveEditedItem(Item editedItem, Item origItem, User user, Set<int[]> newPositions) {
         Date mdate = new Date();
         ItemComparator comparator = new ItemComparator(mdate);
@@ -269,18 +276,18 @@ public class ItemService {
             saveItem(editedItem);
             saveItemHistory(history);
         }
-
+        
         containerPositionService.moveItemToNewPosition(origItem, editedItem.getContainer(), newPositions, user, mdate);
         if (editedItem.getContainer() != null) {
             editedItem.setContainer(containerService.loadContainerById(editedItem.getContainer().getId()));
         }
         return editedItem;
     }
-
+    
     public void saveItemHistory(ItemHistory history) {
         this.em.merge(history.createEntity());
     }
-
+    
     public SortedMap<Date, ItemPositionHistoryList> loadItemPositionHistory(Item item) {
         SortedMap<Date, ItemPositionHistoryList> histories = new TreeMap<>();
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
@@ -298,7 +305,7 @@ public class ItemService {
         }
         return histories;
     }
-
+    
     public SortedMap<Date, List<ItemDifference>> loadHistoryOfItem(Item item) {
         SortedMap<Date, List<ItemDifference>> histories = new TreeMap<>();
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
@@ -340,24 +347,24 @@ public class ItemService {
             diffs.add(history);
             histories.put(history.getMdate(), diffs);
         }
-
+        
         SortedMap<Date, ItemPositionHistoryList> positions = loadItemPositionHistory(item);
-
+        
         for (Date d : positions.keySet()) {
             if (histories.get(d) == null) {
                 histories.put(d, new ArrayList<>());
             }
             histories.get(d).add(positions.get(d));
         }
-
+        
         return histories;
     }
-
+    
     private Container loadParentContainer(Integer containerId) {
         if (containerId != null) {
             return containerService.loadContainerById(containerId);
         }
         return null;
     }
-
+    
 }

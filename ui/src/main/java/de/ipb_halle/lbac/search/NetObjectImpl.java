@@ -23,9 +23,23 @@ import de.ipb_halle.lbac.entity.Node;
  *
  * @author fmauz
  */
-public interface NetObject extends Searchable {
+public class NetObjectImpl implements NetObject {
 
-    public Node getNode();
+    private Searchable searchable;
+    private Node node;
 
-    public Searchable getSearchable();
+    public NetObjectImpl(Searchable searchable, Node node) {
+        this.searchable = searchable;
+        this.node = node;
+    }
+
+    public Searchable getSearchable() {
+        return searchable;
+    }
+
+    @Override
+    public Node getNode() {
+        return node;
+    }
+
 }
