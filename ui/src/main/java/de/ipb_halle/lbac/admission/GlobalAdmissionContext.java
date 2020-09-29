@@ -107,6 +107,11 @@ public class GlobalAdmissionContext implements Serializable {
     @PostConstruct
     private void init() {
         try {
+/*
+            this.logger.info("************ START REPAIR PERMCODES ***************");
+            this.aclistService.repairPermCodes();
+            this.logger.info("************ FINISH REPAIR PERMCODES **************");
+*/
             this.publicNode = createPublicNode(UUID.fromString(PUBLIC_NODE_ID));
             this.publicGroup = createGroup(PUBLIC_GROUP_ID, AdmissionSubSystemType.BUILTIN, this.publicNode, "Public Group");
             createPublicAccount();

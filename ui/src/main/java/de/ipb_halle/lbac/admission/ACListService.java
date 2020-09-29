@@ -218,6 +218,23 @@ public class ACListService implements Serializable {
     }
 
     /**
+     * repair the permission codes of ACLists
+     */
+    public void repairPermCodes() {
+        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        CriteriaQuery<ACListEntity> criteriaQuery = builder.createQuery(ACListEntity.class);
+        Root<ACListEntity> acListRoot = criteriaQuery.from(ACListEntity.class);
+        criteriaQuery.select(acListRoot);
+
+        for(ACListEntity entity: this.em.createQuery(criteriaQuery).getResultList()) {
+            ACList acl = new ACList(entity);
+            acl.setACEntries(loadACEntries(acl));
+            acl.updatePermCode();
+            this.em.merge(acl.createEntity());
+        }
+    }
+
+    /**
      * save a single ACList object
      *
      * @param acl the ACList to save

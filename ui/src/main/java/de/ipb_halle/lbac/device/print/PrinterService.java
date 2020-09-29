@@ -82,7 +82,7 @@ public class PrinterService implements Serializable {
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
         CriteriaQuery<PrinterEntity> criteriaQuery = builder.createQuery(PrinterEntity.class);
         Root<PrinterEntity> printerRoot = criteriaQuery.from(PrinterEntity.class);
-        criteriaQuery.select(printerRoot);
+        criteriaQuery.select(printerRoot).orderBy(builder.asc(printerRoot.get("queue")));
         List<Printer> result = new ArrayList<>();
         for (PrinterEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
             result.add(new Printer(
@@ -122,6 +122,7 @@ public class PrinterService implements Serializable {
      * @return the persisted Printer DTO
      */
     public Printer save(Printer p) {
+        p.setACList(this.aclistService.save(p.getACList()));
         return new Printer(
                 this.em.merge(p.createEntity()),
                 p.getACList(),

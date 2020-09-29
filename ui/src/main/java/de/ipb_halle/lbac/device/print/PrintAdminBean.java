@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.device.job.Job;
 import de.ipb_halle.lbac.device.job.JobService;
+import de.ipb_halle.lbac.navigation.Navigator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,10 +55,12 @@ import org.apache.logging.log4j.LogManager;
 @Named
 public class PrintAdminBean implements ACObjectBean, Serializable {
 
-    private final static String PRINTER_LIST = NavigationConstants.TEMPLATE_FOLDER + "print/printerList.xhtml";
-    private final static String PRINTER_DETAILS = NavigationConstants.TEMPLATE_FOLDER + "print/printerDetails.xhtml";
-    private final static String PRINTER_JOBS = NavigationConstants.TEMPLATE_FOLDER + "print/printerJobs.xhtml";
-    private final static String LABEL_DETAILS = NavigationConstants.TEMPLATE_FOLDER + "print/labelDetails.xhtml";
+    private final static long serialVersionUID = 1L;
+
+    private final static String PRINTER_LIST = "print/printerList";
+    private final static String PRINTER_DETAILS = "print/printerDetails";
+    private final static String PRINTER_JOBS = "print/printerJobs";
+    private final static String LABEL_DETAILS = "print/labelDetails";
 
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
@@ -75,6 +78,9 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
     private MemberService memberService;
 
     @Inject
+    private Navigator navigator;
+
+    @Inject
     private UserBean userBean;
 
     private ACObjectController acObjectController;
@@ -84,6 +90,8 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
     private Label label;
     private Logger logger;
 
+    private List<Label> labels;
+    private List<Printer> printers;
 
     /*
      * default constructor
@@ -95,16 +103,21 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
 
     @PostConstruct
     private void printAdminBeanInit() {
+/*
         this.printer = new Printer(new PrinterEntity(),
                 GlobalAdmissionContext.getPublicReadACL(),
                 globalAdmissionContext.getAdminAccount());
         this.label = new Label(new LabelEntity());
+*/
+        this.printers = printerService.load();
+        this.labels = labelService.load(new HashMap<String, Object> ());
     }
 
 
     public void actionAddLabel() {
         this.label = new Label(new LabelEntity());
         this.currentPage = LABEL_DETAILS;
+        this.navigator.navigate(LABEL_DETAILS);
     }
 
     public void actionAddPrinter() {
@@ -112,20 +125,25 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
                 GlobalAdmissionContext.getPublicReadACL(),
                 globalAdmissionContext.getAdminAccount());
         this.currentPage = PRINTER_DETAILS;
+        this.navigator.navigate(PRINTER_DETAILS);
     }
 
     public void actionClose() {
+        this.printer = null;
         currentPage = PRINTER_LIST;
+        this.navigator.navigate(PRINTER_LIST);
     }
 
     public void actionDelete(Printer printer) {
         this.logger.info("actionDelete(): {}", printer.getQueue());
         printerService.delete(printer);
+        printAdminBeanInit();
     }
 
     public void actionDelete(Label label) {
         this.logger.info("actionDelete(): {}", label.getId());
         labelService.delete(label);
+        printAdminBeanInit();
     }
 
     /**
@@ -141,27 +159,32 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
     public void actionSaveLabel() {
         this.label = labelService.save(this.label);
         // ToDo: xxxxx error handling!!!
+        printAdminBeanInit();
     }
 
     public void actionSavePrinter() {
         this.printer = printerService.save(this.printer);
         // ToDo: xxxxx error handling!!!
+        printAdminBeanInit();
     }
 
     public void actionSelectLabel(Label label) {
         this.label = label;
         currentPage = LABEL_DETAILS;
+        this.navigator.navigate(LABEL_DETAILS);
         // ToDo: xxxxx error handling!!!
     }
 
     public void actionSelectPrinter(Printer printer) {
         this.printer = printer; 
         currentPage = PRINTER_DETAILS;
+        this.navigator.navigate(PRINTER_DETAILS);
         // ToDo: xxxxx error handling!!!
     }
 
     public void actionShowJobs(String queue) {
         currentPage = PRINTER_JOBS;
+        this.navigator.navigate(PRINTER_JOBS);
     }
 
     public void actionStartAclChange(ACObject aco) { 
@@ -226,14 +249,16 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
      * obtain the list of labels
      */
     public List<Label> getLabels() {
-        return labelService.load(new HashMap<String, Object> ());
+        // return labelService.load(new HashMap<String, Object> ());
+        return this.labels;
     }
 
     /**
      * get a list of available Printers
      */
     public List<Printer> getPrinters() {
-        return printerService.load();
+        // return printerService.load();
+        return this.printers;
     }
 
     /**

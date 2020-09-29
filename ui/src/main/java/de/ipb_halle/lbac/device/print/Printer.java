@@ -59,7 +59,7 @@ public class Printer extends ACObject implements DTO {
     @Override
     public PrinterEntity createEntity() {
         return new PrinterEntity()
-            .setACListId(this.getACList().getId())
+            .setACListId(getACList().getId())
             .setConfig(this.config)
             .setContact(this.contact)
             .setDriver(this.driver)
