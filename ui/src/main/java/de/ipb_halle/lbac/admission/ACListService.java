@@ -245,6 +245,7 @@ public class ACListService implements Serializable {
         ACList r = loadExisting(acl);
         if (r == null) {
             ACListEntity entity = acl.createEntity();
+            entity.setId(null);
             entity = this.em.merge(entity);
             acl.setId(entity.getId());
             for (ACEntry ae : acl.getACEntries().values()) {

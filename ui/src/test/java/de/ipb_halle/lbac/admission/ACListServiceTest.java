@@ -36,6 +36,8 @@ import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
+import java.util.ArrayList;
+import java.util.List;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -278,6 +280,62 @@ public class ACListServiceTest extends TestBase {
         assertTrue("testPermissions() OWNER is granted READ permission in ACL 1",
                 this.acListService.isPermitted(ACPermission.permREAD,
                         this.acListService.loadById(this.aclIds[1]), this.acListService.getOwnerAccount()));
+    }
 
+    @Test
+    public void testAclManipulation() {
+        //Change a acl so that it is similar to an existing one
+        List<ACList> aclists = getAllAcLists();
+        ACList acl = getACListbyName(aclists, "No Access ACL");
+        Group g = memberService.loadGroupById(4);
+        acl.addACE(g, ACPermission.values());
+        acListService.save(acl);
+        List<ACList> loadedAclists = getAllAcLists();
+        areBasicFourACListsUnchanged(loadedAclists);
+        Assert.assertEquals(4, loadedAclists.size());
+
+        //Change a acl so is will be another one
+        aclists = getAllAcLists();
+        acl = getACListbyName(aclists, "No Access ACL");
+        g = memberService.loadGroupById(4);
+        acl.addACE(g, new ACPermission[]{ACPermission.permDELETE});
+        acListService.save(acl);
+        loadedAclists = getAllAcLists();
+        areBasicFourACListsUnchanged(loadedAclists);
+        Assert.assertEquals(5, loadedAclists.size());
+    }
+    
+    @Test
+    public void repairPermCodes(){
+        //Corrupt all permcodes
+        entityManagerService.doSqlUpdate("UPDATE aclists SET permcode=0");
+        acListService.repairPermCodes();
+        
+        areBasicFourACListsUnchanged(getAllAcLists());
+    }
+
+    private List<ACList> getAllAcLists() {
+        List<ACList> aclists = new ArrayList<>();
+        List<Integer> o = (List) entityManagerService.doSqlQuery("SELECT id from aclists");
+        for (int i : o) {
+            aclists.add(acListService.loadById(i));
+        }
+        return aclists;
+    }
+
+    private ACList getACListbyName(List<ACList> aclists, String name) {
+        for (ACList acl : aclists) {
+            if (acl.getName().equals(name)) {
+                return acl;
+            }
+        }
+        return null;
+    }
+
+    private void areBasicFourACListsUnchanged(List<ACList> aclist) {
+        Assert.assertEquals(0, aclist.get(0).getPermCode());
+        Assert.assertEquals(131, aclist.get(1).getPermCode());
+        Assert.assertEquals(133, aclist.get(2).getPermCode());
+        Assert.assertEquals(130, aclist.get(3).getPermCode());
     }
 }
