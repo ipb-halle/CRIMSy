@@ -19,10 +19,6 @@ package de.ipb_halle.lbac.util.pref;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.DTO;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
