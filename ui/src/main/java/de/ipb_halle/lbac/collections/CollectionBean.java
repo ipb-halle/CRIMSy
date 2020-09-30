@@ -96,14 +96,37 @@ public class CollectionBean implements Serializable, ACObjectBean {
 
     private int shownCollections = -1;
     private ACObjectController acObjectController;
-
-    @Inject
-    private DocumentSearchBean documentSearchBean;
-
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Inject
-    private MemberService memberService;
+    protected DocumentSearchBean documentSearchBean;
+
+    @Inject
+    protected MemberService memberService;
+
+    @Inject
+    protected CollectionService collectionService;
+
+    @Inject
+    protected NodeService nodeService;
+
+    @Inject
+    protected FileService fileService;
+
+    @Inject
+    protected FileEntityService fileEntityService;
+
+    @Inject
+    protected GlobalAdmissionContext globalAdmissionContext;
+
+    @Inject
+    private CollectionOrchestrator collectionOrchestrator;
+
+    @Inject
+    protected ACListService acListService;
+
+    @Inject
+    protected TermVectorEntityService termVectorEntityService;
 
     @Override
     public void applyAclChanges() {
@@ -133,31 +156,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
         CLEAR // removes all documents from collection
     };
 
-    @Inject
-    private CollectionService collectionService;
-
-    @Inject
-    private NodeService nodeService;
-
-    @Inject
-    private FileService fileService;
-
-    @Inject
-    private FileEntityService fileEntityService;
-
-    @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
-
     private CollectionSearchState collectionSearchState = new CollectionSearchState();
-
-    @Inject
-    private CollectionOrchestrator collectionOrchestrator;
-
-    @Inject
-    private ACListService acListService;
-
-    @Inject
-    private TermVectorEntityService termVectorEntityService;
 
     @PostConstruct
     public void initCollectionBean() {
