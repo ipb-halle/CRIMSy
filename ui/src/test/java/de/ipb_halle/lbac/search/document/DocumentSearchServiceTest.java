@@ -41,13 +41,11 @@ import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
@@ -102,41 +100,28 @@ public class DocumentSearchServiceTest extends TestBase {
         createAndSaveNewCol();
 
         uploadDocument("Document1.pdf");
-        while(!asynContext.isComplete()){
-            Thread.sleep(500);
-        }
         uploadDocument("Document2.pdf");
-        while(!asynContext.isComplete()){
-            Thread.sleep(500);
-        }
         uploadDocument("Document3.pdf");
-        while(!asynContext.isComplete()){
-            Thread.sleep(500);
-        }
+        
         FileSearchRequest request = new FileSearchRequest();
-        request.wordsToSearchFor.addStemmedWord("java",new HashSet<>( Arrays.asList("java")));
+        request.wordsToSearchFor.addStemmedWord("java", new HashSet<>(Arrays.asList("java")));
         request.holder = col;
         Set<Document> documents = documentSearchService.loadDocuments(request, 10);
-       // Assert.assertEquals(2, documents.size());
+        Assert.assertEquals(2, documents.size());
+
+        request = new FileSearchRequest();
+
+        request.holder = col;
+        documents = documentSearchService.loadDocuments(request, 10);
+        Assert.assertEquals(3, documents.size());
+
+        request.holder = col;
+        request.wordsToSearchFor.addStemmedWord("java", new HashSet<>(Arrays.asList("java")));
+        request.wordsToSearchFor.addStemmedWord("failure", new HashSet<>(Arrays.asList("failure")));
+        documents = documentSearchService.loadDocuments(request, 10);
+        Assert.assertEquals(3, documents.size());
     }
-
-    @Test
-    public void test003_createSqlWhereClause() {
-        Map<String, Set<String>> stemmedWords = new HashMap<>();
-
-        Assert.assertEquals("", documentSearchService.createSqlReplaceString(stemmedWords));
-
-        stemmedWords.put("java", new HashSet<>(Arrays.asList("java")));
-        String trimmedString = documentSearchService.createSqlReplaceString(stemmedWords).replace("  ", " ").trim();
-        Assert.assertEquals("AND ( tv.wordroot IN ('java') )", trimmedString);
-
-        stemmedWords.put("hibernate", new HashSet<>(Arrays.asList("hibernate")));
-        trimmedString = documentSearchService.createSqlReplaceString(stemmedWords).replace("  ", " ").trim();
-        boolean p1 = "AND ( tv.wordroot IN ('java') OR tv.wordroot IN ('hibernate') )".equals(trimmedString);
-        boolean p2 = "AND ( tv.wordroot IN ('hibernate') OR tv.wordroot IN ('java') )".equals(trimmedString);
-        Assert.assertTrue(p1 || p2);
-    }
-
+    
     @Test
     public void getTagStringForSeachRequestTest() {
         assertEquals("", documentSearchService.getTagStringForSeachRequest(null));
@@ -171,9 +156,9 @@ public class DocumentSearchServiceTest extends TestBase {
     private void createAndSaveNewCol() {
         col = new Collection();
         col.setACList(GlobalAdmissionContext.getPublicReadACL());
-        col.setDescription("test001_saveDocumentToCollection()");
+        col.setDescription("xxx");
         col.setIndexPath("/");
-        col.setName("test-coll");
+        col.setName("DocumentSearchServiceTest");
         col.setNode(nodeService.getLocalNode());
         col.setOwner(publicUser);
         col.setStoragePath("/");
@@ -181,10 +166,10 @@ public class DocumentSearchServiceTest extends TestBase {
         col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
     }
 
-    private void uploadDocument(String documentName) throws FileNotFoundException {
-        asynContext=new AsyncContextMock(
-                        new File(examplaDocsRootFolder + documentName),
-                        col.getName());
+    private void uploadDocument(String documentName) throws FileNotFoundException, InterruptedException {
+        asynContext = new AsyncContextMock(
+                new File(examplaDocsRootFolder + documentName),
+                col.getName());
         UploadToColMock upload = new UploadToColMock(
                 FilterDefinitionInputStreamFactory.getFilterDefinition(),
                 fileEntityService,
@@ -195,5 +180,8 @@ public class DocumentSearchServiceTest extends TestBase {
                 "target/test-classes/collections");
 
         upload.run();
+        while (!asynContext.isComplete()) {
+            Thread.sleep(500);
+        }
     }
 }

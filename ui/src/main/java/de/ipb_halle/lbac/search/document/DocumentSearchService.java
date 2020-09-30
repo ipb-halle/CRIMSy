@@ -93,7 +93,7 @@ public class DocumentSearchService {
             + "FROM files f "
             + "JOIN termvectors tv ON tv.file_id=f.id "
             + "WHERE f.collection_id=:collectionid "
-            + "#words#";
+            + "AND (:termvectorLength=0 OR tv.wordroot IN (:termvector))";
 
     protected String SQL_LOAD_DOCUMENT_LENGTH
             = "SELECT sum(termfrequency) "
@@ -209,9 +209,11 @@ public class DocumentSearchService {
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
 
         Set<Document> documents = new HashSet<>();
-        String adjustedSql = SQL_LOAD_DOCUMENTS.replace("#words#", createSqlReplaceString(request.wordsToSearchFor.getStemmedWords()));
-        List<FileObjectEntity> results = this.em.createNativeQuery(adjustedSql, FileObjectEntity.class)
+        //String adjustedSql = SQL_LOAD_DOCUMENTS.replace("#words#", createSqlReplaceString(request.wordsToSearchFor.getStemmedWords()));
+        List<FileObjectEntity> results = this.em.createNativeQuery(SQL_LOAD_DOCUMENTS, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
+                .setParameter("termvectorLength", request.wordsToSearchFor.getAllStemmedWords().size())
+                .setParameter("termvector",  request.wordsToSearchFor.getAllStemmedWords())
                 .getResultList();
 
         int count = 0;

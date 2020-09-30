@@ -80,6 +80,64 @@ public class MaterialIndexBeanTest extends TestBase {
         instance.init();
     }
 
+    @Test
+    public void test01_init() throws Exception {
+
+        Assert.assertTrue(
+                "value after initialisation must be empty",
+                instance.getIndexValue().isEmpty());
+
+        Assert.assertEquals(
+                "First Indextype must be of GESTIS/ZVG",
+                "GESTIS/ZVG", instance.getIndexCategories().get(0));
+    }
+
+    @Test
+    public void test02_getIndexCategories() throws Exception {
+        Assert.assertEquals(3,instance.getIndexCategories().size());
+        Assert.assertEquals("GESTIS/ZVG",instance.getIndexCategories().get(0));
+        Assert.assertEquals("CAS/RM",instance.getIndexCategories().get(1));
+        Assert.assertEquals("Carl Roth Sicherheitsdatenblatt",
+                instance.getIndexCategories().get(2)
+        );
+
+    }
+
+    @Test
+    public void test03_addNewIndex() throws Exception {
+        //Add new index
+        instance.setIndexValue("TestValue");
+        instance.setIndexCatergory("GESTIS/ZVG");
+        instance.addNewIndex();
+
+        Assert.assertEquals(1, instance.getIndices().size());
+        Assert.assertEquals(2, instance.getIndices().get(0).getTypeId());
+        Assert.assertEquals("TestValue", instance.getIndices().get(0).getValue());
+        Assert.assertEquals(2, instance.getIndexCategories().size());
+
+        //Change the value of an existing index
+        instance.setIndexCatergory("GESTIS/ZVG");
+        instance.setIndexValue("Changed Value");
+        instance.addNewIndex();
+        Assert.assertEquals(1, instance.getIndices().size());
+        Assert.assertEquals(2, instance.getIndices().get(0).getTypeId());
+        Assert.assertEquals("Changed Value", instance.getIndices().get(0).getValue());
+        Assert.assertEquals(2, instance.getIndexCategories().size());
+
+    }
+
+    @Test
+    public void test04_removeIndex() throws Exception {
+        instance.setIndexValue("TestValue");
+        instance.setIndexCatergory("GESTIS/ZVG");
+        instance.addNewIndex();
+        Assert.assertEquals(1, instance.getIndices().size());
+        Assert.assertEquals(2, instance.getIndexCategories().size());
+        instance.removeIndex(instance.getIndices().get(0));
+        Assert.assertEquals(0, instance.getIndices().size());
+        Assert.assertEquals(3, instance.getIndexCategories().size());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
@@ -122,84 +180,6 @@ public class MaterialIndexBeanTest extends TestBase {
                         .addClass(IndexServiceMock.class);
         deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
-    }
-
-    @Test
-    public void test01_init() throws Exception {
-
-        Assert.assertTrue(
-                "value after initialisation must be empty",
-                instance.getIndexValue().isEmpty());
-
-        Assert.assertEquals(
-                "First Indextype must be of GESTIS/ZVG",
-                "GESTIS/ZVG", instance.getIndexCategories().get(0));
-    }
-
-    @Test
-    public void test02_getIndexCategories() throws Exception {
-        Assert.assertEquals(
-                3,
-                instance.getIndexCategories().size()
-        );
-        Assert.assertEquals(
-                "GESTIS/ZVG",
-                instance.getIndexCategories().get(0)
-        );
-        Assert.assertEquals(
-                "CAS/RM",
-                instance.getIndexCategories().get(1)
-        );
-        Assert.assertEquals(
-                "Carl Roth Sicherheitsdatenblatt",
-                instance.getIndexCategories().get(2)
-        );
-
-    }
-
-    @Test
-    public void test03_addNewIndex() throws Exception {
-        instance.setIndexValue("TestValue");
-        instance.setIndexCatergory("GESTIS/ZVG");
-        instance.addNewIndex();
-
-        Assert.assertEquals(
-                1,
-                instance.getIndices().size()
-        );
-
-        Assert.assertEquals(
-                2, instance.getIndices().get(0).getTypeId());
-        Assert.assertEquals(
-                "TestValue", instance.getIndices().get(0).getValue());
-        Assert.assertEquals(
-                2,
-                instance.getIndexCategories().size()
-        );
-    }
-
-    @Test
-    public void test04_removeIndex() throws Exception {
-        instance.setIndexValue("TestValue");
-        instance.setIndexCatergory("GESTIS/ZVG");
-        instance.addNewIndex();
-        Assert.assertEquals(
-                1,
-                instance.getIndices().size()
-        );
-        Assert.assertEquals(
-                2,
-                instance.getIndexCategories().size()
-        );
-        instance.removeIndex(instance.getIndices().get(0));
-        Assert.assertEquals(
-                0,
-                instance.getIndices().size()
-        );
-        Assert.assertEquals(
-                3,
-                instance.getIndexCategories().size()
-        );
     }
 
 }

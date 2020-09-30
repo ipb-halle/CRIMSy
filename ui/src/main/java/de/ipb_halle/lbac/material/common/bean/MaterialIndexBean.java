@@ -164,8 +164,6 @@ public class MaterialIndexBean implements Serializable {
         ACList aclist = materialEditBean.getMaterialEditState().getMaterialToEdit().getDetailRight(MaterialDetailType.INDEX);
         boolean userHasEditRight = aclist != null && materialEditBean.getAcListService().isPermitted(ACPermission.permEDIT, aclist, materialEditBean.getUserBean().getCurrentAccount());
         boolean userIsOwner = materialEditBean.getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(materialEditBean.getUserBean().getCurrentAccount().getId());
-        logger.info("OWNER "+userIsOwner);
-        logger.info("RIGHTS "+userHasEditRight);
         return !(userIsOwner || userHasEditRight);
 
     }

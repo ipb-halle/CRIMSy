@@ -33,6 +33,7 @@ public class NetObjectImpl implements NetObject {
         this.node = node;
     }
 
+    @Override
     public Searchable getSearchable() {
         return searchable;
     }
