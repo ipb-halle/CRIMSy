@@ -26,12 +26,20 @@ import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 
 /**
  *
  * @author fmauz
  */
 public class MateriaBeanMock extends MaterialBean {
+
+    boolean rightToEdit = true;
+
+    public void setRightToEdit(boolean right) {
+        this.rightToEdit = right;
+    }
 
     public void setMaterialService(MaterialService materialService) {
         this.materialService = materialService;
@@ -64,10 +72,12 @@ public class MateriaBeanMock extends MaterialBean {
 
     @Override
     public void setMaterialIndexBean(MaterialIndexBean materialIndexBean) {
-        
         this.materialIndexBean = materialIndexBean;
     }
 
-    
+    @Override
+    public boolean hasDetailRight(ACPermission what, MaterialDetailType onWhat) {
+        return rightToEdit;
+    }
 
 }

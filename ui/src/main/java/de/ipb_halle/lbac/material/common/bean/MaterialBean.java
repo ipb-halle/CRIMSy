@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACPermission;
@@ -49,6 +50,7 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -524,6 +526,13 @@ public class MaterialBean implements Serializable {
 
     public TaxonomySelectionController getTaxonomyController() {
         return taxonomyController;
+    }
+
+    public boolean hasDetailRight(ACPermission what, MaterialDetailType onWhat) {
+        ACList aclist = getMaterialEditState().getMaterialToEdit().getDetailRight(onWhat);
+        boolean userHasEditRight = aclist != null && getAcListService().isPermitted(what, aclist, getUserBean().getCurrentAccount());
+        boolean userIsOwner = getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(getUserBean().getCurrentAccount().getId());
+        return !(userIsOwner || userHasEditRight);
     }
 
 }

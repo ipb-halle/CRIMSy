@@ -50,8 +50,11 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
+import java.util.Arrays;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -72,11 +75,15 @@ public class MaterialIndexBeanTest extends TestBase {
     @Inject
     private IndexServiceMock indexServiceMock;
     private MaterialIndexBean instance;
+    private MateriaBeanMock materialEditBeanMock;
 
     @Before
     public void init() {
         instance = new MaterialIndexBean();
         instance.setIndexService(indexServiceMock);
+        materialEditBeanMock = new MateriaBeanMock();
+        materialEditBeanMock.setMode(MaterialBean.Mode.EDIT);
+        instance.setMaterialEditBean(materialEditBeanMock);
         instance.init();
     }
 
@@ -94,9 +101,9 @@ public class MaterialIndexBeanTest extends TestBase {
 
     @Test
     public void test02_getIndexCategories() throws Exception {
-        Assert.assertEquals(3,instance.getIndexCategories().size());
-        Assert.assertEquals("GESTIS/ZVG",instance.getIndexCategories().get(0));
-        Assert.assertEquals("CAS/RM",instance.getIndexCategories().get(1));
+        Assert.assertEquals(3, instance.getIndexCategories().size());
+        Assert.assertEquals("GESTIS/ZVG", instance.getIndexCategories().get(0));
+        Assert.assertEquals("CAS/RM", instance.getIndexCategories().get(1));
         Assert.assertEquals("Carl Roth Sicherheitsdatenblatt",
                 instance.getIndexCategories().get(2)
         );
@@ -107,7 +114,9 @@ public class MaterialIndexBeanTest extends TestBase {
     public void test03_addNewIndex() throws Exception {
         //Add new index
         instance.setIndexValue("TestValue");
+        Assert.assertEquals("TestValue", instance.getIndexValue());
         instance.setIndexCatergory("GESTIS/ZVG");
+        Assert.assertEquals("GESTIS/ZVG", instance.getIndexCatergory());
         instance.addNewIndex();
 
         Assert.assertEquals(1, instance.getIndices().size());
@@ -124,6 +133,18 @@ public class MaterialIndexBeanTest extends TestBase {
         Assert.assertEquals("Changed Value", instance.getIndices().get(0).getValue());
         Assert.assertEquals(2, instance.getIndexCategories().size());
 
+        instance.init();
+        instance.setIndices(Arrays.asList(new IndexEntry(2, "setIndex", "de")));
+        Assert.assertEquals(1, instance.getIndices().size());
+        Assert.assertEquals(2, instance.getIndices().get(0).getTypeId());
+        Assert.assertEquals("setIndex", instance.getIndices().get(0).getValue());
+        Assert.assertEquals(2, instance.getIndexCategories().size());
+
+        Assert.assertNull(instance.getIndexName(new IndexEntry(1, "", "")));
+        Assert.assertEquals("GESTIS/ZVG", instance.getIndexName(new IndexEntry(2, "", "")));
+        Assert.assertEquals("CAS/RM", instance.getIndexName(new IndexEntry(3, "", "")));
+        Assert.assertEquals("Carl Roth Sicherheitsdatenblatt", instance.getIndexName(new IndexEntry(4, "", "")));
+
     }
 
     @Test
@@ -136,6 +157,22 @@ public class MaterialIndexBeanTest extends TestBase {
         instance.removeIndex(instance.getIndices().get(0));
         Assert.assertEquals(0, instance.getIndices().size());
         Assert.assertEquals(3, instance.getIndexCategories().size());
+    }
+
+    @Test
+    public void test005_checkIndexEnable() {
+        materialEditBeanMock.setMode(MaterialBean.Mode.EDIT);
+        materialEditBeanMock.setRightToEdit(false);
+        Assert.assertTrue(instance.isIndexEditDisabled());
+
+        materialEditBeanMock.setRightToEdit(true);
+        Assert.assertFalse(instance.isIndexEditDisabled());
+
+        materialEditBeanMock.setMode(MaterialBean.Mode.HISTORY);
+        Assert.assertTrue(instance.isIndexEditDisabled());
+
+        materialEditBeanMock.setMode(MaterialBean.Mode.CREATE);
+        Assert.assertFalse(instance.isIndexEditDisabled());
     }
 
     @Deployment

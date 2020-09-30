@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
@@ -160,12 +159,12 @@ public class MaterialIndexBean implements Serializable {
         if (materialEditBean.getMode() == MaterialBean.Mode.CREATE) {
             return false;
         }
+        return !materialEditBean.hasDetailRight(ACPermission.permEDIT, MaterialDetailType.INDEX);
 
-        ACList aclist = materialEditBean.getMaterialEditState().getMaterialToEdit().getDetailRight(MaterialDetailType.INDEX);
-        boolean userHasEditRight = aclist != null && materialEditBean.getAcListService().isPermitted(ACPermission.permEDIT, aclist, materialEditBean.getUserBean().getCurrentAccount());
-        boolean userIsOwner = materialEditBean.getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(materialEditBean.getUserBean().getCurrentAccount().getId());
-        return !(userIsOwner || userHasEditRight);
+    }
 
+    public void setMaterialEditBean(MaterialBean materialEditBean) {
+        this.materialEditBean = materialEditBean;
     }
 
 }
