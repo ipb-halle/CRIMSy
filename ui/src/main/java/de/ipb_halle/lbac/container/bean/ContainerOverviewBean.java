@@ -214,6 +214,7 @@ public class ContainerOverviewBean implements Serializable {
                 editBean.getContainerHeight(),
                 editBean.getContainerWidth()
         );
+        editBean.getContainerToCreate().setParentContainer(editBean.getContainerLocation());
 
         if (valide) {
             setDimensionIfPossible();

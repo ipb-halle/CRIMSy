@@ -71,6 +71,7 @@ public class ContainerEditBeanTest extends TestBase {
         bean.startNewContainerCreation();
 
         Assert.assertNotNull(bean.getContainerToCreate());
+        Assert.assertEquals("container_edit_titel_create", bean.getDialogTitle());
         checkCleanState();
         bean.setContainerName("container-1-room");
         bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(0));
@@ -85,16 +86,25 @@ public class ContainerEditBeanTest extends TestBase {
         checkCleanState();
 
         bean.setContainerName("container-2-cupboard");
-        bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(3));
+        bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(1));
         bean.setContainerHeight(10);
         bean.setContainerWidth(20);
-        bean.getContainerToCreate().setParentContainer(loadedContainer);
+        bean.setContainerLocation(loadedContainer);
 
         overviewBean.saveNewContainer();
         loadedContainer = containerService.loadContainerById(bean.getContainerToCreate().getId());
         Assert.assertNotNull(loadedContainer.getParentContainer());
-        int i = 0;
 
+        bean.startNewContainerCreation();
+        bean.setContainerName("container-3-FREEZER");
+        bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(2));
+        bean.setContainerHeight(10);
+        bean.setContainerWidth(20);
+        bean.setContainerLocation(loadedContainer);
+
+        overviewBean.saveNewContainer();
+        loadedContainer = containerService.loadContainerById(bean.getContainerToCreate().getId());
+        Assert.assertEquals(2, loadedContainer.getContainerHierarchy().size());
     }
 
     @Before
