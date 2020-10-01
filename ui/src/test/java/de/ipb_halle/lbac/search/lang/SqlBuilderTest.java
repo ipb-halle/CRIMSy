@@ -20,6 +20,9 @@ package de.ipb_halle.lbac.search.lang;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.NodeEntity;
+import de.ipb_halle.lbac.items.entity.ItemEntity;
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
+import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +52,7 @@ public class SqlBuilderTest extends TestBase {
     /**
      */
     @Test
-    public void testSqlBuilder() {
+    public void testSqlBuilder_1() {
 
         EntityGraph graph = new EntityGraph(NodeEntity.class);
         SqlBuilder builder = new SqlBuilder(graph);
@@ -60,6 +63,73 @@ public class SqlBuilderTest extends TestBase {
             new Value("%TEST%"));
 
         assertNotSame("fake assertion!", builder.query(condition));
+        assertEquals("Invalid argument list size", 1, builder.getValueList().size());
+        Value v = builder.getValueList().get(0);
+        assertEquals("Invalid argument key", "field0", v.getArgumentKey());
+        assertEquals("Invalid argument value", "%TEST%", v.getValue());
     }
 
+    @Test
+    public void testSqlBuilder_2() {
+
+        EntityGraph graph = new EntityGraph(MaterialEntity.class)
+                .addChild(new EntityGraph(MaterialIndexEntryEntity.class)
+                        .addLinkField("materialid", "materialid"));
+        SqlBuilder builder = new SqlBuilder(graph);
+
+        Condition condition = new Condition(
+            new Attribute(new AttributeType[] {
+                    AttributeType.MATERIAL,
+                    AttributeType.TEXT
+            }), 
+            Operator.EQUAL,
+            new Value("Benzol"));
+
+        assertNotSame("fake assertion!", builder.query(condition));
+//        assertEquals("Invalid argument list size", 1, builder.getValueList().size());
+//        Value v = builder.getValueList().get(0);
+//        assertEquals("Invalid argument key", "field0", v.getArgumentKey());
+//        assertEquals("Invalid argument value", "%TEST%", v.getValue());
+    }
+
+    @Test
+    public void testSqlBuilder_3() {
+
+        EntityGraph graph = new EntityGraph(ItemEntity.class)
+                .addChild(new EntityGraph(MaterialIndexEntryEntity.class)
+                        .addLinkField("materialid", "materialid"));
+        SqlBuilder builder = new SqlBuilder(graph);
+
+        Condition condition1 = new Condition(
+            new Attribute(new AttributeType[] {
+                    AttributeType.MATERIAL,
+                    AttributeType.TEXT
+            }), 
+            Operator.EQUAL,
+            new Value("Benzol"));
+
+//        assertNotSame("fake assertion!", builder.query(condition));
+        
+        Condition condition2 = new Condition(
+            new Attribute(new AttributeType[] {
+                    AttributeType.ITEM,
+                    AttributeType.TEXT
+            }), 
+            Operator.EQUAL,
+            new Value("HPLC Grade"));
+
+        Condition condition3 = new Condition(
+                condition1,
+                Operator.AND,
+                condition2
+        );
+            
+        assertNotSame("fake assertion!", builder.query(condition3));
+        
+//        assertEquals("Invalid argument list size", 1, builder.getValueList().size());
+//        Value v = builder.getValueList().get(0);
+//        assertEquals("Invalid argument key", "field0", v.getArgumentKey());
+//        assertEquals("Invalid argument value", "%TEST%", v.getValue());
+    }
+    
 }

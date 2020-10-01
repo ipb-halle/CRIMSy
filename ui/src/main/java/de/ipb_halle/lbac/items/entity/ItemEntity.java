@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.items.entity;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -32,6 +34,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "items")
+@AttributeTag(type=AttributeType.ITEM)
 public class ItemEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +68,7 @@ public class ItemEntity implements Serializable {
     private Integer solventid;
 
     @Column
+    @AttributeTag(type=AttributeType.TEXT)
     private String description;
 
     @Column

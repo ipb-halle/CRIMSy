@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.entity.index;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +33,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "material_indices")
+@AttributeTag(type=AttributeType.MATERIAL)
 public class MaterialIndexEntryEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
@@ -46,6 +49,7 @@ public class MaterialIndexEntryEntity implements Serializable {
     private int typeid;
 
     @Column
+    @AttributeTag(type=AttributeType.TEXT)
     private String value;
 
     @Column

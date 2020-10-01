@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.entity;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -34,6 +36,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "materials")
+@AttributeTag(type=AttributeType.MATERIAL)
 public class MaterialEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
