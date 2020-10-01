@@ -317,7 +317,7 @@ public class SqlBuilder {
      */
     protected String where(Condition condition) {
         StringBuilder sb = new StringBuilder();
-        sb.append("WHERE ");
+        sb.append(" WHERE ");
         addCondition(sb, condition);
         return sb.toString();
     }

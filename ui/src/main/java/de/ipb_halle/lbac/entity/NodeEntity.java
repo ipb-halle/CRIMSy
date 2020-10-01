@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.entity;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+
 /**
  * Node This class represents a single node in the Bioactives Cloud. A node is
  * described by its id, baseUrl, institution. Additionally it may be either
@@ -46,6 +49,7 @@ public class NodeEntity implements Serializable {
 
     @Column
     @NotNull
+    @AttributeTag(type=AttributeType.INSTITUTION)
     private String institution;
 
     @Column

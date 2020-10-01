@@ -36,6 +36,7 @@ public enum AttributeType {
     /* entity properties */
     ASSAY_TARGET,
     ASSAY_RECORD,
+    INSTITUTION,
     REACTION_EDUCT,
     REACTION_PRODUCT,
 
