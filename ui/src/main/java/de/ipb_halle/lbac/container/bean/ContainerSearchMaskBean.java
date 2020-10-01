@@ -50,15 +50,15 @@ public class ContainerSearchMaskBean implements Serializable {
     private User currentUser;
 
     @Inject
-    private ContainerOverviewBean overviewBean;
+    protected ContainerOverviewBean overviewBean;
+
+    @Inject
+    protected ContainerService containerService;
+
+    @Inject
+    protected ProjectService projectService;
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
-
-    @Inject
-    private ContainerService containerService;
-
-    @Inject
-    private ProjectService projectService;
 
     public void actionClearSearchFilter() {
         containerSearchName = null;

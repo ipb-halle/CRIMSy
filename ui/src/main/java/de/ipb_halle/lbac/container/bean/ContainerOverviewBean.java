@@ -47,13 +47,13 @@ import org.primefaces.PrimeFaces;
 public class ContainerOverviewBean implements Serializable {
 
     @Inject
-    private ContainerService containerService;
+    protected ContainerService containerService;
     @Inject
-    private ContainerEditBean editBean;
+    protected ContainerEditBean editBean;
     @Inject
-    private ProjectService projectService;
+    protected ProjectService projectService;
     @Inject
-    private ContainerSearchMaskBean searchMaskBean;
+    protected ContainerSearchMaskBean searchMaskBean;
 
     private User currentUser;
     private final Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -61,6 +61,8 @@ public class ContainerOverviewBean implements Serializable {
     private Mode mode;
     private List<Container> readableContainer = new ArrayList<>();
     private InputValidator validator;
+
+    protected ContainerLocalizer localizer = new ContainerLocalizer();
 
     public enum Mode {
         SHOW, EDIT, CREATE
@@ -234,7 +236,7 @@ public class ContainerOverviewBean implements Serializable {
         this.readableContainer = readableContainer;
         for (Container c : readableContainer) {
             c.getType().setLocalizedName(
-                    Messages.getString(MESSAGE_BUNDLE, "container_type_" + c.getType().getName(), null));
+                    localizer.localizeString("container_type_" + c.getType().getName()));
         }
     }
 

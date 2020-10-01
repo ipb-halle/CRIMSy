@@ -46,10 +46,10 @@ import org.apache.logging.log4j.Logger;
 public class ContainerEditBean implements Serializable {
 
     @Inject
-    private ContainerService containerService;
+    protected ContainerService containerService;
 
     @Inject
-    private ProjectService projectService;
+    protected ProjectService projectService;
 
     private Integer containerHeight;
     private Container containerLocation;
@@ -59,11 +59,11 @@ public class ContainerEditBean implements Serializable {
     private User currentUser;
     private String gvoClass;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Mode mode;
     private Container originalContainer;
-    private final List<String> possibleSecuritylevel = new ArrayList<>();
+    protected final List<String> possibleSecuritylevel = new ArrayList<>();
     private String preferredProjectName;
+    protected ContainerLocalizer localizer = new ContainerLocalizer();
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
@@ -124,7 +124,7 @@ public class ContainerEditBean implements Serializable {
         for (ContainerType t : containerTypes) {
             if (t.getRank() > 0) {
                 filteredContainerTypes.add(t);
-                t.setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + t.getName(), null));
+                t.setLocalizedName(localizer.localizeString("container_type_" + t.getName()));
             }
         }
         return filteredContainerTypes;
@@ -136,10 +136,10 @@ public class ContainerEditBean implements Serializable {
 
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
-            return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_create", null);
+            return localizer.localizeString("container_edit_titel_create");
         } else {
             if (originalContainer != null) {
-                return Messages.getString(MESSAGE_BUNDLE, "container_edit_titel_edit", new String[]{originalContainer.getLabel()});
+                return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
             } else {
                 return "";
             }
@@ -172,11 +172,12 @@ public class ContainerEditBean implements Serializable {
 
     public void initSecurityLevels() {
         possibleSecuritylevel.clear();
-        possibleSecuritylevel.add(Messages.getString(MESSAGE_BUNDLE, "container_securitylevel_none", null));
+        possibleSecuritylevel.add(localizer.localizeString("container_securitylevel_none"));
         possibleSecuritylevel.add("S1");
         possibleSecuritylevel.add("S2");
         possibleSecuritylevel.add("S3");
         possibleSecuritylevel.add("S4");
+
     }
 
     public boolean isDimensionVisible() {
