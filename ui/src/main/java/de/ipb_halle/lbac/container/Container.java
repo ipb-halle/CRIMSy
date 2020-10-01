@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Container implements DTO, Serializable,Searchable {
+public class Container implements DTO, Serializable, Searchable {
 
     public enum DimensionType {
         NONE,
@@ -47,7 +47,6 @@ public class Container implements DTO, Serializable,Searchable {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private int id;
-    private Container parentContainer;
     private String label;
     private Project project;
     private String dimension;
@@ -70,8 +69,8 @@ public class Container implements DTO, Serializable,Searchable {
             Project p,
             Container parentContainer) {
         this.id = dbentity.getId();
-        this.parentContainer = parentContainer;
         this.label = dbentity.getLabel();
+        this.containerHierarchy.add(parentContainer);
         this.project = p;
         this.dimension = dbentity.getDimension();
         this.fireSection = dbentity.getFiresection();
@@ -134,14 +133,15 @@ public class Container implements DTO, Serializable,Searchable {
     }
 
     public Container getParentContainer() {
-        if (parentContainer == null && containerHierarchy.size() > 0) {
+        if (containerHierarchy.size() > 0) {
             return containerHierarchy.get(0);
         }
-        return parentContainer;
+        return null;
     }
 
     public void setParentContainer(Container parentContainer) {
-        this.parentContainer = parentContainer;
+        containerHierarchy.clear();
+        containerHierarchy.add(parentContainer);
     }
 
     public String getLabel() {
@@ -290,7 +290,6 @@ public class Container implements DTO, Serializable,Searchable {
         c.setId(id);
         c.setItems(items);
         c.setLabel(label);
-        c.setParentContainer(parentContainer);
         c.setProject(project);
         c.setType(type);
         c.getContainerHierarchy().addAll(containerHierarchy);
