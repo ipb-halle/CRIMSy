@@ -21,6 +21,64 @@ package de.ipb_halle.lbac.search.lang;
  *
  * @author fmauz
  */
-public interface Condition {
-     
+public class Condition {
+
+    private Attribute attribute;
+    private Condition leftCondition;
+    private Operator operator;
+    private Condition rightCondition;
+    private Value value;
+
+
+    public Condition(Attribute attribute, Operator operator, Value value) {
+        this.attribute = attribute;
+        this.operator = operator;
+        this.value = value;
+    }
+
+    public Condition(Attribute attribute, Operator operator) {
+        if (! operator.isUnary()) {
+            throw new IllegalArgumentException("Used binary operator with single argument");
+        }
+        this.attribute = attribute;
+        this.operator = operator;
+    }
+
+    public Condition(Condition left, Operator operator, Condition right) {
+        this.leftCondition = left;
+        this.operator = operator;
+        this.rightCondition = right;
+    }
+
+    public Condition(Condition condition, Operator operator) {
+        if (! operator.isUnary()) {
+            throw new IllegalArgumentException("Used binary operator with single argument");
+        }
+        this.leftCondition = condition;
+        this.operator = operator;
+    }
+
+    public Attribute getAttribute() {
+        return this.attribute;
+    }
+
+    public Condition getLeftCondition() {
+        return this.leftCondition;
+    }
+
+    public Operator getOperator() {
+        return this.operator;
+    }
+
+    public Condition getRightCondition() {
+        return this.rightCondition;
+    }
+
+    public Value getValue() {
+        return this.value;
+    }
+
+    public boolean isLeaf() {
+        return (leftCondition == null);
+    }
 }

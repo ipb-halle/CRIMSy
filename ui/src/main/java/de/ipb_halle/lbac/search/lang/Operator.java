@@ -18,9 +18,72 @@
 package de.ipb_halle.lbac.search.lang;
 
 /**
+ * Operators for search conditions. Operators possess certain features;
+ * they may be
+ * <ul>
+ * <li>unary or binary (ternary operators are currently not supported).</li>
+ * <li>leaf operators or operators for condition nodes</li>
+ * <li>prefix operators or postfix operators (applies only to unary operators)</li>
+ * </ul>
  *
  * @author fmauz
  */
 public enum Operator {
     
+    AND(" AND ", false, false),
+    OR(" OR ",   false, false),
+    NOT(" NOT ", false, true, true),
+
+    IS_NULL(" IS NULL", true, true),
+    IS_NOT_NULL(" IS NOT NULL", true, true),
+    LESS(" < "),
+    LESS_EQUAL(" <= "),
+    EQUAL(" = "),
+    GREATER_EQUAL(" >= "),
+    GREATER(" = "),
+    LIKE(" LIKE "),
+    ILIKE(" ILIKE ");
+
+    private boolean leafOperator;
+    private boolean prefixOperator;
+    private boolean unary;
+    private String sql;
+
+    private Operator(String sql, boolean leafOperator, boolean unary) {
+            this(sql, leafOperator, unary, false);
+    }
+
+    private Operator(String sql, boolean leafOperator, boolean unary, boolean prefixOperator) {
+        this.leafOperator = leafOperator;
+        this.prefixOperator = prefixOperator;
+        this.unary = unary;
+        this.sql = sql;
+    }
+
+    private Operator(String sql) {
+        this.leafOperator = true;
+        this.prefixOperator = false; 
+        this.unary = false;
+        this.sql = sql;
+    }
+
+    public boolean isLeafOperator() {
+        return this.leafOperator;
+    }
+
+    public boolean isPrefixOperator() {
+        return this.prefixOperator;
+    }
+
+    public boolean isPostfixOperator() {
+        return ! this.prefixOperator;
+    }
+
+    public boolean isUnary() {
+        return this.unary;
+    }
+
+    public String getSql() {
+        return this.sql;        
+    }
 }

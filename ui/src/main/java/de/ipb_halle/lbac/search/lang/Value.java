@@ -19,12 +19,33 @@ package de.ipb_halle.lbac.search.lang;
 
 /**
  *
- * @author fmauz
+ * @author fbroda
  */
-public class ConditionNode implements Condition{
-    private ConditionNode leftCondition;
-    private Operator operator;
-    private ConditionNode rightCondition;
+public class Value {
     
-    
+    private Object value;
+    private String argumentKey;
+    private String castExpression;
+
+    public Value(Object value) {
+        this.value = value;
+    }
+
+    public String getArgumentKey() {
+        return this.argumentKey;
+    }
+
+    public Object getValue() {
+        return this.value;
+    }
+
+    public Value setArgumentKey(String argumentKey) {
+        this.argumentKey = argumentKey;
+        return this;
+    }
+
+    public Value setCastExpression(String castExpression) {
+        this.castExpression = castExpression;
+        return this;
+    }
 }

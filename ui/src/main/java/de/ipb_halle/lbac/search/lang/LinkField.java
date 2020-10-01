@@ -19,9 +19,23 @@ package de.ipb_halle.lbac.search.lang;
 
 /**
  *
- * @author fmauz
+ * @author fbroda
  */
-public interface SqlByCondition {
-    public String createSqlOfNode(ConditionNode node);
-    public String createSqlOfLeaf(ConditionLeaf leaf);
+public class LinkField {
+    String parent;
+    String child;
+
+    LinkField(String parent, String child) {
+        this.parent = parent;
+        this.child = child;
+    }
+
+    String getChild() { 
+        return this.child; 
+    }
+
+    String getParent() { 
+        return this.parent; 
+    }
+
 }

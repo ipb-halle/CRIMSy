@@ -17,10 +17,66 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *
  * @author fmauz
  */
 public class Attribute {
     
+    private Set<AttributeType> types;
+    private String name;
+
+
+    public Attribute(Collection<AttributeType> types) {
+        this.types = new HashSet<> ();
+        this.types.addAll(types);
+    }
+
+    public Attribute(AttributeType[] types) {
+        this();
+        this.types.addAll(Arrays.asList(types));
+    }
+
+    public Attribute(AttributeType type) {
+        this();
+        this.types.add(type);
+    }
+
+    private Attribute() {
+        this.types = new HashSet<> ();
+        this.name = "";
+    }
+
+    public Attribute addType(AttributeType type) {
+        this.types.add(type);
+        return this;
+    }
+
+    public Attribute addTypes(AttributeType[] types) {
+        this.types.addAll(Arrays.asList(types));
+        return this;
+    }
+
+    public Attribute addTypes(Collection<AttributeType> types) {
+        this.types.addAll(types);
+        return this;
+    }
+
+    public Set<AttributeType> getTypes() {
+        return this.types;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Attribute setName(String name) {
+        this.name = name;
+        return this;
+    }
 }

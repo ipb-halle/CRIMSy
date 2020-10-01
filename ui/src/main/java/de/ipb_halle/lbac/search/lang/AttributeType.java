@@ -17,21 +17,30 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
-import de.ipb_halle.lbac.search.Value;
-
 /**
+ * Attribute types for selection of search fields
  *
- * @author fmauz
+ * @author fbroda
  */
-public class ConditionLeaf implements Condition{
-    private Attribute attribute;
-    private Operator operator;
-    private Value value;
-
-    public ConditionLeaf(Attribute attribute, Operator operator, Value value) {
-        this.attribute = attribute;
-        this.operator = operator;
-        this.value = value;
-    }
+public enum AttributeType {
     
+    /* */
+    TOPLEVEL,
+
+    /* entities */
+    COLLECTION,
+    EXPERIMENT,
+    ITEM,
+    MATERIAL,
+
+    /* entity properties */
+    ASSAY_TARGET,
+    ASSAY_RECORD,
+    REACTION_EDUCT,
+    REACTION_PRODUCT,
+
+    /* general attribute types */
+    TEXT,
+    STRUCTURE
+
 }
