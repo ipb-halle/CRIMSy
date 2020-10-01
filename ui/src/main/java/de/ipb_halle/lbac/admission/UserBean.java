@@ -219,6 +219,7 @@ public class UserBean implements Serializable {
     public void actionLogout() {
         setCurrentAccount(this.globalAdmissionContext.getPublicAccount());
         navigator.initStartPage();
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
     }
 
     /**
