@@ -45,31 +45,31 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ContainerEditBeanTest extends TestBase {
-
+    
     @Inject
     private ProjectService projectService;
-
+    
     @Inject
     private ContainerService containerService;
-
+    
     private ContainerEditBean bean;
     private User publicUser;
-
+    
     private ContainerOverviewBeanMock overviewBean;
     private ContainerSearchMaskBean searchMaskBean;
-
+    
     @Test
     public void test001_logIn() {
         bean.setCurrentAccount(new LoginEvent(publicUser));
         Assert.assertEquals(5, bean.getGvoClasses().size());
         bean.getContainerTypesWithRankGreaterZero();
     }
-
+    
     @Test
     public void test002_createNewContainer() {
         bean.setCurrentAccount(new LoginEvent(publicUser));
         bean.startNewContainerCreation();
-
+        
         Assert.assertNotNull(bean.getContainerToCreate());
         Assert.assertEquals("container_edit_titel_create", bean.getDialogTitle());
         checkCleanState();
@@ -77,36 +77,43 @@ public class ContainerEditBeanTest extends TestBase {
         bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(0));
         bean.setSecurityLevel("Section-1");
         bean.setGvoClass(bean.getGvoClasses().get(0));
-
+        
+        Assert.assertTrue(bean.isSecurityLevelVisible());
+        
         overviewBean.saveNewContainer();
-
+        
         Container loadedContainer = containerService.loadContainerById(bean.getContainerToCreate().getId());
-
+        
         bean.startNewContainerCreation();
         checkCleanState();
-
+        
         bean.setContainerName("container-2-cupboard");
         bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(1));
         bean.setContainerHeight(10);
         bean.setContainerWidth(20);
+        bean.setFireSection("FireSection A");
         bean.setContainerLocation(loadedContainer);
-
+        
         overviewBean.saveNewContainer();
         loadedContainer = containerService.loadContainerById(bean.getContainerToCreate().getId());
         Assert.assertNotNull(loadedContainer.getParentContainer());
-
+        
         bean.startNewContainerCreation();
         bean.setContainerName("container-3-FREEZER");
         bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(2));
         bean.setContainerHeight(10);
         bean.setContainerWidth(20);
         bean.setContainerLocation(loadedContainer);
-
+        
         overviewBean.saveNewContainer();
         loadedContainer = containerService.loadContainerById(bean.getContainerToCreate().getId());
         Assert.assertEquals(2, loadedContainer.getContainerHierarchy().size());
+        
+        Assert.assertTrue(bean.isEditable());
+        Assert.assertFalse(bean.isSecurityLevelVisible());
+        
     }
-
+    
     @Before
     @Override
     public void setUp() {
@@ -114,7 +121,7 @@ public class ContainerEditBeanTest extends TestBase {
         bean = new ContainerEditBeanMock()
                 .setContainerService(containerService)
                 .setProjectService(projectService);
-
+        
         overviewBean = new ContainerOverviewBeanMock()
                 .setContainerEditBean(bean)
                 .setContainerService(containerService)
@@ -125,17 +132,17 @@ public class ContainerEditBeanTest extends TestBase {
                 .setContainerService(containerService)
                 .setProjectService(projectService);
         searchMaskBean.setCurrentAccount(new LoginEvent(publicUser));
-
+        
         overviewBean.setContainerSearchMaskBean(searchMaskBean);
-
+        
     }
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ContainerEditBeanTest.war");
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
-
+    
     private void checkCleanState() {
         Assert.assertEquals(4, bean.getContainerTypesWithRankGreaterZero().size());
         Assert.assertNull(bean.getContainerName());
@@ -147,6 +154,6 @@ public class ContainerEditBeanTest extends TestBase {
         Assert.assertNull(bean.getGvoClass());
         Assert.assertNull(bean.getPreferredProjectName());
         Assert.assertNull(bean.getSecurityLevel());
-
+        
     }
 }

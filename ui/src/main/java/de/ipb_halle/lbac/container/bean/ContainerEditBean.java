@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
-import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
@@ -53,7 +52,8 @@ public class ContainerEditBean implements Serializable {
 
     private Integer containerHeight;
     private Container containerLocation;
-    private Container containerToCreate;
+    private Container containerToCreate = new Container();
+    ;
     private List<ContainerType> containerTypes = new ArrayList<>();
     private Integer containerWidth;
     private User currentUser;
@@ -77,7 +77,7 @@ public class ContainerEditBean implements Serializable {
      */
     public void clearEditBean() {
         originalContainer = null;
-        containerToCreate = null;
+        containerToCreate = new Container();
         preferredProjectName = null;
         containerLocation = null;
         containerWidth = null;
@@ -90,11 +90,7 @@ public class ContainerEditBean implements Serializable {
     }
 
     public String getContainerName() {
-        if (containerToCreate != null) {
             return containerToCreate.getLabel();
-        } else {
-            return null;
-        }
     }
 
     public Container getContainerLocation() {
@@ -112,11 +108,7 @@ public class ContainerEditBean implements Serializable {
      * @return
      */
     public ContainerType getContainerType() {
-        if (containerToCreate != null) {
-            return containerToCreate.getType();
-        } else {
-            return new ContainerType("XXX", 1000, false, false);
-        }
+        return containerToCreate.getType();
     }
 
     public List<ContainerType> getContainerTypesWithRankGreaterZero() {
@@ -138,11 +130,8 @@ public class ContainerEditBean implements Serializable {
         if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_create");
         } else {
-            if (originalContainer != null) {
-                return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
-            } else {
-                return "";
-            }
+            return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
+
         }
     }
 
@@ -163,11 +152,7 @@ public class ContainerEditBean implements Serializable {
     }
 
     public String getSecurityLevel() {
-        if (containerToCreate != null) {
             return containerToCreate.getGmosavety();
-        } else {
-            return null;
-        }
     }
 
     public void initSecurityLevels() {
@@ -181,11 +166,8 @@ public class ContainerEditBean implements Serializable {
     }
 
     public boolean isDimensionVisible() {
-        if (containerToCreate != null) {
-            return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
-        } else {
-            return false;
-        }
+        return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
+
     }
 
     public boolean isEditable() {
@@ -193,11 +175,7 @@ public class ContainerEditBean implements Serializable {
     }
 
     public boolean isSecurityLevelVisible() {
-        if (containerToCreate != null) {
-            return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
-        } else {
-            return false;
-        }
+        return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
     }
 
     public void setContainerHeight(Integer containerHeight) {

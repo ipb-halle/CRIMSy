@@ -62,6 +62,7 @@ public class Container implements DTO, Serializable, Searchable {
 
     public Container() {
         deactivated = false;
+        type = new ContainerType("xxx", 100, deactivated, deactivated);
     }
 
     public Container(
