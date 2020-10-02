@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -51,6 +54,7 @@ public abstract class MemberEntity {
     private Integer id;
 
     @Column
+    @AttributeTag(type=AttributeType.MEMBER_NAME)
     private String name;
 
     /**

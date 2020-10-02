@@ -39,8 +39,12 @@ public class ItemEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /*
+     * ToDo: add label property (for barcoding)
+     */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @AttributeTag(type=AttributeType.LABEL)
     private Integer id;
 
     @Column

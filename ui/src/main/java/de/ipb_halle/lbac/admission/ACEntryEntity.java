@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -31,6 +34,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ACENTRIES")
+@AttributeTag(type=AttributeType.ACE)
 public class ACEntryEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
@@ -42,6 +46,7 @@ public class ACEntryEntity implements Serializable {
      * Permission to read an object
      */
     @Column
+    @AttributeTag(type=AttributeType.PERM_READ)
     private boolean permREAD;
 
     /**
@@ -49,6 +54,7 @@ public class ACEntryEntity implements Serializable {
      * the object in the first place.
      */
     @Column
+    @AttributeTag(type=AttributeType.PERM_EDIT)
     private boolean permEDIT;
 
     /**
@@ -56,12 +62,14 @@ public class ACEntryEntity implements Serializable {
      * the object afterwards
      */
     @Column
+    @AttributeTag(type=AttributeType.PERM_CREATE)
     private boolean permCREATE;
 
     /**
      * Permission to delete an object
      */
     @Column
+    @AttributeTag(type=AttributeType.PERM_DELETE)
     private boolean permDELETE;
 
     /**
@@ -69,6 +77,7 @@ public class ACEntryEntity implements Serializable {
      * of the receiving party).
      */
     @Column
+    @AttributeTag(type=AttributeType.PERM_CHOWN)
     private boolean permCHOWN;
 
     /**
@@ -76,6 +85,7 @@ public class ACEntryEntity implements Serializable {
      * the Super privilege?).
      */
     @Column
+    @AttributeTag(type=AttributeType.PERM_GRANT)
     private boolean permGRANT;
 
     /**
@@ -83,6 +93,7 @@ public class ACEntryEntity implements Serializable {
      * actions which do not fit anywhere else. Should be used rather rarely!
      */
     @Column
+    @AttributeTag(type=AttributeType.PERM_SUPER)
     private boolean permSUPER;
 
     /* default constructor */

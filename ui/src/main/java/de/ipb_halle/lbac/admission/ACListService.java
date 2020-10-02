@@ -28,6 +28,8 @@ package de.ipb_halle.lbac.admission;
  * be part of convention.
  */
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
@@ -100,6 +102,13 @@ public class ACListService implements Serializable {
             }
         }
         return this.ownerAccount;
+    }
+
+    public EntityGraph getEntityGraph() {
+        return new EntityGraph(ACEntryEntity.class)
+            .addChild(new EntityGraph(MembershipEntity.class)
+                .addLinkField("member_id", "group_id")
+            );
     }
 
     /**

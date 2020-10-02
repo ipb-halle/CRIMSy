@@ -261,6 +261,9 @@ public class EntityGraph {
      * @param isIndex if the class is an EmbeddedId
      */
     private void processFields(Class clazz, String parentFieldName, boolean isIndex) {
+        /*
+         * ToDo: also handle superclass(es) --> ACObject!
+         */
         for(Field field : clazz.getDeclaredFields()) {
             if (isIndex) {
                 processId(parentFieldName, field);

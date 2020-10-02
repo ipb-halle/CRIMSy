@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.project;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -45,8 +48,11 @@ public class ProjectEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
+
     @Column
+    @AttributeTag(type=AttributeType.PROJECT_NAME)
     private String name;
+
     @Column
     private Double budget;
     @Column

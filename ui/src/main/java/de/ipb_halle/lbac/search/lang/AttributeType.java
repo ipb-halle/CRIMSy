@@ -28,7 +28,9 @@ public enum AttributeType {
     TOPLEVEL,
 
     /* entities */
+    ACE,
     COLLECTION,
+    CONTAINER,
     EXPERIMENT,
     ITEM,
     MATERIAL,
@@ -37,11 +39,23 @@ public enum AttributeType {
     ASSAY_TARGET,
     ASSAY_RECORD,
     INSTITUTION,
+    MEMBER_NAME,
+    PROJECT_NAME,
     REACTION_EDUCT,
     REACTION_PRODUCT,
 
     /* general attribute types */
+    LABEL,
+    STRUCTURE,
     TEXT,
-    STRUCTURE
+
+    PERM_READ,
+    PERM_EDIT,
+    PERM_CHOWN,
+    PERM_GRANT,
+    PERM_SUPER,
+    PERM_CREATE,
+    PERM_DELETE
+    
 
 }

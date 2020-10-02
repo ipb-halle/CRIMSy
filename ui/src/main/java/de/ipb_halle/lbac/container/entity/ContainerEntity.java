@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.container.entity;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +34,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "containers")
+@AttributeTag(type=AttributeType.CONTAINER)
 public class ContainerEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +47,7 @@ public class ContainerEntity implements Serializable {
     private Integer parentcontainer;
 
     @Column
+    @AttributeTag(type=AttributeType.LABEL)
     private String label;
 
     @Column
