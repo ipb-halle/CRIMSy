@@ -221,7 +221,6 @@ public class ContainerEditBean implements Serializable {
         } else {
             preferredProjectName = null;
         }
-        c.setParentContainer(containerLocation);
         if (c.getParentContainer() != null) {
             containerLocation = c.getParentContainer();
         } else {

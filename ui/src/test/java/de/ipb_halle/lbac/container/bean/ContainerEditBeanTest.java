@@ -172,7 +172,7 @@ public class ContainerEditBeanTest extends TestBase {
         Assert.assertEquals("container-1-board", loadedContainer.getContainerHierarchy().get(0).getLabel());
         Assert.assertEquals("container-2-room", loadedContainer.getContainerHierarchy().get(1).getLabel());
 
-        overviewBean.actionContainerEdit(board1);
+        overviewBean.actionContainerEdit(containerService.loadContainerById(board1.getId()));
         bean.setContainerLocation(null);
         overviewBean.actionTriggerContainerSave();
 
@@ -191,6 +191,17 @@ public class ContainerEditBeanTest extends TestBase {
         loadedContainer = containerService.loadContainerById(board1.getId());
         Assert.assertEquals("container-1-board EDITED", loadedContainer.getLabel());
         Assert.assertNotNull(loadedContainer.getProject());
+
+        overviewBean.actionContainerEdit(loadedContainer);
+
+        Assert.assertEquals("test002_editContainer() - testproject", bean.getPreferredProjectName());
+        Assert.assertEquals("container_edit_titel_edit", bean.getDialogTitle());
+        Assert.assertNotNull(bean.getOriginalContainer());
+
+        overviewBean.actionContainerEdit(containerService.loadContainerById(room1.getId()));
+        Assert.assertNull(bean.getContainerLocation());
+        Assert.assertNull(bean.getContainerHeight());
+        Assert.assertNull(bean.getContainerWidth());
 
     }
 
@@ -219,7 +230,7 @@ public class ContainerEditBeanTest extends TestBase {
         overviewBean = new ContainerOverviewBeanMock(containerService)
                 .setContainerEditBean(bean)
                 .setProjectService(projectService);
-        
+
         overviewBean.setCurrentAccount(new LoginEvent(publicUser));
         searchMaskBean = new ContainerSearchMaskBeanMock()
                 .setContainerOverviewBean(overviewBean)
