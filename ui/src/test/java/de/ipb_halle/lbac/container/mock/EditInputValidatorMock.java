@@ -15,20 +15,20 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.container.bean;
+package de.ipb_halle.lbac.container.mock;
 
-import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.container.bean.EditInputValidator;
+import de.ipb_halle.lbac.container.service.ContainerService;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerLocalizer {
+public class EditInputValidatorMock extends EditInputValidator {
 
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
-    public String localizeString(String toLocalize, Object... args) {
-        return Messages.getString(MESSAGE_BUNDLE, toLocalize, args);
+    public EditInputValidatorMock(ContainerService containerService, String originalLabel) {
+        super(containerService, originalLabel);
+        this.errorMessagePresenter = new ErrorMessagePresenterMock();
     }
 
 }

@@ -17,18 +17,25 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
-import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.container.service.ContainerService;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerLocalizer {
+public class ValidatorFactory {
 
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    protected ContainerService containerService;
 
-    public String localizeString(String toLocalize, Object... args) {
-        return Messages.getString(MESSAGE_BUNDLE, toLocalize, args);
+    public ValidatorFactory(ContainerService containerService) {
+        this.containerService = containerService;
     }
 
+    public InputValidator createValidatorForCreation() {
+        return new InputValidator(containerService);
+    }
+
+    public EditInputValidator createValidatorForEdit(String label) {
+        return new EditInputValidator(containerService, label);
+    }
 }

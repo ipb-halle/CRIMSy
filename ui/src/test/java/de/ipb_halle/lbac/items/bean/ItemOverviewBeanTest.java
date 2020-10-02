@@ -290,9 +290,9 @@ public class ItemOverviewBeanTest extends TestBase {
         materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser", "water");
         materialid_2 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasserstoff");
 
-        Project p1 = creationTools.createProject("Project_X");
-        Project p2 = creationTools.createProject("Project_XY");
-        Project p3 = creationTools.createProject("Project_Z");
+        Project p1 = creationTools.createAndSaveProject("Project_X");
+        Project p2 = creationTools.createAndSaveProject("Project_XY");
+        Project p3 = creationTools.createAndSaveProject("Project_Z");
 
         Container room = containerCreator.createAndSaveContainer("ROOM", null);
         Container box = containerCreator.createAndSaveContainer("BOX", room);

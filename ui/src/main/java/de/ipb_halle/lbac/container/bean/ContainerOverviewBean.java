@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -60,12 +61,19 @@ public class ContainerOverviewBean implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Mode mode;
     private List<Container> readableContainer = new ArrayList<>();
-    private InputValidator validator;
+    protected InputValidator validator;
 
     protected ContainerLocalizer localizer = new ContainerLocalizer();
+    protected CallBackController callBackController = new CallBackController();
+    protected ValidatorFactory validatorFactory;
 
     public enum Mode {
         SHOW, EDIT, CREATE
+    }
+
+    @PostConstruct
+    private void init() {
+        this.validatorFactory = new ValidatorFactory(containerService);
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
@@ -118,7 +126,7 @@ public class ContainerOverviewBean implements Serializable {
         } else {
             success = saveEditedContainer();
         }
-        PrimeFaces.current().ajax().addCallbackParam("success", success);
+        callBackController.addCallBackParameter("success", success);
         if (success) {
             mode = Mode.SHOW;
             editBean.clearEditBean();

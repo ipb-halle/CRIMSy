@@ -17,18 +17,15 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
-import com.corejsf.util.Messages;
+import org.primefaces.PrimeFaces;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerLocalizer {
+public class CallBackController {
 
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
-    public String localizeString(String toLocalize, Object... args) {
-        return Messages.getString(MESSAGE_BUNDLE, toLocalize, args);
+    public void addCallBackParameter(String paramName, Object value) {
+        PrimeFaces.current().ajax().addCallbackParam(paramName, value);
     }
-
 }

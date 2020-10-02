@@ -15,20 +15,18 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.container.bean;
+package de.ipb_halle.lbac.container.mock;
 
-import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.container.bean.CallBackController;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerLocalizer {
+public class CallBackControllerMock extends CallBackController {
 
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    @Override
+    public void addCallBackParameter(String paramName, Object value) {
 
-    public String localizeString(String toLocalize, Object... args) {
-        return Messages.getString(MESSAGE_BUNDLE, toLocalize, args);
     }
-
 }

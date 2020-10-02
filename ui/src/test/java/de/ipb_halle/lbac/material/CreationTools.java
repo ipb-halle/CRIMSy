@@ -91,10 +91,10 @@ public class CreationTools {
     }
 
     public Project createProject() {
-        return createProject("biochemical-test-project");
+        return createAndSaveProject("biochemical-test-project");
     }
 
-    public Project createProject(String projectname) {
+    public Project createAndSaveProject(String projectname) {
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, projectname);
         p.setBudget(1000d);
         p.setDescription("Description of biochemical test project");

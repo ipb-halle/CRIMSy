@@ -15,20 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.container.bean;
-
-import com.corejsf.util.Messages;
+package de.ipb_halle.lbac.container.mock;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerLocalizer {
-
-    private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
-    public String localizeString(String toLocalize, Object... args) {
-        return Messages.getString(MESSAGE_BUNDLE, toLocalize, args);
-    }
-
+public class ValidatorMock {
+    
 }

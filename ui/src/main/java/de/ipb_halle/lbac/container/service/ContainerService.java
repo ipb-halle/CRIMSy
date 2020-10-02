@@ -50,23 +50,23 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class ContainerService implements Serializable {
-
+    
     Logger logger = LogManager.getLogger(this.getClass().getName());
-
+    
     @Inject
     private ContainerPositionService positionService;
     @Inject
     private ProjectService projectService;
-
+    
     @Inject
     ItemService itemService;
-
+    
     @Inject
     private ContainerNestingService nestingService;
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
-
+    
     private final String SQL_NESTED_TARGETS
             = "SELECT targetid "
             + " FROM nested_containers "
@@ -76,7 +76,7 @@ public class ContainerService implements Serializable {
             + "FROM containers "
             + "WHERE LOWER(label) LIKE LOWER(:label) "
             + "AND deactivated =FALSE";
-
+    
     private final String SQL_LOAD_CONTAINERS = "SELECT DISTINCT "
             + "c.id, "
             + "c.parentcontainer, "
@@ -102,7 +102,7 @@ public class ContainerService implements Serializable {
             + "AND (c2.label=:location OR :location ='no_location') "
             + "AND c.deactivated =FALSE "
             + "ORDER BY c.id";
-
+    
     private final String SQL_LOAD_NESTED_CONTAINER
             = "SELECT  "
             + "c.id, "
@@ -120,14 +120,14 @@ public class ContainerService implements Serializable {
             + "JOIN containertypes ct ON ct.name=c.type "
             + "WHERE nc.sourceid=:cid "
             + "ORDER BY ct.rank";
-
+    
     String SQL_LOAD_ITEMS_OF_CONTAINER = "SELECT "
             + "itemid,"
             + "itemcol,"
             + "itemrow "
             + "FROM item_positions "
             + "WHERE containerId=:containerId";
-
+    
     private final String SQL_LOAD_BY_CONTAINERNAME
             = "SELECT  "
             + "c.id, "
@@ -143,7 +143,7 @@ public class ContainerService implements Serializable {
             + "FROM containers c "
             + "WHERE UPPER(label)=UPPER(:label) "
             + "AND c.deactivated =FALSE";
-
+    
     private final String SQL_DELETE_NESTING
             = "DELETE "
             + "FROM nested_containers "
@@ -166,25 +166,28 @@ public class ContainerService implements Serializable {
             Container c = loadContainerById(id);
             container.add(c);
         }
-
+        
         return container;
     }
-
+    
     public Container loadContainerById(int id) {
         ContainerEntity entity = this.em.find(ContainerEntity.class, id);
         Container container = new Container(entity);
         container.setType(loadContainerTypeByName(entity.getType()));
         container.setItems(loadItemsOfContainer(container));
+        if (entity.getProjectid() != null) {
+            container.setProject(projectService.loadProjectById(entity.getProjectid()));
+        }
         loadContainerHierarchy(container);
         container.setAutoCompleteString(container.getId() + "-" + container.getLabel() + " (" + container.getLocation(true, false) + ")");
         return container;
-
+        
     }
-
+    
     public List<Container> loadContainerHierarchy(Item item) {
         return new ArrayList<>();
     }
-
+    
     public Container saveContainer(Container c) {
         ContainerEntity dbe = c.createEntity();
         em.persist(dbe);
@@ -195,12 +198,12 @@ public class ContainerService implements Serializable {
         c.setId(dbe.getId());
         return c;
     }
-
+    
     public List<Container> loadContainers(
             User u) {
         return loadContainers(u, new HashMap<>());
     }
-
+    
     public void saveEditedContainer(Container c) {
         em.merge(c.createEntity());
         nestingService.updateContainerNesting(
@@ -228,9 +231,9 @@ public class ContainerService implements Serializable {
                         .setParameter("label", cmap.containsKey("label") ? "%" + cmap.get("label") + "%" : "no_label")
                         .setParameter("location", cmap.containsKey("location") ? cmap.get("location") : "no_location")
                         .getResultList();
-
+        
         List<Container> result = new ArrayList<>();
-
+        
         for (ContainerEntity dbe : dbEntities) {
             Container container = loadContainerById(dbe.getId());
             if (dbe.getProjectid() == null) {
@@ -244,7 +247,7 @@ public class ContainerService implements Serializable {
         }
         return result;
     }
-
+    
     @SuppressWarnings("unchecked")
     private void loadContainerHierarchy(Container c) {
         List<ContainerEntity> nestedContainers = this.em
@@ -255,7 +258,7 @@ public class ContainerService implements Serializable {
             c.getContainerHierarchy().add(loadContainerById(nce.getId()));
         }
     }
-
+    
     public List<ContainerType> loadContainerTypes() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ContainerTypeEntity> cq = cb.createQuery(ContainerTypeEntity.class);
@@ -274,7 +277,7 @@ public class ContainerService implements Serializable {
         }
         return result;
     }
-
+    
     public Integer getRankOfContainerType(String type) {
         ContainerTypeEntity entity = em.find(ContainerTypeEntity.class, type);
         if (entity != null) {
@@ -282,7 +285,7 @@ public class ContainerService implements Serializable {
         }
         return null;
     }
-
+    
     @SuppressWarnings("unchecked")
     public Item[][][] loadItemsOfContainer(Container c) {
         int[] dimSize = c.getDimensionIndex();
@@ -290,20 +293,20 @@ public class ContainerService implements Serializable {
             return null;
         }
         Item[][][] items = new Item[dimSize[0]][dimSize[1]][dimSize[2]];
-
+        
         List<Object[]> results = this.em.createNativeQuery(SQL_LOAD_ITEMS_OF_CONTAINER)
                 .setParameter("containerId", c.getId())
                 .getResultList();
-
+        
         for (Object[] entity : results) {
             Integer itemid = (Integer) entity[0];
             Integer x = (Integer) entity[1];
             Integer y = (Integer) entity[2];
             Item i = itemService.loadItemByIdWithoutContainer(itemid);
             items[y][x][0] = i;
-
+            
         }
-
+        
         return items;
     }
 
@@ -364,7 +367,7 @@ public class ContainerService implements Serializable {
         }
         List<Integer> parentContainer = loadNestedTargets(id);
         List<Container> nestedContainer = new ArrayList<>();
-
+        
         Map<Integer, List<Integer>> l = new HashMap<>();
         //Load all targets for every container in chain 
         for (int i : parentContainer) {
@@ -382,7 +385,7 @@ public class ContainerService implements Serializable {
 
         return nestedContainer;
     }
-
+    
     private int getChainWithLeastElements(Map<Integer, List<Integer>> l) {
         int leastElementsId = -1;
         for (int key : l.keySet()) {
@@ -392,7 +395,7 @@ public class ContainerService implements Serializable {
         }
         return leastElementsId;
     }
-
+    
     public ContainerType loadContainerTypeByName(String name) {
         ContainerTypeEntity entity = em.find(ContainerTypeEntity.class, name);
         return new ContainerType(
@@ -402,7 +405,7 @@ public class ContainerService implements Serializable {
                 entity.isUnique_name()
         );
     }
-
+    
     @SuppressWarnings("unchecked")
     public Container loadContainerByName(String containerName) {
         if (containerName == null) {
@@ -418,10 +421,10 @@ public class ContainerService implements Serializable {
             return loadContainerById(entities.get(0).getId());
         }
     }
-
+    
     public void deactivateContainer(Container c) {
         c.setDeactivated(true);
         this.em.merge(c.createEntity());
     }
-
+    
 }

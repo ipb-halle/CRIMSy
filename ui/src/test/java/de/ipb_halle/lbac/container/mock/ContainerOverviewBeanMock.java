@@ -29,8 +29,12 @@ import de.ipb_halle.lbac.project.ProjectService;
  */
 public class ContainerOverviewBeanMock extends ContainerOverviewBean {
 
-    public ContainerOverviewBeanMock() {
+    public ContainerOverviewBeanMock(ContainerService containerService) {
+        super();
         this.localizer = new ContainerLocalizerMock();
+        this.callBackController = new CallBackControllerMock();
+        this.validatorFactory = new ValidatorFactoryMock(containerService);
+        this.containerService = containerService;
     }
 
     public ContainerOverviewBeanMock setContainerService(ContainerService service) {

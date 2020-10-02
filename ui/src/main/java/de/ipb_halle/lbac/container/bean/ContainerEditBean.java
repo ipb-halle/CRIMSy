@@ -59,7 +59,7 @@ public class ContainerEditBean implements Serializable {
     private User currentUser;
     private String gvoClass;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private Mode mode;
+    private Mode mode = Mode.CREATE;
     private Container originalContainer;
     protected final List<String> possibleSecuritylevel = new ArrayList<>();
     private String preferredProjectName;
@@ -90,7 +90,7 @@ public class ContainerEditBean implements Serializable {
     }
 
     public String getContainerName() {
-            return containerToCreate.getLabel();
+        return containerToCreate.getLabel();
     }
 
     public Container getContainerLocation() {
@@ -101,12 +101,6 @@ public class ContainerEditBean implements Serializable {
         return containerToCreate;
     }
 
-    /**
-     * if the container is not yet set a mock Containertype is created to bypass
-     * null pointer issues
-     *
-     * @return
-     */
     public ContainerType getContainerType() {
         return containerToCreate.getType();
     }
@@ -129,9 +123,10 @@ public class ContainerEditBean implements Serializable {
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_create");
-        } else {
+        } else if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
-
+        } else {
+            return "";
         }
     }
 
@@ -152,7 +147,7 @@ public class ContainerEditBean implements Serializable {
     }
 
     public String getSecurityLevel() {
-            return containerToCreate.getGmosavety();
+        return containerToCreate.getGmosavety();
     }
 
     public void initSecurityLevels() {
