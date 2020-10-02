@@ -43,7 +43,6 @@ import de.ipb_halle.lbac.admission.ACListService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -177,7 +176,7 @@ public class ContainerServiceTest extends TestBase {
         priviligedAcl.addACE(secondUser, new ACPermission[]{ACPermission.permREAD});
         acListService.save(priviligedAcl);
 
-        p.setUserGroups(priviligedAcl);
+        p.setACList(priviligedAcl);
         projectService.saveProjectToDb(p);
 
         instance.saveContainer(c0);
@@ -293,7 +292,7 @@ public class ContainerServiceTest extends TestBase {
 
         project.setName("Container Test Project");
         project.setOwner(user);
-        project.setUserGroups(oneUserAcl);
+        project.setACList(oneUserAcl);
         project.setProjectType(ProjectType.IT_PROJECT);
 
         projectService.saveProjectToDb(project);

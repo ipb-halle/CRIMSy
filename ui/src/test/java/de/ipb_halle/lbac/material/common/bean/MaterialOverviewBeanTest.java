@@ -115,7 +115,7 @@ public class MaterialOverviewBeanTest extends TestBase {
         acl.addACE(customUser, new ACPermission[]{ACPermission.permEDIT});
         acl = aclistService.save(acl);
         project.setOwner(publicUser);
-        project.setUserGroups(acl);
+        project.setACList(acl);
         projectService.saveProjectToDb(project);
 
         userBean = new UserBeanMock();

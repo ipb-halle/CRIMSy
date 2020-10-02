@@ -195,7 +195,7 @@ public class ProjectService implements Serializable {
      */
     public Project saveProjectToDb(Project p) {
         ACList existingAcl = acListService.save(p.getUserGroups());
-        p.setUserGroups(existingAcl);
+        p.setACList(existingAcl);
         for (MaterialDetailType md : p.getDetailTemplates().keySet()) {
             if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
                 existingAcl = acListService.save(p.getDetailTemplates().get(md));
@@ -217,7 +217,7 @@ public class ProjectService implements Serializable {
 
     public void saveEditedProjectToDb(Project p) {
         ACList existingAcl = acListService.save(p.getUserGroups());
-        p.setUserGroups(existingAcl);
+        p.setACList(existingAcl);
         for (MaterialDetailType md : p.getDetailTemplates().keySet()) {
             if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
                 existingAcl = acListService.save(p.getDetailTemplates().get(md));

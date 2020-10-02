@@ -106,7 +106,7 @@ public class MaterialEditSaverTest extends TestBase {
         aclist.addACE(u, new ACPermission[]{ACPermission.permREAD});
         aclist = acListService.save(aclist);
         p.setOwner(u);
-        p.setUserGroups(aclist);
+        p.setACList(aclist);
         projectService.saveProjectToDb(p);
         mOld = creationTools.createEmptyStructure(p.getId());
         mOld.getStorageInformation().setStorageClass(new StorageClass(1, "storageClass-1"));

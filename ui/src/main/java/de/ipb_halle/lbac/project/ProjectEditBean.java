@@ -238,7 +238,7 @@ public class ProjectEditBean implements Serializable {
         if (mode == Mode.CREATE) {
             Project p = new Project(currentProjectType, projectName);
             p.setOwner(userBean.getCurrentAccount());
-            p.setUserGroups(projectACL);
+            p.setACList(projectACL);
 
             if (isHasBudget()) {
                 p.setBudget(Double.parseDouble(projectBudget));

@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -88,7 +87,7 @@ public class ProjectServiceTest extends TestBase {
             ACPermission.permREAD});
 
         p.setOwner(u);
-        p.setUserGroups(projectAcList);
+        p.setACList(projectAcList);
         projectAcList = aclistService.save(projectAcList);
 
         p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, projectAcList);

@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Project extends ACObject implements DTO,Serializable {
+public class Project extends ACObject implements DTO, Serializable {
 
     protected int id;
     protected String name;
@@ -138,10 +138,6 @@ public class Project extends ACObject implements DTO,Serializable {
 
     public ACList getUserGroups() {
         return getACList();
-    }
-
-    public void setUserGroups(ACList userGroups) {
-        this.setACList(userGroups);
     }
 
     public Map<MaterialDetailType, ACList> getDetailTemplates() {

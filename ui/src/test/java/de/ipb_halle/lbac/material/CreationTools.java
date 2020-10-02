@@ -117,7 +117,7 @@ public class CreationTools {
             ACPermission.permREAD});
 
         p.setOwner(u);
-        p.setUserGroups(projectAcList);
+        p.setACList(projectAcList);
 
         p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.STORAGE_CLASSES, projectAcList);
