@@ -87,6 +87,9 @@
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
         <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
 
+        <!-- test only -->
+        <class>de.ipb_halle.lbac.search.lang.HorrorEntity</class>
+
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

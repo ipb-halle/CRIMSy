@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +26,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.criteria.JoinType;
 
@@ -91,9 +97,11 @@ public class EntityGraph {
         return this;
     }
 
-    public EntityGraph addChild(EntityGraph entityGraph) {
-        entityGraph.addAttributeTypes(this.attributeTypes);
-        this.children.add(entityGraph);
+    public EntityGraph addChild(EntityGraph child) {
+        if (child.getLinks().size() == 0) {
+            throw new IllegalArgumentException("Child entity without link");
+        }
+        this.children.add(child);
         return this;
     }
 
@@ -190,6 +198,29 @@ public class EntityGraph {
         return this.entityClass != null;
     }
 
+    private void processAttributeOverride(String parentFieldName, AttributeOverride override) {
+        String name = parentFieldName.isEmpty() ?
+                override.name() :
+                parentFieldName + "." + override.name();
+
+        DbField dbField = this.fieldMap.get(name);
+        dbField.setColumnName(override.column().name());
+    }
+
+    private void processAttributeOverrides(String parentFieldName, AnnotatedElement element) {
+        AttributeOverride ao = element.getAnnotation(AttributeOverride.class);
+        if (ao != null) {
+            processAttributeOverride(parentFieldName, ao);
+        }
+
+        AttributeOverrides attributeOverrides = element.getAnnotation(AttributeOverrides.class);
+        if (attributeOverrides != null) {
+            for (AttributeOverride override : attributeOverrides.value()) {
+                processAttributeOverride(parentFieldName, override);
+            }
+        }
+    }
+
     /** 
      * Process the annotations of a class. Many of the 
      * 'more special' Hibernate annotations will be ignored.
@@ -210,9 +241,8 @@ public class EntityGraph {
      * to the fieldMap, if it is not annotated with <code>@Id</code> or <code>@Column</code>.
      * Fields annotated with <code>@EmbeddedId</code> will be resolved.
      *
-     * Note: Annotations <code>@Basic, @Embedded, @EntityCollection, @OneTo*, 
-     * @ManyTo*</code> as well as <code>AttributeOverride</code> etc. are 
-     * currently ignored.
+     * Note: Annotations <code>@EntityCollection, @OneTo*, @ManyTo*</code>  
+     * are currently ignored.
      * 
      * @param parentFieldName name of the field embedding the class of this field
      * @param field the field
@@ -223,7 +253,7 @@ public class EntityGraph {
                 : parentFieldName + "." + field.getName();
 
         if (field.getAnnotation(EmbeddedId.class) != null) {
-            Class clazz = field.getType();
+            Class<?> clazz = field.getType();
             processFields(clazz, fieldName, true);
             /*
              * possibly handle field level annotation of @AttributeOverride etc.
@@ -237,11 +267,20 @@ public class EntityGraph {
             return;
         }
 
+        Embedded embedded = field.getAnnotation(Embedded.class);
+        if (embedded != null) {
+            Class clazz = field.getType();
+            processFields(clazz, fieldName, false);
+            return;
+        }
+
+
         AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
         String columnName = field.getName();
         Column column = field.getAnnotation(Column.class);
-        if (column != null) {
-            if (! column.name().isEmpty()) {
+        Basic basic = field.getAnnotation(Basic.class);
+        if ((basic != null) || (column != null)) {
+            if ((column != null) && (! column.name().isEmpty())) {
                 columnName = column.name();
             }
             DbField dbField = new DbField(false)
@@ -251,8 +290,6 @@ public class EntityGraph {
                 .addAttributeTypes(this.attributeTypes);
             this.fieldMap.put(fieldName, dbField);
         }
-
-        // possibly add support for @Basic, @Embedded and others
     }
 
     /**
@@ -260,17 +297,25 @@ public class EntityGraph {
      * @param clazz the class to resolve the fields for
      * @param isIndex if the class is an EmbeddedId
      */
-    private void processFields(Class clazz, String parentFieldName, boolean isIndex) {
-        /*
-         * ToDo: also handle superclass(es) --> ACObject!
-         */
+    private void processFields(Class<?> clazz, String parentFieldName, boolean isIndex) {
         for(Field field : clazz.getDeclaredFields()) {
             if (isIndex) {
                 processId(parentFieldName, field);
             } else {
                 processColumn(parentFieldName, field);
             }
+            String name = parentFieldName.isEmpty() ?
+                    field.getName() :
+                    parentFieldName + "." + field.getName();
+            processAttributeOverrides(name, field);
         }
+
+        Class<?> superClass = clazz.getSuperclass();
+        if ((superClass != null) 
+                && (superClass.getAnnotation(MappedSuperclass.class) != null)) {
+            processFields(superClass, parentFieldName, isIndex);
+        }
+        processAttributeOverrides(parentFieldName, clazz);
     }
 
     /**
@@ -302,10 +347,9 @@ public class EntityGraph {
     }
 
     /**
-     * process the mandatory <code>@Table</code> annotation
-     * for an entity class.
-     * @throws IllegalArgumentException if the <code>entityClass</code> is
-     * not annotated with <code>@Table</code>.
+     * process <code>@Table</code> annotation for an entity class.
+     * If the annotation is missing, the simple name of the class
+     * is used.
      */
     private void processTable(){
         Table table = this.entityClass.getAnnotation(Table.class);
@@ -319,7 +363,7 @@ public class EntityGraph {
             this.tableName = sb.toString();
             return;
         } 
-        throw new IllegalArgumentException("Entity without table annotation.");
+        this.tableName = this.entityClass.getSimpleName();
     }
 
     protected void setAlias(String alias) {

@@ -23,6 +23,10 @@ import de.ipb_halle.lbac.entity.NodeEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +39,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class will provide some test cases for the NodeService class.
@@ -62,7 +67,7 @@ public class SqlBuilderTest extends TestBase {
             Operator.ILIKE,
             new Value("%TEST%"));
 
-        assertNotSame("fake assertion!", builder.query(condition));
+        builder.query(condition);
         assertEquals("Invalid argument list size", 1, builder.getValueList().size());
         Value v = builder.getValueList().get(0);
         assertEquals("Invalid argument key", "field0", v.getArgumentKey());
@@ -85,11 +90,13 @@ public class SqlBuilderTest extends TestBase {
             Operator.EQUAL,
             new Value("Benzol"));
 
-        assertNotSame("fake assertion!", builder.query(condition));
-//        assertEquals("Invalid argument list size", 1, builder.getValueList().size());
-//        Value v = builder.getValueList().get(0);
-//        assertEquals("Invalid argument key", "field0", v.getArgumentKey());
-//        assertEquals("Invalid argument value", "%TEST%", v.getValue());
+        String query = builder.query(condition);
+        assertTrue("Query contains expected keywords", 
+                query.startsWith("SELECT ") &&
+                query.contains(" FROM ") &&
+                query.contains(" AS a JOIN ") &&
+                query.contains(" ON a.materialid = a_0.materialid ") &&
+                query.contains(" WHERE "));
     }
 
     @Test
@@ -107,8 +114,6 @@ public class SqlBuilderTest extends TestBase {
             }), 
             Operator.EQUAL,
             new Value("Benzol"));
-
-//        assertNotSame("fake assertion!", builder.query(condition));
         
         Condition condition2 = new Condition(
             new Attribute(new AttributeType[] {
@@ -124,12 +129,18 @@ public class SqlBuilderTest extends TestBase {
                 condition2
         );
             
-        assertNotSame("fake assertion!", builder.query(condition3));
-        
-//        assertEquals("Invalid argument list size", 1, builder.getValueList().size());
-//        Value v = builder.getValueList().get(0);
-//        assertEquals("Invalid argument key", "field0", v.getArgumentKey());
-//        assertEquals("Invalid argument value", "%TEST%", v.getValue());
+//        assertNotSame("fake assertion!", builder.query(condition3));
+        builder.query(condition3);
+        assertEquals("Invalid argument list size", 2, builder.getValueList().size());
     }
     
+    @Test
+    public void testSqlBuilder_4() {
+        EntityGraph graph = new EntityGraph(HorrorEntity.class);
+        Map<String, DbField> map = graph.getFieldMap();
+        Set<String> columnNames = new HashSet<>(
+                Arrays.asList(new String[] {"aclist_id", "anzahl", 
+                    "besitzer_id", "foobar", "id", "ort", "strasse"}));
+        assertEquals("Set of column names does not match", columnNames, map.keySet());
+    }
 }
