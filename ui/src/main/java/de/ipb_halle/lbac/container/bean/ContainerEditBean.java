@@ -123,7 +123,7 @@ public class ContainerEditBean implements Serializable {
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_create");
-        } else if (mode == Mode.CREATE) {
+        } else if (mode == Mode.EDIT) {
             return localizer.localizeString("container_edit_titel_edit", originalContainer.getLabel());
         } else {
             return "";
