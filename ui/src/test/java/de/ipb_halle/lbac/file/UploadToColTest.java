@@ -122,7 +122,7 @@ public class UploadToColTest extends TestBase {
                 publicUser,
                 new AsyncContextMock(
                         new File(examplaDocsRootFolder + "IPB_Jahresbericht_2004.pdf"),
-                        "test-coll"),
+                        "test-coll-does-not-exist"),
                 collectionService,
                 termVectorEntityService,
                 "target/test-classes/collections");
@@ -130,7 +130,7 @@ public class UploadToColTest extends TestBase {
         upload.run();
         WriterMock writermock = ((WriterMock) upload.response.getWriter());
         String json = writermock.getJson();
-        Assert.assertEquals("{\"success\":false,\"error\":\"Could not find collection with name test-coll\"}", json);
+        Assert.assertEquals("{\"success\":false,\"error\":\"Could not find collection with name test-coll-does-not-exist\"}", json);
 
     }
 
