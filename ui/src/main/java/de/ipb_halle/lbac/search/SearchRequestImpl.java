@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 
@@ -24,10 +25,26 @@ import de.ipb_halle.lbac.search.lang.EntityGraph;
  *
  * @author fmauz
  */
-public interface SearchRequest {
+public class SearchRequestImpl implements SearchRequest {
 
-    public EntityGraph getEntityGraph();
+    private Condition condition;
+    private int firstResultIndex;
+    private int maxResults;
+    private User u;
+    private EntityGraph entityGraph;
 
-    public Condition getCondition();
+    public SearchRequestImpl(EntityGraph graph, Condition condition) {
+        this.condition = condition;
+        this.entityGraph = graph;
+    }
 
+    @Override
+    public EntityGraph getEntityGraph() {
+        return entityGraph;
+    }
+
+    @Override
+    public Condition getCondition() {
+        return condition;
+    }
 }

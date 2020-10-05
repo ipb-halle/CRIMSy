@@ -139,7 +139,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertNotNull("Creation Date of material must be set", material[1]);
         Assert.assertEquals("ID of general rights not expected one", idOfMatGeneralRights.toString(), material[2]);
         Assert.assertEquals("ID of owner not expected one", ownerId, material[3]);
-        Assert.assertEquals("ID of project not expected one", (int)p.getId(), (int) material[4]);
+        Assert.assertEquals("ID of project not expected one", (int) p.getId(), (int) material[4]);
 
         //Checking the structure  table entry
         List structures = entityManagerService.doSqlQuery("select sumformula,molarmass,exactmolarmass,moleculeid from structures");
@@ -300,18 +300,26 @@ public class MaterialServiceTest extends TestBase {
 
         history = instance.loadHistoryOfMaterial(structure.getId());
         Iterator<Date> iter = history.getChanges().keySet().iterator();
-        iter.next();
-        changeDate = iter.next();
-        storageDiff = history.getDifferenceOfTypeAtDate(MaterialStorageDifference.class, changeDate);
-        Assert.assertNotNull(storageDiff);
-        Integer keepFrozenIndex = storageDiff.getStorageConditionsOld().indexOf(StorageCondition.keepFrozen);
-        Assert.assertTrue(keepFrozenIndex > -1);
-        Assert.assertNull(storageDiff.getStorageConditionsNew().get(keepFrozenIndex));
+
+        if (iter.hasNext()) {
+            iter.next();
+        }
+        if (iter.hasNext()) {
+            changeDate = iter.next();
+
+            storageDiff = history.getDifferenceOfTypeAtDate(MaterialStorageDifference.class, changeDate);
+            Assert.assertNotNull(storageDiff);
+            Integer keepFrozenIndex = storageDiff.getStorageConditionsOld().indexOf(StorageCondition.keepFrozen);
+            Assert.assertTrue(keepFrozenIndex > -1);
+            Assert.assertNull(storageDiff.getStorageConditionsNew().get(keepFrozenIndex));
+        }
 
         cleanMaterialsFromDB();
-        cleanProjectFromDB(p, false);
-        cleanProjectFromDB(p2, false);
-        //    cleanUserFromDB(u2);
+
+        cleanProjectFromDB(p,
+                false);
+        cleanProjectFromDB(p2,
+                false);
     }
 
     @Test
@@ -644,31 +652,56 @@ public class MaterialServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("MaterialServiceTest.war")
-                .addClass(UserBeanMock.class)
-                .addClass(ACListService.class)
-                .addClass(CollectionBean.class)
-                .addClass(CollectionService.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
-                .addClass(CollectionOrchestrator.class)
-                .addClass(EntityManagerService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchBean.class)
-                .addClass(DocumentSearchService.class)
-                .addClass(ACListService.class)
-                .addClass(MoleculeService.class)
-                .addClass(ProjectService.class)
-                .addClass(CollectionWebClient.class)
-                .addClass(DocumentSearchOrchestrator.class)
-                .addClass(Updater.class)
-                .addClass(Navigator.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(TissueService.class)
-                .addClass(WordCloudBean.class)
-                .addClass(WordCloudWebClient.class)
-                .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class);
+                .addClass(UserBeanMock.class
+                )
+                .addClass(ACListService.class
+                )
+                .addClass(CollectionBean.class
+                )
+                .addClass(CollectionService.class
+                )
+                .addClass(FileService.class
+                )
+                .addClass(FileEntityService.class
+                )
+                .addClass(CollectionOrchestrator.class
+                )
+                .addClass(EntityManagerService.class
+                )
+                .addClass(TermVectorEntityService.class
+                )
+                .addClass(DocumentSearchBean.class
+                )
+                .addClass(DocumentSearchService.class
+                )
+                .addClass(ACListService.class
+                )
+                .addClass(MoleculeService.class
+                )
+                .addClass(ProjectService.class
+                )
+                .addClass(CollectionWebClient.class
+                )
+                .addClass(DocumentSearchOrchestrator.class
+                )
+                .addClass(Updater.class
+                )
+                .addClass(Navigator.class
+                )
+                .addClass(TaxonomyService.class
+                )
+                .addClass(TaxonomyNestingService.class
+                )
+                .addClass(TissueService.class
+                )
+                .addClass(WordCloudBean.class
+                )
+                .addClass(WordCloudWebClient.class
+                )
+                .addClass(MaterialIndexHistoryEntity.class
+                )
+                .addClass(MaterialService.class
+                );
         return UserBeanDeployment.add(deployment);
     }
 }

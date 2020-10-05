@@ -164,6 +164,8 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
 
         Assert.assertEquals(1, instance.getItemAmount(owner, new HashMap<>()));
+        
+        
         List<Item> items = instance.loadItems(owner, new HashMap<>(), 0, 25).getAllFoundObjects(Item.class, nodeService.getLocalNode());
 
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
