@@ -165,14 +165,13 @@ public class ItemServiceTest extends TestBase {
         Item item = createItem();
         instance.saveItem(item);
         Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
-        Assert.assertEquals(1, instance.getItemAmount(owner, new HashMap<>()));
 
-        //List<Item> items = instance.loadItems(owner, new HashMap<>(), 0, 25).getAllFoundObjects(Item.class, nodeService.getLocalNode());
         //Load item by description
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(owner, 0, 25);
         builder.addIndexName("%TESTMAT%");
         SearchResult result = instance.loadItems(builder.buildSearchRequest());
         List<Item> items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, instance.getItemAmount(builder.buildSearchRequest()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
 
@@ -181,22 +180,25 @@ public class ItemServiceTest extends TestBase {
         builder.addID(item.getId());
         result = instance.loadItems(builder.buildSearchRequest());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, instance.getItemAmount(builder.buildSearchRequest()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
 
         //Load item by project
         builder = new ItemSearchRequestBuilder(owner, 0, 25);
-        builder.addProject("xyz");
+        builder.addProject("%biochemi%");
         result = instance.loadItems(builder.buildSearchRequest());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals("Testcase 001: One Item must be found after load", 0, items.size());
-        //checkItem(items.get(0));
+        Assert.assertEquals(1, instance.getItemAmount(builder.buildSearchRequest()));
+        Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
+        checkItem(items.get(0));
 
         //Load item by location
         builder = new ItemSearchRequestBuilder(owner, 0, 25);
         builder.addLocation("Schrank1");
         result = instance.loadItems(builder.buildSearchRequest());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, instance.getItemAmount(builder.buildSearchRequest()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
 
@@ -582,6 +584,7 @@ public class ItemServiceTest extends TestBase {
     }
 
     private Item createItem() {
+        
         Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
         Item item = new Item();
         item.setAmount(23d);

@@ -131,9 +131,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public void reloadItems() {
-
-        Map<String, String> cmap = cmapFactory.createCmap(searchMaskValues);
-        itemAmount = itemService.getItemAmount(currentUser, cmap);
+        itemAmount = itemService.getItemAmount(createSearchRequest());
         searchResult = itemService.loadItems(createSearchRequest());
         itemLocaliser.localiseContainerNamesOf(searchResult.getAllFoundObjects(Item.class, nodeService.getLocalNode()));
     }

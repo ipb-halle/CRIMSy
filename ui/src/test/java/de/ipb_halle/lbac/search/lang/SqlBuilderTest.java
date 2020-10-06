@@ -31,14 +31,11 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import java.util.UUID;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -47,13 +44,11 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Arquillian.class)
 public class SqlBuilderTest extends TestBase {
 
-
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("SqlBuilderTest.war");
     }
-    
-   
+
     /**
      */
     @Test
@@ -63,9 +58,9 @@ public class SqlBuilderTest extends TestBase {
         SqlBuilder builder = new SqlBuilder(graph);
 
         Condition condition = new Condition(
-            new Attribute(AttributeType.INSTITUTION), 
-            Operator.ILIKE,
-            new Value("%TEST%"));
+                new Attribute(AttributeType.INSTITUTION),
+                Operator.ILIKE,
+                new Value("%TEST%"));
 
         builder.query(condition);
         assertEquals("Invalid argument list size", 1, builder.getValueList().size());
@@ -83,20 +78,20 @@ public class SqlBuilderTest extends TestBase {
         SqlBuilder builder = new SqlBuilder(graph);
 
         Condition condition = new Condition(
-            new Attribute(new AttributeType[] {
-                    AttributeType.MATERIAL,
-                    AttributeType.TEXT
-            }), 
-            Operator.EQUAL,
-            new Value("Benzol"));
+                new Attribute(new AttributeType[]{
+            AttributeType.MATERIAL,
+            AttributeType.TEXT
+        }),
+                Operator.EQUAL,
+                new Value("Benzol"));
 
         String query = builder.query(condition);
-        assertTrue("Query contains expected keywords", 
-                query.startsWith("SELECT ") &&
-                query.contains(" FROM ") &&
-                query.contains(" AS a JOIN ") &&
-                query.contains(" ON a.materialid = a_0.materialid ") &&
-                query.contains(" WHERE "));
+        assertTrue("Query contains expected keywords",
+                query.startsWith("SELECT ")
+                && query.contains(" FROM ")
+                && query.contains(" AS a JOIN ")
+                && query.contains(" ON a.materialid = a_0.materialid ")
+                && query.contains(" WHERE "));
     }
 
     @Test
@@ -108,39 +103,58 @@ public class SqlBuilderTest extends TestBase {
         SqlBuilder builder = new SqlBuilder(graph);
 
         Condition condition1 = new Condition(
-            new Attribute(new AttributeType[] {
-                    AttributeType.MATERIAL,
-                    AttributeType.TEXT
-            }), 
-            Operator.EQUAL,
-            new Value("Benzol"));
-        
+                new Attribute(new AttributeType[]{
+            AttributeType.MATERIAL,
+            AttributeType.TEXT
+        }),
+                Operator.EQUAL,
+                new Value("Benzol"));
+
         Condition condition2 = new Condition(
-            new Attribute(new AttributeType[] {
-                    AttributeType.ITEM,
-                    AttributeType.TEXT
-            }), 
-            Operator.EQUAL,
-            new Value("HPLC Grade"));
+                new Attribute(new AttributeType[]{
+            AttributeType.ITEM,
+            AttributeType.TEXT
+        }),
+                Operator.EQUAL,
+                new Value("HPLC Grade"));
 
         Condition condition3 = new Condition(
                 condition1,
                 Operator.AND,
                 condition2
         );
-            
+
 //        assertNotSame("fake assertion!", builder.query(condition3));
         builder.query(condition3);
         assertEquals("Invalid argument list size", 2, builder.getValueList().size());
     }
-    
+
+    @Test
+    public void testSqlCountBuilder() {
+        EntityGraph graph = new EntityGraph(ItemEntity.class)
+                .addChild(new EntityGraph(MaterialEntity.class)
+                        .addLinkField("materialid", "materialid"));
+
+        SqlCountBuilder countBuilder = new SqlCountBuilder(
+                graph,
+                new Attribute(new AttributeType[]{
+            AttributeType.ITEM,
+            AttributeType.LABEL
+
+        }));
+        String sql = countBuilder.query(null);
+
+        Assert.assertEquals(" SELECT COUNT( DISTINCT a.id) FROM  items AS a JOIN  materials AS a_0 ON a.materialid = a_0.materialid ", sql);
+
+    }
+
     @Test
     public void testSqlBuilder_4() {
         EntityGraph graph = new EntityGraph(HorrorEntity.class);
         Map<String, DbField> map = graph.getFieldMap();
         Set<String> columnNames = new HashSet<>(
-                Arrays.asList(new String[] {"aclist_id", "anzahl", 
-                    "besitzer_id", "foobar", "id", "ort", "strasse"}));
+                Arrays.asList(new String[]{"aclist_id", "anzahl",
+            "besitzer_id", "foobar", "id", "ort", "strasse"}));
         assertEquals("Set of column names does not match", columnNames, map.keySet());
     }
 }

@@ -30,10 +30,9 @@ import java.util.Set;
  */
 public class SqlBuilder {
 
-    private EntityGraph entityGraph;
+    protected EntityGraph entityGraph;
     private List<Value> valueList;
     private int argumentCounter;
-    private boolean distinct = true;
 
     /**
      * constructor
@@ -311,11 +310,8 @@ public class SqlBuilder {
     protected String select(String alias) {
         StringBuilder sb = new StringBuilder();
         this.entityGraph.setAlias(alias);
-        if (distinct) {
-            sb.append("SELECT DISTINCT ");
-        } else {
-            sb.append("SELECT ");
-        }
+        sb.append("SELECT DISTINCT ");
+
         String sep = "";
         for (DbField field : this.entityGraph.getFieldMap().values()) {
             sb.append(sep);
@@ -326,10 +322,6 @@ public class SqlBuilder {
         }
         sb.append(" ");
         return sb.toString();
-    }
-
-    public void setDistinct(boolean distinct) {
-        this.distinct = distinct;
     }
 
     /**

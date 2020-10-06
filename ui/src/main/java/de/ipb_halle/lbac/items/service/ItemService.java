@@ -42,8 +42,10 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
-import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.lang.Attribute;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.math.BigInteger;
@@ -103,89 +105,10 @@ public class ItemService {
     private NodeService nodeService;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private final String SQL_LOAD_ITEMS = "Select DISTINCT i.id,"
-            + "i.materialid,"
-            + "i.amount,"
-            + "i.articleid,"
-            + "i.projectid,"
-            + "i.concentration,"
-            + "i.unit,"
-            + "i.purity,"
-            + "i.solventid,"
-            + "i.description,"
-            + "i.owner,"
-            + "i.containersize,"
-            + "i.containertype,"
-            + "i.containerid,"
-            + "i.ctime,"
-            + "i.aclist_id,"
-            + "i.expiry_date "
-            + "FROM items i "
-            + "JOIN material_indices mi ON mi.materialid=i.materialid "
-            + "JOIN usersgroups u on u.id=i.owner "
-            + "LEFT JOIN projects p on p.id=i.projectid "
-            + "JOIN materials m ON m.materialid=mi.materialid "
-            + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
-            + "LEFT JOIN containers c ON nc.targetid=c.id "
-            + "LEFT JOIN containers c2 ON i.containerid=c2.id "
-            + SqlStringWrapper.JOIN_KEYWORD + " "
-            + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
-            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
-            + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1) "
-            + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
-            + "AND (c2.label ILIKE(:LOCATION_NAME) OR :LOCATION_NAME='no_location_filter' OR c.label ILIKE(:LOCATION_NAME)) "
-            + "AND (i.description ILIKE(:DESCRIPTION) OR :DESCRIPTION='no_description_filter') "
-            + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
-            + "ORDER BY i.id";
-
-    private final String SQL_LOAD_ITEMS_AMOUNT = "Select COUNT(DISTINCT(i.id)) "
-            + "FROM items i "
-            + "JOIN material_indices mi ON mi.materialid=i.materialid "
-            + "JOIN usersgroups u on u.id=i.owner "
-            + "LEFT JOIN projects p on p.id=i.projectid "
-            + "JOIN materials m ON m.materialid=mi.materialid "
-            + "LEFT JOIN nested_containers nc ON i.containerid=nc.sourceid "
-            + "LEFT JOIN containers c ON nc.targetid=c.id "
-            + "LEFT JOIN containers c2 ON i.containerid=c2.id "
-            + SqlStringWrapper.JOIN_KEYWORD + " "
-            + "WHERE (mi.value=:MATERIAL_NAME OR :MATERIAL_NAME='no_name_filter') "
-            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
-            + "AND (u.name=:OWNER_NAME OR :OWNER_NAME='no_user_filter') "
-            + "AND (i.description ILIKE(:DESCRIPTION) OR :DESCRIPTION='no_description_filter') "
-            + "AND (p.name=:PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
-            + "AND (c2.label ILIKE(:LOCATION_NAME) OR :LOCATION_NAME='no_location_filter' OR c.label ILIKE(:LOCATION_NAME)) "
-            + "AND (i.id=:ITEM_ID OR :ITEM_ID=-1)";
-
-    /**
-     *
-     * @param u
-     * @param cmap
-     * @param firstResult
-     * @param maxResults
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public SearchResult loadItems(User u, Map<String, String> cmap, int firstResult, int maxResults) {
-
-        SearchResult result = new SearchResultImpl();
-
-        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS, "i.aclist_id", "i.owner", ACPermission.permREAD), cmap, ItemEntity.class);
-        q.setParameter("userid", u.getId());
-        q.setFirstResult(firstResult);
-        q.setMaxResults(maxResults);
-        List<ItemEntity> entities = q.getResultList();
-
-        for (ItemEntity entity : entities) {
-            Item i = createItemFromEntity(entity);
-            i.setHistory(loadHistoryOfItem(i));
-
-            result.addResults(nodeService.getLocalNode(), Arrays.asList(i));
-        }
-        return result;
-    }
 
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl();
+        //EntityGraph g=holeUndFiltereGraph(request.getCondition());
         SqlBuilder sqlBuilder = new SqlBuilder(request.getEntityGraph());
         String sql = sqlBuilder.query(request.getCondition());
 
@@ -219,28 +142,22 @@ public class ItemService {
         return item;
     }
 
-    public int getItemAmount(User u, Map<String, String> cmap) {
-        Query q = createItemQuery(SqlStringWrapper.aclWrapper(SQL_LOAD_ITEMS_AMOUNT, "i.aclist_id", "i.owner", ACPermission.permREAD), cmap, null);
-        q.setParameter("userid", u.getId());
+    public int getItemAmount(SearchRequest request) {
+        SqlCountBuilder countBuilder = new SqlCountBuilder(
+                request.getEntityGraph(),
+                new Attribute(new AttributeType[]{
+            AttributeType.ITEM,
+            AttributeType.LABEL
+        }));
+
+        String sql = countBuilder.query(request.getCondition());
+        Query q = em.createNativeQuery(sql);
+        for (Value param : countBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();
-    }
 
-    private Query createItemQuery(String rawSql, Map<String, String> cmap, Class targetClass) {
-        Query q;
-        if (targetClass == null) {
-            q = this.em.createNativeQuery(rawSql);
-        } else {
-            q = this.em.createNativeQuery(rawSql, targetClass);
-        }
-
-        return q
-                .setParameter("DESCRIPTION", cmap.getOrDefault("DESCRIPTION", "no_description_filter"))
-                .setParameter("MATERIAL_NAME", cmap.getOrDefault("MATERIAL_NAME", "no_name_filter"))
-                .setParameter("OWNER_NAME", cmap.getOrDefault("OWNER_NAME", "no_user_filter"))
-                .setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"))
-                .setParameter("LOCATION_NAME", cmap.getOrDefault("LOCATION_NAME", "no_location_filter"))
-                .setParameter("ITEM_ID", cmap.containsKey("ITEM_ID") ? Integer.parseInt(cmap.get("ITEM_ID")) : -1);
     }
 
     public Item loadItemById(int id) {
