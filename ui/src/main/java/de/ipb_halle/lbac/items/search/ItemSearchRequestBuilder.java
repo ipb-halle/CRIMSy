@@ -59,7 +59,7 @@ public class ItemSearchRequestBuilder {
     }
 
     public ItemSearchRequestBuilder addID(Integer id) {
-        addCondition(Operator.ILIKE,
+        addCondition(Operator.EQUAL,
                 id,
                 AttributeType.ITEM,
                 AttributeType.LABEL);
@@ -76,12 +76,19 @@ public class ItemSearchRequestBuilder {
     }
 
     public ItemSearchRequestBuilder addLocation(String location) {
-
+        entityGraphBuilder.addContainer();
+        addCondition(Operator.ILIKE,
+                location,
+                AttributeType.CONTAINER,
+                AttributeType.LABEL);
         return this;
     }
 
     public ItemSearchRequestBuilder addProject(String projectName) {
         entityGraphBuilder.addProject();
+        addCondition(Operator.ILIKE,
+                projectName,
+                AttributeType.PROJECT_NAME);
         return this;
     }
 
