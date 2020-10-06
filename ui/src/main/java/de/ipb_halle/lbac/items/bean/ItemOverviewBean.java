@@ -32,6 +32,8 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
@@ -129,10 +131,36 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public void reloadItems() {
+
         Map<String, String> cmap = cmapFactory.createCmap(searchMaskValues);
         itemAmount = itemService.getItemAmount(currentUser, cmap);
-        searchResult = itemService.loadItems(currentUser, cmap, firstResult, PAGE_SIZE);
+        searchResult = itemService.loadItems(createSearchRequest());
         itemLocaliser.localiseContainerNamesOf(searchResult.getAllFoundObjects(Item.class, nodeService.getLocalNode()));
+    }
+
+    private SearchRequest createSearchRequest() {
+        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(currentUser, firstResult, PAGE_SIZE);
+        if (searchMaskValues.getMaterialName() != null && !searchMaskValues.getMaterialName().isEmpty()) {
+            builder.addIndexName(searchMaskValues.getMaterialName());
+        }
+        if (searchMaskValues.getItemId() != null && !searchMaskValues.getItemId().isEmpty()) {
+            builder.addID(Integer.parseInt(searchMaskValues.getItemId()));
+        }
+        if (searchMaskValues.getUserName() != null && !searchMaskValues.getUserName().isEmpty()) {
+            builder.addUserName(searchMaskValues.getUserName());
+        }
+        if (searchMaskValues.getProjectName() != null && !searchMaskValues.getProjectName().isEmpty()) {
+            builder.addProject(searchMaskValues.getProjectName());
+        }
+        if (searchMaskValues.getDescription() != null && !searchMaskValues.getDescription().isEmpty()) {
+            builder.addDescription(searchMaskValues.getDescription());
+
+        }
+        if (searchMaskValues.getLocation() != null && !searchMaskValues.getLocation().isEmpty()) {
+            builder.addLocation(searchMaskValues.getLocation());
+        }
+        return builder.buildSearchRequest();
+
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {

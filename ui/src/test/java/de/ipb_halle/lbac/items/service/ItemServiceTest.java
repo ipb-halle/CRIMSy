@@ -170,7 +170,7 @@ public class ItemServiceTest extends TestBase {
         //List<Item> items = instance.loadItems(owner, new HashMap<>(), 0, 25).getAllFoundObjects(Item.class, nodeService.getLocalNode());
         //Load item by description
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(owner, 0, 25);
-        builder.addIndexName("TESTMATERIAL");
+        builder.addIndexName("%TESTMAT%");
         SearchResult result = instance.loadItems(builder.buildSearchRequest());
         List<Item> items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());

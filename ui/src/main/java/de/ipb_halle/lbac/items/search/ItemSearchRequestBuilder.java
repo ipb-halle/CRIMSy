@@ -69,7 +69,7 @@ public class ItemSearchRequestBuilder {
     public ItemSearchRequestBuilder addIndexName(String name) {
         entityGraphBuilder.addMaterialName();
         addCondition(Operator.ILIKE,
-                name,
+                "%" + name + "%",
                 AttributeType.MATERIAL,
                 AttributeType.TEXT);
         return this;
@@ -78,7 +78,7 @@ public class ItemSearchRequestBuilder {
     public ItemSearchRequestBuilder addLocation(String location) {
         entityGraphBuilder.addContainer();
         addCondition(Operator.ILIKE,
-                location,
+                "%" + location + "%",
                 AttributeType.CONTAINER,
                 AttributeType.LABEL);
         return this;
@@ -87,13 +87,24 @@ public class ItemSearchRequestBuilder {
     public ItemSearchRequestBuilder addProject(String projectName) {
         entityGraphBuilder.addProject();
         addCondition(Operator.ILIKE,
-                projectName,
+                "%" + projectName + "%",
                 AttributeType.PROJECT_NAME);
         return this;
     }
 
     public ItemSearchRequestBuilder addUserName(String userName) {
         entityGraphBuilder.addUser();
+        addCondition(Operator.ILIKE,
+                "%" + userName + "%",
+                AttributeType.MEMBER_NAME);
+        return this;
+    }
+
+    public ItemSearchRequestBuilder addDescription(String description) {
+        addCondition(Operator.ILIKE,
+                "%" + description + "%",
+                AttributeType.ITEM,
+                AttributeType.TEXT);
         return this;
     }
 
