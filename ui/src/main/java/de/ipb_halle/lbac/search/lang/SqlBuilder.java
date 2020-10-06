@@ -22,18 +22,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import javax.persistence.criteria.JoinType;
 
 /**
  * ToDo: - ORDER clause
- * 
+ *
  * @author fbroda
  */
 public class SqlBuilder {
-    
+
     private EntityGraph entityGraph;
     private List<Value> valueList;
     private int argumentCounter;
+    private boolean distinct = true;
 
     /**
      * constructor
@@ -43,9 +43,10 @@ public class SqlBuilder {
     }
 
     /**
-     * add a condition 
+     * add a condition
+     *
      * @param sb the StringBuilder
-     * @param condition the condition 
+     * @param condition the condition
      */
     private void addCondition(StringBuilder sb, Condition condition) {
         sb.append("(");
@@ -72,12 +73,14 @@ public class SqlBuilder {
     }
 
     /**
-     * add a leaf condition considering all matching columns. Depending on the 
-     * type of condition (not single argument) this will update 
+     * add a leaf condition considering all matching columns. Depending on the
+     * type of condition (not single argument) this will update
      * <code>argumentCounter</code> and <code>valueList</code>.
+     *
      * @param sb the StringBuilder
      * @param condition the leaf condition
-     * @throws NoSuchElementException if the condition attributes can not be fulfilled by the current EntityGraph
+     * @throws NoSuchElementException if the condition attributes can not be
+     * fulfilled by the current EntityGraph
      */
     private void addLeafCondition(StringBuilder sb, Condition condition) {
         Operator operator = condition.getOperator();
@@ -99,8 +102,9 @@ public class SqlBuilder {
 
     /**
      * add a leaf condition with a binary operator
+     *
      * @param sb the StringBuilder
-     * @param columns the matching  columns for this condition
+     * @param columns the matching columns for this condition
      * @param operator the condition operator
      * @param value the condition value
      */
@@ -118,8 +122,9 @@ public class SqlBuilder {
 
     /**
      * add a leaf condition with an unary operator
+     *
      * @param sb the StringBuilder
-     * @param columns the matching  columns for this condition
+     * @param columns the matching columns for this condition
      * @param operator the condition operator
      */
     private void addUnaryLeafCondition(StringBuilder sb, Set<DbField> columns, Operator operator) {
@@ -138,8 +143,8 @@ public class SqlBuilder {
     }
 
     /**
-     * @return the FROM clause defined by this EntityGraph
-     * for a SELECT statement.
+     * @return the FROM clause defined by this EntityGraph for a SELECT
+     * statement.
      */
     protected String from(String alias) {
         StringBuilder sb = new StringBuilder();
@@ -147,7 +152,7 @@ public class SqlBuilder {
         this.entityGraph.setAlias(alias);
 
         sb.append("FROM ");
-        if (this.entityGraph.isEntityClass()) { 
+        if (this.entityGraph.isEntityClass()) {
             sb.append(this.entityGraph.getTableName());
         } else {
             sb.append("( ");
@@ -160,17 +165,18 @@ public class SqlBuilder {
         if (this.entityGraph.hasChildren()) {
             sb.append(joinChildren(this.entityGraph, alias));
         }
-        
+
         return sb.toString();
     }
 
-    /** 
+    /**
      * obtain a set of columns, which matches the given attribute
+     *
      * @param attribute the attribute to filter the fields (columns) against
      * @return a set of matching columns
      */
     private Set<DbField> getMatchingColumns(Attribute attribute) {
-        Set<DbField> fields = new HashSet<> ();
+        Set<DbField> fields = new HashSet<>();
         for (DbField field : this.entityGraph.getAllFields()) {
             if (field.matches(attribute)) {
                 fields.add(field);
@@ -180,20 +186,21 @@ public class SqlBuilder {
     }
 
     /**
-     * return the appropriate JOIN keyword (i.e. 
-     * "LEFT JOIN", "JOIN", "RIGHT JOIN") 
-     * for a join operation
+     * return the appropriate JOIN keyword (i.e. "LEFT JOIN", "JOIN", "RIGHT
+     * JOIN") for a join operation
+     *
      * @param graph the EntityGraph object
      * @return the JOIN keyword(s)
-     * @throws IllegalStateException if joinType doesn't match one of the known join types
+     * @throws IllegalStateException if joinType doesn't match one of the known
+     * join types
      */
     private String getJoinType(EntityGraph graph) {
-        switch(graph.getJoinType()) {
-            case INNER :
+        switch (graph.getJoinType()) {
+            case INNER:
                 return " JOIN ";
-            case LEFT :
+            case LEFT:
                 return " LEFT JOIN ";
-            case RIGHT :
+            case RIGHT:
                 return " RIGHT JOIN ";
         }
         throw new IllegalStateException("Encountered illegal JoinType");
@@ -201,6 +208,7 @@ public class SqlBuilder {
 
     /**
      * return the list of Values with argument keys set
+     *
      * @return a list of Value objects
      */
     public List<Value> getValueList() {
@@ -209,6 +217,7 @@ public class SqlBuilder {
 
     /**
      * add joins of dependent (child) entities
+     *
      * @param graph the entity graph
      * @param alias the SQL alias for this entity
      * @return the SQL JOIN expression
@@ -216,7 +225,7 @@ public class SqlBuilder {
     private String joinChildren(EntityGraph graph, String alias) {
         StringBuilder sb = new StringBuilder();
         int i = 0;
-        for(EntityGraph eg : graph.getChildren()) {
+        for (EntityGraph eg : graph.getChildren()) {
             String newAlias = alias + "_" + String.valueOf(i);
             eg.setAlias(newAlias);
             sb.append(getJoinType(eg));
@@ -233,7 +242,7 @@ public class SqlBuilder {
             sb.append(" ON ");
             sb.append(joinCondition(graph, eg, alias, newAlias));
 
-            if(eg.hasChildren()) {
+            if (eg.hasChildren()) {
                 sb.append(joinChildren(eg, newAlias));
             }
             i++;
@@ -243,24 +252,28 @@ public class SqlBuilder {
 
     /**
      * add a join condition between this instance and another EntityGraph.
+     *
      * @param parent the parent EntityGraph
-     * @param child the child EntityGraph, providing the link between the two tables
+     * @param child the child EntityGraph, providing the link between the two
+     * tables
      * @param alias table alias for this instance
      * @param newAlias table alias for the other instance
-     * @return <code>alias.linkParent_0 = newAlias.linkChild_0 [ AND alias.linkParent_1 = newAlias.linkChild_1 ...]</code>
-     * @throws NoSuchElementException if either parent or child do not contain a requested link column
+     * @return
+     * <code>alias.linkParent_0 = newAlias.linkChild_0 [ AND alias.linkParent_1 = newAlias.linkChild_1 ...]</code>
+     * @throws NoSuchElementException if either parent or child do not contain a
+     * requested link column
      */
     protected String joinCondition(EntityGraph parent, EntityGraph child, String alias, String newAlias) {
         StringBuilder sb = new StringBuilder();
         String sep = "";
-        for(LinkField link : child.getLinks()) {
-            if (! parent.containsColumn(link.getParent()) ) {
-                throw new NoSuchElementException(String.format("Column '%s'does not exist in parent table %s.%s", 
+        for (LinkField link : child.getLinks()) {
+            if (!parent.containsColumn(link.getParent())) {
+                throw new NoSuchElementException(String.format("Column '%s'does not exist in parent table %s.%s",
                         link.getParent(),
                         alias,
                         parent.getTableName()));
             }
-            if (! child.containsColumn(link.getChild()))  {
+            if (!child.containsColumn(link.getChild())) {
                 throw new NoSuchElementException(String.format("Column '%s'does not exist in parent table %s.%s",
                         link.getChild(),
                         newAlias,
@@ -286,7 +299,7 @@ public class SqlBuilder {
 
     public String query(String alias, Condition condition) {
         this.argumentCounter = 0;
-        this.valueList = new ArrayList<> ();
+        this.valueList = new ArrayList<>();
         return select(alias)
                 + from(alias)
                 + where(condition);
@@ -298,8 +311,11 @@ public class SqlBuilder {
     protected String select(String alias) {
         StringBuilder sb = new StringBuilder();
         this.entityGraph.setAlias(alias);
-
-        sb.append("SELECT ");
+        if (distinct) {
+            sb.append("SELECT DISTINCT ");
+        } else {
+            sb.append("SELECT ");
+        }
         String sep = "";
         for (DbField field : this.entityGraph.getFieldMap().values()) {
             sb.append(sep);
@@ -312,10 +328,17 @@ public class SqlBuilder {
         return sb.toString();
     }
 
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
+    }
+
     /**
      * @return the complete WHERE clause of a query
      */
     protected String where(Condition condition) {
+        if (condition == null) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append(" WHERE ");
         addCondition(sb, condition);
