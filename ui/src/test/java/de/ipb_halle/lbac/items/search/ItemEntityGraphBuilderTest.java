@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.items.search;
 
-import de.ipb_halle.lbac.items.search.ItemEntityGraphBuilder;
+import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
@@ -37,12 +37,8 @@ public class ItemEntityGraphBuilderTest {
     public void test001_createEntityGraph() {
 
         ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
-        graphBuilder.addContainer();
-        graphBuilder.addMaterialName();
-        graphBuilder.addProject();
-        graphBuilder.addUser();
-
-        EntityGraph graph = graphBuilder.buildEntityGraph();
+       
+        EntityGraph graph = graphBuilder.buildEntityGraph(null);
         SqlBuilder builder = new SqlBuilder(graph);
 
         Condition condition1 = new Condition(

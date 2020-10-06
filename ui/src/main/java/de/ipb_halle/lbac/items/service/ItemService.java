@@ -44,6 +44,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -58,6 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -105,11 +107,18 @@ public class ItemService {
     private NodeService nodeService;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private ItemEntityGraphBuilder graphBuilder;
+
+    @PostConstruct
+    public void init() {
+        graphBuilder = new ItemEntityGraphBuilder();
+
+    }
 
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl();
-        //EntityGraph g=holeUndFiltereGraph(request.getCondition());
-        SqlBuilder sqlBuilder = new SqlBuilder(request.getEntityGraph());
+
+        SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(request.getCondition()));
         String sql = sqlBuilder.query(request.getCondition());
 
         Query q = em.createNativeQuery(sql, ItemEntity.class);
@@ -144,7 +153,7 @@ public class ItemService {
 
     public int getItemAmount(SearchRequest request) {
         SqlCountBuilder countBuilder = new SqlCountBuilder(
-                request.getEntityGraph(),
+                graphBuilder.buildEntityGraph(request.getCondition()),
                 new Attribute(new AttributeType[]{
             AttributeType.ITEM,
             AttributeType.LABEL

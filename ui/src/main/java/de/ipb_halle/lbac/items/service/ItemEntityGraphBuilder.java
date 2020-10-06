@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.search;
+package de.ipb_halle.lbac.items.service;
 
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
 
@@ -39,22 +40,32 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         super(ItemEntity.class);
     }
 
-    public void addUser() {
+    private void addUser() {
         addJoin(JoinType.INNER, MemberEntity.class, "owner", "id");
     }
 
-    public void addContainer() {
+    private void addContainer() {
         nestedContainerGraph = addJoin(JoinType.LEFT, ContainerNestingEntity.class, "containerid", "sourceid");
         addJoinToChild(JoinType.LEFT, nestedContainerGraph, ContainerEntity.class, "targetid", "id");
         addJoin(JoinType.LEFT, ContainerEntity.class, "id", "id");
     }
 
-    public void addProject() {
+    private void addProject() {
         addJoin(JoinType.LEFT, ProjectEntity.class, "projectid", "id");
     }
 
-    public void addMaterialName() {
+    private void addMaterialName() {
         addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
+    }
+
+    @Override
+    public EntityGraph buildEntityGraph(Condition condition) {
+        addUser();
+        addContainer();
+        addProject();
+        addMaterialName();
+        //TO DO: remove the conditions;
+        return graph;
     }
 
 }

@@ -46,9 +46,5 @@ public class ItemSearchRequestBuilderTest {
         builder.addIndexName("Wasser");
         SearchRequest request = builder.buildSearchRequest();
 
-        SqlBuilder sqlBuilder = new SqlBuilder(request.getEntityGraph());
-        String sql = sqlBuilder.query(request.getCondition());
-       
-
     }
 }

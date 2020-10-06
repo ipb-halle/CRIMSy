@@ -18,15 +18,12 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.search.lang.Condition;
-import de.ipb_halle.lbac.search.lang.EntityGraph;
 
 /**
  *
  * @author fmauz
  */
 public interface SearchRequest {
-
-    public EntityGraph getEntityGraph();
 
     public Condition getCondition();
 

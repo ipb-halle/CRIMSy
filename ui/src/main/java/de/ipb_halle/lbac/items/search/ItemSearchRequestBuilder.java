@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.search;
 
+import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchRequestImpl;
@@ -51,7 +52,6 @@ public class ItemSearchRequestBuilder {
 
     public SearchRequest buildSearchRequest() {
         SearchRequestImpl searchRequest = new SearchRequestImpl(
-                entityGraphBuilder.buildEntityGraph(),
                 conditionBuilder.buildConditionTree()
         );
 
@@ -67,7 +67,6 @@ public class ItemSearchRequestBuilder {
     }
 
     public ItemSearchRequestBuilder addIndexName(String name) {
-        entityGraphBuilder.addMaterialName();
         addCondition(Operator.ILIKE,
                 "%" + name + "%",
                 AttributeType.MATERIAL,
@@ -76,7 +75,6 @@ public class ItemSearchRequestBuilder {
     }
 
     public ItemSearchRequestBuilder addLocation(String location) {
-        entityGraphBuilder.addContainer();
         addCondition(Operator.ILIKE,
                 "%" + location + "%",
                 AttributeType.CONTAINER,
@@ -85,7 +83,6 @@ public class ItemSearchRequestBuilder {
     }
 
     public ItemSearchRequestBuilder addProject(String projectName) {
-        entityGraphBuilder.addProject();
         addCondition(Operator.ILIKE,
                 "%" + projectName + "%",
                 AttributeType.PROJECT_NAME);
@@ -93,7 +90,6 @@ public class ItemSearchRequestBuilder {
     }
 
     public ItemSearchRequestBuilder addUserName(String userName) {
-        entityGraphBuilder.addUser();
         addCondition(Operator.ILIKE,
                 "%" + userName + "%",
                 AttributeType.MEMBER_NAME);

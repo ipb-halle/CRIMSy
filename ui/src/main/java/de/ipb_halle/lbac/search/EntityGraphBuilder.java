@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
 
@@ -26,7 +27,7 @@ import javax.persistence.criteria.JoinType;
  */
 public abstract class EntityGraphBuilder {
 
-    private EntityGraph graph;
+    protected EntityGraph graph;
 
     public EntityGraphBuilder(Class mainEntity) {
         graph = new EntityGraph(mainEntity);
@@ -49,7 +50,7 @@ public abstract class EntityGraphBuilder {
         return child;
     }
 
-    public EntityGraph buildEntityGraph() {
+    public EntityGraph buildEntityGraph(Condition confition) {
         return graph;
     }
 }
