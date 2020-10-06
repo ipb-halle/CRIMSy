@@ -47,6 +47,7 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -160,36 +161,28 @@ public class ItemServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadItem() {
-
-        instance.saveItem(createItem());
+        Item item = createItem();
+        instance.saveItem(item);
         Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
 
         Assert.assertEquals(1, instance.getItemAmount(owner, new HashMap<>()));
-
-        List<Item> items = instance.loadItems(owner, new HashMap<>(), 0, 25).getAllFoundObjects(Item.class, nodeService.getLocalNode());
+        //List<Item> items = instance.loadItems(owner, new HashMap<>(), 0, 25).getAllFoundObjects(Item.class, nodeService.getLocalNode());
 
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(owner, 0, 25);
         builder.addIndexName("TESTMATERIAL");
-        instance.loadItems(builder.buildSearchRequest());
+        SearchResult result = instance.loadItems(builder.buildSearchRequest());
+        List<Item> items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
 
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
-        Item loadedItem = items.get(0);
-        Assert.assertEquals("Testcase 001: Amount must be 23", 23d, (double) loadedItem.getAmount(), 0);
-        Assert.assertEquals("Testcase 001: Unit must be kg", "kg", loadedItem.getUnit());
-        Assert.assertNull("Testcase 001: Article must be null", loadedItem.getArticle());
-        Assert.assertEquals("Testcase 001: Concentration must be 32", 32d, (double) loadedItem.getConcentration(), 0);
-        Assert.assertNotNull("Testcase 001: Parent container must be not null", loadedItem.getContainer());
-        Assert.assertEquals("Testcase 001: containersize must be 100", 100d, loadedItem.getContainerSize(), 0);
-        Assert.assertEquals("Testcase 001: Description must be 'description'", "description", loadedItem.getDescription());
-        Assert.assertEquals("Testcase 001: Material id must be 1", 1, (int) loadedItem.getMaterial().getId());
-        Assert.assertEquals("Testcase 001: Owner-id must be " + ownerid, owner.getId(), loadedItem.getOwner().getId());
-        Assert.assertEquals("Testcase 001: Project-id must be " + project.getId(), project.getId(), loadedItem.getProject().getId());
-        Assert.assertEquals("Testcase 001: Purity must be 'rein'", "rein", loadedItem.getPurity());
-        Assert.assertEquals("Testcase 001: One nested Container must be found", 2, items.get(0).getNestedContainer().size());
-        Assert.assertNull("Testcase 001: Solvent must be null", loadedItem.getSolvent());
-        Assert.assertNotNull(loadedItem.getcTime());
+        checkItem(items.get(0));
 
-        Assert.assertNotNull("Testcase 001: Material must not be null", loadedItem.getMaterial());
+        builder = new ItemSearchRequestBuilder(owner, 0, 25);
+        builder.addID(item.getId());
+        result = instance.loadItems(builder.buildSearchRequest());
+        items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
+        Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
+        checkItem(items.get(0));
+
     }
 
     @Test
@@ -617,8 +610,25 @@ public class ItemServiceTest extends TestBase {
         if (orig.getOwnerOld() != null && loaded.getOwnerOld() != null) {
             equal = equal && orig.getOwnerOld().getId().equals(loaded.getOwnerOld().getId());
         }
-
         return equal;
+    }
 
+    private void checkItem(Item loadedItem) {
+        Assert.assertEquals("Testcase 001: Amount must be 23", 23d, (double) loadedItem.getAmount(), 0);
+        Assert.assertEquals("Testcase 001: Unit must be kg", "kg", loadedItem.getUnit());
+        Assert.assertNull("Testcase 001: Article must be null", loadedItem.getArticle());
+        Assert.assertEquals("Testcase 001: Concentration must be 32", 32d, (double) loadedItem.getConcentration(), 0);
+        Assert.assertNotNull("Testcase 001: Parent container must be not null", loadedItem.getContainer());
+        Assert.assertEquals("Testcase 001: containersize must be 100", 100d, loadedItem.getContainerSize(), 0);
+        Assert.assertEquals("Testcase 001: Description must be 'description'", "description", loadedItem.getDescription());
+        Assert.assertEquals("Testcase 001: Material id must be 1", 1, (int) loadedItem.getMaterial().getId());
+        Assert.assertEquals("Testcase 001: Owner-id must be " + ownerid, owner.getId(), loadedItem.getOwner().getId());
+        Assert.assertEquals("Testcase 001: Project-id must be " + project.getId(), project.getId(), loadedItem.getProject().getId());
+        Assert.assertEquals("Testcase 001: Purity must be 'rein'", "rein", loadedItem.getPurity());
+        Assert.assertEquals("Testcase 001: One nested Container must be found", 2, loadedItem.getNestedContainer().size());
+        Assert.assertNull("Testcase 001: Solvent must be null", loadedItem.getSolvent());
+        Assert.assertNotNull(loadedItem.getcTime());
+
+        Assert.assertNotNull("Testcase 001: Material must not be null", loadedItem.getMaterial());
     }
 }

@@ -65,9 +65,9 @@ public class SearchResultImpl implements SearchResult {
 
     @Override
     public <T> List<T> getAllFoundObjects(Class T, Node n) {
-        List<Searchable> netObejcts = getAllFoundObjects(n);
+        List<Searchable> netObjects = getAllFoundObjects(n);
         List<T> objectsOfType = new ArrayList<>();
-        for (Searchable s : netObejcts) {
+        for (Searchable s : netObjects) {
             if (s.getClass().equals(T)) {
                 objectsOfType.add((T) s);
             }

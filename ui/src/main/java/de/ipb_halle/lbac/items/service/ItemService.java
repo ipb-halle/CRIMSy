@@ -176,16 +176,7 @@ public class ItemService {
         List<ItemEntity> entities = q.getResultList();
 
         for (ItemEntity entity : entities) {
-            Item i = new Item(entity,
-                    entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
-                    entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
-                    materialService.loadMaterialById(entity.getMaterialid()),
-                    memberService.loadUserById(entity.getOwner()),
-                    entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
-                    entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
-                    containerService.loadNestedContainer(entity.getContainerid()),
-                    aclistService.loadById(entity.getAclist_id())
-            );
+            Item i = createItemFromEntity(entity);
             i.setHistory(loadHistoryOfItem(i));
 
             result.addResults(nodeService.getLocalNode(), Arrays.asList(i));
@@ -204,10 +195,28 @@ public class ItemService {
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
-        List<Searchable> foundItems = q.getResultList();
-        result.addResults(nodeService.getLocalNode(), foundItems);
-        return result;
+        List<ItemEntity> entities = q.getResultList();
+        for (ItemEntity ie : entities) {
+            Item item = createItemFromEntity(ie);
+            item.setHistory(loadHistoryOfItem(item));
+            result.addResults(nodeService.getLocalNode(), Arrays.asList(item));
+        }
 
+        return result;
+    }
+
+    private Item createItemFromEntity(ItemEntity entity) {
+        Item item = new Item(entity,
+                entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
+                entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
+                materialService.loadMaterialById(entity.getMaterialid()),
+                memberService.loadUserById(entity.getOwner()),
+                entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
+                entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
+                containerService.loadNestedContainer(entity.getContainerid()),
+                aclistService.loadById(entity.getAclist_id())
+        );
+        return item;
     }
 
     public int getItemAmount(User u, Map<String, String> cmap) {

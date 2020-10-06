@@ -59,6 +59,10 @@ public class ItemSearchRequestBuilder {
     }
 
     public ItemSearchRequestBuilder addID(Integer id) {
+        addCondition(Operator.ILIKE,
+                id,
+                AttributeType.ITEM,
+                AttributeType.LABEL);
         return this;
     }
 
