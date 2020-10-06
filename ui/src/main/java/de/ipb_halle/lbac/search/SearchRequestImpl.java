@@ -47,4 +47,14 @@ public class SearchRequestImpl implements SearchRequest {
     public Condition getCondition() {
         return condition;
     }
+
+    @Override
+    public int getFirstResult() {
+        return firstResultIndex;
+    }
+
+    @Override
+    public int getMaxResults() {
+        return maxResults;
+    }
 }

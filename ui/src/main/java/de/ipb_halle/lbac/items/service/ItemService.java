@@ -42,6 +42,9 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -191,8 +194,19 @@ public class ItemService {
     }
 
     public SearchResult loadItems(SearchRequest request) {
+        SearchResult result = new SearchResultImpl();
+        SqlBuilder sqlBuilder = new SqlBuilder(request.getEntityGraph());
+        String sql = sqlBuilder.query(request.getCondition());
 
-        return null;
+        Query q = em.createNativeQuery(sql, ItemEntity.class);
+        for (Value param : sqlBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        q.setFirstResult(request.getFirstResult());
+        q.setMaxResults(request.getMaxResults());
+        List<Searchable> foundItems = q.getResultList();
+        result.addResults(nodeService.getLocalNode(), foundItems);
+        return result;
 
     }
 

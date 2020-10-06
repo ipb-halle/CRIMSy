@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.device.job.JobService;
 import de.ipb_halle.lbac.device.job.JobStatus;
 import de.ipb_halle.lbac.device.job.JobType;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import static de.ipb_halle.lbac.file.FileObjectEntity_.user;
 import de.ipb_halle.lbac.util.pref.Preference;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 

@@ -30,4 +30,7 @@ public interface SearchRequest {
 
     public Condition getCondition();
 
+    public int getFirstResult();
+
+    public int getMaxResults();
 }

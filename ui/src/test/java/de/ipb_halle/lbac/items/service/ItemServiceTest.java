@@ -35,6 +35,7 @@ import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.ItemPositionHistoryList;
 import de.ipb_halle.lbac.items.ItemPositionsHistory;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -164,9 +165,12 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
 
         Assert.assertEquals(1, instance.getItemAmount(owner, new HashMap<>()));
-        
-        
+
         List<Item> items = instance.loadItems(owner, new HashMap<>(), 0, 25).getAllFoundObjects(Item.class, nodeService.getLocalNode());
+
+        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(owner, 0, 25);
+        builder.addIndexName("TESTMATERIAL");
+        instance.loadItems(builder.buildSearchRequest());
 
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         Item loadedItem = items.get(0);
