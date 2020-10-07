@@ -112,15 +112,13 @@ public class ItemService {
     @PostConstruct
     public void init() {
         graphBuilder = new ItemEntityGraphBuilder();
-
     }
 
     public SearchResult loadItems(SearchRequest request) {
+        graphBuilder = new ItemEntityGraphBuilder();
         SearchResult result = new SearchResultImpl();
-
         SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(request.getCondition()));
         String sql = sqlBuilder.query(request.getCondition());
-
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -152,6 +150,7 @@ public class ItemService {
     }
 
     public int getItemAmount(SearchRequest request) {
+        graphBuilder = new ItemEntityGraphBuilder();
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 graphBuilder.buildEntityGraph(request.getCondition()),
                 new Attribute(new AttributeType[]{
