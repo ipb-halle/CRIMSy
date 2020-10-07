@@ -29,7 +29,6 @@ jobs:
     - name: Code coverage badge
       uses: codecov/codecov-action@v1
       with:
-        directory: ./ui/target/site/cobertura/
         fail_ci_if_error: false
-        file: coverage.xml
+        file: ./ui/target/site/cobertura/coverage.xml
         flags: unittests
