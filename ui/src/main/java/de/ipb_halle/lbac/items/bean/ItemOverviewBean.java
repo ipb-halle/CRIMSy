@@ -81,7 +81,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     protected NodeService nodeService;
 
     private ACObjectController acObjectController;
-    private CMapFactory cmapFactory = new CMapFactory();
     protected User currentUser;
     private int firstResult;
     private int itemAmount;
