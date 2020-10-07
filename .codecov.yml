@@ -1,0 +1,5 @@
+codecov:
+  branch: LBAC-60-CloudLIMS
+  
+coverage:
+  range: 20..80
