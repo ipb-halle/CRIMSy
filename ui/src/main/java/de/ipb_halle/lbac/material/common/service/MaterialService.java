@@ -57,6 +57,14 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.items.entity.ItemEntity;
+import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.Value;
+import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -84,6 +92,7 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class MaterialService implements Serializable {
 
+    private MaterialEntityGraphBuilder graphBuilder;
     protected StructureInformationSaver structureInformationSaver;
     private final String SQL_GET_MATERIAL
             = "SELECT DISTINCT m.materialid, "
@@ -187,6 +196,9 @@ public class MaterialService implements Serializable {
     protected TissueService tissueService;
 
     @Inject
+    protected NodeService nodeService;
+
+    @Inject
     protected TaxonomyNestingService taxonomyNestingService;
 
     @Inject
@@ -261,6 +273,34 @@ public class MaterialService implements Serializable {
         q.setParameter("MOLECULE", cmap.getOrDefault("MOLECULE", null));
         return ((BigInteger) q.getResultList().get(0)).intValue();
 
+    }
+
+    public SearchResult getReadableMaterials(SearchRequest request) {
+        graphBuilder = new MaterialEntityGraphBuilder();
+        SearchResult result = new SearchResultImpl();
+        SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(request.getCondition()));
+        String sql = sqlBuilder.query(request.getCondition());
+        Query q = em.createNativeQuery(sql, MaterialEntity.class);
+        q.setFirstResult(request.getFirstResult());
+        q.setMaxResults(request.getMaxResults());
+        for (Value param : sqlBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        List<MaterialEntity> entities = q.getResultList();
+        for (MaterialEntity me : entities) {
+            Material m = null;
+            if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.STRUCTURE) {
+                m = getStructure(me);
+
+            }
+            if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.BIOMATERIAL) {
+                m = getBioMaterial(me);
+            }
+            m.setACList(aclService.loadById(me.getAclist_id()));
+            m.getDetailRights().addAll(loadDetailRightsOfMaterial(m.getId()));
+            result.addResults(nodeService.getLocalNode(), Arrays.asList(m));
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")

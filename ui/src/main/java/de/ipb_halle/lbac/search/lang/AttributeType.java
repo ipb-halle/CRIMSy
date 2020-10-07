@@ -39,6 +39,7 @@ public enum AttributeType {
     ASSAY_TARGET,
     ASSAY_RECORD,
     INSTITUTION,
+    MATERIAL_TYPE,
     MEMBER_NAME,
     MOLECULE,
     PROJECT_NAME,

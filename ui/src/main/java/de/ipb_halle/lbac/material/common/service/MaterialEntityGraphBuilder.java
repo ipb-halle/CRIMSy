@@ -43,7 +43,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     protected void addIndex() {
-        addJoin(JoinType.LEFT, MaterialIndexEntryEntity.class, "materialid", "materialid");
+        addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
     }
 
     protected void addUser() {
@@ -51,8 +51,8 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     protected void addStructure() {
-        EntityGraph subGraph = addJoin(JoinType.INNER, StructureEntity.class, "materialid", "id");
-        addJoinToChild(JoinType.INNER, subGraph, MoleculeEntity.class, "moleculeid", "id");
+        EntityGraph subGraph = addJoin(JoinType.LEFT, StructureEntity.class, "materialid", "id");
+        addJoinToChild(JoinType.LEFT, subGraph, MoleculeEntity.class, "moleculeid", "id");
     }
 
     @Override

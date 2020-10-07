@@ -29,10 +29,13 @@ public class SearchRequestImpl implements SearchRequest {
     private Condition condition;
     private int firstResultIndex;
     private int maxResults;
-    private User u;
+    private User user;
 
-    public SearchRequestImpl(Condition condition) {
+    public SearchRequestImpl(User u, Condition condition, int firstResult, int maxResults) {
+        this.firstResultIndex = firstResult;
+        this.maxResults = maxResults;
         this.condition = condition;
+        this.user = u;
 
     }
 
@@ -49,5 +52,10 @@ public class SearchRequestImpl implements SearchRequest {
     @Override
     public int getMaxResults() {
         return maxResults;
+    }
+
+    @Override
+    public User getUser() {
+        return user;
     }
 }

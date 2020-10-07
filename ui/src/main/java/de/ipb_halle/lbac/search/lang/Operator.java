@@ -42,7 +42,8 @@ public enum Operator {
     GREATER_EQUAL(" >= "),
     GREATER(" = "),
     LIKE(" LIKE "),
-    ILIKE(" ILIKE ");
+    ILIKE(" ILIKE "),
+    SUBSTRUCTURE(" >= ");
 
     private boolean leafOperator;
     private boolean prefixOperator;

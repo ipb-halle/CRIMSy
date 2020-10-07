@@ -36,16 +36,18 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "materials")
-@AttributeTag(type=AttributeType.MATERIAL)
+@AttributeTag(type = AttributeType.MATERIAL)
 public class MaterialEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @AttributeTag(type = AttributeType.LABEL)
     private Integer materialid;
 
     @Column
+    @AttributeTag(type = AttributeType.MATERIAL_TYPE)
     private int materialtypeid;
 
     @Temporal(TemporalType.TIMESTAMP)

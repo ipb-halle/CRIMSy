@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
 
 /**
@@ -30,4 +31,5 @@ public interface SearchRequest {
     public int getFirstResult();
 
     public int getMaxResults();
+    public User getUser();
 }

@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +42,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public abstract class Material extends ACObject implements DTO, Serializable {
+public abstract class Material extends ACObject implements DTO, Serializable, Searchable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 

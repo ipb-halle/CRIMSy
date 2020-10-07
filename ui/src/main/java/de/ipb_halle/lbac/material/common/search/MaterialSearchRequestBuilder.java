@@ -15,9 +15,10 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.search;
+package de.ipb_halle.lbac.material.common.search;
 
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -26,22 +27,28 @@ import de.ipb_halle.lbac.search.lang.Operator;
  *
  * @author fmauz
  */
-public class ItemSearchRequestBuilder extends SearchRequestBuilder {
+public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
 
-    public ItemSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+    public MaterialSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
-
     }
 
-    public ItemSearchRequestBuilder addID(Integer id) {
+    public MaterialSearchRequestBuilder addID(Integer id) {
         addCondition(Operator.EQUAL,
                 id,
-                AttributeType.ITEM,
+                AttributeType.MATERIAL,
                 AttributeType.LABEL);
         return this;
     }
 
-    public ItemSearchRequestBuilder addIndexName(String name) {
+    public MaterialSearchRequestBuilder addUserName(String userName) {
+        addCondition(Operator.ILIKE,
+                "%" + userName + "%",
+                AttributeType.MEMBER_NAME);
+        return this;
+    }
+
+    public MaterialSearchRequestBuilder addIndexName(String name) {
         addCondition(Operator.ILIKE,
                 "%" + name + "%",
                 AttributeType.MATERIAL,
@@ -49,33 +56,24 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public ItemSearchRequestBuilder addLocation(String location) {
-        addCondition(Operator.ILIKE,
-                "%" + location + "%",
-                AttributeType.CONTAINER,
-                AttributeType.LABEL);
-        return this;
-    }
-
-    public ItemSearchRequestBuilder addProject(String projectName) {
+    public MaterialSearchRequestBuilder addProject(String projectName) {
         addCondition(Operator.ILIKE,
                 "%" + projectName + "%",
                 AttributeType.PROJECT_NAME);
         return this;
     }
 
-    public ItemSearchRequestBuilder addUserName(String userName) {
-        addCondition(Operator.ILIKE,
-                "%" + userName + "%",
-                AttributeType.MEMBER_NAME);
+    public MaterialSearchRequestBuilder addType(MaterialType type) {
+        addCondition(Operator.EQUAL,
+                type.getId(),
+                AttributeType.MATERIAL_TYPE);
         return this;
     }
 
-    public ItemSearchRequestBuilder addDescription(String description) {
-        addCondition(Operator.ILIKE,
-                "%" + description + "%",
-                AttributeType.ITEM,
-                AttributeType.TEXT);
+    public MaterialSearchRequestBuilder addSubMolecule(String molecule) {
+        addCondition(Operator.SUBSTRUCTURE,
+                molecule,
+                AttributeType.MOLECULE);
         return this;
     }
 

@@ -57,6 +57,8 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.Arrays;
@@ -455,108 +457,115 @@ public class MaterialServiceTest extends TestBase {
 
         instance.setUserBean(userBean);
         creationTools = new CreationTools("", "", "", memberService, projectService);
-        Project p = creationTools.createProject();
+        Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
+        Project project2 = creationTools.createAndSaveProject("administration-test-project");
 
         //Create a structure
-        Structure struture1 = creationTools.createStructure(p);
+        Structure struture1 = creationTools.createStructure(project1);
         StorageClassInformation si = new StorageClassInformation(instance.loadStorageClasses());
         si.setRemarks("test remarks");
         si.setStorageClass(si.getPossibleStorageClassById(1));
         struture1.setStorageInformation(si);
 
-        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), p.getDetailTemplates());
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
 
         //Create a structure which is not readable
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         ACList noRightsAcl = new ACList();
         noRightsAcl = aclistService.save(noRightsAcl);
-        Structure struture2 = creationTools.createStructure(p);
-        instance.saveMaterialToDB(struture2, noRightsAcl.getId(), p.getDetailTemplates());
+        Structure structure2 = creationTools.createStructure(project2);
+        structure2.getNames().clear();
+        structure2.getNames().add(new MaterialName("structure2", "de", 1));
+        structure2.getIndices().clear();
+        instance.saveMaterialToDB(structure2, noRightsAcl.getId(), project1.getDetailTemplates());
         //Create a biomaterial
 
         //Load the materials
         userBean.setCurrentAccount(testUser);
-        Map<String, Object> cmap = new HashMap<>();
-        List<Material> loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Material loadedMaterial = loadedMaterials.get(0);
+
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.buildSearchRequest();
+        SearchResult result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+
+        //Only one of the two materials must be found
+        List<Structure> structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(2, structures.size());
+        Material loadedMaterial = structures.get(0);
+//        Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
+
+        requestBuilder.addProject("biochemical");
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, structures.size());
+        loadedMaterial = structures.get(0);
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
 
-        cmap.put("PROJECT_NAME", "%biochemical%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addProject("xyz");
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(0, structures.size());
 
-        cmap.put("PROJECT_NAME", "%biohazard%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertTrue(loadedMaterials.isEmpty());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addType(MaterialType.STRUCTURE);
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(2, structures.size());
+        Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
 
-        cmap.clear();
-        cmap.put("TYPE", MaterialType.STRUCTURE.getId());
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addType(MaterialType.BIOMATERIAL);
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(0, structures.size());
 
-        cmap.put("TYPE", MaterialType.BIOMATERIAL.getId());
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertTrue(loadedMaterials.isEmpty());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addIndexName("Test-Struc");
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, structures.size());
 
-        cmap.clear();
-        cmap.put("NAME", "%Test-Struc%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addIndexName("Test-Fail");
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(0, structures.size());
 
-        cmap.put("NAME", "%Test-Fail%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertTrue(loadedMaterials.isEmpty());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addID(struture1.getId());
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, structures.size());
 
-        cmap.clear();
-        cmap.put("ID", struture1.getId());
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addID(structure2.getId());
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, structures.size());
 
-        cmap.put("ID", struture2.getId());
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertTrue(loadedMaterials.isEmpty());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addUserName(testUser.getName());
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, structures.size());
 
-        cmap.clear();
-        cmap.put("USER", "%User%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addUserName("xz");
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(0, structures.size());
 
-        cmap.put("USER", "%publ%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertTrue(loadedMaterials.isEmpty());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addIndexName("Gest");
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, structures.size());
 
-        cmap.clear();
-        cmap.put("INDEX", "%Gestis%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-        cmap.put("INDEX", "%GestisXX%");
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-
-        cmap.clear();
-        cmap.put("INDEX", "%crs%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-        cmap.put("INDEX", "%XX%");
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-
-        cmap.clear();
-        cmap.put("INDEX", "%cas%");
-        loadedMaterials = instance.getReadableMaterials(testUser, cmap, 0, 25);
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
-        cmap.put("INDEX", "%XX%");
-        Assert.assertEquals(1, loadedMaterials.size());
-        Assert.assertEquals(struture1.getId(), loadedMaterials.get(0).getId());
+        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder.addIndexName("XX");
+        result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
+        structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(0, structures.size());
 
     }
 
