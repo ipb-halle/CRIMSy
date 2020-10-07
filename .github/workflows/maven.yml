@@ -31,5 +31,5 @@ jobs:
       with:
         directory: ./ui/target/site/cobertura/
         fail_ci_if_error: false
-        file: cobertura.xml
+        file: coverage.xml
         flags: unittests
