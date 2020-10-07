@@ -25,7 +25,7 @@ jobs:
     - name: Maven Build (without Test)
       run: mvn -B -DskipTests install --file pom.xml
     - name: Unit Tests and Code Coverage
-      run: mvn -B -Dcobertura.report.format=xml cobertura:cobertura
+      run: mvn -B -Dcobertura.report.format=xml test cobertura:cobertura
     - name: Code Coverage Upload
       uses: codecov/codecov-action@v1
       with:
