@@ -25,7 +25,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B install --file pom.xml
     - name: Code coverage report
-      run: mvn -Dcobertura.report.format=xml -DskipTests cobertura:cobertura
+      run: mvn -B -Dcobertura.report.format=xml -DskipTests cobertura:cobertura
     - name: Code coverage badge
       uses: codecov/codecov-action@v1
       with:
