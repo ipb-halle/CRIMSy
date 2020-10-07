@@ -1,4 +1,5 @@
 ![](https://github.com/ipb-halle/CRIMSy/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![codecov.io](https://img.shields.io/codecov/c/github/ipb-halle/CRIMSy/master.svg?style=flat-square)](http://codecov.io/github/ipb-halle/CRIMSy?branch=LBAC-60-CloudLIMS)
 
 # CRIMSy
 _Cloud Resource & Information Managment System_
