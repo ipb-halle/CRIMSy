@@ -15,48 +15,29 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search.lang;
+package de.ipb_halle.lbac.material.structure;
+
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * Attribute types for selection of search fields
  *
- * @author fbroda
+ * @author fmauz
  */
-public enum AttributeType {
-    
-    /* */
-    TOPLEVEL,
+@Table(name = "molecules")
+public class MoleculeEntity {
 
-    /* entities */
-    ACE,
-    COLLECTION,
-    CONTAINER,
-    EXPERIMENT,
-    ITEM,
-    MATERIAL,
+    @Id
+    private Integer id;
 
-    /* entity properties */
-    ASSAY_TARGET,
-    ASSAY_RECORD,
-    INSTITUTION,
-    MEMBER_NAME,
-    MOLECULE,
-    PROJECT_NAME,
-    REACTION_EDUCT,
-    REACTION_PRODUCT,
+    @Column
+    private String format;
 
-    /* general attribute types */
-    LABEL,
-    STRUCTURE,
-    TEXT,
-
-    PERM_READ,
-    PERM_EDIT,
-    PERM_CHOWN,
-    PERM_GRANT,
-    PERM_SUPER,
-    PERM_CREATE,
-    PERM_DELETE
-    
+    @Column
+    @AttributeTag(type = AttributeType.MOLECULE)
+    private String molecule;
 
 }

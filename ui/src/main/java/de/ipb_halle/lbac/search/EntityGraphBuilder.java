@@ -50,7 +50,7 @@ public abstract class EntityGraphBuilder {
         return child;
     }
 
-    public EntityGraph buildEntityGraph(Condition confition) {
+    public EntityGraph buildEntityGraph(Condition condition) {
         return graph;
     }
 }

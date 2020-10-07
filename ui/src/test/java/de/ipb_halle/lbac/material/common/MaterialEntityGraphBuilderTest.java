@@ -15,48 +15,24 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search.lang;
+package de.ipb_halle.lbac.material.common;
+
+import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Attribute types for selection of search fields
  *
- * @author fbroda
+ * @author fmauz
  */
-public enum AttributeType {
-    
-    /* */
-    TOPLEVEL,
+public class MaterialEntityGraphBuilderTest {
 
-    /* entities */
-    ACE,
-    COLLECTION,
-    CONTAINER,
-    EXPERIMENT,
-    ITEM,
-    MATERIAL,
-
-    /* entity properties */
-    ASSAY_TARGET,
-    ASSAY_RECORD,
-    INSTITUTION,
-    MEMBER_NAME,
-    MOLECULE,
-    PROJECT_NAME,
-    REACTION_EDUCT,
-    REACTION_PRODUCT,
-
-    /* general attribute types */
-    LABEL,
-    STRUCTURE,
-    TEXT,
-
-    PERM_READ,
-    PERM_EDIT,
-    PERM_CHOWN,
-    PERM_GRANT,
-    PERM_SUPER,
-    PERM_CREATE,
-    PERM_DELETE
-    
+    @Test
+    public void testEntityGraphBuild() {
+        MaterialEntityGraphBuilder builder = new MaterialEntityGraphBuilder();
+        EntityGraph graph = builder.buildEntityGraph(null);
+        Assert.assertNotNull(graph);
+    }
 
 }
