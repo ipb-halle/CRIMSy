@@ -112,11 +112,11 @@ public class ACListService implements Serializable {
     public Condition getCondition(User user, ACPermission permission, AttributeType... acObjAttrType) {
 
         Condition ownerCondition = new Condition(
+            Operator.AND,
             new Condition(
                 new Attribute(acObjAttrType).addType(AttributeType.MEMBER),
                 Operator.EQUAL,
                 new Value(user.getId())),
-            Operator.AND,
             new Condition(
                 new Attribute(new AttributeType[] {
                     AttributeType.ACE,
@@ -126,8 +126,8 @@ public class ACListService implements Serializable {
             );
 
         Condition memberCondition = new Condition(
-            ownerCondition, 
             Operator.OR,
+            ownerCondition, 
             new Condition(
                 new Attribute(new AttributeType[] { 
                     AttributeType.MEMBERSHIP, 
@@ -137,8 +137,8 @@ public class ACListService implements Serializable {
             );
 
         return new Condition(
-            memberCondition, 
             Operator.AND, 
+            memberCondition, 
             new Condition(getPermissionAttribute(permission), 
                 Operator.IS_TRUE));
     }

@@ -63,9 +63,14 @@ public class SqlBuilder {
                     sb.append(operator.getSql());
                 }
             } else {
-                addCondition(sb, condition.getLeftCondition());
-                sb.append(operator.getSql());
-                addCondition(sb, condition.getRightCondition());
+                int i = 0;
+                for (Condition c : condition.getConditions()) {
+                    if (i > 0) {
+                        sb.append(operator.getSql());
+                    }
+                    addCondition(sb, c); 
+                    i++;
+                }
             }
         }
         sb.append(")");

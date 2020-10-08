@@ -119,8 +119,8 @@ public class SqlBuilderTest extends TestBase {
                 new Value("HPLC Grade"));
 
         Condition condition3 = new Condition(
-                condition1,
                 Operator.AND,
+                condition1,
                 condition2
         );
 

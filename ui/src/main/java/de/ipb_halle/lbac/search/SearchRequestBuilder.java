@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
-import de.ipb_halle.lbac.search.lang.ConditionBuilder;
+// import de.ipb_halle.lbac.search.lang.ConditionBuilder;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +36,13 @@ public class SearchRequestBuilder {
     protected int firstResultIndex;
     protected int maxResults;
     protected User user;
-    protected ConditionBuilder conditionBuilder;
+//    protected ConditionBuilder conditionBuilder;
 
     public SearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         this.user = u;
         this.firstResultIndex = firstResultIndex;
         this.maxResults = maxResults;
-        conditionBuilder = new ConditionBuilder(leafConditions);
+//        conditionBuilder = new ConditionBuilder(leafConditions);
     }
 
     protected void addCondition(Operator op, Object value, AttributeType... types) {
@@ -52,10 +52,20 @@ public class SearchRequestBuilder {
                 new de.ipb_halle.lbac.search.lang.Value(value)));
     }
 
+    private Condition buildConditions() {
+        switch (this.leafConditions.size()) {
+            case 0 : 
+                return null;
+            case 1 :
+                return this.leafConditions.get(0);
+        }
+        return new Condition(Operator.AND, leafConditions.toArray(new Condition[] {}));
+    }
+
     public SearchRequest buildSearchRequest() {
         SearchRequestImpl searchRequest = new SearchRequestImpl(
                 user,
-                conditionBuilder.buildConditionTree(),
+                buildConditions(),
                 firstResultIndex,
                 maxResults
         );
