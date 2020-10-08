@@ -276,6 +276,7 @@ public class EntityGraph {
 
 
         AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
+        AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
         String columnName = field.getName();
         Column column = field.getAnnotation(Column.class);
         Basic basic = field.getAnnotation(Basic.class);
@@ -287,6 +288,7 @@ public class EntityGraph {
                 .setFieldName(fieldName)
                 .setColumnName(columnName)
                 .addAttributeTag(attributeTag)
+                .addAttributeTag(attributeTags)
                 .addAttributeTypes(this.attributeTypes);
             this.fieldMap.put(fieldName, dbField);
         }
@@ -337,10 +339,12 @@ public class EntityGraph {
         }
         
         AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
+        AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
         DbField dbField = new DbField(true)
                 .setFieldName(fieldName) 
                 .setColumnName(columnName) 
                 .addAttributeTag(attributeTag) 
+                .addAttributeTag(attributeTags) 
                 .addAttributeTypes(this.attributeTypes);
         this.fieldMap.put(fieldName, dbField);
         this.indexCount++;

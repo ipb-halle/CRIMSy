@@ -45,6 +45,15 @@ public class DbField {
         return this;
     }
 
+    DbField addAttributeTag(AttributeTags tag) {
+        if (tag != null) {
+            for (AttributeType type : tag.types()) {
+                this.attributeTypes.add(type);
+            }
+        }
+        return this;
+    }
+
     DbField addAttributeTypes(Set<AttributeType> types) {
         this.attributeTypes.addAll(types);
         return this;
