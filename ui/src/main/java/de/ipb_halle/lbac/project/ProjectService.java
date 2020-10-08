@@ -24,8 +24,17 @@ import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.Value;
+import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +42,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,13 +62,6 @@ public class ProjectService implements Serializable {
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "ORDER BY p.name";
 
-    private final String SQL_LOAD_PROJECT_BY_NAME
-            = "SELECT p.id "
-            + "FROM projects p "
-            + SqlStringWrapper.JOIN_KEYWORD + " "
-            + "WHERE p.name=:projectname "
-            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " ";
-
     private final String SQL_DELETE_PROJECT_TEMPLATES
             = "DELETE FROM projecttemplates "
             + "WHERE projectid=:projectid";
@@ -79,6 +79,10 @@ public class ProjectService implements Serializable {
     private EntityManager em;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private ProjectEntityGraphBuilder graphBuilder;
+
+    @Inject
+    private NodeService nodeService;
 
     /**
      * Gets all project names which matches the pattern %name%
@@ -134,58 +138,21 @@ public class ProjectService implements Serializable {
         return loadDetailInfosOfProject(entity);
     }
 
-    /**
-     * TO DO: only projects which are accessable by user should be loaded
-     *
-     * @param u
-     * @param projectName
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public Project loadProjectByName(User u, String projectName) {
-        if (projectName.trim().isEmpty()) {
-            return null;
+    public SearchResult loadProjects(SearchRequest request) {
+        SearchResult result = new SearchResultImpl();
+
+        SqlBuilder builder = new SqlBuilder(createEntityGraph(request.getCondition()));
+        String sql = builder.query(request.getCondition());
+        Query query = this.em.createNativeQuery(sql, ProjectEntity.class);
+        for (Value param : builder.getValueList()) {
+            query.setParameter(param.getArgumentKey(), param.getValue());
         }
 
-        String sql = SqlStringWrapper.aclWrapper(SQL_LOAD_PROJECT_BY_NAME, "p.aclist_id", "p.ownerid", ACPermission.permREAD);
-        List<Object> ids = this.em
-                .createNativeQuery(sql)
-                .setParameter("projectname", projectName)
-                .setParameter("userid", u.getId())
-                .getResultList();
-
-        if (!ids.isEmpty()) {
-            return loadProjectById((Integer) ids.get(0));
-        } else {
-            return null;
+        List<ProjectEntity> entities = query.getResultList();
+        for (ProjectEntity entity : entities) {
+            result.addResults(nodeService.getLocalNode(), Arrays.asList(loadDetailInfosOfProject(entity)));
         }
-    }
-
-    /**
-     *
-     * @param u
-     * @return
-     */
-    public List<Project> loadReadableProjectsOfUser(User u) {
-        List<Project> projects = new ArrayList<>();
-        CriteriaBuilder builder = this.em.getCriteriaBuilder();
-        CriteriaQuery<ProjectEntity> criteriaQuery = builder.createQuery(ProjectEntity.class);
-        Root<ProjectEntity> collectionRoot = criteriaQuery.from(ProjectEntity.class);
-        criteriaQuery.select(collectionRoot);
-
-        List<ProjectEntity> results = this.em.createQuery(criteriaQuery.distinct(true)).getResultList();
-        for (ProjectEntity pE : results) {
-            ACList projectACL = aclistService.loadById(pE.getAclist_id());
-            boolean isOwner = pE.getOwnerId().equals(u.getId());
-            boolean hasReadRight = false;
-            if (!isOwner) {
-                hasReadRight = acListService.isPermitted(ACPermission.permREAD, projectACL, u);
-            }
-            if (isOwner || hasReadRight) {
-                projects.add(loadDetailInfosOfProject(pE));
-            }
-        }
-        return projects;
+        return result;
     }
 
     /**
@@ -237,6 +204,11 @@ public class ProjectService implements Serializable {
                 this.em.persist(ptE);
             }
         }
+    }
+
+    private EntityGraph createEntityGraph(Condition con) {
+        graphBuilder = new ProjectEntityGraphBuilder();
+        return graphBuilder.buildEntityGraph(con);
     }
 
 }

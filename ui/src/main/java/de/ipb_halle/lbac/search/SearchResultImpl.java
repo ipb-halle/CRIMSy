@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.entity.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -84,4 +85,13 @@ public class SearchResultImpl implements SearchResult {
         }
         return objectsOfType;
     }
+
+    @Override
+    public Set<Node> getNodes() {
+       return foundObjectsOfNode.keySet();
+    }
+
+
+    
+    
 }

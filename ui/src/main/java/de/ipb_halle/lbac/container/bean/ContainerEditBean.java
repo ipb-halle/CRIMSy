@@ -67,7 +67,6 @@ public class ContainerEditBean implements Serializable {
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
-        projectService.loadReadableProjectsOfUser(currentUser);
         clearEditBean();
         initSecurityLevels();
     }

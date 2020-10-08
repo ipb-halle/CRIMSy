@@ -17,12 +17,15 @@
  */
 package de.ipb_halle.lbac.container.bean;
 
-import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +38,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.primefaces.PrimeFaces;
 
 /**
  * Triggers save and search actions from UI.and initialises the readable
@@ -169,12 +171,7 @@ public class ContainerOverviewBean implements Serializable {
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
-                    .setProject(projectService
-                            .loadProjectByName(
-                                    currentUser,
-                                    editBean.getPreferredProjectName().trim()
-                            )
-                    );
+                    .setProject(loadProjectByName());
         }
         if (editBean.getPreferredProjectName() == null || editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
@@ -208,12 +205,7 @@ public class ContainerOverviewBean implements Serializable {
         if (editBean.getPreferredProjectName() != null
                 && !editBean.getPreferredProjectName().trim().isEmpty()) {
             editBean.getContainerToCreate()
-                    .setProject(projectService
-                            .loadProjectByName(
-                                    currentUser,
-                                    editBean.getPreferredProjectName().trim()
-                            )
-                    );
+                    .setProject(loadProjectByName());
         }
         boolean valide = validator.isInputValideForCreation(
                 editBean.getContainerToCreate(),
@@ -247,6 +239,15 @@ public class ContainerOverviewBean implements Serializable {
             c.getType().setLocalizedName(
                     localizer.localizeString("container_type_" + c.getType().getName()));
         }
+    }
+
+    private Project loadProjectByName() {
+        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(currentUser, 0, 1);
+        builder.addExactName(editBean.getPreferredProjectName().trim());
+        SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
+        Node n = result.getNodes().iterator().next();
+        return (Project) result.getAllFoundObjects(Project.class, n).get(0);
+
     }
 
 }

@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,7 +65,9 @@ public class ProjectBean implements Serializable, ACObjectBean {
     private MemberService memberService;
 
     private void reloadReadableProjects() {
-        List<Project> result = projectService.loadReadableProjectsOfUser(user);
+        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
+        List<Project> result = response.getAllFoundObjects(Project.class, response.getNodes().iterator().next());
         Collections.sort(result, (p1, p2) -> {
             return p1.getName().compareTo(p2.getName());
         });

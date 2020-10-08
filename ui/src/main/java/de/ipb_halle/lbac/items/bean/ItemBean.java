@@ -33,7 +33,9 @@ import de.ipb_halle.lbac.material.Material;
 
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,46 +55,46 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 @Named
 public class ItemBean implements Serializable {
-    
+
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private ItemState state;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Material material;
     private HistoryOperation historyOperation;
-    
+
     @Inject
     protected PrintBean printBean;
-    
+
     @Inject
     protected ItemOverviewBean itemOverviewBean;
-    
+
     @Inject
     protected ProjectService projectService;
-    
+
     @Inject
     protected ContainerService containerService;
     @Inject
     protected ContainerPositionService containerPositionService;
-    
+
     @Inject
     protected Navigator navigator;
-    
+
     @Inject
     protected ItemService itemService;
-    
+
     private ContainerController containerController;
-    
+
     private List<Project> projects = new ArrayList<>();
     private List<Container> containers = new ArrayList<>();
     private List<Solvent> solvents = new ArrayList<>();
     private List<String> purities = new ArrayList<>();
     private List<String> units = new ArrayList<>();
     private List<ContainerType> containerTypes = new ArrayList<>();
-    
+
     private boolean commercialMaterial;
     @Inject
     protected UserBean userBean;
-    
+
     private Project project;
     //private Container container;
 
@@ -113,36 +115,36 @@ public class ItemBean implements Serializable {
     private Double amount;
     private String amountUnit;
     private String purity;
-    
+
     private boolean directContainer;
-    
+
     private String containerName;
     protected Mode mode;
-    
+
     public enum Mode {
         CREATE, EDIT, HISTORY
     }
-    
+
     public void applyNextPositiveDiff() {
         historyOperation.applyNextPositiveDifference();
     }
-    
+
     public ContainerController getContainerController() {
         return containerController;
     }
-    
+
     public void setContainerController(ContainerController containerController) {
         this.containerController = containerController;
     }
-    
+
     public void applyNextNegativeDiff() {
         historyOperation.applyNextNegativeDifference();
     }
-    
+
     public ContainerType getBasicContainerType() {
         return basicContainerType;
     }
-    
+
     public void setBasicContainerType(ContainerType basicContainerType) {
         this.basicContainerType = basicContainerType;
     }
@@ -155,15 +157,15 @@ public class ItemBean implements Serializable {
     public boolean getLabelPrintingEnabled() {
         return (state.getEditedItem().getId() != null);
     }
-    
+
     public PrintBean getPrintBean() {
         return this.printBean;
     }
-    
+
     public List<String> getPurityUnits() {
         return Arrays.asList("%", "M", "mM", "µM", "ppm");
     }
-    
+
     public void actionSave() {
         boolean areSlotsEmpty = containerPositionService.areContainerSlotsFree(state.getEditedItem(), containerController.getContainer(), containerController.resolveItemPositions());
         if (!areSlotsEmpty) {
@@ -187,15 +189,17 @@ public class ItemBean implements Serializable {
             navigator.navigate("/item/items");
         }
     }
-    
+
     public boolean isSolventRowVisisble() {
         return solved;
     }
-    
+
     public void actionStartItemEdit(Item i) {
         try {
             mode = Mode.EDIT;
-            projects = projectService.loadReadableProjectsOfUser(userBean.getCurrentAccount());
+            ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(userBean.getCurrentAccount(), 0, Integer.MAX_VALUE);
+            SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
+            projects = response.getAllFoundObjects(Project.class, response.getNodes().iterator().next());
             containers = containerService.loadContainers(userBean.getCurrentAccount());
             containerTypes = containerService.loadContainerTypes();
             filterAndLocalizeContainerTypes();
@@ -212,61 +216,63 @@ public class ItemBean implements Serializable {
             logger.error(e);
         }
     }
-    
+
     public void actionStartItemCreation(Material m) {
         mode = Mode.CREATE;
         state = new ItemState();
         this.printBean.setLabelDataObject(state.getEditedItem());
         directContainer = true;
-        projects = projectService.loadReadableProjectsOfUser(userBean.getCurrentAccount());
+        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(userBean.getCurrentAccount(), 0, Integer.MAX_VALUE);
+        SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
+        projects = response.getAllFoundObjects(Project.class, response.getNodes().iterator().next());
         containers = containerService.loadContainers(userBean.getCurrentAccount());
         containerTypes = containerService.loadContainerTypes();
         filterAndLocalizeContainerTypes();
-        
+
         units = loadUnits();
         solvents = loadSolvents();
         purities = loadPurities();
         clearFormular();
         containerController = new ContainerController(this, null);
-        
+
         this.material = m;
     }
-    
+
     public List<ContainerType> getContainerTypes() {
         return containerTypes;
     }
-    
+
     public boolean isCommercialMaterial() {
         return commercialMaterial;
     }
-    
+
     public void setCommercialMaterial(boolean commercialMaterial) {
         this.commercialMaterial = commercialMaterial;
     }
-    
+
     public String getPurityUnit() {
         return purityUnit;
     }
-    
+
     public void setPurityUnit(String purityUnit) {
         this.purityUnit = purityUnit;
     }
-    
+
     public void actionChangeContainer(Container c) {
         containerController = new ContainerController(this, c);
         this.containerName = c.getLabel();
-        
+
     }
-    
+
     public void onItemSelect(SelectEvent event) {
         containerName = (String) event.getObject();
         int containerId = Integer.parseInt(containerName.split("-")[0]);
         containerService.loadContainerById(containerId);
         Container c = containerService.loadContainerById(containerId);
         actionChangeContainer(c);
-        
+
     }
-    
+
     public List<String> nameSuggestions(String enteredValue) {
         List<String> matches = new ArrayList<>();
         List<String> names = new ArrayList<>();
@@ -280,7 +286,7 @@ public class ItemBean implements Serializable {
         }
         return matches;
     }
-    
+
     public String getMaterialName() {
         if (material == null) {
             return "no material choosen";
@@ -288,35 +294,35 @@ public class ItemBean implements Serializable {
             return material.getNames().get(0).getValue();
         }
     }
-    
+
     public Project getProject() {
         return project;
     }
-    
+
     public void setProject(Project project) {
         this.project = project;
     }
-    
+
     public List<Project> getProjects() {
         return projects;
     }
-    
+
     public Container getContainer() {
         return containerController.getContainer();
     }
-    
+
     public void setContainer(Container container) {
         containerController = new ContainerController(this, container);
     }
-    
+
     public List<Container> getContainers() {
         return containers;
     }
-    
+
     public void setContainerName(String containerName) {
         this.containerName = containerName;
     }
-    
+
     public String getContainerName() {
         if (containerController.getContainer() == null || containerController.getContainer().getLabel() == null) {
             return "";
@@ -324,7 +330,7 @@ public class ItemBean implements Serializable {
             return containerController.getContainer().getLabel();
         }
     }
-    
+
     public String getContainerType() {
         if (containerController.getContainer() == null) {
             return "";
@@ -333,7 +339,7 @@ public class ItemBean implements Serializable {
             return containerController.getContainer().getType().getLocalizedName();
         }
     }
-    
+
     public String getContainerProject() {
         if (containerController.getContainer() == null) {
             return "";
@@ -345,7 +351,7 @@ public class ItemBean implements Serializable {
             }
         }
     }
-    
+
     public String getContainerLocation() {
         if (containerController.getContainer() == null) {
             return "";
@@ -357,95 +363,95 @@ public class ItemBean implements Serializable {
             }
         }
     }
-    
+
     public List<String> getUnits() {
         return units;
     }
-    
+
     public String getContainerUnit() {
         return containerUnit;
     }
-    
+
     public void setContainerUnit(String containerUnit) {
         this.containerUnit = containerUnit;
     }
-    
+
     public String getSolvent() {
         return solvent;
     }
-    
+
     public void setSolvent(String solvent) {
         this.solvent = solvent;
     }
-    
+
     public List<Solvent> getSolvents() {
         return solvents;
     }
-    
+
     public Double getConcentration() {
         return concentration;
     }
-    
+
     public void setConcentration(Double concentration) {
         this.concentration = concentration;
     }
-    
+
     public String getPurity() {
         return purity;
     }
-    
+
     public void setPurity(String purity) {
         this.purity = purity;
     }
-    
+
     public List<String> getPurities() {
         return purities;
     }
-    
+
     public String getDescription() {
         return description;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public Double getContainerSize() {
         return containerSize;
     }
-    
+
     public void setContainerSize(Double containerSize) {
         this.containerSize = containerSize;
     }
-    
+
     public Double getAmount() {
         return amount;
     }
-    
+
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-    
+
     public String getAmountUnit() {
         return amountUnit;
     }
-    
+
     public void setAmountUnit(String amountUnit) {
         this.amountUnit = amountUnit;
     }
-    
+
     public ItemState getState() {
         return state;
     }
-    
+
     public Boolean getSolved() {
         return solved;
     }
-    
+
     public void setSolved(Boolean solved) {
         this.solved = solved;
     }
-    
+
     private List<String> loadPurities() {
         List<String> purities = new ArrayList<>();
         purities.add("unbekannt");
@@ -453,7 +459,7 @@ public class ItemBean implements Serializable {
         purities.add("unrein");
         return purities;
     }
-    
+
     private List<Solvent> loadSolvents() {
         List<Solvent> solvents = new ArrayList<>();
         solvents.add(new Solvent(1, "solvent 1", "Wasser"));
@@ -461,7 +467,7 @@ public class ItemBean implements Serializable {
         solvents.add(new Solvent(3, "solvent 3", "Benzin"));
         return solvents;
     }
-    
+
     private List<String> loadUnits() {
         List<String> units = new ArrayList<>();
         units.add("l");
@@ -471,7 +477,7 @@ public class ItemBean implements Serializable {
         units.add("einheit");
         return units;
     }
-    
+
     private void clearFormular() {
         containerUnit = units.get(0);
         containerSize = null;
@@ -482,7 +488,7 @@ public class ItemBean implements Serializable {
         purityUnit = units.get(0);
         solvent = "";
         amount = null;
-        
+
         amountUnit = units.get(0);
         purity = purities.get(0);
     }
@@ -504,23 +510,23 @@ public class ItemBean implements Serializable {
             }
         }
     }
-    
+
     public boolean isIdVisible() {
         return mode != Mode.CREATE;
     }
-    
+
     public boolean isUnitEditable() {
         return mode == Mode.CREATE;
     }
-    
+
     public boolean isDirectContainer() {
         return directContainer;
     }
-    
+
     public void setDirectContainer(boolean directContainer) {
         this.directContainer = directContainer;
     }
-    
+
     public String getSaveButtonText() {
         if (mode == Mode.CREATE) {
             return Messages.getString(MESSAGE_BUNDLE, "itemEdit_materialPanel_save", null);
@@ -528,19 +534,19 @@ public class ItemBean implements Serializable {
             return Messages.getString(MESSAGE_BUNDLE, "itemEdit_materialPanel_saveEdited", null);
         }
     }
-    
+
     public boolean isPreviousVersionButtonDisabled() {
         if (state.getEditedItem().getHistory().isEmpty()) {
             return true;
         }
         return state.getEditedItem().getHistory().firstKey().equals(state.getCurrentHistoryDate());
     }
-    
+
     public boolean isNextVersionButtonDisabled() {
         return state.getEditedItem().getHistory().isEmpty() || state.getCurrentHistoryDate() == null;
-        
+
     }
-    
+
     public void removeContainer() {
         containerController = new ContainerController(this, null);
     }

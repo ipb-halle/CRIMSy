@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class Project extends ACObject implements DTO, Serializable {
+public class Project extends ACObject implements DTO, Serializable, Searchable {
 
     protected int id;
     protected String name;

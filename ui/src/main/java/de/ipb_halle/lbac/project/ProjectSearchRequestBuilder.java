@@ -15,28 +15,28 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search;
+package de.ipb_halle.lbac.project;
 
-import de.ipb_halle.lbac.entity.Node;
-import java.util.List;
-import java.util.Set;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Operator;
 
 /**
  *
  * @author fmauz
  */
-public interface SearchResult {
+public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
 
-    public Set<Node> getNodes();
+    public ProjectSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+        super(u, firstResultIndex, maxResults);
+    }
 
-    public List<NetObject> getAllFoundObjects();
-
-    public List<Searchable> getAllFoundObjects(Node n);
-
-    public <T> List<NetObject> getAllFoundObjects(Class T); //T nur Searchable
-
-    public <T> List<T> getAllFoundObjects(Class T, Node n); //T nur Searchable
-
-    public void addResults(Node n, List<Searchable> foundObjects);
+    public ProjectSearchRequestBuilder addExactName(String name) {
+        addCondition(Operator.EQUAL,
+                name,
+                AttributeType.PROJECT_NAME);
+        return this;
+    }
 
 }
