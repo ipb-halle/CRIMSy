@@ -35,6 +35,14 @@ public class Value {
         return this.argumentKey;
     }
 
+    public String getCastArgument() {
+        String arg = ":" + this.argumentKey;
+        if (castExpression != null) {
+            return String.format(this.castExpression, arg);
+        }
+        return arg;
+    }
+
     public Object getValue() {
         return this.value;
     }

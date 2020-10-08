@@ -34,12 +34,14 @@ public enum AttributeType {
     EXPERIMENT,
     ITEM,
     MATERIAL,
+    MEMBERSHIP,
 
     /* entity properties */
     ASSAY_TARGET,
     ASSAY_RECORD,
     INSTITUTION,
     MATERIAL_TYPE,
+    MEMBER,
     MEMBER_NAME,
     MOLECULE,
     PROJECT_NAME,

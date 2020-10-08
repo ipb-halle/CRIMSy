@@ -113,8 +113,7 @@ public class SqlBuilder {
             sb.append(sep);
             sb.append(field.getAliasedColumnName());
             sb.append(operator.getSql());
-            sb.append(":");
-            sb.append(value.getArgumentKey());
+            sb.append(value.getCastArgument());
             sep = " OR ";
         }
     }

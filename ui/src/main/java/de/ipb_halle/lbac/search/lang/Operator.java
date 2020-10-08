@@ -26,6 +26,9 @@ package de.ipb_halle.lbac.search.lang;
  * <li>prefix operators or postfix operators (applies only to unary operators)</li>
  * </ul>
  *
+ * Some operators (e.g. <code>IN</code>) may require a cast expression 
+ * (e.g. <code>' (%s) '</code>) for their value arguments.
+ * 
  * @author fmauz
  */
 public enum Operator {
@@ -36,6 +39,8 @@ public enum Operator {
 
     IS_NULL(" IS NULL", true, true),
     IS_NOT_NULL(" IS NOT NULL", true, true),
+    IS_TRUE(" IS TRUE", true, true),
+    IN(" IN ", true, true),
     LESS(" < "),
     LESS_EQUAL(" <= "),
     EQUAL(" = "),
