@@ -27,14 +27,17 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +111,7 @@ public class ProjectService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     private Project loadDetailInfosOfProject(ProjectEntity pE) {
-        ACList projectACL = aclistService.loadById(pE.getAclist_id());
+        ACList projectACL = aclistService.loadById(pE.getACList());
         Map<MaterialDetailType, ACList> detailTemplates = new HashMap<>();
         List<ProjectTemplateEntity> templates = em.createNativeQuery(
                 SQL_PROJECT_TEMPLATES, ProjectTemplateEntity.class)
@@ -119,7 +122,7 @@ public class ProjectService implements Serializable {
                     acListService.loadById(ptE.getAcListId()));
         }
         List<BudgetReservation> budgetReservation = new ArrayList<>();
-        User projectOwner = memberService.loadUserById(pE.getOwnerId());
+        User projectOwner = memberService.loadUserById(pE.getOwner());
         return new Project(
                 pE,
                 projectOwner,
@@ -141,8 +144,29 @@ public class ProjectService implements Serializable {
     public SearchResult loadProjects(SearchRequest request) {
         SearchResult result = new SearchResultImpl();
 
-        SqlBuilder builder = new SqlBuilder(createEntityGraph(request.getCondition()));
-        String sql = builder.query(request.getCondition());
+        Condition condition = aclistService.getCondition(
+                request.getUser(),
+                ACPermission.permREAD,
+                AttributeType.PROJECT,
+                AttributeType.MEMBER);
+     
+        EntityGraph graph = createEntityGraph(request.getCondition());
+        EntityGraph aclGraph = aclistService.getEntityGraph();
+        aclGraph.addLinkField("aclist_id", "aclist_id");
+
+        graph.addChild(aclGraph);
+        
+        if (request.getCondition() != null ) {
+            condition = new Condition(
+                Operator.AND,
+                request.getCondition(),
+                condition);
+        }
+
+        SqlBuilder builder = new SqlBuilder(graph);
+
+        String sql = builder.query(condition);
+
         Query query = this.em.createNativeQuery(sql, ProjectEntity.class);
         for (Value param : builder.getValueList()) {
             query.setParameter(param.getArgumentKey(), param.getValue());
@@ -193,6 +217,7 @@ public class ProjectService implements Serializable {
             }
         }
         ProjectEntity pE = p.createEntity();
+        pE.setMtime(new Date());
         this.em.merge(pE);
         this.em.createNativeQuery(SQL_DELETE_PROJECT_TEMPLATES)
                 .setParameter("projectid", p.getId())

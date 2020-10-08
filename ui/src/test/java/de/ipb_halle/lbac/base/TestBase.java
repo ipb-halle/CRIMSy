@@ -144,6 +144,7 @@ public class TestBase implements Serializable {
                 .addClass(CollectionService.class)
                 .addClass(KeyStoreFactory.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
+                
                 .addAsResource("init.sql", "init.sql")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;

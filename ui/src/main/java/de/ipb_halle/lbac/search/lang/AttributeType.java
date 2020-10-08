@@ -35,6 +35,7 @@ public enum AttributeType {
     ITEM,
     MATERIAL,
     MEMBERSHIP,
+    PROJECT,
 
     /* entity properties */
     ASSAY_TARGET,

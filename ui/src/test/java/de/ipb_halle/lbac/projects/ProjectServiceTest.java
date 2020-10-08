@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.util.List;
 import javax.inject.Inject;
@@ -39,8 +38,8 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -119,7 +118,7 @@ public class ProjectServiceTest extends TestBase {
         requestBuilder = new ProjectSearchRequestBuilder(user2, 0, 25);
         result = instance.loadProjects(requestBuilder.buildSearchRequest());
         List<Project> projectsOfUser2 = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
-        // Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
+         Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
 
         requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
         requestBuilder.addExactName("biochemical-test-project");
@@ -135,6 +134,43 @@ public class ProjectServiceTest extends TestBase {
         Assert.assertEquals(0, loadedByName.size());
 
         cleanUp(user2, projectAcList, p);
+    }
+
+    @Test
+    public void test002_saveEditedProject() {
+        //Prepare a project and save it to the database
+        Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "test002_project-beforeEdit");
+        p.setBudget(1000d);
+        p.setDescription("Description of biochemical test project");
+        Group g = memberService.loadGroupById(GlobalAdmissionContext.PUBLIC_GROUP_ID);
+        User u = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        ACList emptyACList = new ACList();
+        p.setACList(emptyACList);
+        p.setOwner(u);
+        p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, emptyACList);
+        p = instance.saveProjectToDb(p);
+
+        //Modify the project and save it
+        p.setBudget(0d);
+        p.setName("test002_project-afterEdit");
+        p.setACList(GlobalAdmissionContext.getPublicReadACL());
+        p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, GlobalAdmissionContext.getPublicReadACL());
+        p.getDetailTemplates().put(MaterialDetailType.HAZARD_INFORMATION, GlobalAdmissionContext.getPublicReadACL());
+        instance.saveEditedProjectToDb(p);
+
+        //Load the edited Project and check its changed properties
+        Project loadedProject = instance.loadProjectById(p.getId());
+        Assert.assertEquals(0d, (double) loadedProject.getBudget(), 0);
+        Assert.assertTrue(loadedProject.getBudgetReservation().isEmpty());
+        Assert.assertEquals("Description of biochemical test project", loadedProject.getDescription());
+        Assert.assertEquals(GlobalAdmissionContext.getPublicReadACL().getId(), loadedProject.getDetailTemplates().get(MaterialDetailType.COMMON_INFORMATION).getId());
+        Assert.assertEquals(GlobalAdmissionContext.getPublicReadACL().getId(), loadedProject.getDetailTemplates().get(MaterialDetailType.HAZARD_INFORMATION).getId());
+        Assert.assertNull(loadedProject.getDetailTemplates().get(MaterialDetailType.INDEX));
+        Assert.assertEquals("test002_project-afterEdit", loadedProject.getName());
+        Assert.assertEquals(u.getId(), loadedProject.getOwnerID());
+        Assert.assertEquals(GlobalAdmissionContext.getPublicReadACL().getId(), loadedProject.getUserGroups().getId());
+        loadedProject.hashCode();
+
     }
 
     private void cleanUp(User user2, ACList projectAcList, Project p) {

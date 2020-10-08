@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.project;
 
+import de.ipb_halle.lbac.admission.ACObjectEntity;
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 
@@ -37,20 +38,17 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "projects")
-public class ProjectEntity implements Serializable {
+@AttributeTag(type = AttributeType.PROJECT)
+public class ProjectEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
-
-    public ProjectEntity() {
-
-    }
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
 
     @Column
-    @AttributeTag(type=AttributeType.PROJECT_NAME)
+    @AttributeTag(type = AttributeType.PROJECT_NAME)
     private String name;
 
     @Column
@@ -60,12 +58,6 @@ public class ProjectEntity implements Serializable {
 
     @Column
     private int projectTypeId;
-
-    @Column
-    private Integer ownerId;
-
-    @Column
-    private Integer aclist_id;
 
     @Column
     private String description;
@@ -78,14 +70,20 @@ public class ProjectEntity implements Serializable {
     @Column
     private Date mtime;
 
+    /**
+     * default constructor
+     */
+    public ProjectEntity() {
+    }
+
     public ProjectEntity(Project p) {
-      
+
         name = p.getName();
         budget = p.getBudget();
         budgetBlocked = p.budgetBlocked;
         projectTypeId = p.getProjectType().getId();
-        ownerId = p.getOwnerID();
-        aclist_id = p.getUserGroups().getId();
+        super.setOwner(p.getOwnerID());
+        super.setACList(p.getUserGroups().getId());
         description = p.getDescription();
         ctime = new Date();
         mtime = new Date();
@@ -130,22 +128,6 @@ public class ProjectEntity implements Serializable {
 
     public void setProjectTypeId(int projectTypeId) {
         this.projectTypeId = projectTypeId;
-    }
-
-    public Integer getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Integer ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public Integer getAclist_id() {
-        return aclist_id;
-    }
-
-    public void setAclist_id(Integer aclist_id) {
-        this.aclist_id = aclist_id;
     }
 
     public String getDescription() {

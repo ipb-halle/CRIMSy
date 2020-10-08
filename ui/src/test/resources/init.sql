@@ -231,7 +231,7 @@ CREATE TABLE projects (
   budget DOUBLE,
   budgetBlocked BOOLEAN default false,
   projecttypeid INTEGER NOT NULL REFERENCES projecttypes(id),
-  ownerid INTEGER NOT NULL REFERENCES usersgroups(id),
+  owner_id INTEGER NOT NULL REFERENCES usersgroups(id),
   aclist_id INTEGER NOT NULL REFERENCES aclists(id),
   description VARCHAR,
   ctime TIMESTAMP  NOT NULL DEFAULT now(),

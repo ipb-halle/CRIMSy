@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
@@ -30,6 +32,7 @@ public class ACObjectEntity {
     private Integer aclist;
 
     @Column(name = "owner_id")
+    @AttributeTag(type = AttributeType.MEMBER)
     private Integer owner;
 
     /**

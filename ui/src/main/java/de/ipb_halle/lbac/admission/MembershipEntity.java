@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -26,12 +28,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 /**
  * Class for membership associations
  */
 @Entity
 @Table(name = "MEMBERSHIPS")
+@AttributeTag(type = AttributeType.MEMBERSHIP)
 public class MembershipEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
@@ -47,12 +49,11 @@ public class MembershipEntity implements Serializable {
     private Integer group;
 
     @Column(name = "member_id")
+    @AttributeTag(type = AttributeType.MEMBER)
     private Integer member;
 
     public MembershipEntity() {
     }
-
-
 
     /**
      * equals only depends on groupId and memberId this is necessary e.g.for

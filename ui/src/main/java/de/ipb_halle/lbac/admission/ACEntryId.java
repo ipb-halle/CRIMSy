@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
@@ -30,6 +32,8 @@ public class ACEntryId implements Serializable {
     private final static long serialVersionUID = 1L;
 
     private Integer aclist_id;
+
+    @AttributeTag(type = AttributeType.MEMBER)
     private Integer member_id;
 
     /**

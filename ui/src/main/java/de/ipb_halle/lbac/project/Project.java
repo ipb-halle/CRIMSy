@@ -79,6 +79,7 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
     public Project(ProjectType projectType, String projectName) {
         this.projectType = projectType;
         this.name = projectName;
+        this.ctime = new Date();
     }
 
     public int getId() {
@@ -187,14 +188,14 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
     public ProjectEntity createEntity() {
         ProjectEntity entity = new ProjectEntity();
         entity.setId(id);
-        entity.setAclist_id(getACList().getId());
+        entity.setACList(getACList().getId());
         entity.setBudget(budget);
         entity.setBudgetBlocked(budgetBlocked);
         entity.setCtime(ctime);
         entity.setDescription(description);
         entity.setMtime(mTime);
         entity.setName(name);
-        entity.setOwnerId(getOwnerID());
+        entity.setOwner(getOwnerID());
         entity.setProjectTypeId(projectType.getId());
         return entity;
     }
