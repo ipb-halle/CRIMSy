@@ -59,7 +59,7 @@ public class FileEntityServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("ForumServiceTest.war")
+        return prepareDeployment("FileEntityServiceTest.war")
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
                 .addClass(FileObject.class)

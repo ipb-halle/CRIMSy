@@ -56,7 +56,7 @@ public class MembershipWebClientTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         
-        return prepareDeployment("MembershipWebServiceTest.war")
+        return prepareDeployment("MembershipWebClientTest.war")
                 .addClass(WebRequestAuthenticator.class)
                 .addPackage(MembershipWebServiceMock.class.getPackage())
                 .addClass(Updater.class)

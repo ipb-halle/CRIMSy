@@ -150,7 +150,7 @@ public class MaterialOverviewBeanTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
-                = prepareDeployment("MaterialEditBeanTest.war")
+                = prepareDeployment("MaterialOverviewBeanTest.war")
                         .addClass(ACListService.class)
                         .addClass(CollectionBean.class)
                         .addClass(CollectionService.class)

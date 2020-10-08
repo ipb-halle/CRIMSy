@@ -64,7 +64,7 @@ public class FileUploadWebServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("UploadToColTest.war");
+        return prepareDeployment("FileUploadWebServiceTest.war");
     }
 
     private void createAndSaveNewCol() {

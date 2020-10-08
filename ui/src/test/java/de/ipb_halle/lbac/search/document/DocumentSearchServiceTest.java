@@ -139,7 +139,7 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("WordCloudWebServiceTest.war")
+        return prepareDeployment("DocumentSearchServiceTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(FileEntityService.class)
                 .addClass(CloudService.class)
