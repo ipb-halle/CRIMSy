@@ -288,17 +288,8 @@ public class MaterialService implements Serializable {
         }
         List<MaterialEntity> entities = q.getResultList();
         for (MaterialEntity me : entities) {
-            Material m = null;
-            if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.STRUCTURE) {
-                m = getStructure(me);
-
-            }
-            if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.BIOMATERIAL) {
-                m = getBioMaterial(me);
-            }
-            m.setACList(aclService.loadById(me.getAclist_id()));
-            m.getDetailRights().addAll(loadDetailRightsOfMaterial(m.getId()));
-            result.addResults(nodeService.getLocalNode(), Arrays.asList(m));
+            
+            result.addResults(nodeService.getLocalNode(), Arrays.asList(loadMaterialById(me.getMaterialid())));
         }
         return result;
     }

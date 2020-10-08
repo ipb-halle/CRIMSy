@@ -19,10 +19,14 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +44,7 @@ public class MaterialTableController implements TableController {
     private DataTableNavigationController tableController;
 
     private List<Material> shownMaterials;
-    private Map<String, Object> lastcmap = new HashMap<>();
+    private MaterialSearchMaskValues lastValues;
     private User lastUser;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -56,22 +60,16 @@ public class MaterialTableController implements TableController {
 
     @Override
     public void reloadDataTableItems() {
-        shownMaterials = materialService.getReadableMaterials(
-                lastUser,
-                lastcmap,
-                tableController.getFirstResult(),
-                tableController.getCHUNK_SIZE());
+        SearchResult result = materialService.getReadableMaterials(createRequest());
+        shownMaterials = extractAllMaterialsFromResponse(result);
+
     }
 
-    public void reloadShownMaterial(User user, Map<String, Object> cmap) {
-        lastcmap = cmap;
+    public void reloadShownMaterial(User user, MaterialSearchMaskValues values) {
+        lastValues = values;
         lastUser = user;
-        shownMaterials = materialService.getReadableMaterials(
-                user,
-                cmap,
-                tableController.getFirstResult(),
-                tableController.getCHUNK_SIZE());
-        maxResults = materialService.loadMaterialAmount(user, cmap);
+        reloadDataTableItems();
+        maxResults = materialService.loadMaterialAmount(user, new HashMap<>());
         tableController.setMaxResults(maxResults);
 
     }
@@ -87,6 +85,24 @@ public class MaterialTableController implements TableController {
     @Override
     public void setLastUser(User u) {
         this.lastUser = u;
+    }
+
+    private SearchRequest createRequest() {
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(
+                lastUser,
+                tableController.getFirstResult(),
+                tableController.getCHUNK_SIZE());
+        builder.setConditionsBySearchValues(lastValues);
+        return builder.buildSearchRequest();
+    }
+
+    private List<Material> extractAllMaterialsFromResponse(SearchResult response) {
+        List<Material> materials = new ArrayList<>();
+        for (NetObject no : response.getAllFoundObjects()) {
+            materials.add((Material) no.getSearchable());
+        }
+        return materials;
+
     }
 
 }

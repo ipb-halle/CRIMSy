@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.common.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -75,6 +76,31 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
                 molecule,
                 AttributeType.MOLECULE);
         return this;
+    }
+    
+    public void setConditionsBySearchValues(MaterialSearchMaskValues values){
+           if(values!=null){
+            if(values.id!=null){
+               addID(values.id);
+            }
+            if(values.index!=null){
+                addIndexName(values.index);
+            }
+            if(values.materialName!=null){
+                addIndexName(values.materialName);
+            }
+             if(values.molecule!=null){
+                addSubMolecule(values.molecule);
+            }
+               if(values.projectName!=null){
+                addProject(values.projectName);
+            }
+               
+                 if(values.type!=null){
+                addProject(values.projectName);
+            }
+                
+        }
     }
 
 }

@@ -52,6 +52,7 @@ public class MaterialSearchMaskController implements Serializable {
     private MemberService memberService;
     private List<MaterialType> materialTypes;
     private String molecule;
+    private MaterialSearchMaskValues values;
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -81,8 +82,9 @@ public class MaterialSearchMaskController implements Serializable {
 
     /**
      * ToDo: localize the material type names
+     *
      * @param mt
-     * @return 
+     * @return
      */
     public String getLocalizedMaterialTypeName(MaterialType mt) {
         if (mt == null) {
@@ -101,7 +103,7 @@ public class MaterialSearchMaskController implements Serializable {
 
     public void actionClearSearchFilter() {
         clearInputFields();
-        tableController.reloadShownMaterial(overviewBean.getCurrentUser(), generateCmap());
+        tableController.reloadShownMaterial(overviewBean.getCurrentUser(), getValues());
     }
 
     public void clearInputFields() {
@@ -118,39 +120,47 @@ public class MaterialSearchMaskController implements Serializable {
     }
 
     public void actionStartMaterialSearch() {
-        tableController.reloadShownMaterial(overviewBean.getCurrentUser(), generateCmap());
+        tableController.reloadShownMaterial(overviewBean.getCurrentUser(), getValues());
     }
 
-    private Map<String, Object> generateCmap() {
+    private MaterialSearchMaskValues getValues() {
+        values = new MaterialSearchMaskValues();
 
         Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {
-            cmap.put("NAME", "%" + name.trim() + "%");
+            values.materialName = name;
         }
         if (id != null && !id.trim().isEmpty()) {
-            cmap.put("ID", Integer.parseInt(id));
+            values.id = Integer.parseInt(id);
         }
         if (projectName != null && !projectName.trim().isEmpty()) {
-            cmap.put("PROJECT_NAME", "%" + projectName.trim() + "%");
+            values.projectName = projectName;
         }
         if (index != null && !index.trim().isEmpty()) {
-            cmap.put("INDEX", "%" + index.trim() + "%");
+            values.index = index;
         }
         if (userName != null && !userName.trim().isEmpty()) {
-            cmap.put("USER", "%" + userName.trim() + "%");
+            values.userName = userName;
         }
         if (materialType != null) {
-            cmap.put("TYPE", materialType.getId());
+            values.type.add(materialType);
+        } else {
+            values.type.add(MaterialType.BIOMATERIAL);
+            values.type.add(MaterialType.COMPOSITION);
+            values.type.add(MaterialType.CONSUMABLE);
+            values.type.add(MaterialType.SEQUENCE);
+            values.type.add(MaterialType.STRUCTURE);
+            values.type.add(MaterialType.TISSUE);
         }
         try {
             if (!new V2000().isEmptyMolecule(molecule)) {
-                cmap.put("MOLECULE", molecule);
+                values.molecule = molecule;
             }
         } catch (Exception e) {
             logger.error("Could not parse molecule", e);
         }
 
-        return cmap;
+        return values;
     }
 
     public List<String> getSimilarMaterialNames(String pattern) {
