@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
@@ -41,6 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -86,6 +88,16 @@ public class ProjectService implements Serializable {
 
     @Inject
     private NodeService nodeService;
+
+    private PermissionConditionBuilder permissionConditionBuilder;
+
+    @PostConstruct
+    public void init() {
+        permissionConditionBuilder = new PermissionConditionBuilder(
+                aclistService,
+                new AttributeType[]{AttributeType.PROJECT, AttributeType.MEMBER});
+
+    }
 
     /**
      * Gets all project names which matches the pattern %name%
@@ -144,28 +156,14 @@ public class ProjectService implements Serializable {
     public SearchResult loadProjects(SearchRequest request) {
         SearchResult result = new SearchResultImpl();
 
-        Condition condition = aclistService.getCondition(
-                request.getUser(),
-                ACPermission.permREAD,
-                AttributeType.PROJECT,
-                AttributeType.MEMBER);
-     
         EntityGraph graph = createEntityGraph(request.getCondition());
-        EntityGraph aclGraph = aclistService.getEntityGraph();
-        aclGraph.addLinkField("aclist_id", "aclist_id");
-
-        graph.addChild(aclGraph);
-        
-        if (request.getCondition() != null ) {
-            condition = new Condition(
-                Operator.AND,
-                request.getCondition(),
-                condition);
-        }
 
         SqlBuilder builder = new SqlBuilder(graph);
 
-        String sql = builder.query(condition);
+        String sql = builder.query(
+                permissionConditionBuilder.addPermissionCondition(
+                        request,
+                        ACPermission.permREAD));
 
         Query query = this.em.createNativeQuery(sql, ProjectEntity.class);
         for (Value param : builder.getValueList()) {
@@ -233,7 +231,7 @@ public class ProjectService implements Serializable {
 
     private EntityGraph createEntityGraph(Condition con) {
         graphBuilder = new ProjectEntityGraphBuilder();
+        graphBuilder.addACListContraint(acListService.getEntityGraph(), "aclist_id");
         return graphBuilder.buildEntityGraph(con);
     }
-
 }
