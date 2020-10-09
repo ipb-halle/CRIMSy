@@ -50,7 +50,6 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -584,11 +583,12 @@ public class ItemServiceTest extends TestBase {
     }
 
     private Item createItem() {
-        
+
         Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
-        item.setACList(globalContext.getAdminOnlyACL());
+
+        item.setACList(GlobalAdmissionContext.getPublicReadACL());
         item.setUnit("kg");
         item.setArticle(null);
         item.setConcentration(32d);

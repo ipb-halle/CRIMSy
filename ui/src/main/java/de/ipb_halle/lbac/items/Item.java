@@ -125,7 +125,7 @@ public class Item extends ACObject implements DTO, Serializable,Searchable {
         if (solvent != null) {
             entity.setSolventid(solvent.getId());
         }
-        entity.setAclist_id(getACList().getId());
+        entity.setACList(getACList().getId());
         entity.setCtime(cTime);
         entity.setExpiry_date(expiry_date);
         return entity;

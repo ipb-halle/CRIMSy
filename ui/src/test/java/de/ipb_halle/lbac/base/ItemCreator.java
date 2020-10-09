@@ -30,7 +30,7 @@ public class ItemCreator {
     protected EntityManagerService entityManagerService;
 
     protected String SQL_INSERT_ITEM = "INSERT INTO items "
-            + "(materialid,amount,owner,aclist_id,description,projectid,containerid) "
+            + "(materialid,amount,owner_id,aclist_id,description,projectid,containerid) "
             + "VALUES(%d,0,%d,%d,'%s',%d,%d)";
 
     protected String SQL_MAX_ITEM_ID = "SELECT max(id) from items";

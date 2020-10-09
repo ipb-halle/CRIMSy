@@ -41,13 +41,13 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     private void addUser() {
-        addJoin(JoinType.INNER, MemberEntity.class, "owner", "id");
+        addJoin(JoinType.INNER, MemberEntity.class, "owner_id", "id");
     }
 
     private void addContainer() {
         nestedContainerGraph = addJoin(JoinType.LEFT, ContainerNestingEntity.class, "containerid", "sourceid");
         addJoinToChild(JoinType.LEFT, nestedContainerGraph, ContainerEntity.class, "targetid", "id");
-        addJoin(JoinType.LEFT, ContainerEntity.class, "id", "id");
+        addJoin(JoinType.LEFT, ContainerEntity.class, "containerid", "id");
     }
 
     private void addProject() {

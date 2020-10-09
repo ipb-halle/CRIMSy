@@ -22,7 +22,7 @@ SET @SCHEMA_VERSION = '00001';
 
 
 CREATE DOMAIN IF NOT EXISTS molecule AS VARCHAR;
-CREATE domain IF NOT EXISTS jsonb AS VARCHAR;
+CREATE DOMAIN IF NOT EXISTS jsonb AS VARCHAR;
 
 /*
  * Cloud
@@ -536,7 +536,7 @@ CREATE TABLE items(
     purity VARCHAR,
     solventid INTEGER REFERENCES solvents(id),
     description VARCHAR,
-    owner INTEGER  NOT NULL REFERENCES usersgroups(id),
+    owner_id INTEGER  NOT NULL REFERENCES usersgroups(id),
     containersize DOUBLE ,
     containertype VARCHAR REFERENCES containertypes(name),
     containerid INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE SET NULL,

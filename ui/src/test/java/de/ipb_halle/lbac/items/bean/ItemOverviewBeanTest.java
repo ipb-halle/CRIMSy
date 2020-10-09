@@ -121,7 +121,7 @@ public class ItemOverviewBeanTest extends TestBase {
 
     }
 
-    @Ignore("Only working if acls are activated in SqpBuilder")
+    //@Ignore("Only working if acls are activated in SqpBuilder")
     @Test
     public void test001_reloadItems() {
         createAndSaveItems();
@@ -189,7 +189,6 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertEquals("no items with active filters found", itemOverviewBean.getItemNavigationInfo());
     }
 
-    @Ignore("Only working if acls are activated in SqpBuilder")
     @Test
     public void test002_itemTableNavigation() {
         materialid_1 = this.materialCreator.createStructure(

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.entity;
 
+import de.ipb_halle.lbac.admission.ACObjectEntity;
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
@@ -34,8 +35,8 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "items")
-@AttributeTag(type=AttributeType.ITEM)
-public class ItemEntity implements Serializable {
+@AttributeTag(type = AttributeType.ITEM)
+public class ItemEntity extends ACObjectEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +45,7 @@ public class ItemEntity implements Serializable {
      */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @AttributeTag(type=AttributeType.LABEL)
+    @AttributeTag(type = AttributeType.LABEL)
     private Integer id;
 
     @Column
@@ -72,11 +73,8 @@ public class ItemEntity implements Serializable {
     private Integer solventid;
 
     @Column
-    @AttributeTag(type=AttributeType.TEXT)
+    @AttributeTag(type = AttributeType.TEXT)
     private String description;
-
-    @Column
-    private Integer owner;
 
     @Column
     private Double containersize;
@@ -90,9 +88,6 @@ public class ItemEntity implements Serializable {
     @Column
     private Date ctime;
 
-    @Column
-    private Integer aclist_id;
-    
     @Column
     private Date expiry_date;
 
@@ -168,14 +163,6 @@ public class ItemEntity implements Serializable {
         this.description = description;
     }
 
-    public Integer getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Integer owner) {
-        this.owner = owner;
-    }
-
     public Double getContainersize() {
         return containersize;
     }
@@ -214,14 +201,6 @@ public class ItemEntity implements Serializable {
 
     public void setCtime(Date ctime) {
         this.ctime = ctime;
-    }
-
-    public Integer getAclist_id() {
-        return aclist_id;
-    }
-
-    public void setAclist_id(Integer aclist_id) {
-        this.aclist_id = aclist_id;
     }
 
     public Date getExpiry_date() {

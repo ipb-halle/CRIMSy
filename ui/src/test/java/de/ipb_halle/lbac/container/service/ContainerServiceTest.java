@@ -463,7 +463,7 @@ public class ContainerServiceTest extends TestBase {
     private void createItems(String ownerid) {
         String sql = "INSERT INTO items "
                 + " (id,materialid,amount, articleid,projectid,concentration, "
-                + "unit,purity,solventid,description,owner,containersize,containertype, "
+                + "unit,purity,solventid,description,owner_id,containersize,containertype, "
                 + "containerid,ctime,aclist_id) "
                 + "values("
                 + "1,1,10,null,null,0,'kg','unknown',null,'item 1', "
@@ -474,7 +474,7 @@ public class ContainerServiceTest extends TestBase {
                 .doSqlUpdate(sql);
         sql = "INSERT INTO items "
                 + " (id,materialid,amount, articleid,projectid,concentration, "
-                + "unit,purity,solventid,description,owner,containersize,containertype, "
+                + "unit,purity,solventid,description,owner_id,containersize,containertype, "
                 + "containerid,ctime,aclist_id) "
                 + "values(2,1,5,null,null,0,'g','pure',null,'item 2', " + ownerid + " ,null,null," + c0.getId() + ",now(), "
                 + " " + globalContext.getAdminOnlyACL().getId() + " )";
@@ -482,7 +482,7 @@ public class ContainerServiceTest extends TestBase {
         entityManagerService.doSqlUpdate(sql);
         sql = "INSERT INTO items "
                 + " (id,materialid,amount, articleid,projectid,concentration, "
-                + "unit,purity,solventid,description,owner,containersize,containertype, "
+                + "unit,purity,solventid,description,owner_id,containersize,containertype, "
                 + "containerid,ctime,aclist_id) "
                 + "values(3,1,11,null,null,0,'mg','xxx',null,'item 3', " + ownerid + " ,null,null," + c1.getId() + ",now(), "
                 + " " + globalContext.getAdminOnlyACL().getId() + " )";

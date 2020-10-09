@@ -36,12 +36,15 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -104,17 +107,27 @@ public class ItemService {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ItemEntityGraphBuilder graphBuilder;
+    private PermissionConditionBuilder permissionConditionBuilder;
 
     @PostConstruct
     public void init() {
         graphBuilder = new ItemEntityGraphBuilder();
+        permissionConditionBuilder = new PermissionConditionBuilder(
+                aclistService,
+                new AttributeType[]{AttributeType.ITEM, AttributeType.MEMBER});
+
     }
 
     public SearchResult loadItems(SearchRequest request) {
-        graphBuilder = new ItemEntityGraphBuilder();
         SearchResult result = new SearchResultImpl();
-        SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(request.getCondition()));
-        String sql = sqlBuilder.query(request.getCondition());
+        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
+
+        String sql = sqlBuilder.query(
+                permissionConditionBuilder.addPermissionCondition(
+                        request,
+                        ACPermission.permREAD));
+        // TO DO: Temporary soltution until ORDER BY is implemented in sqlBuilder
+        sql += " ORDER BY a.id";
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -131,6 +144,28 @@ public class ItemService {
         return result;
     }
 
+    public int getItemAmount(SearchRequest request) {
+
+        SqlCountBuilder countBuilder = new SqlCountBuilder(
+                createEntityGraph(request),
+                new Attribute(new AttributeType[]{
+            AttributeType.ITEM,
+            AttributeType.LABEL
+        }));
+
+        String sql = countBuilder.query(
+                permissionConditionBuilder.addPermissionCondition(
+                        request,
+                        ACPermission.permREAD));
+        Query q = em.createNativeQuery(sql);
+        for (Value param : countBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        BigInteger bi = (BigInteger) q.getResultList().get(0);
+        return bi.intValue();
+
+    }
+
     private Item createItemFromEntity(ItemEntity entity) {
         Item item = new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
@@ -140,28 +175,9 @@ public class ItemService {
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
                 containerService.loadNestedContainer(entity.getContainerid()),
-                aclistService.loadById(entity.getAclist_id())
+                aclistService.loadById(entity.getACList())
         );
         return item;
-    }
-
-    public int getItemAmount(SearchRequest request) {
-        graphBuilder = new ItemEntityGraphBuilder();
-        SqlCountBuilder countBuilder = new SqlCountBuilder(
-                graphBuilder.buildEntityGraph(request.getCondition()),
-                new Attribute(new AttributeType[]{
-            AttributeType.ITEM,
-            AttributeType.LABEL
-        }));
-
-        String sql = countBuilder.query(request.getCondition());
-        Query q = em.createNativeQuery(sql);
-        for (Value param : countBuilder.getValueList()) {
-            q.setParameter(param.getArgumentKey(), param.getValue());
-        }
-        BigInteger bi = (BigInteger) q.getResultList().get(0);
-        return bi.intValue();
-
     }
 
     public Item loadItemById(int id) {
@@ -174,7 +190,7 @@ public class ItemService {
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
                 containerService.loadNestedContainer(entity.getContainerid()),
-                aclistService.loadById(entity.getAclist_id()));
+                aclistService.loadById(entity.getACList()));
         item.setHistory(loadHistoryOfItem(item));
         return item;
     }
@@ -189,7 +205,7 @@ public class ItemService {
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
                 new ArrayList<>(),
-                aclistService.loadById(entity.getAclist_id()));
+                aclistService.loadById(entity.getACList()));
     }
 
     /**
@@ -316,6 +332,12 @@ public class ItemService {
             return containerService.loadContainerById(containerId);
         }
         return null;
+    }
+
+    private EntityGraph createEntityGraph(SearchRequest request) {
+        graphBuilder = new ItemEntityGraphBuilder();
+        graphBuilder.addACListContraint(aclistService.getEntityGraph(), "aclist_id");
+        return graphBuilder.buildEntityGraph(request.getCondition());
     }
 
 }
