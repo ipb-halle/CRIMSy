@@ -366,7 +366,7 @@ CREATE TABLE items(
     purity VARCHAR,
     solventid INTEGER REFERENCES solvents(id),
     description VARCHAR,
-    owner INTEGER  NOT NULL REFERENCES usersgroups(id),
+    owner_id INTEGER  NOT NULL REFERENCES usersgroups(id),
     containersize FLOAT,
     containertype VARCHAR REFERENCES containertypes(name),
     containerid INTEGER REFERENCES containers(id),
