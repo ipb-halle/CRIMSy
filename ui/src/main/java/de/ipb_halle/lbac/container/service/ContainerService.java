@@ -94,7 +94,7 @@ public class ContainerService implements Serializable {
             + "LEFT JOIN memberships ms ON ms.group_id=ace.member_id "
             + "LEFT JOIN nested_containers nc ON nc.sourceid=c.id "
             + "LEFT JOIN containers c2 ON c2.id=nc.targetid "
-            + "WHERE (ace.permread=true OR c.projectid IS NULL OR p.ownerid=:userid) "
+            + "WHERE (ace.permread=true OR c.projectid IS NULL OR p.owner_id=:userid) "
             + "AND (c.id=:id OR :id=-1) "
             + "AND (ms.member_id=:userid  OR c.projectid IS NULL) "
             + "AND (p.name=:project OR :project='no_project') "

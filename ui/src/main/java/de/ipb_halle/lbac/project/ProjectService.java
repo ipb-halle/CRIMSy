@@ -97,7 +97,7 @@ public class ProjectService implements Serializable {
     @SuppressWarnings("unchecked")
     public List<String> getSimilarProjectNames(String name, User user) {
 
-        String sql = SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "p.aclist_id", "p.ownerid", ACPermission.permREAD);
+        String sql = SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "p.aclist_id", "p.owner_id", ACPermission.permREAD);
         return this.em.createNativeQuery(sql)
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", user.getId())
