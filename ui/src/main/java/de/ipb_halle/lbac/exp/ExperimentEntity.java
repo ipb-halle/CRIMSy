@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.admission.ACObjectEntity;
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -31,12 +34,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "experiments")
-public class ExperimentEntity implements Serializable {
+@AttributeTag(type = AttributeType.EXPERIMENT)
+public class ExperimentEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @AttributeTag(type = AttributeType.LABEL)
     private Integer experimentid;
 
     @Column
@@ -46,12 +51,7 @@ public class ExperimentEntity implements Serializable {
     private String description;
 
     @Column
-    private Integer ownerid;
-
-    @Column
-    private Integer aclist_id;
-
-    @Column
+    @AttributeTag(type = AttributeType.TEMPLATE)
     private boolean template;
 
     @Column
@@ -71,14 +71,6 @@ public class ExperimentEntity implements Serializable {
 
     public Integer getExperimentId() {
         return this.experimentid;
-    }
-
-    public Integer getOwnerId() {
-        return ownerid;
-    }
-
-    public Integer getACListId() {
-        return aclist_id;
     }
 
     public boolean getTemplate() {
@@ -102,16 +94,6 @@ public class ExperimentEntity implements Serializable {
 
     public ExperimentEntity setExperimentId(Integer experimentid) {
         this.experimentid = experimentid;
-        return this;
-    }
-
-    public ExperimentEntity setOwnerId(Integer ownerid) {
-        this.ownerid = ownerid;
-        return this;
-    }
-
-    public ExperimentEntity setACListId(Integer aclist_id) {
-        this.aclist_id = aclist_id;
         return this;
     }
 

@@ -48,6 +48,7 @@ public enum AttributeType {
     PROJECT_NAME,
     REACTION_EDUCT,
     REACTION_PRODUCT,
+    TEMPLATE,
 
     /* general attribute types */
     LABEL,

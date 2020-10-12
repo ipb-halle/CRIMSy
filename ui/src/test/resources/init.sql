@@ -720,7 +720,7 @@ CREATE TABLE experiments (
     description     VARCHAR,
     template        BOOLEAN NOT NULL DEFAULT FALSE,
     aclist_id       INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    ownerid         INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    owner_id         INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     ctime           TIMESTAMP NOT NULL
 );
 

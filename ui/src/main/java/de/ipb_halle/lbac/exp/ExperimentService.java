@@ -25,10 +25,22 @@ package de.ipb_halle.lbac.exp;
  */
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
+import de.ipb_halle.lbac.search.PermissionConditionBuilder;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.Value;
+import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,12 +84,18 @@ public class ExperimentService implements Serializable {
     private ACListService aclistService;
     
     @Inject
+    private NodeService nodeService;
+    
+    @Inject
     private MemberService memberService;
     
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
     
     private Logger logger;
+    private ExperimentEntityGraphBuilder graphBuilder;
+    private EntityGraph graph;
+    private PermissionConditionBuilder permissionConditionBuilder;
     
     public ExperimentService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
@@ -88,6 +106,10 @@ public class ExperimentService implements Serializable {
         if (em == null) {
             logger.error("Injection failed for EntityManager. @PersistenceContext(name = \"de.ipb_halle.lbac\")");
         }
+        graphBuilder = new ExperimentEntityGraphBuilder();
+        permissionConditionBuilder = new PermissionConditionBuilder(
+                aclistService,
+                new AttributeType[]{AttributeType.EXPERIMENT, AttributeType.MEMBER});
     }
 
     /**
@@ -102,6 +124,30 @@ public class ExperimentService implements Serializable {
         }
         
         return q.setParameter(TEMPLATE_FLAG, cmap.getOrDefault(TEMPLATE_FLAG, null));
+    }
+    
+    public SearchResult load(SearchRequest request) {
+        SearchResult back = new SearchResultImpl();
+        graph = createEntityGraph(request);
+        SqlBuilder sqlBuilder = new SqlBuilder(graph);
+        
+        String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request, ACPermission.permREAD));
+        logger.info(sql);
+        Query q = em.createNativeQuery(sql, ExperimentEntity.class);
+        for (Value param : sqlBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        q.setFirstResult(request.getFirstResult());
+        q.setMaxResults(request.getMaxResults());
+        List<ExperimentEntity> entities = q.getResultList();
+        for (ExperimentEntity e : entities) {
+            Experiment exp = new Experiment(
+                    e,
+                    aclistService.loadById(e.getACList()),
+                    memberService.loadUserById(e.getOwner()));
+            back.addResults(nodeService.getLocalNode(), Arrays.asList(exp));
+        }
+        return back;
     }
 
     /**
@@ -121,8 +167,8 @@ public class ExperimentService implements Serializable {
         for (ExperimentEntity e : (List<ExperimentEntity>) q.getResultList()) {
             result.add(new Experiment(
                     e,
-                    aclistService.loadById(e.getACListId()),
-                    memberService.loadUserById(e.getOwnerId())));
+                    aclistService.loadById(e.getACList()),
+                    memberService.loadUserById(e.getOwner())));
         }
         return result;
     }
@@ -139,8 +185,8 @@ public class ExperimentService implements Serializable {
     public Experiment loadById(Integer id) {
         ExperimentEntity entity = this.em.find(ExperimentEntity.class, id);
         return new Experiment(
-                entity, aclistService.loadById(entity.getACListId()),
-                memberService.loadUserById(entity.getOwnerId()));
+                entity, aclistService.loadById(entity.getACList()),
+                memberService.loadUserById(entity.getOwner()));
     }
     
     public void updateExperimentAcl(int experimentid, ACList newAcList) {
@@ -148,7 +194,7 @@ public class ExperimentService implements Serializable {
             // TO DO: save History 
             ACList acl = aclistService.save(newAcList);
             logger.info("new aclist id " + acl.getId());
-            logger.info("exp id " +experimentid);
+            logger.info("exp id " + experimentid);
             this.em.createNativeQuery(SQL_UPDATE_ACL)
                     .setParameter("aclist_id", acl.getId())
                     .setParameter("exp_id", experimentid)
@@ -170,5 +216,11 @@ public class ExperimentService implements Serializable {
                 this.em.merge(e.createEntity()),
                 e.getACList(),
                 e.getOwner());
+    }
+    
+    private EntityGraph createEntityGraph(SearchRequest request) {
+        graphBuilder = new ExperimentEntityGraphBuilder();
+        graphBuilder.addACListContraint(aclistService.getEntityGraph(), "aclist_id");
+        return graphBuilder.buildEntityGraph(request.getCondition());
     }
 }

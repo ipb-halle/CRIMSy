@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.search.Searchable;
 
 import java.util.Date;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public class Experiment extends ACObject implements DTO {
+public class Experiment extends ACObject implements DTO, Searchable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -116,14 +117,15 @@ public class Experiment extends ACObject implements DTO {
 
     @Override
     public ExperimentEntity createEntity() {
-        return new ExperimentEntity()
+        ExperimentEntity entity = new ExperimentEntity()
                 .setExperimentId(this.experimentid)
                 .setCode(this.code)
                 .setDescription(this.description)
-                .setTemplate(this.template)
-                .setACListId(this.acList.getId())
-                .setCtime(creationTime)
-                .setOwnerId(this.owner.getId());
+                .setTemplate(this.template);
+        entity.setACList(this.acList.getId());
+        entity.setCtime(creationTime);
+        entity.setOwner(this.owner.getId());
+        return entity;
     }
 
     @Override

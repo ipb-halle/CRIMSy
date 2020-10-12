@@ -21,17 +21,19 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.AssayService;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -55,8 +57,12 @@ public class ExperimentServiceTest extends TestBase {
     @Inject
     private ExpRecordService recordService;
 
+    @Inject
+    private ACListService aclistService;
+
     private User publicUser;
     private ACList publicReadAcl;
+    private ACList nothingAcl;
 
     @Before
     @Override
@@ -64,6 +70,9 @@ public class ExperimentServiceTest extends TestBase {
         super.setUp();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
+        nothingAcl = new ACList();
+        nothingAcl = aclistService.save(nothingAcl);
+
     }
 
     @After
@@ -79,6 +88,9 @@ public class ExperimentServiceTest extends TestBase {
         exp = experimentService.save(exp);
         Experiment exp2 = new Experiment(null, "TEST-EXP-002", "Testexperiment", false, publicReadAcl, publicUser, creationDate);
         exp2 = experimentService.save(exp2);
+        Experiment exp3 = new Experiment(null, "TEST-EXP-003", "not readable experiment", false, nothingAcl, publicUser, creationDate);
+        exp3 = experimentService.save(exp3);
+
         Text text1 = new Text();
         text1.setExperiment(exp);
         text1.setCreationTime(creationDate);
@@ -90,10 +102,11 @@ public class ExperimentServiceTest extends TestBase {
         text2.setText("Test001-A");
         text2 = (Text) recordService.save(text2);
 
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         Experiment loadedExperiment = experimentService.loadById(exp.getExperimentId());
 
-        List<Experiment> loadedExp = experimentService.load(new HashMap<>());
-        Assert.assertEquals(2, loadedExp.size());
+        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(2, loadedExp.getAllFoundObjects().size());
 
         Assert.assertEquals(exp.getExperimentId(), loadedExperiment.getExperimentId());
         Assert.assertEquals(exp.getCode(), loadedExperiment.getCode());
@@ -103,13 +116,15 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(publicUser.getId(), loadedExperiment.getOwner().getId());
         Assert.assertEquals(creationDate, loadedExperiment.getCreationTime());
 
-        List<ExpRecord> loadedRecords = recordService.load(new HashMap<>());
-        Assert.assertEquals(2, loadedRecords.size());
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put(ExpRecordService.EXPERIMENT_ID, exp.getExperimentId());
-        loadedRecords = recordService.load(cmap);
-        Assert.assertEquals(1, loadedRecords.size());
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addId(exp.getExperimentId());
+        loadedExp = experimentService.load(builder.buildSearchRequest());
 
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+        Experiment exp1 = (Experiment) loadedExp.getAllFoundObjects().get(0).getSearchable();
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("ID", exp1.getId());
+        List<ExpRecord> loadedRecords = recordService.load(cmap);
         Assert.assertEquals("Test001", ((Text) loadedRecords.get(0)).getText());
         Assert.assertEquals(exp.getExperimentId(), loadedRecords.get(0).getExperiment().getExperimentId());
         Assert.assertEquals(ExpRecordType.TEXT, loadedRecords.get(0).getType());
@@ -131,7 +146,7 @@ public class ExperimentServiceTest extends TestBase {
         recordService.saveOnly(text1);
         loadedRecords = recordService.load(cmap);
         loadedRecords = recordService.orderList(loadedRecords);
-        Assert.assertEquals(2, loadedRecords.size());
+        Assert.assertEquals(3, loadedRecords.size());
         Assert.assertEquals(text1.getExpRecordId(), loadedRecords.get(0).getExpRecordId());
         Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(1).getExpRecordId());
         Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(0).getNext());
