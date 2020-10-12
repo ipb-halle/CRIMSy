@@ -21,7 +21,11 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +50,8 @@ import org.apache.logging.log4j.Logger;
 @Dependent
 public class MaterialAgent implements Serializable {
 
-    private final static long   serialVersionUID = 1L;
+    private final static long serialVersionUID = 1L;
+    private int MAX_MATERIALS_TO_SEARCH = 5;
 
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
@@ -82,6 +87,23 @@ public class MaterialAgent implements Serializable {
         }
     }
 
+    private SearchRequest createSearchRequest() {
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(
+                this.userBean.getCurrentAccount(),
+                0,
+                MAX_MATERIALS_TO_SEARCH);
+        if (this.materialSearch != null || !this.materialSearch.trim().isEmpty()) {
+            builder.addIndexName(this.materialSearch);
+        }
+        if (this.moleculeSearch != null || !this.moleculeSearch.trim().isEmpty()) {
+            builder.addSubMolecule(this.moleculeSearch);
+        }
+        int size = this.materialHolder.getMaterialTypes().size();
+        MaterialType[] types = new MaterialType[size];
+        builder.addTypes(this.materialHolder.getMaterialTypes().toArray(types));
+        return builder.buildSearchRequest();
+    }
+
     public MaterialHolder getMaterialHolder() {
         this.logger.info("getMaterialHolder() {}", this.materialHolder == null ? "null" : "holder is set");
         return this.materialHolder;
@@ -91,33 +113,20 @@ public class MaterialAgent implements Serializable {
      * get the list of appropriate materials
      */
     public List<Material> getMaterialList() {
-        if ( this.materialHolder != null ) {
+        if (this.materialHolder != null) {
             try {
-                HashMap<String, Object> cmap = new HashMap<String, Object> ();
-                cmap.put("TYPES", this.materialHolder.getMaterialTypes());
-                if (this.materialSearch.length() > 0) {
-                    cmap.put("NAME", "%" + this.materialSearch + "%");
-                }
-                // crude (!) check on empty molecules
-                if (this.moleculeSearch.length() > 80) {
-                    this.logger.info("getMaterialList() MOLECULE: {}", this.moleculeSearch);
-                    cmap.put("MOLECULE", this.moleculeSearch);
-                }
-                List<Material> result = this.materialService.getReadableMaterials(
-                        this.userBean.getCurrentAccount(),
-                        cmap,
-                        0,
-                        5);
+                SearchResult result = this.materialService.getReadableMaterials(
+                        createSearchRequest());
                 if (result == null) {
                     this.logger.info("getMaterialList() result is null");
                 } else {
-                    this.logger.info("getMaterialList() got {} results", result.size());
+                    this.logger.info("getMaterialList() got {} results", result.getAllFoundObjects().size());
                 }
-                return result;
+                return result.getAllFoundObjects(Material.class, result.getNodes().iterator().next());
             } catch (Exception e) {
                 this.logger.warn("getMaterialList() caught an exception: ", (Throwable) e);
             }
-        } 
+        }
         return new ArrayList<Material>();
     }
 
@@ -135,7 +144,7 @@ public class MaterialAgent implements Serializable {
     }
 
     public boolean getShowMolEditor() {
-        return this.showMolEditor; 
+        return this.showMolEditor;
     }
 
     public void setMaterialHolder(MaterialHolder materialHolder) {
@@ -159,4 +168,5 @@ public class MaterialAgent implements Serializable {
     public void setShowMolEditor(boolean show) {
         this.showMolEditor = show;
     }
+
 }

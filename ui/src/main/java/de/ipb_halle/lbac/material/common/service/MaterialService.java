@@ -98,53 +98,6 @@ public class MaterialService implements Serializable {
     private MaterialEntityGraphBuilder graphBuilder;
     protected StructureInformationSaver structureInformationSaver;
     private PermissionConditionBuilder permissionConditionBuilder;
-    private final String SQL_GET_MATERIAL
-            = "SELECT DISTINCT m.materialid, "
-            + "m.materialtypeid, "
-            + "m.ctime, "
-            + "m.aclist_id, "
-            + "m.ownerid, "
-            + "m.projectid, "
-            + "m.deactivated "
-            + "FROM materials m "
-            + "JOIN projects p ON p.id=m.projectid "
-            + "JOIN material_indices mi ON mi.materialid=m.materialid "
-            + "JOIN usersgroups u ON u.id=m.ownerid "
-            + "LEFT JOIN structures s ON s.id = m.materialid "
-            + "LEFT JOIN molecules mol ON mol.id=s.moleculeid "
-            + SqlStringWrapper.JOIN_KEYWORD + " "
-            + "WHERE deactivated=false "
-            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
-            + "AND (p.name ILIKE :PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
-            + "AND ((mi.value ILIKE :NAME AND mi.typeid=1) OR :NAME='no_name_filter') "
-            + "AND ((mi.value ILIKE :INDEX AND mi.typeid>1) OR :INDEX='no_index_filter') "
-            + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
-            + "AND (materialtypeid IN ( :TYPES ) OR -1 IN ( :TYPES ) ) "
-            + "AND (m.materialid=:ID OR :ID=-1) "
-            + "AND (u.name ILIKE :USER OR :USER='no_user_filter') "
-            + "AND materialtypeid NOT IN (6,7) "
-            + "AND (mol.molecule >= CAST(:MOLECULE AS MOLECULE) OR :MOLECULE IS NULL) ";
-
-    private final String SQL_GET_MATERIAL_COUNT
-            = "SELECT COUNT(DISTINCT(m.materialid)) "
-            + "FROM materials m "
-            + "JOIN projects p ON p.id=m.projectid "
-            + "JOIN material_indices mi ON mi.materialid=m.materialid "
-            + "JOIN usersgroups u ON u.id=m.ownerid "
-            + "LEFT JOIN structures s ON s.id = m.materialid "
-            + "LEFT JOIN molecules mol ON mol.id=s.moleculeid "
-            + SqlStringWrapper.JOIN_KEYWORD + " "
-            + "WHERE deactivated=false "
-            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
-            + "AND (p.name ILIKE :PROJECT_NAME OR :PROJECT_NAME='no_project_filter') "
-            + "AND ((mi.value ILIKE :NAME AND mi.typeid=1) OR :NAME='no_name_filter') "
-            + "AND ((mi.value ILIKE :INDEX AND mi.typeid>1) OR :INDEX='no_index_filter') "
-            + "AND (materialtypeid=:TYPE OR :TYPE=-1) "
-            + "AND (materialtypeid IN ( :TYPES ) OR -1 IN ( :TYPES ) ) "
-            + "AND (m.materialid=:ID OR :ID=-1) "
-            + "AND (u.name ILIKE :USER OR :USER='no_user_filter') "
-            + "AND materialtypeid NOT IN (6,7) "
-            + "AND (mol.molecule >= CAST(:MOLECULE AS MOLECULE) OR :MOLECULE IS NULL) ";
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
@@ -258,27 +211,6 @@ public class MaterialService implements Serializable {
         return em;
     }
 
-    public int loadMaterialAmount(User u) {
-        return loadMaterialAmount(u, new HashMap<>());
-    }
-
-    public int loadMaterialAmount(User u, Map<String, Object> cmap) {
-
-        Query q = em.createNativeQuery(
-                SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL_COUNT, "m.aclist_id", "m.ownerid", ACPermission.permREAD)
-        );
-        q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
-        q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
-        q.setParameter("TYPES", cmap.getOrDefault("TYPES", Arrays.asList(-1)));
-        q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
-        q.setParameter("userid", u.getId());
-        q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
-        q.setParameter("ID", cmap.getOrDefault("ID", -1));
-        q.setParameter("INDEX", cmap.getOrDefault("INDEX", "no_index_filter"));
-        q.setParameter("MOLECULE", cmap.getOrDefault("MOLECULE", null));
-        return ((BigInteger) q.getResultList().get(0)).intValue();
-    }
-
     public int loadMaterialAmount(SearchRequest request) {
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 createEntityGraph(request),
@@ -315,40 +247,6 @@ public class MaterialService implements Serializable {
             result.addResults(nodeService.getLocalNode(), Arrays.asList(loadMaterialById(me.getMaterialid())));
         }
         return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<Material> getReadableMaterials(User u, Map<String, Object> cmap, int firstResult, int maxResults) {
-        Query q = em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_MATERIAL, "m.aclist_id", "m.ownerid", ACPermission.permREAD), MaterialEntity.class);
-
-        q.setFirstResult(firstResult);
-        q.setMaxResults(maxResults);
-        q.setParameter("PROJECT_NAME", cmap.getOrDefault("PROJECT_NAME", "no_project_filter"));
-        q.setParameter("TYPE", cmap.getOrDefault("TYPE", -1));
-        q.setParameter("TYPES", cmap.getOrDefault("TYPES", Arrays.asList(-1)));
-        q.setParameter("NAME", cmap.getOrDefault("NAME", "no_name_filter"));
-        q.setParameter("userid", u.getId());
-        q.setParameter("USER", cmap.getOrDefault("USER", "no_user_filter"));
-        q.setParameter("ID", cmap.getOrDefault("ID", -1));
-        q.setParameter("INDEX", cmap.getOrDefault("INDEX", "no_index_filter"));
-        q.setParameter("MOLECULE", cmap.getOrDefault("MOLECULE", null));
-        List<MaterialEntity> ies = q.getResultList();
-        List<Material> back = new ArrayList<>();
-        for (MaterialEntity me : ies) {
-            Material m = null;
-            if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.STRUCTURE) {
-                m = getStructure(me);
-
-            }
-            if (MaterialType.getTypeById(me.getMaterialtypeid()) == MaterialType.BIOMATERIAL) {
-                m = getBioMaterial(me);
-            }
-            m.setACList(aclService.loadById(me.getAclist_id()));
-            m.getDetailRights().addAll(loadDetailRightsOfMaterial(m.getId()));
-            back.add(m);
-        }
-
-        return back;
     }
 
     public BioMaterial getBioMaterial(MaterialEntity me) {

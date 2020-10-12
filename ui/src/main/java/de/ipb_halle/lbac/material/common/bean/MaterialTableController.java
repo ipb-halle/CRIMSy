@@ -69,7 +69,7 @@ public class MaterialTableController implements TableController {
         lastValues = values;
         lastUser = user;
         reloadDataTableItems();
-        maxResults = materialService.loadMaterialAmount(user, new HashMap<>());
+        maxResults = materialService.loadMaterialAmount(createRequest());
         tableController.setMaxResults(maxResults);
 
     }
