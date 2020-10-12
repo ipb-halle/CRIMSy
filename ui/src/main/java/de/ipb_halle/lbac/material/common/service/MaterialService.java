@@ -61,9 +61,11 @@ import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
@@ -275,12 +277,30 @@ public class MaterialService implements Serializable {
         q.setParameter("INDEX", cmap.getOrDefault("INDEX", "no_index_filter"));
         q.setParameter("MOLECULE", cmap.getOrDefault("MOLECULE", null));
         return ((BigInteger) q.getResultList().get(0)).intValue();
+    }
 
+    public int loadMaterialAmount(SearchRequest request) {
+        SqlCountBuilder countBuilder = new SqlCountBuilder(
+                createEntityGraph(request),
+                new Attribute(new AttributeType[]{
+            AttributeType.MATERIAL,
+            AttributeType.LABEL
+        }));
+
+        String sql = countBuilder.query(
+                permissionConditionBuilder.addPermissionCondition(
+                        request,
+                        ACPermission.permREAD));
+        Query q = em.createNativeQuery(sql);
+        for (Value param : countBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        BigInteger bi = (BigInteger) q.getResultList().get(0);
+        return bi.intValue();
     }
 
     public SearchResult getReadableMaterials(SearchRequest request) {
         EntityGraph graph = createEntityGraph(request);
-
         SearchResult result = new SearchResultImpl();
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request, ACPermission.permREAD));
@@ -292,7 +312,6 @@ public class MaterialService implements Serializable {
         }
         List<MaterialEntity> entities = q.getResultList();
         for (MaterialEntity me : entities) {
-
             result.addResults(nodeService.getLocalNode(), Arrays.asList(loadMaterialById(me.getMaterialid())));
         }
         return result;
