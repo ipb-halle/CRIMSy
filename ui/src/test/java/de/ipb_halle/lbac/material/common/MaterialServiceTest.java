@@ -595,7 +595,7 @@ public class MaterialServiceTest extends TestBase {
 
         //load material by index (which not exists)
         requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
-        requestBuilder.addIndexName("XX");
+        requestBuilder.addSubMolecule("cc");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
         Assert.assertEquals(0,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));

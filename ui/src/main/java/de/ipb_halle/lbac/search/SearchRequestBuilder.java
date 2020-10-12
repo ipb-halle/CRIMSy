@@ -52,14 +52,23 @@ public class SearchRequestBuilder {
                 new de.ipb_halle.lbac.search.lang.Value(value)));
     }
 
+    protected void addConditionWithCast(Operator op, Object value, String castExpression, AttributeType... types) {
+        de.ipb_halle.lbac.search.lang.Value valueWithCast = new de.ipb_halle.lbac.search.lang.Value(value);
+        valueWithCast.setCastExpression(castExpression);
+        leafConditions.add(new Condition(
+                new Attribute(types),
+                op,
+                valueWithCast));
+    }
+
     private Condition buildConditions() {
         switch (this.leafConditions.size()) {
-            case 0 : 
+            case 0:
                 return null;
-            case 1 :
+            case 1:
                 return this.leafConditions.get(0);
         }
-        return new Condition(Operator.AND, leafConditions.toArray(new Condition[] {}));
+        return new Condition(Operator.AND, leafConditions.toArray(new Condition[]{}));
     }
 
     public SearchRequest buildSearchRequest() {

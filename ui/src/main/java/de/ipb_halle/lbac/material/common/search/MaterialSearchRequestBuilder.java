@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
+import de.ipb_halle.lbac.search.lang.Value;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -78,8 +79,9 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     }
 
     public MaterialSearchRequestBuilder addSubMolecule(String molecule) {
-        addCondition(Operator.SUBSTRUCTURE,
+        addConditionWithCast(Operator.SUBSTRUCTURE,
                 molecule,
+                " CAST(%s AS MOLECULE) ",
                 AttributeType.MOLECULE);
         return this;
     }
@@ -103,7 +105,6 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
             }
 
             if (values.type != null && !values.type.isEmpty()) {
-                logger.info(values.type);
                 int size = values.type.size();
                 MaterialType[] types = new MaterialType[size];
                 addTypes(values.type.toArray(types));
