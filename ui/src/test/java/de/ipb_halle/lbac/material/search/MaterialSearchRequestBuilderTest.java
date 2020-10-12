@@ -48,7 +48,7 @@ public class MaterialSearchRequestBuilderTest {
         builder.addID(1);
         builder.addIndexName("Index1");
         builder.addProject("project1");
-        builder.addType(MaterialType.BIOMATERIAL);
+        builder.addTypes(MaterialType.BIOMATERIAL);
         builder.addSubMolecule("MOL");
         SearchRequest request = builder.buildSearchRequest();
         Assert.assertEquals(user.getId(), request.getUser().getId());

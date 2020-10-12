@@ -57,11 +57,12 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.items.entity.ItemEntity;
-import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
+import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
@@ -94,6 +95,7 @@ public class MaterialService implements Serializable {
 
     private MaterialEntityGraphBuilder graphBuilder;
     protected StructureInformationSaver structureInformationSaver;
+    private PermissionConditionBuilder permissionConditionBuilder;
     private final String SQL_GET_MATERIAL
             = "SELECT DISTINCT m.materialid, "
             + "m.materialtypeid, "
@@ -210,6 +212,7 @@ public class MaterialService implements Serializable {
         materialHistoryService = new MaterialHistoryService(this);
         editedMaterialSaver = new MaterialEditSaver(this, taxonomyNestingService);
         structureInformationSaver = new StructureInformationSaver(em);
+        permissionConditionBuilder = new PermissionConditionBuilder(aclService, new AttributeType[]{AttributeType.MATERIAL, AttributeType.MEMBER});
     }
 
     /**
@@ -276,10 +279,11 @@ public class MaterialService implements Serializable {
     }
 
     public SearchResult getReadableMaterials(SearchRequest request) {
-        graphBuilder = new MaterialEntityGraphBuilder();
+        EntityGraph graph = createEntityGraph(request);
+
         SearchResult result = new SearchResultImpl();
-        SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(request.getCondition()));
-        String sql = sqlBuilder.query(request.getCondition());
+        SqlBuilder sqlBuilder = new SqlBuilder(graph);
+        String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request, ACPermission.permREAD));
         Query q = em.createNativeQuery(sql, MaterialEntity.class);
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
@@ -288,7 +292,7 @@ public class MaterialService implements Serializable {
         }
         List<MaterialEntity> entities = q.getResultList();
         for (MaterialEntity me : entities) {
-            
+
             result.addResults(nodeService.getLocalNode(), Arrays.asList(loadMaterialById(me.getMaterialid())));
         }
         return result;
@@ -741,4 +745,9 @@ public class MaterialService implements Serializable {
         return classes;
     }
 
+    private EntityGraph createEntityGraph(SearchRequest request) {
+        graphBuilder = new MaterialEntityGraphBuilder();
+        graphBuilder.addACListContraint(aclService.getEntityGraph(), "aclist_id");
+        return graphBuilder.buildEntityGraph(request.getCondition());
+    }
 }

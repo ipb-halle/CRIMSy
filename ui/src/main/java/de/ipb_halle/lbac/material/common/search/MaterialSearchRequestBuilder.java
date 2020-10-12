@@ -23,6 +23,8 @@ import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -64,9 +66,9 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public MaterialSearchRequestBuilder addType(MaterialType type) {
-        addCondition(Operator.EQUAL,
-                type.getId(),
+    public MaterialSearchRequestBuilder addTypes(MaterialType... types) {
+        addCondition(Operator.IN,
+                getIdsFromMaterialTypes(types),
                 AttributeType.MATERIAL_TYPE);
         return this;
     }
@@ -77,30 +79,38 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
                 AttributeType.MOLECULE);
         return this;
     }
-    
-    public void setConditionsBySearchValues(MaterialSearchMaskValues values){
-           if(values!=null){
-            if(values.id!=null){
-               addID(values.id);
+
+    public void setConditionsBySearchValues(MaterialSearchMaskValues values) {
+        if (values != null) {
+            if (values.id != null) {
+                addID(values.id);
             }
-            if(values.index!=null){
+            if (values.index != null) {
                 addIndexName(values.index);
             }
-            if(values.materialName!=null){
+            if (values.materialName != null) {
                 addIndexName(values.materialName);
             }
-             if(values.molecule!=null){
+            if (values.molecule != null) {
                 addSubMolecule(values.molecule);
             }
-               if(values.projectName!=null){
+            if (values.projectName != null) {
                 addProject(values.projectName);
             }
-               
-                 if(values.type!=null){
+
+            if (values.type != null) {
                 addProject(values.projectName);
             }
-                
+
         }
+    }
+
+    private Set<Integer> getIdsFromMaterialTypes(MaterialType... types) {
+        Set<Integer> ids = new HashSet<>();
+        for (MaterialType t : types) {
+            ids.add(t.getId());
+        }
+        return ids;
     }
 
 }

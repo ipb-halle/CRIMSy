@@ -40,7 +40,7 @@ public enum Operator {
     IS_NULL(" IS NULL", true, true),
     IS_NOT_NULL(" IS NOT NULL", true, true),
     IS_TRUE(" IS TRUE", true, true),
-    IN(" IN ", true, true),
+    IN(" IN ", true, false),
     LESS(" < "),
     LESS_EQUAL(" <= "),
     EQUAL(" = "),
