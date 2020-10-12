@@ -39,9 +39,7 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,18 +60,6 @@ public class ExperimentService implements Serializable {
     private static final long serialVersionUID = 1L;
     
     public final static String TEMPLATE_FLAG = "TEMPLATE_FLAG";
-    
-    private final static String SQL_LOAD = "SELECT "
-            + "e.experimentid, "
-            + "e.code, "
-            + "e.description, "
-            + "e.template, "
-            + "e.aclist_id, "
-            + "e.ownerid, "
-            + "e.ctime "
-            + "FROM experiments AS e "
-            + "WHERE (e.template = :TEMPLATE_FLAG OR :TEMPLATE_FLAG IS NULL) "
-            + "ORDER BY e.code";
     
     private final static String SQL_UPDATE_ACL
             = "UPDATE experiments "
@@ -132,7 +118,6 @@ public class ExperimentService implements Serializable {
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         
         String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request, ACPermission.permREAD));
-        logger.info(sql);
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -148,29 +133,6 @@ public class ExperimentService implements Serializable {
             back.addResults(nodeService.getLocalNode(), Arrays.asList(exp));
         }
         return back;
-    }
-
-    /**
-     * @param cmap map of query criteria
-     * @return the list of experiments
-     */
-    @SuppressWarnings("unchecked")
-    public List<Experiment> load(Map<String, Object> cmap) {
-        List<Experiment> result = new ArrayList<>();
-        Query q = createExperimentQuery(SQL_LOAD,
-                (cmap == null) ? new HashMap<String, Object>() : cmap,
-                ExperimentEntity.class);
-        // q.setParameter("USERID", xxxxx);
-        // q.setFirstResult();
-        // q.setMaxResults();
-
-        for (ExperimentEntity e : (List<ExperimentEntity>) q.getResultList()) {
-            result.add(new Experiment(
-                    e,
-                    aclistService.loadById(e.getACList()),
-                    memberService.loadUserById(e.getOwner())));
-        }
-        return result;
     }
 
     /**

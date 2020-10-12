@@ -18,16 +18,19 @@
 package de.ipb_halle.lbac.exp;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.AssayController;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
 import de.ipb_halle.lbac.globals.ACObjectController;
+import de.ipb_halle.lbac.search.SearchResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -87,10 +91,14 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private BarChartModel barChart;
 
     private int expRecordIndex;
+    private User currentUser;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Experiment experimentInFocus;
 
+     public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+    }
     @PostConstruct
     protected void experimentBeanInit() {
         /*
@@ -374,8 +382,14 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public List<Experiment> getExperiments() {
         Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
-
-        return experimentService.load(cmap);
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(currentUser, 0, Integer.MAX_VALUE);
+        builder.addTemplate(this.templateMode);
+        SearchResult result = experimentService.load(builder.buildSearchRequest());
+        if (!result.getAllFoundObjects().isEmpty()) {
+            return result.getAllFoundObjects(Experiment.class, result.getNodes().iterator().next());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public ExpRecordController getExpRecordController() {
