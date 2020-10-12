@@ -25,12 +25,16 @@ import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author fmauz
  */
 public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
+
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public MaterialSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
@@ -85,21 +89,31 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
             if (values.id != null) {
                 addID(values.id);
             }
-            if (values.index != null) {
+            if (values.index != null && !values.index.trim().isEmpty()) {
                 addIndexName(values.index);
             }
-            if (values.materialName != null) {
+            if (values.materialName != null && !values.materialName.trim().isEmpty()) {
                 addIndexName(values.materialName);
             }
-            if (values.molecule != null) {
+            if (values.molecule != null && !values.molecule.trim().isEmpty()) {
                 addSubMolecule(values.molecule);
             }
-            if (values.projectName != null) {
+            if (values.projectName != null && !values.projectName.trim().isEmpty()) {
                 addProject(values.projectName);
             }
 
-            if (values.type != null) {
-                addProject(values.projectName);
+            if (values.type != null && !values.type.isEmpty()) {
+                logger.info(values.type);
+                int size = values.type.size();
+                MaterialType[] types = new MaterialType[size];
+                addTypes(values.type.toArray(types));
+            } else {
+                addTypes(MaterialType.BIOMATERIAL,
+                        MaterialType.COMPOSITION,
+                        MaterialType.CONSUMABLE,
+                        MaterialType.SEQUENCE,
+                        MaterialType.STRUCTURE,
+                        MaterialType.TISSUE);
             }
 
         }

@@ -223,6 +223,7 @@ public class MaterialService implements Serializable {
                 permissionConditionBuilder.addPermissionCondition(
                         request,
                         ACPermission.permREAD));
+        
         Query q = em.createNativeQuery(sql);
         for (Value param : countBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
