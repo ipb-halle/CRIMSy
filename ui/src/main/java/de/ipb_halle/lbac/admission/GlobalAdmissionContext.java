@@ -163,17 +163,6 @@ public class GlobalAdmissionContext implements Serializable {
                                     ACPermission.permSUPER}
                         )
                         .addACE(
-                                this.ownerAccount,
-                                new ACPermission[]{
-                                    ACPermission.permREAD,
-                                    ACPermission.permEDIT,
-                                    ACPermission.permCREATE,
-                                    ACPermission.permDELETE,
-                                    ACPermission.permCHOWN,
-                                    ACPermission.permGRANT,
-                                    ACPermission.permSUPER}
-                        )
-                        .addACE(
                                 this.publicGroup,
                                 new ACPermission[]{
                                     ACPermission.permREAD}
