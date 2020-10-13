@@ -84,7 +84,7 @@ public class ExperimentServiceTest extends TestBase {
     public void test001_saveAndLoadExp() {
 
         Date creationDate = new Date();
-        Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment", false, publicReadAcl, publicUser, creationDate);
+        Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment x56df", false, publicReadAcl, publicUser, creationDate);
         exp = experimentService.save(exp);
         Experiment exp2 = new Experiment(null, "TEST-EXP-002", "Testexperiment", false, publicReadAcl, publicUser, creationDate);
         exp2 = experimentService.save(exp2);
@@ -151,6 +151,22 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(1).getExpRecordId());
         Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(0).getNext());
         Assert.assertNull(loadedRecords.get(1).getNext());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("x56df");
+        loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addUserName("public");
+        loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(2, loadedExp.getAllFoundObjects().size());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addUserName("no-valide-user");
+        loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+
     }
 
     @Deployment

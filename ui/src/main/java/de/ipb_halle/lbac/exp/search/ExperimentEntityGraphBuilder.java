@@ -17,10 +17,12 @@
  */
 package de.ipb_halle.lbac.exp.search;
 
+import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.exp.ExperimentEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import javax.persistence.criteria.JoinType;
 
 /**
  *
@@ -32,8 +34,13 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
         super(ExperimentEntity.class);
     }
 
+    private void addUser() {
+        addJoin(JoinType.INNER, MemberEntity.class, "owner_id", "id");
+    }
+
     @Override
     public EntityGraph buildEntityGraph(Condition condition) {
+        addUser();
         return graph;
     }
 

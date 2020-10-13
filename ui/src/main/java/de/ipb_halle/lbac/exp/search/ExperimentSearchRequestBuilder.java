@@ -48,4 +48,18 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
+    public ExperimentSearchRequestBuilder addUserName(String userName) {
+        addCondition(Operator.ILIKE,
+                "%" + userName + "%",
+                AttributeType.MEMBER_NAME);
+        return this;
+    }
+
+    public ExperimentSearchRequestBuilder addDescription(String description) {
+        addCondition(Operator.ILIKE,
+                "%" + description + "%",
+                AttributeType.TEXT);
+        return this;
+    }
+
 }
