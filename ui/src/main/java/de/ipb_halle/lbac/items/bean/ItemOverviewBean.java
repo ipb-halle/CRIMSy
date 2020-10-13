@@ -168,7 +168,11 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public String getAmountString(Item i) {
-        return i.getAmount() + " " + i.getUnit();
+        String unitString = "";
+        if (i.getUnit() != null) {
+            unitString = i.getUnit();
+        }
+        return i.getAmount() + " " + unitString;
     }
 
     public String getMaterialName(Item i) {
