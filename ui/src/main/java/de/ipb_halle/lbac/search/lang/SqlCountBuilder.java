@@ -34,7 +34,7 @@ public class SqlCountBuilder extends SqlBuilder {
     protected String select() {
         for (DbField field : entityGraph.getAllFields()) {
             if (field.matches(attributeToCount)) {
-                return String.format(" SELECT COUNT( DISTINCT %s) ", field.getAliasedColumnName());
+                return String.format(" SELECT COUNT( DISTINCT %s)", field.getAliasedColumnName());
             }
         }
         throw new RuntimeException("Could not fond dbfield for attribute");

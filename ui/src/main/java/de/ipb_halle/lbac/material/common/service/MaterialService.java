@@ -63,7 +63,9 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.DbField;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.OrderDirection;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -223,7 +225,7 @@ public class MaterialService implements Serializable {
                 permissionConditionBuilder.addPermissionCondition(
                         request,
                         ACPermission.permREAD));
-        
+
         Query q = em.createNativeQuery(sql);
         for (Value param : countBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -236,7 +238,10 @@ public class MaterialService implements Serializable {
         EntityGraph graph = createEntityGraph(request);
         SearchResult result = new SearchResultImpl();
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request, ACPermission.permREAD));
+        String sql = sqlBuilder.query(
+                permissionConditionBuilder.addPermissionCondition(
+                        request,
+                        ACPermission.permREAD), createOrderList());
         Query q = em.createNativeQuery(sql, MaterialEntity.class);
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
@@ -248,6 +253,17 @@ public class MaterialService implements Serializable {
             result.addResults(nodeService.getLocalNode(), Arrays.asList(loadMaterialById(me.getMaterialid())));
         }
         return result;
+    }
+
+    private List<DbField> createOrderList() {
+        DbField labelField = new DbField()
+                .setColumnName("materialid")
+                .setTableName("materials")
+                .setOrderDirection(OrderDirection.ASC);
+
+        List<DbField> orderList = new ArrayList<>();
+        orderList.add(labelField);
+        return orderList;
     }
 
     public BioMaterial getBioMaterial(MaterialEntity me) {

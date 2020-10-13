@@ -44,7 +44,9 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.DbField;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.OrderDirection;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -125,9 +127,7 @@ public class ItemService {
         String sql = sqlBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(
                         request,
-                        ACPermission.permREAD));
-        // TO DO: Temporary soltution until ORDER BY is implemented in sqlBuilder
-        sql += " ORDER BY a.id";
+                        ACPermission.permREAD),createOrderList());
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -142,6 +142,17 @@ public class ItemService {
         }
 
         return result;
+    }
+
+    private List<DbField> createOrderList() {
+        DbField labelField = new DbField()
+                .setColumnName("id")
+                .setTableName("items")
+                .setOrderDirection(OrderDirection.ASC);
+
+        List<DbField> orderList = new ArrayList<>();
+        orderList.add(labelField);
+        return orderList;
     }
 
     public int getItemAmount(SearchRequest request) {

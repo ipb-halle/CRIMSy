@@ -36,6 +36,10 @@ public class DbField {
     private String orderKey;
     private String tableName;
 
+    public DbField() {
+        this(false);
+    }
+
     public DbField(boolean indexField) {
         this.alias = "";
         this.indexField = indexField;

@@ -381,7 +381,7 @@ public class EntityGraph {
     private void processTable(){
         Table table = this.entityClass.getAnnotation(Table.class);
         if (table != null) {
-            StringBuilder sb = new StringBuilder(" ");
+            StringBuilder sb = new StringBuilder();
             if ((table.schema() != null) && (! table.schema().isEmpty())) {
                 sb.append(table.schema());
                 sb.append(".");

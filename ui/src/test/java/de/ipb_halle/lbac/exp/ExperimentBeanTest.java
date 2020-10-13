@@ -230,9 +230,6 @@ public class ExperimentBeanTest extends TestBase {
         Assert.assertEquals(0, experimentBean.getAcObjectController().getGroupsNotInAcList().size());
         getACEntryByName("Public Group", experimentBean.getAcObjectController().getAcEntries()).setPermRead(true);
         experimentBean.getAcObjectController().saveNewAcList();
-        
-        int i = 0;
-        
     }
     
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {

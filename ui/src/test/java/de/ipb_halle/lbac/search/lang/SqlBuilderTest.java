@@ -152,8 +152,7 @@ public class SqlBuilderTest extends TestBase {
                 new Value(Integer.valueOf(1))
             )
         );
-
-        Assert.assertEquals(" SELECT COUNT( DISTINCT a.id) FROM  items AS a JOIN  materials AS a_0 ON a.materialid = a_0.materialid  WHERE (a_0.materialid = :field0)", sql);
+        Assert.assertEquals(" SELECT COUNT( DISTINCT a.id) FROM items AS a JOIN materials AS a_0 ON a.materialid = a_0.materialid WHERE (a_0.materialid = :field0)", sql);
 
     }
 

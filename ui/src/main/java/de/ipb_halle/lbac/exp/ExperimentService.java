@@ -56,37 +56,32 @@ import org.apache.logging.log4j.LogManager;
 // import javax.persistence.Persistence;
 @Stateless
 public class ExperimentService implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     public final static String TEMPLATE_FLAG = "TEMPLATE_FLAG";
-    
-    private final static String SQL_UPDATE_ACL
-            = "UPDATE experiments "
-            + "SET aclist_id=:aclist_id "
-            + "WHERE experimentid=:exp_id";
-    
+
     @Inject
     private ACListService aclistService;
-    
+
     @Inject
     private NodeService nodeService;
-    
+
     @Inject
     private MemberService memberService;
-    
+
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-    
+
     private Logger logger;
     private ExperimentEntityGraphBuilder graphBuilder;
     private EntityGraph graph;
     private PermissionConditionBuilder permissionConditionBuilder;
-    
+
     public ExperimentService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
-    
+
     @PostConstruct
     public void ExperimentServiceInit() {
         if (em == null) {
@@ -108,15 +103,15 @@ public class ExperimentService implements Serializable {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
-        
+
         return q.setParameter(TEMPLATE_FLAG, cmap.getOrDefault(TEMPLATE_FLAG, null));
     }
-    
+
     public SearchResult load(SearchRequest request) {
         SearchResult back = new SearchResultImpl();
         graph = createEntityGraph(request);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        
+
         String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request, ACPermission.permREAD));
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
@@ -150,21 +145,13 @@ public class ExperimentService implements Serializable {
                 entity, aclistService.loadById(entity.getACList()),
                 memberService.loadUserById(entity.getOwner()));
     }
-    
+
     public void updateExperimentAcl(int experimentid, ACList newAcList) {
-        try {
-            // TO DO: save History 
-            ACList acl = aclistService.save(newAcList);
-            logger.info("new aclist id " + acl.getId());
-            logger.info("exp id " + experimentid);
-            this.em.createNativeQuery(SQL_UPDATE_ACL)
-                    .setParameter("aclist_id", acl.getId())
-                    .setParameter("exp_id", experimentid)
-                    .executeUpdate();
-        } catch (Exception e) {
-            logger.error(e);
-        }
-        
+        // TO DO: save History 
+        ACList acl = aclistService.save(newAcList);
+        Experiment exp = loadById(experimentid);
+        exp.setACList(acl);
+        em.merge(exp.createEntity());
     }
 
     /**
@@ -179,7 +166,7 @@ public class ExperimentService implements Serializable {
                 e.getACList(),
                 e.getOwner());
     }
-    
+
     private EntityGraph createEntityGraph(SearchRequest request) {
         graphBuilder = new ExperimentEntityGraphBuilder();
         graphBuilder.addACListContraint(aclistService.getEntityGraph(), "aclist_id");

@@ -195,7 +195,7 @@ public class SqlBuilder {
     protected String from() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("FROM ");
+        sb.append(" FROM ");
         if (this.entityGraph.isEntityClass()) {
             sb.append(this.entityGraph.getTableName());
         } else {
@@ -332,7 +332,6 @@ public class SqlBuilder {
             sb.append(link.getChild());
             sep = " AND ";
         }
-        sb.append(" ");
         return sb.toString();
     }
 
@@ -398,7 +397,6 @@ public class SqlBuilder {
             sb.append(field.getColumnName()); // slightly more efficient than computing "alias.columName" in DbField
             sep = ", ";
         }
-        sb.append(" ");
         return sb.toString();
     }
 
