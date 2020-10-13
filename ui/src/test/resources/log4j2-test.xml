@@ -20,7 +20,7 @@
             <Pattern>[%-5p] %d{yyyy-MM-dd HH:mm:ss} %c{1} - %m%n</Pattern>
         </PatternLayout>
         <Policies>
-            <TimeBasedTriggeringPolicy filePattern="${LOG_DIR}/ui.%d{yyyy-MM-dd}.log" />
+            <TimeBasedTriggeringPolicy/>
         </Policies>
         <DefaultRolloverStrategy max="5" />
     </RollingFile>

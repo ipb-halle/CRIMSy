@@ -49,9 +49,12 @@ public class EntityGraph {
     private Set<AttributeType> attributeTypes;
     private List<EntityGraph> children;
     private List<LinkField> linkFields;
+    private EntityGraph parent;
     private JoinType joinType;
 
     private Map<String, DbField> fieldMap;
+    private String alias;
+    private boolean active;
     private int indexCount;
     private String tableName;
 
@@ -73,12 +76,20 @@ public class EntityGraph {
     }
         
     private EntityGraph() {
+        this.active = false;
         this.attributeTypes = new HashSet<> ();
         this.children = new ArrayList<> ();
         this.joinType = JoinType.INNER;
         this.linkFields = new ArrayList<> ();
         this.indexCount = 0;
         this.fieldMap = new HashMap<> ();
+    }
+
+    protected void activate() {
+        this.active = true;
+        if (this.parent != null) {
+            this.parent.activate();
+        }
     }
 
     protected EntityGraph addAttributeType(AttributeType type) {
@@ -101,6 +112,7 @@ public class EntityGraph {
         if (child.getLinks().size() == 0) {
             throw new IllegalArgumentException("Child entity without link");
         }
+        child.setParent(this);
         this.children.add(child);
         return this;
     }
@@ -132,6 +144,14 @@ public class EntityGraph {
      */
     protected boolean containsColumn(String column) {
         return this.fieldMap.containsKey(column);
+    }
+
+    protected boolean getActive() {
+        return this.active;
+    }
+
+    protected String getAlias() {
+        return this.alias;
     }
 
     /** 
@@ -173,6 +193,10 @@ public class EntityGraph {
      */
     protected List<LinkField> getLinks() {
         return this.linkFields;
+    }
+
+    protected EntityGraph getParent() {
+        return this.parent;
     }
 
     /**
@@ -232,7 +256,6 @@ public class EntityGraph {
             addAttributeType(tag.type());
         }
         processFields(this.entityClass, "", false);
-        // possibly handle class level annotation of @AttributeOverride etc.
         buildFieldMap();
     }
 
@@ -255,10 +278,6 @@ public class EntityGraph {
         if (field.getAnnotation(EmbeddedId.class) != null) {
             Class<?> clazz = field.getType();
             processFields(clazz, fieldName, true);
-            /*
-             * possibly handle field level annotation of @AttributeOverride etc.
-             * fixOverrides(parentFieldName, ...) ?
-             */
             return;
         }
 
@@ -285,8 +304,10 @@ public class EntityGraph {
                 columnName = column.name();
             }
             DbField dbField = new DbField(false)
+                .setEntityGraph(this)
                 .setFieldName(fieldName)
                 .setColumnName(columnName)
+                .setTableName(this.tableName)
                 .addAttributeTag(attributeTag)
                 .addAttributeTag(attributeTags)
                 .addAttributeTypes(this.attributeTypes);
@@ -341,8 +362,10 @@ public class EntityGraph {
         AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
         AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
         DbField dbField = new DbField(true)
+                .setEntityGraph(this)
                 .setFieldName(fieldName) 
                 .setColumnName(columnName) 
+                .setTableName(this.tableName)
                 .addAttributeTag(attributeTag) 
                 .addAttributeTag(attributeTags) 
                 .addAttributeTypes(this.attributeTypes);
@@ -370,15 +393,39 @@ public class EntityGraph {
         this.tableName = this.entityClass.getSimpleName();
     }
 
+    protected void reset() {
+        this.active = false;
+        for (EntityGraph graph : this.children) {
+            graph.reset();
+        }
+    }
+
     protected void setAlias(String alias) {
+        this.alias = alias;
         for (DbField field : this.fieldMap.values()) {
             field.setAlias(alias);
+        }
+        int i = 0;
+        for (EntityGraph graph : this.children) {
+            graph.setAlias(alias + "_" + String.valueOf(i));
+            i++;
         }
     }
 
     public EntityGraph setJoinType(JoinType joinType) {
         this.joinType = joinType;
         return this;
+    }
+
+    public EntityGraph setOrderKey(String key) {
+        for (DbField field : this.fieldMap.values()) {
+            field.setOrderKey(key);
+        }
+        return this;
+    }
+
+    private void setParent(EntityGraph parent) {
+        this.parent = parent;
     }
 
     /**

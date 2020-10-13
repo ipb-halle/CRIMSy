@@ -142,9 +142,18 @@ public class SqlBuilderTest extends TestBase {
             AttributeType.LABEL
 
         }));
-        String sql = countBuilder.query(null);
 
-        Assert.assertEquals(" SELECT COUNT( DISTINCT a.id) FROM  items AS a JOIN  materials AS a_0 ON a.materialid = a_0.materialid ", sql);
+        // needs condition, otherwise JOIN gets removed
+        String sql = countBuilder.query(
+            new Condition(new Attribute(new AttributeType[]{
+                    AttributeType.MATERIAL,
+                    AttributeType.LABEL} ),
+                Operator.EQUAL,
+                new Value(Integer.valueOf(1))
+            )
+        );
+
+        Assert.assertEquals(" SELECT COUNT( DISTINCT a.id) FROM  items AS a JOIN  materials AS a_0 ON a.materialid = a_0.materialid  WHERE (a_0.materialid = :field0)", sql);
 
     }
 

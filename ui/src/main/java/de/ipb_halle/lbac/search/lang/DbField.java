@@ -29,13 +29,18 @@ public class DbField {
     private Set<AttributeType> attributeTypes;
     private String className;
     private String columnName;
+    private EntityGraph entityGraph;
     private String fieldName;
     private boolean indexField;
+    private OrderDirection orderDirection;
+    private String orderKey;
+    private String tableName;
 
-    DbField(boolean indexField) {
+    public DbField(boolean indexField) {
         this.alias = "";
         this.indexField = indexField;
         this.attributeTypes = new HashSet<> ();
+        this.orderDirection = OrderDirection.NONE;
     }
 
     DbField addAttributeTag(AttributeTag tag) {
@@ -86,6 +91,18 @@ public class DbField {
         return this.columnName;
     }
 
+    public EntityGraph getEntityGraph() {
+        return this.entityGraph;
+    }
+
+    public OrderDirection getOrderDirection() {
+        return this.orderDirection;
+    }
+
+    public String getTableName() {
+        return this.tableName;
+    }
+
     public int hashCode() {
         return this.alias.hashCode() + this.columnName.hashCode();
     }
@@ -99,23 +116,64 @@ public class DbField {
         return this.attributeTypes.containsAll(attribute.getTypes());
     }
 
-    DbField setAlias(String alias) {
+    /**
+     * compares table name, column name and order key of this instance 
+     * against another DbField to select matching columns in ORDER BY 
+     * clauses.
+     * @return true if both objects have the same columnName, tableName
+     * and orderKey.
+     */
+    public boolean matchesOrder(DbField field) {
+        return this.columnName.equals(field.columnName) 
+            && this.tableName.equals(field.tableName)
+            && (((this.orderKey == null) && (field.orderKey == null))
+            || this.orderKey.equals(field.orderKey));
+    }
+
+    public DbField setAlias(String alias) {
         this.alias = alias;
         return this;
     }
 
-    DbField setClassName(String className) {
+    public DbField setClassName(String className) {
         this.className = className;
         return this;
     }
 
-    DbField setColumnName(String columnName) {
+    public DbField setColumnName(String columnName) {
         this.columnName = columnName;
         return this;
     }
 
-    DbField setFieldName(String fieldName) {
+    public DbField setEntityGraph(EntityGraph entityGraph) {
+        this.entityGraph = entityGraph;
+        return this;
+    }
+
+    public DbField setFieldName(String fieldName) {
         this.fieldName = fieldName;
+        return this;
+    }
+
+    public DbField setOrderDirection(OrderDirection dir) {
+        this.orderDirection = dir;
+        return this;
+    }
+
+    /**
+     * Key field to identify fields for ORDER BY clauses.
+     * Must be assigned during creation of the EntityGraph and 
+     * will be evaluated in matchesOrder().
+     * @param key the order key
+     * @return this 
+     */
+    public DbField setOrderKey(String key) {
+        this.orderKey = key;
+        return this;
+    }
+
+    public DbField setTableName(String tableName) {
+        this.tableName = tableName;
         return this;
     }
 }

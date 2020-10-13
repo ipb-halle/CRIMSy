@@ -18,26 +18,11 @@
 package de.ipb_halle.lbac.search.lang;
 
 /**
- *
- * @author fmauz
+ * @author fbroda
  */
-public class SqlCountBuilder extends SqlBuilder {
-
-    Attribute attributeToCount;
-
-    public SqlCountBuilder(EntityGraph graph, Attribute attributeToCount) {
-        super(graph);
-        this.attributeToCount = attributeToCount;
-    }
-
-    @Override
-    protected String select() {
-        for (DbField field : entityGraph.getAllFields()) {
-            if (field.matches(attributeToCount)) {
-                return String.format(" SELECT COUNT( DISTINCT %s) ", field.getAliasedColumnName());
-            }
-        }
-        throw new RuntimeException("Could not fond dbfield for attribute");
-    }
-
+public enum OrderDirection {
+    
+    ASC,
+    DESC,
+    NONE;
 }

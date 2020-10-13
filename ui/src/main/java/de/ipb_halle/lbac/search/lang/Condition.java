@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import java.util.List;
 
 /**
  *
@@ -68,6 +69,16 @@ public class Condition {
         }
         this.conditions = condition; 
         this.operator = operator;
+    }
+
+    public void getAttributes(List<Attribute> attributeList) {
+        if (isLeaf()) {
+            attributeList.add(this.attribute);
+        } else {
+            for (Condition cond : this.conditions) {
+                cond.getAttributes(attributeList);
+            }
+        }
     }
 
     public Attribute getAttribute() {
