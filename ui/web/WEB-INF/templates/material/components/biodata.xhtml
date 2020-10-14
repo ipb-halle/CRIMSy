@@ -59,7 +59,9 @@
                                 </b:column>
                             </b:row>
                             <b:row>
-                                <b:column span="10">
+                                <b:column 
+                                    span="10"
+                                    rendered="#{materialBean.isTissueSelectionVisible()}">
                                     <b:selectOneMenu
                                         label="Select tissue">
                                     </b:selectOneMenu>
