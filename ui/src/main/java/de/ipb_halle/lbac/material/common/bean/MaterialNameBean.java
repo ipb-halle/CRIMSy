@@ -57,6 +57,7 @@ public class MaterialNameBean implements Serializable {
         possibleLanguages.clear();
         possibleLanguages.add("de");
         possibleLanguages.add("en");
+        possibleLanguages.add("la");
 
         nameListOperation = new NameListOperation(possibleLanguages.get(0));
         nameListOperation.addNewEmptyName(names);
