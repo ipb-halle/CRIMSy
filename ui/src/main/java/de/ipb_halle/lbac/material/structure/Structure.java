@@ -57,8 +57,27 @@ public class Structure extends Material {
         this.molarMass = molarMass;
         this.exactMolarMass = exactMolarMass;
         this.molecule = molecule;
-
         this.type = MaterialType.STRUCTURE;
+    }
+
+    public Structure(
+            String sumFormula,
+            Double molarMass,
+            Double exactMolarMass,
+            int id,
+            List<MaterialName> names,
+            Integer projectId) {
+        this(
+                sumFormula,
+                molarMass,
+                exactMolarMass,
+                id,
+                names,
+                projectId,
+                new HazardInformation(),
+                new StorageClassInformation(),
+                null);
+
     }
 
     @Override

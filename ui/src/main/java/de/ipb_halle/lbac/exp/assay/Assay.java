@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.exp.assay;
 
 import com.corejsf.util.Messages;
 
-import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
@@ -27,7 +26,6 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.util.Unit;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.faces.model.SelectItem;
 import org.apache.logging.log4j.LogManager;
