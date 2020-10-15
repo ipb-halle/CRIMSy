@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean.Mode;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import org.apache.logging.log4j.LogManager;
@@ -38,17 +38,20 @@ public class TaxonomyRenderController implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private MemberService memberService;
-    private SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private SimpleDateFormat SDF = new SimpleDateFormat(" yyyy-MM-dd HH:mm");
+    private MessagePresenter messagePresenter;
 
     public TaxonomyRenderController(
             TaxonomyBean taxonomyBean,
             TaxonomyNameController nameController,
             TaxonomyLevelController levelController,
-            MemberService memberService) {
+            MemberService memberService,
+            MessagePresenter messagePresenter) {
         this.taxonomyBean = taxonomyBean;
         this.nameController = nameController;
         this.levelController = levelController;
         this.memberService = memberService;
+        this.messagePresenter = messagePresenter;
     }
 
     /**
@@ -73,17 +76,18 @@ public class TaxonomyRenderController implements Serializable {
     public String getEditButtonLabel() {
         if (taxonomyBean.getMode() == Mode.CREATE || taxonomyBean.getMode() == Mode.EDIT) {
 
-            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_cancel", null);
+            return messagePresenter.presentMessage("taxonomy_button_cancel");
         } else {
-            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_edit", null);
+            return messagePresenter.presentMessage("taxonomy_button_edit");
         }
     }
 
     public String getSecondButtonLabel() {
         if (taxonomyBean.getMode() == Mode.SHOW) {
-            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_add", null);
+
+            return messagePresenter.presentMessage("taxonomy_button_add");
         } else {
-            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_button_save", null);
+            return messagePresenter.presentMessage("taxonomy_button_save");
         }
     }
 
@@ -127,31 +131,62 @@ public class TaxonomyRenderController implements Serializable {
         return isVisible;
     }
 
-    public String getCurrentAction() {
-        String back = "";
+    public String getInfoHeader() {
         if (taxonomyBean.getMode() == Mode.SHOW || taxonomyBean.getMode() == Mode.HISTORY) {
-            if (taxonomyBean.getSelectedTaxonomy() != null) {
-                Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-                back = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_detail", null) + "<br>";
-                back += t.getFirstName();
-                back += "<br><br>";
-                back += "ID " + t.getId() + "<br>";
-                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_created", null) + " " + SDF.format(t.getCreationTime()) + "<br>";
-                back += Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit_by", null) + " " + memberService.loadUserById(t.getOwner().getId()).getName() + "<br>";
-                return back;
-            }
+            return messagePresenter.presentMessage("taxonomy_label_detail");
         }
         if (taxonomyBean.getMode() == Mode.CREATE) {
-            return Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_new", null);
+            return messagePresenter.presentMessage("taxonomy_label_new");
         }
         if (taxonomyBean.getMode() == Mode.EDIT) {
-            back = Messages.getString(MESSAGE_BUNDLE, "taxonomy_label_edit", null);
-            back += "<br><br>";
-            Taxonomy t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
-            back += "ID " + t.getId();
-            return back;
+            return messagePresenter.presentMessage("taxonomy_label_edit");
         }
         return "";
+    }
+
+    public String getOwnerInfoForSelectedTaxonomy() {
+        if (shouldTaxonomyInfosBeDisplayed()) {
+            return messagePresenter.presentMessage("taxonomy_label_created")
+                    + SDF.format(selectTaxonomyToShow().getCreationTime());
+        }
+        return "";
+    }
+
+    public String getEditInfoForSelectedTaxonomy() {
+        if (shouldTaxonomyInfosBeDisplayed()) {
+            if (selectTaxonomyToShow().getHistory().getChanges().isEmpty()) {
+                return "";
+            }
+            return messagePresenter.presentMessage("taxonomy_label_edit_by")
+                    + SDF.format(selectTaxonomyToShow().getHistory().getChanges().lastKey());
+        }
+        return "";
+    }
+
+    public String getInfoForSelectedTaxonomy() {
+        if (shouldTaxonomyInfosBeDisplayed()) {
+            return selectTaxonomyToShow().getFirstName()
+                    + " (ID: "
+                    + selectTaxonomyToShow().getId()
+                    + ")";
+        }
+        return "";
+    }
+
+    private Taxonomy selectTaxonomyToShow() {
+        Taxonomy t;
+        if (taxonomyBean.getMode() == Mode.EDIT) {
+            t = taxonomyBean.getTaxonomyBeforeEdit();
+        } else {
+            t = (Taxonomy) taxonomyBean.getSelectedTaxonomy().getData();
+        }
+        return t;
+    }
+
+    private boolean shouldTaxonomyInfosBeDisplayed() {
+        return taxonomyBean.getMode() == Mode.SHOW
+                || taxonomyBean.getMode() == Mode.HISTORY
+                || taxonomyBean.getMode() == Mode.EDIT;
     }
 
     public boolean isSecondButtonDisabled() {

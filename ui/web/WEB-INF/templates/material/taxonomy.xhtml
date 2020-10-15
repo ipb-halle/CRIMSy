@@ -32,16 +32,42 @@
 
             <b:container>
                 <b:row style-class="taxonomy-top-row">
-                    <b:column span="3" 
+                    <b:column span="4" 
                               styleClass="taxonomyInfos">
+                        <b:container>
+                            <b:row
+                                styleClass="taxonomy-header-panel-row">
+                                <b:column span="4"
+                                          >
+                                    <h:outputText
+                                        value="#{taxonomyBean.renderController.getInfoHeader()}"
+                                        styleClass="taxonomyInfos taxonomy-action-panel taxonomy-header-panel"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="4">
+                                    <h:outputText
+                                        value="#{taxonomyBean.renderController.getInfoForSelectedTaxonomy()}"
+                                        styleClass="taxonomyInfos taxonomy-action-panel"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="4">
+                                    <h:outputText
+                                        value="#{taxonomyBean.renderController.getOwnerInfoForSelectedTaxonomy()}"
+                                        styleClass="taxonomyInfos taxonomy-action-panel"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column span="4">
+                                    <h:outputText
+                                        value="#{taxonomyBean.renderController.getEditInfoForSelectedTaxonomy()}"
+                                        styleClass="taxonomyInfos taxonomy-action-panel"/>
+                                </b:column>
+                            </b:row>
 
-                        <h:outputText 
-                            escape="false"
-                            value="#{taxonomyBean.renderController.getCurrentAction()}"
-                            styleClass="taxonomyInfos taxonomy-action-panel">
-                            <f:converter converterId="InputConverter" />
-                        </h:outputText>
 
+                        </b:container>
                     </b:column>
                     <b:column span="1"
                               styleClass="taxonomyInfos">
@@ -53,7 +79,7 @@
                             rendered="#{taxonomyBean.renderController.isHistoryVisible()}"
                             disabled="#{taxonomyBean.renderController.historyBackButtonDisabled}"/>
                     </b:column>
-                    <b:column span="4" 
+                    <b:column span="3" 
                               styleClass="taxonomyInfos historyInfoPanel"
                               >
                         <h:outputText 
@@ -76,7 +102,7 @@
                     </b:column>
 
 
-                    <b:column span="1" offset="1"  styleClass="taxonomyInfos">
+                    <b:column span="1"  styleClass="taxonomyInfos">
                         <b:commandButton 
                             type="button"
                             value="#{taxonomyBean.renderController.getEditButtonLabel()}"

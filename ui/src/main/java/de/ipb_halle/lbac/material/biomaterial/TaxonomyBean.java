@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.material.UIMessagePresenter;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import java.io.Serializable;
 import java.util.HashMap;
 import javax.annotation.PostConstruct;
@@ -78,9 +78,9 @@ public class TaxonomyBean implements Serializable {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
-        validityController = new TaxonomyValidityController(this,UIMessagePresenter.getInstance());
+        validityController = new TaxonomyValidityController(this,JsfMessagePresenter.getInstance());
         historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService);
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService,JsfMessagePresenter.getInstance());
         treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
     }
 

@@ -22,15 +22,12 @@ package de.ipb_halle.lbac.service;
  */
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.NodeEntity;
-import de.ipb_halle.lbac.entity.NodeEntity_;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

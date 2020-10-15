@@ -15,18 +15,26 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.bean.mock;
+package de.ipb_halle.lbac.material.mocks;
 
-import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectBean;
+import de.ipb_halle.lbac.material.common.service.IndexService;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  * @author fmauz
  */
-public class ProjectBeanMock extends ProjectBean {
+public class IndexServiceMock extends IndexService {
 
-    public Project getReadableProjectById(int projectId) {
-        return null;
+    @Override
+    public Map<Integer, String> loadIndexTypes() {
+        Map<Integer, String> fakeIndices = new HashMap<>();
+        fakeIndices.put(1, "Name");
+        fakeIndices.put(2, "GESTIS/ZVG");
+        fakeIndices.put(3, "CAS/RM");
+        fakeIndices.put(4, "Carl Roth Sicherheitsdatenblatt");
+        return fakeIndices;
     }
+
 }

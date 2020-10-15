@@ -17,33 +17,41 @@
  */
 package de.ipb_halle.lbac.material;
 
+import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.i18n.UIMessage;
 
 /**
  *
  * @author fmauz
  */
-public class UIMessagePresenter implements MessagePresenter {
+public class JsfMessagePresenter implements MessagePresenter {
 
-    private static UIMessagePresenter instance;
+    private static JsfMessagePresenter instance;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    private UIMessagePresenter() {
+    private JsfMessagePresenter() {
 
     }
 
+    @Override
     public void error(String message, Object... args) {
         UIMessage.error(null, MESSAGE_BUNDLE, message, args);
     }
 
+    @Override
     public void info(String message, Object... args) {
         UIMessage.info(null, MESSAGE_BUNDLE, message, args);
     }
 
     public static synchronized MessagePresenter getInstance() {
         if (instance == null) {
-            instance = new UIMessagePresenter();
+            instance = new JsfMessagePresenter();
         }
         return instance;
+    }
+
+    @Override
+    public String presentMessage(String messageKey, Object... args) {
+          return Messages.getString(MESSAGE_BUNDLE, messageKey, args);
     }
 }

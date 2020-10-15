@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.ProjectService;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -102,7 +103,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         TaxonomyNameController nameController = new TaxonomyNameController(bean);
         historyController = new TaxonomyHistoryController(bean, nameController, taxonomyService, memberService);
         levelController = new TaxonomyLevelController(bean);
-        renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService);
+        renderController = new TaxonomyRenderController(bean, nameController, levelController, memberService, new MessagePresenterMock());
         TaxonomyTreeController tc = new TaxonomyTreeController(node, taxonomyService, levelController);
 
         bean.setHistoryController(historyController);

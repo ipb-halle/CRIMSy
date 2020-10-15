@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.bean.mock;
+package de.ipb_halle.lbac.material.mocks;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 

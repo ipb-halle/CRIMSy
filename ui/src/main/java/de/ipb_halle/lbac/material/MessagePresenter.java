@@ -14,4 +14,6 @@ public interface MessagePresenter {
     public void error(String message, Object... args);
 
     public void info(String message, Object... args);
+
+    public String presentMessage(String messageKey, Object... args);
 }

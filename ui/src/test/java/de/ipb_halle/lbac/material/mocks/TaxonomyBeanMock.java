@@ -17,14 +17,15 @@
  */
 package de.ipb_halle.lbac.material.mocks;
 
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistoryController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNameController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyRenderController;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyTreeController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyValidityController;
-import javax.annotation.PostConstruct;
 
 /**
  *
@@ -32,15 +33,18 @@ import javax.annotation.PostConstruct;
  */
 public class TaxonomyBeanMock extends TaxonomyBean {
 
-    @PostConstruct
-    public void init() {
+    
+
+    public void init(
+            MemberService memberService,
+            TaxonomyService taxonomieService) {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
-        levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
+        levelController.setLevels(taxonomieService.loadTaxonomyLevel());
         validityController = new TaxonomyValidityController(this, new MessagePresenterMock());
-        historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService);
-        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
+        historyController = new TaxonomyHistoryController(this, nameController, taxonomieService, memberService);
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService,new MessagePresenterMock());
+        treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomieService, levelController);
     }
 
 }

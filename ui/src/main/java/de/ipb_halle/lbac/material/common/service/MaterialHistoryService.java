@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.common.service;
 
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialHistoryEntity;
-import de.ipb_halle.lbac.material.biomaterial.BioMaterialHistoryEntity_;
 import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;

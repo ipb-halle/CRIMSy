@@ -61,7 +61,7 @@ public class TaxonomyBeanTest extends TestBase {
     @Inject
     private MaterialService materialService;
 
-    protected TaxonomyBean bean;
+    protected TaxonomyBeanMock bean;
 
     protected User owner;
     protected TreeNode nodeToOperateOn;
@@ -71,7 +71,7 @@ public class TaxonomyBeanTest extends TestBase {
 
         bean = new TaxonomyBeanMock();
         bean.setTaxonomyService(taxonomyService);
-        bean.init();
+        bean.init(memberService, taxonomyService);
 
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
@@ -172,7 +172,7 @@ public class TaxonomyBeanTest extends TestBase {
 
         Assert.assertEquals("Champignonartige_de", bean.getRenderController().getParentFirstName());
         bean.getRenderController().getLabelForParentTaxonomy();
-        Assert.assertEquals(4, bean.getLevelController().getLevels().size());
+        Assert.assertEquals(16, bean.getLevelController().getLevels().size());
         Assert.assertEquals(600, (int) bean.getLevelController().getLevels().get(0).getRank());
 
         bean.nameController.getNames().get(0).setValue("test003_de");

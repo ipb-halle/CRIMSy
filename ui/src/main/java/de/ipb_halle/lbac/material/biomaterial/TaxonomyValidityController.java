@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.MessagePresenter;
-import java.io.Serializable;
 
+import java.io.Serializable;
+import de.ipb_halle.lbac.material.MessagePresenter;
 /**
  *
  * @author fmauz

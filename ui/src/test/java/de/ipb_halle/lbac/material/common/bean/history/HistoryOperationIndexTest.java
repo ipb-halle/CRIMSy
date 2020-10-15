@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.material.common.bean.mock.ProjectBeanMock;
+import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;

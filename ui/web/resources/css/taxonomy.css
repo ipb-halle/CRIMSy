@@ -53,5 +53,13 @@
     height: 120px;
 }
 
+.taxonomy-header-panel{
+    font-size: 1.25em;
+    font-weight: bold;
+}
+.taxonomy-header-panel-row{
+    padding-bottom: 20px;
+}
+
 /** format info box test results in ldpap check **/
 

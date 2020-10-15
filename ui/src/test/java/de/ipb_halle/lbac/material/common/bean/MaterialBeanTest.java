@@ -41,7 +41,7 @@ import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.common.bean.mock.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;

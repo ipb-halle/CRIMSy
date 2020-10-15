@@ -26,6 +26,11 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 public class MessagePresenterMock implements MessagePresenter {
 
     @Override
+    public String presentMessage(String messageKey, Object... args) {
+        return messageKey;
+    }
+
+    @Override
     public void error(String message, Object... args) {
 
     }
