@@ -30,24 +30,24 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A record object holding an outcome (either single valued or 
- * multivalued) for a specific material or item. The records 
- * are ordered by rank, counting from zero. Reordering of records 
- * is deemed unnecessary and _currently_ not planned.
+ * A record object holding an outcome (either single valued or multivalued) for
+ * a specific material or item. The records are ordered by rank, counting from
+ * zero. Reordering of records is deemed unnecessary and _currently_ not
+ * planned.
  *
  * @author fbroda
  */
 public class AssayRecord implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private Long                recordid;
-    private Assay               assay;
-    private transient boolean   edit;
-    private Material            material;
-    private Item                item;
-    private int                 rank;
-    private AssayOutcome        outcome;
-    private transient AssayOutcomeType    outcomeType;   
+    private Long recordid;
+    private Assay assay;
+    private transient boolean edit;
+    private Material material;
+    private Item item;
+    private int rank;
+    private AssayOutcome outcome;
+    private transient AssayOutcomeType outcomeType;
 
     /**
      * constructor
@@ -58,7 +58,7 @@ public class AssayRecord implements DTO {
         this.outcomeType = assay.getOutcomeType();
         this.rank = rank;
         this.outcome = new SinglePointOutcome()
-            .setAssay(assay);
+                .setAssay(assay);
     }
 
     /**
@@ -72,17 +72,19 @@ public class AssayRecord implements DTO {
         this.rank = entity.getRank();
         this.recordid = entity.getRecordId();
         this.outcomeType = assay.getOutcomeType();
-        this.outcome = AssayOutcome.fromString(this.outcomeType, entity.getOutcome())
-            .setAssay(assay);
+        outcome = AssayOutcome.fromString(this.outcomeType, entity.getOutcome());
+        if (outcome != null) {
+            outcome.setAssay(assay);
+        }
     }
 
     public AssayRecordEntity createEntity() {
         AssayRecordEntity entity = new AssayRecordEntity()
-            .setExpRecordId(this.assay.getExpRecordId())
-            .setRank(this.rank)
-            .setRecordId(this.recordid)
-            .setOutcome(this.outcome.toString());
-            // .setType(this.outcome.getType())
+                .setExpRecordId(this.assay.getExpRecordId())
+                .setRank(this.rank)
+                .setRecordId(this.recordid)
+                .setOutcome(this.outcome.toString());
+        // .setType(this.outcome.getType())
 
         if (this.item != null) {
             entity.setItemId(this.item.getId());
@@ -121,8 +123,8 @@ public class AssayRecord implements DTO {
         return this.rank;
     }
 
-    public Long getRecordId() { 
-        return this.recordid; 
+    public Long getRecordId() {
+        return this.recordid;
     }
 
     public AssayRecord setAssay(Assay assay) {
@@ -139,8 +141,8 @@ public class AssayRecord implements DTO {
     }
 
     /**
-     * Sets the item and additionally updates the 
-     * material if item is not null
+     * Sets the item and additionally updates the material if item is not null
+     *
      * @param item the item for this record
      * @return this
      */
@@ -153,9 +155,9 @@ public class AssayRecord implements DTO {
     }
 
     /**
-     * set the material for this AssayRecord; this method will 
-     * only succeed if item is not set. Otherwise the item 
-     * associated material takes precedence.
+     * set the material for this AssayRecord; this method will only succeed if
+     * item is not set. Otherwise the item associated material takes precedence.
+     *
      * @param material the new material
      * @return this
      */
@@ -177,8 +179,8 @@ public class AssayRecord implements DTO {
         return this;
     }
 
-    public AssayRecord setRecordId(Long recordid) { 
-        this.recordid = recordid; 
-        return this; 
+    public AssayRecord setRecordId(Long recordid) {
+        this.recordid = recordid;
+        return this;
     }
 }
