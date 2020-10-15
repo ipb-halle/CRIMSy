@@ -17,7 +17,11 @@
  */
 package de.ipb_halle.lbac.material;
 
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.structure.Structure;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -97,5 +101,21 @@ public enum MaterialType implements Serializable {
             }
         }
         return null;
+    }
+
+    public Class getClassOfDto() {
+        if (this == STRUCTURE) {
+            return Structure.class;
+        }
+        if (this == BIOMATERIAL) {
+            return BioMaterial.class;
+        }
+        if (this == TISSUE) {
+            return Tissue.class;
+        }
+        if (this == TAXONOMY) {
+            return Taxonomy.class;
+        }
+        throw new RuntimeException("Could not resolve class of DTO for" + this);
     }
 }

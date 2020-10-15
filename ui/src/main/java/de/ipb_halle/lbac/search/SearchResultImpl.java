@@ -69,6 +69,7 @@ public class SearchResultImpl implements SearchResult {
         List<Searchable> netObjects = getAllFoundObjects(n);
         List<T> objectsOfType = new ArrayList<>();
         for (Searchable s : netObjects) {
+            
             if (s.getClass().equals(T)) {
                 objectsOfType.add((T) s);
             }

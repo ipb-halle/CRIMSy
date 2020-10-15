@@ -23,23 +23,23 @@ import de.ipb_halle.lbac.material.MaterialType;
 import java.util.List;
 
 /**
- * Interface for classes holding a single material and 
- * having that material assigned / changed by a MaterialAgent
+ * Interface for classes holding a single material and having that material
+ * assigned / changed by a MaterialAgent
  *
  * @author fbroda
  */
 public interface MaterialHolder {
 
-    /** 
+    /**
      * @return the currently active material
      */
     public Material getMaterial();
 
     /**
-     * @return an array of acceptable material types in the current situation. The
-     * return value of this method may depend on the current field.
+     * @return an array of acceptable material types in the current situation.
+     * The return value of this method may depend on the current field.
      */
-    public List<Integer> getMaterialTypes();
+    public List<MaterialType> getMaterialTypes();
 
     /**
      * @param material the material chosen by the user

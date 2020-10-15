@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.exp.MaterialHolder;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
+import java.util.ArrayList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,7 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
             records.add(this.assayRecord);
             setRecordEdit(rank);    // select this record for edit
         } catch (Exception e) {
-            this.logger.info("actionAppendAssayRecord() caught an exception" , (Throwable) e); 
+            this.logger.info("actionAppendAssayRecord() caught an exception", (Throwable) e);
         }
     }
 
@@ -88,23 +89,24 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         return null;
     }
 
-    public List<Integer> getMaterialTypes() {
+    @Override
+    public List<MaterialType> getMaterialTypes() {
         switch (this.materialTarget) {
-            case "TARGET" :
+            case "TARGET":
                 this.logger.info("getMaterialTypes() TARGET: biomaterial");
-                return Arrays.asList( MaterialType.BIOMATERIAL.getId() );
-            case "RECORD" :
+                return Arrays.asList(MaterialType.BIOMATERIAL);
+            case "RECORD":
                 this.logger.info("getMaterialTypes() RECORD: structure");
-                return Arrays.asList( MaterialType.STRUCTURE.getId() );
+                return Arrays.asList(MaterialType.STRUCTURE);
         }
         this.logger.info("getMaterialTypes() all / undefined");
-        return Arrays.asList(-1);
+        return new ArrayList<>();
     }
 
     public ExpRecord getNewRecord() {
         ExpRecord rec = new Assay();
         rec.setEdit(true);
-        return rec; 
+        return rec;
     }
 
     public void setItem(Item item) {
@@ -115,10 +117,10 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
 
     public void setMaterial(Material material) {
         switch (this.materialTarget) {
-            case "TARGET" :
+            case "TARGET":
                 ((Assay) getExpRecord()).setTarget(material);
                 break;
-            case "RECORD" :
+            case "RECORD":
                 if (this.assayRecord != null) {
                     this.assayRecord.setMaterial(material);
                 }
@@ -126,13 +128,13 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         }
     }
 
-    public  void setMaterialTarget(String target) {
+    public void setMaterialTarget(String target) {
         this.materialTarget = target;
-        switch(target) {
-            case "TARGET" :
+        switch (target) {
+            case "TARGET":
                 getExperimentBean().getMaterialAgent().setShowMolEditor(false);
                 break;
-            case "RECORD" :
+            case "RECORD":
                 getExperimentBean().getMaterialAgent().setShowMolEditor(true);
                 break;
         }
@@ -140,7 +142,7 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
     }
 
     /**
-     * set record 
+     * set record
      */
     public void setRecordEdit(int rank) {
         List<AssayRecord> records = ((Assay) getExpRecord()).getRecords();

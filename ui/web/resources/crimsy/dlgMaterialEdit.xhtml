@@ -59,7 +59,6 @@
 
                     <p:outputLabel id="nameSearchLabel" for="nameSearch" value="Material Name" />
                     <p:inputText id="nameSearch" value="#{cc.attrs.agent.materialSearch}">
-                        <p:ajax event="keyup" update="@(.materialEdit)" />
                     </p:inputText> 
 
                     <p:outputLabel id="molEditorLabel" 
@@ -96,7 +95,7 @@
                 <h:panelGroup id="materialTablePanelGrp">
                     <p:outputLabel id="materialTableLabel" for="materialTable" value="Material" />
                     <p:dataTable id="materialTable" 
-                            value="#{cc.attrs.agent.materialList}" 
+                            value="#{cc.attrs.agent.getMaterialList()}" 
                             var="material" >
                         <p:column id="col0" width="80%">
                             <f:facet name="header">

@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.exp.ExpRecordController;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -29,14 +29,8 @@ import de.ipb_halle.lbac.search.SearchResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -92,10 +86,10 @@ public class MaterialAgent implements Serializable {
                 this.userBean.getCurrentAccount(),
                 0,
                 MAX_MATERIALS_TO_SEARCH);
-        if (this.materialSearch != null || !this.materialSearch.trim().isEmpty()) {
+        if (this.materialSearch != null && !this.materialSearch.trim().isEmpty()) {
             builder.addIndexName(this.materialSearch);
         }
-        if (this.moleculeSearch != null || !this.moleculeSearch.trim().isEmpty()) {
+        if (this.moleculeSearch != null && !this.moleculeSearch.trim().isEmpty()) {
             builder.addSubMolecule(this.moleculeSearch);
         }
         int size = this.materialHolder.getMaterialTypes().size();
@@ -122,12 +116,24 @@ public class MaterialAgent implements Serializable {
                 } else {
                     this.logger.info("getMaterialList() got {} results", result.getAllFoundObjects().size());
                 }
-                return result.getAllFoundObjects(Material.class, result.getNodes().iterator().next());
+                return extractMaterialsFromResult(result);
             } catch (Exception e) {
                 this.logger.warn("getMaterialList() caught an exception: ", (Throwable) e);
             }
         }
         return new ArrayList<Material>();
+    }
+
+    private List<Material> extractMaterialsFromResult(SearchResult result) {
+        if (result.getNodes().isEmpty()) {
+            return new ArrayList<>();
+        }
+        Node n = result.getNodes().iterator().next();
+        List<Material> foundMaterials = new ArrayList<>();
+        for (MaterialType t : getMaterialHolder().getMaterialTypes()) {
+            foundMaterials.addAll(result.getAllFoundObjects(t.getClassOfDto(), n));
+        }
+        return foundMaterials;
     }
 
     public Integer getMaterialId() {

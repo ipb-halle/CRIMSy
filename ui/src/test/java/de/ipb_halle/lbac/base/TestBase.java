@@ -117,6 +117,7 @@ public class TestBase implements Serializable {
 
     @Inject
     protected CollectionService collectionService;
+
     @Inject
     protected MemberService memberService;
 
@@ -144,7 +145,6 @@ public class TestBase implements Serializable {
                 .addClass(CollectionService.class)
                 .addClass(KeyStoreFactory.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                
                 .addAsResource("init.sql", "init.sql")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
         return archive;
@@ -162,7 +162,7 @@ public class TestBase implements Serializable {
         itemCreator = new ItemCreator(entityManagerService);
         acListReadable = GlobalAdmissionContext.getPublicReadACL();
         this.logger = LogManager.getLogger(this.getClass().getName());
-        
+
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         entityManagerService.doSqlUpdate("DELETE FROM files");
@@ -313,15 +313,15 @@ public class TestBase implements Serializable {
     protected void createTaxonomyTreeInDB(Integer userGroups, Integer ownerId) {
         createTaxanomy(1, "Leben", 1, userGroups, ownerId);
         createTaxanomy(2, "Pilze", 2, userGroups, ownerId, 1);
-         createTaxanomy(3, "Agaricomycetes", 4, userGroups, ownerId, 1, 2);
-          createTaxanomy(4, "Champignonartige", 5, userGroups, ownerId, 1, 2, 3);
-           createTaxanomy(5, "Wulstlingsverwandte", 6, userGroups, ownerId, 1, 2, 3, 4);
-            createTaxanomy(6, "Wulstlinge", 7, userGroups, ownerId, 1, 2, 3, 4, 5);
-            createTaxanomy(7, "Schleimschirmlinge", 7, userGroups, ownerId, 1, 2, 3, 4, 5);
-          createTaxanomy(8, "Dacrymycetes", 4, userGroups, ownerId, 1, 2);
-           createTaxanomy(9, "Ohrlappenpilzverwandte", 5, userGroups, ownerId, 1, 2, 3);
-            createTaxanomy(10, "Ohrlappenpilze", 7, userGroups, ownerId, 1, 2, 3, 9);
-            createTaxanomy(11, "Gallerttränenverwandte", 6, userGroups, ownerId, 1, 2, 8);
+        createTaxanomy(3, "Agaricomycetes", 4, userGroups, ownerId, 1, 2);
+        createTaxanomy(4, "Champignonartige", 5, userGroups, ownerId, 1, 2, 3);
+        createTaxanomy(5, "Wulstlingsverwandte", 6, userGroups, ownerId, 1, 2, 3, 4);
+        createTaxanomy(6, "Wulstlinge", 7, userGroups, ownerId, 1, 2, 3, 4, 5);
+        createTaxanomy(7, "Schleimschirmlinge", 7, userGroups, ownerId, 1, 2, 3, 4, 5);
+        createTaxanomy(8, "Dacrymycetes", 4, userGroups, ownerId, 1, 2);
+        createTaxanomy(9, "Ohrlappenpilzverwandte", 5, userGroups, ownerId, 1, 2, 3);
+        createTaxanomy(10, "Ohrlappenpilze", 7, userGroups, ownerId, 1, 2, 3, 9);
+        createTaxanomy(11, "Gallerttränenverwandte", 6, userGroups, ownerId, 1, 2, 8);
         createTaxanomy(12, "Hörnlinge ", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(13, "Gallerttränen", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(14, "Bakterien", 2, userGroups, ownerId, 1);

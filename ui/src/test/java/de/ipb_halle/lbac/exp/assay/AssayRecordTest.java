@@ -96,12 +96,31 @@ public class AssayRecordTest {
         entity.setOutcome(null);
         entity.setRank(1);
         entity.setRecordId(exportRecordId);
-
         record = new AssayRecord(entity, assay, struc1, item1);
 
         Assert.assertEquals(item1.getId(), record.getItem().getId());
         Assert.assertEquals(struc1.getId(), record.getMaterial().getId());
+    }
 
+    @Test
+    public void testCreateEntity() {
+        AssayRecordEntity entity = record.createEntity();
+
+        Assert.assertNull(entity.getRecordId());
+        Assert.assertEquals(assay.getExpRecordId(), entity.getExpRecordId());
+        Assert.assertEquals(record.getOutcome().toString(), entity.getOutcome());
+        Assert.assertEquals(record.getRank(), entity.getRank());
+        Assert.assertNull(entity.getItemId());
+        Assert.assertNull(entity.getMaterialId());
+
+        record.setMaterial(struc1);
+        entity = record.createEntity();
+        Assert.assertEquals(struc1.getId(), entity.getMaterialId(), 0);
+
+        record.setItem(item2);
+        entity = record.createEntity();
+        Assert.assertEquals(struc2.getId(), entity.getMaterialId(), 0);
+        Assert.assertEquals(item2.getId(), entity.getItemId(), 0);
     }
 
     private Material createMaterial(int id, String... names) {
