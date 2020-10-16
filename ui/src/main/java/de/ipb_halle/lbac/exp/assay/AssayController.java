@@ -100,6 +100,10 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         return new ArrayList<>();
     }
 
+    public boolean isDiagrammButtonVisible(Assay assay) {
+        return !assay.getRecords().isEmpty();
+    }
+
     public ExpRecord getNewRecord() {
         ExpRecord rec = new Assay();
         rec.setEdit(true);
@@ -158,6 +162,6 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         this.assayRecord = record;
         this.assayRecord.setEdit(true);
         setMaterialTarget("RECORD");
-        
+
     }
 }

@@ -24,9 +24,11 @@ import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.util.UnitsValidator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.faces.model.SelectItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -133,6 +135,8 @@ public class Assay extends ExpRecord implements DTO {
 
         for (AssayRecord r : this.records) {
             double v = ((SinglePointOutcome) r.getOutcome()).getValue();
+            logger.info("Found unit " + ((SinglePointOutcome) r.getOutcome()).getUnit());
+            
             Unit u = Unit.getUnit(((SinglePointOutcome) r.getOutcome()).getUnit());
             v *= u.getFactor();
 

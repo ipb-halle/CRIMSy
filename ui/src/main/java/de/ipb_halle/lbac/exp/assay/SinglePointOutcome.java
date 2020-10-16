@@ -30,16 +30,15 @@ import org.apache.logging.log4j.Logger;
  */
 public class SinglePointOutcome extends AssayOutcome {
 
-    private double              stddev;
-    private double              value;
-    private String              unit;
-    private String              remarks;
+    private double stddev;
+    private double value;
+    private String unit;
+    private String remarks;
 
     private transient Logger logger = LogManager.getLogger(this.getClass().getName());
 
-
-    public SinglePointOutcome() {
-        this.unit = "mM";
+    public SinglePointOutcome(String unit) {
+        this.unit = unit;
     }
 
     public String getRemarks() {
@@ -52,7 +51,7 @@ public class SinglePointOutcome extends AssayOutcome {
 
     public AssayOutcomeType getType() {
         return AssayOutcomeType.SINGLE_POINT;
-    } 
+    }
 
     public String getUnit() {
         return this.unit;
@@ -61,20 +60,20 @@ public class SinglePointOutcome extends AssayOutcome {
     public Set<Unit> getUnits() {
         try {
             return UnitsValidator.getUnitSet(
-                getAssay()
-                    .getUnits());
-        } catch(Exception e) {
+                    getAssay()
+                            .getUnits());
+        } catch (Exception e) {
             this.logger.warn("getUnits() caught an exception", (Throwable) e);
         }
         return null;
 
-/*
+        /*
         List<Unit> units = new ArrayList<Unit> ();
         for(String u : new String[] {"mM", "µM", "nM", "pM"}) {
             units.add(Unit.getUnit(u));
         }
         return units;
-*/
+         */
     }
 
     public double getValue() {
@@ -90,11 +89,12 @@ public class SinglePointOutcome extends AssayOutcome {
     }
 
     public void setUnit(String unit) {
-        this.unit = unit;
+        if (unit != null && !unit.trim().isEmpty()) {
+            this.unit = unit;
+        }
     }
 
     public void setValue(double value) {
-        // this.logger.info("setValue() {}", value);
         this.value = value;
     }
 }

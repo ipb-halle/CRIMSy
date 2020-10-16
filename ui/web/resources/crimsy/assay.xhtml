@@ -63,12 +63,11 @@
                 <crimsy:materialView material="#{cc.attrs.assay.target}" />
                 <h:commandLink title="Action"
                                rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getRecords().size() == 0)}"
-                               update="@this" > 
+                               update="@form" > 
                     <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
                     <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
                     <span class="fa fa-cog"> </span>
                 </h:commandLink>
-
             </h:panelGroup>
             <h:outputText value="Outcome Type:" />
             <p:selectOneMenu 
@@ -76,24 +75,17 @@
                 value="#{cc.attrs.assay.outcomeType}" >
                 <f:selectItems value="#{cc.attrs.assay.outcomeTypes}" />
             </p:selectOneMenu>
-
         </h:panelGrid>
-
-
-
         <b:dataTable
             var ="assayRecord"
             value="#{cc.attrs.assay.getRecords()}"
             styleClass="assayRecordTable"
-            paginated="false"
-            >
-
+            paginated="false">
             <b:dataTableColumn
                 label="Material"
                 orderable="false">
                 <h:outputText
                     value="#{assayRecord.getMaterialName()}"/>
-
                 <p:commandLink title="Action"
                                style="pull-right"
                                ajax="true"
@@ -103,14 +95,12 @@
                                disabled="#{!assayRecord.isMaterialEditable()}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>
-
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
                 label="Item">
                 <h:outputText
                     value="#{assayRecord.getItemLabel()}"/>
-
                 <p:commandLink title="Action"
                                ajax="true"
                                action="#{experimentBean.expRecordController.editRecord(assayRecord)}"
@@ -137,44 +127,29 @@
                 label="Actions">
                 Zahnrad
             </b:dataTableColumn>
-
-
         </b:dataTable>
-        <table>
-            <tr>
-                <th class="assayTableCell">Material</th>
-                <th class="assayTableCell">Item</th>
-                <th class="assayTableCell">
-                    <p:commandLink 
+        <b:container>
+            <b:row>
+                <b:column span="1">
+                    <b:commandButton
+                        ajax="true"
                         update="dlgBarChartForm"
-                        rendered="#{! cc.attrs.assay.template}"
-                        process="@this"
-                        onclick="PF('dlg_barChart').show();" >
-                        <f:setPropertyActionListener target="#{cc.attrs.bean.barChartModel}" value="#{cc.attrs.assay.index}" />
-                        <span class="fa fa-search"> Value</span>
-                    </p:commandLink></th>
-                <th class="assayTableCell">Unit</th>
-                <th class="assayTableCell"> </th>
-            </tr>
-
-
-            <composite:insertChildren />
-
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <p:commandLink 
-                        rendered="#{cc.attrs.assay.editRecord}"
+                        rendered="#{cc.attrs.bean.expRecordController.isDiagrammButtonVisible(cc.attrs.assay)}"
+                        oncomplete="PF('dlg_barChart').show();"
+                        action="#{cc.attrs.bean.setBarChartModel(cc.attrs.assay.index)}"
+                        process="@form"
+                        value="Show">
+                    </b:commandButton>
+                </b:column>
+                <b:column span="2" offset="9">
+                    <b:commandButton
                         update="@form"
-                        action="#{cc.attrs.bean.expRecordController.actionAppendAssayRecord()}" >
-                        <span class="fa fa-plus"> </span>
-                    </p:commandLink>
-                </td>
-            </tr>
-        </table>
-
+                        ajax="true"
+                        process="@form"
+                        action="#{cc.attrs.bean.expRecordController.actionAppendAssayRecord()}"
+                        value="Add new Entry"/>
+                </b:column>
+            </b:row>
+        </b:container>
     </composite:implementation >
 </html>

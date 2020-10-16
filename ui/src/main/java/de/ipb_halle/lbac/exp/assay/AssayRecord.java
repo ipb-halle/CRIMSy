@@ -52,7 +52,7 @@ public class AssayRecord implements DTO {
         this.edit = true;
         this.outcomeType = assay.getOutcomeType();
         this.rank = rank;
-        this.outcome = new SinglePointOutcome()
+        this.outcome = new SinglePointOutcome(assay.getPossibleUnits().iterator().next().getUnit())
                 .setAssay(assay);
     }
 
