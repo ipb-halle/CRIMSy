@@ -35,7 +35,7 @@ import org.hibernate.annotations.Type;
 public class AssayRecordEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
-   
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long recordid;
@@ -51,6 +51,9 @@ public class AssayRecordEntity implements Serializable {
 
     @Column
     private int rank;
+
+    @Column
+    private int type;
 
     @Type(type = "RawJsonb")
     private String outcome;
@@ -77,6 +80,10 @@ public class AssayRecordEntity implements Serializable {
 
     public Long getRecordId() {
         return this.recordid;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public AssayRecordEntity setExpRecordId(Long exprecordid) {
@@ -106,6 +113,11 @@ public class AssayRecordEntity implements Serializable {
 
     public AssayRecordEntity setRecordId(Long recordid) {
         this.recordid = recordid;
+        return this;
+    }
+
+    public AssayRecordEntity setType(int type) {
+        this.type = type;
         return this;
     }
 

@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
-
+import de.ipb_halle.lbac.exp.assay.Assay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,7 +47,7 @@ public abstract class ExpRecordController {
                 int index = rec.getIndex();
                 rec = this.bean.loadExpRecordById(rec.getExpRecordId());
                 this.bean.getExpRecords().set(index, rec);
-                this.logger.info("actionCancel() replaced #{} at index {}", rec.getExpRecordId(), index); 
+                this.logger.info("actionCancel() replaced #{} at index {}", rec.getExpRecordId(), index);
             }
         }
         this.bean.reIndex();
@@ -82,11 +82,15 @@ public abstract class ExpRecordController {
     public ExpRecord getExpRecord() {
         int i = this.bean.getExpRecordIndex();
         if ((i >= 0) && (i < this.bean.getExpRecords().size())) {
-            return this.bean.getExpRecords().get(i); 
+            return this.bean.getExpRecords().get(i);
         }
         return null;
     }
 
     public abstract ExpRecord getNewRecord();
+
+    public boolean isDiagrammButtonVisible(Assay assay) {
+        return false;
+    }
 
 }

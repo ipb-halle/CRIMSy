@@ -78,8 +78,8 @@ public class AssayRecord implements DTO {
                 .setExpRecordId(this.assay.getExpRecordId())
                 .setRank(this.rank)
                 .setRecordId(this.recordid)
+                .setType(this.outcomeType.getTypeId())
                 .setOutcome(this.outcome.toString());
-        // .setType(this.outcome.getType())
 
         if (this.item != null) {
             entity.setItemId(this.item.getId());
