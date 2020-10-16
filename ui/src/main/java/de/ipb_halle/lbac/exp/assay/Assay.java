@@ -37,16 +37,16 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 /**
- * Assays provide information about effects which can be induced in a 
- * certain target by e.g. compounds. The target and the whole test 
- * system is specified by a standard operation procedure (which is 
- * stored in the experiment template). Assay stores a the target,
- * additional conditions and remarks, acceptable units etc. and a 
- * collection of tupels <code>material, outcome</code>).
- * 
- * The outcome will be diverse (boolean, single numbers, numbers with error, 
- * (multi-dimensional) arrays). In a first stage, only single point
- * results (numbers) will be implemented.
+ * Assays provide information about effects which can be induced in a certain
+ * target by e.g. compounds. The target and the whole test system is specified
+ * by a standard operation procedure (which is stored in the experiment
+ * template). Assay stores a the target, additional conditions and remarks,
+ * acceptable units etc. and a collection of tupels
+ * <code>material, outcome</code>).
+ *
+ * The outcome will be diverse (boolean, single numbers, numbers with error,
+ * (multi-dimensional) arrays). In a first stage, only single point results
+ * (numbers) will be implemented.
  *
  * @author fbroda
  */
@@ -71,16 +71,16 @@ public class Assay extends ExpRecord implements DTO {
     private String units;
 
     /**
-     * outcometype limits the type of outcome this assay object accepts.
-     * This is done becaus rendering multiple outcome types in the same 
-     * table might prove difficult.
+     * outcometype limits the type of outcome this assay object accepts. This is
+     * done becaus rendering multiple outcome types in the same table might
+     * prove difficult.
      */
-    private AssayOutcomeType    outcomeType;
+    private AssayOutcomeType outcomeType;
 
     /**
      * the tupels (material, outcome)
      */
-    private List<AssayRecord>   records;
+    private List<AssayRecord> records;
 
     /**
      * default constructor
@@ -90,7 +90,7 @@ public class Assay extends ExpRecord implements DTO {
         setType(ExpRecordType.ASSAY);
         this.remarks = "";
         this.units = "mM, µM, nM";
-        this.records = new ArrayList<AssayRecord> ();
+        this.records = new ArrayList<AssayRecord>();
         this.outcomeType = AssayOutcomeType.SINGLE_POINT;
     }
 
@@ -100,10 +100,10 @@ public class Assay extends ExpRecord implements DTO {
         this.remarks = entity.getRemarks();
         this.target = target;
         this.units = entity.getUnits();
-        this.records = new ArrayList<AssayRecord> ();
+        this.records = new ArrayList<AssayRecord>();
         if (entity != null) {
             this.outcomeType = entity.getOutcomeType();
-        } 
+        }
     }
 
     @Override
@@ -116,11 +116,11 @@ public class Assay extends ExpRecord implements DTO {
 
     public AssayEntity createEntity() {
         return new AssayEntity()
-            .setExpRecordId(getExpRecordId())
-            .setOutcomeType(this.outcomeType)
-            .setRemarks(this.remarks)
-            .setTargetId(this.target.getId())
-            .setUnits(this.units);
+                .setExpRecordId(getExpRecordId())
+                .setOutcomeType(this.outcomeType)
+                .setRemarks(this.remarks)
+                .setTargetId(this.target.getId())
+                .setUnits(this.units);
     }
 
     public BarChartModel computeSinglePointBarChart() {
@@ -128,8 +128,8 @@ public class Assay extends ExpRecord implements DTO {
         double max = 0.0;
         double logMin = 1000.0;
         double logMax = -1000.0;
-        List<Double> values = new ArrayList<Double> ();
-        List<Double> logValues = new ArrayList<Double> ();
+        List<Double> values = new ArrayList<Double>();
+        List<Double> logValues = new ArrayList<Double>();
 
         for (AssayRecord r : this.records) {
             double v = ((SinglePointOutcome) r.getOutcome()).getValue();
@@ -170,13 +170,13 @@ public class Assay extends ExpRecord implements DTO {
         for (Double d : values) {
             data.set(Integer.toString(i++), Double.valueOf(faktor * d.doubleValue()));
         }
- 
+
         model.setTitle("Assay");
         model.setLegendPosition("ne");
- 
+
         Axis xAxis = model.getAxis(AxisType.X);
         xAxis.setLabel("Sample");
- 
+
         Axis yAxis = model.getAxis(AxisType.Y);
         yAxis.setLabel(axisLabel);
         yAxis.setMin(min * 1.1);
@@ -189,7 +189,8 @@ public class Assay extends ExpRecord implements DTO {
     @Override
     public BarChartModel getBarChart() {
         switch (this.outcomeType) {
-            case SINGLE_POINT : return computeSinglePointBarChart();
+            case SINGLE_POINT:
+                return computeSinglePointBarChart();
         }
         return null;
     }
@@ -199,16 +200,19 @@ public class Assay extends ExpRecord implements DTO {
     }
 
     /**
-     * @return a localized list of outcometypes for selection in
-     * template mode
+     * @return a localized list of outcometypes for selection in template mode
      */
     public List<SelectItem> getOutcomeTypes() {
-        List<SelectItem> l = new ArrayList<SelectItem> ();
-        for(AssayOutcomeType t : AssayOutcomeType.values()) {
-            l.add(new SelectItem(t, 
+        List<SelectItem> l = new ArrayList<SelectItem>();
+        for (AssayOutcomeType t : AssayOutcomeType.values()) {
+            l.add(new SelectItem(t,
                     Messages.getString(MESSAGE_BUNDLE, "AssayOutcomeType_" + t.toString(), null)));
         }
         return l;
+    }
+
+    public Set<Unit> getPossibleUnits() {
+        return UnitsValidator.getUnitSet(units);
     }
 
     public List<AssayRecord> getRecords() {

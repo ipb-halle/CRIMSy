@@ -18,14 +18,9 @@
 package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.entity.DTO;
-import de.ipb_halle.lbac.exp.ExpRecord;
-import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.json.JsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -99,20 +94,17 @@ public class AssayRecord implements DTO {
         return this.assay;
     }
 
-    public boolean isMaterialEditable(){
-        return item==null;
+    public boolean isMaterialEditable() {
+        return item == null;
     }
-    
-    public boolean isItemEditable(){
+
+    public boolean isItemEditable() {
         return true;
     }
 
     public boolean isEdit() {
         return edit;
     }
-    
-    
-    
 
     public String getFacelet() {
         return this.outcomeType.toString();
