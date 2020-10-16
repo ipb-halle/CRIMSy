@@ -46,3 +46,10 @@
     background-color: #fafaff;
 }
 
+.dataTables_length{
+    visibility: hidden;
+}
+
+.dataTables_filter{
+    visibility: hidden;
+}

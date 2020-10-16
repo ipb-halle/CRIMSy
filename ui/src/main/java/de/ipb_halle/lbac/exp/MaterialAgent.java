@@ -43,29 +43,29 @@ import org.apache.logging.log4j.Logger;
  */
 @Dependent
 public class MaterialAgent implements Serializable {
-
+    
     private final static long serialVersionUID = 1L;
     private int MAX_MATERIALS_TO_SEARCH = 5;
-
+    
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
-
+    
     @Inject
     protected UserBean userBean;
-
+    
     @Inject
     protected MaterialService materialService;
-
+    
     private String materialSearch = "";
     private String moleculeSearch = "";
-
+    
     private MaterialHolder materialHolder;
     private boolean showMolEditor = false;
-
+    
     private Integer materialId;
-
+    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-
+    
     public void actionSetMaterial() {
         this.logger.info("actionSetMaterial() materialId = {}", this.materialId);
         if (this.materialHolder != null) {
@@ -75,12 +75,18 @@ public class MaterialAgent implements Serializable {
                 this.materialHolder.setMaterial(
                         this.materialService.loadMaterialById(this.materialId));
             }
-
+            
         } else {
             this.logger.info("actionSetMaterial(): materialHolder not set");
         }
     }
-
+    
+    public void actionSetMaterial(Material m) {
+        logger.info("Set material " + m.getFirstName());
+        materialId=m.getId();
+        this.materialHolder.setMaterial(m);
+    }
+    
     private SearchRequest createSearchRequest() {
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(
                 this.userBean.getCurrentAccount(),
@@ -97,9 +103,8 @@ public class MaterialAgent implements Serializable {
         builder.addTypes(this.materialHolder.getMaterialTypes().toArray(types));
         return builder.buildSearchRequest();
     }
-
+    
     public MaterialHolder getMaterialHolder() {
-        this.logger.info("getMaterialHolder() {}", this.materialHolder == null ? "null" : "holder is set");
         return this.materialHolder;
     }
 
@@ -111,19 +116,14 @@ public class MaterialAgent implements Serializable {
             try {
                 SearchResult result = this.materialService.getReadableMaterials(
                         createSearchRequest());
-                if (result == null) {
-                    this.logger.info("getMaterialList() result is null");
-                } else {
-                    this.logger.info("getMaterialList() got {} results", result.getAllFoundObjects().size());
-                }
                 return extractMaterialsFromResult(result);
             } catch (Exception e) {
                 this.logger.warn("getMaterialList() caught an exception: ", (Throwable) e);
             }
         }
-        return new ArrayList<Material>();
+        return new ArrayList<>();
     }
-
+    
     private List<Material> extractMaterialsFromResult(SearchResult result) {
         if (result.getNodes().isEmpty()) {
             return new ArrayList<>();
@@ -135,44 +135,44 @@ public class MaterialAgent implements Serializable {
         }
         return foundMaterials;
     }
-
+    
     public Integer getMaterialId() {
         return this.materialId;
     }
-
+    
     public String getMaterialSearch() {
         return this.materialSearch;
     }
-
+    
     public String getMoleculeSearch() {
         this.logger.info("getMoleculeSearch() len={}", this.moleculeSearch.length());
         return this.moleculeSearch;
     }
-
+    
     public boolean getShowMolEditor() {
         return this.showMolEditor;
     }
-
+    
     public void setMaterialHolder(MaterialHolder materialHolder) {
         this.materialHolder = materialHolder;
     }
-
+    
     public void setMaterialId(Integer materialId) {
         this.logger.info("setMaterialId() {}", materialId);
         this.materialId = materialId;
     }
-
+    
     public void setMaterialSearch(String materialSearch) {
         this.materialSearch = materialSearch;
     }
-
+    
     public void setMoleculeSearch(String moleculeSearch) {
         this.logger.info("setMoleculeSearch() len={}", moleculeSearch.length());
         this.moleculeSearch = moleculeSearch;
     }
-
+    
     public void setShowMolEditor(boolean show) {
         this.showMolEditor = show;
     }
-
+    
 }

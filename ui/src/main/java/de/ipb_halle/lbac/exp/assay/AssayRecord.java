@@ -99,9 +99,20 @@ public class AssayRecord implements DTO {
         return this.assay;
     }
 
-    public boolean getEdit() {
-        return this.edit;
+    public boolean isMaterialEditable(){
+        return item==null;
     }
+    
+    public boolean isItemEditable(){
+        return true;
+    }
+
+    public boolean isEdit() {
+        return edit;
+    }
+    
+    
+    
 
     public String getFacelet() {
         return this.outcomeType.toString();
@@ -113,6 +124,20 @@ public class AssayRecord implements DTO {
 
     public Material getMaterial() {
         return this.material;
+    }
+
+    public String getMaterialName() {
+        if (material != null) {
+            return material.getFirstName();
+        }
+        return "";
+    }
+
+    public String getItemLabel() {
+        if (item != null) {
+            return item.getItemIdPlain();
+        }
+        return "";
     }
 
     public AssayOutcome getOutcome() {

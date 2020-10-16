@@ -93,13 +93,10 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
     public List<MaterialType> getMaterialTypes() {
         switch (this.materialTarget) {
             case "TARGET":
-                this.logger.info("getMaterialTypes() TARGET: biomaterial");
                 return Arrays.asList(MaterialType.BIOMATERIAL);
             case "RECORD":
-                this.logger.info("getMaterialTypes() RECORD: structure");
                 return Arrays.asList(MaterialType.STRUCTURE);
         }
-        this.logger.info("getMaterialTypes() all / undefined");
         return new ArrayList<>();
     }
 
@@ -155,5 +152,12 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
                 rec.setEdit(false);
             }
         }
+    }
+
+    public void editRecord(AssayRecord record) {
+        this.assayRecord = record;
+        this.assayRecord.setEdit(true);
+        setMaterialTarget("RECORD");
+        
     }
 }
