@@ -28,80 +28,88 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <composite:interface name="dlgItemEdit"
-                     displayName="item select dialog"
-                     preferred="true"
-                     expert="false"
-                     shortDescription="item select dialog">
+                         displayName="item select dialog"
+                         preferred="true"
+                         expert="false"
+                         shortDescription="item select dialog">
         <composite:attribute name="agent" required="true" />
     </composite:interface>
 
     <composite:implementation >
 
-    <h:form id="dlgItemEditForm">
-        <p:dialog id="dlgItemEdit"
-                header="Select Item" 
-                styleClass="dlgItemEdit"
-                widgetVar="dlg_itemEdit"
-                modal="true" 
-                height="600">
+        <h:form id="dlgItemEditForm">
+            <p:dialog id="dlgItemEdit"
+                      header="Select Item" 
+                      styleClass="dlgItemEdit"
+                      widgetVar="dlg_itemEdit"
+                      modal="true" 
+                      height="600">
 
-            <p:panelGrid id="itemEdit" 
-                    columns="2" 
-                    layout="grid"
-                    styleClass="itemEdit" 
-                    columnClasses="ui-g-12 ui-md-5 ui-xl-4, ui-col-12 ui-md-7 ui-xl-8">
+                <p:panelGrid id="itemEdit" 
+                             columns="2" 
+                             layout="grid"
+                             styleClass="itemEdit" 
+                             columnClasses="ui-g-12 ui-md-5 ui-xl-4, ui-col-12 ui-md-7 ui-xl-8">
 
-                <p:panelGrid id="search" 
-                    columns="1"
-                    layout="grid"
-                    columnClasses="ui-g-12 ui-md-12 ui-xl-12">
+                    <p:panelGrid id="search" 
+                                 columns="1"
+                                 layout="grid"
+                                 columnClasses="ui-g-12 ui-md-12 ui-xl-12">
 
-                    <p:outputLabel id="nameSearchLabel" for="nameSearch" value="Item Id" />
-                    <p:inputText id="nameSearch" value="#{cc.attrs.agent.itemSearch}">
-                        <p:ajax event="keyup" update="@(.itemEdit)" />
-                    </p:inputText> 
+                        <p:outputLabel id="nameSearchLabel" for="nameSearch" value="Item Id" />
+                        <p:inputText id="nameSearch" value="#{cc.attrs.agent.itemSearch}">
+                            <p:ajax event="keyup" update="@(.itemEdit)" />
+                        </p:inputText> 
 
-                    <p:fragment id="cmdItemFragment">
-                        <h:inputHidden id="itemId" 
-                                pass:class="cmdItemId" 
-                                value="#{cc.attrs.agent.itemId}" />
-                        <p:remoteCommand 
+                        <p:fragment id="cmdItemFragment">
+                            <h:inputHidden id="itemId" 
+                                           pass:class="cmdItemId" 
+                                           value="#{cc.attrs.agent.itemId}" />
+                            <p:remoteCommand 
                                 id="cmdItemCmd"
                                 name="cmdActionSetItem" 
                                 update="@all" 
                                 action="#{cc.attrs.agent.actionSetItem}" >
-                        </p:remoteCommand>
-                    </p:fragment>
+                            </p:remoteCommand>
+                        </p:fragment>
+
+                    </p:panelGrid>
+
+                    <!-- rendered attribute of table is irrelevant -->
+                    <h:panelGroup id="itemTablePanelGrp">
+                        <p:outputLabel id="itemTableLabel" for="itemTable" value="Item" />
+                        <p:dataTable id="itemTable" 
+                                     value="#{cc.attrs.agent.itemList}" 
+                                     var="item" >
+                            <p:column id="col0" width="80%">
+                                <f:facet name="header">
+                                    Id
+                                </f:facet>
+                                #{item.id}
+                            </p:column>
+                            <p:column id="col1" width="20%">
+                                <f:facet name="header">
+                                    Action
+                                </f:facet>
+                                <!--
+                                <p:button id="selectBtn"
+                                    value="Select"
+                                    onclick="$('input[class=cmdItemId]').val(#{item.id}); cmdActionSetItem();" />
+                                -->
+                                <p:commandButton
+                                    ajax="true"
+                                    action="#{cc.attrs.agent.actionSetItem(item)}"
+                                    update="@(.assayRecordTable)"
+                                    oncomplete="PF('dlg_itemEdit').hide();"
+                                    />
+
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGroup>
 
                 </p:panelGrid>
-
-                <!-- rendered attribute of table is irrelevant -->
-                <h:panelGroup id="itemTablePanelGrp">
-                    <p:outputLabel id="itemTableLabel" for="itemTable" value="Item" />
-                    <p:dataTable id="itemTable" 
-                            value="#{cc.attrs.agent.itemList}" 
-                            var="item" >
-                        <p:column id="col0" width="80%">
-                            <f:facet name="header">
-                                Id
-                            </f:facet>
-                            #{item.id}
-                        </p:column>
-                        <p:column id="col1" width="20%">
-                            <f:facet name="header">
-                                Action
-                            </f:facet>
-                            <p:button id="selectBtn"
-                                value="Select"
-                                onclick="$('input[class=cmdItemId]').val(#{item.id}); cmdActionSetItem();" />
-
-                        </p:column>
-                    </p:dataTable>
-                </h:panelGroup>
-
-            </p:panelGrid>
-        </p:dialog>
-    </h:form>
+            </p:dialog>
+        </h:form>
     </composite:implementation>
 </html>
 

@@ -66,16 +66,9 @@ public class ItemAgent implements Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    public void actionSetItem() {
-        this.logger.info("actionSetItem() itemId = {}", this.itemId);
+    public void actionSetItem(Item item) {
         if (this.itemHolder != null) {
-
-            // do the actual work
-            if (this.itemId != null) {
-                this.itemHolder.setItem(
-                        this.itemService.loadItemById(this.itemId));
-            }
-
+                this.itemHolder.setItem(item);
         } else {
             this.logger.info("actionSetItem(): itemHolder not set");
         }
