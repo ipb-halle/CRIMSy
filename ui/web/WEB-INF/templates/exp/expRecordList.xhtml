@@ -29,40 +29,56 @@
 
     <ui:composition>
         <ui:repeat value="#{experimentBean.expRecordsWithNullRecord}" var="rec" varStatus="recStatus">
-
+            <b:container class="experimentRecorContainer">
+                <b:row>
+                    <b:column span="2">
+                        <!--
             <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
-                 title="#{rec.expRecordDetails}" >#{rec.expRecordInfo}
-
-                <p:commandLink title="#{msgs.MoveUp}"
-                               update="@all"
-                               disabled="#{rec.moveUpDisabled}"
-                               action="#{experimentBean.actionRearrangeRecord(-1)}">
-                    <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
-                    <span class="fa fa-angle-up"> </span>
-                </p:commandLink>
-                <p:commandLink title="#{msgs.MoveDown}"
-                               update="@all"
-                               disabled="#{rec.moveDownDisabled}"
-                               action="#{experimentBean.actionRearrangeRecord(1)}">
-                    <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
-                    <span class="fa fa-angle-down"> </span>
-                </p:commandLink>
-                <p:commandLink title="#{msgs.Edit}" 
-                               update="@all"
-                               rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
-                               action="#{experimentBean.actionEditRecord}">
-                    <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
-                    <span class="fa fa-pencil"> </span>
-                </p:commandLink>
-                <p:selectOneMenu value="#{experimentBean.newRecordType}"
-                                 rendered="#{experimentBean.expRecordController.edit}">
-                    <f:selectItem itemLabel="#{msgs.expAddRecord}" itemValue="" />
-                    <f:selectItem itemLabel="#{msgs.expText}" itemValue="TEXT" />
-                    <f:selectItem itemLabel="#{msgs.expAssay}" itemValue="ASSAY" />
-                    <p:ajax event="change" listener="#{experimentBean.actionAppendRecord(rec.index)}" update="expRecordsForm" />
-                </p:selectOneMenu>
-                <br/>
-            </div>
+                 title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
+                        #{rec.expRecordInfo}
+                    </b:column>
+                    <b:column span="2" offset="8">
+                        <p:commandLink title="#{msgs.MoveUp}"
+                                       update="@all"
+                                       styleClass="experimentRecordOrderButton experimentRecordButton"
+                                       disabled="#{rec.moveUpDisabled}"
+                                       action="#{experimentBean.actionRearrangeRecord(-1)}">
+                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                            <span class="fa fa-angle-up"> </span>
+                        </p:commandLink>
+                        <p:commandLink title="#{msgs.MoveDown}"
+                                       update="@all"
+                                       disabled="#{rec.moveDownDisabled}"
+                                       styleClass="experimentRecordOrderButton experimentRecordButton"
+                                       action="#{experimentBean.actionRearrangeRecord(1)}">
+                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                            <span class="fa fa-angle-down"> </span>
+                        </p:commandLink>
+                        <p:commandLink title="#{msgs.Edit}" 
+                                       update="@all"
+                                       styleClass="experimentRecordButton"
+                                       rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
+                                       action="#{experimentBean.actionEditRecord}">
+                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                            <span class="fa fa-pencil"> </span>
+                        </p:commandLink>
+                        <b:dropMenu value="New" 
+                                    styleClass="experimentRecordButton experimentRecordButtonAdd"
+                                    icon-awesome="fa-plus"
+                                    iconAlign="left">
+                            <b:navLink header="Please select recordtype"/>
+                            <b:navCommandLink 
+                                value="#{msgs.expText}"
+                                actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"/>
+                            <b:navCommandLink 
+                                value="#{msgs.expAssay}"
+                                actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"/>
+                        </b:dropMenu>
+                    </b:column>
+                    <br/>
+                    <!--   </div> -->
+                </b:row>
+            </b:container>
 
             <h:panelGroup id="recordDetails" 
                           layout="block"

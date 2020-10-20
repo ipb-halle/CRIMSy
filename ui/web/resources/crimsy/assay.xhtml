@@ -86,8 +86,7 @@
                 orderable="false">
                 <h:outputText
                     value="#{assayRecord.getMaterialName()}"/>
-                <p:commandLink title="Action"
-                               style="pull-right"
+                <p:commandLink title="Edit material"
                                ajax="true"
                                action="#{experimentBean.expRecordController.editRecord(assayRecord)}"
                                update="@(.dlgMaterialEdit)"
@@ -147,7 +146,7 @@
                         ajax="true"
                         process="@form"
                         action="#{cc.attrs.bean.expRecordController.actionAppendAssayRecord()}"
-                        value="Add new Entry"/>
+                        value="Append"/>
                 </b:column>
             </b:row>
         </b:container>

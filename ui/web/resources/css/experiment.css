@@ -53,3 +53,15 @@
 .dataTables_filter{
     visibility: hidden;
 }
+
+.experimentRecordOrderButton{
+    width: 15px;
+}
+
+.experimentRecordButton{
+    margin-right: 5px;
+}
+
+.experimentRecordButtonAdd{
+    
+}

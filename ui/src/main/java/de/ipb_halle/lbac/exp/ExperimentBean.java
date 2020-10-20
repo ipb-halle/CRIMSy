@@ -96,9 +96,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Experiment experimentInFocus;
 
-     public void setCurrentAccount(@Observes LoginEvent evt) {
+    public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
     }
+
     @PostConstruct
     protected void experimentBeanInit() {
         /*
@@ -232,6 +233,11 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      */
     public void actionNewExperiment() {
         experimentBeanInit();
+    }
+
+    public void actionNewExperimentRecord(String type,int index) {
+        newRecordType=type;
+        actionAppendRecord(index);
     }
 
     /**
