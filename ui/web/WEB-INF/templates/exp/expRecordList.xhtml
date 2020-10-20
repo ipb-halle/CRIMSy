@@ -30,15 +30,23 @@
     <ui:composition>
         <ui:repeat value="#{experimentBean.expRecordsWithNullRecord}" var="rec" varStatus="recStatus">
             <b:container class="experimentRecorContainer">
-                <b:row>
-                    <b:column span="2">
+                <b:row
+                    class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}">
+                    <b:column span="4">
+                        <h:outputText 
+                            rendered="#{!recStatus.last}"
+                            value=" #{rec.expRecordInfo}"
+                             title="#{rec.expRecordDetails}">
+                            
+                        </h:outputText>
                         <!--
             <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
-                        #{rec.expRecordInfo}
+                      
                     </b:column>
-                    <b:column span="2" offset="8">
+                    <b:column span="2" offset="6">
                         <p:commandLink title="#{msgs.MoveUp}"
+                                        rendered="#{!recStatus.last}"
                                        update="@all"
                                        styleClass="experimentRecordOrderButton experimentRecordButton"
                                        disabled="#{rec.moveUpDisabled}"
@@ -48,6 +56,7 @@
                         </p:commandLink>
                         <p:commandLink title="#{msgs.MoveDown}"
                                        update="@all"
+                                        rendered="#{!recStatus.last}"
                                        disabled="#{rec.moveDownDisabled}"
                                        styleClass="experimentRecordOrderButton experimentRecordButton"
                                        action="#{experimentBean.actionRearrangeRecord(1)}">
@@ -78,30 +87,34 @@
                     <br/>
                     <!--   </div> -->
                 </b:row>
+
+                <b:row
+                    styleClass="#{experimentBean.getRowStyle(recStatus.last)}">
+                    <b:column>
+                        <h:panelGroup id="recordDetails" 
+                                      layout="block"
+                                      styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
+                            <crimsy:assay assay="#{rec}"
+                                          materialAgent="#{materialAgent}" 
+                                          bean="#{experimentBean}"
+                                          rendered="#{rec.facelet eq 'ASSAY'}">
+                                <crimsy:assayRecords assay="#{rec}"
+                                                     bean="#{experimentBean}"
+                                                     materialAgent="#{materialAgent}" />
+                            </crimsy:assay>
+
+                            <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
+                            <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                        </h:panelGroup>
+
+
+                        <ui:fragment rendered="#{rec.edit}">
+                            <p:commandButton value="#{msgs.Cancel}" action="#{experimentBean.expRecordController.actionCancel}" update="@form" process="@this" />
+                            <p:commandButton value="#{msgs.Save}" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@form" />
+                        </ui:fragment>
+                    </b:column>
+                </b:row>
             </b:container>
-
-            <h:panelGroup id="recordDetails" 
-                          layout="block"
-                          styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
-                <crimsy:assay assay="#{rec}"
-                              materialAgent="#{materialAgent}" 
-                              bean="#{experimentBean}"
-                              rendered="#{rec.facelet eq 'ASSAY'}">
-                    <crimsy:assayRecords assay="#{rec}"
-                                         bean="#{experimentBean}"
-                                         materialAgent="#{materialAgent}" />
-                </crimsy:assay>
-
-                <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
-                <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
-            </h:panelGroup>
-
-
-            <ui:fragment rendered="#{rec.edit}">
-                <p:commandButton value="#{msgs.Cancel}" action="#{experimentBean.expRecordController.actionCancel}" update="@form" process="@this" />
-                <p:commandButton value="#{msgs.Save}" action="#{experimentBean.expRecordController.actionSaveRecord}" update="@form" />
-            </ui:fragment>
-
         </ui:repeat>
 
     </ui:composition>

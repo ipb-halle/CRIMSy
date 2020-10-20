@@ -454,6 +454,13 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         return "";
     }
 
+    public String getRowStyle(boolean isLast){
+        if(!isLast){
+            return "experimentRecordBottomRow";
+        }else{
+            return "";
+        }
+    }
     public boolean getTemplateMode() {
         return this.templateMode;
     }
