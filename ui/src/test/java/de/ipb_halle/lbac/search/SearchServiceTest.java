@@ -46,7 +46,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -74,6 +73,7 @@ public class SearchServiceTest extends TestBase {
     @Override
     public void setUp() {
         super.setUp();
+        cleanAllProjectsFromDb();
         projectCreator = new ProjectCreator(
                 projectService,
                 GlobalAdmissionContext.getPublicReadACL());
@@ -83,14 +83,13 @@ public class SearchServiceTest extends TestBase {
         project1 = projectCreator.createAndSaveProject(publicUser);
         projectCreator.setProjectName("SearchServiceTest-Project-02-XYZ");
         project2 = projectCreator.createAndSaveProject(publicUser);
+
     }
 
     @After
     public void finish() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        cleanProjectFromDB(project1, false);
-        cleanProjectFromDB(project2, false);
 
     }
 
