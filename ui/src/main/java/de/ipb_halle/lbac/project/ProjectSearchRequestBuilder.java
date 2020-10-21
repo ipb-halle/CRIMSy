@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
 
@@ -30,6 +31,7 @@ public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
 
     public ProjectSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
+        target = SearchTarget.PROJECT;
     }
 
     public ProjectSearchRequestBuilder addExactName(String name) {

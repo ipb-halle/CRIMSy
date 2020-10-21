@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
-import java.util.Set;
 
 /**
  *
@@ -35,5 +34,7 @@ public interface SearchRequest {
 
     public User getUser();
 
-    public Set<SearchTarget> getSearchTargets();
+    public SearchTarget getSearchTarget();
+
+    public void setSearchTarget(SearchTarget searchTarget);
 }

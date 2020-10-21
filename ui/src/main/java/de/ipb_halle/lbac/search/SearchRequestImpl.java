@@ -19,8 +19,6 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -28,7 +26,7 @@ import java.util.Set;
  */
 public class SearchRequestImpl implements SearchRequest {
 
-    private Set<SearchTarget> searchTargets = new HashSet<>();
+    private SearchTarget searchTarget;
     private Condition condition;
     private int firstResultIndex;
     private int maxResults;
@@ -63,7 +61,13 @@ public class SearchRequestImpl implements SearchRequest {
     }
 
     @Override
-    public Set<SearchTarget> getSearchTargets() {
-        return searchTargets;
+    public SearchTarget getSearchTarget() {
+        return searchTarget;
     }
+
+    @Override
+    public void setSearchTarget(SearchTarget searchTarget) {
+        this.searchTarget = searchTarget;
+    }
+
 }

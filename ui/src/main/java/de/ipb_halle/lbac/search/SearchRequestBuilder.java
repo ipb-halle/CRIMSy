@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
-// import de.ipb_halle.lbac.search.lang.ConditionBuilder;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,7 @@ public class SearchRequestBuilder {
     protected int firstResultIndex;
     protected int maxResults;
     protected User user;
+    protected SearchTarget target;
 
     public SearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         this.user = u;
@@ -76,6 +76,7 @@ public class SearchRequestBuilder {
                 firstResultIndex,
                 maxResults
         );
+        searchRequest.setSearchTarget(target);
 
         return searchRequest;
     }

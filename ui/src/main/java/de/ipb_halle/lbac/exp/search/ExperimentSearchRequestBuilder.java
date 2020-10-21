@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
 
@@ -30,6 +31,7 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
 
     public ExperimentSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
+        target=SearchTarget.EXPERIMENT;
     }
 
     public ExperimentSearchRequestBuilder addTemplate(boolean isTemplate) {

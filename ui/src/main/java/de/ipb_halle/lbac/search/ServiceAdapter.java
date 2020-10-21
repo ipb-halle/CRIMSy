@@ -56,7 +56,8 @@ public class ServiceAdapter {
         this.memberService = memberService;
     }
 
-    public SearchResult doSearch(SearchRequest request, SearchTarget target) {
+    public SearchResult doSearch(SearchRequest request) {
+        SearchTarget target = request.getSearchTarget();
         if (target == SearchTarget.EXPERIMENT) {
             return experimentService.load(request);
         }

@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -39,6 +40,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
 
     public MaterialSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
+        target = SearchTarget.MATERIAL;
     }
 
     public MaterialSearchRequestBuilder addID(Integer id) {

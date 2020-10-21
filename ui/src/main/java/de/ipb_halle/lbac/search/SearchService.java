@@ -19,15 +19,16 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import org.apache.johnzon.mapper.Adapter;
 
 /**
  *
@@ -66,27 +67,34 @@ public class SearchService {
                 memberService);
     }
 
-    public SearchResult search(SearchRequest request) {
+    public SearchResult search(List<SearchRequest> requests) {
         SearchResult result = new SearchResultImpl();
-        if (shouldSearchBeDone(request)) {
-            result = doItemSearch(request, result);
+        if (requests != null) {
+            for (SearchRequest request : requests) {
+                result = handleSingleSearch(request, result);
+            }
         }
         return result;
     }
 
-    private boolean shouldSearchBeDone(SearchRequest request) {
-        return request != null && !request.getSearchTargets().isEmpty();
-    }
-
-    private SearchResult doItemSearch(SearchRequest request, SearchResult result) {
-        for (SearchTarget target : request.getSearchTargets()) {
-            SearchResult partialResult = adpater.doSearch(request, target);
+    private SearchResult handleSingleSearch(SearchRequest request, SearchResult result) {
+        if (shouldSearchBeDone(request)) {
+            SearchResult partialResult = adpater.doSearch(request);
             result = mergeResults(result, partialResult);
         }
         return result;
     }
 
+    private boolean shouldSearchBeDone(SearchRequest request) {
+        return request != null && request.getSearchTarget() != null;
+    }
+
     private SearchResult mergeResults(SearchResult totalResult, SearchResult partialResult) {
+        if (!partialResult.getNodes().isEmpty()) {
+            Node node = partialResult.getNodes().iterator().next();
+            totalResult.addResults(node, partialResult.getAllFoundObjects(node));
+        }
         return totalResult;
     }
+
 }
