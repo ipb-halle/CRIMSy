@@ -235,8 +235,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         experimentBeanInit();
     }
 
-    public void actionNewExperimentRecord(String type,int index) {
-        newRecordType=type;
+    public void actionNewExperimentRecord(String type, int index) {
+        newRecordType = type;
         actionAppendRecord(index);
     }
 
@@ -454,15 +454,20 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         return "";
     }
 
-    public String getRowStyle(boolean isLast){
-        if(!isLast){
+    public String getRowStyle(boolean isLast) {
+        if (!isLast) {
             return "experimentRecordBottomRow";
-        }else{
+        } else {
             return "";
         }
     }
+
     public boolean getTemplateMode() {
         return this.templateMode;
+    }
+
+    public boolean isRecordEditable(ExpRecord record) {
+        return record.getEdit();
     }
 
     /**

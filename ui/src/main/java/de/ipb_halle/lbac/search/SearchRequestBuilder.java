@@ -36,13 +36,11 @@ public class SearchRequestBuilder {
     protected int firstResultIndex;
     protected int maxResults;
     protected User user;
-//    protected ConditionBuilder conditionBuilder;
 
     public SearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         this.user = u;
         this.firstResultIndex = firstResultIndex;
         this.maxResults = maxResults;
-//        conditionBuilder = new ConditionBuilder(leafConditions);
     }
 
     protected void addCondition(Operator op, Object value, AttributeType... types) {

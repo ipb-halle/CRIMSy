@@ -17,23 +17,16 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.lang.Condition;
-import java.util.Set;
-
 /**
  *
  * @author fmauz
  */
-public interface SearchRequest {
-
-    public Condition getCondition();
-
-    public int getFirstResult();
-
-    public int getMaxResults();
-
-    public User getUser();
-
-    public Set<SearchTarget> getSearchTargets();
+public enum SearchTarget {
+    ITEM,
+    DOCUMENT,
+    MATERIAL,
+    PROJECT,
+    USER,
+    EXPERIMENT,
+    CONTAINER
 }

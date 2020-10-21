@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.search;
 import de.ipb_halle.lbac.entity.Node;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

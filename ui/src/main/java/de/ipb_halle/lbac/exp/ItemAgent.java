@@ -19,20 +19,13 @@ package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.service.ItemService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
