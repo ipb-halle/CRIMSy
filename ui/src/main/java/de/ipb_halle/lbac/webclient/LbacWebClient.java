@@ -28,7 +28,6 @@ import java.security.SignatureException;
 import java.util.Base64;
 import java.util.Date;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Basic class for webclient which provides basic funtionality e.g. creating

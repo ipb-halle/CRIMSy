@@ -58,17 +58,18 @@ public class ServiceAdapter {
 
     public SearchResult doSearch(SearchRequest request) {
         SearchTarget target = request.getSearchTarget();
+        SearchResult result = new SearchResultImpl();
         if (target == SearchTarget.EXPERIMENT) {
-            return experimentService.load(request);
+            result = experimentService.load(request);
         }
         if (target == SearchTarget.ITEM) {
-            return itemService.loadItems(request);
+            result = itemService.loadItems(request);
         }
         if (target == SearchTarget.MATERIAL) {
-            return materialService.getReadableMaterials(request);
+            result = materialService.getReadableMaterials(request);
         }
         if (target == SearchTarget.PROJECT) {
-            return projectService.loadProjects(request);
+            result = projectService.loadProjects(request);
         }
         if (target == SearchTarget.DOCUMENT) {
             throw new UnsupportedOperationException("Not yet implemented!");
@@ -79,7 +80,7 @@ public class ServiceAdapter {
         if (target == SearchTarget.CONTAINER) {
             throw new UnsupportedOperationException("Not yet implemented!");
         }
-        return new SearchResultImpl();
+        return result;
     }
 
 }

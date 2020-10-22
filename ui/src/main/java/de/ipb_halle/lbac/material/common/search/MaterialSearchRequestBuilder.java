@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
-import de.ipb_halle.lbac.search.lang.Value;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;

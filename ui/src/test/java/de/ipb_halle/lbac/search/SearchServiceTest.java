@@ -21,17 +21,22 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.ItemCreator;
+import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.exp.ExperimentService;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -59,6 +64,10 @@ public class SearchServiceTest extends TestBase {
     private User publicUser;
     private ProjectCreator projectCreator;
     private Project project1, project2;
+    private MaterialCreator materialCreator;
+    private ItemCreator itemCreator;
+    private int materialid1, materialid2;
+    private int itemid1, itemid2;
 
     @Inject
     private SearchService searchService;
@@ -78,11 +87,36 @@ public class SearchServiceTest extends TestBase {
                 projectService,
                 GlobalAdmissionContext.getPublicReadACL());
         publicUser = context.getPublicAccount();
+        materialCreator = new MaterialCreator(entityManagerService);
+        itemCreator = new ItemCreator(entityManagerService);
 
         projectCreator.setProjectName("SearchServiceTest-Project-01");
         project1 = projectCreator.createAndSaveProject(publicUser);
         projectCreator.setProjectName("SearchServiceTest-Project-02-XYZ");
         project2 = projectCreator.createAndSaveProject(publicUser);
+
+        int publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
+        materialid1 = materialCreator.createStructure(
+                publicUser.getId(),
+                publicAclId,
+                project1.getId(),
+                "Testmaterial-001");
+        materialid2 = materialCreator.createStructure(
+                publicUser.getId(),
+                publicAclId,
+                project1.getId(),
+                "Testmaterial-002");
+
+        itemid1 = itemCreator.createItem(
+                publicUser.getId(),
+                publicAclId,
+                materialid1,
+                "Testitem-001");
+        itemid2 = itemCreator.createItem(
+                publicUser.getId(),
+                publicAclId,
+                materialid2,
+                "Testitem-002");
 
     }
 
@@ -101,6 +135,8 @@ public class SearchServiceTest extends TestBase {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         result = searchService.search(Arrays.asList(request));
         Assert.assertEquals(0, result.getAllFoundObjects().size());
+        
+        
     }
 
     @Test(expected = Exception.class)
@@ -135,6 +171,50 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
     }
 
+    @Test
+    public void test006_searchMaterials() {
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        SearchRequest request = builder.buildSearchRequest();
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+
+        builder.addIndexName("-002");
+        request = builder.buildSearchRequest();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test007_searchItems() {
+        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        SearchRequest request = builder.buildSearchRequest();
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+
+        builder.addIndexName("-002");
+        request = builder.buildSearchRequest();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test008_searchExperiments() {
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        SearchRequest request = builder.buildSearchRequest();
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+
+       
+    }
+
+    @Test
+    public void test009_searchForEveryTarget() {
+        ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        ProjectSearchRequestBuilder projectBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        SearchRequest itemRequest = itemBuilder.buildSearchRequest();
+        SearchRequest materialRequest = materialBuilder.buildSearchRequest();
+        SearchRequest projectRequest = projectBuilder.buildSearchRequest();
+
+        SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest));
+        Assert.assertEquals(6, response.getAllFoundObjects().size());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("SearchService.war")
@@ -152,9 +232,4 @@ public class SearchServiceTest extends TestBase {
                 .addClass(TaxonomyNestingService.class);
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
-
-    private void createProjects() {
-
-    }
-
 }
