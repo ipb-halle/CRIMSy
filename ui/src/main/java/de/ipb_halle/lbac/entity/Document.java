@@ -23,6 +23,7 @@ package de.ipb_halle.lbac.entity;
 import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import de.ipb_halle.lbac.search.Searchable;
 import org.apache.johnzon.mapper.JohnzonConverter;
@@ -277,6 +278,15 @@ public class Document implements Serializable, Comparable<Document>, Searchable 
     @Override
     public String getNameToDisplay() {
         return originalName;
+    }
+
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof Document)) {
+            return false;
+        }
+        Document otherUser = (Document) other;
+        return Objects.equals(otherUser.getId(), this.getId());
     }
 
 }

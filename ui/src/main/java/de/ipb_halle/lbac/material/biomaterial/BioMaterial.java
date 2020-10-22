@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,7 +64,7 @@ public class BioMaterial extends Material {
                 projectId,
                 hazards.copy(),
                 storageInformation.copy(),
-                taxonomy==null?null:taxonomy.copyMaterial(),
+                taxonomy == null ? null : taxonomy.copyMaterial(),
                 tissue == null ? null : tissue.copyMaterial());
         b.setACList(getACList());
         b.setOwner(getOwner());
@@ -107,6 +108,15 @@ public class BioMaterial extends Material {
 
     public Integer getTaxonomyId() {
         return taxonomy == null ? null : taxonomy.getId();
+    }
+
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof BioMaterial)) {
+            return false;
+        }
+        BioMaterial otherUser = (BioMaterial) other;
+        return Objects.equals(otherUser.getId(), this.getId());
     }
 
 }

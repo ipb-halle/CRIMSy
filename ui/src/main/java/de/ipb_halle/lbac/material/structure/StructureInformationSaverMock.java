@@ -47,11 +47,11 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
                     .setParameter(2, s.getMolecule().getStructureModel());
 
             q.executeUpdate();
-
-            em.persist(s.createDbEntity(m.getId(), molId));
             s.getMolecule().setId(molId);
+            em.persist(s.createEntity());
+
         } else {
-            em.persist(s.createDbEntity(m.getId(), null));
+            em.persist(s.createEntity());
         }
     }
 }

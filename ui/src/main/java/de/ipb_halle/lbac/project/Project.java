@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -203,6 +205,15 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
     @Override
     public String getNameToDisplay() {
         return name;
+    }
+
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof Project)) {
+            return false;
+        }
+        Project otherUser = (Project) other;
+        return Objects.equals(otherUser.getId(), this.getId());
     }
 
 }

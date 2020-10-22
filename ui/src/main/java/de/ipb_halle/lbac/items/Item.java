@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.project.Project;
@@ -33,6 +34,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -325,6 +327,15 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setHistory(getHistory());
         copiedItem.setACList(getACList());
         return copiedItem;
+    }
+
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof Item)) {
+            return false;
+        }
+        Item otherUser = (Item) other;
+        return Objects.equals(otherUser.getId(), this.getId());
     }
 
 }

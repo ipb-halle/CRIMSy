@@ -21,9 +21,11 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.search.Searchable;
 
 import java.util.Date;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -197,6 +199,15 @@ public class Experiment extends ACObject implements DTO, Searchable {
     @Override
     public String getNameToDisplay() {
         return code;
+    }
+
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof Experiment)) {
+            return false;
+        }
+        Experiment otherUser = (Experiment) other;
+        return Objects.equals(otherUser.getId(), this.getId());
     }
 
 }

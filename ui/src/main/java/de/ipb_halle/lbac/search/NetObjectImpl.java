@@ -48,4 +48,14 @@ public class NetObjectImpl implements NetObject {
         return searchable.getNameToDisplay();
     }
 
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof NetObject)) {
+            return false;
+        }
+        NetObject otherNo = (NetObject) other;
+        return getNode().getId().equals(otherNo.getNode().getId())
+                && searchable.isEqualTo(otherNo.getSearchable());
+    }
+
 }

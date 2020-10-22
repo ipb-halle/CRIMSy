@@ -45,15 +45,17 @@ public class StructureInformationSaver implements Serializable {
         for (IndexEntry ie : s.getIndices()) {
             em.persist(ie.toDbEntity(m.getId(), 0));
         }
-        if (s.getMolecule().getStructureModel() != null) {
+        if (s.getMolecule().getStructureModel() != null 
+                && !s.getMolecule().getStructureModel().isEmpty()) {
             Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
                     .setParameter("molecule", s.getMolecule().getStructureModel())
                     .setParameter("format", s.getMolecule().getModelType().toString());
 
             int molId = (int) q.getSingleResult();
-            em.persist(s.createDbEntity(m.getId(), molId));
-        } else {
-            em.persist(s.createDbEntity(m.getId(), null));
+            s.getMolecule().setId(molId);
+        }else{
+            s.getMolecule().setId(0);
         }
+        em.persist(s.createEntity());
     }
 }

@@ -25,8 +25,10 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -171,17 +173,6 @@ public class Structure extends Material {
         return s;
     }
 
-    public StructureEntity createDbEntity(int materialId, Integer moleculeId) {
-        StructureEntity sE = new StructureEntity();
-        sE.setSumformula(sumFormula);
-        sE.setExactmolarmass(exactMolarMass);
-        sE.setMolarmass(molarMass);
-        sE.setId(materialId);
-        sE.setMoleculeid(moleculeId);
-        return sE;
-
-    }
-
     @Override
     public Material copyMaterial() {
         Structure copy = new Structure(
@@ -207,8 +198,27 @@ public class Structure extends Material {
     }
 
     @Override
-    public Object createEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public StructureEntity createEntity() {
+        StructureEntity sE = new StructureEntity();
+        sE.setSumformula(sumFormula);
+        sE.setExactmolarmass(exactMolarMass);
+        sE.setMolarmass(molarMass);
+        sE.setId(getId());
+        if (molecule != null
+                && molecule.getStructureModel() != null
+                && !molecule.getStructureModel().isEmpty()) {
+            sE.setMoleculeid(molecule.getId());
+        }
+        return sE;
+    }
+
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof Structure)) {
+            return false;
+        }
+        Structure otherUser = (Structure) other;
+        return Objects.equals(otherUser.getId(), this.getId());
     }
 
 }

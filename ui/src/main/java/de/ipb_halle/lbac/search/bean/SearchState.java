@@ -17,10 +17,19 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.search.NetObject;
+import java.util.List;
+
 /**
  *
  * @author fmauz
  */
 public class SearchState {
+    
+    private List<NetObject> foundObjects;
+    
+    private void addNetObjects(List<NetObject> objectsToAdd){
+        
+    }
     
 }

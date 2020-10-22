@@ -129,4 +129,13 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         return getName();
     }
 
+    @Override
+    public boolean isEqualTo(Object other) {
+       if(!(other instanceof User)){
+           return false;
+       }
+       User otherUser=(User)other;
+       return Objects.equals(otherUser.getId(),this.getId());
+    }
+
 }

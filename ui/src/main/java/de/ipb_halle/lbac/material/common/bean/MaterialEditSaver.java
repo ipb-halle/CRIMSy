@@ -241,12 +241,7 @@ public class MaterialEditSaver implements Serializable {
 
     protected void updateStructureOverview(Structure structure) {
         StructureEntity dbentity;
-
-        if (structure.getMolecule() != null) {
-            dbentity = structure.createDbEntity(structure.getId(), structure.getMolecule().getId());
-        } else {
-            dbentity = structure.createDbEntity(structure.getId(), null);
-        }
+        dbentity = structure.createEntity();
         materialService.getEm().merge(dbentity);
     }
 

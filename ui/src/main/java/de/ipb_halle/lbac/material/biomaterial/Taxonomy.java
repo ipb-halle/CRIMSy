@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.material.MaterialType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -94,6 +95,15 @@ public class Taxonomy extends Material {
 
     public void setLevel(TaxonomyLevel level) {
         this.level = level;
+    }
+    
+    @Override
+    public boolean isEqualTo(Object other) {
+        if (!(other instanceof Taxonomy)) {
+            return false;
+        }
+        Taxonomy otherUser = (Taxonomy) other;
+        return Objects.equals(otherUser.getId(), this.getId());
     }
 
 }

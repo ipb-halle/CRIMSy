@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.container;
 
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.entity.DTO;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -327,6 +329,15 @@ public class Container implements DTO, Serializable, Searchable {
             }
         }
         return places;
+    }
+    
+     @Override
+    public boolean isEqualTo(Object other) {
+       if(!(other instanceof Container)){
+           return false;
+       }
+       Container otherUser=(Container)other;
+       return Objects.equals(otherUser.getId(),this.getId());
     }
 
 }

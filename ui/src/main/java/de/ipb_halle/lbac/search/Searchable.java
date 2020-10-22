@@ -25,4 +25,6 @@ public interface Searchable {
 
     public String getNameToDisplay();
 
+    public boolean isEqualTo(Object other);
+
 }
