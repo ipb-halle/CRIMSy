@@ -66,51 +66,15 @@ import org.junit.runner.RunWith;
 public class NetObjectPresenterTest extends TestBase {
 
     private List<NetObject> netObjects;
-    private Node localNode, remoteNode;
-    private Document localDocument, remoteDocument;
-    private Structure localStruc, remoteStruc;
-    private Project localProject, remoteProject;
-    private User localUser, remoteUser;
-    private Item localItem, remoteItem;
-    private Experiment localExp, remoteExp;
 
-    private NetObjectPresenter presenter;
+    private NetObjectFactory netObjectFactory = new NetObjectFactory();
+    private NetObjectPresenter presenter  = new NetObjectPresenter();
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
-
-        netObjects = new ArrayList<>();
-        localNode = createLocalNode();
-        remoteNode = createRemoteNode();
-        localDocument = createDocument("localCol", localNode, "localDoc");
-        remoteDocument = createDocument("remoteCol", remoteNode, "remoteDoc");
-        localUser = createUser(localNode, "local User");
-        remoteUser = createUser(remoteNode, "remote User");
-        localProject = createProject(localUser, "localProject");
-        remoteProject = createProject(remoteUser, "remoteProject");
-        localStruc = createStructure(localUser, "localStructure", localProject);
-        remoteStruc = createStructure(remoteUser, "remoteStructure", remoteProject);
-        localItem = createItem(localUser, localStruc, "localItem");
-        remoteItem = createItem(remoteUser, remoteStruc, "remoteItem");
-        localExp = createExperiment(localUser, "localExp");
-        remoteExp = createExperiment(remoteUser, "remoteExp");
-
-        netObjects.add(new NetObjectImpl(localDocument, localNode));
-        netObjects.add(new NetObjectImpl(remoteDocument, remoteNode));
-        netObjects.add(new NetObjectImpl(localUser, localNode));
-        netObjects.add(new NetObjectImpl(remoteUser, remoteNode));
-        netObjects.add(new NetObjectImpl(localProject, localNode));
-        netObjects.add(new NetObjectImpl(remoteProject, remoteNode));
-        netObjects.add(new NetObjectImpl(localStruc, localNode));
-        netObjects.add(new NetObjectImpl(remoteStruc, remoteNode));
-        netObjects.add(new NetObjectImpl(localItem, localNode));
-        netObjects.add(new NetObjectImpl(remoteItem, remoteNode));
-        netObjects.add(new NetObjectImpl(localExp, localNode));
-        netObjects.add(new NetObjectImpl(remoteExp, remoteNode));
-
-        presenter = new NetObjectPresenter();
+        netObjects = netObjectFactory.createNetObjects();
     }
 
     @Test
@@ -193,76 +157,6 @@ public class NetObjectPresenterTest extends TestBase {
                 .addClass(ExperimentService.class)
                 .addClass(TaxonomyNestingService.class);
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
-    }
-
-    private Node createLocalNode() {
-        Node localNode = new Node();
-        localNode.setInstitution("local");
-        localNode.setLocal(true);
-        localNode.setBaseUrl("http://local");
-        return localNode;
-    }
-
-    private Node createRemoteNode() {
-        Node localNode = new Node();
-        localNode.setInstitution("remote");
-        localNode.setLocal(true);
-        localNode.setBaseUrl("http://remote");
-        return localNode;
-    }
-
-    private Document createDocument(String collectionName, Node node, String documentName) {
-        Document d = new Document();
-        Collection col = new Collection();
-        col.setNode(node);
-        col.setName(collectionName);
-        d.setCollection(col);
-        d.setNode(node);
-        d.setOriginalName(documentName);
-        return d;
-    }
-
-    private Structure createStructure(User u, String name, Project project) {
-        List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName(name, "de", 0));
-        return new Structure("",
-                0d,
-                0d,
-                1,
-                names,
-                project.getId(),
-                new HazardInformation(),
-                new StorageClassInformation(),
-                null);
-
-    }
-
-    private User createUser(Node n, String name) {
-        User u = new User();
-        u.setName(name);
-        u.setNode(n);
-        return u;
-    }
-
-    private Project createProject(User user, String name) {
-        Project p = new Project();
-        p.setId(1);
-        p.setName(name);
-        p.setOwner(user);
-        return p;
-    }
-
-    private Item createItem(User u, Material m, String name) {
-        Item i = new Item();
-        i.setMaterial(m);
-        i.setDescription(name);
-        i.setId(12014);
-        i.setOwner(u);
-        return i;
-    }
-
-    private Experiment createExperiment(User u, String code) {
-        return new Experiment(1, code, code, false, null, u, new Date());
     }
 
 }

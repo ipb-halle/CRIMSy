@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.search.NetObject;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -32,12 +34,43 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class SearchBean implements Serializable {
 
-    protected NetObjectPresenter netObjectPresenter;
-    protected SearchState searchState;
+    protected NetObjectPresenter netObjectPresenter = new NetObjectPresenter();
+    protected SearchState searchState = new SearchState();
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
+    protected List<NetObject> shownObjects = new ArrayList<>();
 
     public NetObjectPresenter getNetObjectPresenter() {
         return netObjectPresenter;
+    }
+
+    public void actionAddFoundObjectsToShownObjects() {
+        for (NetObject noToAdd : searchState.getFoundObjects()) {
+            boolean alreadyIn = false;
+            for (NetObject no : shownObjects) {
+                if (no.isEqualTo(noToAdd)) {
+                    alreadyIn = true;
+                }
+            }
+            if (!alreadyIn) {
+                shownObjects.add(noToAdd);
+            }
+        }
+    }
+
+    public List<NetObject> getShownObjects() {
+        return shownObjects;
+    }
+
+    public SearchState getSearchState() {
+        return searchState;
+    }
+
+    public boolean isSearchActive() {
+        return searchState.isSearchActive();
+    }
+
+    public int getUnshownButFoundObjects() {
+        return searchState.getFoundObjects().size() - shownObjects.size();
     }
 
 }

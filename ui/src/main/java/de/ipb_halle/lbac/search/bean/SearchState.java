@@ -18,18 +18,46 @@
 package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.search.NetObject;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  *
  * @author fmauz
  */
 public class SearchState {
-    
-    private List<NetObject> foundObjects;
-    
-    private void addNetObjects(List<NetObject> objectsToAdd){
-        
+
+    private List<NetObject> foundObjects = new ArrayList<>();
+    private Set<UUID> activeSearches = new HashSet<>();
+
+    public void addNetObjects(List<NetObject> objectsToAdd) {
+        for (NetObject noToAdd : objectsToAdd) {
+            boolean alreadyIn = false;
+            for (NetObject no : foundObjects) {
+                if (no.isEqualTo(noToAdd)) {
+                    alreadyIn = true;
+                }
+            }
+            if (!alreadyIn) {
+                activeSearches.remove(noToAdd.getNode().getId());
+                foundObjects.add(noToAdd);
+            }
+        }
     }
-    
+
+    public void addNoteToSearch(UUID nodeId) {
+        activeSearches.add(nodeId);
+    }
+
+    public List<NetObject> getFoundObjects() {
+        return foundObjects;
+    }
+
+    public boolean isSearchActive() {
+        return !activeSearches.isEmpty();
+    }
+
 }
