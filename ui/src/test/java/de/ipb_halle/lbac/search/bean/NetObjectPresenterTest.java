@@ -127,7 +127,54 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("12014 (remoteStructure)", presenter.getName(netObjects.get(9)));
         Assert.assertEquals("localExp", presenter.getName(netObjects.get(10)));
         Assert.assertEquals("remoteExp", presenter.getName(netObjects.get(11)));
+    }
 
+    @Test
+    public void test002_getNodeName() {
+        Assert.assertEquals("local", presenter.getNodeName(netObjects.get(0)));
+        Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(1)));
+        Assert.assertEquals("local", presenter.getNodeName(netObjects.get(2)));
+        Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(3)));
+        Assert.assertEquals("local", presenter.getNodeName(netObjects.get(4)));
+        Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(5)));
+        Assert.assertEquals("local", presenter.getNodeName(netObjects.get(6)));
+        Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(7)));
+        Assert.assertEquals("local", presenter.getNodeName(netObjects.get(8)));
+        Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(9)));
+        Assert.assertEquals("local", presenter.getNodeName(netObjects.get(10)));
+        Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(11)));
+    }
+
+    @Test(expected = Exception.class)
+    public void test003_getLink() {
+        Assert.assertEquals("local", presenter.getLink(netObjects.get(0)));
+        Assert.assertEquals("remote", presenter.getLink(netObjects.get(1)));
+        Assert.assertEquals("local", presenter.getLink(netObjects.get(2)));
+        Assert.assertEquals("remote", presenter.getLink(netObjects.get(3)));
+        Assert.assertEquals("local", presenter.getLink(netObjects.get(4)));
+        Assert.assertEquals("remote", presenter.getLink(netObjects.get(5)));
+        Assert.assertEquals("local", presenter.getLink(netObjects.get(6)));
+        Assert.assertEquals("remote", presenter.getLink(netObjects.get(7)));
+        Assert.assertEquals("local", presenter.getLink(netObjects.get(8)));
+        Assert.assertEquals("remote", presenter.getLink(netObjects.get(9)));
+        Assert.assertEquals("local", presenter.getLink(netObjects.get(10)));
+        Assert.assertEquals("remote", presenter.getLink(netObjects.get(11)));
+    }
+
+    @Test(expected = Exception.class)
+    public void test004_getToolTip() {
+        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(0)));
+        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(1)));
+        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(2)));
+        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(3)));
+        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(4)));
+        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(5)));
+        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(6)));
+        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(7)));
+        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(8)));
+        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(9)));
+        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(10)));
+        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(11)));
     }
 
     @Deployment
