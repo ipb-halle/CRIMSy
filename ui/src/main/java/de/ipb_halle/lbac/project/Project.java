@@ -200,4 +200,9 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
         return entity;
     }
 
+    @Override
+    public String getNameToDisplay() {
+        return name;
+    }
+
 }

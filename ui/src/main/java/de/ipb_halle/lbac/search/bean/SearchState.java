@@ -15,14 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search;
+package de.ipb_halle.lbac.search.bean;
 
 /**
  *
  * @author fmauz
  */
-public interface Searchable {
-
-    public String getNameToDisplay();
-
+public class SearchState {
+    
 }

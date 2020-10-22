@@ -15,14 +15,29 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search;
+package de.ipb_halle.lbac.search.bean;
+
+import de.ipb_halle.lbac.search.NetObject;
+import java.io.Serializable;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author fmauz
  */
-public interface Searchable {
+@SessionScoped
+@Named
+public class SearchBean implements Serializable {
 
-    public String getNameToDisplay();
+    protected NetObjectPresenter netObjectPresenter;
+    protected SearchState searchState;
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    public NetObjectPresenter getNetObjectPresenter() {
+        return netObjectPresenter;
+    }
 
 }

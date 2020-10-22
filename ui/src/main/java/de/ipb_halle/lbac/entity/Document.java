@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.message.LocalUUIDConverter;
+import de.ipb_halle.lbac.search.Searchable;
 import org.apache.johnzon.mapper.JohnzonConverter;
 
 import java.io.Serializable;
@@ -33,9 +34,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-public class Document implements Serializable, Comparable<Document> {
+public class Document implements Serializable, Comparable<Document>, Searchable {
 
     private final static long serialVersionUID = 1L;
     private final static String UTF8 = "UTF-8";
@@ -270,6 +272,11 @@ public class Document implements Serializable, Comparable<Document> {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String getNameToDisplay() {
+        return originalName;
     }
 
 }

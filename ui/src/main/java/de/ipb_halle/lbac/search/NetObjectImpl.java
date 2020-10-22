@@ -43,4 +43,9 @@ public class NetObjectImpl implements NetObject {
         return node;
     }
 
+    @Override
+    public String getNameToDisplay() {
+        return searchable.getNameToDisplay();
+    }
+
 }

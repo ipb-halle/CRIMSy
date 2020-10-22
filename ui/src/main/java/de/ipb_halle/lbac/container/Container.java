@@ -133,6 +133,11 @@ public class Container implements DTO, Serializable, Searchable {
         this.id = id;
     }
 
+    @Override
+    public String getNameToDisplay() {
+        return label;
+    }
+
     public Container getParentContainer() {
         if (containerHierarchy.size() > 0) {
             return containerHierarchy.get(0);

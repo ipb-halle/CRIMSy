@@ -15,14 +15,29 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search;
+package de.ipb_halle.lbac.search.bean;
+
+import de.ipb_halle.lbac.search.NetObject;
 
 /**
  *
  * @author fmauz
  */
-public interface Searchable {
+public class NetObjectPresenter {
+    
+    public String getName(NetObject no) {
+        return no.getNameToDisplay();
+    }
 
-    public String getNameToDisplay();
+    public String getNodeName(NetObject no) {
+        return no.getNode().getInstitution();
+    }
 
+    public String getLink(NetObject no) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public String getToolTip(NetObject no) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }

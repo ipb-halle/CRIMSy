@@ -194,4 +194,9 @@ public class Experiment extends ACObject implements DTO, Searchable {
         return experimentid;
     }
 
+    @Override
+    public String getNameToDisplay() {
+        return code;
+    }
+
 }

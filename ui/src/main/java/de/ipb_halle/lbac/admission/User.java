@@ -20,10 +20,11 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
+import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class User extends Member implements Serializable, Obfuscatable, DTO {
+public class User extends Member implements Serializable, Obfuscatable, DTO, Searchable {
 
     private final static long serialVersionUID = 1L;
 
@@ -121,6 +122,11 @@ public class User extends Member implements Serializable, Obfuscatable, DTO {
                 + getName() + ", email="
                 + this.email + ",\n      node="
                 + this.getNode() + "}";
+    }
+
+    @Override
+    public String getNameToDisplay() {
+        return getName();
     }
 
 }

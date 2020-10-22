@@ -41,7 +41,7 @@ import java.util.TreeMap;
  * @author fmauz
  */
 @LabelType(name = "Item")
-public class Item extends ACObject implements DTO, Serializable,Searchable {
+public class Item extends ACObject implements DTO, Serializable, Searchable {
 
     private Integer id;
     private Double amount;
@@ -190,6 +190,11 @@ public class Item extends ACObject implements DTO, Serializable,Searchable {
 
     public Double getConcentration() {
         return concentration;
+    }
+
+    @Override
+    public String getNameToDisplay() {
+        return String.format("%d (%s)", id, material.getFirstName());
     }
 
     public void setConcentration(Double concentration) {

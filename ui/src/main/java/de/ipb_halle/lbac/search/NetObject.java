@@ -28,4 +28,6 @@ public interface NetObject extends Searchable {
     public Node getNode();
 
     public Searchable getSearchable();
+
+    public String getNameToDisplay();
 }
