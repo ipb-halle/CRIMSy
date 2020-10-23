@@ -107,6 +107,13 @@ public class Assay extends ExpRecord implements DTO {
             this.outcomeType = entity.getOutcomeType();
         }
     }
+    
+    public void activateEditModeForRecord(AssayRecord recordToEdit){
+        for(AssayRecord record:records){
+            record.setEdit(false);
+        }
+        recordToEdit.setEdit(true);
+    }
 
     @Override
     public void copy() {

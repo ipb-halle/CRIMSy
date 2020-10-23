@@ -88,6 +88,7 @@
                     value="#{assayRecord.getMaterialName()}"/>
                 <p:commandLink title="Edit material"
                                ajax="true"
+                               rendered="#{cc.attrs.assay.edit}"
                                action="#{experimentBean.expRecordController.editRecord(assayRecord)}"
                                update="@(.dlgMaterialEdit)"
                                oncomplete="PF('dlg_materialEdit').show();"
@@ -101,6 +102,7 @@
                 <h:outputText
                     value="#{assayRecord.getItemLabel()}"/>
                 <p:commandLink title="Action"
+                               rendered="#{cc.attrs.assay.edit}"
                                ajax="true"
                                action="#{experimentBean.expRecordController.editRecord(assayRecord)}"
                                oncomplete="PF('dlg_itemEdit').show();"
@@ -112,19 +114,30 @@
             <b:dataTableColumn
                 orderable="false"
                 label="Value">
-                <h:inputText value="#{assayRecord.outcome.value}"/>
+                <h:inputText 
+                    disabled="#{!assayRecord.edit}"
+                    value="#{assayRecord.outcome.value}"/>
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
                 label="Unit">
-                <p:selectOneMenu value="#{assayRecord.outcome.unit}" >
+                <p:selectOneMenu 
+                    disabled="#{!assayRecord.edit}"
+                    value="#{assayRecord.outcome.unit}" >
                     <f:selectItems value="#{cc.attrs.assay.getPossibleUnits()}" />
                 </p:selectOneMenu>
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
                 label="Actions">
-                Zahnrad
+                <p:commandLink title="Edit"
+                               rendered ="#{cc.attrs.assay.edit}"
+                               ajax="true"
+                               action="#{cc.attrs.assay.activateEditModeForRecord(assayRecord)}"
+                               update="@form"
+                               disabled="#{assayRecord.edit}">
+                    <span class="fa fa-pencil"/>
+                </p:commandLink>
             </b:dataTableColumn>
         </b:dataTable>
         <b:container>
@@ -140,7 +153,8 @@
                         value="Show">
                     </b:commandButton>
                 </b:column>
-                <b:column span="2" offset="9">
+                <b:column span="2" offset="9"
+                          rendered ="#{cc.attrs.assay.edit}">
                     <b:commandButton
                         update="@form"
                         ajax="true"

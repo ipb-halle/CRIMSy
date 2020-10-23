@@ -95,11 +95,11 @@ public class AssayRecord implements DTO {
     }
 
     public boolean isMaterialEditable() {
-        return item == null;
+        return item == null && edit;
     }
 
     public boolean isItemEditable() {
-        return true;
+        return edit;
     }
 
     public boolean isEdit() {
