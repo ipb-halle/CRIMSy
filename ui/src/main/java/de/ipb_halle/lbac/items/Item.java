@@ -25,11 +25,12 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -336,6 +337,11 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         }
         Item otherUser = (Item) other;
         return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.ITEM);
     }
 
 }

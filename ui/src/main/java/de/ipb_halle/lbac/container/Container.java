@@ -17,12 +17,13 @@
  */
 package de.ipb_halle.lbac.container;
 
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -330,14 +331,19 @@ public class Container implements DTO, Serializable, Searchable {
         }
         return places;
     }
-    
-     @Override
+
+    @Override
     public boolean isEqualTo(Object other) {
-       if(!(other instanceof Container)){
-           return false;
-       }
-       Container otherUser=(Container)other;
-       return Objects.equals(otherUser.getId(),this.getId());
+        if (!(other instanceof Container)) {
+            return false;
+        }
+        Container otherUser = (Container) other;
+        return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.CONTAINER);
     }
 
 }

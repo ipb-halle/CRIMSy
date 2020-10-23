@@ -17,14 +17,17 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.search.bean.Type;
+
 /**
  *
  * @author fmauz
  */
 public interface Searchable {
 
-    public String getNameToDisplay();
-
     public boolean isEqualTo(Object other);
 
+    public String getNameToDisplay();
+
+    public Type getTypeToDisplay();
 }

@@ -21,8 +21,9 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.bean.Type;
 
 import java.util.Date;
 import java.util.Objects;
@@ -208,6 +209,11 @@ public class Experiment extends ACObject implements DTO, Searchable {
         }
         Experiment otherUser = (Experiment) other;
         return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.EXPERIMENT);
     }
 
 }

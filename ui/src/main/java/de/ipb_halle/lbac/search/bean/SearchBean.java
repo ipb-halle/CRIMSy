@@ -17,11 +17,18 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchService;
+import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,13 +41,24 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class SearchBean implements Serializable {
 
+    @Inject
+    private SearchService searchService;
+
     protected NetObjectPresenter netObjectPresenter = new NetObjectPresenter();
     protected SearchState searchState = new SearchState();
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected List<NetObject> shownObjects = new ArrayList<>();
+    protected SearchFilter searchFilter;
+    protected RelevanceCalculator relevanceCalculator;
+    protected User currentUser;
 
     public NetObjectPresenter getNetObjectPresenter() {
         return netObjectPresenter;
+    }
+
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+        searchFilter = new SearchFilter(currentUser);
     }
 
     public void actionAddFoundObjectsToShownObjects() {
@@ -55,6 +73,18 @@ public class SearchBean implements Serializable {
                 shownObjects.add(noToAdd);
             }
         }
+    }
+
+    public void actionTriggerSearch() {
+        relevanceCalculator = new RelevanceCalculator();
+        searchState = new SearchState();
+        SearchResult result = searchService.search(searchFilter.createRequests());
+        searchState.addNetObjects(result.getAllFoundObjects());
+        actionAddFoundObjectsToShownObjects();
+    }
+
+    public SearchFilter getSearchFilter() {
+        return searchFilter;
     }
 
     public List<NetObject> getShownObjects() {

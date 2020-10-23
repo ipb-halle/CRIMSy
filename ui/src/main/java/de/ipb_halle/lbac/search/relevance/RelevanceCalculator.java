@@ -37,13 +37,13 @@ public class RelevanceCalculator implements Serializable {
 
     private StemmedWordGroup searchTerms;
     private final Logger logger;
-    private boolean develop;
     private List<String> originalSearchTerms;
+    private final float k1 = 1.2f;
+    private final float b = 0.75f;
 
     public RelevanceCalculator() {
         this.searchTerms = new StemmedWordGroup();
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.develop = false;
         this.originalSearchTerms = new ArrayList<>();
     }
 
@@ -51,9 +51,6 @@ public class RelevanceCalculator implements Serializable {
         this();
         originalSearchTerms = originalTerms;
     }
-
-    private final float k1 = 1.2f;
-    private final float b = 0.75f;
 
     /**
      * Calculates the relevance score for all documents
@@ -102,31 +99,6 @@ public class RelevanceCalculator implements Serializable {
         }
 
         return docs;
-    }
-
-    public void setDevelop(boolean develop) {
-        this.develop = develop;
-    }
-
-    private void infoStart(double docsWithHit, double idf, double averageDocLength, int totalDocuments) {
-        logger.info("------");
-        logger.info("Start Calculation of DocumentRelevance");
-        logger.info("Docs with term " + docsWithHit);
-        logger.info("IDF " + idf);
-        logger.info("AWL " + averageDocLength);
-        logger.info("TOTAL " + totalDocuments);
-        logger.info("TERMS");
-        logger.info("-- ORIGINAL");
-        for (String o : originalSearchTerms) {
-            logger.info(o);
-        }
-    }
-
-    private void infoDocument(String doc, String term, double nf, double rh, double relevance) {
-        logger.info("-- Term: " + doc + ":" + term);
-        logger.info("---- NF: " + nf);
-        logger.info("---- RH: " + rh);
-        logger.info("---- RELEVANCE: " + relevance);
     }
 
     public StemmedWordGroup getSearchTerms() {

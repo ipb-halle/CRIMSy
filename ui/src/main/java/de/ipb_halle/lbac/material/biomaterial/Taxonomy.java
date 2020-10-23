@@ -23,6 +23,8 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.search.SearchTarget;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,7 +98,7 @@ public class Taxonomy extends Material {
     public void setLevel(TaxonomyLevel level) {
         this.level = level;
     }
-    
+
     @Override
     public boolean isEqualTo(Object other) {
         if (!(other instanceof Taxonomy)) {
@@ -104,6 +106,11 @@ public class Taxonomy extends Material {
         }
         Taxonomy otherUser = (Taxonomy) other;
         return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.MATERIAL, MaterialType.TAXONOMY);
     }
 
 }

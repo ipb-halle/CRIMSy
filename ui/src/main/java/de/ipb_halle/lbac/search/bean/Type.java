@@ -17,31 +17,33 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
-import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.search.SearchTarget;
 
 /**
  *
  * @author fmauz
  */
-public class NetObjectPresenter {
+public class Type {
 
-    public String getName(NetObject no) {
-        return no.getNameToDisplay();
+    private SearchTarget generalType;
+    private MaterialType materialType;
+
+    public Type(SearchTarget generalType) {
+        this.generalType = generalType;
     }
 
-    public String getNodeName(NetObject no) {
-        return no.getNode().getInstitution();
+    public Type(SearchTarget generalType, MaterialType materialType) {
+        this.generalType = generalType;
+        this.materialType = materialType;
     }
 
-    public String getObjectType(NetObject no) {
-        return no.getTypeToDisplay().getTypeName();
+    public String getTypeName() {
+        if (generalType == SearchTarget.MATERIAL) {
+            return generalType.toString() + "-" + materialType.toString();
+        } else {
+            return generalType.toString();
+        }
     }
 
-    public String getLink(NetObject no) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
-
-    public String getToolTip(NetObject no) {
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 }

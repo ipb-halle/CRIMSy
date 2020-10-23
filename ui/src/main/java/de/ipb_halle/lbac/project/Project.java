@@ -22,8 +22,9 @@ import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -214,6 +215,11 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
         }
         Project otherUser = (Project) other;
         return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.PROJECT);
     }
 
 }

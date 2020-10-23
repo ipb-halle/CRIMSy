@@ -130,7 +130,6 @@ public class DocumentSearchBean implements Serializable {
         );
 
         relevanceCalculator = new RelevanceCalculator(searchTerms);
-        relevanceCalculator.setDevelop(develop);
 
         try {
             documentSearchState = documentSearchService.actionStartDocumentSearch(

@@ -26,6 +26,8 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.search.SearchTarget;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -219,6 +221,11 @@ public class Structure extends Material {
         }
         Structure otherUser = (Structure) other;
         return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.MATERIAL, MaterialType.STRUCTURE);
     }
 
 }

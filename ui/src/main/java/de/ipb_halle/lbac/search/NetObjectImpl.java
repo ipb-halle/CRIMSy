@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.search.bean.Type;
 
 /**
  *
@@ -56,6 +57,11 @@ public class NetObjectImpl implements NetObject {
         NetObject otherNo = (NetObject) other;
         return getNode().getId().equals(otherNo.getNode().getId())
                 && searchable.isEqualTo(otherNo.getSearchable());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return searchable.getTypeToDisplay();
     }
 
 }

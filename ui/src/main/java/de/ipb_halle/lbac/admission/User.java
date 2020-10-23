@@ -20,7 +20,9 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -131,11 +133,16 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
 
     @Override
     public boolean isEqualTo(Object other) {
-       if(!(other instanceof User)){
-           return false;
-       }
-       User otherUser=(User)other;
-       return Objects.equals(otherUser.getId(),this.getId());
+        if (!(other instanceof User)) {
+            return false;
+        }
+        User otherUser = (User) other;
+        return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.USER);
     }
 
 }

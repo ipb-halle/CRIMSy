@@ -23,6 +23,8 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.consumable.Consumable;
+import de.ipb_halle.lbac.search.SearchTarget;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,6 +67,11 @@ public class Sequence extends Material {
         }
         Sequence otherUser = (Sequence) other;
         return Objects.equals(otherUser.getId(), this.getId());
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.MATERIAL, MaterialType.SEQUENCE);
     }
 
 }
