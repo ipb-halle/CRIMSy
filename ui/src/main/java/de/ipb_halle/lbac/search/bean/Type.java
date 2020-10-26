@@ -46,4 +46,8 @@ public class Type {
         }
     }
 
+    public SearchTarget getGeneralType() {
+        return generalType;
+    }
+
 }

@@ -15,31 +15,22 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search;
-
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.search.document.DocumentStatistic;
-import java.util.List;
-import java.util.Set;
+package de.ipb_halle.lbac.search.document;
 
 /**
  *
  * @author fmauz
  */
-public interface SearchResult {
+public class DocumentStatistic {
 
-    public Set<Node> getNodes();
+    public float averageWordLength;
+    public int totalDocsInNode;
 
-    public List<NetObject> getAllFoundObjects();
-
-    public List<Searchable> getAllFoundObjects(Node n);
-
-    public <T> List<NetObject> getAllFoundObjects(Class T); //T nur Searchable
-
-    public <T> List<T> getAllFoundObjects(Class T, Node n); //T nur Searchable
-
-    public void addResults(Node n, List<Searchable> foundObjects);
-
-    public DocumentStatistic getDocumentStatistic();
+    public void merge(DocumentStatistic other) {
+        averageWordLength = (other.averageWordLength * other.totalDocsInNode
+                + averageWordLength * totalDocsInNode)
+                / (totalDocsInNode + other.totalDocsInNode);
+        totalDocsInNode += other.totalDocsInNode;
+    }
 
 }

@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;

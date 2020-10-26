@@ -25,11 +25,15 @@ import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchTarget;
+import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
+import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -46,6 +50,7 @@ public class SearchFilter {
     private boolean materialTypeSequence;
     private boolean advancedSearchActive;
     private int maxresults = 50;
+    private final Logger LOGGER = LogManager.getLogger(DocumentSearchService.class);
 
     public SearchFilter(User user) {
         this.user = user;
@@ -53,16 +58,25 @@ public class SearchFilter {
 
     public List<SearchRequest> createRequests() {
         MaterialSearchRequestBuilder materialRequestBuilder = new MaterialSearchRequestBuilder(user, 0, maxresults);
+
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
-        materialRequestBuilder.setConditionsBySearchValues(searchValue);
 
         ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(user, 0, maxresults);
-
         ExperimentSearchRequestBuilder expBuilder = new ExperimentSearchRequestBuilder(user, 0, maxresults);
+        DocumentSearchRequestBuilder docBuilder = new DocumentSearchRequestBuilder(user, 0, maxresults);
+        if (searchTerms != null && !searchTerms.trim().isEmpty()) {
+            searchValue.materialName = searchTerms;
+            itemBuilder.addDescription(searchTerms);
+            expBuilder.addDescription(searchTerms);
+            docBuilder.addWordRoots(new HashSet(Arrays.asList(searchTerms.split(" "))));
+
+        }
+        materialRequestBuilder.setConditionsBySearchValues(searchValue);
 
         return Arrays.asList(
                 expBuilder.buildSearchRequest(),
                 materialRequestBuilder.buildSearchRequest(),
+                docBuilder.buildSearchRequest(),
                 itemBuilder.buildSearchRequest());
 
     }

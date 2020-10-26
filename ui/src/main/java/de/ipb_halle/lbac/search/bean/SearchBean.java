@@ -20,11 +20,16 @@ package de.ipb_halle.lbac.search.bean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchService;
+import de.ipb_halle.lbac.search.SearchTarget;
+import de.ipb_halle.lbac.search.document.Document;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -49,8 +54,9 @@ public class SearchBean implements Serializable {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected List<NetObject> shownObjects = new ArrayList<>();
     protected SearchFilter searchFilter;
-    protected RelevanceCalculator relevanceCalculator;
+    protected RelevanceCalculator relevanceCalculator = new RelevanceCalculator();
     protected User currentUser;
+    StemmedWordGroup normalizedTerms;
 
     public NetObjectPresenter getNetObjectPresenter() {
         return netObjectPresenter;
@@ -62,6 +68,7 @@ public class SearchBean implements Serializable {
     }
 
     public void actionAddFoundObjectsToShownObjects() {
+
         for (NetObject noToAdd : searchState.getFoundObjects()) {
             boolean alreadyIn = false;
             for (NetObject no : shownObjects) {
@@ -73,13 +80,52 @@ public class SearchBean implements Serializable {
                 shownObjects.add(noToAdd);
             }
         }
+        relevanceCalculator.calculateRelevanceFactors(
+                searchState.getTotalDocs(),
+                searchState.getAverageDocLength(),
+                getDocumentsFromResults());
+
+    }
+
+    private List<Document> getDocumentsFromResults() {
+        List<Document> docs = new ArrayList<>();
+        for (NetObject no : shownObjects) {
+            if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
+                docs.add((Document) no.getSearchable());
+            }
+        }
+        return docs;
     }
 
     public void actionTriggerSearch() {
-        relevanceCalculator = new RelevanceCalculator();
+        shownObjects.clear();
+        String filteredSearchText = searchFilter.getSearchTerms()
+                .toLowerCase()
+                .replace("(", "")
+                .replace(")", "")
+                .replace(" or ", " ");
+
+        List<String> searchTerms = Arrays.asList(
+                filteredSearchText
+                        .split(" ")
+        );
+
+        relevanceCalculator = new RelevanceCalculator(searchTerms);
+
+        SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
+        // fetches all documents of the collection and adds the total 
+        // number of documents in the collection to the search state
+        normalizedTerms = searchQueryStemmer.stemmQuery(filteredSearchText);
+
+        relevanceCalculator.setSearchTerms(normalizedTerms);
+
         searchState = new SearchState();
+
         SearchResult result = searchService.search(searchFilter.createRequests());
         searchState.addNetObjects(result.getAllFoundObjects());
+        searchState.addNewStats(
+                result.getDocumentStatistic().totalDocsInNode,
+                result.getDocumentStatistic().averageWordLength);
         actionAddFoundObjectsToShownObjects();
     }
 

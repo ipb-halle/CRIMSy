@@ -72,7 +72,7 @@ public class ServiceAdapter {
             result = projectService.loadProjects(request);
         }
         if (target == SearchTarget.DOCUMENT) {
-            throw new UnsupportedOperationException("Not yet implemented!");
+            result = documentService.loadDocuments(request);
         }
         if (target == SearchTarget.USER) {
             throw new UnsupportedOperationException("Not yet implemented!");
@@ -80,6 +80,7 @@ public class ServiceAdapter {
         if (target == SearchTarget.CONTAINER) {
             throw new UnsupportedOperationException("Not yet implemented!");
         }
+        
         return result;
     }
 

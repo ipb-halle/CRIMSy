@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import de.ipb_halle.lbac.entity.Document;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

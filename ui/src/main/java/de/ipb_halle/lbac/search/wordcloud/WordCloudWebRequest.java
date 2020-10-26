@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.webservice.WebRequest;
 import java.util.ArrayList;
 import java.util.HashSet;

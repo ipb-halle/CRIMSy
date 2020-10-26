@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.message.TermVectorMessage;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.search.document.TermOcurrence;
 
 import java.io.Serializable;
@@ -35,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -157,9 +157,11 @@ public class TermVectorEntityService implements Serializable {
     @SuppressWarnings("unchecked")
     public TermOcurrence getTermVectorForSearch(
             List<Integer> docIds,
-            StemmedWordGroup searchTerms) {
+            Set<String> searchTerms) {
         TermOcurrence back = new TermOcurrence();
-
+        if (searchTerms.isEmpty()) {
+            return back;
+        }
         try {
             if (docIds.isEmpty()) {
                 return back;
@@ -169,7 +171,7 @@ public class TermVectorEntityService implements Serializable {
             List<TermVectorEntity> entities = this.em.createNativeQuery(
                     SQL_TERMVECTORS_BY_ID_AND_WORDS, TermVectorEntity.class)
                     .setParameter("id", docIds)
-                    .setParameter("words",  searchTerms.getAllStemmedWords())
+                    .setParameter("words", searchTerms)
                     .getResultList();
             for (TermVectorEntity entity : entities) {
                 list.add(new TermVector(entity));

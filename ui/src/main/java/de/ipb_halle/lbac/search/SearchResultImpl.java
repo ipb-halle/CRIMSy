@@ -18,9 +18,10 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.search.document.DocumentStatistic;
+import de.ipb_halle.lbac.search.document.SearchStatistic;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -31,6 +32,8 @@ import java.util.Set;
 public class SearchResultImpl implements SearchResult {
 
     protected HashMap<Node, List<Searchable>> foundObjectsOfNode = new HashMap<>();
+    private SearchStatistic searchStatistic;
+    private DocumentStatistic documentStatistic = new DocumentStatistic();
 
     @Override
     public void addResults(Node n, List<Searchable> foundObjects) {
@@ -70,7 +73,7 @@ public class SearchResultImpl implements SearchResult {
         List<Searchable> netObjects = getAllFoundObjects(n);
         List<T> objectsOfType = new ArrayList<>();
         for (Searchable s : netObjects) {
-            
+
             if (s.getClass().equals(T)) {
                 objectsOfType.add((T) s);
             }
@@ -90,10 +93,12 @@ public class SearchResultImpl implements SearchResult {
 
     @Override
     public Set<Node> getNodes() {
-       return foundObjectsOfNode.keySet();
+        return foundObjectsOfNode.keySet();
     }
 
+    @Override
+    public DocumentStatistic getDocumentStatistic() {
+        return documentStatistic;
+    }
 
-    
-    
 }

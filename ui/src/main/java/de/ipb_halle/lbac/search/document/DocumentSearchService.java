@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.search.document;
 
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
@@ -30,14 +29,17 @@ import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.lang.Attribute;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -117,6 +119,10 @@ public class DocumentSearchService {
             + "FROM termvectors "
             + "WHERE file_id=:file_id";
 
+    protected String SQL_LOAD_DOCUMENT_COUNT
+            = "SELECT count(*) "
+            + "FROM files";
+
     public DocumentSearchState actionStartDocumentSearch(
             DocumentSearchState searchState,
             List<Collection> collsToSearchIn,
@@ -150,7 +156,7 @@ public class DocumentSearchService {
 
         TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
-                normalizedTerms);
+                normalizedTerms.getAllStemmedWords());
 
         for (Document d : searchState.getFoundDocuments()) {
             d.setWordCount(getLengthOfDocument(d.getId()));
@@ -159,19 +165,21 @@ public class DocumentSearchService {
                 d.getTermFreqList().getTermFreq().add(new TermFrequency(s, words.get(s)));
             }
         }
-        if (development) {
-            //infoCollection(searchState.getFoundDocuments(), searchState.getTotalDocs());
-        }
-
         return searchState;
     }
 
+    private int loadTotalCountOfFiles() {
+        Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
+        List<BigInteger> result = q.getResultList();
+        return result.get(0).intValue();
+    }
+
     public SearchResult loadDocuments(SearchRequest request) {
+        List<Searchable> foundDocs = new ArrayList<>();
         SearchResult result = new SearchResultImpl();
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
 
         String sql = sqlBuilder.query(request.getCondition());
-
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -180,16 +188,55 @@ public class DocumentSearchService {
         q.setMaxResults(request.getMaxResults());
         List<FileObjectEntity> entities = q.getResultList();
         for (FileObjectEntity entity : entities) {
-            result.addResults(
-                    nodeService.getLocalNode(),
-                    Arrays.asList(convertFileObjectToDocument(
-                            new FileObject(
-                                    entity,
-                                    collectionService.loadById(entity.getCollection()),
-                                    memberService.loadUserById(entity.getUser())))));
+            foundDocs.add(convertFileObjectToDocument(
+                    new FileObject(
+                            entity,
+                            collectionService.loadById(entity.getCollection()),
+                            memberService.loadUserById(entity.getUser()))));
+
         }
 
+        result.addResults(nodeService.getLocalNode(), foundDocs);
+        List<Integer> docIds = getDocIds(foundDocs);
+
+        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
+                docIds,
+                getWordRoots(request.getCondition()));
+        calculateWordCountOfDocs(foundDocs, totalTerms);
+        result.getDocumentStatistic().totalDocsInNode = loadTotalCountOfFiles();
+        result.getDocumentStatistic().averageWordLength = getSumOfWordsOfAllDocs() / result.getDocumentStatistic().totalDocsInNode;
         return result;
+    }
+
+    private Set<String> getWordRoots(Condition con) {
+        Set<String> wordRoots = new HashSet<>();
+        if (con != null && con.getConditions() != null) {
+            for (Condition innerCon : con.getConditions()) {
+                if (innerCon.getOperator() == Operator.IN) {
+                    wordRoots.addAll((Set<String>) innerCon.getValue().getValue());
+                }
+            }
+        }
+        return wordRoots;
+    }
+
+    private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOcurrence totalTerms) {
+        for (Searchable searchable : foundDocs) {
+            Document d = (Document) searchable;
+            d.setWordCount(getLengthOfDocument(d.getId()));
+            Map<String, Integer> words = totalTerms.getTermsOfDocument(d.getId());
+            for (String s : words.keySet()) {
+                d.getTermFreqList().getTermFreq().add(new TermFrequency(s, words.get(s)));
+            }
+        }
+    }
+
+    private List<Integer> getDocIds(List<Searchable> foundDocs) {
+        List<Integer> ids = new ArrayList<>();
+        for (Searchable s : foundDocs) {
+            ids.add(((Document) s).getId());
+        }
+        return ids;
     }
 
     /**

@@ -62,7 +62,7 @@ public class TermVectorParser {
     }
 
     public List<StemmedWordOrigin> parseTermVectorXmlToWordOrigins(
-            de.ipb_halle.lbac.entity.Document d,
+            de.ipb_halle.lbac.search.document.Document d,
             String xml)
             throws IOException {
         List<StemmedWordOrigin> results = new ArrayList<>();

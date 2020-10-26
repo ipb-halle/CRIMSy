@@ -29,7 +29,7 @@ import java.util.List;
 public class TermVectorParserMock extends TermVectorParser {
 
     public List<StemmedWordOrigin> parseTermVectorXmlToWordOrigins(
-            de.ipb_halle.lbac.entity.Document d,
+            de.ipb_halle.lbac.search.document.Document d,
             String xml) {
         return new ArrayList<>();
     }

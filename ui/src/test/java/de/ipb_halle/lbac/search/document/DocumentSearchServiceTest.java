@@ -33,23 +33,22 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.file.FileSearchRequest;
 import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -85,6 +84,7 @@ public class DocumentSearchServiceTest extends TestBase {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
 
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+
     }
 
     @After
@@ -118,7 +118,7 @@ public class DocumentSearchServiceTest extends TestBase {
     @Test
     public void test002_loadDocuments_withOneWordRoot() throws FileNotFoundException, InterruptedException {
         createAndSaveNewCol();
-
+        RelevanceCalculator calculator = new RelevanceCalculator(Arrays.asList("java"));
         uploadDocument("Document1.pdf");
         uploadDocument("Document2.pdf");
         uploadDocument("Document3.pdf");
@@ -131,7 +131,17 @@ public class DocumentSearchServiceTest extends TestBase {
 
         SearchResult result = documentSearchService.loadDocuments(request);
         List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
+        List<Document> documents = new ArrayList<>();
+        for (NetObject no : netObjects) {
+            documents.add((Document) no.getSearchable());
+        }
         Assert.assertEquals(2, netObjects.size());
+        Assert.assertEquals(55, result.getDocumentStatistic().averageWordLength, 0);
+        Assert.assertEquals(3, result.getDocumentStatistic().totalDocsInNode, 0);
+        calculator.calculateRelevanceFactors(
+                result.getDocumentStatistic().totalDocsInNode,
+                result.getDocumentStatistic().averageWordLength,
+                documents);
     }
 
     @Test

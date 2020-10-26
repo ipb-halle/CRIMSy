@@ -36,14 +36,14 @@ import javax.inject.Inject;
  */
 @Stateless
 public class SearchService {
-
+    
     private ServiceAdapter adpater;
     @Inject
     private ItemService itemService;
-
+    
     @Inject
     private ProjectService projectService;
-
+    
     @Inject
     private MaterialService materialService;
     @Inject
@@ -54,7 +54,7 @@ public class SearchService {
     private ContainerService containerService;
     @Inject
     private MemberService memberService;
-
+    
     @PostConstruct
     public void init() {
         adpater = new ServiceAdapter(
@@ -66,7 +66,7 @@ public class SearchService {
                 containerService,
                 memberService);
     }
-
+    
     public SearchResult search(List<SearchRequest> requests) {
         SearchResult result = new SearchResultImpl();
         if (requests != null) {
@@ -76,7 +76,7 @@ public class SearchService {
         }
         return result;
     }
-
+    
     private SearchResult handleSingleSearch(SearchRequest request, SearchResult result) {
         if (shouldSearchBeDone(request)) {
             SearchResult partialResult = adpater.doSearch(request);
@@ -84,17 +84,18 @@ public class SearchService {
         }
         return result;
     }
-
+    
     private boolean shouldSearchBeDone(SearchRequest request) {
         return request != null && request.getSearchTarget() != null;
     }
-
+    
     private SearchResult mergeResults(SearchResult totalResult, SearchResult partialResult) {
         if (!partialResult.getNodes().isEmpty()) {
             Node node = partialResult.getNodes().iterator().next();
             totalResult.addResults(node, partialResult.getAllFoundObjects(node));
+            totalResult.getDocumentStatistic().merge(partialResult.getDocumentStatistic());
         }
         return totalResult;
     }
-
+    
 }

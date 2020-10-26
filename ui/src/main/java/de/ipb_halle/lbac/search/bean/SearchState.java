@@ -23,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -32,6 +34,9 @@ public class SearchState {
 
     private List<NetObject> foundObjects = new ArrayList<>();
     private Set<UUID> activeSearches = new HashSet<>();
+    private float averageDocLength;
+    private int totalDocs;
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public void addNetObjects(List<NetObject> objectsToAdd) {
         for (NetObject noToAdd : objectsToAdd) {
@@ -58,6 +63,19 @@ public class SearchState {
 
     public boolean isSearchActive() {
         return !activeSearches.isEmpty();
+    }
+
+    public float getAverageDocLength() {
+        return averageDocLength;
+    }
+
+    public int getTotalDocs() {
+        return totalDocs;
+    }
+
+    public void addNewStats(int newTotalDocs, float newAvgLength) {
+        averageDocLength = (newAvgLength * newTotalDocs + averageDocLength * totalDocs) / (totalDocs + newTotalDocs);
+        totalDocs += newTotalDocs;
     }
 
 }

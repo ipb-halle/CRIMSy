@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;

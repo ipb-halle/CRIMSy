@@ -113,11 +113,22 @@
                     var="searchable"
                     value="#{searchBean.shownObjects}">
                     <b:dataTableColumn
-                        label="Name"
-                        value="#{searchBean.netObjectPresenter.getName(searchable)}"/>
+                        label="Name">
+                        <b:navLink
+                            disabled="#{searchBean.netObjectPresenter.isNavLinkDisabled(searchable)}" 
+                            href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                            value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                            />
+                    </b:dataTableColumn>
+                    <b:dataTableColumn
+                        label="Location"
+                        value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
                     <b:dataTableColumn
                         label="Type"
                         value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
+                    <b:dataTableColumn
+                        label="Relevanz"
+                        value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
                 </b:dataTable>
 
             </b:container>

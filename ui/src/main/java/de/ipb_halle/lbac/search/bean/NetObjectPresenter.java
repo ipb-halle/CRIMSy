@@ -17,13 +17,19 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.SearchTarget;
+import de.ipb_halle.lbac.service.NodeService;
+import java.io.UnsupportedEncodingException;
 
 /**
  *
  * @author fmauz
  */
 public class NetObjectPresenter {
+
+    private NodeService nodeService;
 
     public String getName(NetObject no) {
         return no.getNameToDisplay();
@@ -37,11 +43,35 @@ public class NetObjectPresenter {
         return no.getTypeToDisplay().getTypeName();
     }
 
-    public String getLink(NetObject no) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public String getLink(NetObject no) throws UnsupportedEncodingException {
+        if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
+            Document d = (Document) no.getSearchable();
+            return d.getLink();
+        } else {
+            return "-";
+        }
+    }
+
+    public boolean isNavLinkDisabled(NetObject no) {
+        if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public String getToolTip(NetObject no) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return "This is the tooltip for " + no.toString();
     }
+
+    public String getObjectRelevance(NetObject no) {
+        if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
+            Document d = (Document) no.getSearchable();
+            return d.getFormatedRelevance();
+        } else {
+            return "";
+        }
+
+    }
+
 }

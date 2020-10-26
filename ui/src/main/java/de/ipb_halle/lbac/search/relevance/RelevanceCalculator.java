@@ -17,7 +17,8 @@
  */
 package de.ipb_halle.lbac.search.relevance;
 
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.SearchQueryStemmer;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class RelevanceCalculator implements Serializable {
     private List<String> originalSearchTerms;
     private final float k1 = 1.2f;
     private final float b = 0.75f;
+    private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
 
     public RelevanceCalculator() {
         this.searchTerms = new StemmedWordGroup();
@@ -50,6 +52,7 @@ public class RelevanceCalculator implements Serializable {
     public RelevanceCalculator(List<String> originalTerms) {
         this();
         originalSearchTerms = originalTerms;
+        searchTerms = searchQueryStemmer.stemmQuery(String.join(" ", originalTerms));
     }
 
     /**
@@ -70,13 +73,17 @@ public class RelevanceCalculator implements Serializable {
             d.setRelevance(0);
             for (String word : searchTerms.getAllStemmedWords()) {
                 double docsWithHit = getDocAmountWithHit(docsToUpdate, word);
+                logger.info("DWH " + docsWithHit);
+                logger.info("T " + totalDocuments);
                 double idf = Math.log10(1 + (totalDocuments / docsWithHit));
                 int fq = d.getTermFreqList().getFreqOf(word);
+                logger.info("FQ " + fq);
                 if (fq > 0) {
                     double nf = (double) (d.getWordCount() / averageDocLength);
+                    logger.info("NF " + nf);
                     double rh = (fq * (k1 + 1)) / (fq + k1 * (1 - b + b * (nf)));
+                    logger.info("RH " + rh);
                     d.setRelevance(d.getRelevance() + (idf * rh));
-
                 }
             }
 

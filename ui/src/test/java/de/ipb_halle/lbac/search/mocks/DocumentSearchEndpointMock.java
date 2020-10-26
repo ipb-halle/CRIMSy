@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.search.mocks;
 
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequest;
 import javax.ws.rs.Consumes;

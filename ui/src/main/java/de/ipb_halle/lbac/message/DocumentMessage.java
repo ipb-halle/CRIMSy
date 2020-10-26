@@ -18,7 +18,7 @@
 
 package de.ipb_halle.lbac.message;
 
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

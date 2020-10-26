@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.search.wordcloud.mock;
 
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.TermFrequency;
 import de.ipb_halle.lbac.file.TermFrequencyList;

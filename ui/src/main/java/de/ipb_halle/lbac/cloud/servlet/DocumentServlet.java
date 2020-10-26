@@ -28,7 +28,7 @@ package de.ipb_halle.lbac.cloud.servlet;
  */
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.NodeService;

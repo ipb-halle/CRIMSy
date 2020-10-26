@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.search.document;
 
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;

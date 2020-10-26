@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.items.Item;

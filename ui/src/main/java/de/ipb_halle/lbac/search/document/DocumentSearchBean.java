@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.search.document;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.collections.CollectionService;

@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExperimentService;
@@ -47,6 +47,7 @@ import de.ipb_halle.lbac.search.NetObjectImpl;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -110,7 +111,7 @@ public class NetObjectPresenterTest extends TestBase {
     }
 
     @Test(expected = Exception.class)
-    public void test003_getLink() {
+    public void test003_getLink() throws UnsupportedEncodingException {
         Assert.assertEquals("local", presenter.getLink(netObjects.get(0)));
         Assert.assertEquals("remote", presenter.getLink(netObjects.get(1)));
         Assert.assertEquals("local", presenter.getLink(netObjects.get(2)));
