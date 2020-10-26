@@ -27,6 +27,12 @@ import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.file.FileObjectEntity;
 import de.ipb_halle.lbac.file.FileSearchRequest;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.math.BigInteger;
@@ -44,6 +50,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -80,6 +87,16 @@ public class DocumentSearchService {
 
     private String uriOfPublicColl;
     protected SearchQueryStemmer searchQueryStemmer;
+    private DocumentEntityGraphBuilder graphBuilder;
+
+    @PostConstruct
+    public void init() {
+        graphBuilder = new DocumentEntityGraphBuilder();
+        if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development) {
+            development = true;
+        }
+
+    }
 
     protected String SQL_LOAD_DOCUMENTS = "SELECT DISTINCT "
             + "f.id, "
@@ -149,6 +166,32 @@ public class DocumentSearchService {
         return searchState;
     }
 
+    public SearchResult loadDocuments(SearchRequest request) {
+        SearchResult result = new SearchResultImpl();
+        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
+
+        String sql = sqlBuilder.query(request.getCondition());
+
+        Query q = em.createNativeQuery(sql, FileObjectEntity.class);
+        for (Value param : sqlBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        q.setFirstResult(request.getFirstResult());
+        q.setMaxResults(request.getMaxResults());
+        List<FileObjectEntity> entities = q.getResultList();
+        for (FileObjectEntity entity : entities) {
+            result.addResults(
+                    nodeService.getLocalNode(),
+                    Arrays.asList(convertFileObjectToDocument(
+                            new FileObject(
+                                    entity,
+                                    collectionService.loadById(entity.getCollection()),
+                                    memberService.loadUserById(entity.getUser())))));
+        }
+
+        return result;
+    }
+
     /**
      * Gets the total sum of all words over all collections and all documents
      *
@@ -156,13 +199,6 @@ public class DocumentSearchService {
      */
     public long getSumOfWordsOfAllDocs() {
         return termVectorEntityService.getSumOfAllWordsFromAllDocs();
-    }
-
-    @PostConstruct
-    public void init() {
-        if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development) {
-            development = true;
-        }
     }
 
     private int getLengthOfDocument(int documentId) {
@@ -209,11 +245,10 @@ public class DocumentSearchService {
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
 
         Set<Document> documents = new HashSet<>();
-        //String adjustedSql = SQL_LOAD_DOCUMENTS.replace("#words#", createSqlReplaceString(request.wordsToSearchFor.getStemmedWords()));
         List<FileObjectEntity> results = this.em.createNativeQuery(SQL_LOAD_DOCUMENTS, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
                 .setParameter("termvectorLength", request.wordsToSearchFor.getAllStemmedWords().size())
-                .setParameter("termvector",  request.wordsToSearchFor.getAllStemmedWords())
+                .setParameter("termvector", request.wordsToSearchFor.getAllStemmedWords())
                 .getResultList();
 
         int count = 0;
@@ -263,5 +298,10 @@ public class DocumentSearchService {
         }
 
         return " AND (" + String.join(" OR ", subClauses) + ")";
+    }
+
+    private EntityGraph createEntityGraph(SearchRequest request) {
+        graphBuilder = new DocumentEntityGraphBuilder();
+        return graphBuilder.buildEntityGraph(request.getCondition());
     }
 }

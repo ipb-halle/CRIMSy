@@ -38,15 +38,17 @@ import de.ipb_halle.lbac.file.FileSearchRequest;
 import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
+import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
@@ -96,32 +98,61 @@ public class DocumentSearchServiceTest extends TestBase {
     }
 
     @Test
-    public void test002_loadDocuments() throws FileNotFoundException, InterruptedException {
+    public void test001_loadDocuments() throws FileNotFoundException, InterruptedException {
         createAndSaveNewCol();
 
         uploadDocument("Document1.pdf");
         uploadDocument("Document2.pdf");
         uploadDocument("Document3.pdf");
-        
-        FileSearchRequest request = new FileSearchRequest();
-        request.wordsToSearchFor.addStemmedWord("java", new HashSet<>(Arrays.asList("java")));
-        request.holder = col;
-        Set<Document> documents = documentSearchService.loadDocuments(request, 10);
-        Assert.assertEquals(2, documents.size());
 
-        request = new FileSearchRequest();
+        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        builder.addCollectionID(col.getId());
 
-        request.holder = col;
-        documents = documentSearchService.loadDocuments(request, 10);
-        Assert.assertEquals(3, documents.size());
+        SearchRequest request = builder.buildSearchRequest();
 
-        request.holder = col;
-        request.wordsToSearchFor.addStemmedWord("java", new HashSet<>(Arrays.asList("java")));
-        request.wordsToSearchFor.addStemmedWord("failure", new HashSet<>(Arrays.asList("failure")));
-        documents = documentSearchService.loadDocuments(request, 10);
-        Assert.assertEquals(3, documents.size());
+        SearchResult result = documentSearchService.loadDocuments(request);
+        List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
+        Assert.assertEquals(3, netObjects.size());
     }
-    
+
+    @Test
+    public void test002_loadDocuments_withOneWordRoot() throws FileNotFoundException, InterruptedException {
+        createAndSaveNewCol();
+
+        uploadDocument("Document1.pdf");
+        uploadDocument("Document2.pdf");
+        uploadDocument("Document3.pdf");
+
+        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        builder.addCollectionID(col.getId());
+        builder.addWordRoots(new HashSet<>(Arrays.asList("java")));
+
+        SearchRequest request = builder.buildSearchRequest();
+
+        SearchResult result = documentSearchService.loadDocuments(request);
+        List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
+        Assert.assertEquals(2, netObjects.size());
+    }
+
+    @Test
+    public void test003_loadDocuments_withTwoWordRoot() throws FileNotFoundException, InterruptedException {
+        createAndSaveNewCol();
+
+        uploadDocument("Document1.pdf");
+        uploadDocument("Document2.pdf");
+        uploadDocument("Document3.pdf");
+
+        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        builder.addCollectionID(col.getId());
+        builder.addWordRoots(new HashSet<>(Arrays.asList("java", "failure")));
+
+        SearchRequest request = builder.buildSearchRequest();
+
+        SearchResult result = documentSearchService.loadDocuments(request);
+        List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
+        Assert.assertEquals(3, netObjects.size());
+    }
+
     @Test
     public void getTagStringForSeachRequestTest() {
         assertEquals("", documentSearchService.getTagStringForSeachRequest(null));

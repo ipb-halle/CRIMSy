@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -25,20 +27,25 @@ import java.util.Date;
 
 @Entity
 @Table(name = "files")
+@AttributeTag(type = AttributeType.DOCUMENT)
 public class FileObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
-    
+
+    @AttributeTag(type = AttributeType.LABEL)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
 
+    @Column
     @Size(min = 1, max = 255)
     private String name;
 
+    @Column
     @Size(min = 1, max = 255)
     private String filename;
 
+    @Column
     @Size(min = 1, max = 255)
     private String hash;
 
@@ -48,9 +55,11 @@ public class FileObjectEntity implements Serializable {
     @Column(name = "user_id")
     private Integer user;
 
+    @AttributeTag(type = AttributeType.COLLECTION)
     @Column(name = "collection_id")
     private Integer collection;
 
+    @Column
     private String document_language;
 
     /**
@@ -103,9 +112,9 @@ public class FileObjectEntity implements Serializable {
         this.created = created;
         return this;
     }
-    
-    public FileObjectEntity setCreatedFromDate(Date d){
-        this.created=new Timestamp(d.getTime());
+
+    public FileObjectEntity setCreatedFromDate(Date d) {
+        this.created = new Timestamp(d.getTime());
         return this;
     }
 
@@ -118,8 +127,8 @@ public class FileObjectEntity implements Serializable {
         this.hash = hash;
         return this;
     }
-    
-     public FileObjectEntity setId(Integer id) {
+
+    public FileObjectEntity setId(Integer id) {
         this.id = id;
         return this;
     }

@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.file;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Embeddable;
 
@@ -28,6 +30,7 @@ import javax.persistence.Embeddable;
 public class TermVectorId implements Serializable {
 
     private Integer file_id;
+    @AttributeTag(type = AttributeType.WORDROOT)
     private String wordroot;
 
     public TermVectorId() {

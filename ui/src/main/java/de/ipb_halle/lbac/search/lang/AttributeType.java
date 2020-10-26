@@ -23,10 +23,9 @@ package de.ipb_halle.lbac.search.lang;
  * @author fbroda
  */
 public enum AttributeType {
-    
+
     /* */
     TOPLEVEL,
-
     /* entities */
     ACE,
     COLLECTION,
@@ -36,7 +35,7 @@ public enum AttributeType {
     MATERIAL,
     MEMBERSHIP,
     PROJECT,
-
+    DOCUMENT,
     /* entity properties */
     ASSAY_TARGET,
     ASSAY_RECORD,
@@ -49,12 +48,11 @@ public enum AttributeType {
     REACTION_EDUCT,
     REACTION_PRODUCT,
     TEMPLATE,
-
+    WORDROOT,
     /* general attribute types */
     LABEL,
     STRUCTURE,
     TEXT,
-
     PERM_READ,
     PERM_EDIT,
     PERM_CHOWN,
@@ -62,6 +60,5 @@ public enum AttributeType {
     PERM_SUPER,
     PERM_CREATE,
     PERM_DELETE
-    
 
 }
