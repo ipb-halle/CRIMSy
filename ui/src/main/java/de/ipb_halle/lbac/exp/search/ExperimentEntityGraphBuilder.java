@@ -40,7 +40,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     private void addTextRecord() {
-        addJoin(JoinType.INNER, TextEntity.class, "experimentid", "exprecordid");
+        addJoin(JoinType.LEFT, TextEntity.class, "experimentid", "exprecordid");
     }
 
     @Override
