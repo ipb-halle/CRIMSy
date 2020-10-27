@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.exp.ExperimentEntity;
+import de.ipb_halle.lbac.exp.text.TextEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
@@ -38,9 +39,14 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
         addJoin(JoinType.INNER, MemberEntity.class, "owner_id", "id");
     }
 
+    private void addTextRecord() {
+        addJoin(JoinType.INNER, TextEntity.class, "experimentid", "exprecordid");
+    }
+
     @Override
     public EntityGraph buildEntityGraph(Condition condition) {
         addUser();
+        addTextRecord();
         return graph;
     }
 

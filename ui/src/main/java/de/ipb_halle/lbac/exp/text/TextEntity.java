@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.text;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,6 +30,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "exp_texts")
+@AttributeTag(type = AttributeType.EXP_TEXT_RECORD)
 public class TextEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
@@ -35,9 +38,10 @@ public class TextEntity implements Serializable {
     @Id
     private Long exprecordid;
 
+    @AttributeTag(type = AttributeType.TEXT)
     @Column
-    private String text; 
-   
+    private String text;
+
     public Long getExpRecordId() {
         return this.exprecordid;
     }

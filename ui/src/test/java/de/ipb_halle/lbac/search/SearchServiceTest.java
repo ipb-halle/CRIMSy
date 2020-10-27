@@ -135,8 +135,6 @@ public class SearchServiceTest extends TestBase {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         result = searchService.search(Arrays.asList(request));
         Assert.assertEquals(0, result.getAllFoundObjects().size());
-        
-        
     }
 
     @Test
@@ -198,7 +196,12 @@ public class SearchServiceTest extends TestBase {
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = builder.buildSearchRequest();
         Assert.assertEquals(0, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        
+        
 
+        
+        
+        
        
     }
 

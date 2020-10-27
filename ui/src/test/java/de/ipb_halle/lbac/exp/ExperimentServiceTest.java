@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.util.Date;
 import java.util.HashMap;
@@ -166,7 +167,43 @@ public class ExperimentServiceTest extends TestBase {
         builder.addUserName("no-valide-user");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+    }
 
+    @Test
+    public void test002_searchExperimentByDescription() {
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-001", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
+        exp = experimentService.save(exp);
+
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("java");
+        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        builder.addDescription("c#");
+        loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test003_searchExperimentByTextRecord() {
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-002", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
+        Text text1 = new Text();
+        text1.setExperiment(exp);
+        text1.setCreationTime(creationDate);
+        text1.setText("C# is also good");
+        text1 = (Text) recordService.save(text1);
+
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("C#");
+        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("PROLOG");
+        loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
 
     @Deployment
