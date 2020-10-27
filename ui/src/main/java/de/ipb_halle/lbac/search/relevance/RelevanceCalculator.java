@@ -38,20 +38,12 @@ public class RelevanceCalculator implements Serializable {
 
     private StemmedWordGroup searchTerms;
     private final Logger logger;
-    private List<String> originalSearchTerms;
     private final float k1 = 1.2f;
     private final float b = 0.75f;
     private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
 
-    public RelevanceCalculator() {
-        this.searchTerms = new StemmedWordGroup();
-        this.logger = LogManager.getLogger(this.getClass().getName());
-        this.originalSearchTerms = new ArrayList<>();
-    }
-
     public RelevanceCalculator(List<String> originalTerms) {
-        this();
-        originalSearchTerms = originalTerms;
+        this.logger = LogManager.getLogger(this.getClass().getName());
         searchTerms = searchQueryStemmer.stemmQuery(String.join(" ", originalTerms));
     }
 
@@ -73,16 +65,11 @@ public class RelevanceCalculator implements Serializable {
             d.setRelevance(0);
             for (String word : searchTerms.getAllStemmedWords()) {
                 double docsWithHit = getDocAmountWithHit(docsToUpdate, word);
-                logger.info("DWH " + docsWithHit);
-                logger.info("T " + totalDocuments);
                 double idf = Math.log10(1 + (totalDocuments / docsWithHit));
                 int fq = d.getTermFreqList().getFreqOf(word);
-                logger.info("FQ " + fq);
                 if (fq > 0) {
                     double nf = (double) (d.getWordCount() / averageDocLength);
-                    logger.info("NF " + nf);
                     double rh = (fq * (k1 + 1)) / (fq + k1 * (1 - b + b * (nf)));
-                    logger.info("RH " + rh);
                     d.setRelevance(d.getRelevance() + (idf * rh));
                 }
             }
@@ -114,14 +101,6 @@ public class RelevanceCalculator implements Serializable {
 
     public void setSearchTerms(StemmedWordGroup searchTerms) {
         this.searchTerms = searchTerms;
-    }
-
-    public List<String> getOriginalSearchTerms() {
-        return originalSearchTerms;
-    }
-
-    public void setOriginalSearchTerms(List<String> originalSearchTerms) {
-        this.originalSearchTerms = originalSearchTerms;
     }
 
 }

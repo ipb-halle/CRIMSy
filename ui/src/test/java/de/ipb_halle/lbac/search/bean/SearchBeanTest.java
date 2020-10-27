@@ -17,9 +17,16 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.DocumentCreator;
+import de.ipb_halle.lbac.base.ItemCreator;
+import de.ipb_halle.lbac.base.MaterialCreator;
+import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.file.FileEntityService;
@@ -29,13 +36,16 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
+import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
+import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -54,11 +64,49 @@ public class SearchBeanTest extends TestBase {
     private NetObjectFactory factory = new NetObjectFactory();
     private List<NetObject> netObjects;
 
+    @Inject
+    private SearchService searchService;
+
+    @Inject
+    private GlobalAdmissionContext context;
+
+    @Inject
+    private ProjectService projectService;
+
+    private User publicUser;
+    private Collection col;
+    private DocumentCreator documentCreator;
+    private ItemCreator itemCreator;
+    private MaterialCreator materialCreator;
+    private ProjectCreator projectCreator;
+
     @Before
     @Override
     public void setUp() {
         super.setUp();
         netObjects = factory.createNetObjects();
+        publicUser = context.getPublicAccount();
+        documentCreator = new DocumentCreator(
+                fileEntityService,
+                collectionService,
+                nodeService,
+                termVectorEntityService);
+
+        try {
+            col = documentCreator.uploadDocuments(
+                    publicUser,
+                    "DocumentSearchServiceTest",
+                    "Document1.pdf",
+                    "Document2.pdf",
+                    "Document3.pdf");
+        } catch (FileNotFoundException | InterruptedException ex) {
+            throw new RuntimeException("Could not upload file");
+        }
+        materialCreator = new MaterialCreator(entityManagerService);
+        projectCreator = new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL());
+        Project project = projectCreator.createAndSaveProject(publicUser);
+        materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), project.getId(), "java");
+
     }
 
     @Test
@@ -85,8 +133,17 @@ public class SearchBeanTest extends TestBase {
         bean.actionAddFoundObjectsToShownObjects();
         Assert.assertEquals(4, bean.getShownObjects().size());
         Assert.assertEquals(0, bean.getUnshownButFoundObjects());
-        
-        Assert.assertEquals("localDoc",bean.getNetObjectPresenter().getName(netObjects.get(0)));
+
+        Assert.assertEquals("localDoc", bean.getNetObjectPresenter().getName(netObjects.get(0)));
+    }
+
+    @Test
+    public void test002_actionTriggerSearch() {
+        SearchBean bean = new SearchBean(searchService, publicUser);
+        bean.getSearchFilter().setSearchTerms("java");
+        bean.actionTriggerSearch();
+        List<NetObject> shownObjects = bean.getShownObjects();
+        Assert.assertEquals(3, shownObjects.size());
     }
 
     @Deployment

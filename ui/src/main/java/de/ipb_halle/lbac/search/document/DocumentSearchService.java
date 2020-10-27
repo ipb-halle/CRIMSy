@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.lang.Attribute;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -204,16 +205,23 @@ public class DocumentSearchService {
                 getWordRoots(request.getCondition()));
         calculateWordCountOfDocs(foundDocs, totalTerms);
         result.getDocumentStatistic().totalDocsInNode = loadTotalCountOfFiles();
-        result.getDocumentStatistic().averageWordLength = getSumOfWordsOfAllDocs() / result.getDocumentStatistic().totalDocsInNode;
+        if (result.getDocumentStatistic().totalDocsInNode > 0) {
+            result.getDocumentStatistic().averageWordLength = getSumOfWordsOfAllDocs() / result.getDocumentStatistic().totalDocsInNode;
+        }
         return result;
     }
 
     private Set<String> getWordRoots(Condition con) {
         Set<String> wordRoots = new HashSet<>();
-        if (con != null && con.getConditions() != null) {
-            for (Condition innerCon : con.getConditions()) {
-                if (innerCon.getOperator() == Operator.IN) {
-                    wordRoots.addAll((Set<String>) innerCon.getValue().getValue());
+        if (con != null) {
+            if (con.getAttribute() != null && con.getAttribute().getTypes().contains(AttributeType.WORDROOT)) {
+                wordRoots.addAll((Set<String>) con.getValue().getValue());
+            }
+            if (con.getConditions() != null) {
+                for (Condition innerCon : con.getConditions()) {
+                    if (innerCon.getAttribute().getTypes().contains(AttributeType.WORDROOT)) {
+                        wordRoots.addAll((Set<String>) innerCon.getValue().getValue());
+                    }
                 }
             }
         }

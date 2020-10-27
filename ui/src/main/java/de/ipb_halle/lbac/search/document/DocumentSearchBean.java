@@ -61,7 +61,7 @@ public class DocumentSearchBean implements Serializable {
     private final List<Document> shownDocs = new ArrayList<>();
     protected SimpleDateFormat SDF = new SimpleDateFormat("mm:ss:SSSS");
     private DocumentSearchState documentSearchState = new DocumentSearchState();
-    private RelevanceCalculator relevanceCalculator = new RelevanceCalculator();
+    private RelevanceCalculator relevanceCalculator = new RelevanceCalculator(new ArrayList<>());
     private String searchFieldText;
     private boolean develop = false;
     private boolean delayedPresentationEnabled = false;
@@ -186,8 +186,6 @@ public class DocumentSearchBean implements Serializable {
         Collections.sort(shownDocs);
         return shownDocs;
     }
-
-    
 
     /**
      * Normalizes the search terms for all languages of the documents with the

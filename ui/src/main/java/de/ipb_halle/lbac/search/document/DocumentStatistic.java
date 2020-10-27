@@ -27,9 +27,11 @@ public class DocumentStatistic {
     public int totalDocsInNode;
 
     public void merge(DocumentStatistic other) {
-        averageWordLength = (other.averageWordLength * other.totalDocsInNode
-                + averageWordLength * totalDocsInNode)
-                / (totalDocsInNode + other.totalDocsInNode);
+        if (totalDocsInNode + other.totalDocsInNode > 0) {
+            averageWordLength = (other.averageWordLength * other.totalDocsInNode
+                    + averageWordLength * totalDocsInNode)
+                    / (totalDocsInNode + other.totalDocsInNode);
+        }
         totalDocsInNode += other.totalDocsInNode;
     }
 

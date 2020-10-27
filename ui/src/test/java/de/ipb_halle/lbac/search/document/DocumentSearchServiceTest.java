@@ -22,6 +22,7 @@ package de.ipb_halle.lbac.search.document;
  * @author fmauz
  */
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
@@ -33,22 +34,21 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.collections.Collection;
-import de.ipb_halle.lbac.file.FilterDefinitionInputStreamFactory;
 import de.ipb_halle.lbac.file.mock.AsyncContextMock;
-import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -73,17 +73,37 @@ public class DocumentSearchServiceTest extends TestBase {
     protected String examplaDocsRootFolder = "target/test-classes/exampledocs/";
     protected User publicUser;
     protected AsyncContextMock asynContext;
+    private DocumentCreator documentCreator;
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
+        Files.delete(Paths.get("target/test-classes/collections").toFile());
+         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
         entityManagerService.doSqlUpdate("DELETE from files");
         Files.delete(Paths.get("target/test-classes/collections").toFile());
 
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+
+        documentCreator = new DocumentCreator(
+                fileEntityService,
+                collectionService,
+                nodeService,
+                termVectorEntityService);
+
+        try {
+            col = documentCreator.uploadDocuments(
+                    publicUser,
+                    "DocumentSearchServiceTest",
+                    "Document1.pdf",
+                    "Document2.pdf",
+                    "Document3.pdf");
+        } catch (FileNotFoundException | InterruptedException ex) {
+            throw new RuntimeException("Could not upload file");
+        }
 
     }
 
@@ -99,11 +119,6 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @Test
     public void test001_loadDocuments() throws FileNotFoundException, InterruptedException {
-        createAndSaveNewCol();
-
-        uploadDocument("Document1.pdf");
-        uploadDocument("Document2.pdf");
-        uploadDocument("Document3.pdf");
 
         DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
         builder.addCollectionID(col.getId());
@@ -117,11 +132,8 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @Test
     public void test002_loadDocuments_withOneWordRoot() throws FileNotFoundException, InterruptedException {
-        createAndSaveNewCol();
+
         RelevanceCalculator calculator = new RelevanceCalculator(Arrays.asList("java"));
-        uploadDocument("Document1.pdf");
-        uploadDocument("Document2.pdf");
-        uploadDocument("Document3.pdf");
 
         DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
         builder.addCollectionID(col.getId());
@@ -146,11 +158,6 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @Test
     public void test003_loadDocuments_withTwoWordRoot() throws FileNotFoundException, InterruptedException {
-        createAndSaveNewCol();
-
-        uploadDocument("Document1.pdf");
-        uploadDocument("Document2.pdf");
-        uploadDocument("Document3.pdf");
 
         DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
         builder.addCollectionID(col.getId());
@@ -194,35 +201,4 @@ public class DocumentSearchServiceTest extends TestBase {
                 .addClass(TermVectorEntityService.class);
     }
 
-    private void createAndSaveNewCol() {
-        col = new Collection();
-        col.setACList(GlobalAdmissionContext.getPublicReadACL());
-        col.setDescription("xxx");
-        col.setIndexPath("/");
-        col.setName("DocumentSearchServiceTest");
-        col.setNode(nodeService.getLocalNode());
-        col.setOwner(publicUser);
-        col.setStoragePath("/");
-        col = collectionService.save(col);
-        col.COLLECTIONS_BASE_FOLDER = "target/test-classes/collections";
-    }
-
-    private void uploadDocument(String documentName) throws FileNotFoundException, InterruptedException {
-        asynContext = new AsyncContextMock(
-                new File(examplaDocsRootFolder + documentName),
-                col.getName());
-        UploadToColMock upload = new UploadToColMock(
-                FilterDefinitionInputStreamFactory.getFilterDefinition(),
-                fileEntityService,
-                publicUser,
-                asynContext,
-                collectionService,
-                termVectorEntityService,
-                "target/test-classes/collections");
-
-        upload.run();
-        while (!asynContext.isComplete()) {
-            Thread.sleep(500);
-        }
-    }
 }

@@ -54,9 +54,20 @@ public class SearchBean implements Serializable {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected List<NetObject> shownObjects = new ArrayList<>();
     protected SearchFilter searchFilter;
-    protected RelevanceCalculator relevanceCalculator = new RelevanceCalculator();
+    protected RelevanceCalculator relevanceCalculator = new RelevanceCalculator(new ArrayList<>());
     protected User currentUser;
     StemmedWordGroup normalizedTerms;
+
+    public SearchBean() {
+    }
+
+    public SearchBean(
+            SearchService searchService,
+            User user) {
+        this.searchService = searchService;
+        setCurrentAccount(new LoginEvent(user));
+
+    }
 
     public NetObjectPresenter getNetObjectPresenter() {
         return netObjectPresenter;
@@ -99,34 +110,33 @@ public class SearchBean implements Serializable {
 
     public void actionTriggerSearch() {
         shownObjects.clear();
-        String filteredSearchText = searchFilter.getSearchTerms()
-                .toLowerCase()
-                .replace("(", "")
-                .replace(")", "")
-                .replace(" or ", " ");
+        relevanceCalculator = new RelevanceCalculator(parseSearchTerms());
+        searchState = doSearch();
+        actionAddFoundObjectsToShownObjects();
+    }
 
-        List<String> searchTerms = Arrays.asList(
-                filteredSearchText
-                        .split(" ")
-        );
-
-        relevanceCalculator = new RelevanceCalculator(searchTerms);
-
-        SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
-        // fetches all documents of the collection and adds the total 
-        // number of documents in the collection to the search state
-        normalizedTerms = searchQueryStemmer.stemmQuery(filteredSearchText);
-
-        relevanceCalculator.setSearchTerms(normalizedTerms);
-
-        searchState = new SearchState();
-
+    private SearchState doSearch() {
+        SearchState searchState = new SearchState();
         SearchResult result = searchService.search(searchFilter.createRequests());
         searchState.addNetObjects(result.getAllFoundObjects());
         searchState.addNewStats(
                 result.getDocumentStatistic().totalDocsInNode,
                 result.getDocumentStatistic().averageWordLength);
-        actionAddFoundObjectsToShownObjects();
+        return searchState;
+    }
+
+    private List<String> parseSearchTerms() {
+        List<String> back = new ArrayList<>();
+        if (searchFilter.getSearchTerms() != null) {
+            back = Arrays.asList(searchFilter.getSearchTerms()
+                    .toLowerCase()
+                    .replace("(", "")
+                    .replace(")", "")
+                    .replace(" or ", " ")
+                    .trim()
+                    .split(" "));
+        }
+        return back;
     }
 
     public SearchFilter getSearchFilter() {

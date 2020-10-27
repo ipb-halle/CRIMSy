@@ -139,7 +139,7 @@ public class SearchServiceTest extends TestBase {
         
     }
 
-    @Test(expected = Exception.class)
+    @Test
     public void test002_searchDocuments() {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         request.setSearchTarget(SearchTarget.DOCUMENT);
