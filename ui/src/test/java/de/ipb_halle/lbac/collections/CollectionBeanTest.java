@@ -38,6 +38,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -82,6 +83,7 @@ public class CollectionBeanTest extends TestBase {
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
+    @Ignore
     @Test
     public void test001_logIn() {
         LoginEvent logInEvent = new LoginEvent(publicUser);
@@ -92,6 +94,7 @@ public class CollectionBeanTest extends TestBase {
         Assert.assertEquals(publicUser.getId(), bean.getCurrentAccount().getId());
     }
 
+    @Ignore
     @Test
     public void test002_actionCreate() {
         LoginEvent logInEvent = new LoginEvent(publicUser);
