@@ -92,6 +92,15 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.7</version>
+                <configuration>
+                    <quiet>true</quiet>
+                    <cobertura.maxmem>1024m</cobertura.maxmem>
+                    <instrumentation>
+                        <maxmem>1024m</maxmem>
+                    </instrumentation>
+                    <argLine>-Xms1024m -Xmx4096m -XX:MaxPermSize=4096m</argLine>
+                    <!-- <argLine>-Xmx2048m</argLine> -->
+                </configuration>
             </plugin>
         </plugins>
     </reporting>
