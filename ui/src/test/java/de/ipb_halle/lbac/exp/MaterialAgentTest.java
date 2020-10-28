@@ -39,6 +39,8 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialDetailRight;
+import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -47,6 +49,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -151,7 +154,7 @@ public class MaterialAgentTest extends TestBase {
         createBiomaterial(taxo1, project, "BioMat4", "Cat Kidney");
         createBiomaterial(taxo1, project, "BioMat5", "Cat Liver");
         createBiomaterial(taxo1, project, "BioMat6", "Dog Kidney");
-        createBiomaterial(taxo1, project, "BioMat7", "Dof Liver");
+        createBiomaterial(taxo1, project, "BioMat7", "Dog Liver");
         materials = materialAgent.getMaterialList();
         Assert.assertEquals(5, materials.size());
     }
@@ -181,7 +184,13 @@ public class MaterialAgentTest extends TestBase {
             nameList.add(new MaterialName(names[i], "de", i + 1));
         }
         BioMaterial biomaterial = new BioMaterial(0, nameList, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, null);
-        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>());
+        MaterialDetailRight detailRight = new MaterialDetailRight();
+        detailRight.setType(MaterialDetailType.INDEX);
+        detailRight.setAcList(acListReadable);
+        Map<MaterialDetailType,ACList> rights=new HashMap<>();
+        rights.put(MaterialDetailType.INDEX, publicReadAcl);
+        biomaterial.getDetailRights().add(detailRight);
+        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), rights);
         return biomaterial;
 
     }

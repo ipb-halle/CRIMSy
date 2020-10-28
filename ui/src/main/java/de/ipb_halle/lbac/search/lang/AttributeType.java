@@ -34,6 +34,7 @@ public enum AttributeType {
     EXPERIMENT,
     ITEM,
     MATERIAL,
+    MATERIAL_DETAIL_RIGHT,
     MEMBERSHIP,
     PROJECT,
     EXP_TEXT_RECORD,

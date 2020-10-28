@@ -22,7 +22,10 @@ SET @SCHEMA_VERSION = '00001';
 
 
 CREATE DOMAIN IF NOT EXISTS molecule AS VARCHAR;
-CREATE DOMAIN IF NOT EXISTS jsonb AS VARCHAR;
+CREATE DOMAIN IF NOT EXISTS jsonb AS other;
+CREATE DOMAIN IF NOT EXISTS RawJsonb AS other;
+
+
 
 /*
  * Cloud
@@ -746,7 +749,7 @@ CREATE TABLE exp_assay_records (
     itemid          INTEGER REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
     rank            INTEGER DEFAULT 0,
     type            INTEGER NOT NULL,
-    outcome         JSONB
+    outcome         VARCHAR
 );
 
 /*

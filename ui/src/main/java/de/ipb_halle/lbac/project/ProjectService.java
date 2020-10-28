@@ -93,9 +93,6 @@ public class ProjectService implements Serializable {
 
     @PostConstruct
     public void init() {
-        permissionConditionBuilder = new PermissionConditionBuilder(
-                aclistService,
-                new AttributeType[]{AttributeType.PROJECT, AttributeType.MEMBER});
 
     }
 
@@ -160,10 +157,10 @@ public class ProjectService implements Serializable {
 
         SqlBuilder builder = new SqlBuilder(graph);
 
+        permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
+                addFields(AttributeType.PROJECT, AttributeType.MEMBER);
         String sql = builder.query(
-                permissionConditionBuilder.addPermissionCondition(
-                        request,
-                        ACPermission.permREAD));
+                permissionConditionBuilder.addPermissionCondition(request.getCondition()));
 
         Query query = this.em.createNativeQuery(sql, ProjectEntity.class);
         for (Value param : builder.getValueList()) {
@@ -230,8 +227,8 @@ public class ProjectService implements Serializable {
     }
 
     private EntityGraph createEntityGraph(Condition con) {
-        graphBuilder = new ProjectEntityGraphBuilder();
-        graphBuilder.addACListContraint(acListService.getEntityGraph(), "aclist_id");
+        graphBuilder = new ProjectEntityGraphBuilder(acListService);
         return graphBuilder.buildEntityGraph(con);
     }
+
 }

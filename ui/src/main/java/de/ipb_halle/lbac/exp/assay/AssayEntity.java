@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +40,7 @@ public class AssayEntity implements Serializable {
     @Column
     private AssayOutcomeType outcomeType;
 
+    @AttributeTag(type = AttributeType.TEXT)
     @Column
     private String remarks;
 
@@ -46,7 +49,7 @@ public class AssayEntity implements Serializable {
 
     @Column
     private String units;
-   
+
     public Long getExpRecordId() {
         return this.exprecordid;
     }

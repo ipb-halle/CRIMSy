@@ -36,9 +36,13 @@ public class MaterialCreator {
         entityManagerService.doSqlUpdate(
                 String.format(
                         SQL_INSERT_MATERIAL,
-                        MaterialType.STRUCTURE.getId(),  aclid,userid, projectid));
+                        MaterialType.STRUCTURE.getId(), aclid, userid, projectid));
 
         Integer materialid = (Integer) entityManagerService.doSqlQuery(MAX_MATERIAL_ID).get(0);
+
+        for (int i = 1; i <= 6; i++) {
+            entityManagerService.doSqlUpdate(String.format(SQL_INSERT_DETAIL_RIGHTS, materialid, aclid, i));
+        }
         entityManagerService.doSqlUpdate("INSERT INTO structures  VALUES(" + materialid + ",'',0,0,null)");
         entityManagerService.doSqlUpdate("INSERT INTO storages VALUES(" + materialid + ",1,'')");
         for (String n : names) {
@@ -54,6 +58,9 @@ public class MaterialCreator {
 
         return materialid;
     }
+
+    String SQL_INSERT_DETAIL_RIGHTS = "INSERT INTO materialdetailrights("
+            + "materialid,aclistid,materialtypeid) VALUES(%d,%d,%d)";
 
     String SQL_INSERT_MATERIAL = "INSERT INTO MATERIALS("
             + "materialtypeid, "

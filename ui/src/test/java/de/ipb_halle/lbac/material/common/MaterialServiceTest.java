@@ -484,11 +484,10 @@ public class MaterialServiceTest extends TestBase {
         //Create a biomaterial
 
         //Only one of the two materials must be found because user has no read right for the other one
-        
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
         requestBuilder.buildSearchRequest();
         SearchResult result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
-        Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         List<Structure> structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
         Assert.assertEquals(1, structures.size());
         Material loadedMaterial = structures.get(0);
@@ -498,7 +497,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addProject("biochemical");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-         Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(1, structures.size());
         loadedMaterial = structures.get(0);
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
@@ -508,7 +507,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addProject("xyz");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(0,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(0, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(0, structures.size());
 
         //load only structures
@@ -516,7 +515,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addTypes(MaterialType.STRUCTURE);
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(1, structures.size());
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
 
@@ -525,7 +524,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addTypes(MaterialType.BIOMATERIAL);
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(0,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(0, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(0, structures.size());
 
         //load only structures or biomaterials
@@ -533,7 +532,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addTypes(MaterialType.STRUCTURE, MaterialType.BIOMATERIAL);
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(1, structures.size());
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
 
@@ -542,7 +541,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addIndexName("Test-Struc");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(1, structures.size());
 
         //load only materials with name matches pattern 'Test-Fail'
@@ -550,7 +549,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addIndexName("Test-Fail");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(0,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(0, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(0, structures.size());
 
         //load material by id
@@ -558,7 +557,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addID(struture1.getId());
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(1, structures.size());
 
         //load material by id without right to read
@@ -566,7 +565,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addID(structure2.getId());
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(0,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(0, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(0, structures.size());
 
         //load material of user
@@ -574,7 +573,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addUserName(testUser.getName());
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(1, structures.size());
 
         //load material of user (which not exists)
@@ -582,7 +581,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addUserName("xz");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(0,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(0, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(0, structures.size());
 
         //load material by index
@@ -590,7 +589,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.addIndexName("Gest");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        Assert.assertEquals(1,instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
         Assert.assertEquals(1, structures.size());
 
     }
@@ -604,56 +603,31 @@ public class MaterialServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("MaterialServiceTest.war")
-                .addClass(UserBeanMock.class
-                )
-                .addClass(ACListService.class
-                )
-                .addClass(CollectionBean.class
-                )
-                .addClass(CollectionService.class
-                )
-                .addClass(FileService.class
-                )
-                .addClass(FileEntityService.class
-                )
-                .addClass(CollectionOrchestrator.class
-                )
-                .addClass(EntityManagerService.class
-                )
-                .addClass(TermVectorEntityService.class
-                )
-                .addClass(DocumentSearchBean.class
-                )
-                .addClass(DocumentSearchService.class
-                )
-                .addClass(ACListService.class
-                )
-                .addClass(MoleculeService.class
-                )
-                .addClass(ProjectService.class
-                )
-                .addClass(CollectionWebClient.class
-                )
-                .addClass(DocumentSearchOrchestrator.class
-                )
-                .addClass(Updater.class
-                )
-                .addClass(Navigator.class
-                )
-                .addClass(TaxonomyService.class
-                )
-                .addClass(TaxonomyNestingService.class
-                )
-                .addClass(TissueService.class
-                )
-                .addClass(WordCloudBean.class
-                )
-                .addClass(WordCloudWebClient.class
-                )
-                .addClass(MaterialIndexHistoryEntity.class
-                )
-                .addClass(MaterialService.class
-                );
+                .addClass(UserBeanMock.class)
+                .addClass(ACListService.class)
+                .addClass(CollectionBean.class)
+                .addClass(CollectionService.class)
+                .addClass(FileService.class)
+                .addClass(FileEntityService.class)
+                .addClass(CollectionOrchestrator.class)
+                .addClass(EntityManagerService.class)
+                .addClass(TermVectorEntityService.class)
+                .addClass(DocumentSearchBean.class)
+                .addClass(DocumentSearchService.class)
+                .addClass(ACListService.class)
+                .addClass(MoleculeService.class)
+                .addClass(ProjectService.class)
+                .addClass(CollectionWebClient.class)
+                .addClass(DocumentSearchOrchestrator.class)
+                .addClass(Updater.class)
+                .addClass(Navigator.class)
+                .addClass(TaxonomyService.class)
+                .addClass(TaxonomyNestingService.class)
+                .addClass(TissueService.class)
+                .addClass(WordCloudBean.class )
+                .addClass(WordCloudWebClient.class)
+                .addClass(MaterialIndexHistoryEntity.class)
+                .addClass(MaterialService.class);
         return UserBeanDeployment.add(deployment);
     }
 }

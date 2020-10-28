@@ -75,7 +75,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -169,7 +168,6 @@ public class MaterialService implements Serializable {
         materialHistoryService = new MaterialHistoryService(this);
         editedMaterialSaver = new MaterialEditSaver(this, taxonomyNestingService);
         structureInformationSaver = new StructureInformationSaver(em);
-        permissionConditionBuilder = new PermissionConditionBuilder(aclService, new AttributeType[]{AttributeType.MATERIAL, AttributeType.MEMBER});
     }
 
     /**
@@ -221,10 +219,13 @@ public class MaterialService implements Serializable {
             AttributeType.LABEL
         }));
 
+        permissionConditionBuilder
+                = new PermissionConditionBuilder(aclService, request.getUser(), ACPermission.permREAD)
+                        .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
         String sql = countBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(
-                        request,
-                        ACPermission.permREAD));
+                        request.getCondition()),
+                createOrderList());
 
         Query q = em.createNativeQuery(sql);
         for (Value param : countBuilder.getValueList()) {
@@ -238,10 +239,15 @@ public class MaterialService implements Serializable {
         EntityGraph graph = createEntityGraph(request);
         SearchResult result = new SearchResultImpl();
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
+
+        permissionConditionBuilder
+                = new PermissionConditionBuilder(aclService, request.getUser(), ACPermission.permREAD)
+                        .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
+
         String sql = sqlBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(
-                        request,
-                        ACPermission.permREAD), createOrderList());
+                        request.getCondition()),
+                createOrderList());
         Query q = em.createNativeQuery(sql, MaterialEntity.class);
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
@@ -680,8 +686,8 @@ public class MaterialService implements Serializable {
     }
 
     private EntityGraph createEntityGraph(SearchRequest request) {
-        graphBuilder = new MaterialEntityGraphBuilder();
-        graphBuilder.addACListContraint(aclService.getEntityGraph(), "aclist_id");
+        graphBuilder = new MaterialEntityGraphBuilder(aclService);
+
         return graphBuilder.buildEntityGraph(request.getCondition());
     }
 }

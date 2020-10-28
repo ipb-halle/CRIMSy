@@ -50,9 +50,12 @@ public abstract class EntityGraphBuilder {
         return child;
     }
 
-    public void addACListContraint(EntityGraph aclSubGraph, String linkField) {
+    public void addACListContraint(
+            EntityGraph mainGraph,
+            EntityGraph aclSubGraph,
+            String linkField) {
         aclSubGraph.addLinkField(linkField, "aclist_id");
-        graph.addChild(aclSubGraph);
+        mainGraph.addChild(aclSubGraph);
     }
 
     public EntityGraph buildEntityGraph(Condition condition) {

@@ -19,9 +19,12 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.Operator;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -30,25 +33,45 @@ import de.ipb_halle.lbac.search.lang.Operator;
 public class PermissionConditionBuilder {
 
     private ACListService aclistService;
-    private AttributeType[] memberFieldAttributes;
+    private List<AttributeType[]> fieldsToCheckAgainstAcl = new ArrayList<>();
+    private User user;
+    private ACPermission permission;
 
-    public PermissionConditionBuilder(ACListService aclistService, AttributeType[] memberFieldAttributes) {
+    public PermissionConditionBuilder(
+            ACListService aclistService,
+            User user,
+            ACPermission permission) {
         this.aclistService = aclistService;
-        this.memberFieldAttributes = memberFieldAttributes;
+        this.user = user;
+        this.permission = permission;
     }
 
-    public Condition addPermissionCondition(SearchRequest request, ACPermission permission) {
-        Condition condition = aclistService.getCondition(
-                request.getUser(),
-                permission,
-                memberFieldAttributes);
+    public PermissionConditionBuilder addFields(AttributeType... fields) {
+        fieldsToCheckAgainstAcl.add(fields);
+        return this;
+    }
 
-        if (request.getCondition() != null) {
-            condition = new Condition(
-                    Operator.AND,
-                    request.getCondition(),
-                    condition);
+    public Condition addPermissionCondition(Condition originalCondition) {
+        Condition back = originalCondition;
+        for (AttributeType[] fields : fieldsToCheckAgainstAcl) {
+            back = addAclCondition(back, fields);
         }
-        return condition;
+        return back;
+    }
+
+    private Condition addAclCondition(Condition originalCondition, AttributeType[] fields) {
+        Condition condition = aclistService.getCondition(
+                user,
+                permission,
+                fields);
+
+        if (originalCondition != null) {
+            return new Condition(
+                    Operator.AND,
+                    originalCondition,
+                    condition);
+        } else {
+            return condition;
+        }
     }
 }

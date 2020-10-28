@@ -65,7 +65,7 @@ CREATE TABLE exp_assay_records (
                     REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
     rank            INTEGER DEFAULT 0,
     type            INTEGER NOT NULL,
-    outcome         JSONB
+    outcome         VARCHAR
 );
 
 /*

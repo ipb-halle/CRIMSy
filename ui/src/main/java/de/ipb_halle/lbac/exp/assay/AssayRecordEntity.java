@@ -55,7 +55,7 @@ public class AssayRecordEntity implements Serializable {
     @Column
     private int type;
 
-    @Type(type = "RawJsonb")
+    @Column
     private String outcome;
 
     public Long getExpRecordId() {

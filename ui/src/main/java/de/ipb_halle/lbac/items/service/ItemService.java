@@ -113,21 +113,17 @@ public class ItemService {
 
     @PostConstruct
     public void init() {
-        graphBuilder = new ItemEntityGraphBuilder();
-        permissionConditionBuilder = new PermissionConditionBuilder(
-                aclistService,
-                new AttributeType[]{AttributeType.ITEM, AttributeType.MEMBER});
 
     }
 
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl();
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
-
+        permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
+                addFields(AttributeType.ITEM, AttributeType.MEMBER);
         String sql = sqlBuilder.query(
-                permissionConditionBuilder.addPermissionCondition(
-                        request,
-                        ACPermission.permREAD),createOrderList());
+                permissionConditionBuilder.addPermissionCondition(request.getCondition()),
+                createOrderList());
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -164,10 +160,10 @@ public class ItemService {
             AttributeType.LABEL
         }));
 
+        permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
+                addFields(AttributeType.ITEM, AttributeType.MEMBER);
         String sql = countBuilder.query(
-                permissionConditionBuilder.addPermissionCondition(
-                        request,
-                        ACPermission.permREAD));
+                permissionConditionBuilder.addPermissionCondition(request.getCondition()));
         Query q = em.createNativeQuery(sql);
         for (Value param : countBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -346,8 +342,7 @@ public class ItemService {
     }
 
     private EntityGraph createEntityGraph(SearchRequest request) {
-        graphBuilder = new ItemEntityGraphBuilder();
-        graphBuilder.addACListContraint(aclistService.getEntityGraph(), "aclist_id");
+        graphBuilder = new ItemEntityGraphBuilder(aclistService);
         return graphBuilder.buildEntityGraph(request.getCondition());
     }
 

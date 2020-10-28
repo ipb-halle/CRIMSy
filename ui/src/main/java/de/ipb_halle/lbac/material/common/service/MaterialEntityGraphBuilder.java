@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.lbac.material.common.service;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberEntity;
+import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.structure.MoleculeEntity;
@@ -34,8 +36,12 @@ import javax.persistence.criteria.JoinType;
  */
 public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
 
-    public MaterialEntityGraphBuilder() {
+    protected ACListService aclistService;
+    protected EntityGraph detailRightSubGraph;
+
+    public MaterialEntityGraphBuilder(ACListService aclistService) {
         super(MaterialEntity.class);
+        this.aclistService = aclistService;
     }
 
     protected void addProject() {
@@ -50,9 +56,19 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         addJoin(JoinType.INNER, MemberEntity.class, "ownerid", "id");
     }
 
+    protected void addDetailRights() {
+        detailRightSubGraph = addJoin(JoinType.INNER, MaterialDetailRightEntity.class, "materialid", "materialid");
+    }
+
     protected void addStructure() {
         EntityGraph subGraph = addJoin(JoinType.LEFT, StructureEntity.class, "materialid", "id");
         addJoinToChild(JoinType.LEFT, subGraph, MoleculeEntity.class, "moleculeid", "id");
+    }
+
+    protected void addAcls() {
+
+        addACListContraint(graph, aclistService.getEntityGraph(), "aclist_id");
+        addACListContraint(detailRightSubGraph, aclistService.getEntityGraph(), "aclistid");
     }
 
     @Override
@@ -61,6 +77,8 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         addIndex();
         addUser();
         addStructure();
+        addDetailRights();
+        addAcls();
         return graph;
     }
 

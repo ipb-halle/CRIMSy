@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.entity;
 
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,6 +33,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "materialdetailrights")
+@AttributeTag(type = AttributeType.MATERIAL_DETAIL_RIGHT)
 public class MaterialDetailRightEntity implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +43,7 @@ public class MaterialDetailRightEntity implements Serializable {
     @Column
     private int materialid;
 
+    @AttributeTag(type = AttributeType.MEMBER)
     @Column
     private Integer aclistid;
 

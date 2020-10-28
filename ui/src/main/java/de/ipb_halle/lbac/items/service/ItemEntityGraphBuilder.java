@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.items.service;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
@@ -35,9 +36,11 @@ import javax.persistence.criteria.JoinType;
 public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
     private EntityGraph nestedContainerGraph;
+    private ACListService aclistService;
 
-    public ItemEntityGraphBuilder() {
+    public ItemEntityGraphBuilder(ACListService aclistService) {
         super(ItemEntity.class);
+        this.aclistService = aclistService;
     }
 
     private void addUser() {
@@ -64,7 +67,7 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         addContainer();
         addProject();
         addMaterialName();
-        //TO DO: remove the conditions;
+        addACListContraint(graph, aclistService.getEntityGraph(), "aclist_id");
         return graph;
     }
 

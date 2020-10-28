@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -87,10 +88,7 @@ public class ExperimentService implements Serializable {
         if (em == null) {
             logger.error("Injection failed for EntityManager. @PersistenceContext(name = \"de.ipb_halle.lbac\")");
         }
-        graphBuilder = new ExperimentEntityGraphBuilder();
-        permissionConditionBuilder = new PermissionConditionBuilder(
-                aclistService,
-                new AttributeType[]{AttributeType.EXPERIMENT, AttributeType.MEMBER});
+        graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
     }
 
     /**
@@ -112,7 +110,13 @@ public class ExperimentService implements Serializable {
         graph = createEntityGraph(request);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
 
-        String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request, ACPermission.permREAD));
+        permissionConditionBuilder = new PermissionConditionBuilder(
+                aclistService,
+                request.getUser(),
+                ACPermission.permREAD)
+                .addFields(AttributeType.EXPERIMENT, AttributeType.MEMBER);
+
+        String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request.getCondition()));
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -168,8 +172,8 @@ public class ExperimentService implements Serializable {
     }
 
     private EntityGraph createEntityGraph(SearchRequest request) {
-        graphBuilder = new ExperimentEntityGraphBuilder();
-        graphBuilder.addACListContraint(aclistService.getEntityGraph(), "aclist_id");
+        graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
+        
         return graphBuilder.buildEntityGraph(request.getCondition());
     }
 }

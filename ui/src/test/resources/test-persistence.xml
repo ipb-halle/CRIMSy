@@ -34,7 +34,10 @@
         <class>de.ipb_halle.lbac.exp.ExpRecordEntity</class>
         <class>de.ipb_halle.lbac.exp.ExperimentEntity</class>
         <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
+        <class>de.ipb_halle.lbac.exp.assay.AssayEntity</class>
+        <class>de.ipb_halle.lbac.exp.assay.AssayRecordEntity</class>
         
+      
         
         <class>de.ipb_halle.lbac.project.ProjectEntity</class>
         <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>
@@ -86,6 +89,7 @@
         <class>de.ipb_halle.lbac.forum.TopicEntity</class>
         <class>de.ipb_halle.lbac.forum.PostingEntity</class>
         <class>de.ipb_halle.lbac.util.pref.PreferenceEntity</class>
+        
 
         <!-- test only -->
         <class>de.ipb_halle.lbac.search.lang.HorrorEntity</class>
