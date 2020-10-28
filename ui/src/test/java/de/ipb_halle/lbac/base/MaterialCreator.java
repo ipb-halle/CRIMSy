@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.base;
 
 import de.ipb_halle.lbac.EntityManagerService;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.MaterialType;
 
 /**
@@ -27,12 +28,21 @@ import de.ipb_halle.lbac.material.MaterialType;
 public class MaterialCreator {
 
     protected EntityManagerService entityManagerService;
+    protected ACList detailRightsACList;
 
     public MaterialCreator(EntityManagerService entityManagerService) {
         this.entityManagerService = entityManagerService;
     }
 
+    public void setDetailRightsACList(ACList detailRightsACList) {
+        this.detailRightsACList = detailRightsACList;
+    }
+
     public int createStructure(int userid, int aclid, Integer projectid, String... names) {
+        int detailACListId = aclid;
+        if (detailRightsACList != null) {
+            detailACListId = detailRightsACList.getId();
+        }
         entityManagerService.doSqlUpdate(
                 String.format(
                         SQL_INSERT_MATERIAL,
@@ -41,7 +51,7 @@ public class MaterialCreator {
         Integer materialid = (Integer) entityManagerService.doSqlQuery(MAX_MATERIAL_ID).get(0);
 
         for (int i = 1; i <= 6; i++) {
-            entityManagerService.doSqlUpdate(String.format(SQL_INSERT_DETAIL_RIGHTS, materialid, aclid, i));
+            entityManagerService.doSqlUpdate(String.format(SQL_INSERT_DETAIL_RIGHTS, materialid, detailACListId, i));
         }
         entityManagerService.doSqlUpdate("INSERT INTO structures  VALUES(" + materialid + ",'',0,0,null)");
         entityManagerService.doSqlUpdate("INSERT INTO storages VALUES(" + materialid + ",1,'')");

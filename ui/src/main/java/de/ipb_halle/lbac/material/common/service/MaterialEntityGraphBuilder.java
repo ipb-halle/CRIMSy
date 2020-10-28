@@ -68,7 +68,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     protected void addAcls() {
 
         addACListContraint(graph, aclistService.getEntityGraph(), "aclist_id");
-        addACListContraint(detailRightSubGraph, aclistService.getEntityGraph(), "aclistid");
+        //addACListContraint(detailRightSubGraph, aclistService.getEntityGraph(), "aclistid");
     }
 
     @Override

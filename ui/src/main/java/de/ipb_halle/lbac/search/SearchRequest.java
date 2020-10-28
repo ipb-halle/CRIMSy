@@ -37,4 +37,5 @@ public interface SearchRequest {
     public SearchTarget getSearchTarget();
 
     public void setSearchTarget(SearchTarget searchTarget);
+
 }

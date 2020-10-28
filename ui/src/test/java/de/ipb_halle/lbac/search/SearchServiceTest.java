@@ -37,6 +37,7 @@ import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -178,6 +179,7 @@ public class SearchServiceTest extends TestBase {
         builder.addIndexName("-002");
         request = builder.buildSearchRequest();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+
     }
 
     @Test

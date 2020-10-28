@@ -212,6 +212,7 @@ public class MaterialService implements Serializable {
     }
 
     public int loadMaterialAmount(SearchRequest request) {
+
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 createEntityGraph(request),
                 new Attribute(new AttributeType[]{
@@ -224,8 +225,7 @@ public class MaterialService implements Serializable {
                         .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
         String sql = countBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(
-                        request.getCondition()),
-                createOrderList());
+                        request.getCondition()));
 
         Query q = em.createNativeQuery(sql);
         for (Value param : countBuilder.getValueList()) {
@@ -256,7 +256,9 @@ public class MaterialService implements Serializable {
         }
         List<MaterialEntity> entities = q.getResultList();
         for (MaterialEntity me : entities) {
-            result.addResults(nodeService.getLocalNode(), Arrays.asList(loadMaterialById(me.getMaterialid())));
+            Material material = loadMaterialById(me.getMaterialid());
+            result.addResults(nodeService.getLocalNode(), Arrays.asList(material));
+
         }
         return result;
     }
