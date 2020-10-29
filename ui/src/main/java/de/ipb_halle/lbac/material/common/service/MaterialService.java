@@ -121,7 +121,7 @@ public class MaterialService implements Serializable {
 
     private final String SQL_UPDATE_MATERIAL_ACL
             = "UPDATE materials "
-            + "SET aclist_id =:aclid"
+            + "SET aclist_id =:aclid "
             + "WHERE materialid=:mid";
 
     protected MaterialHistoryService materialHistoryService;
