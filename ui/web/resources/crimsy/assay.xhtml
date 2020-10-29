@@ -44,38 +44,83 @@
     </composite:interface>
 
     <composite:implementation >
+        <b:container>
+            <b:row>
+                <b:column span="7">
+                    <b:column>
+                        <b:row>
+                            <b:column span="7"
+                                      styleClass="assayRemarkLabel">
+                                <h:outputText value="Remarks:" />
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="7">
+                                <p:inputTextarea
+                                    styleClass="assayRemarkTextarea"
+                                    value="#{cc.attrs.assay.remarks}"
+                                    disabled="#{! cc.attrs.assay.edit}"/>
+                            </b:column>
+                        </b:row>
 
-        <h:panelGrid columns="2">
-            <h:outputText value="Remarks:" />
-            <p:inputText value="#{cc.attrs.assay.remarks}" disabled="#{! cc.attrs.assay.edit}"/>
-            <h:outputText value="Standard units:" />
-            <h:panelGroup>
-                <p:inputText
-                    id="assayUnitsList"
-                    value="#{cc.attrs.assay.units}" 
-                    disabled="#{(! cc.attrs.assay.edit) or (cc.attrs.assay.getRecords().size() gt 0)}">
-                    <f:validator validatorId="UnitsValidator" />
-                </p:inputText>
-                <p:message for="assayUnitsList" />
-            </h:panelGroup>
-            <h:outputText value="Target:" />
-            <h:panelGroup>
-                <crimsy:materialView material="#{cc.attrs.assay.target}" />
-                <h:commandLink title="Action"
-                               rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getRecords().size() == 0)}"
-                               update="@form" > 
-                    <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
-                    <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
-                    <span class="fa fa-cog"> </span>
-                </h:commandLink>
-            </h:panelGroup>
-            <h:outputText value="Outcome Type:" />
-            <p:selectOneMenu 
-                disabled="#{! cc.attrs.assay.editTemplate}"
-                value="#{cc.attrs.assay.outcomeType}" >
-                <f:selectItems value="#{cc.attrs.assay.outcomeTypes}" />
-            </p:selectOneMenu>
-        </h:panelGrid>
+                    </b:column>
+
+                </b:column>
+                <b:column span="4">
+                    <b:container>
+                        <b:row
+                            styleClass="assayTargetRow">
+                            <b:column span="2">
+                                <h:outputText value="Target:" />
+                            </b:column>
+                            <b:column span="2">
+                                <h:panelGroup>
+                                    <crimsy:materialView material="#{cc.attrs.assay.target}" />
+                                    <h:commandLink title="Action"
+                                                   rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getRecords().size() == 0)}"
+                                                   update="@form" > 
+                                        <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
+                                        <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
+                                        <span class="fa fa-cog"> </span>
+                                    </h:commandLink>
+                                </h:panelGroup>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                             styleClass="assayUnitRow">
+                            <b:column span="2">
+                                <h:outputText value="Standard units:" />
+                            </b:column>
+                            <b:column span="2">
+                                <h:panelGroup>
+                                    <p:inputText
+                                        id="assayUnitsList"
+                                        value="#{cc.attrs.assay.units}" 
+                                        disabled="#{(! cc.attrs.assay.edit) or (cc.attrs.assay.getRecords().size() gt 0)}">
+                                        <f:validator validatorId="UnitsValidator" />
+                                    </p:inputText>
+                                    <p:message for="assayUnitsList" />
+                                </h:panelGroup>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                                styleClass="assayOutcomeRow">
+                            <b:column span="2">
+                                <h:outputText value="Outcome Type:" />
+                            </b:column>
+                            <b:column span="2">
+                                <p:selectOneMenu 
+                                    styleClass="assayUnitsSelectBox"
+                                    disabled="#{! cc.attrs.assay.editTemplate}"
+                                    value="#{cc.attrs.assay.outcomeType}" >
+                                    <f:selectItems value="#{cc.attrs.assay.outcomeTypes}" />
+                                </p:selectOneMenu>
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </b:column>
+            </b:row>
+        </b:container>
         <b:dataTable
             var ="assayRecord"
             value="#{cc.attrs.assay.getRecords()}"

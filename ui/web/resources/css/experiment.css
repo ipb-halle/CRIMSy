@@ -74,3 +74,30 @@
     padding-bottom: 10px;
 }
 
+.assayRemarkLabel{
+    margin-top: 10px;
+    padding-left: 25px;
+    margin-bottom: 2px;
+}
+.assayRemarkTextarea{
+    width:650px;
+    height: 71px;
+}
+
+.assayTargetRow{
+    margin-top: 10px;
+    margin-bottom:  10px;
+}
+.assayUnitRow{
+    padding-top: 5px;
+}
+.assayUnitRow input{
+    width:200px;
+}
+.assayOutcomeRow{
+    padding-top: 5px;
+}
+.assayUnitsSelectBox{
+    width: 200px ;
+}
+
