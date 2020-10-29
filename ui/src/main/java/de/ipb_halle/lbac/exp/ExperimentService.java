@@ -139,36 +139,8 @@ public class ExperimentService implements Serializable {
 
         List<Object> searchString = getSearchStrings(request.getCondition());
         for (ExperimentEntity e : entities) {
-            Map<String, Object> cmap = new HashMap<>();
-            cmap.put("EXPERIMENT_ID", e.getExperimentId());
-            List<ExpRecord> records = recordService.load(cmap);
-            boolean shouldExpBeShown = false;
-            for (ExpRecord rec : records) {
-                if (rec.getType() == ExpRecordType.ASSAY) {
-                    Assay assay = (Assay) rec;
-                    if (checkMaterial(assay.getTarget(), request.getUser(), searchString)) {
-                        shouldExpBeShown = true;
-                    }
-                    for (AssayRecord assayRec : assay.getRecords()) {
-                        if (checkMaterial(assayRec.getMaterial(), request.getUser(), searchString)) {
-                            shouldExpBeShown = true;
-                        }
-                        if (checkItem(assayRec.getItem(), request.getUser(), searchString)) {
-                            shouldExpBeShown = true;
-                        }
-                    }
-                }
-                if (rec.getType() == ExpRecordType.TEXT) {
-                    Text text = (Text) rec;
-                    if (textContainsSearchTerm(text.getText(), searchString)) {
-                        shouldExpBeShown = true;
-                    }
-                }
-            }
-
+            boolean shouldExpBeShown = checkExpRecords(e.getExperimentId(), searchString, request.getUser());
             if (shouldExpBeShown
-                    || records.isEmpty()
-                    || searchString.isEmpty()
                     || textContainsSearchTerm(e.getDescription(), searchString)) {
                 Experiment exp = new Experiment(
                         e,
@@ -178,6 +150,50 @@ public class ExperimentService implements Serializable {
             }
         }
         return back;
+    }
+
+    private boolean checkExpRecords(
+            int experimentid,
+            List<Object> searchString,
+            User user) {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("EXPERIMENT_ID", experimentid);
+        List<ExpRecord> records = recordService.load(cmap);
+        if (records.isEmpty() || searchString.isEmpty()) {
+            return true;
+        }
+        boolean shouldExpBeShown = false;
+        for (ExpRecord rec : records) {
+            if (rec.getType() == ExpRecordType.ASSAY) {
+                shouldExpBeShown = checkAssay((Assay) rec, shouldExpBeShown, user, searchString);
+            }
+            if (rec.getType() == ExpRecordType.TEXT) {
+                shouldExpBeShown = checkText((Text) rec, shouldExpBeShown, searchString);
+            }
+        }
+        return shouldExpBeShown;
+    }
+
+    private boolean checkText(Text text, boolean shouldExpBeShown, List<Object> searchString) {
+        if (textContainsSearchTerm(text.getText(), searchString)) {
+            shouldExpBeShown = true;
+        }
+        return shouldExpBeShown;
+    }
+
+    private boolean checkAssay(Assay assay, boolean shouldExpBeShown, User user, List<Object> searchString) {
+        if (checkMaterial(assay.getTarget(), user, searchString)) {
+            shouldExpBeShown = true;
+        }
+        for (AssayRecord assayRec : assay.getRecords()) {
+            if (checkMaterial(assayRec.getMaterial(), user, searchString)) {
+                shouldExpBeShown = true;
+            }
+            if (checkItem(assayRec.getItem(), user, searchString)) {
+                shouldExpBeShown = true;
+            }
+        }
+        return shouldExpBeShown;
     }
 
     private boolean textContainsSearchTerm(String text, List<Object> searchString) {
