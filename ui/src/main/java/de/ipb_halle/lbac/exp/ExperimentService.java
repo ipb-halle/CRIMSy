@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.Assay;
 import de.ipb_halle.lbac.exp.assay.AssayRecord;
+import de.ipb_halle.lbac.exp.search.ExpRecordAccessChecker;
 import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.items.Item;
@@ -92,6 +93,7 @@ public class ExperimentService implements Serializable {
     private EntityGraph graph;
     private PermissionConditionBuilder permissionConditionBuilder;
     private ConditionValueFetcher conValueFetcher;
+    private ExpRecordAccessChecker recordAccessChecker;
 
     public ExperimentService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
@@ -104,6 +106,7 @@ public class ExperimentService implements Serializable {
         }
         graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
         conValueFetcher = new ConditionValueFetcher();
+        recordAccessChecker = new ExpRecordAccessChecker(recordService, aclistService);
     }
 
     /**
@@ -121,6 +124,7 @@ public class ExperimentService implements Serializable {
     }
 
     public SearchResult load(SearchRequest request) {
+
         SearchResult back = new SearchResultImpl();
         graph = createEntityGraph(request);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
@@ -142,9 +146,9 @@ public class ExperimentService implements Serializable {
 
         List<Object> searchString = conValueFetcher.getValuesOfType(request.getCondition(), AttributeType.TEXT);
         for (ExperimentEntity e : entities) {
-            boolean shouldExpBeShown = checkExpRecords(e.getExperimentId(), searchString, request.getUser());
+            boolean shouldExpBeShown = recordAccessChecker.checkExpRecords(e.getExperimentId(), searchString, request.getUser());
             if (shouldExpBeShown
-                    || textContainsSearchTerm(e.getDescription(), searchString)) {
+                    || recordAccessChecker.textContainsSearchTerm(e.getDescription(), searchString)) {
                 Experiment exp = new Experiment(
                         e,
                         aclistService.loadById(e.getACList()),
@@ -153,97 +157,6 @@ public class ExperimentService implements Serializable {
             }
         }
         return back;
-    }
-
-    private boolean checkExpRecords(
-            int experimentid,
-            List<Object> searchString,
-            User user) {
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put("EXPERIMENT_ID", experimentid);
-        List<ExpRecord> records = recordService.load(cmap);
-        if (records.isEmpty() || searchString.isEmpty()) {
-            return true;
-        }
-        boolean shouldExpBeShown = false;
-        for (ExpRecord rec : records) {
-            if (rec.getType() == ExpRecordType.ASSAY) {
-                shouldExpBeShown = checkAssay((Assay) rec, shouldExpBeShown, user, searchString);
-            }
-            if (rec.getType() == ExpRecordType.TEXT) {
-                shouldExpBeShown = checkText((Text) rec, shouldExpBeShown, searchString);
-            }
-        }
-        return shouldExpBeShown;
-    }
-
-    private boolean checkText(Text text, boolean shouldExpBeShown, List<Object> searchString) {
-        if (textContainsSearchTerm(text.getText(), searchString)) {
-            shouldExpBeShown = true;
-        }
-        return shouldExpBeShown;
-    }
-
-    private boolean checkAssay(Assay assay, boolean shouldExpBeShown, User user, List<Object> searchString) {
-        if (checkMaterial(assay.getTarget(), user, searchString)) {
-            shouldExpBeShown = true;
-        }
-        for (AssayRecord assayRec : assay.getRecords()) {
-            if (checkMaterial(assayRec.getMaterial(), user, searchString)) {
-                shouldExpBeShown = true;
-            }
-            if (checkItem(assayRec.getItem(), user, searchString)) {
-                shouldExpBeShown = true;
-            }
-        }
-        return shouldExpBeShown;
-    }
-
-    private boolean textContainsSearchTerm(String text, List<Object> searchString) {
-        for (Object nameObj : searchString) {
-            String searchTerm = (String) nameObj;
-            if (text.toLowerCase().contains(searchTerm.toLowerCase().replace("%", ""))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean checkMaterial(Material mat, User user, List<Object> searchString) {
-        boolean hit = false;
-        if (!aclistService.isPermitted(ACPermission.permREAD, mat.getACList(), user)) {
-            return false;
-        }
-
-        for (Object nameObj : searchString) {
-            String name = (String) nameObj;
-            for (MaterialName matName : mat.getNames()) {
-                if (matName.getValue().toLowerCase().contains(name.toLowerCase().replace("%", ""))) {
-                    hit = true;
-                }
-            }
-        }
-        return hit;
-    }
-
-    private boolean checkItem(Item item, User user, List<Object> searchString) {
-        if (item == null) {
-            return false;
-        }
-        boolean hit = false;
-        if (!aclistService.isPermitted(ACPermission.permREAD, item.getACList(), user)) {
-            return false;
-        }
-        for (Object nameObj : searchString) {
-            String name = (String) nameObj;
-
-            if (item.getDescription().toLowerCase().contains(name.toLowerCase().replace("%", ""))
-                    || item.getNameToDisplay().toLowerCase().contains(name.toLowerCase().replace("%", ""))) {
-                hit = true;
-            }
-
-        }
-        return hit;
     }
 
     /**
