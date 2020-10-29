@@ -84,6 +84,8 @@ public class Assay extends ExpRecord implements DTO {
      */
     private List<AssayRecord> records;
 
+    private boolean allRecordsShown;
+
     /**
      * default constructor
      */
@@ -94,6 +96,7 @@ public class Assay extends ExpRecord implements DTO {
         this.units = "mM, µM, nM";
         this.records = new ArrayList<AssayRecord>();
         this.outcomeType = AssayOutcomeType.SINGLE_POINT;
+        allRecordsShown = true;
     }
 
     public Assay(AssayEntity entity, Material target) {
@@ -106,10 +109,11 @@ public class Assay extends ExpRecord implements DTO {
         if (entity != null) {
             this.outcomeType = entity.getOutcomeType();
         }
+        allRecordsShown = true;
     }
-    
-    public void activateEditModeForRecord(AssayRecord recordToEdit){
-        for(AssayRecord record:records){
+
+    public void activateEditModeForRecord(AssayRecord recordToEdit) {
+        for (AssayRecord record : records) {
             record.setEdit(false);
         }
         recordToEdit.setEdit(true);
@@ -143,7 +147,7 @@ public class Assay extends ExpRecord implements DTO {
         for (AssayRecord r : this.records) {
             double v = ((SinglePointOutcome) r.getOutcome()).getValue();
             logger.info("Found unit " + ((SinglePointOutcome) r.getOutcome()).getUnit());
-            
+
             Unit u = Unit.getUnit(((SinglePointOutcome) r.getOutcome()).getUnit());
             v *= u.getFactor();
 
@@ -262,4 +266,13 @@ public class Assay extends ExpRecord implements DTO {
     public void setUnits(String units) {
         this.units = units;
     }
+
+    public boolean isAllRecordsShown() {
+        return allRecordsShown;
+    }
+
+    public void setAllRecordsShown(boolean allRecordsShown) {
+        this.allRecordsShown = allRecordsShown;
+    }
+
 }

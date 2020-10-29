@@ -187,7 +187,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         // load the template records
         Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
-        List<ExpRecord> records = this.expRecordService.load(cmap);
+        List<ExpRecord> records = this.expRecordService.load(cmap, currentUser);
 
         // copy the experiment
         this.experiment.setExperimentId(null);
@@ -477,7 +477,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * @return
      */
     public ExpRecord loadExpRecordById(Long id) {
-        return this.expRecordService.loadById(id);
+        return this.expRecordService.loadById(id, currentUser);
     }
 
     /**
@@ -490,7 +490,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
         cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
         this.expRecords = this.expRecordService.orderList(
-                this.expRecordService.load(cmap));
+                this.expRecordService.load(cmap, currentUser));
         reIndex();
     }
 

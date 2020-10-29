@@ -18,14 +18,15 @@
 package de.ipb_halle.lbac.exp;
 
 /**
- * ExpRecordService provides service to load, save, update experiment 
- * record entities. As <code>ExpRecord</code> is abstract, it also 
- * works as a one stop shop for all other record types and delegates 
- * work to specific other service classes.
- * 
- * The current implementation is rather a mock implementation as many 
- * important aspects (permissions, history, filtering, ...) are missing.
+ * ExpRecordService provides service to load, save, update experiment record
+ * entities. As <code>ExpRecord</code> is abstract, it also works as a one stop
+ * shop for all other record types and delegates work to specific other service
+ * classes.
+ *
+ * The current implementation is rather a mock implementation as many important
+ * aspects (permissions, history, filtering, ...) are missing.
  */
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 
@@ -40,7 +41,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
@@ -55,11 +55,10 @@ public class ExpRecordService implements Serializable {
     public final static String EXPERIMENT_ID = "EXPERIMENT_ID";
 
     private final static String SQL_LOAD = "SELECT DISTINCT "
-        + "r.exprecordid, r.experimentid, r.changetime, r.creationtime, r.next, r.revision, r.type "
-        + "FROM exp_records AS r WHERE "
-        + "(r.experimentid = :EXPERIMENT_ID OR :EXPERIMENT_ID = -1) "
-        + "ORDER BY r.exprecordid";
-
+            + "r.exprecordid, r.experimentid, r.changetime, r.creationtime, r.next, r.revision, r.type "
+            + "FROM exp_records AS r WHERE "
+            + "(r.experimentid = :EXPERIMENT_ID OR :EXPERIMENT_ID = -1) "
+            + "ORDER BY r.exprecordid";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -102,30 +101,31 @@ public class ExpRecordService implements Serializable {
 
     /**
      * load a list of records according to the query criteria
+     *
      * @param cmap map of query criteria
      * @return the list of ExpRecords
      */
     @SuppressWarnings("unchecked")
-    public List<ExpRecord> load(Map<String, Object> cmap) {
-        List<ExpRecord> result = new ArrayList<ExpRecord> ();
+    public List<ExpRecord> load(Map<String, Object> cmap, User user) {
+        List<ExpRecord> result = new ArrayList<ExpRecord>();
 
         Query q = createExpRecordQuery(SQL_LOAD,
-                (cmap == null) ? new HashMap<String, Object> () : cmap, 
+                (cmap == null) ? new HashMap<String, Object>() : cmap,
                 ExpRecordEntity.class);
         // q.setParameter("USERID", xxxxx);
         // q.setFirstResult();
         // q.setMaxResults();
 
-        for(ExpRecordEntity e : (List<ExpRecordEntity>) q.getResultList()) {
+        for (ExpRecordEntity e : (List<ExpRecordEntity>) q.getResultList()) {
             Experiment experiment = this.experimentService.loadById(e.getExperimentId());
-            switch(e.getType()) {
-                case ASSAY :
-                    result.add(this.assayService.loadAssayById(experiment, e)); 
+            switch (e.getType()) {
+                case ASSAY:
+                    result.add(this.assayService.loadAssayById(experiment, e, user));
                     break;
-                case TEXT :
+                case TEXT:
                     result.add(this.textService.loadTextById(experiment, e));
                     break;
-                default : 
+                default:
                     throw new UnsupportedOperationException("load(): invalid ExpRecord.type");
             }
         }
@@ -138,23 +138,21 @@ public class ExpRecordService implements Serializable {
      * @param id experiment record Id
      * @return the ExpRecord object
      */
-    public ExpRecord loadById(Long id) {
+    public ExpRecord loadById(Long id, User user) {
         ExpRecordEntity e = this.em.find(ExpRecordEntity.class, id);
         if (e == null) {
             return null;
         }
         Experiment experiment = this.experimentService.loadById(e.getExperimentId());
 
-        switch(e.getType()) {
-            case ASSAY :
-                return this.assayService.loadAssayById(experiment, e); 
-            case TEXT :
+        switch (e.getType()) {
+            case ASSAY:
+                return this.assayService.loadAssayById(experiment, e, user);
+            case TEXT:
                 return this.textService.loadTextById(experiment, e);
         }
         throw new UnsupportedOperationException("loadById(): invalid ExpRecord.type");
     }
-    
-   
 
     /**
      * order the list of records according to their next field
@@ -165,7 +163,7 @@ public class ExpRecordService implements Serializable {
             return records;
         }
 
-        ArrayList<ExpRecord> result = new ArrayList<ExpRecord> ();
+        ArrayList<ExpRecord> result = new ArrayList<ExpRecord>();
         ExpRecord first = null;
         ExpRecord last = null;
 
@@ -175,8 +173,8 @@ public class ExpRecordService implements Serializable {
             changed = false;
             while (iter.hasNext()) {
                 ExpRecord record = iter.next();
-                if ((last == null) ||
-                  (record.getExpRecordId().equals(last.getNext()))) {
+                if ((last == null)
+                        || (record.getExpRecordId().equals(last.getNext()))) {
                     // append to the top of the list
                     result.add(record);
                     last = record;
@@ -196,7 +194,7 @@ public class ExpRecordService implements Serializable {
                 }
             }
         }
-        if (! changed) {
+        if (!changed) {
             this.logger.info("orderList() contains multiple record chains; adding remaining ExpRecords");
             result.addAll(records);
         }
@@ -211,19 +209,18 @@ public class ExpRecordService implements Serializable {
      */
     public ExpRecord save(ExpRecord record) {
         record = saveOnly(record);
-        switch(record.getType()) {
-            case ASSAY :
+        switch (record.getType()) {
+            case ASSAY:
                 return this.assayService.saveAssay(record);
-            case TEXT :
+            case TEXT:
                 return this.textService.saveText(record);
-        } 
+        }
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }
 
     /**
-     * save a only single experiment object (i.e. do not update 
-     * the type specific data. Used i.e. for updating record 
-     * ordering.
+     * save a only single experiment object (i.e. do not update the type
+     * specific data. Used i.e. for updating record ordering.
      *
      * @param r the experiment to save
      * @return the persisted Experiment DTO

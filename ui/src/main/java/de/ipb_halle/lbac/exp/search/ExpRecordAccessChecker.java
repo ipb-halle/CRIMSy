@@ -53,7 +53,7 @@ public class ExpRecordAccessChecker {
             User user) {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("EXPERIMENT_ID", experimentid);
-        List<ExpRecord> records = recordService.load(cmap);
+        List<ExpRecord> records = recordService.load(cmap, user);
         if (records.isEmpty() || searchString.isEmpty()) {
             return true;
         }
@@ -103,6 +103,9 @@ public class ExpRecordAccessChecker {
 
     private boolean checkMaterial(Material mat, User user, List<Object> searchString) {
         boolean hit = false;
+        if (mat == null) {
+            return hit;
+        }
         if (!aclistService.isPermitted(ACPermission.permREAD, mat.getACList(), user)) {
             return false;
         }

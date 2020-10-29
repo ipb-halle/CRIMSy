@@ -164,7 +164,7 @@ public class ExperimentServiceTest extends TestBase {
         Experiment exp1 = (Experiment) loadedExp.getAllFoundObjects().get(0).getSearchable();
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("ID", exp1.getId());
-        List<ExpRecord> loadedRecords = recordService.load(cmap);
+        List<ExpRecord> loadedRecords = recordService.load(cmap,publicUser);
         Assert.assertEquals("Test001", ((Text) loadedRecords.get(0)).getText());
         Assert.assertEquals(exp.getExperimentId(), loadedRecords.get(0).getExperiment().getExperimentId());
         Assert.assertEquals(ExpRecordType.TEXT, loadedRecords.get(0).getType());
@@ -173,7 +173,7 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertNull(loadedRecords.get(0).getNext());
         Assert.assertEquals(1, loadedRecords.get(0).getRevision());
 
-        Text loadedById = (Text) recordService.loadById(text1.getExpRecordId());
+        Text loadedById = (Text) recordService.loadById(text1.getExpRecordId(),publicUser);
         Assert.assertEquals("Test001", loadedById.getText());
 
         Text text3 = new Text();
@@ -184,7 +184,7 @@ public class ExperimentServiceTest extends TestBase {
 
         text1.setNext(text3.getExpRecordId());
         recordService.saveOnly(text1);
-        loadedRecords = recordService.load(cmap);
+        loadedRecords = recordService.load(cmap,publicUser);
         loadedRecords = recordService.orderList(loadedRecords);
         Assert.assertEquals(3, loadedRecords.size());
         Assert.assertEquals(text1.getExpRecordId(), loadedRecords.get(0).getExpRecordId());
