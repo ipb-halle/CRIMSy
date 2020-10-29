@@ -41,6 +41,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -90,6 +91,7 @@ public class ExperimentService implements Serializable {
     private ExperimentEntityGraphBuilder graphBuilder;
     private EntityGraph graph;
     private PermissionConditionBuilder permissionConditionBuilder;
+    private ConditionValueFetcher conValueFetcher;
 
     public ExperimentService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
@@ -101,6 +103,7 @@ public class ExperimentService implements Serializable {
             logger.error("Injection failed for EntityManager. @PersistenceContext(name = \"de.ipb_halle.lbac\")");
         }
         graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
+        conValueFetcher = new ConditionValueFetcher();
     }
 
     /**
@@ -137,7 +140,7 @@ public class ExperimentService implements Serializable {
         q.setMaxResults(request.getMaxResults());
         List<ExperimentEntity> entities = q.getResultList();
 
-        List<Object> searchString = getSearchStrings(request.getCondition());
+        List<Object> searchString = conValueFetcher.getValuesOfType(request.getCondition(), AttributeType.TEXT);
         for (ExperimentEntity e : entities) {
             boolean shouldExpBeShown = checkExpRecords(e.getExperimentId(), searchString, request.getUser());
             if (shouldExpBeShown
@@ -204,25 +207,6 @@ public class ExperimentService implements Serializable {
             }
         }
         return false;
-    }
-
-    private List<Object> getSearchStrings(Condition con) {
-        List<Object> back = new ArrayList<>();
-        if (con == null) {
-            return back;
-        }
-        if (con.getAttribute() != null) {
-            if (con.getAttribute().getTypes().contains(AttributeType.TEXT)) {
-                back.add(con.getValue().getValue());
-            }
-        } else {
-            if (con.getConditions() != null) {
-                for (Condition c : con.getConditions()) {
-                    back.addAll(getSearchStrings(c));
-                }
-            }
-        }
-        return back;
     }
 
     private boolean checkMaterial(Material mat, User user, List<Object> searchString) {
