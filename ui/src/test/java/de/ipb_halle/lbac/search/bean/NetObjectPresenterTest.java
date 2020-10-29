@@ -21,7 +21,10 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentService;
+import de.ipb_halle.lbac.exp.assay.AssayService;
+import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ArticleService;
@@ -51,19 +54,19 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class NetObjectPresenterTest extends TestBase {
-
+    
     private List<NetObject> netObjects;
-
+    
     private NetObjectFactory netObjectFactory = new NetObjectFactory();
     private NetObjectPresenter presenter = new NetObjectPresenter();
-
+    
     @Before
     @Override
     public void setUp() {
         super.setUp();
         netObjects = netObjectFactory.createNetObjects();
     }
-
+    
     @Test
     public void test001_getName() {
         Assert.assertEquals("localDoc", presenter.getName(netObjects.get(0)));
@@ -79,7 +82,7 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("localExp", presenter.getName(netObjects.get(10)));
         Assert.assertEquals("remoteExp", presenter.getName(netObjects.get(11)));
     }
-
+    
     @Test
     public void test002_getNodeName() {
         Assert.assertEquals("local", presenter.getNodeName(netObjects.get(0)));
@@ -95,7 +98,7 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("local", presenter.getNodeName(netObjects.get(10)));
         Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(11)));
     }
-
+    
     @Test
     @Ignore
     public void test003_getLink() throws UnsupportedEncodingException {
@@ -112,7 +115,7 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("local", presenter.getLink(netObjects.get(10)));
         Assert.assertEquals("remote", presenter.getLink(netObjects.get(11)));
     }
-
+    
     @Test
     @Ignore
     public void test004_getToolTip() {
@@ -129,7 +132,7 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("local", presenter.getToolTip(netObjects.get(10)));
         Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(11)));
     }
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("NetObjectPresenterTest.war")
@@ -143,9 +146,12 @@ public class NetObjectPresenterTest extends TestBase {
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
                 .addClass(FileEntityService.class)
+                .addClass(ExpRecordService.class)
+                .addClass(AssayService.class)
+                .addClass(TextService.class)
                 .addClass(ExperimentService.class)
                 .addClass(TaxonomyNestingService.class);
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
-
+    
 }

@@ -79,6 +79,9 @@ public class ExperimentServiceTest extends TestBase {
     @Inject
     private ItemService itemService;
 
+    @Inject
+    private GlobalAdmissionContext context;
+
     private MaterialCreator materialCreator;
     private ItemCreator itemCreator;
     private ProjectCreator projectCreator;
@@ -269,6 +272,50 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
     }
 
+    @Test
+    public void test005_searchExperimentByUnreadableMaterial() {
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-003", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
+        exp = experimentService.save(exp);
+        Assay assay = new Assay();
+        assay.setTarget(material1);
+        assay.setExperiment(exp);
+
+        AssayRecord assayRecord = new AssayRecord(assay, 1);
+        assayRecord.setItem(item1);
+        assayRecord.setMaterial(material1);
+        int materialId = materialCreator.createStructure(
+                publicUser.getId(),
+                context.getNoAccessACL().getId(),
+                project1.getId(), "Phenol");
+
+        AssayRecord assayRecord_unreadable = new AssayRecord(assay, 2);
+        assayRecord_unreadable.setMaterial(materialService.loadMaterialById(materialId));
+
+        assay.getRecords().add(assayRecord);
+        assay.getRecords().add(assayRecord_unreadable);
+        recordService.save(assay);
+
+        //Search by readable Material should be a success
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("Benzol");
+        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        //Search by unreadable Material should be a success
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("Phenol");
+        loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+        
+         //Search by unreadable Material should be a success
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("ol");
+        loadedExp = experimentService.load(builder.buildSearchRequest());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ExperimentServiceTest.war")
@@ -278,6 +325,7 @@ public class ExperimentServiceTest extends TestBase {
                 .addClass(ItemService.class)
                 .addClass(ExperimentBean.class)
                 .addClass(ExperimentService.class)
+                
                 .addClass(ItemAgent.class)
                 .addClass(MaterialAgent.class);
         return UserBeanDeployment.add(ItemDeployment.add(deployment));

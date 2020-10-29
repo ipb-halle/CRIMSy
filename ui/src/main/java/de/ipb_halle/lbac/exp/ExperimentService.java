@@ -27,7 +27,14 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.exp.assay.Assay;
+import de.ipb_halle.lbac.exp.assay.AssayRecord;
 import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
+import de.ipb_halle.lbac.exp.text.Text;
+import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -40,7 +47,9 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +79,9 @@ public class ExperimentService implements Serializable {
 
     @Inject
     private MemberService memberService;
+
+    @Inject
+    private ExpRecordService recordService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -124,14 +136,114 @@ public class ExperimentService implements Serializable {
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
         List<ExperimentEntity> entities = q.getResultList();
+
+        List<Object> searchString = getSearchStrings(request.getCondition());
         for (ExperimentEntity e : entities) {
-            Experiment exp = new Experiment(
-                    e,
-                    aclistService.loadById(e.getACList()),
-                    memberService.loadUserById(e.getOwner()));
-            back.addResults(nodeService.getLocalNode(), Arrays.asList(exp));
+            Map<String, Object> cmap = new HashMap<>();
+            cmap.put("EXPERIMENT_ID", e.getExperimentId());
+            List<ExpRecord> records = recordService.load(cmap);
+            boolean shouldExpBeShown = false;
+            for (ExpRecord rec : records) {
+                if (rec.getType() == ExpRecordType.ASSAY) {
+                    Assay assay = (Assay) rec;
+                    if (checkMaterial(assay.getTarget(), request.getUser(), searchString)) {
+                        shouldExpBeShown = true;
+                    }
+                    for (AssayRecord assayRec : assay.getRecords()) {
+                        if (checkMaterial(assayRec.getMaterial(), request.getUser(), searchString)) {
+                            shouldExpBeShown = true;
+                        }
+                        if (checkItem(assayRec.getItem(), request.getUser(), searchString)) {
+                            shouldExpBeShown = true;
+                        }
+                    }
+                }
+                if (rec.getType() == ExpRecordType.TEXT) {
+                    Text text = (Text) rec;
+                    if (textContainsSearchTerm(text.getText(), searchString)) {
+                        shouldExpBeShown = true;
+                    }
+                }
+            }
+
+            if (shouldExpBeShown
+                    || records.isEmpty()
+                    || searchString.isEmpty()
+                    || textContainsSearchTerm(e.getDescription(), searchString)) {
+                Experiment exp = new Experiment(
+                        e,
+                        aclistService.loadById(e.getACList()),
+                        memberService.loadUserById(e.getOwner()));
+                back.addResults(nodeService.getLocalNode(), Arrays.asList(exp));
+            }
         }
         return back;
+    }
+
+    private boolean textContainsSearchTerm(String text, List<Object> searchString) {
+        for (Object nameObj : searchString) {
+            String searchTerm = (String) nameObj;
+            if (text.toLowerCase().contains(searchTerm.toLowerCase().replace("%", ""))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<Object> getSearchStrings(Condition con) {
+        List<Object> back = new ArrayList<>();
+        if (con == null) {
+            return back;
+        }
+        if (con.getAttribute() != null) {
+            if (con.getAttribute().getTypes().contains(AttributeType.TEXT)) {
+                back.add(con.getValue().getValue());
+            }
+        } else {
+            if (con.getConditions() != null) {
+                for (Condition c : con.getConditions()) {
+                    back.addAll(getSearchStrings(c));
+                }
+            }
+        }
+        return back;
+    }
+
+    private boolean checkMaterial(Material mat, User user, List<Object> searchString) {
+        boolean hit = false;
+        if (!aclistService.isPermitted(ACPermission.permREAD, mat.getACList(), user)) {
+            return false;
+        }
+
+        for (Object nameObj : searchString) {
+            String name = (String) nameObj;
+            for (MaterialName matName : mat.getNames()) {
+                if (matName.getValue().toLowerCase().contains(name.toLowerCase().replace("%", ""))) {
+                    hit = true;
+                }
+            }
+        }
+        return hit;
+    }
+
+    private boolean checkItem(Item item, User user, List<Object> searchString) {
+        if (item == null) {
+            return false;
+        }
+        boolean hit = false;
+        if (!aclistService.isPermitted(ACPermission.permREAD, item.getACList(), user)) {
+            return false;
+        }
+        for (Object nameObj : searchString) {
+            String name = (String) nameObj;
+
+            if (item.getDescription().toLowerCase().contains(name.toLowerCase().replace("%", ""))
+                    || item.getNameToDisplay().toLowerCase().contains(name.toLowerCase().replace("%", ""))) {
+                hit = true;
+            }
+
+        }
+        return hit;
     }
 
     /**
@@ -144,7 +256,8 @@ public class ExperimentService implements Serializable {
      * @return the Experiment object
      */
     public Experiment loadById(Integer id) {
-        ExperimentEntity entity = this.em.find(ExperimentEntity.class, id);
+        ExperimentEntity entity = this.em.find(ExperimentEntity.class,
+                id);
         return new Experiment(
                 entity, aclistService.loadById(entity.getACList()),
                 memberService.loadUserById(entity.getOwner()));
@@ -173,7 +286,7 @@ public class ExperimentService implements Serializable {
 
     private EntityGraph createEntityGraph(SearchRequest request) {
         graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
-        
+
         return graphBuilder.buildEntityGraph(request.getCondition());
     }
 }

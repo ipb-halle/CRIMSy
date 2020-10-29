@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.exp.assay.AssayEntity;
 import de.ipb_halle.lbac.exp.assay.AssayRecordEntity;
 import de.ipb_halle.lbac.exp.text.TextEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.Condition;
@@ -41,7 +41,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
     private EntityGraph assayEntityGraph;
     private EntityGraph assayRecordEntityGraph;
     private EntityGraph expRecordGraph;
-    private EntityGraph materialDetailRightGraph;
+    private EntityGraph materialGraph;
     private ACListService aclistService;
 
     public ExperimentEntityGraphBuilder(ACListService aclistService) {
@@ -62,6 +62,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
         assayRecordEntityGraph = addJoinToChild(JoinType.LEFT, assayEntityGraph, AssayRecordEntity.class, "exprecordid", "exprecordid");
         addJoinToChild(JoinType.LEFT, assayRecordEntityGraph, MaterialIndexEntryEntity.class, "materialid", "materialid");
+        materialGraph=addJoinToChild(JoinType.LEFT, assayRecordEntityGraph, MaterialEntity.class, "materialid", "materialid");
         addJoinToChild(JoinType.LEFT, assayRecordEntityGraph, ItemEntity.class, "itemid", "id");
     }
 
@@ -70,6 +71,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
         addUser();
         addExpRecords();
         addACListContraint(graph,aclistService.getEntityGraph(), "aclist_id");
+       // addACListContraint(materialGraph,aclistService.getEntityGraph(), "aclist_id");
         return graph;
     }
 
