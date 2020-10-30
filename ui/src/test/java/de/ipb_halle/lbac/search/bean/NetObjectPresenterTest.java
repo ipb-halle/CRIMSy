@@ -54,19 +54,19 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class NetObjectPresenterTest extends TestBase {
-    
+
     private List<NetObject> netObjects;
-    
+
     private NetObjectFactory netObjectFactory = new NetObjectFactory();
     private NetObjectPresenter presenter = new NetObjectPresenter();
-    
+
     @Before
     @Override
     public void setUp() {
         super.setUp();
         netObjects = netObjectFactory.createNetObjects();
     }
-    
+
     @Test
     public void test001_getName() {
         Assert.assertEquals("localDoc", presenter.getName(netObjects.get(0)));
@@ -82,7 +82,7 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("localExp", presenter.getName(netObjects.get(10)));
         Assert.assertEquals("remoteExp", presenter.getName(netObjects.get(11)));
     }
-    
+
     @Test
     public void test002_getNodeName() {
         Assert.assertEquals("local", presenter.getNodeName(netObjects.get(0)));
@@ -98,24 +98,29 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("local", presenter.getNodeName(netObjects.get(10)));
         Assert.assertEquals("remote", presenter.getNodeName(netObjects.get(11)));
     }
-    
+
     @Test
-    @Ignore
     public void test003_getLink() throws UnsupportedEncodingException {
-        Assert.assertEquals("local", presenter.getLink(netObjects.get(0)));
-        Assert.assertEquals("remote", presenter.getLink(netObjects.get(1)));
-        Assert.assertEquals("local", presenter.getLink(netObjects.get(2)));
-        Assert.assertEquals("remote", presenter.getLink(netObjects.get(3)));
-        Assert.assertEquals("local", presenter.getLink(netObjects.get(4)));
-        Assert.assertEquals("remote", presenter.getLink(netObjects.get(5)));
-        Assert.assertEquals("local", presenter.getLink(netObjects.get(6)));
-        Assert.assertEquals("remote", presenter.getLink(netObjects.get(7)));
-        Assert.assertEquals("local", presenter.getLink(netObjects.get(8)));
-        Assert.assertEquals("remote", presenter.getLink(netObjects.get(9)));
-        Assert.assertEquals("local", presenter.getLink(netObjects.get(10)));
-        Assert.assertEquals("remote", presenter.getLink(netObjects.get(11)));
+        String expectedPath = "/ui/servlet/document/GET?nodeId="
+                + netObjects.get(0).getNode().getId().toString()
+                + "&collectionId=1&contentType=pdf&originalName=localDoc&path=%2Fpath";
+        Assert.assertEquals(expectedPath, presenter.getLink(netObjects.get(0)));
+        expectedPath = "/ui/servlet/document/GET?nodeId="
+                + netObjects.get(1).getNode().getId().toString()
+                + "&collectionId=1&contentType=pdf&originalName=remoteDoc&path=%2Fpath";
+        Assert.assertEquals(expectedPath, presenter.getLink(netObjects.get(1)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(2)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(3)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(4)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(5)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(6)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(7)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(8)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(9)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(10)));
+        Assert.assertEquals("-", presenter.getLink(netObjects.get(11)));
     }
-    
+
     @Test
     @Ignore
     public void test004_getToolTip() {
@@ -132,7 +137,7 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("local", presenter.getToolTip(netObjects.get(10)));
         Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(11)));
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("NetObjectPresenterTest.war")
@@ -153,5 +158,5 @@ public class NetObjectPresenterTest extends TestBase {
                 .addClass(TaxonomyNestingService.class);
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
-    
+
 }

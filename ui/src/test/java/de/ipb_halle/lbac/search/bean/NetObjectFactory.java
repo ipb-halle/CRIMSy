@@ -41,7 +41,7 @@ import java.util.UUID;
  * @author fmauz
  */
 public class NetObjectFactory {
-
+    
     private Node localNode, remoteNode;
     private Document localDocument, remoteDocument;
     private Structure localStruc, remoteStruc;
@@ -51,11 +51,11 @@ public class NetObjectFactory {
     private Experiment localExp, remoteExp;
     private UUID localNodeId, remoteNodeId;
     
-    public NetObjectFactory(){
-        localNodeId=UUID.randomUUID();
-        remoteNodeId=UUID.randomUUID();
+    public NetObjectFactory() {
+        localNodeId = UUID.randomUUID();
+        remoteNodeId = UUID.randomUUID();
     }
-
+    
     public List<NetObject> createNetObjects() {
         List<NetObject> netObjects = new ArrayList<>();
         localNode = createLocalNode();
@@ -72,7 +72,7 @@ public class NetObjectFactory {
         remoteItem = createItem(remoteUser, remoteStruc, "remoteItem");
         localExp = createExperiment(localUser, "localExp");
         remoteExp = createExperiment(remoteUser, "remoteExp");
-
+        
         netObjects.add(new NetObjectImpl(localDocument, localNode));
         netObjects.add(new NetObjectImpl(remoteDocument, remoteNode));
         netObjects.add(new NetObjectImpl(localUser, localNode));
@@ -85,10 +85,10 @@ public class NetObjectFactory {
         netObjects.add(new NetObjectImpl(remoteItem, remoteNode));
         netObjects.add(new NetObjectImpl(localExp, localNode));
         netObjects.add(new NetObjectImpl(remoteExp, remoteNode));
-
+        
         return netObjects;
     }
-
+    
     public Node createLocalNode() {
         Node localNode = new Node();
         localNode.setInstitution("local");
@@ -97,7 +97,7 @@ public class NetObjectFactory {
         localNode.setBaseUrl("http://local");
         return localNode;
     }
-
+    
     public Node createRemoteNode() {
         Node localNode = new Node();
         localNode.setInstitution("remote");
@@ -106,7 +106,7 @@ public class NetObjectFactory {
         localNode.setBaseUrl("http://remote");
         return localNode;
     }
-
+    
     public Document createDocument(String collectionName, Node node, String documentName) {
         Document d = new Document();
         Collection col = new Collection();
@@ -114,10 +114,14 @@ public class NetObjectFactory {
         col.setName(collectionName);
         d.setCollection(col);
         d.setNode(node);
+        d.setContentType("pdf");
+        d.setPath("/path");
+        d.setCollectionId(1);
+        d.setNodeId(node.getId());
         d.setOriginalName(documentName);
         return d;
     }
-
+    
     public Structure createStructure(User u, String name, Project project) {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName(name, "de", 0));
@@ -130,16 +134,16 @@ public class NetObjectFactory {
                 new HazardInformation(),
                 new StorageClassInformation(),
                 null);
-
+        
     }
-
+    
     public User createUser(Node n, String name) {
         User u = new User();
         u.setName(name);
         u.setNode(n);
         return u;
     }
-
+    
     public Project createProject(User user, String name) {
         Project p = new Project();
         p.setId(1);
@@ -147,7 +151,7 @@ public class NetObjectFactory {
         p.setOwner(user);
         return p;
     }
-
+    
     public Item createItem(User u, Material m, String name) {
         Item i = new Item();
         i.setMaterial(m);
@@ -156,7 +160,7 @@ public class NetObjectFactory {
         i.setOwner(u);
         return i;
     }
-
+    
     public Experiment createExperiment(User u, String code) {
         return new Experiment(1, code, code, false, null, u, new Date());
     }

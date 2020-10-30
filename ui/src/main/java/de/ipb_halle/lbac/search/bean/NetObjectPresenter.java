@@ -39,6 +39,22 @@ public class NetObjectPresenter {
         return no.getNode().getInstitution();
     }
 
+    public boolean isDownloadLinkVisible(NetObject no) {
+        return no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT;
+    }
+
+    public boolean isInternalLinkVisible(NetObject no) {
+        boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
+        boolean local = no.getNode().getLocal();
+        return noDoc;
+    }
+
+    public boolean isExternalLinkVisible(NetObject no) {
+        boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
+        boolean local = no.getNode().getLocal();
+        return false;
+    }
+
     public String getObjectType(NetObject no) {
         return no.getTypeToDisplay().getTypeName();
     }

@@ -19,8 +19,10 @@ package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.search.NetObject;
-import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -45,10 +47,10 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class SearchBean implements Serializable {
-
+    
     @Inject
     private SearchService searchService;
-
+    
     protected NetObjectPresenter netObjectPresenter = new NetObjectPresenter();
     protected SearchState searchState = new SearchState();
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -57,29 +59,32 @@ public class SearchBean implements Serializable {
     protected RelevanceCalculator relevanceCalculator = new RelevanceCalculator(new ArrayList<>());
     protected User currentUser;
     StemmedWordGroup normalizedTerms;
-
+    
+    @Inject
+    private MaterialOverviewBean materialBean;
+    
     public SearchBean() {
     }
-
+    
     public SearchBean(
             SearchService searchService,
             User user) {
         this.searchService = searchService;
         setCurrentAccount(new LoginEvent(user));
-
+        
     }
-
+    
     public NetObjectPresenter getNetObjectPresenter() {
         return netObjectPresenter;
     }
-
+    
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         searchFilter = new SearchFilter(currentUser);
     }
-
+    
     public void actionAddFoundObjectsToShownObjects() {
-
+        
         for (NetObject noToAdd : searchState.getFoundObjects()) {
             boolean alreadyIn = false;
             for (NetObject no : shownObjects) {
@@ -95,9 +100,9 @@ public class SearchBean implements Serializable {
                 searchState.getTotalDocs(),
                 searchState.getAverageDocLength(),
                 getDocumentsFromResults());
-
+        
     }
-
+    
     private List<Document> getDocumentsFromResults() {
         List<Document> docs = new ArrayList<>();
         for (NetObject no : shownObjects) {
@@ -107,14 +112,14 @@ public class SearchBean implements Serializable {
         }
         return docs;
     }
-
+    
     public void actionTriggerSearch() {
         shownObjects.clear();
         relevanceCalculator = new RelevanceCalculator(parseSearchTerms());
         searchState = doSearch();
         actionAddFoundObjectsToShownObjects();
     }
-
+    
     private SearchState doSearch() {
         SearchState searchState = new SearchState();
         SearchResult result = searchService.search(searchFilter.createRequests());
@@ -124,7 +129,7 @@ public class SearchBean implements Serializable {
                 result.getDocumentStatistic().averageWordLength);
         return searchState;
     }
-
+    
     private List<String> parseSearchTerms() {
         List<String> back = new ArrayList<>();
         if (searchFilter.getSearchTerms() != null) {
@@ -138,25 +143,33 @@ public class SearchBean implements Serializable {
         }
         return back;
     }
-
+    
     public SearchFilter getSearchFilter() {
         return searchFilter;
     }
-
+    
     public List<NetObject> getShownObjects() {
         return shownObjects;
     }
-
+    
     public SearchState getSearchState() {
         return searchState;
     }
-
+    
     public boolean isSearchActive() {
         return searchState.isSearchActive();
     }
-
+    
     public int getUnshownButFoundObjects() {
         return searchState.getFoundObjects().size() - shownObjects.size();
     }
-
+    
+    public void navigateToObject(NetObject no) {
+        logger.info("Inner navigation to " + no.getSearchable().getTypeToDisplay().getGeneralType());
+        if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.MATERIAL) {
+            materialBean.actionEditMaterial((Material) no.getSearchable());
+        }
+        
+    }
+    
 }

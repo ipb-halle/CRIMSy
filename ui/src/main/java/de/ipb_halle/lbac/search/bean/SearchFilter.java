@@ -68,7 +68,7 @@ public class SearchFilter {
             searchValue.materialName = searchTerms;
             itemBuilder.addDescription(searchTerms);
             expBuilder.addDescription(searchTerms);
-            docBuilder.addWordRoots(new HashSet(Arrays.asList(searchTerms.split(" "))));
+            docBuilder.addWordRoots(new HashSet(Arrays.asList(searchTerms.toLowerCase().split(" "))));
 
         }
         materialRequestBuilder.setConditionsBySearchValues(searchValue);

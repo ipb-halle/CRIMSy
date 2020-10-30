@@ -59,7 +59,7 @@
                         <b:inputText styleClass="searchRequest"
                                      placeholder=" #{msgs.searchMgr_searchtext_placeholder}"
                                      required="false" label=""
-                                     value="#{documentSearchBean.searchFieldText}"
+                                     value="#{searchBean.searchFilter.searchTerms}"
                                      labelColXs="0" labelColMd="0">
 
                             <f:facet name="prepend">
@@ -70,7 +70,7 @@
                                                  value=""
                                                  style="margin-left: 8px"
                                                  type="submit"
-                                                 action="#{documentSearchBean.actionStartSearch()}"
+                                                 action="#{searchBean.actionTriggerSearch()}"
                                                  ajax="true"
                                                  update="@form frmDocumentSearchResults form2:spinningIcon form2:newDocumentsBadge searchPoll refreshPollTable"
                                                  icon="search"
@@ -90,33 +90,48 @@
                               icon-size="2x"
                               look="info"
                               onclick="$('tbody.files').find('tr').remove();
-                                          $('.modalFileUpload').modal()"
+                                      $('.modalFileUpload').modal()"
                               style="margin-top:10px" 
                               rendered="#{userBean.hasUploadPermission()}"/>
                 </b:column>
             </b:row>
             <b:row  styleClass="defaultFormat">
                 <b:form id="frmDocumentSearchResults">
-                    <b:dataTable id="documentList"
-                                 value="#{documentSearchBean.getFoundDocuments()}"
-                                 striped="true"
-                                 responsive="false"
-                                 customOptions="autoWidth:true"
-                                 fixedHeader="true"
-                                 var="document"
-                                 csv="false">
-                        <b:dataTableColumn label="#{msgs.searchMgr_resulttable_document}">
-                            <b:navLink href="#{document.getLink()}" value="#{document.originalName}"/>
-                        </b:dataTableColumn>
-                        <b:dataTableColumn 
-                            label="#{msgs.searchMgr_resulttable_source}"
-                            value="#{document.getRichSourceInfo()}"/>
-                        <b:dataTableColumn 
-                            label="#{msgs.searchMgr_resulttable_relevance}">
-                            <h:outputText value="#{document.getFormatedRelevance()}"/>
-                        </b:dataTableColumn>
+                    <b:dataTable
+                        var="searchable"
+                        value="#{searchBean.shownObjects}">
+                        <b:dataTableColumn
+                            label="Name">
+                            <b:navLink
+                                href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}"
+                                />
+                            <b:commandLink
+                                href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                action="#{searchBean.navigateToObject(searchable)}"
+                                value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                rendered="#{searchBean.netObjectPresenter.isInternalLinkVisible(searchable)}"
+                                />
+                            <b:commandLink
+                                href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                action="#{searchBean.navigateToObject(searchable)}"
+                                value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                rendered="#{searchBean.netObjectPresenter.isExternalLinkVisible(searchable)}"
+                                />
 
+                        </b:dataTableColumn>
+                        <b:dataTableColumn
+                            label="Location"
+                            value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
+                        <b:dataTableColumn
+                            label="Type"
+                            value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
+                        <b:dataTableColumn
+                            label="Relevanz"
+                            value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
                     </b:dataTable>
+
                 </b:form>
             </b:row>
             <b:row  styleClass="defaultFormat">
