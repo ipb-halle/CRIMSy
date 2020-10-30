@@ -22,7 +22,8 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
 
     <h:body>
@@ -40,11 +41,12 @@
                              styleClass="img-responsive,centerPanel"/>
                 </b:row>
             </b:jumbotron>
+
             <b:row styleClass="defaultFormat">
                 <b:column colMd="10"
                           offsetMd="1" 
                           colXs="10" 
-                          offsetXs="1">
+                          >
                     <b:form horizontal="true" id="form1">
                         <b:poll id="searchPoll"
                                 interval="#{documentSearchBean.getPollIntervall()}" 
@@ -77,6 +79,23 @@
                                                  icon-align="left"/>
                             </f:facet>
                         </b:inputText>
+
+                    </b:form>
+                </b:column>
+                <b:column
+                    col-xs="1"
+                    col-lg="1"
+                    col-md="1"
+                    col-sm="1">
+                    <b:form>
+                        <b:commandButton
+                            styleClass="advancedSearchButton"
+                            ajax="true"
+                            update="@(.advancedSearchPanel)"
+                            action="#{searchBean.toogleAdvancedSearch()}"
+                            icon-awesome="fa-plus-circle"/>
+
+
                     </b:form>
                 </b:column>
                 <b:column 
@@ -93,6 +112,106 @@
                                       $('.modalFileUpload').modal()"
                               style="margin-top:10px" 
                               rendered="#{userBean.hasUploadPermission()}"/>
+                </b:column>
+            </b:row>
+            <b:row
+                styleClass="advancedSearchPanel">
+                <b:column 
+                    offset="1"
+                    span="10"
+                    rendered="#{searchBean.advancedSearch}">
+                    <p:tabView styleClass="itemEditTabView">
+                        <p:tab title="Common">
+
+                        </p:tab>
+                        <p:tab title="Types">
+                            <b:row>
+                                <b:column span="4">
+                                    <b:row styleClass="advancedSearchHeader">
+                                        <b:column span="2">
+                                            <h:outputText
+                                                value="Typen"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="2"
+                                                  styleClass="rightLabeledCbx">
+                                            <b:selectBooleanCheckbox
+                                                label="Materialien"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="2"
+                                                  styleClass="rightLabeledCbx">
+                                            <b:selectBooleanCheckbox
+                                                label="Gebinde"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="2"
+                                                  styleClass="rightLabeledCbx">
+                                            <b:selectBooleanCheckbox
+                                                label="Experimente"/>
+                                        </b:column>
+                                    </b:row>
+                                    <b:row>
+                                        <b:column span="2"
+                                                  styleClass="rightLabeledCbx">
+                                            <b:selectBooleanCheckbox
+                                                label="Projekte"/>
+                                        </b:column>
+                                    </b:row>
+                                </b:column>
+
+
+                                <b:column span="4">
+                                    <b:row>
+                                        <b:column span="2">
+                                            MaterialTypen
+                                        </b:column>
+                                    </b:row>
+                                </b:column>         
+                                <b:column span="4">
+                                    Struktur
+                                </b:column>          
+                            </b:row>
+                        </p:tab>
+                        <p:tab title="Structure">
+
+                        </p:tab>
+                    </p:tabView>
+                </b:column>
+                <b:column 
+                    span="11"
+                    rendered="#{!searchBean.advancedSearch}">
+                </b:column>
+                <b:column span="1">
+                    <b:form horizontal="true" id="form2">
+                        <b:commandButton look="primary"
+                                         styleClass="#{searchBean.getActualizeButtonStyleClass()}"
+                                         tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
+                                         id="addDocumentButton"
+                                         type="button"
+                                         action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
+                                         ajax="true"
+                                         update="frmDocumentSearchResults newDocumentsBadge spinningIcon form1:searchPoll addDocumentButton"
+                                         icon-align="right"
+                                         rendered="true"
+                                         value="#{msgs.searchMgr_fetchButton}">
+                            <b:badge 
+                                style="margin-left: 4px"
+                                styleClass="pc_badge"
+                                id="newDocumentsBadge"
+                                value="#{searchBean.getAmountOfNotShownObjects()}" />
+                            <b:iconAwesome 
+                                style="margin-left: 4px"
+                                styleClass="pc_icon"
+                                id="spinningIcon"
+                                name="refresh"
+                                spin="#{searchBean.isSearchActive()}"
+                                size="1x" />#{'   '}
+                        </b:commandButton>
+                    </b:form>
                 </b:column>
             </b:row>
             <b:row  styleClass="defaultFormat">
@@ -134,40 +253,7 @@
 
                 </b:form>
             </b:row>
-            <b:row  styleClass="defaultFormat">
-                <b:column span="10">
 
-                </b:column>
-                <b:column span="1">
-                    <b:form horizontal="true" id="form2">
-                        <b:commandButton look="primary"
-                                         styleClass="#{documentSearchBean.getActualizeButtonStyleClass()}"
-                                         style="margin-left: 8px"
-                                         tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
-                                         id="addDocumentButton"
-                                         type="button"
-                                         action="#{documentSearchBean.addNewSearchResultsToTable()}"
-                                         ajax="true"
-                                         update="frmDocumentSearchResults newDocumentsBadge spinningIcon form1:searchPoll addDocumentButton"
-                                         icon-align="right"
-                                         rendered="true"
-                                         value="#{msgs.searchMgr_fetchButton}">
-                            <b:badge 
-                                style="margin-left: 4px"
-                                styleClass="pc_badge"
-                                id="newDocumentsBadge"
-                                value="#{documentSearchBean.getNewDocumentsToShow()}" />
-                            <b:iconAwesome 
-                                style="margin-left: 4px"
-                                styleClass="pc_icon"
-                                id="spinningIcon"
-                                name="refresh"
-                                spin="#{documentSearchBean.isSearchActive()}"
-                                size="1x" />#{'   '}
-                        </b:commandButton>
-                    </b:form>
-                </b:column>
-            </b:row>
         </ui:composition>
     </h:body>
 </html>

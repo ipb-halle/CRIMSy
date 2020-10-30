@@ -491,3 +491,30 @@ select.selCollection {
     margin: auto;
 }
 
+.pc_refreshButton{
+    margin-left: -345px;
+}
+.advancedSearchButton{
+  margin-left: -7px;
+    margin-top: 18px;
+}
+
+.advancedSearchPanel .ui-tabs-top{
+    border-bottom-width: 0px ;
+}
+
+.rightLabeledCbx {
+    margin-top: -40px;
+}
+.rightLabeledCbx > .form-group > .control-label{
+    margin-top: 31px;
+    margin-left: 20px;
+}
+.rightLabeledCbx  > .form-group > .checkbox{
+    margin-top: -26px;
+}
+
+.advancedSearchHeader{
+    margin-bottom: 30px;
+}
+
