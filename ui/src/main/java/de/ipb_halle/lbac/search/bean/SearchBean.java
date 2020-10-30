@@ -19,11 +19,14 @@ package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.exp.Experiment;
+import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchService;
@@ -67,6 +70,12 @@ public class SearchBean implements Serializable {
 
     @Inject
     private ItemOverviewBean itemBean;
+
+    @Inject
+    private Navigator navigator;
+
+    @Inject
+    private ExperimentBean experimentBean;
 
     public SearchBean() {
     }
@@ -176,6 +185,12 @@ public class SearchBean implements Serializable {
         }
         if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.ITEM) {
             itemBean.actionStartItemEdit((Item) no.getSearchable());
+        }
+        if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
+            experimentBean.setExperiment((Experiment) no.getSearchable());
+            experimentBean.loadExpRecords();
+            navigator.navigate("exp/experiments");
+
         }
 
     }
