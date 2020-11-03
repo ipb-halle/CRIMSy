@@ -32,7 +32,7 @@ echo LBAC_REPO=$LBAC_REPO
 
 mkdir -p $LBAC_REPO/target
 sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
-sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD_NAME," |\
+sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
 openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
   -md sha256 -binary -out $LBAC_REPO/target/configure.sh.sig \
   -stream -nodetach \
@@ -48,7 +48,7 @@ cat <<EOF >$LBAC_REPO/target/index.html
 <!DOCTYPE html>
 <html lang="en-US" ><head><meta charset="UTF-8"><title>CRIMSy Download Page</title></head>
 <body bgcolor="#fff">
-<h1>$CLOUD_NAME: $CLOUD</h1>
+<h1>$CLOUD_NAME</h1>
 Auf dieser Seite sind die für die Installation relevanten Ressourcen 
 (Handbücher, das signierte Konfigurations-Skript und die zugehörigen 
 Zertifikate) zum Herunterladen zusammengefasst. Ausführlichere Dokumentation 

@@ -32,8 +32,8 @@ LBAC_DISTRIBUTION_POINT="CLOUDCONFIG_DOWNLOAD_URL"
 CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
 
 #
-LBAC_CONFIG=etc/config.sh
-LBAC_CURRENT_CONFIG_VERSION=4
+LBAC_CONFIG=config.sh
+LBAC_CURRENT_CONFIG_VERSION=5
 LBAC_INSTALLER=bin/install.sh
 
 LBAC_DB_PWFILE=db.passwd
@@ -51,7 +51,7 @@ LBAC_OFFICIAL_PWFILE=official_cert.passwd
 #
 function dialog_START {
 	dialog --backtitle "$CLOUD_NAME" \
-	  --msgbox "Dieses Programm erhebt Daten für die Installation eines Knotens der $CLOUD_NAME. Bitte starten Sie dieses Programm auf dem Rechner und mit dem Account, mit dem später der Cloud-Knoten betrieben werden soll. Nähere Informationen und insbesondere Sicherheitshinweise entnehmen Sie bitte dem Konfigurationshandbuch: 
+	  --msgbox "Dieses Programm erhebt Daten für die Installation eines Knotens in der Cloud $CLOUD_NAME. Bitte starten Sie dieses Programm auf dem Rechner und mit dem Account, mit dem später der Cloud-Knoten betrieben werden soll. Nähere Informationen und insbesondere Sicherheitshinweise entnehmen Sie bitte dem Konfigurationshandbuch: 
 
 $LBAC_DISTRIBUTION_POINT/ConfigManual.pdf 
 
@@ -98,7 +98,7 @@ function dialog_DATASTORE {
 
 function dialog_CONFIG_OLD {
 	NEXT_FORM=DIALOG_OBJECT_IDS
-	if test ! -r $LBAC_DATASTORE/$LBAC_CONFIG ; then
+	if test ! -r $LBAC_DATASTORE/etc/$LBAC_CONFIG ; then
 		return
 	fi
 	dialog --backtitle "$CLOUD_NAME" \
@@ -111,7 +111,7 @@ Die empfohlene Antwort ist 'Ja'" \
 	0)
 		# safeguard if directory has moved
 		tmp=$LBAC_DATASTORE
-		. $LBAC_DATASTORE/$LBAC_CONFIG
+		. $LBAC_DATASTORE/etc/$LBAC_CONFIG
 		LBAC_DATASTORE=$tmp
 		
 		NEXT_FORM=DIALOG_OBJECT_IDS
@@ -353,7 +353,7 @@ function dialog_DOCKER_HOST {
     fi
     dialog --backtitle "$CLOUD_NAME" \
       --cancel-label "Abbrechen" \
-      --checklist "Steht der Knoten / Docker-Host exklusiv für die $CLOUD_NAME zur Verfügung (empfohlene Einstellung: EXCLUSIV)? Falls auf dem dem Docker-Host weitere Container ausgeführt werden, müssen verwaiste Docker-Container, -Images und -Volumes manuell aufgeräumt werden." 15 72 1 \
+      --checklist "Steht der Knoten / Docker-Host exklusiv für CRIMSy zur Verfügung (empfohlene Einstellung: EXCLUSIV)? Falls auf dem dem Docker-Host weitere Container ausgeführt werden, müssen verwaiste Docker-Container, -Images und -Volumes manuell aufgeräumt werden." 15 72 1 \
       "DOCKER" "Exklusive Ausführung der Cloud" $LBAC_DOCKER_EXCLUSIVE 2>$TMP_RESULT
     case $? in
         0)
@@ -506,7 +506,7 @@ function dialog_SAVE {
 	case $? in
 	0)
 		NEXT_FORM="ERROR: Fehler beim Abspeichern."
-		mv $TMP_CONFIG $LBAC_DATASTORE/$LBAC_CONFIG && \
+		mv $TMP_CONFIG $LBAC_DATASTORE/etc/$LBAC_CONFIG && \
 		copyInstaller && upgradeOldConfig && NEXT_FORM=DIALOG_ENCRYPT
 		;;
 	1)
@@ -530,7 +530,7 @@ function dialog_SAVE {
 function dialog_ENCRYPT {
 
 	dialog --backtitle "$CLOUD_NAME" \
-	  --msgbox "Die Konfigurationsdatei wird jetzt verschlüsselt. Bitte senden Sie uns die Datei $LBAC_DATASTORE/$LBAC_CONFIG.asc per Email zu. Sie erhalten dann von uns Nachricht, wann und wie Sie mit dem Installationsprozess fortfahren können. " \
+	  --msgbox "Die Konfigurationsdatei wird jetzt verschlüsselt. Bitte senden Sie uns die Datei $LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc per Email zu. Sie erhalten dann von uns Nachricht, wann und wie Sie mit dem Installationsprozess fortfahren können. " \
 	15 72
 	case $? in
 		0)
@@ -547,7 +547,7 @@ function dialog_END {
 	dialog --backtitle "$CLOUD_NAME" \
 	  --infobox "Die Konfiguration ist beendet. Lassen Sie uns bitte die Datei 
 
-$LBAC_DATASTORE/$LBAC_CONFIG.asc
+$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc
 
 zukommen. Sie erhalten dann weitere Instruktionen für die Installation von uns." 15 72
 	
@@ -685,17 +685,17 @@ chmod +x "$LBAC_DATASTORE/$LBAC_INSTALLER"
 
 # encrypt the configuration script
 function encrypt {
-        rm -f "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && \
-            cat << EOF > "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
+        rm -f "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc" && \
+            cat << EOF > "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
 #
 # LBAC_INSTITUTION=$LBAC_INSTITUTION
-# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT" -text | \
+# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT" -text | \
           grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
 # `date`
 #
 # ----- SMIME ENCRYPTED CONFIG BEGIN -----
 `openssl smime -encrypt -binary -outform PEM -aes-256-cbc \
-  -in "$LBAC_DATASTORE/$LBAC_CONFIG" "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT"`
+  -in "$LBAC_DATASTORE/etc/$LBAC_CONFIG" "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT"`
 # ----- SMIME ENCRYPTED CONFIG END -----
 EOF
 }
@@ -756,17 +756,23 @@ EOF
 }
 
 function makeDirectories {
-	mkdir -p $LBAC_DATASTORE/etc && \
-	mkdir -p $LBAC_DATASTORE/bin
+	mkdir -p "$LBAC_DATASTORE/etc/$CLOUD_NAME" && \
+	mkdir -p "$LBAC_DATASTORE/bin"
 
         if [ ! -f "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE" ] ; then
             uuidgen -r | tr -d $'\n' > "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE"
         fi
 
+        echo /$CLOUD_NAME$'\t/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' | \
+            ed $LBAC_DATASTORE/etc/clouds.cfg
+
+        echo "$CLOUD_NAME;$LBAC_DISTRIBUTION_POINT" > $LBAC_DATASTORE/etc/clouds.cfg
+        echo "$CLOUD_NAME" > $LBAC_DATASTORE/etc/primary.cfg
+
 	# clean up certificates from download and 
 	# verification (see upload.sh)
-	test -s "$LBAC_SSL_CHAIN" && mv -f "$LBAC_SSL_CHAIN" "$LBAC_DATASTORE/etc" 
-	test -s "$LBAC_SSL_DEVCERT" &&  mv -f "$LBAC_SSL_DEVCERT" "$LBAC_DATASTORE/etc"
+	test -s "$LBAC_SSL_CHAIN" && mv -f "$LBAC_SSL_CHAIN" "$LBAC_DATASTORE/etc/$CLOUD_NAME" 
+	test -s "$LBAC_SSL_DEVCERT" &&  mv -f "$LBAC_SSL_DEVCERT" "$LBAC_DATASTORE/etc/$CLOUD_NAME"
 	return 0
 }
 

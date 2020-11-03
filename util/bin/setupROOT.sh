@@ -84,9 +84,10 @@ EOF
 }
 
 #
-# Install an additional CLOUD
+# Install a single additional CLOUD
+# first step: copy certificates and truststores
 #
-function installCloud {
+function installCloudCert {
     pushd $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD > /dev/null
 
     # add certificate and CRL to proxy 
@@ -97,12 +98,20 @@ function installCloud {
     docker cp $LBAC_CLOUD.trustpass dist_ui_1:/install
     docker cp $LBAC_CLOUD.pkcs12 dist_ui_1:/install
     docker cp $LBAC_CLOUD.keypass dist_ui_1:/install
+}
+
+#
+# Install all CLOUDs
+# second step: import certificates and SQL for _all_ clouds
+#
+function installClouds {
+    pushd $LBAC_DATASTORE/dist/etc
     docker exec dist_ui_1 /usr/local/bin/importKeystores.sh
 
     # add database records
-    docker cp $LBAC_CLOUD.sql dist_db_1:/tmp
+    docker cp clouds.sql dist_db_1:/tmp
     docker exec dist_db_1 /bin/bash -c \
-      "cat /tmp/$LBAC_CLOUD.sql | su -c 'psql -Ulbac lbac' postgres && rm /tmp/$LBAC_CLOUD.sql"
+      "cat /tmp/clouds.sql | su -c 'psql -Ulbac lbac' postgres && rm /tmp/clouds.sql"
 }
 
 #
@@ -324,10 +333,14 @@ case $1 in
         echo "Setting up CRON"
         installCron
         ;;
-    installCloud)
+    installCloudCert)
         LBAC_CLOUD=$2
         echo "Installing cloud: $LBAC_CLOUD"
-        installCloud
+        installCloudCert
+        ;;
+    installClouds)
+        echo "Activate all clouds"
+        installClouds
         ;;
     installDbBackup)
         installDbBackup

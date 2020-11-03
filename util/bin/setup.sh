@@ -21,7 +21,7 @@
 # 
 #==========================================================
 #
-LBAC_EXPECTED_CONFIG_VERSION=4
+LBAC_EXPECTED_CONFIG_VERSION=5
 LBAC_CONFIG=etc/config.sh
 
 LBAC_DB_PWFILE=db.passwd
@@ -67,20 +67,21 @@ function configProxy {
 # Note: This function must be run prior to mfour()!
 #
 function copyConfig {
+	mkdir -p $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD
 
-	# directory dist/etc already created by createProperties
 	cp $LBAC_DATASTORE/$LBAC_CONFIG $LBAC_DATASTORE/dist/etc
+        cp $LBAC_DATASTORE/etc/primary.cfg $LBAC_DATASTORE/dist/etc
+        cp $LBAC_DATASTORE/etc/clouds.cfg $LBAC_DATASTORE/dist/etc
+	cp $LBAC_DATASTORE/etc/$LBAC_SSL_PWFILE $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.keypass
 }
 
 #
 # create a properties file
 #
 function createProperties {
-	# LBAC_SSL_PWFILE copied already by keySetup
 	LBAC_KEYSTORE_PASSWORD=`cat $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.keypass`
 	LBAC_TRUSTSTORE_PASSWORD=`cat $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.trustpass`
 
-	mkdir -p $LBAC_DATASTORE/dist/etc
 	cat <<EOF > $LBAC_DATASTORE/dist/etc/lbac_properties.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
@@ -113,7 +114,6 @@ EOF
 #
 function keySetup {
         # keystore password
-	cp "$LBAC_DATASTORE/etc/$LBAC_SSL_PWFILE" "$LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.keypass"
 
         #
 	# store unencrypted keys for proxy 
@@ -283,14 +283,14 @@ function setup {
 	echo "Extracting archive ... "
 	cat $1 | uudecode | tar -xzf -
         chmod -R +x $LBAC_DATASTORE/dist/bin
-        LBAC_CLOUD=`cat $LBAC_DATASTORE/dist/etc/primary.cfg`
-
-	echo "Key setup ... "
-	keySetup
+        LBAC_CLOUD=`cat $LBAC_DATASTORE/etc/primary.cfg`
 
 	echo "Preparing configuration ... "
-	createProperties
 	copyConfig
+	createProperties
+
+        echo "Key setup ... "
+        keySetup
 
         echo "Config proxy ..."
         configProxy
@@ -312,6 +312,9 @@ function setup {
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" installCron
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" postInstall
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" start
+
+        echo "Eventually joining other clouds ..."
+        $LBAC_DATASTORE/dist/bin/join.sh --auto
 
 	echo "Setup is finished" 
 }
@@ -369,8 +372,6 @@ for i in $* ; do
             echo "Usage: setup.sh [--debug] [--noproxy] [--proxy] [--standalone]"
             echo 
             echo "  --debug            enable debugging (i.e. open ports)"
-            echo "  --noproxy          disable proxy (requires manual proxy configuration)"
-            echo "  --proxy            enable proxy where manual configuration is default"
             echo "  --skip-snapshot    skip preinstallation procedure (snapshot / backup)"
             echo "  --standalone       configure node to run standalone"
             echo 

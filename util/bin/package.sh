@@ -195,8 +195,6 @@ function copyDocker {
 }
 
 function copyFiles {
-        # primary cloud
-        echo -n "$LBAC_CLOUD" > target/dist/etc/primary.cfg
 
 	# directories already created by function copyDocker
 	cp ui/target/$LBAC_UI target/dist/ui

@@ -86,11 +86,25 @@
                             <artifactId>hibernate-core</artifactId>
                             <version>5.3.6.Final</version>
                         </artifactItem>
+
+                        <!-- Integration for using Ehcache 2.x as a 
+                        Hibernate second-level-cache provider  -->
                         <artifactItem>
-                            <groupId>org.hibernate.javax.persistence</groupId>
-                            <artifactId>hibernate-jpa-2.1-api</artifactId>
-                            <version>1.0.2.Final</version>
-                        </artifactItem>   
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-ehcache</artifactId>
+                            <version>5.3.6.Final</version>
+                        </artifactItem>
+
+                        <artifactItem>
+                            <groupId>javax.persistence</groupId>
+                            <artifactId>javax.persistence-api</artifactId>
+                            <version>2.2</version>
+                        </artifactItem>
+                        <artifactItem>
+                            <groupId>net.bytebuddy</groupId>
+                            <artifactId>byte-buddy</artifactId>
+                            <version>1.8.17</version>
+                        </artifactItem>
                         <artifactItem>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-validator</artifactId>
