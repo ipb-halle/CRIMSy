@@ -492,7 +492,8 @@ select.selCollection {
 }
 
 .pc_refreshButton{
-    margin-left: -345px;
+    margin-top: 18px;
+    margin-left: -59px;
 }
 .advancedSearchButton{
   margin-left: -7px;
@@ -504,10 +505,9 @@ select.selCollection {
 }
 
 .rightLabeledCbx {
-    margin-top: -40px;
+    
 }
 .rightLabeledCbx > .form-group > .control-label{
-    margin-top: 31px;
     margin-left: 20px;
 }
 .rightLabeledCbx  > .form-group > .checkbox{
@@ -516,5 +516,10 @@ select.selCollection {
 
 .advancedSearchHeader{
     margin-bottom: 30px;
+}
+.documentUploadButton{
+    margin-top: 18px;
+    height: 37px;
+    padding-top: 0px;
 }
 

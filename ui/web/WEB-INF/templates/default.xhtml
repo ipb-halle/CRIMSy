@@ -23,7 +23,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:nwc="http://ipb-halle.de/nwc">
 
 
     <h:body>
@@ -43,9 +44,9 @@
             </b:jumbotron>
 
             <b:row styleClass="defaultFormat">
-                <b:column colMd="10"
-                          offsetMd="1" 
-                          colXs="10" 
+                <b:column colMd="#{searchBean.getTextFieldLength()}"
+                          colXs="#{searchBean.getTextFieldLength()}" 
+                          offset="1"
                           >
                     <b:form horizontal="true" id="form1">
                         <b:poll id="searchPoll"
@@ -92,101 +93,15 @@
                             styleClass="advancedSearchButton"
                             ajax="true"
                             update="@(.advancedSearchPanel)"
-                            action="#{searchBean.toogleAdvancedSearch()}"
+                            action="#{searchBean.getSearchFilter().toogleAdvancedSearch()}"
                             icon-awesome="fa-plus-circle"/>
-
-
                     </b:form>
                 </b:column>
-                <b:column 
-                    colMd="4"
-                    offsetMd="4"
-                    colXs="4"
-                    offsetXs="4">
-                    <b:button icon="cloud-upload"
-                              value="#{msgs.searchMgr_uploadbutton}"
-                              update="@none"
-                              icon-size="2x"
-                              look="info"
-                              onclick="$('tbody.files').find('tr').remove();
-                                      $('.modalFileUpload').modal()"
-                              style="margin-top:10px" 
-                              rendered="#{userBean.hasUploadPermission()}"/>
-                </b:column>
-            </b:row>
-            <b:row
-                styleClass="advancedSearchPanel">
-                <b:column 
-                    offset="1"
-                    span="10"
-                    rendered="#{searchBean.advancedSearch}">
-                    <p:tabView styleClass="itemEditTabView">
-                        <p:tab title="Common">
-
-                        </p:tab>
-                        <p:tab title="Types">
-                            <b:row>
-                                <b:column span="4">
-                                    <b:row styleClass="advancedSearchHeader">
-                                        <b:column span="2">
-                                            <h:outputText
-                                                value="Typen"/>
-                                        </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2"
-                                                  styleClass="rightLabeledCbx">
-                                            <b:selectBooleanCheckbox
-                                                label="Materialien"/>
-                                        </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2"
-                                                  styleClass="rightLabeledCbx">
-                                            <b:selectBooleanCheckbox
-                                                label="Gebinde"/>
-                                        </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2"
-                                                  styleClass="rightLabeledCbx">
-                                            <b:selectBooleanCheckbox
-                                                label="Experimente"/>
-                                        </b:column>
-                                    </b:row>
-                                    <b:row>
-                                        <b:column span="2"
-                                                  styleClass="rightLabeledCbx">
-                                            <b:selectBooleanCheckbox
-                                                label="Projekte"/>
-                                        </b:column>
-                                    </b:row>
-                                </b:column>
-
-
-                                <b:column span="4">
-                                    <b:row>
-                                        <b:column span="2">
-                                            MaterialTypen
-                                        </b:column>
-                                    </b:row>
-                                </b:column>         
-                                <b:column span="4">
-                                    Struktur
-                                </b:column>          
-                            </b:row>
-                        </p:tab>
-                        <p:tab title="Structure">
-
-                        </p:tab>
-                    </p:tabView>
-                </b:column>
-                <b:column 
-                    span="11"
-                    rendered="#{!searchBean.advancedSearch}">
-                </b:column>
-                <b:column span="1">
-                    <b:form horizontal="true" id="form2">
+                <b:column  col-xs="1"
+                           col-lg="1"
+                           col-md="1"
+                           col-sm="1">
+                    <b:form  id="form2">
                         <b:commandButton look="primary"
                                          styleClass="#{searchBean.getActualizeButtonStyleClass()}"
                                          tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
@@ -213,6 +128,22 @@
                         </b:commandButton>
                     </b:form>
                 </b:column>
+                <b:column 
+                    col-xs="3"
+                    col-lg="3"
+                    col-md="3"
+                    col-sm="3">
+                    <b:button icon="cloud-upload"
+                              value="#{msgs.searchMgr_uploadbutton}"
+                              update="@none"
+                              icon-size="1x"
+                              look="info"
+                              onclick="$('tbody.files').find('tr').remove();
+                                      $('.modalFileUpload').modal()"
+                              styleClass="documentUploadButton" 
+                              rendered="#{userBean.hasUploadPermission()}"/>
+                </b:column>
+
             </b:row>
             <b:row  styleClass="defaultFormat">
                 <b:form id="frmDocumentSearchResults">
@@ -250,9 +181,126 @@
                             label="Relevanz"
                             value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
                     </b:dataTable>
-
                 </b:form>
             </b:row>
+            <b:row
+                styleClass="advancedSearchPanel">
+
+                <b:column 
+                    offset="1"
+                    span="10"
+                    rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
+                    <b:form>
+                        <p:tabView styleClass="itemEditTabView">
+                            <p:tab title="Common">
+
+                            </p:tab>
+                            <p:tab title="Types">
+                                <b:row>
+                                    <b:column span="4">
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="advancedSearchHeader">
+                                                <h:outputText
+                                                    value="Typen"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Dokumente"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.documents}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Materialien"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Gebinde"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.items}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Experimente"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <!--
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Projekte"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.projects}"/>
+                                            </b:column>
+                                        </b:row>
+                                        -->
+                                    </b:column>
+
+
+                                    <b:column span="4">
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="advancedSearchHeader">
+                                                MaterialTypen
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Strukturen"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Biomaterial"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Sequenzen"/>
+                                            </b:column>
+                                        </b:row>
+                                    </b:column>         
+                                    <b:column span="4">
+                                        <nwc:molPlugin
+                                            value=""
+                                            pluginType="MolPaintJS" 
+                                            edit="true">
+                                        </nwc:molPlugin>
+                                    </b:column>
+                                </b:row>
+                            </p:tab>
+                            <p:tab title="Structure">
+
+                            </p:tab>
+                        </p:tabView>
+                    </b:form>
+                </b:column>
+            </b:row>
+
 
         </ui:composition>
     </h:body>

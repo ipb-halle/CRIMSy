@@ -43,106 +43,105 @@ public class SearchFilter {
 
     private User user;
     private String searchTerms;
-    private Set<SearchTarget> searchTargets = new HashSet<>();
-    private Set<MaterialType> materialTypes = new HashSet<>();
-    private boolean materialTypeStructure;
-    private boolean materialTypeBioMaterial;
-    private boolean materialTypeSequence;
+    private SearchableTypeFilter typeFilter;
+
     private boolean advancedSearchActive;
     private int maxresults = 50;
-    private final Logger LOGGER = LogManager.getLogger(DocumentSearchService.class);
+    private final Logger logger = LogManager.getLogger(DocumentSearchService.class);
 
     public SearchFilter(User user) {
         this.user = user;
+        typeFilter = new SearchableTypeFilter();
+    }
+
+    public SearchableTypeFilter getTypeFilter() {
+        return typeFilter;
     }
 
     public List<SearchRequest> createRequests() {
-        MaterialSearchRequestBuilder materialRequestBuilder = new MaterialSearchRequestBuilder(user, 0, maxresults);
+        if (advancedSearchActive) {
+            logger.info("Do advanced Search");
+            return createRequestsForAdvancedSearch();
+        } else {
+            logger.info("Do simple Search");
+            return createRequestsForSimpleSearch();
+        }
 
-        MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
+    }
 
-        ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(user, 0, maxresults);
-        ExperimentSearchRequestBuilder expBuilder = new ExperimentSearchRequestBuilder(user, 0, maxresults);
-        DocumentSearchRequestBuilder docBuilder = new DocumentSearchRequestBuilder(user, 0, maxresults);
-        if (searchTerms != null && !searchTerms.trim().isEmpty()) {
-            searchValue.materialName = searchTerms;
-            itemBuilder.addDescription(searchTerms);
-            expBuilder.addDescription(searchTerms);
-            docBuilder.addWordRoots(new HashSet(Arrays.asList(searchTerms.toLowerCase().split(" "))));
+    private List<SearchRequest> createRequestsForSimpleSearch() {
+        return Arrays.asList(
+                createExperimentRequest(),
+                createMaterialSearchRequest(),
+                createDocumentRequest(),
+                createItemRequest());
+    }
+
+    private List<SearchRequest> createRequestsForAdvancedSearch() {
+        List<SearchRequest> requests = new ArrayList<>();
+        if (typeFilter.isMaterials()) {
+            logger.info("Do advanced Search - materials");
+            requests.add(createMaterialSearchRequest());
+        }
+        if (typeFilter.isDocuments()) {
+            logger.info("Do advanced Search - docs");
+            requests.add(createDocumentRequest());
+        }
+        if (typeFilter.isItems()) {
+            logger.info("Do advanced Search - items");
+            requests.add(createItemRequest());
+        }
+        if (typeFilter.isExperiments()) {
+            logger.info("Do advanced Search - exp");
+            requests.add(createExperimentRequest());
+        }
+        if (typeFilter.isProjects()) {
 
         }
+        return requests;
+    }
+
+    private SearchRequest createMaterialSearchRequest() {
+        MaterialSearchRequestBuilder materialRequestBuilder = new MaterialSearchRequestBuilder(user, 0, maxresults);
+        MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
+        searchValue.materialName = searchTerms;
         materialRequestBuilder.setConditionsBySearchValues(searchValue);
+        return materialRequestBuilder.buildSearchRequest();
+    }
 
-        return Arrays.asList(
-                expBuilder.buildSearchRequest(),
-                materialRequestBuilder.buildSearchRequest(),
-                docBuilder.buildSearchRequest(),
-                itemBuilder.buildSearchRequest());
+    private SearchRequest createDocumentRequest() {
+        DocumentSearchRequestBuilder docBuilder = new DocumentSearchRequestBuilder(user, 0, maxresults);
+        docBuilder.addWordRoots(new HashSet(Arrays.asList(searchTerms.toLowerCase().split(" "))));
+        return docBuilder.buildSearchRequest();
+    }
 
+    private SearchRequest createItemRequest() {
+        ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(user, 0, maxresults);
+        itemBuilder.addDescription(searchTerms);
+        return itemBuilder.buildSearchRequest();
+    }
+
+    private SearchRequest createExperimentRequest() {
+        ExperimentSearchRequestBuilder expBuilder = new ExperimentSearchRequestBuilder(user, 0, maxresults);
+        expBuilder.addDescription(searchTerms);
+        return expBuilder.buildSearchRequest();
     }
 
     public String getSearchTerms() {
         return searchTerms;
+
     }
 
     public void setSearchTerms(String searchTerms) {
         this.searchTerms = searchTerms;
     }
 
-    public boolean isTypeDocument() {
-        return searchTargets.contains(SearchTarget.DOCUMENT);
+    public void toogleAdvancedSearch() {
+        this.advancedSearchActive = !this.advancedSearchActive;
     }
 
-    public void setTypeDocument(boolean typeDocument) {
-        searchTargets.add(SearchTarget.DOCUMENT);
-    }
-
-    public boolean isTypeMaterial() {
-        return searchTargets.contains(SearchTarget.MATERIAL);
-    }
-
-    public void setTypeMaterial(boolean typeMaterial) {
-        searchTargets.add(SearchTarget.MATERIAL);
-    }
-
-    public boolean isTypeItem() {
-        return searchTargets.contains(SearchTarget.ITEM);
-    }
-
-    public void setTypeItem(boolean typeItems) {
-        searchTargets.add(SearchTarget.ITEM);
-    }
-
-    public boolean isTypeExperiment() {
-        return searchTargets.contains(SearchTarget.EXPERIMENT);
-    }
-
-    public void setTypeExperiment(boolean typeExperiments) {
-        searchTargets.add(SearchTarget.EXPERIMENT);
-    }
-
-    public boolean isMaterialTypeStructure() {
-        return materialTypes.contains(MaterialType.STRUCTURE);
-    }
-
-    public void setMaterialTypeStructure(boolean materialTypeStructure) {
-        materialTypes.add(MaterialType.STRUCTURE);
-    }
-
-    public boolean isMaterialTypeBioMaterial() {
-        return materialTypes.contains(MaterialType.BIOMATERIAL);
-    }
-
-    public void setMaterialTypeBioMaterial(boolean materialTypeBioMaterial) {
-        materialTypes.add(MaterialType.BIOMATERIAL);
-    }
-
-    public boolean isMaterialTypeSequence() {
-        return materialTypes.contains(MaterialType.SEQUENCE);
-    }
-
-    public void setMaterialTypeSequence(boolean materialTypeSequence) {
-        materialTypes.add(MaterialType.SEQUENCE);
+    public boolean isAdvancedSearch() {
+        return advancedSearchActive;
     }
 
 }
