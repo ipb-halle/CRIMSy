@@ -20,18 +20,15 @@ package de.ipb_halle.lbac.search.bean;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
-import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,6 +41,7 @@ public class SearchFilter {
     private User user;
     private String searchTerms;
     private SearchableTypeFilter typeFilter;
+    private MaterialTypeFilter materialTypeFilter;
 
     private boolean advancedSearchActive;
     private int maxresults = 50;
@@ -52,6 +50,7 @@ public class SearchFilter {
     public SearchFilter(User user) {
         this.user = user;
         typeFilter = new SearchableTypeFilter();
+        materialTypeFilter = new MaterialTypeFilter();
     }
 
     public SearchableTypeFilter getTypeFilter() {
@@ -105,6 +104,9 @@ public class SearchFilter {
         MaterialSearchRequestBuilder materialRequestBuilder = new MaterialSearchRequestBuilder(user, 0, maxresults);
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
         searchValue.materialName = searchTerms;
+        if (advancedSearchActive) {
+            searchValue.type.addAll(materialTypeFilter.getTypes());
+        }
         materialRequestBuilder.setConditionsBySearchValues(searchValue);
         return materialRequestBuilder.buildSearchRequest();
     }
@@ -142,6 +144,10 @@ public class SearchFilter {
 
     public boolean isAdvancedSearch() {
         return advancedSearchActive;
+    }
+
+    public MaterialTypeFilter getMaterialTypeFilter() {
+        return materialTypeFilter;
     }
 
 }

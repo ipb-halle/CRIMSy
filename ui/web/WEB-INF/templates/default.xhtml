@@ -220,6 +220,7 @@
                                                 <b:selectBooleanCheckbox
                                                     label="Materialien"
                                                     ajax="true"
+                                                    update="@(.materialTypeFilter)"
                                                     value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
                                             </b:column>
                                         </b:row>
@@ -255,31 +256,42 @@
                                     </b:column>
 
 
-                                    <b:column span="4">
-                                        <b:row>
+                                    <b:column span="4"
+                                              styleClass="materialTypeFilter">
+                                        <b:row
+                                            rendered="#{searchBean.materialTypeVisible}">
                                             <b:column span="2"
                                                       styleClass="advancedSearchHeader">
                                                 MaterialTypen
                                             </b:column>
                                         </b:row>
-                                        <b:row>
+                                        <b:row
+                                            rendered="#{searchBean.materialTypeVisible}">
                                             <b:column span="2"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
+                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
+                                                    ajax="true"
                                                     label="Strukturen"/>
                                             </b:column>
                                         </b:row>
-                                        <b:row>
+                                        <b:row
+                                            rendered="#{searchBean.materialTypeVisible}">
                                             <b:column span="2"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
+                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
+                                                    ajax="true"
                                                     label="Biomaterial"/>
                                             </b:column>
                                         </b:row>
-                                        <b:row>
+                                        <b:row
+                                            rendered="#{searchBean.materialTypeVisible}">
                                             <b:column span="2"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
+                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
+                                                    ajax="true"
                                                     label="Sequenzen"/>
                                             </b:column>
                                         </b:row>

@@ -178,6 +178,10 @@ public class SearchBean implements Serializable {
         return searchFilter;
     }
 
+    public boolean isMaterialTypeVisible() {
+        return searchFilter.getTypeFilter().isMaterials();
+    }
+
     public List<NetObject> getShownObjects() {
         return shownObjects;
     }
@@ -216,7 +220,7 @@ public class SearchBean implements Serializable {
 
     public void toogleAdvancedSearch() {
         searchFilter.toogleAdvancedSearch();
-       
+
     }
 
     public int getTextFieldLength() {
