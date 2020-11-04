@@ -151,7 +151,7 @@ public class SearchBean implements Serializable {
     }
 
     private SearchState doSearch() {
-        SearchState searchState = new SearchState();
+        searchState = new SearchState();
         SearchResult result = searchService.search(searchFilter.createRequests());
         searchState.addNetObjects(result.getAllFoundObjects());
         searchState.addNewStats(
@@ -214,10 +214,6 @@ public class SearchBean implements Serializable {
 
     }
 
-    public boolean isAdvancedSearch() {
-        return advancedSearch;
-    }
-
     public void toogleAdvancedSearch() {
         searchFilter.toogleAdvancedSearch();
 
@@ -228,6 +224,20 @@ public class SearchBean implements Serializable {
             return 8;
         } else {
             return 6;
+        }
+    }
+
+    public boolean isMolEditorVisible() {
+        return isMaterialTypeVisible()
+                && searchFilter.isAdvancedSearch()
+                && searchFilter.getMaterialTypeFilter().isStructures();
+    }
+
+    public String getAdvancedSearchIcon() {
+        if (isSearchActive()) {
+            return "fa-minus-circle";
+        } else {
+            return "fa-plus-circle";
         }
     }
 

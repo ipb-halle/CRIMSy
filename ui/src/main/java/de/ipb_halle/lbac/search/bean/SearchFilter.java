@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -46,6 +47,7 @@ public class SearchFilter {
     private boolean advancedSearchActive;
     private int maxresults = 50;
     private final Logger logger = LogManager.getLogger(DocumentSearchService.class);
+    private String structureString = "";
 
     public SearchFilter(User user) {
         this.user = user;
@@ -59,10 +61,8 @@ public class SearchFilter {
 
     public List<SearchRequest> createRequests() {
         if (advancedSearchActive) {
-            logger.info("Do advanced Search");
             return createRequestsForAdvancedSearch();
         } else {
-            logger.info("Do simple Search");
             return createRequestsForSimpleSearch();
         }
 
@@ -79,19 +79,15 @@ public class SearchFilter {
     private List<SearchRequest> createRequestsForAdvancedSearch() {
         List<SearchRequest> requests = new ArrayList<>();
         if (typeFilter.isMaterials()) {
-            logger.info("Do advanced Search - materials");
             requests.add(createMaterialSearchRequest());
         }
         if (typeFilter.isDocuments()) {
-            logger.info("Do advanced Search - docs");
             requests.add(createDocumentRequest());
         }
         if (typeFilter.isItems()) {
-            logger.info("Do advanced Search - items");
             requests.add(createItemRequest());
         }
         if (typeFilter.isExperiments()) {
-            logger.info("Do advanced Search - exp");
             requests.add(createExperimentRequest());
         }
         if (typeFilter.isProjects()) {
@@ -106,6 +102,10 @@ public class SearchFilter {
         searchValue.materialName = searchTerms;
         if (advancedSearchActive) {
             searchValue.type.addAll(materialTypeFilter.getTypes());
+            Molecule mol = new Molecule(structureString, maxresults);
+            if (!mol.isEmptyMolecule()) {
+                searchValue.molecule = structureString;
+            }
         }
         materialRequestBuilder.setConditionsBySearchValues(searchValue);
         return materialRequestBuilder.buildSearchRequest();
@@ -148,6 +148,14 @@ public class SearchFilter {
 
     public MaterialTypeFilter getMaterialTypeFilter() {
         return materialTypeFilter;
+    }
+
+    public String getStructureString() {
+        return structureString;
+    }
+
+    public void setStructureString(String structureString) {
+        this.structureString = structureString;
     }
 
 }

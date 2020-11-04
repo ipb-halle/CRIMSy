@@ -493,11 +493,18 @@ select.selCollection {
 
 .pc_refreshButton{
     margin-top: 18px;
-    margin-left: -59px;
+    margin-left: -5px;
 }
 .advancedSearchButton{
-  margin-left: -7px;
-    margin-top: 18px;
+    margin-left: -0px;
+    margin-top: 2px;
+    padding-top:2px !important;
+    width:10px;
+    height:23px;
+}
+
+.advancedSearchButton i{ 
+    margin-left: -6px;   
 }
 
 .advancedSearchPanel .ui-tabs-top{
@@ -505,13 +512,13 @@ select.selCollection {
 }
 
 .rightLabeledCbx {
-    
+
 }
 .rightLabeledCbx > .form-group > .control-label{
     margin-left: 20px;
 }
 .rightLabeledCbx  > .form-group > .checkbox{
-    margin-top: -26px;
+    margin-top: -29px;
 }
 
 .advancedSearchHeader{
@@ -542,4 +549,13 @@ select.selCollection {
 .CloudNodeStatusWaiting {
     font-weight: bold;
     color: #fc0;
+}
+
+.advancedSearchColumn{
+    margin-left: -135px;
+}
+
+.advancedSearchHeaderTitle{
+    font-size: 1.5em;
+    margin-left: -20px;
 }
