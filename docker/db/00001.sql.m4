@@ -286,7 +286,7 @@ CREATE INDEX i_termvectors_file_id ON termvectors (file_id);
 
 
 CREATE TABLE unstemmed_words(
-  stemmed_word VARCHAR NOT NULL,
+  wordroot VARCHAR NOT NULL,
   file_id INTEGER NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
   unstemmed_word VARCHAR NOT NULL,
   PRIMARY KEY(stemmed_word,file_id, unstemmed_word),

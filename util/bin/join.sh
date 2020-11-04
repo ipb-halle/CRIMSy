@@ -43,7 +43,7 @@ function cleanUp {
 }
 
 function dialogCheckCert {
-        tmp=`sha256sum $CLOUD/chain.txt | cut -d' ' -f1`
+        tmp=`sha256sum etc/$CLOUD/chain.txt | cut -d' ' -f1`
         dialog --backtitle "Join Cloud" \
           --yesno "Please compare the checksum of the CA certificate:
 
@@ -64,7 +64,7 @@ Does this checksum match the official checksum?" 15 72
 
         openssl verify -CAfile etc/$CLOUD/chain.txt etc/$CLOUD/devcert.pem || error "Invalid developer certificate"
 
-        # ToDo: crl check
+        # ToDo: crl check?
 }
 
 function dialogDownload {
@@ -194,7 +194,7 @@ function installDB {
 
     for i in `cat $LBAC_DATASTORE/etc/clouds.cfg` ; do
         CLOUD=`echo $i | cut -d';' -f1`
-        cat $LBAC_DATASTORE/dist/etc/$CLOUD/$CLOUD.sql > $LBAC_DATASTORE/dist/etc/clouds.sql
+        cat $LBAC_DATASTORE/dist/etc/$CLOUD/$CLOUD.sql >> $LBAC_DATASTORE/dist/etc/clouds.sql
     done
 
     sudo $LBAC_DATASTORE/dist/bin/setupROOT.sh installClouds

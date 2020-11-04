@@ -657,21 +657,22 @@ if test "!" "(" -n "\$LBAC_DATASTORE" -a -d "\$LBAC_DATASTORE" \
 fi
 . \$LBAC_DATASTORE/etc/config.sh > /dev/null
 cd \$LBAC_DATASTORE
+CLOUD=`cat \$LBAC_DATASTORE/etc/primary.cfg`
 mkdir -p \$LBAC_DATASTORE/tmp 
 pushd \$LBAC_DATASTORE/tmp
 
 curl --silent --output configure.sh.sig \$LBAC_DISTRIBUTION_POINT/configure.sh.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in configure.sh.sig -certfile ../etc/devcert.pem \
-  -CAfile ../etc/chain.txt -out configure.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
+openssl smime -verify -in configure.sh.sig -certfile ../etc/\$CLOUD/devcert.pem \
+  -CAfile ../etc/\$CLOUD/chain.txt -out configure.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
   && rm configure.sh && exit 1)
 
 curl --silent --output setup.asc.sig \$LBAC_DISTRIBUTION_POINT/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in setup.asc.sig -certfile ../etc/devcert.pem \
- -CAfile ../etc/chain.txt | openssl smime -decrypt -inform PEM \
+openssl smime -verify -in setup.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
+ -CAfile ../etc/\$CLOUD/chain.txt | openssl smime -decrypt -inform PEM \
  -inkey ../etc/lbac_cert.key -passin file:../etc/lbac_cert.passwd \
  -out setup.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && rm setup.sh && exit 1)
 chmod +x setup.sh configure.sh
-mv configure.sh ../bin
+mv configure.sh \$LBAC_DATASTORE/bin
 DATE=\`date "+%Y%m%d%H%M%S"\`
 ./setup.sh \$* 2>&1 | tee "\$LBAC_DATASTORE/tmp/setup.\$DATE.log" \
  || ( echo "Setup abgebrochen" && exit 1)
@@ -866,7 +867,7 @@ function runDialogs {
                 echo "cleaning up intermediate files"
                 rm configure.sh.sig 
                 echo "Moving configure.sh to $LBAC_DATASTORE/bin"
-                mv $0 "$LBAC_DATASTORE/bin"
+                mv -f $0 "$LBAC_DATASTORE/bin"
 		exit 0
 		;;
 	*)
@@ -889,8 +890,15 @@ function runDialogs {
 # - from 3 to 4 --> removal of pgchem and SolR
 #
 function upgradeOldConfig {
-	if test x$LBAC_CONFIG_VERSION = x4 ; then
+	if test $LBAC_CONFIG_VERSION -lt 5 ; then
 
+                # move certificates of primary cloud
+                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem" && \
+                    mv "$LBAC_DATASTORE/etc/devcert.pem" "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem"
+                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt" && \
+                    mv "$LBAC_DATASTORE/etc/chain.txt" "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt"
+
+                # remove old components
                 rm -rf "$LBAC_DATASTORE/dist/pgchem" 
                 rm -rf "$LBAC_DATASTORE/dist/solr"
                 sudo rm -rf "$LBAC_DATASTORE/data/solr"

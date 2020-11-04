@@ -22,6 +22,7 @@ function importTruststore {
     keytool -storepasswd -keystore $CLOUD.truststore -storepass "$PASSIN" \
           -new "$TRUSTSTORE_PASSOUT"
 
+    chmod go+r $CLOUD.truststore
     mv $CLOUD.truststore $TOMCAT_HOME/conf/
 }
 
@@ -37,6 +38,7 @@ function importKeystore {
       -destalias $LBAC_INTERNET_FQHN -deststorepass "$KEYSTORE_PASSOUT" \
       -srcalias 1 -srcstorepass "$PASSIN"
 
+    chmod go+r $CLOUD.keystore
     mv $CLOUD.keystore $TOMCAT_HOME/conf/$CLOUD.keystore
 }
 
