@@ -523,3 +523,23 @@ select.selCollection {
     padding-top: 0px;
 }
 
+/* tiny text  e.g. on login form */
+.tinyGrayText {
+    font-size: 10px;
+    color:#666;
+}
+
+.CloudNodeStatusOk {
+    font-weight: bold;
+    color: #0d0;
+}
+
+.CloudNodeStatusFailed {
+    font-weight: bold;
+    color: #d00;
+}
+
+.CloudNodeStatusWaiting {
+    font-weight: bold;
+    color: #fc0;
+}
