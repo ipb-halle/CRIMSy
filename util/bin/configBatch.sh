@@ -95,7 +95,7 @@ function createConfiguration {
     appendCertRequest
 
     # dialog_SAVE
-    mv $TMP_CONFIG $LBAC_DATASTORE/$LBAC_CONFIG
+    mv $TMP_CONFIG $LBAC_DATASTORE/etc/$LBAC_CONFIG
     copyInstaller 
     upgradeOldConfig
     encrypt

@@ -27,7 +27,7 @@
  <version>1.0</version>
  <packaging>jar</packaging>
  
- <name>Selnium Side Filter</name>
+ <name>Selenium Side Filter</name>
  <url>http://github.com/ipb-halle/CRIMSy</url>
  
  <properties>

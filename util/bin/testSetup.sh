@@ -51,7 +51,9 @@ export -f cleanup
 function createNodeConfig {
     key=`echo $0 | cut -d' ' -f1`
     dst=`echo $0 | cut -d' ' -f2`
-    cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | cut -c9-18`
+    cloud=`grep $key "$LBAC_REPO/util/test/etc/nodeconfig.txt" | \
+        cut -c9-18 | \
+        sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
     url="http://`hostname -f`:8000/$cloud"
 
     echo "copying configBatch.sh script ..."
@@ -61,7 +63,7 @@ function createNodeConfig {
     ssh -o "StrictHostKeyChecking no" $dst "chmod +x configBatch.sh && ./configBatch.sh CONFIG $url $key"
 
     echo "fetching node configuration ..."
-    scp -q -o "StrictHostKeyChecking no" $dst:etc/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
+    scp -q -o "StrictHostKeyChecking no" $dst:etc/$cloud/config.sh.asc "$LBAC_REPO/config/nodes/$key.sh.asc"
 }
 export -f createNodeConfig
 
@@ -72,12 +74,13 @@ function installNode {
 export -f installNode
 
 function prepareSeleniumTests {
-    mkdir -p $LBAC_REPO/target/screenplay
 
+    echo "Screenplay: preparing Selenium tests"
+    mkdir -p $LBAC_REPO/target/screenplay
     pushd $LBAC_REPO/util/test/screenplay
     for side in *.side ; do
         java -jar ../target/sidefilter-1.0-jar-with-dependencies.jar \
-            SideFilter $side $LBAC_REPO/target/screenplay/$side
+            $side $LBAC_REPO/target/screenplay/$side
     done
     popd
 }
@@ -165,7 +168,7 @@ function setupTestSubCA {
     . $LBAC_CA_DIR/cloud.cfg
 
     sed -e "s,CLOUDCONFIG_DOWNLOAD_URL,$DOWNLOAD_URL," $LBAC_REPO/util/bin/configure.sh | \
-    sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD_NAME," |\
+    sed -e "s,CLOUDCONFIG_CLOUD_NAME,$CLOUD," |\
     openssl smime -sign -signer $LBAC_CA_DIR/$DEV_CERT.pem \
       -md sha256 -binary -out $LBAC_REPO/target/integration/htdocs/$cloud/configure.sh.sig \
       -stream -nodetach \
@@ -290,12 +293,13 @@ function mainFunc {
 #
 cd $LBAC_REPO
 safetyCheck
-mvn -DskipTests clean install 
+mvn --batch-mode -DskipTests clean install 
 
 pushd util/test/
-mvn clean package
+mvn --batch-mode clean package
 popd
 
+mkdir -p target
 mainFunc 2>&1 | tee $LBAC_REPO/target/test.$TEST_DATE.log
 
 echo
