@@ -19,22 +19,44 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.CloudNode;
+import de.ipb_halle.lbac.search.document.SearchWebService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import java.util.List;
+import javax.ejb.DependsOn;
+import javax.ejb.Startup;
+import javax.enterprise.context.ApplicationScoped;
+import org.apache.cxf.jaxrs.client.WebClient;
 
 /**
  *
  * @author fmauz
  */
+@ApplicationScoped
+@Startup
+@DependsOn({"NodeService"})
 public class SearchWebClient extends LbacWebClient {
-
+    
     public SearchResult getRemoteSearchResult(
             CloudNode cn,
             User user,
             List<SearchRequest> requests) {
-        SearchResult result = new SearchResultImpl();
-
-        return result;
-
+        try {
+            SearchWebRequest webRequest = new SearchWebRequest();
+            webRequest.addRequest(requests);
+            signWebRequest(webRequest, cn.getCloud().getName(), user);
+            WebClient wc = createWebclient(cn, SearchWebService.class);
+            
+            SearchWebResult result = wc.post(webRequest, SearchWebResult.class);
+            if (result != null && result.getSearchResult() != null) {
+                cn.recover();
+                cloudNodeService.save(cn);
+                return result.getSearchResult();
+                
+            } else {
+                return new SearchResultImpl();
+            }
+        } catch (Exception e) {
+            return new SearchResultImpl();
+        }
     }
 }

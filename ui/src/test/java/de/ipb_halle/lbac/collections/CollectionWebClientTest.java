@@ -69,18 +69,14 @@ public class CollectionWebClientTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("CollectionWebClientTest.war")
-               
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(Updater.class)
                 .addClass(CollectionSearchState.class)
-               
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(Navigator.class)
-               
                 .addClass(CollectionWebClient.class)
                 .addClass(CollectionWebServiceMock.class)
-              
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class);
         return UserBeanDeployment.add(deployment);
@@ -104,7 +100,7 @@ public class CollectionWebClientTest extends TestBase {
 
         Cloud c = cloudService.loadByName(TESTCLOUD);
         Node n = nodeService.getLocalNode();
-        CloudNode cn = cloudNodeService.loadCloudNode(c,n);
+        CloudNode cn = cloudNodeService.loadCloudNode(c, n);
         cn.setPublicKey(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
         cn = cloudNodeService.save(cn);
 
@@ -167,7 +163,7 @@ public class CollectionWebClientTest extends TestBase {
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
         List<Collection> readableColls
                 = collectionWebClient.getCollectionsFromRemoteNode(
-                        cn, 
+                        cn,
                         u
                 );
         Assert.assertEquals(1, readableColls.size());

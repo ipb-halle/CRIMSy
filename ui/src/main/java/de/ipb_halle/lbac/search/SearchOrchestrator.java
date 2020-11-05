@@ -58,22 +58,14 @@ public class SearchOrchestrator {
             User user,
             List<SearchRequest> requests) {
         for (Node node : nodeService.load(null, false)) {
-
             List<CloudNode> cnl = cloudNodeService.load(null, node);
-
-            if ((cnl == null) || (cnl.isEmpty())) {
-                continue;
+            if (cnl != null && !cnl.isEmpty()) {
+                startRemoteSearchForCloudNode(
+                        searchState,
+                        cnl.get(0),
+                        user,
+                        requests);
             }
-            searchState.addNoteToSearch(node.getId());
-            CompletableFuture.supplyAsync(() -> {
-                return searchWebClient.getRemoteSearchResult(cnl.get(0), user, requests);
-            }, managedExecutorService)
-                    .thenApply(
-                            remoteResult -> updateSearchState(
-                                    searchState,
-                                    remoteResult
-                            )
-                    );
         }
     }
 
@@ -90,6 +82,25 @@ public class SearchOrchestrator {
 
     public void setSearchWebClient(SearchWebClient searchWebClient) {
         this.searchWebClient = searchWebClient;
+    }
+
+    private void startRemoteSearchForCloudNode(
+            SearchState searchState,
+            CloudNode cloudNode,
+            User user,
+            List<SearchRequest> requests) {
+
+        searchState.addNoteToSearch(cloudNode.getNode().getId());
+
+        CompletableFuture.supplyAsync(() -> {
+            return searchWebClient.getRemoteSearchResult(cloudNode, user, requests);
+        }, managedExecutorService)
+                .thenApply(
+                        remoteResult -> updateSearchState(
+                                searchState,
+                                remoteResult
+                        )
+                );
     }
 
 }
