@@ -15,26 +15,8 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.webclient.LbacWebClient;
-import java.util.List;
-
-/**
- *
- * @author fmauz
- */
-public class SearchWebClient extends LbacWebClient {
-
-    public SearchResult getRemoteSearchResult(
-            CloudNode cn,
-            User user,
-            List<SearchRequest> requests) {
-        SearchResult result = new SearchResultImpl();
-
-        return result;
-
-    }
+.projectDescriptionInputArea{
+    width:100%;
 }
+

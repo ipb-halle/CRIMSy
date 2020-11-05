@@ -15,26 +15,54 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search;
+package de.ipb_halle.lbac.search.mocks;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.webclient.LbacWebClient;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.SearchWebClient;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  *
  * @author fmauz
  */
-public class SearchWebClient extends LbacWebClient {
+public class SearchWebClientMock extends SearchWebClient {
 
+    private Node node;
+    private int responseTimeInMs;
+    private boolean repsonseDelivered;
+
+    public SearchWebClientMock(Node node, int responseTimeInMs) {
+        this.node = node;
+        this.responseTimeInMs = responseTimeInMs;
+    }
+
+    @Override
     public SearchResult getRemoteSearchResult(
             CloudNode cn,
             User user,
             List<SearchRequest> requests) {
         SearchResult result = new SearchResultImpl();
-
+        Item item = new Item();
+        item.setId(1);
+        repsonseDelivered = false;
+        result.addResults(node, Arrays.asList(item));
+        try {
+            Thread.sleep(responseTimeInMs);
+        } catch (Exception e) {
+        }
+        repsonseDelivered = true;
         return result;
-
     }
+
+    public boolean isRepsonseDelivered() {
+        return repsonseDelivered;
+    }
+
 }

@@ -31,14 +31,14 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class SearchState {
-
+    
     private List<NetObject> foundObjects = new ArrayList<>();
     private Set<UUID> activeSearches = new HashSet<>();
     private float averageDocLength;
     private int totalDocs;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
-
-    public void addNetObjects(List<NetObject> objectsToAdd) {
+    
+    public synchronized void addNetObjects(List<NetObject> objectsToAdd) {
         for (NetObject noToAdd : objectsToAdd) {
             boolean alreadyIn = false;
             for (NetObject no : foundObjects) {
@@ -47,35 +47,36 @@ public class SearchState {
                 }
             }
             if (!alreadyIn) {
+                logger.info("Remove node " + noToAdd.getNode().getId());
                 activeSearches.remove(noToAdd.getNode().getId());
                 foundObjects.add(noToAdd);
             }
         }
     }
-
+    
     public void addNoteToSearch(UUID nodeId) {
         activeSearches.add(nodeId);
     }
-
+    
     public List<NetObject> getFoundObjects() {
         return foundObjects;
     }
-
+    
     public boolean isSearchActive() {
         return !activeSearches.isEmpty();
     }
-
+    
     public float getAverageDocLength() {
         return averageDocLength;
     }
-
+    
     public int getTotalDocs() {
         return totalDocs;
     }
-
-    public void addNewStats(int newTotalDocs, float newAvgLength) {
+    
+    public synchronized void addNewStats(int newTotalDocs, float newAvgLength) {
         averageDocLength = (newAvgLength * newTotalDocs + averageDocLength * totalDocs) / (totalDocs + newTotalDocs);
         totalDocs += newTotalDocs;
     }
-
+    
 }
