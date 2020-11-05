@@ -39,4 +39,8 @@ public class SearchWebRequest extends WebRequest {
         this.requests.addAll(requests);
     }
 
+    public List<SearchRequest> getSearchRequests() {
+        return requests;
+    }
+
 }

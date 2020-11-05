@@ -124,6 +124,9 @@ public class TestBase implements Serializable {
     @Inject
     protected MembershipService membershipService;
 
+    @Inject
+    protected GlobalAdmissionContext context;
+
     protected ACList acListReadable, acListNonReadable;
 
     public static WebArchive prepareDeployment(String archiveName) {

@@ -164,7 +164,7 @@ public class ExperimentServiceTest extends TestBase {
         Experiment exp1 = (Experiment) loadedExp.getAllFoundObjects().get(0).getSearchable();
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("ID", exp1.getId());
-        List<ExpRecord> loadedRecords = recordService.load(cmap,publicUser);
+        List<ExpRecord> loadedRecords = recordService.load(cmap, publicUser);
         Assert.assertEquals("Test001", ((Text) loadedRecords.get(0)).getText());
         Assert.assertEquals(exp.getExperimentId(), loadedRecords.get(0).getExperiment().getExperimentId());
         Assert.assertEquals(ExpRecordType.TEXT, loadedRecords.get(0).getType());
@@ -173,7 +173,7 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertNull(loadedRecords.get(0).getNext());
         Assert.assertEquals(1, loadedRecords.get(0).getRevision());
 
-        Text loadedById = (Text) recordService.loadById(text1.getExpRecordId(),publicUser);
+        Text loadedById = (Text) recordService.loadById(text1.getExpRecordId(), publicUser);
         Assert.assertEquals("Test001", loadedById.getText());
 
         Text text3 = new Text();
@@ -184,7 +184,7 @@ public class ExperimentServiceTest extends TestBase {
 
         text1.setNext(text3.getExpRecordId());
         recordService.saveOnly(text1);
-        loadedRecords = recordService.load(cmap,publicUser);
+        loadedRecords = recordService.load(cmap, publicUser);
         loadedRecords = recordService.orderList(loadedRecords);
         Assert.assertEquals(3, loadedRecords.size());
         Assert.assertEquals(text1.getExpRecordId(), loadedRecords.get(0).getExpRecordId());
@@ -307,8 +307,8 @@ public class ExperimentServiceTest extends TestBase {
         builder.addDescription("Phenol");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
-        
-         //Search by unreadable Material should be a success
+
+        //Search by unreadable Material should be a success
         builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.addDescription("ol");
         loadedExp = experimentService.load(builder.buildSearchRequest());
@@ -318,17 +318,8 @@ public class ExperimentServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ExperimentServiceTest.war")
-                .addClass(ExpRecordService.class)
-                .addClass(TextService.class)
-                .addClass(AssayService.class)
-                .addClass(ItemService.class)
-                .addClass(ExperimentBean.class)
-                .addClass(ExperimentService.class)
-                
-                .addClass(ItemAgent.class)
-                .addClass(MaterialAgent.class);
-        return UserBeanDeployment.add(ItemDeployment.add(deployment));
+        WebArchive deployment = prepareDeployment("ExperimentServiceTest.war");
+        return ExperimentDeployment.add(UserBeanDeployment.add(ItemDeployment.add(deployment)));
     }
 
 }

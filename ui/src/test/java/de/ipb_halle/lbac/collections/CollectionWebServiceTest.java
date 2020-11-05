@@ -27,6 +27,8 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
@@ -81,24 +83,18 @@ public class CollectionWebServiceTest
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("CollectionWebServiceTest.war")
                 .addClass(CollectionWebService.class)
-                .addPackage(CollectionService.class.getPackage())
                 .addClass(NodeService.class)
                 .addClass(KeyManager.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
-                .addPackage(WordCloudWebService.class.getPackage())
-                .addPackage(CollectionBean.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
-                .addPackage(Navigator.class.getPackage())
-                .addPackage(Updater.class.getPackage())
                 .addClass(FileService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(FileEntityService.class);
-        return UserBeanDeployment.add(deployment);
+        return ItemDeployment.add(ExperimentDeployment.add(UserBeanDeployment.add(deployment)));
     }
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         initializeKeyStoreFactory();

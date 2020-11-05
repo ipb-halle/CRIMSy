@@ -17,13 +17,27 @@
  */
 package de.ipb_halle.lbac.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author fmauz
  */
-public class SearchWebResult {
+public class SearchWebResponse {
+
+    private String statusCode = "200";
+    private SearchResult result;
 
     public SearchResult getSearchResult() {
-        return null;
+        return result;
+    }
+
+    public void setResult(SearchResult result) {
+        this.result = result;
+    }
+
+    public void setStatusCode(String code) {
+        this.statusCode = code;
     }
 }

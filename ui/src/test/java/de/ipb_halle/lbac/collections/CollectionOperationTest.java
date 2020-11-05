@@ -26,12 +26,9 @@ import de.ipb_halle.lbac.collections.mock.FileServiceMock;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.Updater;
-import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -186,17 +183,12 @@ public class CollectionOperationTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("PermissionEditBeanTest.war")
-                .addPackage(Collection.class.getPackage())
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
-                .addPackage(CollectionBean.class.getPackage())
-                .addPackage(WebRequestAuthenticator.class.getPackage())
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(CollectionSearchState.class)
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
                 .addClass(TermVectorEntityService.class)
                 .addClass(EntityManager.class)
                 .addClass(FileService.class)

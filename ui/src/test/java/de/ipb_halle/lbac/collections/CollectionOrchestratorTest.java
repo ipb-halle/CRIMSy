@@ -27,15 +27,10 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.collections.mock.CollectionWebClientMock;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -59,17 +54,12 @@ public class CollectionOrchestratorTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("CollectionOrchestratorTest.war")
-                .addPackage(CollectionOrchestrator.class.getPackage())
-                .addPackage(NodeService.class.getPackage())
-                .addPackage(Logger.class.getPackage())
-                .addPackage(Updater.class.getPackage())
                 .addClass(Navigator.class)
-                .addPackage(CollectionBean.class.getPackage())
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class)
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
+                .addClass(CollectionOrchestrator.class)
+                .addClass(CollectionWebClient.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionWebServiceMock.class);
         return UserBeanDeployment.add(deployment);

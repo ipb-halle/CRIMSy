@@ -15,30 +15,30 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material;
+package de.ipb_halle.lbac.exp;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
-import de.ipb_halle.lbac.project.ProjectService;
-
+import de.ipb_halle.lbac.exp.assay.AssayService;
+import de.ipb_halle.lbac.exp.text.TextService;
+import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 /**
  *
  * @author fmauz
  */
-public class MaterialDeployment {
-    
+public class ExperimentDeployment {
+
     public static WebArchive add(WebArchive deployment) {
-        return deployment
-                .addClass(MoleculeService.class)
-                .addClass(ProjectService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TissueService.class)
-                .addClass(MaterialService.class)
-                .addClass(TaxonomyNestingService.class);
+        WebArchive d = deployment
+                .addClass(ExpRecordService.class)
+                .addClass(TextService.class)
+                .addClass(AssayService.class)
+                .addClass(ItemService.class)
+                .addClass(ExperimentBean.class)
+                .addClass(ExperimentService.class)
+                .addClass(ItemAgent.class)
+                .addClass(MaterialAgent.class);
+        return MaterialDeployment.add(d);
     }
 }

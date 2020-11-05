@@ -25,12 +25,15 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.admission.ACEntry;
 import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectBean;
 import javax.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -45,6 +48,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.internal.runners.statements.ExpectException;
 import org.junit.runner.RunWith;
 
 /**
@@ -74,9 +78,11 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(DocumentSearchService.class)
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
+                .addClass(SearchService.class)
+                .addClass(SearchWebService.class)
                 .addClass(Updater.class)
                 .addClass(ProjectEditBean.class);
-        return UserBeanDeployment.add(deployment);
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
 
     @Test
