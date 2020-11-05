@@ -28,7 +28,9 @@
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:panel title="Allgemeine Projektinformationen">
+            <b:panel 
+                title="Allgemeine Projektinformationen"
+                collapsible="false">
                 <b:container>
                     <b:row>
                         <b:column span="1">
@@ -42,11 +44,30 @@
                                 <f:converter converterId="InputConverter" />
                             </b:inputText>
                         </b:column>
+                        <b:column span="4">
+                            <h:outputText
+                                value="Projektbeschreibung">
+                            </h:outputText>
+                        </b:column>
+                        <b:column 
+                            offset="1"
+                            span="1">
+                            <b:commandButton
+                                value="Abbrechen"
+                                action="#{navigator.navigate('project/projectOverview')}"/>
+                        </b:column>
+                        <b:column span="1">
+                            <b:commandButton
+                                value="Projekt speichern"
+                                action="#{projectEditBean.saveProject()}"/>
+                        </b:column>
+                    </b:row> 
+                    <b:row>
                         <b:column span="1">
                             <h:outputText
                                 value="Projekttyp"/>
                         </b:column>
-                        <b:column span="2">
+                        <b:column span="3">
                             <b:selectOneMenu
                                 value="#{projectEditBean.currentProjectType}"
                                 ajax="true"
@@ -55,48 +76,16 @@
                                 <f:selectItems 
                                     value="#{projectEditBean.getProjectTypes()}"/>
                             </b:selectOneMenu>
-                        </b:column>
-                        <b:column span="1">
-                            <h:outputText
-                                value="Navision Nummer"/>
-                        </b:column>
-                        <b:column span="2">
-                            <b:inputText
-                                placeholder="Bitte den Navision angeben">
-                                <f:converter converterId="InputConverter" />
-                            </b:inputText>
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:column span="1">
-                            <b:commandButton
-                                value="Abbrechen"
-                                action="#{navigator.navigate('project/projectOverview')}"
-                                />
-                        </b:column>
-                        <b:column span="1">
-                            <b:commandButton
-                                value="Projekt speichern"
-                                action="#{projectEditBean.saveProject()}"
-                                />
-                        </b:column>
-
-                    </b:row>
-                    <b:row>
-                        <b:column span="10">
-                            <h:outputText
-                                value="Projektbeschreibung">
-                            </h:outputText>
-
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:column span="10">
-                            <h:inputTextarea
-                                value="#{projectEditBean.projectDescription}">
-                                <f:converter converterId="InputConverter" />
-                            </h:inputTextarea>
-                        </b:column>
+                        </b:column> 
+                        <b:row>
+                            <b:column span="4">
+                                <h:inputTextarea
+                                    styleClass="projectDescriptionInputArea"
+                                    value="#{projectEditBean.projectDescription}">
+                                    <f:converter converterId="InputConverter" />
+                                </h:inputTextarea>
+                            </b:column>
+                        </b:row>
                     </b:row>
                 </b:container>
             </b:panel>

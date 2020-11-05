@@ -44,6 +44,7 @@ import javax.persistence.PersistenceContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -74,6 +75,7 @@ public class TermVectorEntityServiceTest extends TestBase {
     private ACListService aclistService;
 
     private Random random = new Random();
+    private User user;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -85,27 +87,34 @@ public class TermVectorEntityServiceTest extends TestBase {
                 .addClass(CollectionService.class);
     }
 
+    @After
+    public void cleanUp() {
+
+        //entityManagerService.doSqlUpdate(String.format("DELETE FROM usersgroups WHERE name='%s'", user.getName()));
+
+    }
+
     @Test
     public void test001_termVectorEntityService() {
 
-        User u = createUser(
+        user = createUser(
                 "testuser",
                 "testuser");
 
         termVectorEntityService.deleteTermVectors();
         ACList acl = new ACList();
         acl.setName("test");
-        acl.addACE(u, ACPermission.values());
+        acl.addACE(user, ACPermission.values());
         aclistService.save(acl);
-        Collection col1 = createCollection("collection1", acl, u);
-        Collection col2 = createCollection("collection2", acl, u);
+        Collection col1 = createCollection("collection1", acl, user);
+        Collection col2 = createCollection("collection2", acl, user);
         col1 = collectionService.save(col1);
         col2 = collectionService.save(col2);
 
-        FileObject fE1 = createFileObject(col1, "en", "file1", u);
-        FileObject fE2 = createFileObject(col1, "en", "file2", u);
-        FileObject fE3 = createFileObject(col1, "de", "file3", u);
-        FileObject fE4 = createFileObject(col2, "en", "file4", u);
+        FileObject fE1 = createFileObject(col1, "en", "file1", user);
+        FileObject fE2 = createFileObject(col1, "en", "file2", user);
+        FileObject fE3 = createFileObject(col1, "de", "file3", user);
+        FileObject fE4 = createFileObject(col2, "en", "file4", user);
 
         fE1 = fileEntityService.save(fE1);
         fE2 = fileEntityService.save(fE2);

@@ -28,29 +28,38 @@
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <b:form 
-            id="frmProject"
-            horizontal="true">
+            styleClass="defaultFormat"
+            id="frmProject">
             <ui:insert> 
                 <ui:include src="/WEB-INF/templates/project/components/commonProjectInformationContainer.xhtml"/>
             </ui:insert>
-            <ui:insert> 
-                <ui:include src="/WEB-INF/templates/project/components/projectACLContainer.xhtml"/>
-            </ui:insert>
-            <ui:insert> 
-                <ui:include src="/WEB-INF/templates/project/components/detailTemplateContainer.xhtml"/>
-            </ui:insert>
-             <ui:insert> 
-                <ui:include src="/WEB-INF/templates/project/components/budgetContainer.xhtml"/>
-            </ui:insert>
 
+            <p:tabView>
+                <p:tab title="Projekt Rechte">
+                    <ui:insert> 
+                        <ui:include src="/WEB-INF/templates/project/components/projectACLContainer.xhtml"/>
+                    </ui:insert>
+                </p:tab>
 
-
-
-
-
-
-          
-
+                <p:tab
+                    title="#{projectEditBean.getMaterialDetailPanelHeader('COMMON_INFORMATION')}">
+                    <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
+                        <ui:param name="action" value="COMMON_INFORMATION"/>
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    title="#{projectEditBean.getMaterialDetailPanelHeader('INDEX')}">
+                    <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
+                        <ui:param name="action" value="INDEX"/>
+                    </ui:include>
+                </p:tab>
+                <p:tab
+                    title="#{projectEditBean.getMaterialDetailPanelHeader('STRUCTURE_INFORMATION')}">
+                    <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
+                        <ui:param name="action" value="STRUCTURE_INFORMATION"/>
+                    </ui:include>
+                </p:tab>
+            </p:tabView>
         </b:form>
     </h:body>
 
