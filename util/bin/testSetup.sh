@@ -71,6 +71,17 @@ function installNode {
 }
 export -f installNode
 
+function prepareSeleniumTests {
+    mkdir -p $LBAC_REPO/target/screenplay
+
+    pushd $LBAC_REPO/util/test/screenplay
+    for side in *.side ; do
+        java -jar ../target/sidefilter-1.0-jar-with-dependencies.jar \
+            SideFilter $side $LBAC_REPO/target/screenplay/$side
+    done
+    popd
+}
+
 function runDistServer {
     cp docker/crimsyci/index.html target/integration/htdocs
     (docker inspect crimsyci_service | grep Status | grep -q running ) && docker stop crimsyci_service
@@ -90,7 +101,7 @@ function runSeleniumTests {
     cat "$LBAC_REPO/util/test/etc/$key.yml" | \
       sed -e "s/TESTBASE_HOSTNAME/$dst/" > "$LBAC_REPO/target/test/$key.yml"
 
-    pushd $LBAC_REPO/util/test/screenplay > /dev/null
+    pushd $LBAC_REPO/target/screenplay > /dev/null
     selenium-side-runner --config $LBAC_REPO/target/test/$key.yml \
         --output-directory=$LBAC_REPO/target/test/$key \
         "*.side"
@@ -260,6 +271,9 @@ function mainFunc {
     sleep 5
     popd > /dev/null
 
+    # prepare Selenium tests ..
+    prepareSeleniumTests
+
     # run Selenium tests ...
     echo "run Selenium tests ..."
     cat $HOSTLIST | xargs -l1 -i /bin/bash -c runSeleniumTests "{}"
@@ -277,6 +291,10 @@ function mainFunc {
 cd $LBAC_REPO
 safetyCheck
 mvn -DskipTests clean install 
+
+pushd util/test/
+mvn clean package
+popd
 
 mainFunc 2>&1 | tee $LBAC_REPO/target/test.$TEST_DATE.log
 
