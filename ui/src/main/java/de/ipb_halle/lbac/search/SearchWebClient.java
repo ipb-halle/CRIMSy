@@ -19,8 +19,8 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.search.document.SearchWebService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
+import java.util.Arrays;
 import java.util.List;
 import javax.ejb.DependsOn;
 import javax.ejb.Startup;
@@ -42,7 +42,10 @@ public class SearchWebClient extends LbacWebClient {
             List<SearchRequest> requests) {
         try {
             SearchWebRequest webRequest = new SearchWebRequest();
-            webRequest.addRequest(requests);
+            for (SearchRequest r : requests) {
+                webRequest.addRequest(Arrays.asList((SearchRequestImpl) r));
+            }
+
             signWebRequest(webRequest, cn.getCloud().getName(), user);
             WebClient wc = createWebclient(cn, SearchWebService.class);
 

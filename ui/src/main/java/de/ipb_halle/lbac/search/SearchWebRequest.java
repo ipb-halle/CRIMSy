@@ -33,13 +33,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SearchWebRequest extends WebRequest {
 
-    protected List<SearchRequest> requests = new ArrayList<>();
+    protected List<SearchRequestImpl> requests = new ArrayList<>();
 
-    public void addRequest(List<SearchRequest> requests) {
+    public void addRequest(List<SearchRequestImpl> requests) {
         this.requests.addAll(requests);
     }
 
-    public List<SearchRequest> getSearchRequests() {
+    public List<SearchRequestImpl> getSearchRequests() {
         return requests;
     }
 

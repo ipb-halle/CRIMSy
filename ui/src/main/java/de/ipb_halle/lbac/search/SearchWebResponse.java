@@ -17,17 +17,22 @@
  */
 package de.ipb_halle.lbac.search;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.ipb_halle.lbac.items.Item;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author fmauz
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SearchWebResponse {
 
     private String statusCode = "200";
     private SearchResult result;
+    private Item item;
 
     public SearchResult getSearchResult() {
         return result;
@@ -43,6 +48,14 @@ public class SearchWebResponse {
 
     public String getStatusCode() {
         return statusCode;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 
 }

@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.webclient;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.search.document.SearchWebService;
+import de.ipb_halle.lbac.search.SearchWebService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.HexUtil;
@@ -53,7 +53,7 @@ public class LbacWebClient implements Serializable {
 
     protected String SIGNATURE_ALGORITHM = "SHA256withRSA";
     protected int RANDOM_VALUE_LENGTH = 8;
-    
+
     @Inject
     protected NodeService nodeService;
 
@@ -121,9 +121,10 @@ public class LbacWebClient implements Serializable {
     }
 
     protected WebClient createWebclient(CloudNode cn, Class webServiceClazz) {
-        WebClient wc = SecureWebClientBuilder.createWebClient(cn, getRestApiDefaultPath(webServiceClazz));
-        wc.accept(MediaType.APPLICATION_XML_TYPE);
-        wc.type(MediaType.APPLICATION_XML_TYPE);
+        String restEndPoint = getRestApiDefaultPath(webServiceClazz);
+        WebClient wc = SecureWebClientBuilder.createWebClient(cn, restEndPoint);
+        wc.accept(MediaType.APPLICATION_XML);
+        wc.type(MediaType.APPLICATION_XML);
         return wc;
     }
 }

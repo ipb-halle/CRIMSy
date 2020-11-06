@@ -15,13 +15,17 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search.document;
+package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchRequestImpl;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.SearchWebRequest;
 import de.ipb_halle.lbac.search.SearchWebResponse;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -51,7 +55,12 @@ public class SearchWebService extends LbacWebService {
             SearchWebResponse response = new SearchWebResponse();
             try {
                 checkAuthenticityOfRequest(request);
-                response.setResult(searchService.search(request.getSearchRequests()));
+                List<SearchRequest> requests = new ArrayList<>();
+                for (SearchRequestImpl i : request.getSearchRequests()) {
+                    requests.add((SearchRequest) i);
+                }
+
+                response.setResult(searchService.search(requests));
 
             } catch (NotAuthentificatedException e2) {
                 response.setStatusCode("401:" + e2.getMessage());
