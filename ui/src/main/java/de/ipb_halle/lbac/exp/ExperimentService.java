@@ -124,8 +124,7 @@ public class ExperimentService implements Serializable {
     }
 
     public SearchResult load(SearchRequest request) {
-
-        SearchResult back = new SearchResultImpl();
+        SearchResult back = new SearchResultImpl(nodeService.getLocalNode());
         graph = createEntityGraph(request);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
 
@@ -153,7 +152,7 @@ public class ExperimentService implements Serializable {
                         e,
                         aclistService.loadById(e.getACList()),
                         memberService.loadUserById(e.getOwner()));
-                back.addResults(nodeService.getLocalNode(), Arrays.asList(exp));
+                back.addResults(Arrays.asList(exp));
             }
         }
         return back;

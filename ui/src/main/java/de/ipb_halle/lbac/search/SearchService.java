@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.service.NodeService;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -54,6 +55,8 @@ public class SearchService {
     private ContainerService containerService;
     @Inject
     private MemberService memberService;
+    @Inject
+    private NodeService nodeService;
 
     @PostConstruct
     public void init() {
@@ -64,11 +67,12 @@ public class SearchService {
                 experimentService,
                 documentService,
                 containerService,
-                memberService);
+                memberService,
+                nodeService);
     }
 
     public SearchResult search(List<SearchRequest> requests) {
-        SearchResult result = new SearchResultImpl();
+        SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         if (requests != null) {
             for (SearchRequest request : requests) {
                 result = handleSingleSearch(request, result);
@@ -91,7 +95,7 @@ public class SearchService {
 
     private SearchResult mergeResults(SearchResult totalResult, SearchResult partialResult) {
         Node node = partialResult.getNode();
-        totalResult.addResults(node, partialResult.getAllFoundObjects(node));
+        totalResult.addResults(partialResult.getAllFoundObjects(node));
         totalResult.getDocumentStatistic().merge(partialResult.getDocumentStatistic());
         return totalResult;
     }

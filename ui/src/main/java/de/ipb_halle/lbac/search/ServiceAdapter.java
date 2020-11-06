@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.service.NodeService;
 
 /**
  *
@@ -38,6 +39,7 @@ public class ServiceAdapter {
     private DocumentSearchService documentService;
     private ContainerService containerService;
     private MemberService memberService;
+    private NodeService nodeService;
 
     public ServiceAdapter(
             ItemService itemService,
@@ -46,7 +48,8 @@ public class ServiceAdapter {
             ExperimentService experimentService,
             DocumentSearchService documentService,
             ContainerService containerService,
-            MemberService memberService) {
+            MemberService memberService,
+            NodeService nodeService) {
         this.itemService = itemService;
         this.materialService = materialService;
         this.projectService = projectService;
@@ -54,11 +57,12 @@ public class ServiceAdapter {
         this.documentService = documentService;
         this.containerService = containerService;
         this.memberService = memberService;
+        this.nodeService = nodeService;
     }
 
     public SearchResult doSearch(SearchRequest request) {
         SearchTarget target = request.getSearchTarget();
-        SearchResult result = new SearchResultImpl();
+        SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         if (target == SearchTarget.EXPERIMENT) {
             result = experimentService.load(request);
         }
@@ -80,7 +84,7 @@ public class ServiceAdapter {
         if (target == SearchTarget.CONTAINER) {
             throw new UnsupportedOperationException("Not yet implemented!");
         }
-        
+
         return result;
     }
 

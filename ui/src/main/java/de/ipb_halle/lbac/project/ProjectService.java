@@ -151,7 +151,7 @@ public class ProjectService implements Serializable {
     }
 
     public SearchResult loadProjects(SearchRequest request) {
-        SearchResult result = new SearchResultImpl();
+        SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
 
         EntityGraph graph = createEntityGraph(request.getCondition());
 
@@ -169,7 +169,7 @@ public class ProjectService implements Serializable {
 
         List<ProjectEntity> entities = query.getResultList();
         for (ProjectEntity entity : entities) {
-            result.addResults(nodeService.getLocalNode(), Arrays.asList(loadDetailInfosOfProject(entity)));
+            result.addResults(Arrays.asList(loadDetailInfosOfProject(entity)));
         }
         return result;
     }

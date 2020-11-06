@@ -117,7 +117,7 @@ public class ItemService {
     }
 
     public SearchResult loadItems(SearchRequest request) {
-        SearchResult result = new SearchResultImpl();
+        SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
         permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
                 addFields(AttributeType.ITEM, AttributeType.MEMBER);
@@ -134,7 +134,7 @@ public class ItemService {
         for (ItemEntity ie : entities) {
             Item item = createItemFromEntity(ie);
             item.setHistory(loadHistoryOfItem(item));
-            result.addResults(nodeService.getLocalNode(), Arrays.asList(item));
+            result.addResults(Arrays.asList(item));
         }
 
         return result;

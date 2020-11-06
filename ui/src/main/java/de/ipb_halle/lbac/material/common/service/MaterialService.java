@@ -237,7 +237,7 @@ public class MaterialService implements Serializable {
 
     public SearchResult getReadableMaterials(SearchRequest request) {
         EntityGraph graph = createEntityGraph(request);
-        SearchResult result = new SearchResultImpl();
+        SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
 
         permissionConditionBuilder
@@ -257,7 +257,7 @@ public class MaterialService implements Serializable {
         List<MaterialEntity> entities = q.getResultList();
         for (MaterialEntity me : entities) {
             Material material = loadMaterialById(me.getMaterialid());
-            result.addResults(nodeService.getLocalNode(), Arrays.asList(material));
+            result.addResults(Arrays.asList(material));
 
         }
         return result;

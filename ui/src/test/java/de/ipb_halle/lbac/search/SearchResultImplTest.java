@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,13 @@ public class SearchResultImplTest {
 
     private UUID idOfNode1 = UUID.fromString("422352f8-024c-11eb-adc1-0242ac120002");
     private UUID idOfNode2 = UUID.fromString("5426ee2e-024c-11eb-adc1-0242ac120002");
+    private Node node1, node2;
+
+    @Before
+    public void setUp() {
+        node1 = createNode(idOfNode1);
+        node2 = createNode(idOfNode1);
+    }
 
     @Test
     public void getAllFoundObjectsTest() {
@@ -53,29 +61,28 @@ public class SearchResultImplTest {
 
     @Test
     public void getAllFoundObjectsOfNode() {
+
         SearchResultImpl searchResult = createResult();
-        List<Searchable> netObjects = searchResult.getAllFoundObjects(createNode(idOfNode1));
-        Assert.assertEquals(3, netObjects.size());
+        List<Searchable> netObjects = searchResult.getAllFoundObjects(node1);
+        Assert.assertEquals(6, netObjects.size());
     }
 
     @Test
     public void getAllFoundObjectsOfNodeAndClass() {
         SearchResultImpl searchResult = createResult();
-        List<Item> netObjects = searchResult.getAllFoundObjects(Item.class, createNode(idOfNode1));
-        Assert.assertEquals(2, netObjects.size());
+        List<Item> netObjects = searchResult.getAllFoundObjects(Item.class, node1);
+        Assert.assertEquals(4, netObjects.size());
 
     }
 
     private SearchResultImpl createResult() {
-        SearchResultImpl searchResult = new SearchResultImpl();
+        SearchResultImpl searchResult = new SearchResultImpl(node1);
         searchResult.addResults(
-                createNode(idOfNode1),
                 Arrays.asList(
                         createItem(1),
                         createItem(2),
                         createContainer(1)));
         searchResult.addResults(
-                createNode(idOfNode2),
                 Arrays.asList(
                         createItem(3),
                         createItem(4),

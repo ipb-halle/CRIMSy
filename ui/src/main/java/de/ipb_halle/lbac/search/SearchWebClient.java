@@ -35,7 +35,7 @@ import org.apache.cxf.jaxrs.client.WebClient;
 @Startup
 @DependsOn({"NodeService"})
 public class SearchWebClient extends LbacWebClient {
-    
+
     public SearchResult getRemoteSearchResult(
             CloudNode cn,
             User user,
@@ -45,18 +45,18 @@ public class SearchWebClient extends LbacWebClient {
             webRequest.addRequest(requests);
             signWebRequest(webRequest, cn.getCloud().getName(), user);
             WebClient wc = createWebclient(cn, SearchWebService.class);
-            
+
             SearchWebResponse result = wc.post(webRequest, SearchWebResponse.class);
             if (result != null && result.getSearchResult() != null) {
                 cn.recover();
                 cloudNodeService.save(cn);
                 return result.getSearchResult();
-                
+
             } else {
-                return new SearchResultImpl();
+                return new SearchResultImpl(nodeService.getLocalNode());
             }
         } catch (Exception e) {
-            return new SearchResultImpl();
+            return new SearchResultImpl(nodeService.getLocalNode());
         }
     }
 }

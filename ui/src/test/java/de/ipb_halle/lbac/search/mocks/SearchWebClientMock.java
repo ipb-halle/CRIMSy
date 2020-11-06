@@ -48,11 +48,11 @@ public class SearchWebClientMock extends SearchWebClient {
             CloudNode cn,
             User user,
             List<SearchRequest> requests) {
-        SearchResult result = new SearchResultImpl();
+        SearchResult result = new SearchResultImpl(cn.getNode());
         Item item = new Item();
         item.setId(1);
         repsonseDelivered = false;
-        result.addResults(node, Arrays.asList(item));
+        result.addResults(Arrays.asList(item));
         try {
             Thread.sleep(responseTimeInMs);
         } catch (Exception e) {

@@ -55,7 +55,7 @@ public class LbacWebClient implements Serializable {
     protected int RANDOM_VALUE_LENGTH = 8;
     
     @Inject
-    private NodeService nodeService;
+    protected NodeService nodeService;
 
     @Inject
     protected KeyManager keyManager;

@@ -177,7 +177,7 @@ public class DocumentSearchService {
 
     public SearchResult loadDocuments(SearchRequest request) {
         List<Searchable> foundDocs = new ArrayList<>();
-        SearchResult result = new SearchResultImpl();
+        SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
 
         String sql = sqlBuilder.query(request.getCondition());
@@ -197,7 +197,7 @@ public class DocumentSearchService {
 
         }
 
-        result.addResults(nodeService.getLocalNode(), foundDocs);
+        result.addResults(foundDocs);
         List<Integer> docIds = getDocIds(foundDocs);
 
         TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(

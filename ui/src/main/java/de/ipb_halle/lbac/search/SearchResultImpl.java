@@ -23,7 +23,6 @@ import de.ipb_halle.lbac.search.document.SearchStatistic;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -32,36 +31,31 @@ import java.util.Set;
 public class SearchResultImpl implements SearchResult {
 
     private Node node;
-    protected HashMap<Node, List<Searchable>> foundObjectsOfNode = new HashMap<>();
-    private SearchStatistic searchStatistic;
+    protected List<Searchable> foundObjectsOfNode = new ArrayList<>();
     private DocumentStatistic documentStatistic = new DocumentStatistic();
 
-    @Override
-    public void addResults(Node n, List<Searchable> foundObjects) {
+    public SearchResultImpl(Node n) {
         node = n;
-        if (foundObjectsOfNode.get(n) == null) {
-            foundObjectsOfNode.put(n, new ArrayList<>());
-        }
-        foundObjectsOfNode.get(n).addAll(foundObjects);
+
+    }
+
+    @Override
+    public void addResults( List<Searchable> foundObjects) {
+        foundObjectsOfNode.addAll(foundObjects);
     }
 
     @Override
     public List<NetObject> getAllFoundObjects() {
         List<NetObject> foundObjects = new ArrayList<>();
-        for (Node node : foundObjectsOfNode.keySet()) {
-            for (Searchable s : foundObjectsOfNode.get(node)) {
-                foundObjects.add(new NetObjectImpl(s, node));
-            }
+        for (Searchable s : foundObjectsOfNode) {
+            foundObjects.add(new NetObjectImpl(s, node));
         }
         return foundObjects;
     }
 
     @Override
     public List<Searchable> getAllFoundObjects(Node n) {
-        if (foundObjectsOfNode.get(n) == null) {
-            return new ArrayList<>();
-        }
-        return foundObjectsOfNode.get(n);
+        return foundObjectsOfNode;
     }
 
     @Override
