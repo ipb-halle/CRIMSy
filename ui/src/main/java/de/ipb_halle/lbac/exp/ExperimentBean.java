@@ -392,7 +392,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         builder.addTemplate(this.templateMode);
         SearchResult result = experimentService.load(builder.buildSearchRequest());
         if (!result.getAllFoundObjects().isEmpty()) {
-            return result.getAllFoundObjects(Experiment.class, result.getNodes().iterator().next());
+            return result.getAllFoundObjects(Experiment.class, result.getNode());
         } else {
             return new ArrayList<>();
         }

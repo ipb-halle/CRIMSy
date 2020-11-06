@@ -67,11 +67,10 @@ public class ProjectBean implements Serializable, ACObjectBean {
     private void reloadReadableProjects() {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
         SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
-        List<Project> readableProjects = new ArrayList<> ();
-        if (! result.getNodes().isEmpty()) {
-            readableProjects.addAll(result.getAllFoundObjects(
-                    Project.class, result.getNodes().iterator().next()));
-        }
+        List<Project> readableProjects = new ArrayList<>();
+        readableProjects.addAll(result.getAllFoundObjects(
+                Project.class, result.getNode()));
+
         Collections.sort(readableProjects, (p1, p2) -> {
             return p1.getName().compareTo(p2.getName());
         });

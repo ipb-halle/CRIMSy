@@ -245,7 +245,7 @@ public class ContainerOverviewBean implements Serializable {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(currentUser, 0, 1);
         builder.addExactName(editBean.getPreferredProjectName().trim());
         SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
-        Node n = result.getNodes().iterator().next();
+        Node n = result.getNode();
         return (Project) result.getAllFoundObjects(Project.class, n).get(0);
 
     }

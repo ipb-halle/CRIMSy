@@ -31,12 +31,14 @@ import java.util.Set;
  */
 public class SearchResultImpl implements SearchResult {
 
+    private Node node;
     protected HashMap<Node, List<Searchable>> foundObjectsOfNode = new HashMap<>();
     private SearchStatistic searchStatistic;
     private DocumentStatistic documentStatistic = new DocumentStatistic();
 
     @Override
     public void addResults(Node n, List<Searchable> foundObjects) {
+        node = n;
         if (foundObjectsOfNode.get(n) == null) {
             foundObjectsOfNode.put(n, new ArrayList<>());
         }
@@ -92,8 +94,8 @@ public class SearchResultImpl implements SearchResult {
     }
 
     @Override
-    public Set<Node> getNodes() {
-        return foundObjectsOfNode.keySet();
+    public Node getNode() {
+        return node;
     }
 
     @Override

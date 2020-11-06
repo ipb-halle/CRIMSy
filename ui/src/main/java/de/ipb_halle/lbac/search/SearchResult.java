@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.search;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.search.document.DocumentStatistic;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -28,7 +27,7 @@ import java.util.Set;
  */
 public interface SearchResult {
 
-    public Set<Node> getNodes();
+    public Node getNode();
 
     public List<NetObject> getAllFoundObjects();
 
