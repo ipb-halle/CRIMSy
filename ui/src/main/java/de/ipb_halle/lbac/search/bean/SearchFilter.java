@@ -135,7 +135,7 @@ public class SearchFilter {
     }
 
     public void setSearchTerms(String searchTerms) {
-        this.searchTerms = searchTerms;
+        this.searchTerms = searchTerms.trim().toLowerCase();
     }
 
     public void toogleAdvancedSearch() {
