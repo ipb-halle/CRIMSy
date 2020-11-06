@@ -55,8 +55,6 @@ public class SearchWebService extends LbacWebService {
 
             } catch (NotAuthentificatedException e2) {
                 response.setStatusCode("401:" + e2.getMessage());
-            } catch (Exception e) {
-                response.setStatusCode("500:" + e.getMessage());
             }
 
             return Response.ok(response).build();

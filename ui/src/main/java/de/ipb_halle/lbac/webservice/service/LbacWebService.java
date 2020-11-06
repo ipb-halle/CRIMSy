@@ -29,7 +29,7 @@ import javax.inject.Inject;
  *
  * @author fmauz
  */
-public abstract class LbacWebService implements Serializable{
+public abstract class LbacWebService implements Serializable {
 
     @Inject
     protected WebRequestAuthenticator authenticator;
@@ -61,7 +61,4 @@ public abstract class LbacWebService implements Serializable{
         this.authenticator = authenticator;
     }
 
-    public void setCloudNodeService(CloudNodeService cns) {
-        this.cloudNodeService = cns;
-    }
 }

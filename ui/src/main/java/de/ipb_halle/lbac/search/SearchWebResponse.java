@@ -40,4 +40,9 @@ public class SearchWebResponse {
     public void setStatusCode(String code) {
         this.statusCode = code;
     }
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
 }
