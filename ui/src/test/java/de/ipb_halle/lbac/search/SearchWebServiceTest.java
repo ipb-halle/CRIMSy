@@ -39,7 +39,6 @@ import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.document.SearchWebService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
@@ -149,7 +148,7 @@ public class SearchWebServiceTest extends TestBase {
         SearchWebRequest wr = createEmptyRequest();
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(context.getPublicAccount(), 0, 25);
 
-        wr.addRequest(Arrays.asList(builder.buildSearchRequest()));
+        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
         Response response = webService.search(wr);
         SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
         Node node = searchResponse.getSearchResult().getNode();

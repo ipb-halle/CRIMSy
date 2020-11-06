@@ -17,9 +17,13 @@
  */
 package de.ipb_halle.lbac.search.mocks;
 
-import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.lbac.file.TermFrequency;
-import de.ipb_halle.lbac.search.document.DocumentSearchRequest;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.SearchWebRequest;
+import de.ipb_halle.lbac.search.SearchWebResponse;
+import java.util.Arrays;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -32,7 +36,7 @@ import javax.ws.rs.core.Response;
  * @author fmauz
  */
 @Path("rest/search/")
-public class DocumentSearchEndpointMock {
+public class SearchWebServiceMock {
 
     public static int SLEEPTIME_BETWEEN_REQUESTS = 500;
     private static int request = 0;
@@ -40,22 +44,18 @@ public class DocumentSearchEndpointMock {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response search(DocumentSearchRequest request) {
+    public Response search(SearchWebRequest request) {
+        SearchWebResponse response = new SearchWebResponse();
         try {
-            System.out.println("REST Endpunkt angesprochen: " + request.getCollectionId());
-            DocumentSearchEndpointMock.request++;
-            Thread.sleep(SLEEPTIME_BETWEEN_REQUESTS * DocumentSearchEndpointMock.request);
-            Document d = new Document();
-            d.setCollectionId(request.getCollectionId());
-            d.setNodeId(request.getNodeId());
-            d.setOriginalName("Document from Remote Server");
-            d.setWordCount(100);
-            d.getTermFreqList().getTermFreq().add(new TermFrequency("java", 3));
-            request.add(d);
-        } catch (Exception e) {
 
+            SearchResult results = new SearchResultImpl(new Node());
+            response.setItem(new Item());
+
+            response.setResult(results);
+        } catch (Exception e) {
+            int i = 0;
         }
-        return Response.ok(request).build();
+        return Response.ok(response).build();
     }
 
 }

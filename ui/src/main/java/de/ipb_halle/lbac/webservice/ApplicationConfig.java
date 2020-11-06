@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.collections.CollectionWebService;
 import de.ipb_halle.lbac.device.job.JobWebService;
 import de.ipb_halle.lbac.forum.postings.PostingWebService;
 import de.ipb_halle.lbac.forum.topics.TopicsWebService;
-import de.ipb_halle.lbac.search.document.SearchWebService;
+import de.ipb_halle.lbac.search.SearchWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
 
 import java.util.Arrays;

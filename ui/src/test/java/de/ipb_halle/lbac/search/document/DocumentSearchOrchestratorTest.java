@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.search.mocks.DocumentSearchEndpointMock;
+import de.ipb_halle.lbac.search.mocks.SearchWebServiceMock;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
@@ -62,7 +62,7 @@ public class DocumentSearchOrchestratorTest extends TestBase {
                 .addClass(NodeService.class)
                 .addClass(KeyManager.class)
                 .addClass(DocumentSearchState.class)
-                .addClass(DocumentSearchEndpointMock.class)
+                .addClass(SearchWebServiceMock.class)
                 .addClass(DocumentSearchQuery.class)
                 .addClass(DocumentSearchOrchestrator.class);
     }
@@ -102,7 +102,7 @@ public class DocumentSearchOrchestratorTest extends TestBase {
 
         Assert.assertTrue(searchState.getFoundDocuments().isEmpty());
 
-        Thread.sleep(DocumentSearchEndpointMock.SLEEPTIME_BETWEEN_REQUESTS + 3000);
+        Thread.sleep(SearchWebServiceMock.SLEEPTIME_BETWEEN_REQUESTS + 3000);
         Assert.assertEquals(1, searchState.getFoundDocuments().size());
 
     }
