@@ -17,10 +17,14 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.exp.Experiment;
+import de.ipb_halle.lbac.exp.RemoteExperimentTransformer;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.RemoteItemTransformer;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.RemoteMaterialTransformer;
+import de.ipb_halle.lbac.search.document.Document;
+import de.ipb_halle.lbac.search.document.RemoteDocumentTransformer;
 
 /**
  *
@@ -35,18 +39,21 @@ public class RemoteTransformerFactory {
         if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.ITEM) {
             return new RemoteItemTransformer((Item) searchable);
         }
+        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
+            return new RemoteDocumentTransformer((Document) searchable);
+        }
+        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
+            return new RemoteExperimentTransformer((Experiment) searchable);
+        }
+
         if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.CONTAINER) {
             throw new UnsupportedOperationException("Remote transformer for CONTAINER not yet implemented ");
         }
-        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
-            throw new UnsupportedOperationException("Remote transformer for DOCUMENT not yet implemented ");
-        }
+
         if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.PROJECT) {
             throw new UnsupportedOperationException("Remote transformer for PROJECT not yet implemented ");
         }
-        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
-            throw new UnsupportedOperationException("Remote transformer for EXPERIMENT not yet implemented ");
-        }
+
         if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.USER) {
             throw new UnsupportedOperationException("Remote transformer for USER not yet implemented ");
         }
