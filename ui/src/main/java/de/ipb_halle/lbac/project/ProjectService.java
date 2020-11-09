@@ -157,8 +157,9 @@ public class ProjectService implements Serializable {
 
         SqlBuilder builder = new SqlBuilder(graph);
 
-        permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
-                addFields(AttributeType.PROJECT, AttributeType.MEMBER);
+        permissionConditionBuilder = new PermissionConditionBuilder(
+                aclistService, request.getUser(), ACPermission.permREAD)
+                .addFields(AttributeType.PROJECT, AttributeType.MEMBER);
         String sql = builder.query(
                 permissionConditionBuilder.addPermissionCondition(request.getCondition()));
 

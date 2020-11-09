@@ -50,4 +50,8 @@ public class Type {
         return generalType;
     }
 
+    public MaterialType getMaterialType() {
+        return materialType;
+    }
+
 }
