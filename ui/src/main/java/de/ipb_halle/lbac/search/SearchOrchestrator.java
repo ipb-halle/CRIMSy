@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.search.bean.SearchState;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
@@ -37,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 @Stateless
-public class SearchOrchestrator {
+public class SearchOrchestrator implements Serializable {
 
     @Inject
     private CloudNodeService cloudNodeService;
