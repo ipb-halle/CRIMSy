@@ -19,15 +19,18 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.search.document.DocumentStatistic;
-import de.ipb_halle.lbac.search.document.SearchStatistic;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author fmauz
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class SearchResultImpl implements SearchResult {
 
     private Node node;
@@ -36,11 +39,18 @@ public class SearchResultImpl implements SearchResult {
 
     public SearchResultImpl(Node n) {
         node = n;
+    }
 
+    public SearchResultImpl() {
     }
 
     @Override
-    public void addResults( List<Searchable> foundObjects) {
+    public void addResult(Searchable foundObject) {
+        foundObjectsOfNode.add(foundObject);
+    }
+
+    @Override
+    public void addResults(List<Searchable> foundObjects) {
         foundObjectsOfNode.addAll(foundObjects);
     }
 

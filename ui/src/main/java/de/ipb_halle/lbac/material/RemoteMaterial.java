@@ -23,15 +23,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  *
  * @author fmauz
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RemoteMaterial implements Searchable {
 
     private int id;
-    List<String> names = new ArrayList<>();
+    private List<String> names = new ArrayList<>();
     private Type type;
     private String moleculeString;
     private String sumFormula;
@@ -55,7 +58,11 @@ public class RemoteMaterial implements Searchable {
 
     @Override
     public boolean isEqualTo(Object other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (!(other instanceof Material)) {
+            return false;
+        } else {
+            return ((Material) other).getId() == getId();
+        }
     }
 
     @Override
@@ -97,6 +104,14 @@ public class RemoteMaterial implements Searchable {
 
     public Type getType() {
         return type;
+    }
+
+    public void setNames(List<String> names) {
+        this.names = names;
+    }
+
+    public void setIndices(Map<Integer, String> indices) {
+        this.indices = indices;
     }
 
 }

@@ -134,7 +134,7 @@ public class ItemService {
         for (ItemEntity ie : entities) {
             Item item = createItemFromEntity(ie);
             item.setHistory(loadHistoryOfItem(item));
-            result.addResults(Arrays.asList(item));
+            result.addResult(item);
         }
 
         return result;

@@ -152,7 +152,7 @@ public class ExperimentService implements Serializable {
                         e,
                         aclistService.loadById(e.getACList()),
                         memberService.loadUserById(e.getOwner()));
-                back.addResults(Arrays.asList(exp));
+                back.addResult(exp);
             }
         }
         return back;

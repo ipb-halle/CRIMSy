@@ -19,7 +19,11 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.CloudNode;
+import de.ipb_halle.lbac.items.RemoteItem;
+import de.ipb_halle.lbac.material.RemoteMaterial;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.ejb.DependsOn;
@@ -41,6 +45,7 @@ public class SearchWebClient extends LbacWebClient {
             User user,
             List<SearchRequest> requests) {
         try {
+
             SearchWebRequest webRequest = new SearchWebRequest();
             for (SearchRequest r : requests) {
                 webRequest.addRequest(Arrays.asList((SearchRequestImpl) r));
@@ -50,10 +55,13 @@ public class SearchWebClient extends LbacWebClient {
             WebClient wc = createWebclient(cn, SearchWebService.class);
 
             SearchWebResponse result = wc.post(webRequest, SearchWebResponse.class);
-            if (result != null && result.getSearchResult() != null) {
+            if (result != null) {
                 cn.recover();
                 cloudNodeService.save(cn);
-                return result.getSearchResult();
+                SearchResult searchResult = new SearchResultImpl(cn.getNode());
+                searchResult.addResults(convertRemoteObjectsToSearchable(result));
+
+                return searchResult;
 
             } else {
                 return new SearchResultImpl(nodeService.getLocalNode());
@@ -61,5 +69,19 @@ public class SearchWebClient extends LbacWebClient {
         } catch (Exception e) {
             return new SearchResultImpl(nodeService.getLocalNode());
         }
+    }
+
+    private List<Searchable> convertRemoteObjectsToSearchable(SearchWebResponse result) {
+        List<Searchable> searchables = new ArrayList<>();
+        for (Document d : result.getRemoteDocuments()) {
+            searchables.add(d);
+        }
+        for (RemoteMaterial d : result.getRemoteMaterials()) {
+            searchables.add(d);
+        }
+        for (RemoteItem d : result.getRemoteItem()) {
+            searchables.add(d);
+        }
+        return searchables;
     }
 }

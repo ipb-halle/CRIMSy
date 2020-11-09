@@ -29,6 +29,17 @@ public class Type {
     private SearchTarget generalType;
     private MaterialType materialType;
 
+    public Type() {
+    }
+
+    public void setGeneralType(SearchTarget generalType) {
+        this.generalType = generalType;
+    }
+
+    public void setMaterialType(MaterialType materialType) {
+        this.materialType = materialType;
+    }
+
     public Type(SearchTarget generalType) {
         this.generalType = generalType;
     }

@@ -17,30 +17,12 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.search.document.DocumentStatistic;
-import java.util.List;
-
 /**
  *
  * @author fmauz
  */
-public interface SearchResult {
+public interface RemoteTransformer {
 
-    public Node getNode();
-
-    public List<NetObject> getAllFoundObjects();
-
-    public List<Searchable> getAllFoundObjects(Node n);
-
-    public <T> List<NetObject> getAllFoundObjects(Class T); //T nur Searchable
-
-    public <T> List<T> getAllFoundObjects(Class T, Node n); //T nur Searchable
-
-    public void addResults(List<Searchable> foundObjects);
-    
-     public void addResult(Searchable foundObject);
-
-    public DocumentStatistic getDocumentStatistic();
+    public Searchable transformToRemote();
 
 }

@@ -17,15 +17,14 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchRequestImpl;
-import de.ipb_halle.lbac.search.SearchService;
-import de.ipb_halle.lbac.search.SearchWebRequest;
-import de.ipb_halle.lbac.search.SearchWebResponse;
+import de.ipb_halle.lbac.items.RemoteItem;
+import de.ipb_halle.lbac.material.RemoteMaterial;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,6 +40,13 @@ import org.apache.logging.log4j.LogManager;
 @Path("/search")
 @Stateless
 public class SearchWebService extends LbacWebService {
+
+    RemoteTransformerFactory transformerFactory;
+
+    @PostConstruct
+    public void init() {
+        transformerFactory = new RemoteTransformerFactory();
+    }
 
     @Inject
     private SearchService searchService;
@@ -59,17 +65,20 @@ public class SearchWebService extends LbacWebService {
                 for (SearchRequestImpl i : request.getSearchRequests()) {
                     requests.add((SearchRequest) i);
                 }
+                SearchResult localResult = searchService.search(requests);
+                for (Searchable searchable : localResult.getAllFoundObjects(localResult.getNode())) {
+                    RemoteTransformer transformer = transformerFactory.createSpecificTransformer(searchable);
+                    response.addFoundObject(transformer.transformToRemote());
 
-                response.setResult(searchService.search(requests));
-
+                }
             } catch (NotAuthentificatedException e2) {
                 response.setStatusCode("401:" + e2.getMessage());
             }
-
             return Response.ok(response).build();
         } catch (Exception e) {
             LOGGER.error(e);
             return Response.serverError().build();
         }
     }
+
 }

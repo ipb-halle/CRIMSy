@@ -45,11 +45,11 @@ public class RemoteMaterialTransformerTest {
         struc1.getIndices().add(new IndexEntry(3, "test001_index_id_3", "de"));
 
         RemoteMaterialTransformer transformer = new RemoteMaterialTransformer(struc1);
-        RemoteMaterial remoteMat = transformer.transformToRemote(struc1);
+        RemoteMaterial remoteMat = transformer.transformToRemote();
 
-        Assert.assertEquals(2, remoteMat.names.size());
-        Assert.assertEquals("test001_name1", remoteMat.names.get(0));
-        Assert.assertEquals("test001_name2", remoteMat.names.get(1));
+        Assert.assertEquals(2, remoteMat.getNames().size());
+        Assert.assertEquals("test001_name1", remoteMat.getNames().get(0));
+        Assert.assertEquals("test001_name2", remoteMat.getNames().get(1));
         Assert.assertEquals(1, remoteMat.getIndices().size());
         Assert.assertEquals("test001_index_id_3", remoteMat.getIndices().get(3));
         Assert.assertEquals("CO2", remoteMat.getSumFormula());
@@ -59,7 +59,7 @@ public class RemoteMaterialTransformerTest {
 
         struc1.setMolecule(new Molecule("MOLECULE", 100));
         transformer = new RemoteMaterialTransformer(struc1);
-        remoteMat = transformer.transformToRemote(struc1);
+        remoteMat = transformer.transformToRemote();
 
         Assert.assertEquals("MOLECULE", remoteMat.getMoleculeString());
 

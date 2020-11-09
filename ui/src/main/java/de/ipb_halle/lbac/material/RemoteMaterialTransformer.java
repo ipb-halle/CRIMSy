@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.search.RemoteTransformer;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 
@@ -27,7 +28,7 @@ import de.ipb_halle.lbac.search.bean.Type;
  *
  * @author fmauz
  */
-public class RemoteMaterialTransformer {
+public class RemoteMaterialTransformer implements RemoteTransformer {
 
     private RemoteMaterial remoteMat;
     private Material originalMat;
@@ -39,7 +40,8 @@ public class RemoteMaterialTransformer {
         remoteMat.setType(new Type(SearchTarget.MATERIAL, originalMat.getType()));
     }
 
-    public RemoteMaterial transformToRemote(Material material) {
+    @Override
+    public RemoteMaterial transformToRemote() {
         setNames();
         setStructure();
         setIndices();

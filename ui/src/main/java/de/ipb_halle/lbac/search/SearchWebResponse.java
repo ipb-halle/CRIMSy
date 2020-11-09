@@ -17,7 +17,13 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.exp.Experiment;
+import de.ipb_halle.lbac.items.RemoteItem;
+import de.ipb_halle.lbac.material.RemoteMaterial;
+import de.ipb_halle.lbac.search.document.Document;
+import de.ipb_halle.lbac.search.document.DocumentStatistic;
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -31,31 +37,81 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SearchWebResponse {
 
     private String statusCode = "200";
-    private SearchResult result;
-    private Item item;
-
-    public SearchResult getSearchResult() {
-        return result;
-    }
-
-    public void setResult(SearchResult result) {
-        this.result = result;
-    }
-
-    public void setStatusCode(String code) {
-        this.statusCode = code;
-    }
+    private DocumentStatistic documentStatistic = new DocumentStatistic();
+    List<Document> remoteDocuments = new ArrayList<>();
+    List<RemoteItem> remoteItem = new ArrayList<>();
+    List<RemoteMaterial> remoteMaterials = new ArrayList<>();
+    List<Experiment> remoteExperiments = new ArrayList<>();
 
     public String getStatusCode() {
         return statusCode;
     }
 
-    public Item getItem() {
-        return item;
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public DocumentStatistic getDocumentStatistic() {
+        return documentStatistic;
+    }
+
+    public void setDocumentStatistic(DocumentStatistic documentStatistic) {
+        this.documentStatistic = documentStatistic;
+    }
+
+    public List<Document> getRemoteDocuments() {
+        return remoteDocuments;
+    }
+
+    public void setRemoteDocuments(List<Document> remoteDocuments) {
+        this.remoteDocuments = remoteDocuments;
+    }
+
+    public List<RemoteItem> getRemoteItem() {
+        return remoteItem;
+    }
+
+    public void setRemoteItem(List<RemoteItem> remoteItem) {
+        this.remoteItem = remoteItem;
+    }
+
+    public List<RemoteMaterial> getRemoteMaterials() {
+        return remoteMaterials;
+    }
+
+    public void setRemoteMaterials(List<RemoteMaterial> remoteMaterials) {
+        this.remoteMaterials = remoteMaterials;
+    }
+
+    public List<Experiment> getRemoteExperiments() {
+        return remoteExperiments;
+    }
+
+    public void setRemoteExperiments(List<Experiment> remoteExperiments) {
+        this.remoteExperiments = remoteExperiments;
+    }
+
+    public List<Searchable> getAllFoundObjects() {
+        List<Searchable> foundDocs = new ArrayList<>();
+        foundDocs.addAll(getRemoteDocuments());
+        foundDocs.addAll(getRemoteMaterials());
+        foundDocs.addAll(getRemoteItem());
+        return foundDocs;
+    }
+
+    public void addFoundObject(Searchable searchable) {
+        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.ITEM) {
+            getRemoteItem().add((RemoteItem) searchable);
+        }
+        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.MATERIAL) {
+            getRemoteMaterials().add((RemoteMaterial) searchable);
+        }
+        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
+            getRemoteDocuments().add((Document) searchable);
+        }
+        if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
+            getRemoteExperiments().add((Experiment) searchable);
+        }
     }
 
 }

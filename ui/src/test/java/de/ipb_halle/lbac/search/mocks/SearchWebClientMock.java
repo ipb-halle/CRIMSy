@@ -52,7 +52,7 @@ public class SearchWebClientMock extends SearchWebClient {
         Item item = new Item();
         item.setId(1);
         repsonseDelivered = false;
-        result.addResults(Arrays.asList(item));
+        result.addResult(item);
         try {
             Thread.sleep(responseTimeInMs);
         } catch (Exception e) {

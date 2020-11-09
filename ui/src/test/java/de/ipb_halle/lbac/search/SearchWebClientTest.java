@@ -31,6 +31,9 @@ import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.RemoteItem;
+import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.RemoteMaterial;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.mocks.SearchWebServiceMock;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -41,6 +44,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +78,29 @@ public class SearchWebClientTest extends TestBase {
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
 
         SearchResult result = searchWebClient.getRemoteSearchResult(cn, publicUser, new ArrayList<>());
-        int i=0;
+        Assert.assertEquals(2, result.getAllFoundObjects().size());
+        RemoteMaterial material = (RemoteMaterial) result.getAllFoundObjects().get(0).getSearchable();
+        Assert.assertEquals(20, material.getId());
+        Assert.assertEquals("INDEX-1", material.getIndices().get(1));
+        Assert.assertEquals("MOLECULE", material.getMoleculeString());
+        Assert.assertEquals("STRCUTURE-1", material.getNameToDisplay());
+        Assert.assertEquals(2, material.getNames().size());
+        Assert.assertEquals("CO2", material.getSumFormula());
+        Assert.assertEquals(SearchTarget.MATERIAL, material.getType().getGeneralType());
+        Assert.assertEquals(MaterialType.STRUCTURE, material.getType().getMaterialType());
+        Assert.assertEquals(SearchTarget.MATERIAL, material.getTypeToDisplay().getGeneralType());
+        Assert.assertEquals(MaterialType.STRUCTURE, material.getTypeToDisplay().getMaterialType());
+
+        RemoteItem item = (RemoteItem) result.getAllFoundObjects().get(1).getSearchable();
+        Assert.assertEquals(10d, item.getAmount(), 0);
+        Assert.assertEquals("RemoteItem-desc", item.getDescription());
+        Assert.assertEquals(100, item.getId());
+        Assert.assertEquals("RemoteItemMaterialName", item.getMaterialName());
+        Assert.assertEquals("100 (RemoteItemMaterialName)", item.getNameToDisplay());
+        Assert.assertEquals("remoteItemProjectName", item.getProjectName());
+        Assert.assertEquals(SearchTarget.ITEM, item.getTypeToDisplay().getGeneralType());
+        Assert.assertEquals("remoteItemUnit", item.getUnit());
+
     }
 
     @Deployment

@@ -170,7 +170,7 @@ public class ProjectService implements Serializable {
 
         List<ProjectEntity> entities = query.getResultList();
         for (ProjectEntity entity : entities) {
-            result.addResults(Arrays.asList(loadDetailInfosOfProject(entity)));
+            result.addResult(loadDetailInfosOfProject(entity));
         }
         return result;
     }

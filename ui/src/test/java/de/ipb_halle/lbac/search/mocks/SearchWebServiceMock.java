@@ -17,13 +17,13 @@
  */
 package de.ipb_halle.lbac.search.mocks;
 
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.items.RemoteItem;
+import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.RemoteMaterial;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.SearchWebRequest;
 import de.ipb_halle.lbac.search.SearchWebResponse;
-import java.util.Arrays;
+import de.ipb_halle.lbac.search.bean.Type;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -47,15 +47,36 @@ public class SearchWebServiceMock {
     public Response search(SearchWebRequest request) {
         SearchWebResponse response = new SearchWebResponse();
         try {
-
-            SearchResult results = new SearchResultImpl(new Node());
-            response.setItem(new Item());
-
-            response.setResult(results);
+            createAndAddItem(response);
+            createAndAddStructure(response);
         } catch (Exception e) {
             int i = 0;
         }
         return Response.ok(response).build();
+    }
+
+    private void createAndAddItem(SearchWebResponse response) {
+        RemoteItem remoteItem = new RemoteItem();
+        remoteItem.setAmount(10d);
+        remoteItem.setDescription("RemoteItem-desc");
+        remoteItem.setId(100);
+        remoteItem.setMaterialName("RemoteItemMaterialName");
+        remoteItem.setProjectName("remoteItemProjectName");
+        remoteItem.setUnit("remoteItemUnit");
+        response.getRemoteItem().add(remoteItem);
+
+    }
+
+    private void createAndAddStructure(SearchWebResponse response) {
+        RemoteMaterial remoteStructure = new RemoteMaterial();
+        remoteStructure.setId(20);
+        remoteStructure.setMoleculeString("MOLECULE");
+        remoteStructure.setSumFormula("CO2");
+        remoteStructure.addName("STRCUTURE-1");
+        remoteStructure.addName("STRCUTURE-2");
+        remoteStructure.getIndices().put(1, "INDEX-1");
+        remoteStructure.setType(new Type(SearchTarget.MATERIAL, MaterialType.STRUCTURE));
+        response.getRemoteMaterials().add(remoteStructure);
     }
 
 }

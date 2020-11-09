@@ -32,10 +32,12 @@ import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -51,6 +53,7 @@ import javax.ws.rs.core.Response;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +80,7 @@ public class SearchWebServiceTest extends TestBase {
 
     private int publicUserId;
     private int publicAclId;
+    private Project project;
 
     @Before
     @Override
@@ -94,7 +98,16 @@ public class SearchWebServiceTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUserId = context.getPublicAccount().getId();
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
+    }
 
+    @After
+    public void cleanUp() {
+        cleanItemsFromDb();
+        cleanMaterialsFromDB();
+        if (project != null) {
+            cleanProjectFromDB(project, false);
+            project = null;
+        }
     }
 
     @Test
@@ -102,7 +115,8 @@ public class SearchWebServiceTest extends TestBase {
         SearchWebRequest wr = createEmptyRequest();
         Response response = webService.search(wr);
         SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
-        Assert.assertTrue(searchResponse.getSearchResult().getAllFoundObjects().isEmpty());
+
+        Assert.assertTrue(searchResponse.getAllFoundObjects().isEmpty());
     }
 
     @Test
@@ -111,7 +125,7 @@ public class SearchWebServiceTest extends TestBase {
         wr.setNodeIdOfRequest(null);
         Response response = webService.search(wr);
         SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
-        Assert.assertNull(searchResponse.getSearchResult());
+        Assert.assertTrue(searchResponse.getAllFoundObjects().isEmpty());
         Assert.assertEquals("401:Nodeid of webrequest was null", searchResponse.getStatusCode());
     }
 
@@ -121,7 +135,7 @@ public class SearchWebServiceTest extends TestBase {
         wr.getSignature().setCryptedMessage("WRONG CRYPTED MESSAGE");
         Response response = webService.search(wr);
         SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
-        Assert.assertNull(searchResponse.getSearchResult());
+        Assert.assertTrue(searchResponse.getAllFoundObjects().isEmpty());
         Assert.assertEquals(String.format("401:Could note authentificate request from node %s", TEST_NODE_ID), searchResponse.getStatusCode());
     }
 
@@ -131,13 +145,13 @@ public class SearchWebServiceTest extends TestBase {
         wr.getSignature().setDecryptedMessage("WRONG CLEAR MESSAGE");
         Response response = webService.search(wr);
         SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
-        Assert.assertNull(searchResponse.getSearchResult());
+        Assert.assertTrue(searchResponse.getAllFoundObjects().isEmpty());
         Assert.assertEquals(String.format("401:Could note authentificate request from node %s", TEST_NODE_ID), searchResponse.getStatusCode());
     }
 
     @Test
     public void test004_searchWithItemRequest() throws Exception {
-        Project project = creationTools.createAndSaveProject("SearchWebServiceTest-Test");
+        project = creationTools.createAndSaveProject("SearchWebServiceTest-Test");
         int materilid = materialCreator.createStructure(
                 publicUserId,
                 publicAclId,
@@ -151,10 +165,29 @@ public class SearchWebServiceTest extends TestBase {
         wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
         Response response = webService.search(wr);
         SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
-        Node node = searchResponse.getSearchResult().getNode();
-        List<Item> items = searchResponse.getSearchResult().getAllFoundObjects(Item.class, node);
+
+        List<Searchable> items = searchResponse.getAllFoundObjects();
         Assert.assertEquals(1, items.size());
-        Assert.assertEquals(itemid, items.get(0).getId(), 0);
+        Assert.assertEquals(itemid, ((RemoteItem) items.get(0)).getId(), 0);
+    }
+
+    @Test
+    public void test004_searchWithMaterialRequest() throws Exception {
+        project = creationTools.createAndSaveProject("SearchWebServiceTest-Test004");
+        int materilid = materialCreator.createStructure(
+                publicUserId,
+                publicAclId,
+                project.getId(),
+                "SearchWebServiceTest-Structure");
+
+        SearchWebRequest wr = createEmptyRequest();
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(context.getPublicAccount(), 0, 25);
+        builder.addTypes(MaterialType.STRUCTURE);
+        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
+        Response response = webService.search(wr);
+        SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
+        Assert.assertEquals(1, searchResponse.getAllFoundObjects().size());
+
     }
 
     private SearchWebRequest createEmptyRequest() throws Exception {
