@@ -42,7 +42,9 @@ import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.SearchOrchestrator;
 import de.ipb_halle.lbac.search.SearchService;
+import de.ipb_halle.lbac.search.SearchWebClient;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.FileNotFoundException;
@@ -82,6 +84,9 @@ public class SearchBeanTest extends TestBase {
     private ItemCreator itemCreator;
     private MaterialCreator materialCreator;
     private ProjectCreator projectCreator;
+
+    @Inject
+    private SearchOrchestrator orchestrator;
 
     @Before
     @Override
@@ -144,6 +149,7 @@ public class SearchBeanTest extends TestBase {
     public void test002_actionTriggerSearch() {
         SearchBean bean = new SearchBean(searchService, publicUser);
         bean.getSearchFilter().setSearchTerms("java");
+        bean.setOrchestrator(orchestrator);
         bean.actionTriggerSearch();
         List<NetObject> shownObjects = bean.getShownObjects();
         Assert.assertEquals(3, shownObjects.size());
@@ -158,10 +164,12 @@ public class SearchBeanTest extends TestBase {
                 .addClass(ArticleService.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
+                .addClass(SearchOrchestrator.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
                 .addClass(FileEntityService.class)
+                .addClass(SearchWebClient.class)
                 .addClass(ExperimentService.class)
                 .addClass(ExpRecordService.class)
                 .addClass(AssayService.class)

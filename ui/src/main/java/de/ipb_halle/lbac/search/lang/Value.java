@@ -22,10 +22,13 @@ package de.ipb_halle.lbac.search.lang;
  * @author fbroda
  */
 public class Value {
-    
+
     private Object value;
     private String argumentKey;
     private String castExpression;
+
+    public Value() {
+    }
 
     public Value(Object value) {
         this.value = value;
