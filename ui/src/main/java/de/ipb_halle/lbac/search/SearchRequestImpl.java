@@ -32,6 +32,19 @@ public class SearchRequestImpl implements SearchRequest {
     private int maxResults;
     private User user;
 
+    public SearchRequestImpl() {
+    }
+
+    public int getFirstResultIndex() {
+        return firstResultIndex;
+    }
+
+    public void setFirstResultIndex(int firstResultIndex) {
+        this.firstResultIndex = firstResultIndex;
+    }
+    
+    
+
     public SearchRequestImpl(User u, Condition condition, int firstResult, int maxResults) {
         this.firstResultIndex = firstResult;
         this.maxResults = maxResults;

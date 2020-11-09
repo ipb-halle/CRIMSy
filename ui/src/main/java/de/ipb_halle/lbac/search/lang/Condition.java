@@ -30,6 +30,8 @@ public class Condition {
     private Operator operator;
     private Value value;
 
+    public Condition() {
+    }
 
     public Condition(Attribute attribute, Operator operator, Value value) {
         if (value == null) {
@@ -38,7 +40,7 @@ public class Condition {
         if (operator.isUnary()) {
             throw new IllegalArgumentException("Used binary operator with multiple arguments");
         }
-        if (! operator.isLeafOperator()) {
+        if (!operator.isLeafOperator()) {
             throw new IllegalArgumentException("Used non-leaf operator with leaf condition");
         }
         this.attribute = attribute;
@@ -47,10 +49,10 @@ public class Condition {
     }
 
     public Condition(Attribute attribute, Operator operator) {
-        if (! operator.isUnary()) {
+        if (!operator.isUnary()) {
             throw new IllegalArgumentException("Used binary operator with single argument");
         }
-        if (! operator.isLeafOperator()) {
+        if (!operator.isLeafOperator()) {
             throw new IllegalArgumentException("Used non-leaf operator with leaf condition");
         }
         this.attribute = attribute;
@@ -61,13 +63,13 @@ public class Condition {
         if (operator.isLeafOperator()) {
             throw new IllegalArgumentException("Used leaf operator with non-leaf condition");
         }
-        if ((condition == null) 
-            || (condition.length == 0)
-            || ((condition.length == 1) && (! operator.isUnary()))
-            || ((condition.length > 1) && operator.isUnary())) {
+        if ((condition == null)
+                || (condition.length == 0)
+                || ((condition.length == 1) && (!operator.isUnary()))
+                || ((condition.length > 1) && operator.isUnary())) {
             throw new IllegalArgumentException("Illegal operator arity");
         }
-        this.conditions = condition; 
+        this.conditions = condition;
         this.operator = operator;
     }
 

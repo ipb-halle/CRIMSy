@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.NetObject;
+import de.ipb_halle.lbac.search.SearchOrchestrator;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -80,6 +81,9 @@ public class SearchBean implements Serializable {
 
     @Inject
     private UserBean userBean;
+
+    @Inject
+    private SearchOrchestrator orchestrator;
 
     public SearchBean() {
     }
@@ -157,6 +161,8 @@ public class SearchBean implements Serializable {
         searchState.addNewStats(
                 result.getDocumentStatistic().totalDocsInNode,
                 result.getDocumentStatistic().averageWordLength);
+        orchestrator.startRemoteSearch(searchState, currentUser, searchFilter.createRequests());
+
         return searchState;
     }
 
@@ -239,6 +245,10 @@ public class SearchBean implements Serializable {
         } else {
             return "fa-plus-circle";
         }
+    }
+
+    public void setOrchestrator(SearchOrchestrator orchestrator) {
+        this.orchestrator = orchestrator;
     }
 
 }

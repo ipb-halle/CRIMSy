@@ -27,13 +27,12 @@ import java.util.Set;
  * @author fmauz
  */
 public class Attribute {
-    
+
     private Set<AttributeType> types;
     private String name;
 
-
     public Attribute(Collection<AttributeType> types) {
-        this.types = new HashSet<> ();
+        this.types = new HashSet<>();
         this.types.addAll(types);
     }
 
@@ -48,7 +47,7 @@ public class Attribute {
     }
 
     private Attribute() {
-        this.types = new HashSet<> ();
+        this.types = new HashSet<>();
         this.name = "";
     }
 

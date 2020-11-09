@@ -17,9 +17,6 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.items.RemoteItem;
-import de.ipb_halle.lbac.material.RemoteMaterial;
-import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.ArrayList;
