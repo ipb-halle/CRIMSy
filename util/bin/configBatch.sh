@@ -43,6 +43,7 @@ function getTestData {
     LBAC_CITY=`echo "$data" | cut -c20-35 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
     LBAC_INSTITUTION=`echo "$data" | cut -c36-59 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
     LBAC_INSTITUTION_SHORT=`echo "$data" | cut -c50-68 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
+    LBAC_INSTITUTION_MD5=`echo -n $LBAC_INSTITUTION | md5sum | cut -c1-32`
     LBAC_MANAGER_EMAIL=`echo "$data" | cut -c70-105 | sed -e 's/^[[:blank:]]*//;s/[[:blank:]]*$//'`
 
 }
@@ -81,6 +82,7 @@ function createConfiguration {
 
     echo "LBAC_INSTITUTION=\"$LBAC_INSTITUTION\"" >> $TMP_CONFIG
     echo "LBAC_INSTITUTION_SHORT=\"$LBAC_INSTITUTION_SHORT\"" >> $TMP_CONFIG
+    echo "LBAC_INSTITUTION_MD5=\"$LBAC_INSTITUTION_MD5\"" >> $TMP_CONFIG
     echo "LBAC_MANAGER_EMAIL=\"$LBAC_MANAGER_EMAIL\"" >> $TMP_CONFIG
     echo "LBAC_INTRANET_FQHN=\"$LBAC_INTRANET_FQHN\"" >> $TMP_CONFIG
     echo "LBAC_INTERNET_FQHN=\"$LBAC_INTRANET_FQHN\"" >> $TMP_CONFIG

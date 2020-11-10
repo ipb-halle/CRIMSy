@@ -276,8 +276,10 @@ function setup {
             rm -rf $LBAC_DATASTORE/dist
         else 
             # otherwise clean up everything except dist/etc/
-            echo "cleaning up distribution directory (keeping dist/etc/) ..."
-            cleanDist
+            if test -d $LBAC_DATASTORE/dist ; then
+                echo "cleaning up distribution directory (keeping dist/etc/) ..."
+                cleanDist
+            fi
         fi
 
 	echo "Extracting archive ... "

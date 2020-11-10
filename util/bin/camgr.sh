@@ -386,10 +386,10 @@ function dialogCA {
             dialogCert "CA Name (CN)     :" "$CA_COUNTRY" "$CA_STATE" \
               "$CA_PLACE" "$CA_ORG" "$CA_OU" "$CA_EMAIL" "$CA_CN"
             dialogDownload 'this'
-            CA_CRL=$TMP_DOWNLOAD_URL/crl.pem
             DOWNLOAD_URL=$TMP_DOWNLOAD_URL
             dialogUpload
         fi
+        CA_CRL=$DOWNLOAD_URL/crl.pem
 
         if test -z "$CLOUD" ; then
             createCA
@@ -630,9 +630,10 @@ function performAction {
 	                    writeConfig
                         ;;
                 6)
+                        # probably does not make sense currently: addresses.txt must be changed as well
                         dialogDownload 'this'
-                        CA_CRL=$TMP_DOWNLOAD_URL/crl.pem
                         DOWNLOAD_URL=$TMP_DOWNLOAD_URL
+                        CA_CRL=$DOWNLOAD_URL/crl.pem
                         writeConfig
                         ;;
                 7)
@@ -828,7 +829,7 @@ function importSubCA {
         tmp=`openssl x509 -in cacert.pem -subject_hash -noout | tr -d $'\n'`
         echo -n $CLOUD$'\t'$tmp$'\t' >> addresses.txt
         tmp=`openssl x509 -in cacert.pem -fingerprint -noout | cut -d= -f2 | tr -d $':\n'`
-        echo $tmp$'\t'$DOWNLOAD_URL/cacert.pem$'\t'$DOWNLOAD_URL/crl.pem >> addresses.txt
+        echo $tmp$'\t'$DOWNLOAD_URL/cacert.pem$'\t'$CA_CRL >> addresses.txt
 
         scp cacert.pem $SCP_ADDR/cacert.pem
         scp chain.txt $SCP_ADDR/chain.txt
