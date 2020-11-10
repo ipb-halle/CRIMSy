@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentService;
+import de.ipb_halle.lbac.exp.RemoteExperiment;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
@@ -57,30 +58,30 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class SearchWebClientTest extends TestBase {
-    
+
     @Inject
     SearchWebClient searchWebClient;
-    
+
     private User publicUser;
-    
+
     @Before
     @Override
     public void setUp() {
         super.setUp();
         initializeBaseUrl();
         initializeKeyStoreFactory();
-        
+
         publicUser = context.getPublicAccount();
-        
+
     }
-    
+
     @Test
     @RunAsClient
     public void test001_getRemoteResults() {
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
-        
+
         SearchResult result = searchWebClient.getRemoteSearchResult(cn, publicUser, new ArrayList<>());
-        Assert.assertEquals(2, result.getAllFoundObjects().size());
+        Assert.assertEquals(3, result.getAllFoundObjects().size());
         RemoteMaterial material = (RemoteMaterial) result.getAllFoundObjects().get(0).getSearchable();
         Assert.assertEquals(20, material.getId());
         Assert.assertEquals("INDEX-1", material.getIndices().get(1));
@@ -92,7 +93,7 @@ public class SearchWebClientTest extends TestBase {
         Assert.assertEquals(MaterialType.STRUCTURE, material.getType().getMaterialType());
         Assert.assertEquals(SearchTarget.MATERIAL, material.getTypeToDisplay().getGeneralType());
         Assert.assertEquals(MaterialType.STRUCTURE, material.getTypeToDisplay().getMaterialType());
-        
+
         RemoteItem item = (RemoteItem) result.getAllFoundObjects().get(1).getSearchable();
         Assert.assertEquals(10d, item.getAmount(), 0);
         Assert.assertEquals("RemoteItem-desc", item.getDescription());
@@ -102,19 +103,22 @@ public class SearchWebClientTest extends TestBase {
         Assert.assertEquals("remoteItemProjectName", item.getProjectName());
         Assert.assertEquals(SearchTarget.ITEM, item.getTypeToDisplay().getGeneralType());
         Assert.assertEquals("remoteItemUnit", item.getUnit());
+
+        RemoteExperiment exp = (RemoteExperiment) result.getAllFoundObjects().get(2).getSearchable();
+        int i = 0;
     }
-    
+
     @Test
     @RunAsClient
     public void test002_seriliation() {
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.addID(1);
-        
+
         SearchResult result = searchWebClient.getRemoteSearchResult(cn, publicUser, Arrays.asList(builder.buildSearchRequest()));
-        
+
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("SearchWebClientTest.war")

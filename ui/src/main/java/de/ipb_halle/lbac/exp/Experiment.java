@@ -152,6 +152,10 @@ public class Experiment extends ACObject implements DTO, Searchable {
         return this.template;
     }
 
+    public int getProjectId() {
+        return projectId;
+    }
+
     public Integer getExperimentId() {
         return this.experimentid;
     }

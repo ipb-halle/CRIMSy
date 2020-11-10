@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.CloudNode;
+import de.ipb_halle.lbac.exp.RemoteExperiment;
 import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.material.RemoteMaterial;
 import de.ipb_halle.lbac.search.document.Document;
@@ -80,6 +81,9 @@ public class SearchWebClient extends LbacWebClient {
             searchables.add(d);
         }
         for (RemoteItem d : result.getRemoteItem()) {
+            searchables.add(d);
+        }
+        for (RemoteExperiment d : result.getRemoteExperiments()) {
             searchables.add(d);
         }
         return searchables;

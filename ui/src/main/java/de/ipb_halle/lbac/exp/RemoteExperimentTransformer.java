@@ -33,8 +33,15 @@ public class RemoteExperimentTransformer implements RemoteTransformer {
     }
 
     @Override
-    public Searchable transformToRemote() {
-        return experiment;
+    public RemoteExperiment transformToRemote() {
+        RemoteExperiment remoteExp=new RemoteExperiment();
+        remoteExp.setCode(experiment.getCode());
+        remoteExp.setCreationTime(experiment.getCreationTime());
+        remoteExp.setDescription(experiment.getDescription());
+        remoteExp.setId(experiment.getId());
+        remoteExp.setOwner(experiment.getOwner());
+        remoteExp.setProjectId(experiment.getProjectId());
+        return remoteExp;
     }
 
 }

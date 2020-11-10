@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.exp.Experiment;
+import de.ipb_halle.lbac.exp.RemoteExperiment;
 import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.material.RemoteMaterial;
 import de.ipb_halle.lbac.search.document.Document;
@@ -41,7 +42,7 @@ public class SearchWebResponse {
     List<Document> remoteDocuments = new ArrayList<>();
     List<RemoteItem> remoteItem = new ArrayList<>();
     List<RemoteMaterial> remoteMaterials = new ArrayList<>();
-    List<Experiment> remoteExperiments = new ArrayList<>();
+    List<RemoteExperiment> remoteExperiments = new ArrayList<>();
 
     public String getStatusCode() {
         return statusCode;
@@ -83,20 +84,21 @@ public class SearchWebResponse {
         this.remoteMaterials = remoteMaterials;
     }
 
-    public List<Experiment> getRemoteExperiments() {
+    public List<RemoteExperiment> getRemoteExperiments() {
         return remoteExperiments;
     }
 
-    public void setRemoteExperiments(List<Experiment> remoteExperiments) {
+    public void setRemoteExperiments(List<RemoteExperiment> remoteExperiments) {
         this.remoteExperiments = remoteExperiments;
     }
 
     public List<Searchable> getAllFoundObjects() {
-        List<Searchable> foundDocs = new ArrayList<>();
-        foundDocs.addAll(getRemoteDocuments());
-        foundDocs.addAll(getRemoteMaterials());
-        foundDocs.addAll(getRemoteItem());
-        return foundDocs;
+        List<Searchable> foundSearchables = new ArrayList<>();
+        foundSearchables.addAll(getRemoteDocuments());
+        foundSearchables.addAll(getRemoteMaterials());
+        foundSearchables.addAll(getRemoteItem());
+        foundSearchables.addAll(getRemoteExperiments());
+        return foundSearchables;
     }
 
     public void addFoundObject(Searchable searchable) {
@@ -110,7 +112,7 @@ public class SearchWebResponse {
             getRemoteDocuments().add((Document) searchable);
         }
         if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
-            getRemoteExperiments().add((Experiment) searchable);
+            getRemoteExperiments().add((RemoteExperiment) searchable);
         }
     }
 

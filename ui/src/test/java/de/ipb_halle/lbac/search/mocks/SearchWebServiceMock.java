@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.search.mocks;
 
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.exp.RemoteExperiment;
 import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.RemoteMaterial;
@@ -24,6 +27,8 @@ import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.SearchWebRequest;
 import de.ipb_halle.lbac.search.SearchWebResponse;
 import de.ipb_halle.lbac.search.bean.Type;
+import java.util.Date;
+import java.util.UUID;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -40,22 +45,28 @@ public class SearchWebServiceMock {
 
     public static int SLEEPTIME_BETWEEN_REQUESTS = 500;
     private static int request = 0;
+    private User user;
+    private Node node;
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response search(SearchWebRequest request) {
+        node = createRemoteNode();
+        user = createRemoteUser(node);
+
         SearchWebResponse response = new SearchWebResponse();
         try {
-            createAndAddItem(response);
-            createAndAddStructure(response);
+            response.getRemoteItem().add(createItem());
+            response.getRemoteMaterials().add(createStructure());
+            response.getRemoteExperiments().add(createRemoteExperiment());
         } catch (Exception e) {
-            int i = 0;
+
         }
         return Response.ok(response).build();
     }
 
-    private void createAndAddItem(SearchWebResponse response) {
+    private RemoteItem createItem() {
         RemoteItem remoteItem = new RemoteItem();
         remoteItem.setAmount(10d);
         remoteItem.setDescription("RemoteItem-desc");
@@ -63,11 +74,11 @@ public class SearchWebServiceMock {
         remoteItem.setMaterialName("RemoteItemMaterialName");
         remoteItem.setProjectName("remoteItemProjectName");
         remoteItem.setUnit("remoteItemUnit");
-        response.getRemoteItem().add(remoteItem);
+        return remoteItem;
 
     }
 
-    private void createAndAddStructure(SearchWebResponse response) {
+    private RemoteMaterial createStructure() {
         RemoteMaterial remoteStructure = new RemoteMaterial();
         remoteStructure.setId(20);
         remoteStructure.setMoleculeString("MOLECULE");
@@ -76,7 +87,40 @@ public class SearchWebServiceMock {
         remoteStructure.addName("STRCUTURE-2");
         remoteStructure.getIndices().put(1, "INDEX-1");
         remoteStructure.setType(new Type(SearchTarget.MATERIAL, MaterialType.STRUCTURE));
-        response.getRemoteMaterials().add(remoteStructure);
+        return remoteStructure;
+    }
+
+    private RemoteExperiment createRemoteExperiment() {
+        RemoteExperiment exp = new RemoteExperiment();
+        exp.setCode("REMOTE-EXP");
+        exp.setCreationTime(new Date());
+        exp.setDescription("REMOTE-EXP-DESC");
+        exp.setId(100);
+        exp.setOwner(user);
+        exp.setProjectId(200);
+        return exp;
+    }
+
+    private Node createRemoteNode() {
+        Node node = new Node();
+        node.setBaseUrl("REMOTE-NODE-URL");
+        node.setId(UUID.randomUUID());
+        node.setInstitution("REMOTE-NODE-INST");
+        node.setLocal(false);
+        node.setPublicNode(false);
+        node.setVersion("1.0");
+        return node;
+    }
+
+    private User createRemoteUser(Node node) {
+        User user = new User();
+        user.setEmail("REMOTE-USER-EMAIL");
+        user.setPhone("REMOTE-USER-PHONE");
+        user.setId(1000);
+        user.setName("REMOTE-USER");
+        user.setLogin("REMOTE-USER-LOGIN");
+        user.setNode(node);
+        return user;
     }
 
 }
