@@ -38,6 +38,8 @@ public class Value {
         return this.argumentKey;
     }
 
+   
+
     public String getCastArgument() {
         String arg = ":" + this.argumentKey;
         if (castExpression != null) {
@@ -59,4 +61,9 @@ public class Value {
         this.castExpression = castExpression;
         return this;
     }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
 }

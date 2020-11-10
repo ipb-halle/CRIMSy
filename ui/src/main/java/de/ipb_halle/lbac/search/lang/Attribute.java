@@ -78,4 +78,10 @@ public class Attribute {
         this.name = name;
         return this;
     }
+
+    public void setTypes(Set<AttributeType> types) {
+        this.types = types;
+    }
+    
+    
 }

@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.search.RemoteTransformer;
-import de.ipb_halle.lbac.search.Searchable;
 
 /**
  *

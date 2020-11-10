@@ -45,6 +45,11 @@ public class RemoteExperimentTransformatorTest {
         Assert.assertEquals("REMOTE-USER", remoteExperiment.getOwner().getNameToDisplay());
         Assert.assertEquals(0, remoteExperiment.getProjectId());
         Assert.assertEquals(SearchTarget.EXPERIMENT, remoteExperiment.getTypeToDisplay().getGeneralType());
+        Assert.assertTrue(remoteExperiment.isEqualTo(remoteExperiment));
+        RemoteExperiment otherRemoteExp = new RemoteExperiment();
+        otherRemoteExp.setId(20000);
+        Assert.assertFalse(remoteExperiment.isEqualTo(otherRemoteExp));
+        Assert.assertFalse(remoteExperiment.isEqualTo("TEXT"));
 
     }
 
