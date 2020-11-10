@@ -106,4 +106,22 @@ public class Condition {
     public boolean isLeaf() {
         return (this.conditions == null);
     }
+
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
+    }
+
+    public void setConditions(Condition[] conditions) {
+        this.conditions = conditions;
+    }
+
+    public void setOperator(Operator operator) {
+        this.operator = operator;
+    }
+
+    public void setValue(Value value) {
+        this.value = value;
+    }
+    
+    
 }

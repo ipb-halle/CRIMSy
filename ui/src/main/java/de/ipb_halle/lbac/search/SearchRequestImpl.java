@@ -42,8 +42,6 @@ public class SearchRequestImpl implements SearchRequest {
     public void setFirstResultIndex(int firstResultIndex) {
         this.firstResultIndex = firstResultIndex;
     }
-    
-    
 
     public SearchRequestImpl(User u, Condition condition, int firstResult, int maxResults) {
         this.firstResultIndex = firstResult;
@@ -81,6 +79,18 @@ public class SearchRequestImpl implements SearchRequest {
     @Override
     public void setSearchTarget(SearchTarget searchTarget) {
         this.searchTarget = searchTarget;
+    }
+
+    public void setCondition(Condition condition) {
+        this.condition = condition;
+    }
+
+    public void setMaxResults(int maxResults) {
+        this.maxResults = maxResults;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }
