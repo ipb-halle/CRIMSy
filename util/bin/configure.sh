@@ -380,7 +380,6 @@ function dialog_CERT_REQUEST {
 		  --yesno "Es wurde ein SSL-Zertifikatsantrag mit privatem Schlüssel gefunden. Antworten Sie bitte mit 'Ja', wenn Sie den Zertifikatsantrag weiter verwenden wollen und mit 'Nein', falls Sie die Zertifikatsdaten ändern wollen. Sie müssen einen neuen Zertifikatsantrag erstellen, wenn sich die Hostnamen geändert haben!" 15 72
 		case $? in
 			0)
-                                appendCertRequest
 				NEXT_FORM=DIALOG_CERT_INFO
 				;;
 			1)
@@ -491,6 +490,7 @@ $LBAC_DATASTORE/etc/$LBAC_OFFICIAL_PWFILE
 bevor Sie den Installationsprozess starten. \Z1\ZbBitte schlagen Sie für nähere Erläuterungen im Installationshandbuch nach!\Zn" 19 72
 	case $? in
 		0)
+                        appendCertRequest
 			NEXT_FORM=DIALOG_SAVE
 			;;
 		*)

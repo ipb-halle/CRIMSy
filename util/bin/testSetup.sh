@@ -232,23 +232,50 @@ function setup {
 #
 #==========================================================
 #
+function preprocess {
+        SRC=$0
+        DESTDIR=`dirname $SRC`
+        DESTFILE=`basename $SRC ".m4"`
+        pushd $LBAC_REPO >/dev/null
+        m4 $SRC > $DESTDIR/$DESTFILE
+        rm $SRC
+        popd > /dev/null
+
+}
+export -f preprocess
+#
+#==========================================================
+#
 function runTests {
     # check prerequisites
-    (docker inspect dist_proxy_1 | grep running ) || error "Service seems unavailable ..."
-
+    echo "checking prerequsites"
+    (docker inspect dist_proxy_1 2>/dev/null | grep -q running ) \
+        || error "Service seems unavailable ..."
 
     # build test containers and set up environment
-    pushd $LBAC_REPO/util/test
-    docker inspect crimsyci >/dev/null 2>/dev/null || docker build -f Dockerfile -t cypress .
+    echo "checking / building test environment"
+    pushd $LBAC_REPO/util/test >/dev/null
+    docker inspect --type image cypress >/dev/null 2>/dev/null || docker build -f Dockerfile -t cypress .
+
+    sudo rm -r $LBAC_REPO/target/cypress
     mkdir -p $LBAC_REPO/target/cypress
     cp -r cypress $LBAC_REPO/target/cypress/
+    cat <<EOF >$LBAC_REPO/target/cypress/config_m4.inc
+dnl
+dnl Cypress test fixtures configuration
+dnl
+define(\`TESTBASE_HOSTNAME',\``head -1 $HOSTLIST | cut -d' ' -f2`')dnl
+EOF
+    find $LBAC_REPO/target/cypress -type f -name "*.m4" -exec /bin/bash -c preprocess {} \;
 
     # run tests ...
-    docker run -v $LBAC_REPO/target/cypress:/app/cypress --name cy1 cypress npx cypress run
+    echo "running tests"
+    docker run -v $LBAC_REPO/target/cypress/cypress:/app/cypress --name cy1 cypress --browser firefox --headless
 
     # clean up
+    echo "removing test container"
     docker rm cy1
-    popd
+    popd >/dev/null
 }
 #
 #==========================================================
@@ -257,6 +284,9 @@ function tearDown {
 
     # tear down nodes
     cat $HOSTLIST | xargs -l1 -i /bin/bash -c cleanup "{}"
+
+    # remove target directory (needs root privilege)
+    sudo rm -r config/ target/
 
 }
 #
@@ -275,7 +305,7 @@ function mainFunc {
                 runTests
                 ;;
 
-            tearDown)
+            teardown)
                 tearDown
                 ;;
 
@@ -300,7 +330,7 @@ if [ $# -lt 2 ] ; then
     echo "TARGET must be one of 'setup', 'test' and 'teardown'"
     exit 1
 fi
-HOSTLIST=$1
+HOSTLIST=`realpath $1`
 shift
 
 TEST_DATE=`date +%Y%m%d%H%M`
@@ -308,14 +338,14 @@ TEST_DATE=`date +%Y%m%d%H%M`
 cd $LBAC_REPO
 safetyCheck
 
-mainFunc 2>&1 | tee $LBAC_REPO/config/logs/test.$TEST_DATE.log
+mainFunc $* 2>&1 | tee $LBAC_REPO/config/logs/test.$TEST_DATE.log
 
 echo
-echo "*****************************************************************"
-echo "*                                                               *"
-echo "* FINISHED!                                                     *"
-echo "* Please find your log file in config/logs/test.$TEST_DATE.log  *"
-echo "* and test outcomes in directory target/test/                   *"
-echo "*                                                               *"
-echo "*****************************************************************"
+echo "******************************************************************"
+echo "*                                                                *"
+echo "* FINISHED!                                                      *"
+echo "* Please find your log file in config/logs/test.$TEST_DATE.log *"
+echo "* and test outcomes in directory target/cypress/                 *"
+echo "*                                                                *"
+echo "******************************************************************"
 

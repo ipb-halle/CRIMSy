@@ -1,4 +1,4 @@
-FROM cypress/base:10
+FROM cypress/included:5.6.0
 WORKDIR /app
 
 # dependencies will be installed only if the package files change
@@ -12,3 +12,5 @@ RUN npm ci
 
 # verify correct Cypress installation
 RUN npx cypress verify
+
+CMD npx cypress run 
