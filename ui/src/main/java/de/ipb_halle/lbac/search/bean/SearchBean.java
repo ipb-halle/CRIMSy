@@ -108,7 +108,6 @@ public class SearchBean implements Serializable {
     }
 
     public void actionAddFoundObjectsToShownObjects() {
-
         for (NetObject noToAdd : searchState.getFoundObjects()) {
             boolean alreadyIn = false;
             for (NetObject no : shownObjects) {

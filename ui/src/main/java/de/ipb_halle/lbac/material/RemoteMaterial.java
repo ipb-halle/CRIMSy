@@ -58,10 +58,10 @@ public class RemoteMaterial implements Searchable {
 
     @Override
     public boolean isEqualTo(Object other) {
-        if (!(other instanceof Material)) {
+        if (!(other instanceof RemoteMaterial)) {
             return false;
         } else {
-            return ((Material) other).getId() == getId();
+            return ((RemoteMaterial) other).getId() == getId();
         }
     }
 
