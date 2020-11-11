@@ -19,22 +19,6 @@
 #
 #==========================================================
 #
-p=`dirname $0`
-export LBAC_REPO=`realpath "$p/../.."`
-umask 0022
-
-if [ $# -eq 0 ] ; then
-    echo "usage: `basename $0` HOSTLIST"
-    echo 
-    echo "HOSTLIST is a file containing one nodekey hostname pair per line"
-    exit 1
-fi
-HOSTLIST=$1
-TEST_DATE=`date +%Y%m%d%H%M`
-
-#
-#==========================================================
-#
 function buildDistServer {
     pushd docker/crimsyci > /dev/null
     docker inspect crimsyci >/dev/null 2>/dev/null || docker build -f Dockerfile -t crimsyci .
@@ -67,23 +51,16 @@ function createNodeConfig {
 }
 export -f createNodeConfig
 
+function error {
+    echo $1
+    exit 1
+}
+
 function installNode {
     dst=`echo $0 | cut -d' ' -f2`
     ssh -o "StrictHostKeyChecking no" $dst "./bin/install.sh"
 }
 export -f installNode
-
-function prepareSeleniumTests {
-
-    echo "Screenplay: preparing Selenium tests"
-    mkdir -p $LBAC_REPO/target/screenplay
-    pushd $LBAC_REPO/util/test/screenplay
-    for side in *.side ; do
-        java -jar ../target/sidefilter-1.0-jar-with-dependencies.jar \
-            $side $LBAC_REPO/target/screenplay/$side
-    done
-    popd
-}
 
 function runDistServer {
     cp docker/crimsyci/index.html target/integration/htdocs
@@ -95,22 +72,6 @@ function runDistServer {
         --detach --name crimsyci_service \
         crimsyci
 }
-
-function runSeleniumTests {
-    key=`echo $0 | cut -d' ' -f1`
-    dst=`echo $0 | cut -d' ' -f2`
-
-    mkdir -p "$LBAC_REPO/target/test/$key"
-    cat "$LBAC_REPO/util/test/etc/$key.yml" | \
-      sed -e "s/TESTBASE_HOSTNAME/$dst/" > "$LBAC_REPO/target/test/$key.yml"
-
-    pushd $LBAC_REPO/target/screenplay > /dev/null
-    selenium-side-runner --config $LBAC_REPO/target/test/$key.yml \
-        --output-directory=$LBAC_REPO/target/test/$key \
-        "*.side"
-    popd > /dev/null
-}
-export -f runSeleniumTests
 
 function safetyCheck {
     if [ -d config ] ; then
@@ -131,7 +92,7 @@ EOF
 
         fi
     fi
-    mkdir -p config
+    mkdir -p config/logs
     cat > config/INTEGRATION_TEST << EOF
 *****************************************************************
 *                                                               *
@@ -225,7 +186,7 @@ export -f setupTestCAconf
 #
 #==========================================================
 #
-function mainFunc {
+function setup {
     cat $LBAC_REPO/util/test/etc/cloudconfig.txt | \
         xargs -l1 -i /bin/bash -c setupTestCAconf "{}"
 
@@ -267,46 +228,94 @@ function mainFunc {
     echo "sleep 15 seconds to settle everything ..."
     sleep 15
 
-    # start test containers
-    echo "start test containers ..."
-    pushd $LBAC_REPO/util/test/etc > /dev/null
-    docker-compose up -d
-    sleep 5
-    popd > /dev/null
-
-    # prepare Selenium tests ..
-    prepareSeleniumTests
-
-    # run Selenium tests ...
-    echo "run Selenium tests ..."
-    cat $HOSTLIST | xargs -l1 -i /bin/bash -c runSeleniumTests "{}"
-
-    #
-    # tear down everything
-    cat $HOSTLIST | xargs -l1 -i /bin/bash -c cleanup "{}"
-    pushd $LBAC_REPO/util/test/etc > /dev/null
-    docker-compose down --rmi local --remove-orphans
-    popd > /dev/null
 }
 #
 #==========================================================
 #
+function runTests {
+    # check prerequisites
+    (docker inspect dist_proxy_1 | grep running ) || error "Service seems unavailable ..."
+
+
+    # build test containers and set up environment
+    pushd $LBAC_REPO/util/test
+    docker inspect crimsyci >/dev/null 2>/dev/null || docker build -f Dockerfile -t cypress .
+    mkdir -p $LBAC_REPO/target/cypress
+    cp -r cypress $LBAC_REPO/target/cypress/
+
+    # run tests ...
+    docker run -v $LBAC_REPO/target/cypress:/app/cypress --name cy1 cypress npx cypress run
+
+    # clean up
+    docker rm cy1
+    popd
+}
+#
+#==========================================================
+#
+function tearDown {
+
+    # tear down nodes
+    cat $HOSTLIST | xargs -l1 -i /bin/bash -c cleanup "{}"
+
+}
+#
+#==========================================================
+#
+function mainFunc {
+
+    for action  in $* ; do
+        case $action in
+            setup)
+                mvn --batch-mode -DskipTests clean install
+                setup
+                ;;
+
+            test)
+                runTests
+                ;;
+
+            tearDown)
+                tearDown
+                ;;
+
+            *)
+                echo "WARNING: Ignoring unrecognized target."
+                ;;
+        esac
+    done
+}
+#
+#==========================================================
+#
+p=`dirname $0`
+export LBAC_REPO=`realpath "$p/../.."`
+umask 0022
+
+if [ $# -lt 2 ] ; then
+    echo "usage: `basename $0` HOSTLIST TARGET [TARGET ...]"
+    echo
+    echo "HOSTLIST is a file containing one nodekey hostname pair per line"
+    echo
+    echo "TARGET must be one of 'setup', 'test' and 'teardown'"
+    exit 1
+fi
+HOSTLIST=$1
+shift
+
+TEST_DATE=`date +%Y%m%d%H%M`
+
 cd $LBAC_REPO
 safetyCheck
-mvn --batch-mode -DskipTests clean install 
 
-pushd util/test/
-mvn --batch-mode clean package
-popd
-
-mkdir -p target
-mainFunc 2>&1 | tee $LBAC_REPO/target/test.$TEST_DATE.log
+mainFunc 2>&1 | tee $LBAC_REPO/config/logs/test.$TEST_DATE.log
 
 echo
-echo "***********************************************************************"
-echo "*                                                                     *"
-echo "* Finished. Please find your log file in target/test.$TEST_DATE.log *"
-echo "* and test outcomes in directory target/test/                         *"
-echo "*                                                                     *"
-echo "***********************************************************************"
+echo "*****************************************************************"
+echo "*                                                               *"
+echo "* FINISHED!                                                     *"
+echo "* Please find your log file in config/logs/test.$TEST_DATE.log  *"
+echo "* and test outcomes in directory target/test/                   *"
+echo "*                                                               *"
+echo "*****************************************************************"
 
