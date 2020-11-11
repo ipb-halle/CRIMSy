@@ -68,7 +68,6 @@ public class SearchBean implements Serializable {
     protected RelevanceCalculator relevanceCalculator = new RelevanceCalculator(new ArrayList<>());
     protected User currentUser;
     StemmedWordGroup normalizedTerms;
-    protected boolean advancedSearch;
 
     @Inject
     private MaterialOverviewBean materialBean;
@@ -241,7 +240,7 @@ public class SearchBean implements Serializable {
     }
 
     public String getAdvancedSearchIcon() {
-        if (isSearchActive()) {
+        if (searchFilter.isAdvancedSearch()) {
             return "fa-minus-circle";
         } else {
             return "fa-plus-circle";
