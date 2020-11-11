@@ -54,6 +54,9 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class SearchBean implements Serializable {
 
+    private final int POLLING_INTERVALL_ACTIVE = 1000;
+    private final int POLLING_INTERVALL_INACTIVE = 1000 * 60 * 60;
+
     @Inject
     private SearchService searchService;
 
@@ -215,9 +218,7 @@ public class SearchBean implements Serializable {
             experimentBean.setExperiment((Experiment) no.getSearchable());
             experimentBean.loadExpRecords();
             navigator.navigate("exp/experiments");
-
         }
-
     }
 
     public void toogleAdvancedSearch() {
@@ -249,6 +250,14 @@ public class SearchBean implements Serializable {
 
     public void setOrchestrator(SearchOrchestrator orchestrator) {
         this.orchestrator = orchestrator;
+    }
+
+    public int getPollIntervall() {
+        if (isSearchActive()) {
+            return POLLING_INTERVALL_ACTIVE;
+        } else {
+            return POLLING_INTERVALL_INACTIVE;
+        }
     }
 
 }

@@ -52,9 +52,9 @@
                                       >
 
                                 <b:poll id="searchPoll"
-                                        interval="#{documentSearchBean.getPollIntervall()}" 
+                                        interval="#{searchBean.getPollIntervall()}" 
                                         update="spinningIcon newDocumentsBadge searchPoll addDocumentButton"
-                                        actionListener="#{documentSearchBean.refreshDocumentsToShow}"/>
+                                        />
 
                                 <b:poll id="refreshPollTable"
                                         interval="#{documentSearchBean.getTableRefreshPollIntervall()}"
@@ -98,7 +98,7 @@
                                                  type="button"
                                                  action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
                                                  ajax="true"
-                                                 update="newDocumentsBadge spinningIcon form1:searchPoll addDocumentButton"
+                                                 update="foundObjectDataTableId newDocumentsBadge spinningIcon form1:searchPoll addDocumentButton"
                                                  icon-align="right"
                                                  rendered="true"
                                                  value="#{msgs.searchMgr_fetchButton}">
@@ -137,6 +137,8 @@
                         </b:row>
                         <b:row  styleClass="defaultFormat">
                             <b:dataTable
+                                styleClass="foundObjectDataTable"
+                                id="foundObjectDataTableId"
                                 var="searchable"
                                 value="#{searchBean.shownObjects}">
                                 <b:dataTableColumn
