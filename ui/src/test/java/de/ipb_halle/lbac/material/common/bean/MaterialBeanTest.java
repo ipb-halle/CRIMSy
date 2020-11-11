@@ -55,7 +55,6 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -218,7 +217,6 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(CollectionOrchestrator.class)
                         .addClass(EntityManagerService.class)
                         .addClass(TermVectorEntityService.class)
-                        .addClass(DocumentSearchBean.class)
                         .addClass(DocumentSearchService.class)
                         .addClass(MoleculeService.class)
                         .addClass(ProjectBean.class)

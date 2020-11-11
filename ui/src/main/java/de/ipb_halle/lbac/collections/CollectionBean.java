@@ -31,7 +31,6 @@ import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
@@ -98,8 +97,7 @@ public class CollectionBean implements Serializable, ACObjectBean {
     private ACObjectController acObjectController;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    @Inject
-    protected DocumentSearchBean documentSearchBean;
+   
 
     @Inject
     protected MemberService memberService;
@@ -209,7 +207,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
         if (isOwner || acListService.isPermitted(ACPermission.permDELETE, activeCollection, currentAccount)) {
             collectionOperation.clearCollection(activeCollection, currentAccount);
             fileService.createDir(activeCollection.getName());
-            documentSearchBean.clearBean();
             refreshCollectionList();
         } else {
             UIMessage.info(MESSAGE_BUNDLE, "collMgr_clear_no_permission");
@@ -239,7 +236,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
     public void actionDelete() {
         if (collPermAnalyser.isDeleteAllowed(activeCollection, currentAccount)) {
             CollectionOperation.OperationState state = collectionOperation.deleteCollection(activeCollection, currentAccount);
-            documentSearchBean.clearBean();
             if (state == CollectionOperation.OperationState.OPERATION_SUCCESS) {
 
                 collectionSearchState.getCollections().remove(activeCollection);

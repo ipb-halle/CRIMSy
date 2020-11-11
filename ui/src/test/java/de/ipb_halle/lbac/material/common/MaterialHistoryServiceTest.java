@@ -34,7 +34,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -78,7 +77,6 @@ public class MaterialHistoryServiceTest extends TestBase {
                 .addClass(CollectionOrchestrator.class)
                 .addClass(EntityManagerService.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(MoleculeService.class)
                 .addClass(ProjectService.class)

@@ -28,7 +28,6 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.mock.CollectionBeanMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
@@ -59,8 +58,6 @@ public class CollectionBeanTest extends TestBase {
     @Inject
     private CollectionOrchestrator orchestrator;
 
-    private DocumentSearchBean searchBean;
-
     private CollectionBean bean;
 
     private User publicUser;
@@ -70,7 +67,6 @@ public class CollectionBeanTest extends TestBase {
         super.setUp();
         bean = new CollectionBeanMock()
                 .setCollectionService(collectionService)
-                .setDocumentSearchBean(searchBean)
                 .setFileService(fileService)
                 .setFileEntityService(fileEntityService)
                 .setGlobalAdmissionContext(context)
@@ -123,7 +119,6 @@ public class CollectionBeanTest extends TestBase {
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
                 .addClass(CollectionBean.class)
-                .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(DocumentSearchOrchestrator.class)

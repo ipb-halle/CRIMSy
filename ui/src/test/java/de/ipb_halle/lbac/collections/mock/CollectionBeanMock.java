@@ -21,10 +21,8 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.service.FileService;
 
@@ -34,10 +32,7 @@ import de.ipb_halle.lbac.service.FileService;
  */
 public class CollectionBeanMock extends CollectionBean {
 
-    public CollectionBeanMock setDocumentSearchBean(DocumentSearchBean bean) {
-        this.documentSearchBean = bean;
-        return this;
-    }
+    
 
     public CollectionBeanMock setMemberService(MemberService service) {
         this.memberService = service;

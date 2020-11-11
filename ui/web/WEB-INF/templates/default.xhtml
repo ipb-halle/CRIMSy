@@ -48,18 +48,11 @@
                         <b:row styleClass="defaultFormat">
                             <b:column colMd="#{searchBean.getTextFieldLength()}"
                                       colXs="#{searchBean.getTextFieldLength()}" 
-                                      offset="1"
-                                      >
+                                      offset="1">
 
                                 <b:poll id="searchPoll"
                                         interval="#{searchBean.getPollIntervall()}" 
-                                        update="spinningIcon newDocumentsBadge searchPoll addDocumentButton"
-                                        />
-
-                                <b:poll id="refreshPollTable"
-                                        interval="#{documentSearchBean.getTableRefreshPollIntervall()}"
-                                        update="refreshPollTable"
-                                        stop="#{documentSearchBean.getTableRefreshPollState()}" />
+                                        update="spinningIcon newDocumentsBadge searchPoll addDocumentButton"/>
 
                                 <b:inputText styleClass="searchRequest"
                                              placeholder=" #{msgs.searchMgr_searchtext_placeholder}"
@@ -78,7 +71,7 @@
                                                          action="#{searchBean.actionTriggerSearch()}"
                                                          onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
                                                          ajax="true"
-                                                         update="@form  spinningIcon newDocumentsBadge searchPoll refreshPollTable"
+                                                         update="@form  spinningIcon newDocumentsBadge"
                                                          icon="search"
                                                          icon-align="left"/>
                                     </f:facet>
@@ -98,7 +91,7 @@
                                                  type="button"
                                                  action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
                                                  ajax="true"
-                                                 update="foundObjectDataTableId newDocumentsBadge spinningIcon form1:searchPoll addDocumentButton"
+                                                 update="foundObjectDataTableId newDocumentsBadge spinningIcon addDocumentButton"
                                                  icon-align="right"
                                                  rendered="true"
                                                  value="#{msgs.searchMgr_fetchButton}">

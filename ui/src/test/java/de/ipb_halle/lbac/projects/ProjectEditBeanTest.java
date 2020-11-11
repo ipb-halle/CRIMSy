@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchService;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
 import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.SearchWebService;
@@ -69,7 +68,6 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(ProjectService.class)
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
-                .addClass(DocumentSearchBean.class)
                 .addClass(CollectionBean.class)
                 .addClass(DocumentSearchOrchestrator.class)
                 .addClass(WebRequestAuthenticator.class)
