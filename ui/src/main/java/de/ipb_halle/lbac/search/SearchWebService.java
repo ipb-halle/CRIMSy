@@ -48,12 +48,15 @@ public class SearchWebService extends LbacWebService {
     @Inject
     private SearchService searchService;
 
-    private final Logger LOGGER = LogManager.getLogger(SearchWebService.class);
+    private final Logger logger = LogManager.getLogger(SearchWebService.class);
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response search(SearchWebRequest request) {
+        logger.info("---------------");
+        logger.info("Got a Request " + request);
+        request.switchToLocalMode();
         try {
             SearchWebResponse response = new SearchWebResponse();
             try {
@@ -71,9 +74,11 @@ public class SearchWebService extends LbacWebService {
             } catch (NotAuthentificatedException e2) {
                 response.setStatusCode("401:" + e2.getMessage());
             }
+            logger.info("Will send the response back" + response + "---> " + response.getAllFoundObjects().size());
+
             return Response.ok(response).build();
         } catch (Exception e) {
-            LOGGER.error(e);
+            logger.error(e);
             return Response.serverError().build();
         }
     }

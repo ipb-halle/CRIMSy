@@ -47,9 +47,20 @@ public class SearchWebRequest extends WebRequest {
         this.requests = requests;
     }
 
-    
     public List<SearchRequestImpl> getSearchRequests() {
         return requests;
+    }
+
+    public void switchToTransferMode() {
+        for (SearchRequestImpl impl : requests) {
+            impl.switchToTransferMode();
+        }
+    }
+
+    public void switchToLocalMode() {
+        for (SearchRequestImpl impl : requests) {
+            impl.switchToLocalMode();
+        }
     }
 
 }

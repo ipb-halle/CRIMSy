@@ -55,6 +55,11 @@ public enum Operator {
     private boolean unary;
     private String sql;
 
+    private Operator() {
+    }
+
+    
+    
     private Operator(String sql, boolean leafOperator, boolean unary) {
             this(sql, leafOperator, unary, false);
     }
@@ -92,4 +97,22 @@ public enum Operator {
     public String getSql() {
         return this.sql;        
     }
+
+    public void setLeafOperator(boolean leafOperator) {
+        this.leafOperator = leafOperator;
+    }
+
+    public void setPrefixOperator(boolean prefixOperator) {
+        this.prefixOperator = prefixOperator;
+    }
+
+    public void setUnary(boolean unary) {
+        this.unary = unary;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+    
+    
 }

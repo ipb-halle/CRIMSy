@@ -17,7 +17,10 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -26,9 +29,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Value {
 
+    @XmlTransient
     private Object value;
+
     private String argumentKey;
     private String castExpression;
+
+    private HashSet valueSet;
+    private ArrayList valueList;
+    private Object singleValue;
 
     public Value() {
     }
@@ -65,6 +74,30 @@ public class Value {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public HashSet getValueSet() {
+        return valueSet;
+    }
+
+    public void setValueSet(HashSet valueSet) {
+        this.valueSet = valueSet;
+    }
+
+    public ArrayList getValueList() {
+        return valueList;
+    }
+
+    public void setValueList(ArrayList valueList) {
+        this.valueList = valueList;
+    }
+
+    public Object getSingleValue() {
+        return singleValue;
+    }
+
+    public void setSingleValue(Object singleValue) {
+        this.singleValue = singleValue;
     }
 
 }

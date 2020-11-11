@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 public class SearchFilter {
 
     private User user;
-    private String searchTerms;
+    private String searchTerms="";
     private SearchableTypeFilter typeFilter;
     private MaterialTypeFilter materialTypeFilter;
 

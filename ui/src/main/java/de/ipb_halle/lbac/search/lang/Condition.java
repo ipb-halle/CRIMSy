@@ -17,7 +17,10 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -123,6 +126,35 @@ public class Condition {
 
     public void setValue(Value value) {
         this.value = value;
+    }
+
+    public void switchToTransferMode() {
+        if (value != null && value.getValue() != null) {
+            if (value.getValue() instanceof Set) {
+                value.setValueSet((HashSet) value.getValue());
+            } else if (value.getValue() instanceof List) {
+                value.setValueList((ArrayList) value.getValue());
+            } else {
+                value.setSingleValue(value.getValue());
+            }
+            value.setValue(null);
+        }
+
+    }
+
+    public void switchToLocalMode() {
+        if (value != null) {
+            if (value.getSingleValue() != null) {
+                value.setValue(value.getSingleValue());
+            }
+            if (value.getValueList() != null) {
+                value.setValue(value.getValueList());
+            }
+            if (value.getValueSet() != null) {
+                value.setValue(value.getValueSet());
+            }
+        }
+
     }
 
 }

@@ -35,14 +35,19 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.RemoteMaterial;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.search.bean.SearchFilter;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.mocks.SearchWebServiceMock;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -110,13 +115,31 @@ public class SearchWebClientTest extends TestBase {
 
     @Test
     @RunAsClient
-    public void test002_seriliation() {
-        CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
-        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
-        builder.addID(1);
+    public void test002_serialisation() throws Exception {
+        SearchFilter filter = new SearchFilter(publicUser);
 
-        SearchResult result = searchWebClient.getRemoteSearchResult(cn, publicUser, Arrays.asList(builder.buildSearchRequest()));
+        JAXBContext jaxContext = JAXBContext.newInstance(SearchWebRequest.class);
+        Marshaller jaxbMarshaller = jaxContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
+        SearchWebRequest request = new SearchWebRequest();
+        filter.setSearchTerms("Phenol");
+        List<SearchRequest> requests = filter.createRequests();
+        List<SearchRequestImpl> impls = new ArrayList<>();
+        for (SearchRequest r : requests) {
+            impls.add((SearchRequestImpl) r);
+        }
+        request.addRequest(impls);
+        request.switchToTransferMode();
+        File f = new File("target/searchWebRequest.xml");
+        jaxbMarshaller.marshal(request, f);
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(SearchWebRequest.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        
+        SearchWebRequest unserialisedRequest = (SearchWebRequest) jaxbUnmarshaller.unmarshal(new FileInputStream(f));
+        unserialisedRequest.switchToLocalMode();
+        int i=0;
     }
 
     @Deployment

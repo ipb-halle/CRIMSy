@@ -54,7 +54,7 @@ public class SearchWebClient extends LbacWebClient {
 
             signWebRequest(webRequest, cn.getCloud().getName(), user);
             WebClient wc = createWebclient(cn, SearchWebService.class);
-
+            webRequest.switchToTransferMode();
             SearchWebResponse result = wc.post(webRequest, SearchWebResponse.class);
             if (result != null) {
                 cn.recover();

@@ -95,4 +95,28 @@ public class SearchRequestImpl implements SearchRequest {
         this.user = user;
     }
 
+    public void switchToTransferMode() {
+        if (getCondition() != null) {
+            getCondition().switchToTransferMode();
+            if (getCondition().getConditions() != null) {
+                for (Condition con : getCondition().getConditions()) {
+                    con.switchToTransferMode();
+                }
+            }
+        }
+    }
+
+    public void switchToLocalMode() {
+
+        if (getCondition() != null) {
+            getCondition().switchToLocalMode();
+            if (getCondition().getConditions() != null) {
+                for (Condition con : getCondition().getConditions()) {
+                    con.switchToLocalMode();
+                }
+            }
+        }
+
+    }
+
 }
