@@ -19,11 +19,13 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author fmauz
  */
+@XmlRootElement
 public class SearchRequestImpl implements SearchRequest {
 
     private SearchTarget searchTarget;

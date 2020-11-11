@@ -17,10 +17,13 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author fbroda
  */
+@XmlRootElement
 public class Value {
 
     private Object value;
@@ -37,8 +40,6 @@ public class Value {
     public String getArgumentKey() {
         return this.argumentKey;
     }
-
-   
 
     public String getCastArgument() {
         String arg = ":" + this.argumentKey;

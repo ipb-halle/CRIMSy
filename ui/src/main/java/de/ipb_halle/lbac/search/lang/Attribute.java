@@ -21,11 +21,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author fmauz
  */
+@XmlRootElement
 public class Attribute {
 
     private Set<AttributeType> types;

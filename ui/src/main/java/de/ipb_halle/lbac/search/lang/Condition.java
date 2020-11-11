@@ -18,11 +18,13 @@
 package de.ipb_halle.lbac.search.lang;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author fmauz
  */
+@XmlRootElement
 public class Condition {
 
     private Attribute attribute;
@@ -122,6 +124,5 @@ public class Condition {
     public void setValue(Value value) {
         this.value = value;
     }
-    
-    
+
 }
