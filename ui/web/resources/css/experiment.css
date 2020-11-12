@@ -50,7 +50,7 @@
     visibility: hidden;
 }
 
-.dataTables_filter{
+.experimentRecordContainer .dataTables_filter {
     visibility: hidden;
 }
 
