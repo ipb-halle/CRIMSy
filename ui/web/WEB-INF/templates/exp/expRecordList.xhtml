@@ -29,7 +29,7 @@
 
     <ui:composition>
         <ui:repeat value="#{experimentBean.expRecordsWithNullRecord}" var="rec" varStatus="recStatus">
-            <b:container class="experimentRecorContainer">
+            <b:container class="experimentRecordContainer">
                 <b:row
                     class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}">
                     <b:column span="4">
