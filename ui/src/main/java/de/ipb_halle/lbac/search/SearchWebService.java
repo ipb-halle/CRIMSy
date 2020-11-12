@@ -54,8 +54,6 @@ public class SearchWebService extends LbacWebService {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response search(SearchWebRequest request) {
-        logger.info("---------------");
-        logger.info("Got a Request " + request);
         request.switchToLocalMode();
         try {
             SearchWebResponse response = new SearchWebResponse();

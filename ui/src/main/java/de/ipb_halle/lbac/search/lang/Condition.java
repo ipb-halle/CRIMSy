@@ -130,6 +130,7 @@ public class Condition {
 
     public void switchToTransferMode() {
         if (value != null && value.getValue() != null) {
+            value.setTransferCastExpression(value.getUnmodifiedCastExpression());
             if (value.getValue() instanceof Set) {
                 value.setValueSet((HashSet) value.getValue());
             } else if (value.getValue() instanceof List) {
@@ -153,6 +154,7 @@ public class Condition {
             if (value.getValueSet() != null) {
                 value.setValue(value.getValueSet());
             }
+            value.setCastExpression(value.getTransferCastExpression());
         }
 
     }

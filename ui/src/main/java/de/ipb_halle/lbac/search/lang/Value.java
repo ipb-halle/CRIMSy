@@ -33,11 +33,13 @@ public class Value {
     private Object value;
 
     private String argumentKey;
+    @XmlTransient
     private String castExpression;
 
     private HashSet valueSet;
     private ArrayList valueList;
     private Object singleValue;
+    private String transferCastExpression;
 
     public Value() {
     }
@@ -98,6 +100,18 @@ public class Value {
 
     public void setSingleValue(Object singleValue) {
         this.singleValue = singleValue;
+    }
+
+    public String getTransferCastExpression() {
+        return transferCastExpression;
+    }
+
+    public void setTransferCastExpression(String transferCastExpression) {
+        this.transferCastExpression = transferCastExpression;
+    }
+
+    public String getUnmodifiedCastExpression() {
+        return castExpression;
     }
 
 }
