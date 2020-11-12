@@ -299,14 +299,33 @@ function mainFunc {
             setup)
                 mvn --batch-mode -DskipTests clean install
                 setup
+                 echo "*****************************************************************"
+                 echo "*                                                               *"
+                 echo "* SETUP FINISHED                                                *"
+                 echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
+                 echo "*                                                               *"
+                 echo "*****************************************************************"
                 ;;
 
             test)
                 runTests
+                 echo "*****************************************************************"
+                 echo "*                                                               *"
+                 echo "* TEST FINISHED                                                 *"
+                 echo "* Please find the log file in config/logs/test.$TEST_DATE.log *"
+                 echo "* and test outcomes in directory target/cypress/                *"
+                 echo "*                                                               *"
+                 echo "*****************************************************************"
                 ;;
 
             teardown)
                 tearDown
+                 echo "*****************************************************************"
+                 echo "*                                                               *"
+                 echo "* TEARDOWN FINISHED                                             *"
+                 echo "* Removed everything including logs.                            *"
+                 echo "*                                                               *"
+                 echo "*****************************************************************"
                 ;;
 
             *)
@@ -339,13 +358,4 @@ cd $LBAC_REPO
 safetyCheck
 
 mainFunc $* 2>&1 | tee $LBAC_REPO/config/logs/test.$TEST_DATE.log
-
-echo
-echo "******************************************************************"
-echo "*                                                                *"
-echo "* FINISHED!                                                      *"
-echo "* Please find your log file in config/logs/test.$TEST_DATE.log *"
-echo "* and test outcomes in directory target/cypress/                 *"
-echo "*                                                                *"
-echo "******************************************************************"
 

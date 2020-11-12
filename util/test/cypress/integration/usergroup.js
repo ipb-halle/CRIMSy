@@ -37,7 +37,9 @@ describe('CRIMSy user and group management test', () => {
             cy.get('.tstUserMgrCreate').click()
 
             // manage group membership (add group)
-            cy.get('#frmUserList\\:userList').find('.tstUserMgrMembershipDlg').should('have.length.greaterThan', 1)
+            cy.get('.frmUserListuserListTable > tbody > tr').should('have.length.greaterThan', 1)
+
+            cy.get('#frmUserList\\:userList_filter input[type="search"]').should('be.visible')
             cy.get('#frmUserList\\:userList_filter input[type="search"]').type(data.userLogin)
             cy.get('#frmUserList\\:userList').find('.tstUserMgrMembershipDlg').should('have.length', 1)
             cy.get('.tstUserMgrMembershipDlg').click()
@@ -45,6 +47,7 @@ describe('CRIMSy user and group management test', () => {
             cy.get('.modal-content').should('be.visible')
             cy.get('#frmModalGroupDialog\\:groupList_filter input[type="search"]').type(data.groupName)
             cy.get('.tstUserMgrMembershipAdd').click()
+            cy.get('.frmModalGroupDialogmembershipListTable > tbody > tr').should('have.length', 2)
             cy.get('.tstUserMgrMembershipClose').click()
 
             // final check in group dialog (test group has 1 member)
