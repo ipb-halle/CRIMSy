@@ -40,18 +40,18 @@ import org.apache.cxf.jaxrs.client.WebClient;
 @Startup
 @DependsOn({"NodeService"})
 public class SearchWebClient extends LbacWebClient {
-
+    
     public SearchResult getRemoteSearchResult(
             CloudNode cn,
             User user,
             List<SearchRequest> requests) {
         try {
-
+            
             SearchWebRequest webRequest = new SearchWebRequest();
             for (SearchRequest r : requests) {
                 webRequest.addRequest(Arrays.asList((SearchRequestImpl) r));
             }
-
+            
             signWebRequest(webRequest, cn.getCloud().getName(), user);
             WebClient wc = createWebclient(cn, SearchWebService.class);
             webRequest.switchToTransferMode();
@@ -59,11 +59,12 @@ public class SearchWebClient extends LbacWebClient {
             if (result != null) {
                 cn.recover();
                 cloudNodeService.save(cn);
+                cn.getNode().setLocal(false);
                 SearchResult searchResult = new SearchResultImpl(cn.getNode());
                 searchResult.addResults(convertRemoteObjectsToSearchable(result));
-
+                
                 return searchResult;
-
+                
             } else {
                 return new SearchResultImpl(nodeService.getLocalNode());
             }
@@ -71,7 +72,7 @@ public class SearchWebClient extends LbacWebClient {
             return new SearchResultImpl(nodeService.getLocalNode());
         }
     }
-
+    
     private List<Searchable> convertRemoteObjectsToSearchable(SearchWebResponse result) {
         List<Searchable> searchables = new ArrayList<>();
         for (Document d : result.getRemoteDocuments()) {

@@ -46,13 +46,13 @@ public class NetObjectPresenter {
     public boolean isInternalLinkVisible(NetObject no) {
         boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
         boolean local = no.getNode().getLocal();
-        return noDoc;
+        return noDoc&&local;
     }
 
     public boolean isExternalLinkVisible(NetObject no) {
         boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
         boolean local = no.getNode().getLocal();
-        return false;
+        return noDoc&&!local;
     }
 
     public String getObjectType(NetObject no) {
@@ -65,14 +65,6 @@ public class NetObjectPresenter {
             return d.getLink();
         } else {
             return "-";
-        }
-    }
-
-    public boolean isNavLinkDisabled(NetObject no) {
-        if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT) {
-            return false;
-        } else {
-            return true;
         }
     }
 

@@ -78,9 +78,9 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("localStructure", presenter.getName(netObjects.get(6)));
         Assert.assertEquals("remoteStructure", presenter.getName(netObjects.get(7)));
         Assert.assertEquals("12014 (localStructure)", presenter.getName(netObjects.get(8)));
-        Assert.assertEquals("12014 (remoteStructure)", presenter.getName(netObjects.get(9)));
+        Assert.assertEquals("100 (RemoteMaterial)", presenter.getName(netObjects.get(9)));
         Assert.assertEquals("localExp", presenter.getName(netObjects.get(10)));
-        Assert.assertEquals("remoteExp", presenter.getName(netObjects.get(11)));
+        Assert.assertEquals("remoteExperiment", presenter.getName(netObjects.get(11)));
     }
 
     @Test
@@ -136,6 +136,54 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(9)));
         Assert.assertEquals("local", presenter.getToolTip(netObjects.get(10)));
         Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(11)));
+    }
+
+    @Test
+    public void test005_isDownloadLinkVisible() {
+        Assert.assertTrue(presenter.isDownloadLinkVisible(netObjects.get(0)));
+        Assert.assertTrue(presenter.isDownloadLinkVisible(netObjects.get(1)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(2)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(3)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(4)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(5)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(6)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(7)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(8)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(9)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(10)));
+        Assert.assertFalse(presenter.isDownloadLinkVisible(netObjects.get(11)));
+    }
+
+    @Test
+    public void test005_isInternalLinkVisible() {
+        Assert.assertFalse(presenter.isInternalLinkVisible(netObjects.get(0)));
+        Assert.assertFalse(presenter.isInternalLinkVisible(netObjects.get(1)));
+        Assert.assertTrue(presenter.isInternalLinkVisible(netObjects.get(2)));
+        Assert.assertFalse(presenter.isInternalLinkVisible(netObjects.get(3)));
+        Assert.assertTrue(presenter.isInternalLinkVisible(netObjects.get(4)));
+        Assert.assertFalse(presenter.isInternalLinkVisible(netObjects.get(5)));
+        Assert.assertTrue(presenter.isInternalLinkVisible(netObjects.get(6)));
+        Assert.assertFalse(presenter.isInternalLinkVisible(netObjects.get(7)));
+        Assert.assertTrue(presenter.isInternalLinkVisible(netObjects.get(8)));
+        Assert.assertFalse(presenter.isInternalLinkVisible(netObjects.get(9)));
+        Assert.assertTrue(presenter.isInternalLinkVisible(netObjects.get(10)));
+        Assert.assertFalse(presenter.isInternalLinkVisible(netObjects.get(11)));
+    }
+
+    @Test
+    public void test006_isExternalLinkVisible() {
+        Assert.assertFalse(presenter.isExternalLinkVisible(netObjects.get(0)));
+        Assert.assertFalse(presenter.isExternalLinkVisible(netObjects.get(1)));
+        Assert.assertFalse(presenter.isExternalLinkVisible(netObjects.get(2)));
+        Assert.assertTrue(presenter.isExternalLinkVisible(netObjects.get(3)));
+        Assert.assertFalse(presenter.isExternalLinkVisible(netObjects.get(4)));
+        Assert.assertTrue(presenter.isExternalLinkVisible(netObjects.get(5)));
+        Assert.assertFalse(presenter.isExternalLinkVisible(netObjects.get(6)));
+        Assert.assertTrue(presenter.isExternalLinkVisible(netObjects.get(7)));
+        Assert.assertFalse(presenter.isExternalLinkVisible(netObjects.get(8)));
+        Assert.assertTrue(presenter.isExternalLinkVisible(netObjects.get(9)));
+        Assert.assertFalse(presenter.isExternalLinkVisible(netObjects.get(10)));
+        Assert.assertTrue(presenter.isExternalLinkVisible(netObjects.get(11)));
     }
 
     @Deployment
