@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.search.NetObject;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,7 +40,8 @@ public class SearchStateTest {
                 searchState.getFoundObjects().size());
 
         //Objects should not be added again
-        searchState.addNetObjects(netObjectFactory.createNetObjects());
+        List<NetObject> netObjects=netObjectFactory.createNetObjects();
+        searchState.addNetObjects(netObjects);
         Assert.assertEquals(
                 netObjectFactory.createNetObjects().size(),
                 searchState.getFoundObjects().size());

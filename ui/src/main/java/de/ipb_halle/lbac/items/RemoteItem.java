@@ -88,10 +88,10 @@ public class RemoteItem implements Searchable, Serializable {
 
     @Override
     public boolean isEqualTo(Object other) {
-        if (!(other instanceof Item)) {
+        if (!(other instanceof RemoteItem)) {
             return false;
         } else {
-            return ((Item) other).getId() == id;
+            return ((RemoteItem) other).getId() == id;
         }
     }
 
