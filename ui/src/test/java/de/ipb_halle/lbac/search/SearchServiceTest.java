@@ -43,17 +43,6 @@ import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchRequest;
-
-import de.ipb_halle.lbac.search.SearchRequestImpl;
-import de.ipb_halle.lbac.search.SearchRequestImpl;
-import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.search.SearchService;
-import de.ipb_halle.lbac.search.SearchService;
-import de.ipb_halle.lbac.search.SearchTarget;
-import de.ipb_halle.lbac.search.SearchTarget;
 
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -205,6 +194,12 @@ public class SearchServiceTest extends TestBase {
         builder.addIndexName("-002");
         request = builder.buildSearchRequest();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.addDescription("material");
+        request = builder.buildSearchRequest();
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+
     }
 
     @Test

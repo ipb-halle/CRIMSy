@@ -76,7 +76,6 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
     public ItemSearchRequestBuilder addDescription(String description) {
         addCondition(Operator.ILIKE,
                 "%" + description + "%",
-                AttributeType.ITEM,
                 AttributeType.TEXT);
         return this;
     }
