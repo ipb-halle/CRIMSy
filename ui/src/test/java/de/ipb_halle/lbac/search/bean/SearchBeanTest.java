@@ -122,6 +122,7 @@ public class SearchBeanTest extends TestBase {
         SearchBean bean = new SearchBean();
         bean.getSearchState().addNoteToSearch(netObjects.get(0).getNode().getId());
         Assert.assertTrue(bean.isSearchActive());
+        bean.getSearchState().removeNodeFromSearch(netObjects.get(0).getNode());
         bean.getSearchState().addNetObjects(Arrays.asList(
                 netObjects.get(0),
                 netObjects.get(2),
@@ -135,6 +136,7 @@ public class SearchBeanTest extends TestBase {
         Assert.assertEquals(4, bean.getShownObjects().size());
         Assert.assertEquals(0, bean.getUnshownButFoundObjects());
 
+        bean.getSearchState().removeNodeFromSearch(netObjects.get(0).getNode());
         bean.getSearchState().addNetObjects(Arrays.asList(
                 netObjects.get(0)));
         Assert.assertFalse(bean.isSearchActive());
