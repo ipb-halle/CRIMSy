@@ -43,6 +43,11 @@ public class SearchWebResponse {
     private Integer totalDocsInNode;
     private Float averageWordLength;
 
+    public SearchWebResponse() {
+        averageWordLength = 0f;
+        totalDocsInNode = 0;
+    }
+
     public String getStatusCode() {
         return statusCode;
     }
