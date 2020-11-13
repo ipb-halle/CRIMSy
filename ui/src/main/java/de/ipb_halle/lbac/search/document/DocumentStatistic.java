@@ -23,8 +23,8 @@ package de.ipb_halle.lbac.search.document;
  */
 public class DocumentStatistic {
 
-    public float averageWordLength;
-    public int totalDocsInNode;
+    private float averageWordLength;
+    private int totalDocsInNode;
 
     public void merge(DocumentStatistic other) {
         if (totalDocsInNode + other.totalDocsInNode > 0) {
@@ -33,6 +33,22 @@ public class DocumentStatistic {
                     / (totalDocsInNode + other.totalDocsInNode);
         }
         totalDocsInNode += other.totalDocsInNode;
+    }
+
+    public float getAverageWordLength() {
+        return averageWordLength;
+    }
+
+    public void setAverageWordLength(float averageWordLength) {
+        this.averageWordLength = averageWordLength;
+    }
+
+    public int getTotalDocsInNode() {
+        return totalDocsInNode;
+    }
+
+    public void setTotalDocsInNode(int totalDocsInNode) {
+        this.totalDocsInNode = totalDocsInNode;
     }
 
 }

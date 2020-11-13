@@ -31,6 +31,8 @@ import javax.ejb.DependsOn;
 import javax.ejb.Startup;
 import javax.enterprise.context.ApplicationScoped;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -40,18 +42,20 @@ import org.apache.cxf.jaxrs.client.WebClient;
 @Startup
 @DependsOn({"NodeService"})
 public class SearchWebClient extends LbacWebClient {
-    
+
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
+
     public SearchResult getRemoteSearchResult(
             CloudNode cn,
             User user,
             List<SearchRequest> requests) {
         try {
-            
+
             SearchWebRequest webRequest = new SearchWebRequest();
             for (SearchRequest r : requests) {
                 webRequest.addRequest(Arrays.asList((SearchRequestImpl) r));
             }
-            
+
             signWebRequest(webRequest, cn.getCloud().getName(), user);
             WebClient wc = createWebclient(cn, SearchWebService.class);
             webRequest.switchToTransferMode();
@@ -62,9 +66,11 @@ public class SearchWebClient extends LbacWebClient {
                 cn.getNode().setLocal(false);
                 SearchResult searchResult = new SearchResultImpl(cn.getNode());
                 searchResult.addResults(convertRemoteObjectsToSearchable(result));
-                
+                searchResult
+                        .getDocumentStatistic().setAverageWordLength(result.getAverageWordLength());
+                searchResult.getDocumentStatistic().setTotalDocsInNode(result.getTotalDocsInNode());
                 return searchResult;
-                
+
             } else {
                 return new SearchResultImpl(nodeService.getLocalNode());
             }
@@ -72,7 +78,7 @@ public class SearchWebClient extends LbacWebClient {
             return new SearchResultImpl(nodeService.getLocalNode());
         }
     }
-    
+
     private List<Searchable> convertRemoteObjectsToSearchable(SearchWebResponse result) {
         List<Searchable> searchables = new ArrayList<>();
         for (Document d : result.getRemoteDocuments()) {

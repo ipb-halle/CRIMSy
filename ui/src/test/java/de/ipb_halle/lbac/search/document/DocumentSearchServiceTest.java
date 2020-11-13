@@ -80,7 +80,7 @@ public class DocumentSearchServiceTest extends TestBase {
     public void setUp() {
         super.setUp();
         Files.delete(Paths.get("target/test-classes/collections").toFile());
-         entityManagerService.doSqlUpdate("DELETE FROM collections");
+        entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE from termvectors");
         entityManagerService.doSqlUpdate("DELETE from files");
@@ -148,11 +148,11 @@ public class DocumentSearchServiceTest extends TestBase {
             documents.add((Document) no.getSearchable());
         }
         Assert.assertEquals(2, netObjects.size());
-        Assert.assertEquals(55, result.getDocumentStatistic().averageWordLength, 0);
-        Assert.assertEquals(3, result.getDocumentStatistic().totalDocsInNode, 0);
+        Assert.assertEquals(55, result.getDocumentStatistic().getAverageWordLength(), 0);
+        Assert.assertEquals(3, result.getDocumentStatistic().getTotalDocsInNode(), 0);
         calculator.calculateRelevanceFactors(
-                result.getDocumentStatistic().totalDocsInNode,
-                result.getDocumentStatistic().averageWordLength,
+                result.getDocumentStatistic().getTotalDocsInNode(),
+                result.getDocumentStatistic().getAverageWordLength(),
                 documents);
     }
 

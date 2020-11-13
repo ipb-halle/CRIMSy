@@ -35,13 +35,16 @@ public class SearchResultImpl implements SearchResult {
 
     private Node node;
     protected List<Searchable> foundObjectsOfNode = new ArrayList<>();
-    private DocumentStatistic documentStatistic = new DocumentStatistic();
-
-    public SearchResultImpl(Node n) {
-        node = n;
-    }
+    private DocumentStatistic documentStatistic;
 
     public SearchResultImpl() {
+        documentStatistic = new DocumentStatistic();
+    }
+
+    public SearchResultImpl(Node n) {
+        this();
+        node = n;
+        
     }
 
     @Override
@@ -105,6 +108,10 @@ public class SearchResultImpl implements SearchResult {
     @Override
     public DocumentStatistic getDocumentStatistic() {
         return documentStatistic;
+    }
+
+    public void setDocumentStatistic(DocumentStatistic documentStatistic) {
+        this.documentStatistic = documentStatistic;
     }
 
 }

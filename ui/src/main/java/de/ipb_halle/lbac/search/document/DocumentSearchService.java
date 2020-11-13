@@ -196,7 +196,6 @@ public class DocumentSearchService {
                             memberService.loadUserById(entity.getUser()))));
 
         }
-
         result.addResults(foundDocs);
         List<Integer> docIds = getDocIds(foundDocs);
 
@@ -204,9 +203,9 @@ public class DocumentSearchService {
                 docIds,
                 getWordRoots(request.getCondition()));
         calculateWordCountOfDocs(foundDocs, totalTerms);
-        result.getDocumentStatistic().totalDocsInNode = loadTotalCountOfFiles();
-        if (result.getDocumentStatistic().totalDocsInNode > 0) {
-            result.getDocumentStatistic().averageWordLength = getSumOfWordsOfAllDocs() / result.getDocumentStatistic().totalDocsInNode;
+        result.getDocumentStatistic().setTotalDocsInNode(loadTotalCountOfFiles());
+        if (result.getDocumentStatistic().getTotalDocsInNode() > 0) {
+            result.getDocumentStatistic().setAverageWordLength(getSumOfWordsOfAllDocs() / result.getDocumentStatistic().getTotalDocsInNode());
         }
         return result;
     }

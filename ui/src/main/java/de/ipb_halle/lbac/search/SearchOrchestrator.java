@@ -73,11 +73,10 @@ public class SearchOrchestrator implements Serializable {
     private SearchState updateSearchState(
             SearchState searchState,
             SearchResult result) {
-
         searchState.addNetObjects(result.getAllFoundObjects());
         searchState.addNewStats(
-                result.getDocumentStatistic().totalDocsInNode,
-                result.getDocumentStatistic().averageWordLength);
+                result.getDocumentStatistic().getTotalDocsInNode(),
+                result.getDocumentStatistic().getAverageWordLength());
         return searchState;
     }
 
@@ -90,9 +89,7 @@ public class SearchOrchestrator implements Serializable {
             CloudNode cloudNode,
             User user,
             List<SearchRequest> requests) {
-
         searchState.addNoteToSearch(cloudNode.getNode().getId());
-
         CompletableFuture.supplyAsync(() -> {
             return searchWebClient.getRemoteSearchResult(cloudNode, user, requests);
         }, managedExecutorService)

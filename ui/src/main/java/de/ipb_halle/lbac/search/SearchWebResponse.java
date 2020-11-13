@@ -17,12 +17,10 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.RemoteExperiment;
 import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.material.RemoteMaterial;
 import de.ipb_halle.lbac.search.document.Document;
-import de.ipb_halle.lbac.search.document.DocumentStatistic;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -38,11 +36,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SearchWebResponse {
 
     private String statusCode = "200";
-    private DocumentStatistic documentStatistic = new DocumentStatistic();
     List<Document> remoteDocuments = new ArrayList<>();
     List<RemoteItem> remoteItem = new ArrayList<>();
     List<RemoteMaterial> remoteMaterials = new ArrayList<>();
     List<RemoteExperiment> remoteExperiments = new ArrayList<>();
+    private Integer totalDocsInNode;
+    private Float averageWordLength;
 
     public String getStatusCode() {
         return statusCode;
@@ -50,14 +49,6 @@ public class SearchWebResponse {
 
     public void setStatusCode(String statusCode) {
         this.statusCode = statusCode;
-    }
-
-    public DocumentStatistic getDocumentStatistic() {
-        return documentStatistic;
-    }
-
-    public void setDocumentStatistic(DocumentStatistic documentStatistic) {
-        this.documentStatistic = documentStatistic;
     }
 
     public List<Document> getRemoteDocuments() {
@@ -114,6 +105,22 @@ public class SearchWebResponse {
         if (searchable.getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
             getRemoteExperiments().add((RemoteExperiment) searchable);
         }
+    }
+
+    public Integer getTotalDocsInNode() {
+        return totalDocsInNode;
+    }
+
+    public void setTotalDocsInNode(Integer totalDocsInNode) {
+        this.totalDocsInNode = totalDocsInNode;
+    }
+
+    public Float getAverageWordLength() {
+        return averageWordLength;
+    }
+
+    public void setAverageWordLength(Float averageWordLength) {
+        this.averageWordLength = averageWordLength;
     }
 
 }

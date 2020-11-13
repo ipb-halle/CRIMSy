@@ -64,6 +64,8 @@ public class SearchWebService extends LbacWebService {
                     requests.add((SearchRequest) i);
                 }
                 SearchResult localResult = searchService.search(requests);
+                response.setAverageWordLength(localResult.getDocumentStatistic().getAverageWordLength());
+                response.setTotalDocsInNode(localResult.getDocumentStatistic().getTotalDocsInNode());
                 for (Searchable searchable : localResult.getAllFoundObjects(localResult.getNode())) {
                     RemoteTransformer transformer = transformerFactory.createSpecificTransformer(searchable);
                     response.addFoundObject(transformer.transformToRemote());
