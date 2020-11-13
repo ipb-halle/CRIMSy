@@ -171,21 +171,6 @@ public class MaterialOverviewDifference implements MaterialDifference {
         return mDate;
     }
 
-    public void debug() {
-        logger.info("--MaterialOverviewDifference--");
-        logger.info("  materialID " + materialID);
-        logger.info("  actorID " + actorID);
-        logger.info("  date " + mDate);
-        logger.info("  acListOld " + acListOld);
-        logger.info("  acListNew " + acListNew);
-        logger.info("  projectIdOld " + projectIdOld);
-        logger.info("  projectIdNew " + projectIdNew);
-        logger.info("  ownerIdOld " + ownerIdOld);
-        logger.info("  ownerIdNew " + ownerIdNew);
-        logger.info("                              ");
-
-    }
-
     public String getDigest() {
         return digest;
     }

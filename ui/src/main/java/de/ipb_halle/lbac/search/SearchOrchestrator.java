@@ -39,21 +39,21 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class SearchOrchestrator implements Serializable {
-
+    
     @Inject
     private CloudNodeService cloudNodeService;
-
+    
     @Inject
     private NodeService nodeService;
-
+    
     @Inject
     private SearchWebClient searchWebClient;
-
+    
     @Resource
     private ManagedExecutorService managedExecutorService;
-
+    
     private static final Logger logger = LogManager.getLogger(SearchOrchestrator.class);
-
+    
     public void startRemoteSearch(
             SearchState searchState,
             User user,
@@ -69,21 +69,22 @@ public class SearchOrchestrator implements Serializable {
             }
         }
     }
-
+    
     private SearchState updateSearchState(
             SearchState searchState,
             SearchResult result) {
+        searchState.removeNodeFromSearch(result.getNode());
         searchState.addNetObjects(result.getAllFoundObjects());
         searchState.addNewStats(
                 result.getDocumentStatistic().getTotalDocsInNode(),
                 result.getDocumentStatistic().getAverageWordLength());
         return searchState;
     }
-
+    
     public void setSearchWebClient(SearchWebClient searchWebClient) {
         this.searchWebClient = searchWebClient;
     }
-
+    
     private void startRemoteSearchForCloudNode(
             SearchState searchState,
             CloudNode cloudNode,
@@ -100,5 +101,5 @@ public class SearchOrchestrator implements Serializable {
                         )
                 );
     }
-
+    
 }

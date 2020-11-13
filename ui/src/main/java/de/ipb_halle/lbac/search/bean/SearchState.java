@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.search.NetObject;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,7 +48,6 @@ public class SearchState {
                 }
             }
             if (!alreadyIn) {
-                activeSearches.remove(noToAdd.getNode().getId());
                 foundObjects.add(noToAdd);
             }
         }
@@ -76,6 +76,10 @@ public class SearchState {
     public synchronized void addNewStats(int newTotalDocs, float newAvgLength) {
         averageDocLength = (newAvgLength * newTotalDocs + averageDocLength * totalDocs) / (totalDocs + newTotalDocs);
         totalDocs += newTotalDocs;
+    }
+
+    public synchronized void removeNodeFromSearch(Node node) {
+        activeSearches.remove(node.getId());
     }
 
 }

@@ -50,7 +50,6 @@ public class SearchWebClient extends LbacWebClient {
             User user,
             List<SearchRequest> requests) {
         try {
-
             SearchWebRequest webRequest = new SearchWebRequest();
             for (SearchRequest r : requests) {
                 webRequest.addRequest(Arrays.asList((SearchRequestImpl) r));
@@ -72,10 +71,10 @@ public class SearchWebClient extends LbacWebClient {
                 return searchResult;
 
             } else {
-                return new SearchResultImpl(nodeService.getLocalNode());
+                return new SearchResultImpl(cn.getNode());
             }
         } catch (Exception e) {
-            return new SearchResultImpl(nodeService.getLocalNode());
+            return new SearchResultImpl(cn.getNode());
         }
     }
 
