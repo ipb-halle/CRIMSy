@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchService;
-import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.SearchWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
@@ -47,7 +46,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.internal.runners.statements.ExpectException;
 import org.junit.runner.RunWith;
 
 /**
@@ -69,7 +67,6 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(WordCloudBean.class)
                 .addClass(WordCloudWebClient.class)
                 .addClass(CollectionBean.class)
-                .addClass(DocumentSearchOrchestrator.class)
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(SearchWebService.class)
                 .addClass(DocumentSearchService.class)

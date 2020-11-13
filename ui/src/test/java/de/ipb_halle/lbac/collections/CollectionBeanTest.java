@@ -28,7 +28,6 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.mock.CollectionBeanMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -121,7 +120,6 @@ public class CollectionBeanTest extends TestBase {
                 .addClass(CollectionBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchOrchestrator.class)
                 .addClass(MembershipOrchestrator.class);
     }
 

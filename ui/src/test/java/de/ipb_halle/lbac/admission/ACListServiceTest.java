@@ -28,7 +28,6 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.CloudService;
@@ -93,7 +92,6 @@ public class ACListServiceTest extends TestBase {
                 .addClass(CollectionBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchOrchestrator.class)
                 .addClass(MembershipOrchestrator.class);
     }
 

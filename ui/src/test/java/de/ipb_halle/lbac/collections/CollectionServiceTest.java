@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
@@ -89,7 +88,6 @@ public class CollectionServiceTest extends TestBase {
                 .addClass(CollectionBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchOrchestrator.class)
                 .addClass(MembershipOrchestrator.class);
     }
 

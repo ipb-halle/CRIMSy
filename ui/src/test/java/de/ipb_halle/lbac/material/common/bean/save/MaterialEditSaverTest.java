@@ -45,7 +45,6 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
@@ -217,7 +216,6 @@ public class MaterialEditSaverTest extends TestBase {
                 .addClass(MoleculeService.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
-                .addClass(DocumentSearchOrchestrator.class)
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
                 .addClass(WordCloudBean.class)
