@@ -53,7 +53,7 @@ public class GlobalAdmissionContext implements Serializable {
     public final static Integer PUBLIC_GROUP_ID = 1;
     public final static Integer PUBLIC_ACCOUNT_ID = 2;
     public final static Integer OWNER_ACCOUNT_ID = 3;
-    private final static Integer ADMIN_GROUP_ID = 4;
+    public final static Integer ADMIN_GROUP_ID = 4;
     private final static Integer ADMIN_ACCOUNT_ID = 5;
     public static final String NAME_OF_DEACTIVATED_USER = "deactivated";
 

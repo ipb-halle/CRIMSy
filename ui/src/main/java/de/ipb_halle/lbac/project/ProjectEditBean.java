@@ -22,11 +22,14 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACEntry;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.i18n.UIMessage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +43,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  *
@@ -75,8 +77,13 @@ public class ProjectEditBean implements Serializable {
 
     private String projectBudget;
 
+    private User projectOwner;
+
     @Inject
     private MemberService memberService;
+
+    @Inject
+    private ProjectBean projectBean;
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
@@ -112,9 +119,14 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void startProjectCreation() {
+
         mode = Mode.CREATE;
+        projectOwner = userBean.getCurrentAccount();
         possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
         projectACL = new ACList();
+        projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.OWNER_ACCOUNT_ID), ACPermission.values());
+        projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.ADMIN_GROUP_ID), ACPermission.values());
+        projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.PUBLIC_GROUP_ID), new ACPermission[]{ACPermission.permREAD});
         for (MaterialDetailType mdt : MaterialDetailType.values()) {
             detailTemplates.put(mdt, new ACList());
         }
@@ -125,7 +137,7 @@ public class ProjectEditBean implements Serializable {
         this.projectToEdit = p;
         this.currentProjectType = p.getProjectType();
         possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
-
+        projectOwner = p.getOwner();
     }
 
     public List<ACEntry> getACEntriesForDetailRole(String detailType) {
@@ -152,7 +164,6 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void addAceToRoleTemplate(Group g, String materialDetail) {
-        logger.info("ADD mit Argument " + materialDetail);
         ACList acl = detailTemplates.get(MaterialDetailType.valueOf(materialDetail));
         acl.addACE(g, new ACPermission[]{});
     }
@@ -234,6 +245,14 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void saveProject() {
+        if (projectName == null || projectName.trim().isEmpty()) {
+            UIMessage.error("projectEdit_invalide_projectname");
+            return;
+        }
+        if (!projectService.isProjectNameAvailable(projectName)) {
+            UIMessage.error("projectEdit_duplicate_projectname");
+            return;
+        }
 
         if (mode == Mode.CREATE) {
             Project p = new Project(currentProjectType, projectName);
@@ -248,9 +267,17 @@ public class ProjectEditBean implements Serializable {
 
             p.setDescription(projectDescription);
             p.setDetailTemplates(detailTemplates);
+            try {
+                projectService.saveProjectToDb(p);
+            } catch (Exception e) {
 
-            projectService.saveProjectToDb(p);
+                UIMessage.error("projectEdit_duplicate_projectname");
+                logger.info(e.getCause().getClass());
+                logger.error(e);
+                return;
+            }
         }
+        projectBean.reloadReadableProjects();
         navigator.navigate("project/projectOverview");
     }
 
@@ -272,6 +299,18 @@ public class ProjectEditBean implements Serializable {
 
     public String getMaterialDetailPanelHeader(String detailType) {
         return Messages.getString(MESSAGE_BUNDLE, "projectEdit_detailinfo_" + detailType, null);
+    }
+
+    public User getProjectOwner() {
+        return projectOwner;
+    }
+
+    public List<User> getLocalUsers() {
+        return memberService.loadLocalUsers();
+    }
+
+    public void changeOwner(User user) {
+        this.projectOwner = user;
     }
 
 }

@@ -25,15 +25,22 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
     <h:body>
         <ui:composition>
+
+            <crimsy:changeOwnerModal
+                acobject="#{projectEditBean.getProjectOwner()}"
+                bean="#{projectEditBean}"
+                updateTargetClass="projectOwnerClass"/>
+
             <b:panel 
-                title="Allgemeine Projektinformationen"
+                title="Neuen Besitzer wählen"
                 collapsible="false">
                 <b:container>
                     <b:row>
-                        <b:column span="1">
+                        <b:column span="2">
                             <h:outputText
                                 value="Projektname"/>
                         </b:column>
@@ -50,7 +57,6 @@
                             </h:outputText>
                         </b:column>
                         <b:column 
-                            offset="1"
                             span="1">
                             <b:commandButton
                                 value="Abbrechen"
@@ -63,7 +69,7 @@
                         </b:column>
                     </b:row> 
                     <b:row>
-                        <b:column span="1">
+                        <b:column span="2">
                             <h:outputText
                                 value="Projekttyp"/>
                         </b:column>
@@ -86,6 +92,29 @@
                                 </h:inputTextarea>
                             </b:column>
                         </b:row>
+                    </b:row>
+                    <b:row>
+                        <b:column span="2">
+                            <h:outputText
+                                value="Projektverantwortlicher"/>
+                             <b:commandButton
+                                ajax="true"
+                                update="@(.acoEditModal)"
+                                look="link"
+                                process="@this"
+                                type="button"
+                                oncomplete="PF('dlgChangeOwner').show();"
+                                icon-awesome="fa-pencil"/>
+                       
+                        </b:column>
+                        <b:column span="3"
+                                  styleClass="projectOwnerClass">
+                            <b:inputText
+                                disabled="true"
+                                value="#{projectEditBean.getProjectOwner().getName()}">
+                                <f:converter converterId="InputConverter" />
+                            </b:inputText>
+                        </b:column>
                     </b:row>
                 </b:container>
             </b:panel>

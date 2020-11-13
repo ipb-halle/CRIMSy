@@ -57,7 +57,7 @@ CREATE TABLE materialinformations (
 
 CREATE TABLE projects (
     id SERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR NOT NULL,
+    name VARCHAR NOT NULL UNIQUE,
     budget NUMERIC,
     budgetBlocked BOOLEAN default false,
     projecttypeid INTEGER NOT NULL REFERENCES projecttypes(id),
@@ -67,6 +67,7 @@ CREATE TABLE projects (
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
     mtime TIMESTAMP  NOT NULL DEFAULT now()
 );
+CREATE UNIQUE index project_index_name_unique ON projects (LOWER(name));
 
 CREATE TABLE projecttemplates (
     id SERIAL NOT NULL PRIMARY KEY,

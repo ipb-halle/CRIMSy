@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,15 +44,14 @@ import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.apache.openjpa.lib.rop.ResultList;
 
 @Stateless
 public class MemberService implements Serializable {
 
     public final static String PARAM_MEMBER_ID = "id";
     public final static String PARAM_NODE_ID = "node_id";
-    public final static String PARAM_SUBSYSTEM_TYPE ="subSystemType";
-    public final static String PARAM_SUBSYSTEM_DATA ="subSystemData";
+    public final static String PARAM_SUBSYSTEM_TYPE = "subSystemType";
+    public final static String PARAM_SUBSYSTEM_DATA = "subSystemData";
     public final static String PARAM_NAME = "name";
     public final static String PARAM_LOGIN = "login";
 
@@ -162,6 +162,12 @@ public class MemberService implements Serializable {
             resultGroups.add(new Group(ge, node));
         }
         return resultGroups;
+    }
+
+    public List<User> loadLocalUsers() {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put(PARAM_NODE_ID, nodeService.getLocalNodeId());
+        return loadUsers(cmap);
     }
 
     /**

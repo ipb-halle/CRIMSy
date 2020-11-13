@@ -31,13 +31,12 @@ import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
-import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +65,8 @@ public class ProjectService implements Serializable {
             + "WHERE p.name ILIKE :name "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "ORDER BY p.name";
+
+    private final String SQL_GET_NAME_AVAILABLE = "SELECT COUNT(*) FROM projects WHERE LOWER(:name) = LOWER(name)";
 
     private final String SQL_DELETE_PROJECT_TEMPLATES
             = "DELETE FROM projecttemplates "
@@ -175,12 +176,19 @@ public class ProjectService implements Serializable {
         return result;
     }
 
+    public boolean isProjectNameAvailable(String name) {
+        BigInteger i = (BigInteger) this.em.createNativeQuery(SQL_GET_NAME_AVAILABLE).setParameter("name", name).getResultList().get(0);
+        return i.intValue() == 0;
+    }
+
     /**
      *
      * @param p
      * @return
+     * @throws java.lang.Exception
      */
-    public Project saveProjectToDb(Project p) {
+    public Project saveProjectToDb(Project p) throws Exception {
+
         ACList existingAcl = acListService.save(p.getUserGroups());
         p.setACList(existingAcl);
         for (MaterialDetailType md : p.getDetailTemplates().keySet()) {

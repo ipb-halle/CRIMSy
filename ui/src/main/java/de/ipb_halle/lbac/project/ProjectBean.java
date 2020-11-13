@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.project;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
@@ -64,7 +63,7 @@ public class ProjectBean implements Serializable, ACObjectBean {
     @Inject
     private MemberService memberService;
 
-    private void reloadReadableProjects() {
+    public void reloadReadableProjects() {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
         SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
         readableProjects = new ArrayList<>();
