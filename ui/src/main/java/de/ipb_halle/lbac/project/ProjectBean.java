@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,9 +65,15 @@ public class ProjectBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(ProjectBean.class);
     private ACObjectController acObjectController;
     private User user;
+    
+    @Inject
+    private ProjectEditBean projectEditBean;
 
     @Inject
     private MemberService memberService;
+    
+    @Inject
+    private Navigator navigator;
 
     public void reloadReadableProjects() {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
@@ -79,10 +86,10 @@ public class ProjectBean implements Serializable, ACObjectBean {
             return p1.getName().compareTo(p2.getName());
         });
     }
-
-    @Init
-    public void init() {
-
+    
+    public void actionStartNewProjectCreation(){
+        projectEditBean.startProjectCreation();
+        navigator.navigate("project/projectEdit");
     }
 
     @Override

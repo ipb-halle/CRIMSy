@@ -40,23 +40,10 @@
                         <ui:include src="/WEB-INF/templates/project/components/projectACLContainer.xhtml"/>
                     </ui:insert>
                 </p:tab>
-
                 <p:tab
                     title="#{projectEditBean.getMaterialDetailPanelHeader('COMMON_INFORMATION')}">
                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                         <ui:param name="action" value="COMMON_INFORMATION"/>
-                    </ui:include>
-                </p:tab>
-                <p:tab
-                    title="#{projectEditBean.getMaterialDetailPanelHeader('INDEX')}">
-                    <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
-                        <ui:param name="action" value="INDEX"/>
-                    </ui:include>
-                </p:tab>
-                <p:tab
-                    title="#{projectEditBean.getMaterialDetailPanelHeader('STRUCTURE_INFORMATION')}">
-                    <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
-                        <ui:param name="action" value="STRUCTURE_INFORMATION"/>
                     </ui:include>
                 </p:tab>
             </p:tabView>
