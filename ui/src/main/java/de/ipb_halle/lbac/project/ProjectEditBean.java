@@ -18,12 +18,12 @@
 package de.ipb_halle.lbac.project;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACEntry;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -57,9 +58,6 @@ public class ProjectEditBean implements Serializable {
 
     @Inject
     private ProjectService projectService;
-
-    @Inject
-    private UserBean userBean;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -85,15 +83,20 @@ public class ProjectEditBean implements Serializable {
     @Inject
     private ProjectBean projectBean;
 
+    private User currentUser;
+
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     public enum Mode {
         CREATE, EDIT
     }
 
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
+    }
+
     @PostConstruct
     public void init() {
-
         startProjectCreation();
     }
 
@@ -121,7 +124,7 @@ public class ProjectEditBean implements Serializable {
     public void startProjectCreation() {
 
         mode = Mode.CREATE;
-        projectOwner = userBean.getCurrentAccount();
+        projectOwner = currentUser;
         possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
         projectACL = new ACList();
         projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.OWNER_ACCOUNT_ID), ACPermission.values());
@@ -256,7 +259,7 @@ public class ProjectEditBean implements Serializable {
 
         if (mode == Mode.CREATE) {
             Project p = new Project(currentProjectType, projectName);
-            p.setOwner(userBean.getCurrentAccount());
+            p.setOwner(currentUser);
             p.setACList(projectACL);
 
             if (isHasBudget()) {
