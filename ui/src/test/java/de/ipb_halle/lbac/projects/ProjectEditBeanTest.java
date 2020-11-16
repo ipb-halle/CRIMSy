@@ -25,6 +25,8 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.admission.ACEntry;
 import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.LoginEvent;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
@@ -44,7 +46,9 @@ import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,6 +61,80 @@ public class ProjectEditBeanTest extends TestBase {
 
     @Inject
     protected ProjectEditBean instance;
+
+    private User publicUser;
+
+    private Group group1, group2;
+
+    private ProjectEditBean projectEditBean;
+
+    @Before
+    @Override
+    public void setUp() {
+        super.setUp();
+        this.publicUser = context.getPublicAccount();
+        group1 = createGroup("test02_removeAceFromProjectACL_group_1",
+                nodeService.getLocalNode(),
+                memberService,
+                membershipService);
+
+        group2 = createGroup("test02_removeAceFromProjectACL_group_2",
+                nodeService.getLocalNode(),
+                memberService,
+                membershipService);
+
+        projectEditBean = new ProjectEditBean();
+        projectEditBean.setMemberService(memberService);
+        projectEditBean.init();
+        projectEditBean.setCurrentAccount(new LoginEvent(publicUser));
+    }
+
+    @After
+    public void cleanUp() {
+        entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + group1.getId());
+        entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + group2.getId());
+    }
+
+    @Test
+    public void test01_addGroupToProjectACL() {
+        projectEditBean.addGroupToProjectACL(group1);
+        int sizeBeforeAdding = projectEditBean.getAddableGroupsForProject().size();
+        projectEditBean.addGroupToProjectACL(group2);
+        Assert.assertEquals(
+                sizeBeforeAdding,
+                projectEditBean.getAddableGroupsForProject().size() + 1);
+    }
+
+    @Test
+    public void test02_removeAceFromProjectACL() {
+        projectEditBean.addGroupToProjectACL(group1);
+        int sizeBeforeAction = projectEditBean.getACEntriesOfProject().size();
+        projectEditBean.addGroupToProjectACL(group2);
+        projectEditBean.removeAceFromProjectACL(projectEditBean.getACEntriesOfProject().get(0));
+        Assert.assertEquals(
+                sizeBeforeAction,
+                projectEditBean.getACEntriesOfProject().size());
+    }
+
+    @Test
+    public void test03_roleTemplate() {
+        String materialDetail = MaterialDetailType.COMMON_INFORMATION.toString();
+        int sizeBeforeAction = projectEditBean
+                .getAddableGroupsForRoleTemplates(materialDetail).size();
+        projectEditBean.addAceToRoleTemplate(group1, materialDetail);
+        int sizeAfterAction = projectEditBean
+                .getAddableGroupsForRoleTemplates(materialDetail).size();
+        Assert.assertEquals(
+                sizeBeforeAction,
+                sizeAfterAction + 1);
+        ACEntry ace = projectEditBean.getACEntriesForDetailRole(materialDetail).get(0);
+        projectEditBean.removeAceFromRoleTemplateACL(ace, materialDetail);
+        sizeAfterAction = projectEditBean
+                .getAddableGroupsForRoleTemplates(materialDetail).size();
+        Assert.assertEquals(
+                sizeBeforeAction,
+                sizeAfterAction);
+    }
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -78,84 +156,6 @@ public class ProjectEditBeanTest extends TestBase {
                 .addClass(Updater.class)
                 .addClass(ProjectEditBean.class);
         return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
-    }
-
-    @Test
-    public void test01_addGroupToProjectACL() {
-
-        ProjectEditBean projectEditBean = new ProjectEditBean();
-        projectEditBean.setMemberService(memberService);
-        projectEditBean.init();
-        projectEditBean.addGroupToProjectACL(
-                createGroup("test01_addGroupToProjectACL",
-                        nodeService.getLocalNode(),
-                        memberService,
-                        membershipService)
-        );
-
-        int sizeBeforeAdding = projectEditBean.getAddableGroupsForProject().size();
-        Group groupToAdd = projectEditBean.getAddableGroupsForProject().get(0);
-        projectEditBean.addGroupToProjectACL(groupToAdd);
-        Assert.assertEquals(
-                sizeBeforeAdding,
-                projectEditBean.getAddableGroupsForProject().size() + 1);
-    }
-
-    @Test
-    public void test02_removeAceFromProjectACL() {
-
-        ProjectEditBean projectEditBean = new ProjectEditBean();
-        projectEditBean.setMemberService(memberService);
-        projectEditBean.init();
-        projectEditBean.addGroupToProjectACL(
-                createGroup("test02_removeAceFromProjectACL",
-                        nodeService.getLocalNode(),
-                        memberService,
-                        membershipService)
-        );
-
-        int sizeBeforeAction = projectEditBean.getACEntriesOfProject().size();
-        Group groupToAdd = projectEditBean.getAddableGroupsForProject().get(0);
-        projectEditBean.addGroupToProjectACL(groupToAdd);
-
-        projectEditBean.removeAceFromProjectACL(projectEditBean.getACEntriesOfProject().get(0));
-        Assert.assertEquals(
-                sizeBeforeAction,
-                projectEditBean.getACEntriesOfProject().size());
-    }
-
-    @Test
-    public void test03_RoleTemplate() {
-        String materialDetail = MaterialDetailType.COMMON_INFORMATION.toString();
-        ProjectEditBean projectEditBean = new ProjectEditBean();
-        projectEditBean.setMemberService(memberService);
-        projectEditBean.init();
-
-        Group g
-                = projectEditBean
-                        .getAddableGroupsForRoleTemplates(materialDetail).get(0);
-        int sizeBeforeAction = projectEditBean
-                .getAddableGroupsForRoleTemplates(materialDetail).size();
-        projectEditBean.addAceToRoleTemplate(g, materialDetail);
-
-        int sizeAfterAction = projectEditBean
-                .getAddableGroupsForRoleTemplates(materialDetail).size();
-
-        Assert.assertEquals(
-                sizeBeforeAction,
-                sizeAfterAction + 1);
-
-        ACEntry ace = projectEditBean.getACEntriesForDetailRole(materialDetail).get(0);
-
-        projectEditBean.removeAceFromRoleTemplateACL(ace, materialDetail);
-
-        sizeAfterAction = projectEditBean
-                .getAddableGroupsForRoleTemplates(materialDetail).size();
-
-        Assert.assertEquals(
-                sizeBeforeAction,
-                sizeAfterAction);
-
     }
 
 }
