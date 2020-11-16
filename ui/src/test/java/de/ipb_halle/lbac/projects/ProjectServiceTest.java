@@ -49,41 +49,31 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ProjectServiceTest extends TestBase {
-
+    
     @Inject
     private ProjectService instance;
-
+    
     @Inject
     private ACListService aclistService;
-
-    @Deployment
-    public static WebArchive createDeployment() {
-        return prepareDeployment("ProjectServiceTest.war")
-                .addClass(SystemSettings.class)
-                .addClass(ACListService.class)
-                .addClass(ProjectService.class);
-
-    }
-
+    
     @Before
     @Override
     public void setUp() {
         super.setUp();
         cleanAllProjectsFromDb();
     }
-
-    // @Ignore("Ignored until ACL is implemented to loading")
+    
     @Test
     public void test001_saveLoadProject() {
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "biochemical-test-project");
         p.setBudget(1000d);
         p.setDescription("Description of biochemical test project");
-
+        
         Group g = memberService.loadGroupById(GlobalAdmissionContext.PUBLIC_GROUP_ID);
         User u = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-
+        
         ACList projectAcList = new ACList();
-
+        
         projectAcList.addACE(u, new ACPermission[]{
             ACPermission.permREAD,
             ACPermission.permCHOWN,
@@ -92,50 +82,50 @@ public class ProjectServiceTest extends TestBase {
             ACPermission.permEDIT,
             ACPermission.permGRANT,
             ACPermission.permSUPER});
-
+        
         projectAcList.addACE(g, new ACPermission[]{
             ACPermission.permREAD});
-
+        
         p.setOwner(u);
         p.setACList(projectAcList);
         projectAcList = aclistService.save(projectAcList);
-
+        
         p.getDetailTemplates().put(MaterialDetailType.COMMON_INFORMATION, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.STORAGE_CLASSES, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.STRUCTURE_INFORMATION, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.HAZARD_INFORMATION, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.INDEX, projectAcList);
         p.getDetailTemplates().put(MaterialDetailType.TAXONOMY, projectAcList);
-
+        
         instance.saveProjectToDb(p);
         ProjectSearchRequestBuilder requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
-
+        
         SearchResult result = instance.loadProjects(requestBuilder.buildSearchRequest());
         List<Project> projectsOfPublicUser = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertEquals("Only 1 project should be found", 1, projectsOfPublicUser.size());
-
+        
         User user2 = createUser("UserWithoutPermission", "no name");
         requestBuilder = new ProjectSearchRequestBuilder(user2, 0, 25);
         result = instance.loadProjects(requestBuilder.buildSearchRequest());
         List<Project> projectsOfUser2 = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
-         Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
-
+        Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
+        
         requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
         requestBuilder.addExactName("biochemical-test-project");
         result = instance.loadProjects(requestBuilder.buildSearchRequest());
         List<Project> loadedByName = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertNotNull("test001: loaded by name should not be null ", loadedByName);
         Assert.assertEquals("test001: loaded by name wrong project loaded", p.getId(), loadedByName.get(0).getId());
-
+        
         requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
         requestBuilder.addExactName("biochemical-test-project-XXX");
         result = instance.loadProjects(requestBuilder.buildSearchRequest());
         loadedByName = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertEquals(0, loadedByName.size());
-
+        
         cleanUp(user2, projectAcList, p);
     }
-
+    
     @Test
     public void test002_saveEditedProject() {
         //Prepare a project and save it to the database
@@ -170,9 +160,18 @@ public class ProjectServiceTest extends TestBase {
         Assert.assertEquals(u.getId(), loadedProject.getOwnerID());
         Assert.assertEquals(GlobalAdmissionContext.getPublicReadACL().getId(), loadedProject.getUserGroups().getId());
         loadedProject.hashCode();
-
     }
-
+    
+    @Test
+    public void test003_isProjectNameAvailable() {
+        Assert.assertTrue(instance.isProjectNameAvailable("Test_project"));
+        saveProjectEntry("Test_project");
+        Assert.assertFalse(instance.isProjectNameAvailable("Test_project"));
+        Assert.assertFalse(instance.isProjectNameAvailable("test_Project"));
+        entityManagerService.doSqlUpdate("DELETE FROM projects WHERE name='Test_project'");
+        
+    }
+    
     private void cleanUp(User user2, ACList projectAcList, Project p) {
         entityManagerService.doSqlUpdate("delete from projecttemplates");
         entityManagerService.doSqlUpdate("delete from budgetreservations");
@@ -181,5 +180,21 @@ public class ProjectServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("delete from aclists where id=" + projectAcList.getId().toString());
         entityManagerService.deleteUserWithAllMemberships(user2.getId().toString());
         entityManagerService.doSqlUpdate("delete from usersgroups where name='" + user2.getName() + "'");
+    }
+    
+    @Deployment
+    public static WebArchive createDeployment() {
+        return prepareDeployment("ProjectServiceTest.war")
+                .addClass(SystemSettings.class)
+                .addClass(ACListService.class)
+                .addClass(ProjectService.class);
+    }
+    
+    private void saveProjectEntry(String name) {
+        entityManagerService.doSqlUpdate(
+                String.format("INSERT INTO "
+                        + "projects (name,projecttypeid,owner_id,aclist_id) "
+                        + "VALUES('%s',1,1,1)",
+                        name));
     }
 }

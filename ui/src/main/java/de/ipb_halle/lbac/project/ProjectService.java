@@ -185,9 +185,8 @@ public class ProjectService implements Serializable {
      *
      * @param p
      * @return
-     * @throws java.lang.Exception
      */
-    public Project saveProjectToDb(Project p) throws Exception {
+    public Project saveProjectToDb(Project p) {
 
         ACList existingAcl = acListService.save(p.getUserGroups());
         p.setACList(existingAcl);
