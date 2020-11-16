@@ -17,10 +17,12 @@
  */
 package de.ipb_halle.lbac.project;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.admission.MemberService;
@@ -51,6 +53,9 @@ public class ProjectBean implements Serializable, ACObjectBean {
 
     @Inject
     private UserBean userBean;
+
+    @Inject
+    private ACListService aclistService;
 
     private List<Project> readableProjects = new ArrayList<>();
 
@@ -127,7 +132,19 @@ public class ProjectBean implements Serializable, ACObjectBean {
     }
 
     public boolean isPermissionEditAllowed(Project p) {
-        return true;
+        return aclistService.isPermitted(ACPermission.permEDIT, p, user);
+    }
+
+    public void setProjectService(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+
+    public void setMemberService(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    public void setAclistService(ACListService aclistService) {
+        this.aclistService = aclistService;
     }
 
 }

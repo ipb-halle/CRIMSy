@@ -166,6 +166,9 @@ public class TestBase implements Serializable {
         acListReadable = GlobalAdmissionContext.getPublicReadACL();
         this.logger = LogManager.getLogger(this.getClass().getName());
 
+        entityManagerService.doSqlUpdate("DELETE FROM PROJECTTEMPLATES");
+        entityManagerService.doSqlUpdate("DELETE FROM projects");
+
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         entityManagerService.doSqlUpdate("DELETE FROM files");
