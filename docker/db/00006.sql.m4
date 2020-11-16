@@ -57,7 +57,7 @@ CREATE TABLE materialinformations (
 
 CREATE TABLE projects (
     id SERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR NOT NULL UNIQUE,
+    name VARCHAR NOT NULL,
     budget NUMERIC,
     budgetBlocked BOOLEAN default false,
     projecttypeid INTEGER NOT NULL REFERENCES projecttypes(id),
