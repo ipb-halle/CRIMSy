@@ -145,14 +145,15 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void startProjectEdit(Project p) {
-        mode = Mode.EDIT;
+        this.mode = Mode.EDIT;
         this.projectToEdit = p;
         this.currentProjectType = p.getProjectType();
-        projectName = p.getName();
-        projectDescription = p.getDescription();
-
-        possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
-        projectOwner = p.getOwner();
+        this.projectName = p.getName();
+        this.projectDescription = p.getDescription();
+        this.detailTemplates=p.getDetailTemplates();
+        this.possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
+        this.projectACL=p.getACList();
+        this.projectOwner = p.getOwner();
     }
 
     public List<ACEntry> getACEntriesForDetailRole(String detailType) {

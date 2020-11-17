@@ -30,7 +30,7 @@
         <ui:composition>
             <b:panel 
                 collapsible="false"
-                title="Allgemeine Projektberechtigungen">
+                title="#{msgs.projectEdit_accessRights}">
                 <b:container
                     styleClass="projectACLContainer">
                     <b:row>
@@ -42,27 +42,27 @@
                                 var="acEntry">
                                 <b:dataTableColumn
                                     value="#{acEntry.getMember().getName()}"
-                                    label="Name"
+                                    label="#{msgs.projectEdit_projectName}"
                                     />
                                 <b:dataTableColumn
                                     orderable="false"
-                                    label="Read">
+                                    label="#{msgs.projectEdit_tableHeader_read}">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permRead}"/>
                                 </b:dataTableColumn>
 
                                 <b:dataTableColumn
-                                    label="Edit"
+                                    label="#{msgs.projectEdit_tableHeader_edit}"
                                     orderable="false">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permEdit}"/>
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
                                     orderable="false"
-                                    label="Delete">
+                                    label="#{msgs.projectEdit_tableHeader_delete}">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permDelete}"/>
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
                                     orderable="false"
-                                    label="Super">
+                                     label="#{msgs.projectEdit_tableHeader_super}">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permSuper}"/>
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
@@ -89,11 +89,11 @@
 
                                 <b:dataTableColumn
                                     value="#{group.getName()}"
-                                    label="Name"
+                                    label="#{msgs.aclEdit_modal_table_groupname}"
                                     />
                                 <b:dataTableColumn
                                     value="#{group.getNode().getInstitution()}"
-                                    label="Institution"
+                                    label="#{msgs.aclEdit_modal_table_institution}"
                                     />
 
                                 <b:dataTableColumn 
