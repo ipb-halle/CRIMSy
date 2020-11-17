@@ -50,6 +50,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.Arrays;
@@ -209,6 +210,7 @@ public class MaterialIndexBeanTest extends TestBase {
                         .addClass(ArticleService.class)
                         .addClass(ItemOverviewBean.class)
                         .addClass(ContainerNestingService.class)
+                        .addClass(ProjectEditBean.class)
                         .addClass(ItemBean.class)
                         .addClass(IndexServiceMock.class);
         deployment = UserBeanDeployment.add(deployment);

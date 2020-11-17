@@ -59,6 +59,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.ArrayList;
@@ -147,6 +148,7 @@ public class MaterialCreationSaverTest extends TestBase {
                         .addClass(MaterialIndexBean.class)
                         .addClass(ProjectService.class)
                         .addClass(CollectionWebClient.class)
+                        .addClass(ProjectEditBean.class)
                         .addClass(Updater.class)
                         .addClass(TissueService.class)
                         .addClass(TaxonomyService.class)

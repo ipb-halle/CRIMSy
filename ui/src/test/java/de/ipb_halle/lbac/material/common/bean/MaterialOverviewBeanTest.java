@@ -60,6 +60,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.mocks.MaterialOverviewBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -183,6 +184,7 @@ public class MaterialOverviewBeanTest extends TestBase {
                         .addClass(ContainerNestingService.class)
                         .addClass(ItemBean.class)
                         .addClass(MaterialIndexHistoryEntity.class)
+                        .addClass(ProjectEditBean.class)
                         .addClass(IndexService.class)
                         .addClass(MaterialService.class);
         deployment = UserBeanDeployment.add(deployment);

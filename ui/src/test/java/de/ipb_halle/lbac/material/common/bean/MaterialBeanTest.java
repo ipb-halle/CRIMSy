@@ -61,6 +61,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.HashMap;
@@ -228,6 +229,7 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(Updater.class)
                         .addClass(ContainerPositionService.class)
                         .addClass(TissueService.class)
+                        .addClass(ProjectEditBean.class)
                         .addClass(TaxonomyService.class)
                         .addClass(Navigator.class)
                         .addClass(WordCloudBean.class)
