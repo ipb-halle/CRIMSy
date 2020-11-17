@@ -101,7 +101,13 @@ public class ProjectEditBean implements Serializable {
     }
 
     public List<ACEntry> getACEntriesOfProject() {
-        return new ArrayList<>(projectACL.getACEntries().values());
+        List<ACEntry> entries = new ArrayList<>();
+        for (ACEntry ace : projectACL.getACEntries().values()) {
+            if (ace.getMemberId() != GlobalAdmissionContext.OWNER_ACCOUNT_ID) {
+                entries.add(ace);
+            }
+        }
+        return entries;
     }
 
     public List<Group> getAddableGroupsForProject() {
@@ -122,7 +128,6 @@ public class ProjectEditBean implements Serializable {
     }
 
     public void startProjectCreation() {
-
         mode = Mode.CREATE;
         projectOwner = currentUser;
         possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
@@ -131,7 +136,11 @@ public class ProjectEditBean implements Serializable {
         projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.ADMIN_GROUP_ID), ACPermission.values());
         projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.PUBLIC_GROUP_ID), new ACPermission[]{ACPermission.permREAD});
         for (MaterialDetailType mdt : MaterialDetailType.values()) {
-            detailTemplates.put(mdt, new ACList());
+            ACList aclDetail = new ACList();
+            aclDetail.addACE(memberService.loadMemberById(GlobalAdmissionContext.OWNER_ACCOUNT_ID), ACPermission.values());
+            aclDetail.addACE(memberService.loadMemberById(GlobalAdmissionContext.ADMIN_GROUP_ID), ACPermission.values());
+            aclDetail.addACE(memberService.loadMemberById(GlobalAdmissionContext.PUBLIC_GROUP_ID), new ACPermission[]{ACPermission.permREAD});
+            detailTemplates.put(mdt, aclDetail);
         }
     }
 
@@ -139,14 +148,21 @@ public class ProjectEditBean implements Serializable {
         mode = Mode.EDIT;
         this.projectToEdit = p;
         this.currentProjectType = p.getProjectType();
+        projectName = p.getName();
+        projectDescription = p.getDescription();
+
         possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
         projectOwner = p.getOwner();
     }
 
     public List<ACEntry> getACEntriesForDetailRole(String detailType) {
-        ACList acListOfDetail = detailTemplates.get(MaterialDetailType.valueOf(detailType));
-        Collection<ACEntry> aces = acListOfDetail.getACEntries().values();
-        return new ArrayList<>(aces);
+        List<ACEntry> entries = new ArrayList<>();
+        for (ACEntry ace : detailTemplates.get(MaterialDetailType.valueOf(detailType)).getACEntries().values()) {
+            if (ace.getMemberId() != GlobalAdmissionContext.OWNER_ACCOUNT_ID) {
+                entries.add(ace);
+            }
+        }
+        return entries;
     }
 
     public List<Group> getAddableGroupsForRoleTemplates(String materialDetail) {
@@ -247,19 +263,56 @@ public class ProjectEditBean implements Serializable {
         }
     }
 
+    private boolean creationNameConditionMet() {
+        if (mode == Mode.CREATE) {
+            return projectService.isProjectNameAvailable(projectName);
+        } else {
+            return true;
+        }
+    }
+
+    private boolean editNameConditionMet() {
+        if (mode == Mode.EDIT) {
+            return projectName.trim().equals(projectToEdit.getName())
+                    || projectService.isProjectNameAvailable(projectName);
+        } else {
+            return true;
+        }
+    }
+
     public void saveProject() {
-        if (projectName == null || projectName.trim().isEmpty()) {
+        if (projectName == null
+                || projectName.trim().isEmpty()) {
             UIMessage.error("projectEdit_invalide_projectname");
             return;
         }
-        if (!projectService.isProjectNameAvailable(projectName)) {
+        if (!creationNameConditionMet() || !editNameConditionMet()) {
             UIMessage.error("projectEdit_duplicate_projectname");
             return;
         }
 
         if (mode == Mode.CREATE) {
-            Project p = new Project(currentProjectType, projectName);
-            p.setOwner(currentUser);
+           saveNewProject();
+        }
+        if (mode == Mode.EDIT) {
+            saveEditedProject();
+        }
+        projectBean.reloadReadableProjects();
+        navigator.navigate("project/projectOverview");
+    }
+    
+    private void saveEditedProject(){
+         projectToEdit.setName(projectName);
+            projectToEdit.setDescription(projectDescription);
+            projectToEdit.setOwner(projectOwner);
+            projectToEdit.setACList(projectACL);
+            projectToEdit.setDetailTemplates(detailTemplates);
+            projectService.saveEditedProjectToDb(projectToEdit);
+    }
+    
+    private void saveNewProject(){
+         Project p = new Project(currentProjectType, projectName);
+            p.setOwner(projectOwner);
             p.setACList(projectACL);
 
             if (isHasBudget()) {
@@ -267,21 +320,14 @@ public class ProjectEditBean implements Serializable {
             } else {
                 p.setBudget(null);
             }
-
             p.setDescription(projectDescription);
             p.setDetailTemplates(detailTemplates);
             try {
                 projectService.saveProjectToDb(p);
             } catch (Exception e) {
-
                 UIMessage.error("projectEdit_duplicate_projectname");
-                logger.info(e.getCause().getClass());
-                logger.error(e);
                 return;
             }
-        }
-        projectBean.reloadReadableProjects();
-        navigator.navigate("project/projectOverview");
     }
 
     public String getProjectDescription() {

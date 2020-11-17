@@ -65,13 +65,13 @@ public class ProjectBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(ProjectBean.class);
     private ACObjectController acObjectController;
     private User user;
-    
+
     @Inject
     private ProjectEditBean projectEditBean;
 
     @Inject
     private MemberService memberService;
-    
+
     @Inject
     private Navigator navigator;
 
@@ -86,9 +86,14 @@ public class ProjectBean implements Serializable, ACObjectBean {
             return p1.getName().compareTo(p2.getName());
         });
     }
-    
-    public void actionStartNewProjectCreation(){
+
+    public void actionStartNewProjectCreation() {
         projectEditBean.startProjectCreation();
+        navigator.navigate("project/projectEdit");
+    }
+
+    public void actionStartProjectEdit(Project p) {
+        projectEditBean.startProjectEdit(p);
         navigator.navigate("project/projectEdit");
     }
 
