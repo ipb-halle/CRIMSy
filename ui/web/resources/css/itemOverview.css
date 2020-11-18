@@ -36,8 +36,12 @@
     width:10px  !important;
 }
 .itemFilterInputfield{
-    width:165px  !important;
+    width:200px  !important;
     height: 30px !important;
+}
+.itemFilterInputfield input{
+    width:200px  !important;
+    height:30px !important;
 }
 
 .itemFilterRow div{

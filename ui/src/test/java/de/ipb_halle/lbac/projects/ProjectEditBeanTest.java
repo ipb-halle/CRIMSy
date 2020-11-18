@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.admission.ACEntry;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
@@ -31,10 +32,12 @@ import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import javax.inject.Inject;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.SearchWebService;
@@ -42,6 +45,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import java.util.HashMap;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -134,6 +138,35 @@ public class ProjectEditBeanTest extends TestBase {
         Assert.assertEquals(
                 sizeBeforeAction,
                 sizeAfterAction);
+    }
+    
+    @Test
+    public void test004_startProjectCreation(){
+        projectEditBean.startProjectCreation();
+        
+        Assert.assertTrue(projectEditBean.getProjectName().isEmpty());
+        Assert.assertEquals(2,projectEditBean.getACEntriesOfProject().size());
+        Assert.assertEquals(ProjectType.CHEMICAL_PROJECT,projectEditBean.getCurrentProjectType());
+        Assert.assertTrue(projectEditBean.getProjectDescription().isEmpty());
+        Assert.assertEquals(publicUser.getId(),projectEditBean.getProjectOwner().getId());
+    }
+    
+    @Test
+    public void test005_startProjectEdit(){
+        Project p=new Project();
+        p.setName("test005_startProjectEdit");
+        p.setDescription("test005_startProjectEdit_description");
+        p.setOwner(context.getAdminAccount());
+        p.setDetailTemplates(new HashMap<>());
+        p.setProjectType(ProjectType.IT_PROJECT);
+        p.setACList(new ACList());
+        
+        projectEditBean.startProjectEdit(p);
+          Assert.assertEquals("test005_startProjectEdit",projectEditBean.getProjectName());
+        Assert.assertEquals(0,projectEditBean.getACEntriesOfProject().size());
+        Assert.assertEquals(ProjectType.IT_PROJECT,projectEditBean.getCurrentProjectType());
+        Assert.assertEquals("test005_startProjectEdit_description",projectEditBean.getProjectDescription());
+        Assert.assertEquals(context.getAdminAccount().getId(),projectEditBean.getProjectOwner().getId());
     }
 
     @Deployment

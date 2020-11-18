@@ -131,6 +131,8 @@ public class ProjectEditBean implements Serializable {
         mode = Mode.CREATE;
         projectOwner = currentUser;
         possibleGroupsToAdd = memberService.loadGroups(new HashMap<>());
+        projectName="";
+        projectDescription="";
         projectACL = new ACList();
         projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.OWNER_ACCOUNT_ID), ACPermission.values());
         projectACL.addACE(memberService.loadMemberById(GlobalAdmissionContext.ADMIN_GROUP_ID), ACPermission.values());
