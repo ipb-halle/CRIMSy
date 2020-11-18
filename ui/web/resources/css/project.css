@@ -19,4 +19,35 @@
 .projectDescriptionInputArea{
     width:100%;
 }
+.projectOwnerEditButton{
+    padding: 0px;
+}
+.projectOwnerButton i{
+    margin-left: 5px;
+}
+.projectOwnerButton {
+    padding: 0px;
+}
+.projectTitleText{
+    margin-top: 6px;
+    font-size: 1.15em;
+    color: gray;
+}
+.projectTitleText i{
+    color: red;
+}
+.projectDescriptionTitle{
+    font-size: 1.5em;
+    font-weight: bold;
+    padding-left: 86px;
+}
+.projectEdit_aclTable_firstColumn{
+    width: 105px;
+}
+.projectEdit_aclTable_column{
+    width: 60px;
+}
+.projectEdit_aclTable_groupsToAdd_firstColumn{
+    width: 300px;
+}
 

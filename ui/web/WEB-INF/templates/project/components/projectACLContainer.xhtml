@@ -41,31 +41,37 @@
                                 value="#{projectEditBean.getACEntriesOfProject()}"
                                 var="acEntry">
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_firstColumn"
                                     value="#{acEntry.getMember().getName()}"
                                     label="#{msgs.projectEdit_projectName}"
                                     />
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_column"
                                     orderable="false"
                                     label="#{msgs.projectEdit_tableHeader_read}">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permRead}"/>
                                 </b:dataTableColumn>
 
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_column"
                                     label="#{msgs.projectEdit_tableHeader_edit}"
                                     orderable="false">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permEdit}"/>
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_column"
                                     orderable="false"
                                     label="#{msgs.projectEdit_tableHeader_delete}">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permDelete}"/>
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_column"
                                     orderable="false"
-                                     label="#{msgs.projectEdit_tableHeader_super}">
+                                    label="#{msgs.projectEdit_tableHeader_super}">
                                     <b:selectBooleanCheckbox  style="margin-left: 25px"   value="#{acEntry.permSuper}"/>
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_column"
                                     label=""
                                     orderable="false">
                                     <b:commandButton style="padding: 0 4px;"
@@ -88,15 +94,18 @@
                                 var="group">
 
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_groupsToAdd_firstColumn"
                                     value="#{group.getName()}"
                                     label="#{msgs.aclEdit_modal_table_groupname}"
                                     />
                                 <b:dataTableColumn
+                                    styleClass="projectEdit_aclTable_column"
                                     value="#{group.getNode().getInstitution()}"
                                     label="#{msgs.aclEdit_modal_table_institution}"
                                     />
 
                                 <b:dataTableColumn 
+                                    styleClass="projectEdit_aclTable_column"
                                     label=""
                                     orderable="false">
                                     <b:commandButton style="padding: 0 4px;"

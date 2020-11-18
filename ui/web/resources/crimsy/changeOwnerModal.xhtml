@@ -21,11 +21,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
-      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy">
 
     <composite:interface name="changeOwnerModal"
                          displayName="changeOwner modal"
@@ -35,15 +33,10 @@
         <composite:attribute name="acobject" required="true" />
         <composite:attribute name="bean" required="true" />
         <composite:attribute name="updateTargetClass" required="true" />
-        
-      
-
     </composite:interface>
-
     <composite:implementation >
-
         <p:dialog 
-            header="Neuen Besitzer wählen"
+            header="#{msgs.ownerDialog_title}"
             widgetVar="dlgChangeOwner"
             modal="true" 
             styleClass="acoEditModal"
@@ -53,22 +46,24 @@
                     var="user"
                     value="#{cc.attrs.bean.getLocalUsers()}">
                     <b:dataTableColumn
-                        value="#{user.getName()}"/>
+                        value="#{user.getName()}"
+                        label="#{msgs.ownerDialog_tableHeader_name}"/>
 
                     <b:dataTableColumn
-                        value="#{user.getPhone()}"/>
+                        value="#{user.getPhone()}"
+                        label="#{msgs.ownerDialog_tableHeader_phone}"/>
                     <b:dataTableColumn
-                        value="#{user.getEmail()}"/>
-
-                    <b:dataTableColumn>
+                        value="#{user.getEmail()}"
+                        label="#{msgs.ownerDialog_tableHeader_email}"/>
+                    <b:dataTableColumn
+                        label="">
                         <p:commandButton 
                                     ajax="true"
+                                    value="#{msgs.ownerDialog_button_choose}"
                                     update="@(.#{cc.attrs.updateTargetClass})"
                                     action="#{cc.attrs.bean.changeOwner(user)}"
                                     oncomplete="PF('dlgChangeOwner').hide();"/>
                     </b:dataTableColumn>
-
-
                 </b:dataTable>
             </center>
         </p:dialog>
