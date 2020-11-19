@@ -52,6 +52,7 @@ public enum AttributeType {
     TEMPLATE,
     WORDROOT,
     /* general attribute types */
+    DEACTIVATED,
     LABEL,
     STRUCTURE,
     TEXT,

@@ -238,7 +238,8 @@ CREATE TABLE projects (
   aclist_id INTEGER NOT NULL REFERENCES aclists(id),
   description VARCHAR,
   ctime TIMESTAMP  NOT NULL DEFAULT now(),
-  mtime TIMESTAMP  NOT NULL DEFAULT now()
+  mtime TIMESTAMP  NOT NULL DEFAULT now(),
+  deactivated BOOLEAN NOT NULL DEFAULT false
 );
 
 

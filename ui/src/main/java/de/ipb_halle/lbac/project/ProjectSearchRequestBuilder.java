@@ -34,6 +34,13 @@ public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
         target = SearchTarget.PROJECT;
     }
 
+    public ProjectSearchRequestBuilder addDeactivated(boolean deactivated) {
+        addCondition(Operator.EQUAL,
+                deactivated,
+                AttributeType.DEACTIVATED);
+        return this;
+    }
+
     public ProjectSearchRequestBuilder addExactName(String name) {
         addCondition(Operator.EQUAL,
                 name,

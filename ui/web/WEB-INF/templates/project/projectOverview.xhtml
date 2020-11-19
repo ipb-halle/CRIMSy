@@ -89,7 +89,9 @@
                                                  look="link"
                                                  ajax="true"
                                                  process="@this"
+                                                 update="@(.readableProjectTable)"
                                                  type="button"
+                                                 action="#{projectBean.actionDeleteProject(project)}"
                                                  disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                                  tooltip="Projekt loeschen(not yet implemented)"
                                                  />

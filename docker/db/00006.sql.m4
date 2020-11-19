@@ -65,7 +65,8 @@ CREATE TABLE projects (
     aclist_id INTEGER NOT NULL REFERENCES aclists(id),
     description VARCHAR,
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
-    mtime TIMESTAMP  NOT NULL DEFAULT now()
+    mtime TIMESTAMP  NOT NULL DEFAULT now(),
+    deactivated BOOLEAN NOT NULL DEFAULT false
 );
 CREATE UNIQUE index project_index_name_unique ON projects (LOWER(name));
 
@@ -136,7 +137,7 @@ CREATE TABLE materials (
         ctime TIMESTAMP  NOT NULL DEFAULT now(),
         aclist_id INTEGER NOT NULL REFERENCES aclists(id),
         ownerId INTEGER NOT NULL REFERENCES usersgroups(id),
-        deactivated BOOLEAN NOT NULL,
+        deactivated BOOLEAN NOT NULL DEFAULT false,
         projectId INTEGER REFERENCES projects(id));
 
 CREATE TABLE material_indices (

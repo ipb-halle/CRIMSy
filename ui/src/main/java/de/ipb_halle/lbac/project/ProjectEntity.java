@@ -69,6 +69,10 @@ public class ProjectEntity extends ACObjectEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column
     private Date mtime;
+    
+    @AttributeTag(type = AttributeType.DEACTIVATED)
+    @Column
+    private boolean deactivated;
 
     /**
      * default constructor
@@ -152,6 +156,14 @@ public class ProjectEntity extends ACObjectEntity implements Serializable {
 
     public void setMtime(Date mtime) {
         this.mtime = mtime;
+    }
+
+    public boolean isDeactivated() {
+        return deactivated;
+    }
+
+    public void setDeactivated(boolean deactivated) {
+        this.deactivated = deactivated;
     }
 
 }

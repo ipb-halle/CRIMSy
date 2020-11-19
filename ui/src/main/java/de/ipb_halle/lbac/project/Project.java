@@ -53,6 +53,7 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Date ctime;
     private Date mTime;
+    private boolean deactivated;
 
     public Project() {
     }
@@ -71,6 +72,7 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
         this.description = pE.getDescription();
         ctime = pE.getCtime();
         mTime = pE.getMtime();
+        this.deactivated = pE.isDeactivated();
 
         this.setOwner(owner);
         this.setACList(userGroups);
@@ -200,6 +202,7 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
         entity.setName(name);
         entity.setOwner(getOwnerID());
         entity.setProjectTypeId(projectType.getId());
+        entity.setDeactivated(deactivated);
         return entity;
     }
 

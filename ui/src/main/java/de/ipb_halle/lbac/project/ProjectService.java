@@ -72,6 +72,11 @@ public class ProjectService implements Serializable {
             = "DELETE FROM projecttemplates "
             + "WHERE projectid=:projectid";
 
+    private final String SQL_DEACTIVATE_PROJECT
+            = "UPDATE projects"
+            + " SET deactivated=:deactivated"
+            + " WHERE id=:id";
+
     @Inject
     private MemberService memberService;
 
@@ -107,7 +112,10 @@ public class ProjectService implements Serializable {
     @SuppressWarnings("unchecked")
     public List<String> getSimilarProjectNames(String name, User user) {
 
-        String sql = SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "p.aclist_id", "p.owner_id", ACPermission.permREAD);
+        String sql = SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES,
+                "p.aclist_id",
+                "p.owner_id",
+                ACPermission.permREAD);
         return this.em.createNativeQuery(sql)
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", user.getId())
@@ -153,9 +161,7 @@ public class ProjectService implements Serializable {
 
     public SearchResult loadProjects(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-
         EntityGraph graph = createEntityGraph(request.getCondition());
-
         SqlBuilder builder = new SqlBuilder(graph);
 
         permissionConditionBuilder = new PermissionConditionBuilder(
@@ -179,6 +185,13 @@ public class ProjectService implements Serializable {
     public boolean isProjectNameAvailable(String name) {
         BigInteger i = (BigInteger) this.em.createNativeQuery(SQL_GET_NAME_AVAILABLE).setParameter("name", name).getResultList().get(0);
         return i.intValue() == 0;
+    }
+
+    public void changeDeactivationState(int projectId, boolean deactivated) {
+        Query q = em.createNativeQuery(SQL_DEACTIVATE_PROJECT);
+        q.setParameter("deactivated", deactivated);
+        q.setParameter("id", projectId);
+        q.executeUpdate();
     }
 
     /**

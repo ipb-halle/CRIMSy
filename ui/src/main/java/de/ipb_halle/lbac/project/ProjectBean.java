@@ -77,6 +77,7 @@ public class ProjectBean implements Serializable, ACObjectBean {
 
     public void reloadReadableProjects() {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        builder.addDeactivated(false);
         SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
         readableProjects = new ArrayList<>();
         readableProjects.addAll(result.getAllFoundObjects(
@@ -143,7 +144,7 @@ public class ProjectBean implements Serializable, ACObjectBean {
                 projectInFocus.getName());
     }
 
-    public boolean isPermissionAllowed(Project p,String permission) {
+    public boolean isPermissionAllowed(Project p, String permission) {
         return aclistService.isPermitted(ACPermission.valueOf(permission), p, user);
     }
 
@@ -157,6 +158,11 @@ public class ProjectBean implements Serializable, ACObjectBean {
 
     public void setAclistService(ACListService aclistService) {
         this.aclistService = aclistService;
+    }
+
+    public void actionDeleteProject(Project p) {
+        projectService.changeDeactivationState(p.getId(), true);
+        reloadReadableProjects();
     }
 
 }
