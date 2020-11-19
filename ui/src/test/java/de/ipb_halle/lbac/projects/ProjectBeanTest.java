@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.projects;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
@@ -103,20 +104,19 @@ public class ProjectBeanTest extends TestBase {
     public void test004_isPermissionEditAllowed() {
 
         Project projectToEdit = instance.getReadableProjectById(project1Id);
-        Assert.assertFalse(instance.isPermissionEditAllowed(projectToEdit));
+        Assert.assertFalse(instance.isPermissionAllowed(projectToEdit, "permEDIT"));
 
         instance.actionStartAclChange(projectToEdit);
         projectToEdit.getACList().getACEntries().get(context.getPublicGroup().getId()).setPermEdit(true);
         instance.applyAclChanges();
-        Assert.assertTrue(instance.isPermissionEditAllowed(projectToEdit));
+        Assert.assertTrue(instance.isPermissionAllowed(projectToEdit, "permEDIT"));
     }
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
-        
-        
+
         this.publicUser = context.getPublicAccount();
         instance = new ProjectBean();
         instance.setProjectService(projectService);

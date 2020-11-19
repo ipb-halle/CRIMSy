@@ -69,7 +69,7 @@
                                                  look="link"
                                                  type="submit"
                                                  ajax="false"
-                                                 disabled="#{!projectBean.isPermissionEditAllowed(project)}"
+                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                                  action="#{projectBean.actionStartProjectEdit(project)}"
                                                  />
                                 <b:commandButton style="padding: 0 4px;"
@@ -82,7 +82,7 @@
                                                  type="button"
                                                  onclick="ajax:projectBean.actionStartAclChange(project)"
                                                  oncomplete="PF('dlgAcl').show();"
-                                                 disabled="#{!projectBean.isPermissionEditAllowed(project)}"/>
+                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"/>
 
                                 <b:commandButton style="padding: 0 4px;"
                                                  icon="trash"
@@ -90,7 +90,7 @@
                                                  ajax="true"
                                                  process="@this"
                                                  type="button"
-                                                 disabled="true"
+                                                 disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                                  tooltip="Projekt loeschen(not yet implemented)"
                                                  />
                             </b:dataTableColumn>

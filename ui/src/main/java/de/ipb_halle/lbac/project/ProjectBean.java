@@ -143,8 +143,8 @@ public class ProjectBean implements Serializable, ACObjectBean {
                 projectInFocus.getName());
     }
 
-    public boolean isPermissionEditAllowed(Project p) {
-        return aclistService.isPermitted(ACPermission.permEDIT, p, user);
+    public boolean isPermissionAllowed(Project p,String permission) {
+        return aclistService.isPermitted(ACPermission.valueOf(permission), p, user);
     }
 
     public void setProjectService(ProjectService projectService) {
