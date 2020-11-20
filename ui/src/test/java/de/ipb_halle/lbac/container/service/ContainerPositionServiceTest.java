@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
@@ -130,19 +131,8 @@ public class ContainerPositionServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ContainerPositionService.war")
-                .addClass(ContainerService.class)
-                .addClass(ItemService.class)
-                .addClass(MaterialService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TissueService.class)
-                .addClass(ArticleService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(MoleculeService.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(ContainerPositionService.class)
-                .addClass(ProjectService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("ContainerPositionService.war");
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 
     private Item createItem() {

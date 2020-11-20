@@ -374,7 +374,8 @@ CREATE TABLE items(
     containerid INTEGER REFERENCES containers(id),
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
     expiry_date TIMESTAMP,
-    aclist_id INTEGER NOT NULL
+    aclist_id INTEGER NOT NULL,
+    label VARCHAR
 );
 
 CREATE TABLE item_positions(

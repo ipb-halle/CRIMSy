@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 
@@ -40,6 +41,7 @@ public class ItemDeployment {
                 .addClass(ContainerService.class)
                 .addClass(ContainerNestingService.class)
                 .addClass(ContainerPositionService.class)
+                .addClass(LabelService.class)
                 .addClass(MaterialService.class);
         return MaterialDeployment.add(d);
     }

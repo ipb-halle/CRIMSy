@@ -45,7 +45,7 @@ public class OrderByTest {
 
         String sql = builder.query(null, orderList);
         
-        assertEquals("Invalid ORDER BY clause", "SELECT DISTINCT a.solventid, a.aclist_id, a.amount, a.purity, a.owner_id, a.expiry_date, a.articleid, a.description, a.containersize, a.concentration, a.materialid, a.containertype, a.unit, a.ctime, a.id, a.containerid, a.projectid FROM items AS a ORDER BY a.id DESC ", sql);
+        assertEquals("Invalid ORDER BY clause", "SELECT DISTINCT a.solventid, a.aclist_id, a.amount, a.purity, a.owner_id, a.expiry_date, a.articleid, a.description, a.containersize, a.concentration, a.label, a.materialid, a.containertype, a.unit, a.ctime, a.id, a.containerid, a.projectid FROM items AS a ORDER BY a.id DESC ", sql);
     }
     
 }

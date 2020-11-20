@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -92,20 +93,8 @@ public class ContainerNestingServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ContainerNestingServiceTest.war")
-                .addClass(ContainerService.class)
-                .addClass(ACListService.class)
-                .addClass(ItemService.class)
-                .addClass(MaterialService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TissueService.class)
-                .addClass(ArticleService.class)
-                .addClass(MoleculeService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(ContainerPositionService.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(ProjectService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("ContainerNestingServiceTest.war");
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 
     private int[] initializeContainer() {

@@ -90,6 +90,9 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
 
     @Column
     private Date expiry_date;
+    
+    @Column
+    private String label;
 
     public Integer getId() {
         return id;
@@ -209,6 +212,14 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
 
     public void setExpiry_date(Date expiry_date) {
         this.expiry_date = expiry_date;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 }

@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.ItemPositionHistoryList;
@@ -552,20 +553,9 @@ public class ItemServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ItemServiceTest.war")
-                .addClass(EntityManagerService.class)
-                .addClass(ProjectService.class)
-                .addClass(MaterialService.class)
-                .addClass(ContainerService.class)
-                .addClass(MoleculeService.class)
-                .addClass(ArticleService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TissueService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(ContainerPositionService.class)
-                .addClass(ItemService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("ItemServiceTest.war");
+
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 
     private void createAndSaveMaterial() {

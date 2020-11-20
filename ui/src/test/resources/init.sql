@@ -547,7 +547,8 @@ CREATE TABLE items(
     containerid INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE SET NULL,
     aclist_id INTEGER NOT NULL,
     expiry_date TIMESTAMP,
-    ctime TIMESTAMP  NOT NULL DEFAULT now());
+    ctime TIMESTAMP  NOT NULL DEFAULT now(),
+    label VARCHAR);
 
 CREATE TABLE item_positions(
     id SERIAL NOT NULL PRIMARY KEY,

@@ -36,6 +36,7 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -189,19 +190,7 @@ public class InputValidatorTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("InputValidatorTest.war")
-                .addClass(ContainerService.class)
-                .addClass(ACListService.class)
-                .addClass(ItemService.class)
-                .addClass(MaterialService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TissueService.class)
-                .addClass(ArticleService.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(MoleculeService.class)
-                .addClass(ContainerPositionService.class)
-                .addClass(ProjectService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("InputValidatorTest.war");
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -374,19 +375,8 @@ public class ContainerServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("ContainerServiceTest.war")
-                .addClass(ContainerService.class)
-                .addClass(ItemService.class)
-                .addClass(MaterialService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TissueService.class)
-                .addClass(ArticleService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(MoleculeService.class)
-                .addClass(ContainerPositionService.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(ProjectService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("ContainerServiceTest.war");
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 
     private void checkItem1(Item i, String testDesc) {

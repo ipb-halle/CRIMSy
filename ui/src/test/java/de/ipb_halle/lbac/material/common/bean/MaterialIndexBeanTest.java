@@ -48,6 +48,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
@@ -178,41 +179,8 @@ public class MaterialIndexBeanTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialIndexBeanTest.war")
-                        .addClass(ACListService.class)
-                        .addClass(CollectionBean.class)
-                        .addClass(CollectionService.class)
-                        .addClass(FileService.class)
-                        .addClass(FileEntityService.class)
-                        .addClass(CollectionOrchestrator.class)
-                        .addClass(EntityManagerService.class)
-                        .addClass(TermVectorEntityService.class)
-                        .addClass(DocumentSearchService.class)
-                        .addClass(MoleculeService.class)
-                        .addClass(ProjectService.class)
-                        .addClass(CollectionWebClient.class)
-                        .addClass(Updater.class)
-                        .addClass(Navigator.class)
-                        .addClass(WordCloudBean.class)
-                        .addClass(WordCloudWebClient.class)
-                        .addClass(MaterialIndexBean.class)
-                        .addClass(IndexServiceMock.class)
-                        .addClass(MaterialNameBean.class)
-                        .addClass(ProjectBean.class)
-                        .addClass(MaterialService.class)
-                        .addClass(ContainerPositionService.class)
-                        .addClass(MaterialBean.class)
-                        .addClass(TissueService.class)
-                        .addClass(TaxonomyService.class)
-                        .addClass(MaterialOverviewBean.class)
-                        .addClass(TaxonomyNestingService.class)
-                        .addClass(ContainerService.class)
-                        .addClass(ItemService.class)
-                        .addClass(ArticleService.class)
-                        .addClass(ItemOverviewBean.class)
-                        .addClass(ContainerNestingService.class)
-                        .addClass(ProjectEditBean.class)
-                        .addClass(ItemBean.class)
-                        .addClass(IndexServiceMock.class);
+                  .addClass(IndexServiceMock.class)      ;
+         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }

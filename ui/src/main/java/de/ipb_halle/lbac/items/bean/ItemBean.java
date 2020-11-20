@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.Material;
 
@@ -41,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -120,9 +122,15 @@ public class ItemBean implements Serializable {
 
     private String containerName;
     protected Mode mode;
+    private Code25LabelGenerator labelGenerator;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
+    }
+
+    @PostConstruct
+    public void init() {
+        labelGenerator = new Code25LabelGenerator();
     }
 
     public void applyNextPositiveDiff() {

@@ -61,6 +61,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -198,54 +199,13 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertEquals("Edited-name-1", instance.getMaterialNameBean().getNames().get(2).getValue());
         Assert.assertEquals("Edited-name-2", instance.getMaterialNameBean().getNames().get(3).getValue());
     }
-    
-    
-    
-    
-    
-    
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialBeanTest.war")
-                        .addClass(ACListService.class)
-                        .addClass(CollectionBean.class)
-                        .addClass(CollectionService.class)
-                        .addClass(FileService.class)
-                        .addClass(FileEntityService.class)
-                        .addClass(CollectionOrchestrator.class)
-                        .addClass(EntityManagerService.class)
-                        .addClass(TermVectorEntityService.class)
-                        .addClass(DocumentSearchService.class)
-                        .addClass(MoleculeService.class)
-                        .addClass(ProjectBean.class)
-                        .addClass(IndexService.class)
-                        .addClass(MaterialNameBean.class)
-                        .addClass(MaterialIndexBean.class)
-                        .addClass(TaxonomyNestingService.class)
-                        .addClass(ProjectService.class)
-                        .addClass(CollectionWebClient.class)
-                        .addClass(Updater.class)
-                        .addClass(ContainerPositionService.class)
-                        .addClass(TissueService.class)
-                        .addClass(ProjectEditBean.class)
-                        .addClass(TaxonomyService.class)
-                        .addClass(Navigator.class)
-                        .addClass(WordCloudBean.class)
-                        .addClass(ACListService.class)
-                        .addClass(WordCloudWebClient.class)
-                        .addClass(MateriaBeanMock.class)
-                        .addClass(MaterialOverviewBean.class)
-                        .addClass(ContainerService.class)
-                        .addClass(ItemService.class)
-                        .addClass(ArticleService.class)
-                        .addClass(ItemOverviewBean.class)
-                        .addClass(ContainerNestingService.class)
-                        .addClass(ItemBean.class)
-                        .addClass(MaterialIndexHistoryEntity.class)
-                        .addClass(IndexService.class)
-                        .addClass(MaterialService.class);
+                        .addClass(IndexService.class);
+        deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);
     }

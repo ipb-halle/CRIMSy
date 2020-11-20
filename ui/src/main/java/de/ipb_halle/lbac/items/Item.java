@@ -63,6 +63,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     private SortedMap<Date, List<ItemDifference>> history = new TreeMap<>();
     private List<Container> nestedContainer = new ArrayList<>();
     private Date expiry_date;
+    private String label;
 
     public Item() {
 
@@ -85,6 +86,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.container = con;
         this.containerSize = entity.getContainersize();
         this.expiry_date = entity.getExpiry_date();
+        this.label=entity.getLabel();
         if (entity.getContainertype() != null) {
             this.containerType = new ContainerType(entity.getContainertype(), 0, true, false);
         }
@@ -128,6 +130,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         if (solvent != null) {
             entity.setSolventid(solvent.getId());
         }
+        entity.setLabel(label);
         entity.setACList(getACList().getId());
         entity.setCtime(cTime);
         entity.setExpiry_date(expiry_date);
@@ -327,6 +330,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setcTime(getcTime());
         copiedItem.setHistory(getHistory());
         copiedItem.setACList(getACList());
+        copiedItem.setLabel(label);
         return copiedItem;
     }
 
@@ -342,6 +346,14 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     @Override
     public Type getTypeToDisplay() {
         return new Type(SearchTarget.ITEM);
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
 }

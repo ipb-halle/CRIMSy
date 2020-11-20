@@ -38,6 +38,9 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
+
+import de.ipb_halle.lbac.items.Code25LabelGenerator;
+import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -53,7 +56,6 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -79,6 +81,9 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class ItemService {
+
+    @Inject
+    private LabelService labelService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -110,10 +115,11 @@ public class ItemService {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ItemEntityGraphBuilder graphBuilder;
     private PermissionConditionBuilder permissionConditionBuilder;
+    private Code25LabelGenerator labelGenerator;
 
     @PostConstruct
     public void init() {
-
+        labelGenerator = new Code25LabelGenerator();
     }
 
     public SearchResult loadItems(SearchRequest request) {
@@ -152,14 +158,12 @@ public class ItemService {
     }
 
     public int getItemAmount(SearchRequest request) {
-
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 createEntityGraph(request),
                 new Attribute(new AttributeType[]{
             AttributeType.ITEM,
             AttributeType.LABEL
         }));
-
         permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
                 addFields(AttributeType.ITEM, AttributeType.MEMBER);
         String sql = countBuilder.query(
@@ -233,7 +237,12 @@ public class ItemService {
     public Item saveItem(Item item) {
         item.setACList(aclistService.save(item.getACList()));
         ItemEntity entity = item.createEntity();
+
         entity = em.merge(entity);
+        if (entity.getLabel() == null) {
+            String label = labelService.createLabel(entity.getId(), Item.class);
+            labelService.saveItemLabel(label, entity.getId());
+        }
         item.setId(entity.getId());
         return item;
     }
