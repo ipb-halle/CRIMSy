@@ -172,16 +172,36 @@
                                         searching="false"
                                         var="item">
                                         <b:dataTableColumn
-                                            label="Gebindenummer" 
-                                            value="#{item.getLabel()}">
+                                            label="Label">
+                                            <h:outputText
+                                                id="itemLabel"
+                                                escape="false"
+                                                value="#{item.getLabel()}">
+                                            </h:outputText>
+                                            <p:tooltip for="itemLabel"  position="right">
+                                                <h:outputText 
+                                                    escape="false"
+                                                    value="#{itemOverviewBean. getItemId(item)}" >
+                                                    <f:converter converterId="RichTextConverter" />
+                                                </h:outputText>
+                                            </p:tooltip>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_material}">
                                             <h:outputText
+                                                id="materialNames"
                                                 escape="false"
-                                                value="#{itemOverviewBean.getMaterialName(item)}">
+                                                value="#{itemOverviewBean. getWrappedNames(item, 3)}">
                                                 <f:converter converterId="RichTextConverter" />
                                             </h:outputText>
+                                            <p:tooltip for="materialNames"  position="right">
+                                                <h:outputText 
+                                                    escape="false"
+                                                    value="#{itemOverviewBean. getWrappedNames(item, 20)}" >
+                                                    <f:converter converterId="RichTextConverter" />
+                                                </h:outputText>
+
+                                            </p:tooltip>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_projectOwner}"

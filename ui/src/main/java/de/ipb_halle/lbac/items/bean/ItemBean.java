@@ -255,7 +255,7 @@ public class ItemBean implements Serializable {
         purities = loadPurities();
         clearFormular();
         containerController = new ContainerController(this, null);
-        customLabelValue="";
+        customLabelValue = "";
         this.material = m;
     }
 

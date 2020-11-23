@@ -40,7 +40,7 @@ import org.apache.logging.log4j.Logger;
 public class SearchFilter {
 
     private User user;
-    private String searchTerms="";
+    private String searchTerms = "";
     private SearchableTypeFilter typeFilter;
     private MaterialTypeFilter materialTypeFilter;
 
@@ -109,6 +109,17 @@ public class SearchFilter {
         }
         materialRequestBuilder.setConditionsBySearchValues(searchValue);
         return materialRequestBuilder.buildSearchRequest();
+    }
+
+    public void init() {
+        materialTypeFilter.setBiomaterial(true);
+        materialTypeFilter.setSequences(true);
+        materialTypeFilter.setStructures(true);
+        typeFilter.setDocuments(true);
+        typeFilter.setExperiments(true);
+        typeFilter.setMaterials(true);
+        typeFilter.setItems(true);
+
     }
 
     private SearchRequest createDocumentRequest() {

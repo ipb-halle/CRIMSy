@@ -221,6 +221,9 @@ public class SearchBean implements Serializable {
 
     public void toogleAdvancedSearch() {
         searchFilter.toogleAdvancedSearch();
+        if(searchFilter.isAdvancedSearch()){
+            searchFilter.init();
+        }
 
     }
 

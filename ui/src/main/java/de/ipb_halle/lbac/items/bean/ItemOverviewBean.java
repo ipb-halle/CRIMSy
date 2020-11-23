@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.NodeService;
@@ -42,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -194,6 +194,26 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
 
     public String getLocationOfItem(Item i) {
         return i.getNestedLocation();
+    }
+
+    public String getItemId(Item i) {
+        logger.info("Try to get Item ID "+i.getId());
+        return String.format("ID: %d", i.getId());
+    }
+
+    public String getWrappedNames(Item item, int maxNamesShown) {
+        String back = "";
+        for (int i = 0; i < Math.min(item.getMaterial().getNames().size(), maxNamesShown); i++) {
+            back += item.getMaterial().getNames().get(i).getValue() + "<br>";
+        }
+        if (item.getMaterial().getNames().size() > maxNamesShown) {
+            back += "...";
+        }
+
+        if (back.endsWith("<br>")) {
+            back = back.substring(0, back.length() - "<br>".length());
+        }
+        return back;
     }
 
     public String getDatesOfItem(Item i) {
