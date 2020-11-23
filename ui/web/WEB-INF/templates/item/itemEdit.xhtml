@@ -32,7 +32,6 @@
 
     <h:body>
         <ui:composition>
-
             <b:form 
                 id="itemEditForm">
                 <ui:insert name="containerModal">
@@ -89,28 +88,32 @@
                     </b:container>
                 </b:panel>
                 <p:tabView styleClass="itemEditTabView">
-                    <p:tab title="Informationen">
+                    <p:tab title="#{msgs.itemEdit_itemPanel_title_basicInformation}">
                         <b:container>
-                            <b:row
-                                rendered="#{itemBean.isCustomLabelCheckBoxVisible()}">
-                                <b:column span="1">
-                                    <b:selectBooleanCheckbox
-                                        ajax="true"
-                                        label="eigenes Label"
-                                        value="#{itemBean.customLabel}"
-                                        update="@(.customLabelText)" />
-                                </b:column>
-                                <b:column span="1" 
-                                          styleClass="customLabelText">
-                                    <b:inputText 
-                                        rendered="#{itemBean.customLabel}"
-                                        value="#{itemBean.customLabelValue}">
+                            <b:row>
+                                <b:column span="2" offset="2">
+                                    <b:inputText
+                                        id="amount"
+                                        value="#{itemBean.state.editedItem.amount}"
+                                        label="#{msgs.itemEdit_itemPanel_amount}">
+                                        <f:validateDoubleRange minimum="0" for="amount"/>
                                         <f:converter converterId="InputConverter" />
                                     </b:inputText>
                                 </b:column>
+                                <b:column span="3">
+                                    <b:selectOneMenu
+                                        disabled="#{!itemBean.isUnitEditable()}"
+                                        label="#{msgs.itemEdit_itemPanel_container_unit}"
+                                        value="#{itemBean.state.editedItem.unit}">
+                                        <f:selectItems 
+                                            value="#{itemBean.getUnits()}"
+                                            />
+                                    </b:selectOneMenu>
+                                </b:column> 
                             </b:row>
+
                             <b:row>
-                                <b:column span="1"
+                                <b:column span="2"
                                           styleClass="rightLabeledCbxBound">
                                     <b:selectBooleanCheckbox
                                         label="#{msgs.itemEdit_itemPanel_directContainer}"
@@ -130,18 +133,6 @@
                                         <f:validateDoubleRange minimum="0" for="containerSize"/>
                                     </b:inputText>
                                 </b:column>
-                                <b:column span="2" styleClass="directContainerClass">
-                                    <b:selectOneMenu
-                                        rendered="#{itemBean.directContainer}"
-                                        disabled="#{!itemBean.isUnitEditable()}"
-                                        label="#{msgs.itemEdit_itemPanel_container_unit}"
-                                        value="#{itemBean.state.editedItem.unit}">
-                                        <f:selectItems 
-                                            value="#{itemBean.getUnits()}"
-                                            />
-                                    </b:selectOneMenu>
-                                </b:column> 
-
                                 <b:column span="3" styleClass="directContainerClass">
                                     <b:selectOneMenu
                                         rendered="#{itemBean.directContainer}"
@@ -157,8 +148,7 @@
                             <b:row 
                                 styleClass="solventClass">
                                 <b:column 
-                                    span="1"
-                                    offset="1"
+                                    span="2"
                                     styleClass="rightLabeledCbxSolvent">
                                     <b:selectBooleanCheckbox
                                         label="#{msgs.itemEdit_itemPanel_solvent}"
@@ -179,7 +169,7 @@
                                     </b:inputText>
                                 </b:column>
                                 <b:column
-                                    span="2"
+                                    span="3"
                                     rendered="#{itemBean.isSolventRowVisisble()}">
                                     <b:selectOneMenu
                                         label="#{msgs.itemEdit_itemPanel_concentration_unit}"
@@ -189,7 +179,7 @@
                                     </b:selectOneMenu>
                                 </b:column> 
                                 <b:column
-                                    span="4"
+                                    span="2"
                                     rendered="#{itemBean.isSolventRowVisisble()}">
                                     <b:selectOneMenu
                                         label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
@@ -203,27 +193,27 @@
                                 </b:column>
                             </b:row>
                             <b:row>
-                                <b:column span="2" offset="2">
-                                    <b:inputText
-                                        id="amount"
-                                        value="#{itemBean.state.editedItem.amount}"
-                                        label="#{msgs.itemEdit_itemPanel_amount}">
-                                        <f:validateDoubleRange minimum="0" for="amount"/>
+                                <b:column span="2"
+                                          styleClass="rightLabeledCbxCustomLabel">
+                                    <b:selectBooleanCheckbox
+                                        ajax="true"
+                                        label="eigenes Label"
+                                        disabled="#{itemBean.isCustomLabelDisabled()}"
+                                        value="#{itemBean.customLabel}"
+                                        update="@(.customLabelText)" />
+                                </b:column>
+                                <b:column span="2" 
+                                          styleClass="customLabelText">
+                                    <b:inputText 
+                                        disabled="#{itemBean.isCustomLabelDisabled()}"
+                                        rendered="#{itemBean.isLabelVisible()}"
+                                        value="#{itemBean.customLabelValue}">
                                         <f:converter converterId="InputConverter" />
                                     </b:inputText>
                                 </b:column>
-                                <b:column span="4">
-                                    <b:selectOneMenu
-                                        label="#{msgs.itemEdit_itemPanel_amount_purity}"
-                                        value="#{itemBean.state.editedItem.purity}">
-                                        <f:selectItems 
-                                            value="#{itemBean.getPurities()}"
-                                            />
-                                    </b:selectOneMenu>
-                                </b:column>
                             </b:row>
                             <b:row>
-                                <b:column span="9" offset="1">
+                                <b:column span="9">
                                     <b:inputTextarea
                                         label="#{msgs.itemEdit_itemPanel_description}"
                                         value="#{itemBean.state.editedItem.description}"
@@ -234,198 +224,157 @@
                             </b:row>
                         </b:container>
                     </p:tab>
-
-                    <p:tab title="Project">
-                        <b:panel
-                            collapsible="false"
-                            styleClass="itemEditPanel"
-                            title="#{msgs.itemEdit_projectPanel_title}">
-                            <b:container>
-                                <b:row>
-                                    <b:column
-                                        span="2"
-                                        styleClass="rightLabeledCbxVendor">
-                                        <b:selectOneMenu
-                                            label="#{msgs.itemEdit_projectPanel_name}"
-                                            value="#{itemBean.state.editedItem.project}">
-                                            <f:selectItems 
-                                                value="#{itemBean.getProjects()}"
-                                                var="p"
-                                                itemLabel="#{p.toString()}"/>
-                                        </b:selectOneMenu>
-                                    </b:column>
-                                    <b:column span="1">
-                                        <b:selectBooleanCheckbox
-                                            label="#{msgs.itemEdit_projectPanel_checkBox}"
-                                            ajax="true"
-                                            update="@(.commercialClass)"
-                                            value="#{itemBean.commercialMaterial}"/>
-                                    </b:column>
-                                    <b:column span="1"
-                                              styleClass="commercialClass">
-                                        <b:selectOneMenu
-                                            label="#{msgs.itemEdit_projectPanel_checkBox_provider}"
-                                            rendered="#{itemBean.commercialMaterial}"
-                                            value="2">
-                                        </b:selectOneMenu>
-                                    </b:column>
-
-                                    <b:column 
-                                        span="2"
-                                        styleClass="commercialClass">
-                                        <b:selectOneMenu
-                                            label="#{msgs.itemEdit_projectPanel_checkBox_article}"
-                                            rendered="#{itemBean.commercialMaterial}"
-                                            value="2">
-                                        </b:selectOneMenu>
-                                    </b:column>
-
-                                </b:row>
-                            </b:container>
-                        </b:panel>
+                    <p:tab title="#{msgs.itemEdit_itemPanel_title_project}">
+                        <b:container>
+                            <b:row>
+                                <b:column
+                                    span="4"
+                                    styleClass="rightLabeledCbxVendor">
+                                    <b:selectOneMenu
+                                        label="#{msgs.itemEdit_projectPanel_name}"
+                                        value="#{itemBean.state.editedItem.project}">
+                                        <f:selectItems 
+                                            value="#{itemBean.getProjects()}"
+                                            var="p"
+                                            itemLabel="#{p.toString()}"/>
+                                    </b:selectOneMenu>
+                                </b:column>
+                            </b:row>
+                        </b:container>
                     </p:tab>
+                    <p:tab title="#{msgs.itemEdit_itemPanel_title_location}">
+                        <b:container>
+                            <b:row>
+                                <b:column span="4" styleClass="containerPseudoClass">
+                                    <b:container>
+                                        <b:row>
+                                            <b:column
+                                                styleClass="itemEditLocationHeader"
+                                                span="2">
+                                                <h:outputText
+                                                    value="Aktueller Standort"/>
+                                            </b:column>
+                                            <b:column
+                                                span="1">
+                                                <b:commandButton
+                                                    styleClass="itemEditContainerRemoveButton"
+                                                    ajax="true"
+                                                    action="#{itemBean.removeContainer()}"
+                                                    update="@(.containerPseudoClass)"
+                                                    value="remove"/>
+                                            </b:column>
+                                        </b:row>
 
 
-                    <p:tab title="Standort">
-                        <b:panel
-                            collapsible="false"
-                            styleClass="itemEditPanel"
-                            title="#{msgs.itemEdit_containerPanel_title}">
-                            <b:container>
-                                <b:row>
-                                    <b:column span="4" styleClass="containerPseudoClass">
-                                        <b:container>
-                                            <b:row>
-                                                <b:column
-                                                    styleClass="itemEditLocationHeader"
-                                                    span="2">
-                                                    <h:outputText
-                                                        value="Aktueller Standort"/>
-                                                </b:column>
-                                                <b:column
-                                                    span="1">
-                                                    <b:commandButton
-                                                        styleClass="itemEditContainerRemoveButton"
-                                                        ajax="true"
-                                                        action="#{itemBean.removeContainer()}"
-                                                        update="@(.containerPseudoClass)"
-                                                        value="remove"/>
-                                                </b:column>
-                                            </b:row>
+                                        <b:row>
+                                            <b:column span="1" >
+                                                <h:outputText
+                                                    value="#{msgs.itemEdit_containerPanel_container_name}"/>
+                                            </b:column>
+                                            <b:column span="2" >
+                                                <h:outputText value="#{itemBean.getContainerName()}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="1" >
+                                                <h:outputText value="#{msgs.itemEdit_containerPanel_container_type}"/>
+                                            </b:column>
+                                            <b:column  span="2" >
+                                                <h:outputText value="#{itemBean.getContainerType()}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column  span="1">
+                                                <h:outputText value="#{msgs.itemEdit_containerPanel_container_project}"/>
+                                            </b:column>
+                                            <b:column  span="2" >
+                                                <h:outputText value="#{itemBean.getContainerProject()}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="1" >
+                                                <h:outputText value="#{msgs.itemEdit_containerPanel_container_location}"/>
+                                            </b:column>
+                                            <b:column span="2" >
+                                                <h:outputText 
+                                                    escape="false"
+                                                    value="#{itemBean.getContainerLocation()}">
+                                                    <f:converter converterId="RichTextConverter" />
+                                                </h:outputText>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column 
+                                                span="3"
+                                                styleClass="itemEditLocationHeader">
+                                                <h:outputText
+                                                    value=""/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column 
+                                                span="3"
+                                                styleClass="itemEditLocationHeader">
+                                                <h:outputText
+                                                    value="Standortsuche"/>
+                                            </b:column>
+                                        </b:row>
 
+                                        <b:row>
+                                            <b:column span="1">
+                                                <h:outputText
+                                                    value="#{msgs.itemEdit_containerPanel_quickSearch}"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="2"
+                                                      styleClass="containerPseudoClass">
+                                                <p:autoComplete value="#{itemBean.containerName}"
+                                                                maxResults="15"
+                                                                forceSelection="true"
+                                                                completeMethod="#{itemBean.nameSuggestions}"
+                                                                >
+                                                    <p:ajax 
+                                                        event="itemSelect" 
+                                                        listener="#{itemBean.onItemSelect}"
+                                                        update="@(.containerPseudoClass)"/>
 
-                                            <b:row>
-                                                <b:column span="1" >
-                                                    <h:outputText
-                                                        value="#{msgs.itemEdit_containerPanel_container_name}"/>
-                                                </b:column>
-                                                <b:column span="2" >
-                                                    <h:outputText value="#{itemBean.getContainerName()}"/>
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column span="1" >
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_type}"/>
-                                                </b:column>
-                                                <b:column  span="2" >
-                                                    <h:outputText value="#{itemBean.getContainerType()}"/>
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column  span="1">
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_project}"/>
-                                                </b:column>
-                                                <b:column  span="2" >
-                                                    <h:outputText value="#{itemBean.getContainerProject()}"/>
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column span="1" >
-                                                    <h:outputText value="#{msgs.itemEdit_containerPanel_container_location}"/>
-                                                </b:column>
-                                                <b:column span="2" >
-                                                    <h:outputText 
-                                                        escape="false"
-                                                        value="#{itemBean.getContainerLocation()}">
-                                                        <f:converter converterId="RichTextConverter" />
-                                                    </h:outputText>
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column 
-                                                    span="3"
-                                                    styleClass="itemEditLocationHeader">
-                                                    <h:outputText
-                                                        value=""/>
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column 
-                                                    span="3"
-                                                    styleClass="itemEditLocationHeader">
-                                                    <h:outputText
-                                                        value="Standortsuche"/>
-                                                </b:column>
-                                            </b:row>
+                                                </p:autoComplete>
+                                            </b:column>
+                                            <b:column span="1" >
+                                                <b:commandButton
+                                                    styleClass="itemEditcontainerAdvancedSearch"
+                                                    ajax="true"
+                                                    oncomplete="$('.containerModal').modal()"
+                                                    value="erweiterte Suche"/>
+                                            </b:column>
+                                        </b:row>
 
-                                            <b:row>
-                                                <b:column span="1">
-                                                    <h:outputText
-                                                        value="#{msgs.itemEdit_containerPanel_quickSearch}"/>
-                                                </b:column>
-                                            </b:row>
-                                            <b:row>
-                                                <b:column span="2"
-                                                          styleClass="containerPseudoClass">
-                                                    <p:autoComplete value="#{itemBean.containerName}"
-                                                                    maxResults="15"
-                                                                    forceSelection="true"
-                                                                    completeMethod="#{itemBean.nameSuggestions}"
-                                                                    >
-                                                        <p:ajax 
-                                                            event="itemSelect" 
-                                                            listener="#{itemBean.onItemSelect}"
-                                                            update="@(.containerPseudoClass)"/>
+                                    </b:container>
 
-                                                    </p:autoComplete>
-                                                </b:column>
-                                                <b:column span="1" >
-                                                    <b:commandButton
-                                                        styleClass="itemEditcontainerAdvancedSearch"
-                                                        ajax="true"
-                                                        oncomplete="$('.containerModal').modal()"
-                                                        value="erweiterte Suche"/>
-                                                </b:column>
-                                            </b:row>
-
-                                        </b:container>
-
-                                    </b:column>
-                                    <b:column 
-                                        span="4"
-                                        styleClass="containerPseudoClass">
-                                        <crimsy:container2d 
-                                            container="#{itemBean.container}"
-                                            rendered="#{itemBean.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
-                                    </b:column>
-                                </b:row>
-                            </b:container>
-                        </b:panel>
+                                </b:column>
+                                <b:column 
+                                    span="4"
+                                    styleClass="containerPseudoClass">
+                                    <crimsy:container2d 
+                                        container="#{itemBean.container}"
+                                        rendered="#{itemBean.containerController.isContainerSubComponentRendered('TWO_DIMENSION')}"/>
+                                </b:column>
+                            </b:row>
+                        </b:container>
                     </p:tab>
 
 
                     <p:tab title="Print">
-                        <b:panel
-                            styleClass="itemEditPanel"
-                            collapsible="false">
-                            <b:container>
-                                <b:row>
-                                    <crimsy:label id="labelPrintUI" 
-                                                  rendered="#{itemBean.labelPrintingEnabled}" 
-                                                  printbean="#{itemBean.printBean}" />
-                                </b:row>
-                            </b:container>
-                        </b:panel>
+
+                        <b:container>
+                            <b:row>
+                                <crimsy:label id="labelPrintUI" 
+                                              rendered="#{itemBean.labelPrintingEnabled}" 
+                                              printbean="#{itemBean.printBean}" />
+                            </b:row>
+                        </b:container>
+
                     </p:tab>
 
                 </p:tabView>
