@@ -218,6 +218,7 @@ public class ItemBean implements Serializable {
         try {
             mode = Mode.EDIT;
             ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(userBean.getCurrentAccount(), 0, Integer.MAX_VALUE);
+            builder.addDeactivated(false);
             SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
             projects = response.getAllFoundObjects(Project.class, response.getNode());
             containers = containerService.loadContainers(userBean.getCurrentAccount());
@@ -244,6 +245,7 @@ public class ItemBean implements Serializable {
         this.printBean.setLabelDataObject(state.getEditedItem());
         directContainer = true;
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(userBean.getCurrentAccount(), 0, Integer.MAX_VALUE);
+        builder.addDeactivated(false);
         SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
         projects = response.getAllFoundObjects(Project.class, response.getNode());
         containers = containerService.loadContainers(userBean.getCurrentAccount());

@@ -36,7 +36,7 @@
                     <b:column span="1">
                         <b:commandButton
                             id="newProjectButton"
-                            value="neues Project erstellen"
+                            value="#{msgs.project_overview_button_new}"
                             action="#{projectBean.actionStartNewProjectCreation()}"
                             />
                     </b:column>
@@ -50,15 +50,15 @@
                             value="#{projectBean.getReadableProjects()}"
                             var="project">
                             <b:dataTableColumn
-                                label="Name"
+                                label="#{msgs.project_overview_header_name}"
                                 value="#{project.name}">
                             </b:dataTableColumn>
                             <b:dataTableColumn
-                                label="ProjektTyp"
+                                label="#{msgs.project_overview_header_type}"
                                 value="#{project.projectType}">
                             </b:dataTableColumn>
                             <b:dataTableColumn
-                                label="Projektleiter"
+                                label="#{msgs.project_overview_header_owner}"
                                 value="#{project.getOwnerName()}">
                             </b:dataTableColumn>
                             <b:dataTableColumn
@@ -69,6 +69,7 @@
                                                  look="link"
                                                  type="submit"
                                                  ajax="false"
+                                                 tooltip="#{msgs.project_overview_edit}"
                                                  disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
                                                  action="#{projectBean.actionStartProjectEdit(project)}"
                                                  />
@@ -93,7 +94,7 @@
                                                  type="button"
                                                  action="#{projectBean.actionDeleteProject(project)}"
                                                  disabled="#{!projectBean.isPermissionAllowed(project,'permEDIT')}"
-                                                 tooltip="Projekt loeschen(not yet implemented)"
+                                                 tooltip="#{msgs.project_overview_deactivate}"
                                                  />
                             </b:dataTableColumn>
                         </b:dataTable>

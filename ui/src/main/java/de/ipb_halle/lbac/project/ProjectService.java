@@ -56,7 +56,7 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class ProjectService implements Serializable {
-
+    
     private final String SQL_PROJECT_TEMPLATES = "SELECT id,materialdetailtypeid,aclistid,projectid FROM projecttemplates WHERE projectid=:pid";
     private final String SQL_GET_SIMILAR_NAMES
             = "SELECT DISTINCT (p.name) "
@@ -65,41 +65,41 @@ public class ProjectService implements Serializable {
             + "WHERE p.name ILIKE :name "
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "ORDER BY p.name";
-
+    
     private final String SQL_GET_NAME_AVAILABLE = "SELECT COUNT(*) FROM projects WHERE LOWER(:name) = LOWER(name)";
-
+    
     private final String SQL_DELETE_PROJECT_TEMPLATES
             = "DELETE FROM projecttemplates "
             + "WHERE projectid=:projectid";
-
+    
     private final String SQL_DEACTIVATE_PROJECT
             = "UPDATE projects"
             + " SET deactivated=:deactivated"
             + " WHERE id=:id";
-
+    
     @Inject
     private MemberService memberService;
-
+    
     @Inject
     private ACListService aclistService;
-
+    
     @Inject
     private ACListService acListService;
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
+    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ProjectEntityGraphBuilder graphBuilder;
-
+    
     @Inject
     private NodeService nodeService;
-
+    
     private PermissionConditionBuilder permissionConditionBuilder;
-
+    
     @PostConstruct
     public void init() {
-
+        
     }
 
     /**
@@ -111,7 +111,7 @@ public class ProjectService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarProjectNames(String name, User user) {
-
+        
         String sql = SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES,
                 "p.aclist_id",
                 "p.owner_id",
@@ -158,35 +158,37 @@ public class ProjectService implements Serializable {
         ProjectEntity entity = em.find(ProjectEntity.class, id);
         return loadDetailInfosOfProject(entity);
     }
-
+    
     public SearchResult loadProjects(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         EntityGraph graph = createEntityGraph(request.getCondition());
         SqlBuilder builder = new SqlBuilder(graph);
-
+        
         permissionConditionBuilder = new PermissionConditionBuilder(
                 aclistService, request.getUser(), ACPermission.permREAD)
                 .addFields(AttributeType.PROJECT, AttributeType.MEMBER);
         String sql = builder.query(
                 permissionConditionBuilder.addPermissionCondition(request.getCondition()));
-
+        
+        logger.info(sql);
         Query query = this.em.createNativeQuery(sql, ProjectEntity.class);
         for (Value param : builder.getValueList()) {
+            logger.info(param.getArgumentKey() + " : " + param.getValue());
             query.setParameter(param.getArgumentKey(), param.getValue());
         }
-
+        
         List<ProjectEntity> entities = query.getResultList();
         for (ProjectEntity entity : entities) {
             result.addResult(loadDetailInfosOfProject(entity));
         }
         return result;
     }
-
+    
     public boolean isProjectNameAvailable(String name) {
         BigInteger i = (BigInteger) this.em.createNativeQuery(SQL_GET_NAME_AVAILABLE).setParameter("name", name).getResultList().get(0);
         return i.intValue() == 0;
     }
-
+    
     public void changeDeactivationState(int projectId, boolean deactivated) {
         Query q = em.createNativeQuery(SQL_DEACTIVATE_PROJECT);
         q.setParameter("deactivated", deactivated);
@@ -200,14 +202,14 @@ public class ProjectService implements Serializable {
      * @return
      */
     public Project saveProjectToDb(Project p) {
-
+        
         ACList existingAcl = acListService.save(p.getUserGroups());
         p.setACList(existingAcl);
         for (MaterialDetailType md : p.getDetailTemplates().keySet()) {
             if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
                 existingAcl = acListService.save(p.getDetailTemplates().get(md));
                 p.getDetailTemplates().put(md, existingAcl);
-
+                
             }
         }
         ProjectEntity pE = new ProjectEntity(p);
@@ -221,7 +223,7 @@ public class ProjectService implements Serializable {
         }
         return p;
     }
-
+    
     public void saveEditedProjectToDb(Project p) {
         ACList existingAcl = acListService.save(p.getUserGroups());
         p.setACList(existingAcl);
@@ -229,7 +231,7 @@ public class ProjectService implements Serializable {
             if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
                 existingAcl = acListService.save(p.getDetailTemplates().get(md));
                 p.getDetailTemplates().put(md, existingAcl);
-
+                
             }
         }
         ProjectEntity pE = p.createEntity();
@@ -238,7 +240,7 @@ public class ProjectService implements Serializable {
         this.em.createNativeQuery(SQL_DELETE_PROJECT_TEMPLATES)
                 .setParameter("projectid", p.getId())
                 .executeUpdate();
-
+        
         for (MaterialDetailType md : p.getDetailTemplates().keySet()) {
             if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
                 ProjectTemplateEntity ptE = new ProjectTemplateEntity(md.getId(), p.getDetailTemplates().get(md).getId(), pE.getId());
@@ -246,10 +248,10 @@ public class ProjectService implements Serializable {
             }
         }
     }
-
+    
     private EntityGraph createEntityGraph(Condition con) {
         graphBuilder = new ProjectEntityGraphBuilder(acListService);
         return graphBuilder.buildEntityGraph(con);
     }
-
+    
 }
