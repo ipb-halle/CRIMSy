@@ -84,7 +84,7 @@ public class ItemComparator {
             history.setProjectNew(itemNew.getProject());
             history.setProjectOld(itemOld.getProject());
         }
-        if (!itemNew.getPurity().equals(itemOld.getPurity())) {
+        if (!Objects.equals(itemNew.getPurity(), itemOld.getPurity())) {
             differenceFound = true;
             history.setPurityNew(itemNew.getPurity());
             history.setPurityOld(itemOld.getPurity());
