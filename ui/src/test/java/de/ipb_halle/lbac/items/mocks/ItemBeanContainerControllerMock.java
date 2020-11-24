@@ -33,7 +33,21 @@ import de.ipb_halle.lbac.project.ProjectService;
  *
  * @author fmauz
  */
-public class ItemBeanMock extends ItemBean {
+public class ItemBeanContainerControllerMock extends ItemBean {
+
+    ItemState state;
+
+    public ItemBeanContainerControllerMock() {
+        state = new ItemState();
+    }
+
+    public ItemBeanContainerControllerMock(Item item) {
+        state = new ItemState(item);
+    }
+
+    public ItemState getState() {
+        return state;
+    }
 
     public void setPrintBean(PrintBean bean) {
         this.printBean = bean;
