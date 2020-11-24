@@ -99,11 +99,10 @@ public class ItemBean implements Serializable {
     private List<ContainerType> containerTypes = new ArrayList<>();
 
     private boolean commercialMaterial;
+    private Validator validator;
+
     @Inject
     protected UserBean userBean;
-
-    private Project project;
-    //private Container container;
 
     private String description;
 
@@ -134,6 +133,7 @@ public class ItemBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        validator = new Validator(containerPositionService, labelService);
 
     }
 
@@ -171,35 +171,28 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
-        boolean areSlotsEmpty = containerPositionService.areContainerSlotsFree(state.getEditedItem(), containerController.getContainer(), containerController.resolveItemPositions());
-        if (!areSlotsEmpty) {
-            UIMessage.info(MESSAGE_BUNDLE, "itemEdit_container_blocked");
-            return;
-        }
-        if (customLabel && !labelService.isLabelAvailable(customLabelValue)) {
-            UIMessage.error(MESSAGE_BUNDLE, "itemEdit_label_unavailable");
-            return;
-        }
         state.getEditedItem().setContainer(containerController.getContainer());
-        if (mode == Mode.CREATE) {
-            state.getEditedItem().setACList(material.getACList());
-            state.getEditedItem().setOwner(userBean.getCurrentAccount());
-            state.getEditedItem().setMaterial(material);
-            state.getEditedItem().setcTime(new Date());
-            if (customLabel) {
-                state.getEditedItem().setLabel(customLabelValue);
-            }
-            state.setEditedItem(itemService.saveItem(state.getEditedItem()));
+        if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
+            if (mode == Mode.CREATE) {
+                state.getEditedItem().setACList(material.getACList());
+                state.getEditedItem().setOwner(userBean.getCurrentAccount());
+                state.getEditedItem().setMaterial(material);
+                state.getEditedItem().setcTime(new Date());
+                if (customLabel) {
+                    state.getEditedItem().setLabel(customLabelValue);
+                }
+                state.setEditedItem(itemService.saveItem(state.getEditedItem()));
 
-            this.printBean.setLabelDataObject(state.getEditedItem());
-        } else {
-            itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount(), containerController.resolveItemPositions());
-            this.printBean.setLabelDataObject(state.getEditedItem());
-        }
-        if (areSlotsEmpty) {
+                this.printBean.setLabelDataObject(state.getEditedItem());
+            } else {
+                itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount(), containerController.resolveItemPositions());
+                this.printBean.setLabelDataObject(state.getEditedItem());
+            }
+
             itemOverviewBean.reloadItems();
             navigator.navigate("/item/items");
         }
+        logger.info("Eroor");
     }
 
     public boolean isCustomLabelDisabled() {
@@ -316,14 +309,6 @@ public class ItemBean implements Serializable {
         } else {
             return material.getNames().get(0).getValue();
         }
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 
     public List<Project> getProjects() {

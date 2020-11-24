@@ -116,6 +116,7 @@ public class ItemBeanTest extends TestBase {
         itemBean.setContainerPositionService(containerPositionService);
         itemBean.setNavigator(new NavigatorMock(userBean));
         itemBean.setUserBean(userBean);
+        itemBean.init();
 
     }
 
