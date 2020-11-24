@@ -110,7 +110,6 @@ public class ItemBean implements Serializable {
     //Direct container of items
     private Double containerSize;
     private String containerUnit;
-    private ContainerType basicContainerType;
 
     //Solvent infos
     private boolean solved;
@@ -154,14 +153,6 @@ public class ItemBean implements Serializable {
         historyOperation.applyNextNegativeDifference();
     }
 
-    public ContainerType getBasicContainerType() {
-        return basicContainerType;
-    }
-
-    public void setBasicContainerType(ContainerType basicContainerType) {
-        this.basicContainerType = basicContainerType;
-    }
-
     /**
      * Printing an item label makes sense only for persisted items.
      *
@@ -199,6 +190,7 @@ public class ItemBean implements Serializable {
                 state.getEditedItem().setLabel(customLabelValue);
             }
             state.setEditedItem(itemService.saveItem(state.getEditedItem()));
+
             this.printBean.setLabelDataObject(state.getEditedItem());
         } else {
             itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount(), containerController.resolveItemPositions());
@@ -513,7 +505,6 @@ public class ItemBean implements Serializable {
         containerUnit = units.get(0);
         containerSize = null;
         containerController = new ContainerController(this, null);
-        basicContainerType = containerTypes.get(0);
         solved = false;
         concentration = null;
         purityUnit = units.get(0);

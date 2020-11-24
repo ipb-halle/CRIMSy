@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.device.print.PrintBean;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
 import de.ipb_halle.lbac.items.mocks.ItemOverviewBeanMock;
@@ -123,15 +124,24 @@ public class ItemBeanTest extends TestBase {
         itemBean.actionStartItemCreation(structure);
         itemBean.getState().getEditedItem().setAmount(20d);
         itemBean.getState().getEditedItem().setUnit("g");
-        itemBean.setBasicContainerType(new ContainerType("GLAS_FLASK", 0, false, false));
+        itemBean.getState().getEditedItem().setContainerType(new ContainerType("GLAS_FLASK", 0, false, false));
         itemBean.getState().getEditedItem().setConcentration(.5d);
         itemBean.getState().getEditedItem().setContainerSize(40d);
-        itemBean.setProject(project);
+        itemBean.getState().getEditedItem().setProject(project);
         itemBean.getState().getEditedItem().setPurity("pure");
 
         Assert.assertEquals(ItemBean.Mode.CREATE, itemBean.mode);
 
         itemBean.actionSave();
+        Item item = itemService.loadItemById(itemBean.getState().getEditedItem().getId());
+        Assert.assertEquals(structure.getId(), item.getMaterial().getId());
+        Assert.assertEquals(20d, item.getAmount(), 0);
+        Assert.assertEquals("g", item.getUnit());
+        Assert.assertEquals("GLAS_FLASK", item.getContainerType().getName());
+        Assert.assertEquals(40d, item.getContainerSize(), 0);
+        Assert.assertEquals(.5d, item.getConcentration(), 0);
+        Assert.assertEquals(project.getId(), item.getProject().getId());
+        Assert.assertEquals("pure", item.getPurity());
 
     }
 
