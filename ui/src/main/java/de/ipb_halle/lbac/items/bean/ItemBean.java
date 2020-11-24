@@ -27,9 +27,10 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
 import de.ipb_halle.lbac.container.service.ContainerService;
+
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.Material;
 
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -84,6 +85,9 @@ public class ItemBean implements Serializable {
 
     @Inject
     protected ItemService itemService;
+
+    @Inject
+    protected LabelService labelService;
 
     private ContainerController containerController;
 
@@ -179,6 +183,10 @@ public class ItemBean implements Serializable {
         boolean areSlotsEmpty = containerPositionService.areContainerSlotsFree(state.getEditedItem(), containerController.getContainer(), containerController.resolveItemPositions());
         if (!areSlotsEmpty) {
             UIMessage.info(MESSAGE_BUNDLE, "itemEdit_container_blocked");
+            return;
+        }
+        if (customLabel && !labelService.isLabelAvailable(customLabelValue)) {
+            UIMessage.error(MESSAGE_BUNDLE, "itemEdit_label_unavailable");
             return;
         }
         state.getEditedItem().setContainer(containerController.getContainer());

@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.label;
 
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
+import java.io.Serializable;
 import java.math.BigInteger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -30,7 +31,7 @@ import javax.persistence.Query;
  * @author fmauz
  */
 @Stateless
-public class LabelService {
+public class LabelService implements Serializable{
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
