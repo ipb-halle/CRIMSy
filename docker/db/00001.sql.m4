@@ -286,14 +286,14 @@ CREATE INDEX i_termvectors_file_id ON termvectors (file_id);
 
 
 CREATE TABLE unstemmed_words(
-  wordroot VARCHAR NOT NULL,
+  stemmed_word VARCHAR NOT NULL,
   file_id INTEGER NOT NULL REFERENCES files (id) ON UPDATE CASCADE ON DELETE CASCADE,
   unstemmed_word VARCHAR NOT NULL,
-  PRIMARY KEY(wordroot,file_id, unstemmed_word),
-  FOREIGN KEY (wordroot, file_id) REFERENCES termvectors (wordroot, file_id)
+  PRIMARY KEY(stemmed_word,file_id, unstemmed_word),
+  FOREIGN KEY (stemmed_word, file_id) REFERENCES termvectors (wordroot, file_id)
       ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE INDEX i_unstemmed_words_wordroot ON  unstemmed_words (wordroot);
+CREATE INDEX i_unstemmed_words_stemmed_word ON  unstemmed_words (stemmed_word);
 
 /*
  * finally set DBSchema Version
