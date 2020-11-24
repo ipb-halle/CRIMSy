@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.base;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.project.Project;
+import java.util.UUID;
 
 /**
  *
@@ -30,8 +31,8 @@ public class ItemCreator {
     protected EntityManagerService entityManagerService;
 
     protected String SQL_INSERT_ITEM = "INSERT INTO items "
-            + "(materialid,amount,owner_id,aclist_id,description,projectid,containerid) "
-            + "VALUES(%d,0,%d,%d,'%s',%d,%d)";
+            + "(materialid,amount,owner_id,aclist_id,description,projectid,containerid,label) "
+            + "VALUES(%d,0,%d,%d,'%s',%d,%d,'%s')";
 
     protected String SQL_MAX_ITEM_ID = "SELECT max(id) from items";
 
@@ -41,25 +42,25 @@ public class ItemCreator {
 
     public int createItem(int userid, int aclid, Integer materialid, String desc) {
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, null));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, null,UUID.randomUUID().toString()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
     public int createItem(int userid, int aclid, Integer materialid, String desc, Project p) {
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), null));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), null,UUID.randomUUID().toString()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
     public int createItem(int userid, int aclid, Integer materialid, String desc, Container c) {
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, c.getId()));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, c.getId(),UUID.randomUUID().toString()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
     public int createItem(int userid, int aclid, Integer materialid, String desc, Project p, Container c) {
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), c.getId()));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), c.getId(),UUID.randomUUID().toString()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 

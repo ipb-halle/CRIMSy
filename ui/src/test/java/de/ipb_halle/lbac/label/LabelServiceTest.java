@@ -120,9 +120,15 @@ public class LabelServiceTest extends TestBase {
         createItem();
         String label = labelService.createLabel(itemId, Item.class);
         labelService.saveItemLabel(label, itemId);
-        
-        
+    }
 
+    @Test
+    public void isLabelAvailable() {
+        Assert.assertTrue(labelService.isLabelAvailable("00001"));
+
+        createItem();
+        Item item = itemService.loadItemById(itemId);
+        Assert.assertFalse(labelService.isLabelAvailable(item.getLabel()));
     }
 
     private void createItem() {
