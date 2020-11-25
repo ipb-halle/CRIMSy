@@ -18,10 +18,12 @@
 package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.mocks.ItemBeanContainerControllerMock;
-import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
+import java.util.Set;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -30,26 +32,86 @@ import org.junit.Test;
  */
 public class ContainerControllerTest {
 
-    @Test
-    public void test001_xxx() {
-        Item item = new Item();
-        item.setId(1);
-        Item anotherItem = new Item();
-        item.setId(2);
-        ItemBean bean = new ItemBeanContainerControllerMock(item);
+    Item item = new Item();
+    Item anotherItem = new Item();
+    ItemBean bean;
+    Container container = new Container();
+    ContainerController controller;
 
-        Container container = new Container();
-        container.setDimension("2;2;1");
-        Item[][][] items = new Item[4][4][1];
+    @Before
+    public void setUp() {
+        item.setId(1);
+        anotherItem.setId(2);
+        bean = new ItemBeanContainerControllerMock(item);
+        container.setDimension("4;3;1");
+        Item[][][] items = new Item[4][3][1];
         items[1][0][0] = item;
         items[0][1][0] = anotherItem;
         container.setItems(items);
+        controller = new ContainerController(bean, container);
+        bean.setContainerController(controller);
+    }
 
-        ContainerController controller = new ContainerController(bean, container);
+    @Test
+    public void test001_getStyleOfContainerPlace() {
         Assert.assertEquals("possible-place", controller.getStyleOfContainerPlace(0, 0));
-
         Assert.assertEquals("own-place", controller.getStyleOfContainerPlace(1, 0));
         Assert.assertEquals("occupied-place", controller.getStyleOfContainerPlace(0, 1));
+    }
+
+    @Test
+    public void test002_getToolTipForContainerPlace() {
+        Assert.assertEquals("free place", controller.getToolTipForContainerPlace(0, 0));
+        Assert.assertEquals("ID: 1", controller.getToolTipForContainerPlace(1, 0));
+        Assert.assertEquals("ID: 2", controller.getToolTipForContainerPlace(0, 1));
+    }
+
+    @Test
+    public void test003_clickCheckBox() {
+        controller.clickCheckBox(0, 0);
+        Assert.assertFalse(controller.getItemPositions()[0][0]);
+        controller.setItemAtPosition(0, 0);
+        controller.clickCheckBox(0, 0);
+        Assert.assertTrue(controller.getItemPositions()[0][0]);
+        controller.removeItemFromPosition(0, 0);
+        Assert.assertFalse(controller.getItemPositions()[0][0]);
+    }
+
+    @Test
+    public void test004_isContainerPlaceDisabled() {
+        Assert.assertFalse(controller.isContainerPlaceDisabled(0, 0));
+        Assert.assertFalse(controller.isContainerPlaceDisabled(1, 0)); //own item
+        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 1));
+    }
+
+    @Test
+    public void test004_resolveItemPositions() {
+        controller.setItemAtPosition(0, 0);
+        Set<int[]> positions = controller.resolveItemPositions();
+        Assert.assertEquals(2, positions.size());
+    }
+
+    @Test
+    public void test005_resolveItemPositions() {
+        Assert.assertEquals("A", controller.getLetterByIndex(0));
+    }
+
+    @Test
+    public void test006_resolveItemPositions() {
+        Assert.assertEquals(4, controller.getTotalSlots(0).size());
+        Assert.assertEquals(3, controller.getTotalSlots(1).size());
+    }
+
+    @Test
+    public void test007_isContainerSubComponentRendered() {
+        Assert.assertTrue(controller.isContainerSubComponentRendered(Container.DimensionType.TWO_DIMENSION.toString()));
+        Assert.assertFalse(controller.isContainerSubComponentRendered(Container.DimensionType.ONE_DIMENSION.toString()));
 
     }
+
+    @Test
+    public void test008_isContainerSubComponentRendered() {
+        controller.setNewContainer(container);
+    }
+
 }

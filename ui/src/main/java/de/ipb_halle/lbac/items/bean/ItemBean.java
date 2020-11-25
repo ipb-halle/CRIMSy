@@ -112,9 +112,6 @@ public class ItemBean implements Serializable {
 
     //Solvent infos
     private boolean solved;
-    private Double concentration;
-    private String purityUnit;
-    private String solvent;
 
     //amount infos
     private Double amount;
@@ -174,25 +171,27 @@ public class ItemBean implements Serializable {
         state.getEditedItem().setContainer(containerController.getContainer());
         if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
             if (mode == Mode.CREATE) {
-                state.getEditedItem().setACList(material.getACList());
-                state.getEditedItem().setOwner(userBean.getCurrentAccount());
-                state.getEditedItem().setMaterial(material);
-                state.getEditedItem().setcTime(new Date());
-                if (customLabel) {
-                    state.getEditedItem().setLabel(customLabelValue);
-                }
-                state.setEditedItem(itemService.saveItem(state.getEditedItem()));
-
-                this.printBean.setLabelDataObject(state.getEditedItem());
+                saveNewItem();
             } else {
                 itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount(), containerController.resolveItemPositions());
-                this.printBean.setLabelDataObject(state.getEditedItem());
             }
-
+            this.printBean.setLabelDataObject(state.getEditedItem());
             itemOverviewBean.reloadItems();
             navigator.navigate("/item/items");
         }
-        logger.info("Eroor");
+
+    }
+
+    private void saveNewItem() {
+        state.getEditedItem().setACList(material.getACList());
+        state.getEditedItem().setOwner(userBean.getCurrentAccount());
+        state.getEditedItem().setMaterial(material);
+        state.getEditedItem().setcTime(new Date());
+        if (customLabel) {
+            state.getEditedItem().setLabel(customLabelValue);
+        }
+        state.setEditedItem(itemService.saveItem(state.getEditedItem()));
+
     }
 
     public boolean isCustomLabelDisabled() {
@@ -264,14 +263,6 @@ public class ItemBean implements Serializable {
 
     public void setCommercialMaterial(boolean commercialMaterial) {
         this.commercialMaterial = commercialMaterial;
-    }
-
-    public String getPurityUnit() {
-        return purityUnit;
-    }
-
-    public void setPurityUnit(String purityUnit) {
-        this.purityUnit = purityUnit;
     }
 
     public void actionChangeContainer(Container c) {
@@ -384,24 +375,8 @@ public class ItemBean implements Serializable {
         this.containerUnit = containerUnit;
     }
 
-    public String getSolvent() {
-        return solvent;
-    }
-
-    public void setSolvent(String solvent) {
-        this.solvent = solvent;
-    }
-
     public List<Solvent> getSolvents() {
         return solvents;
-    }
-
-    public Double getConcentration() {
-        return concentration;
-    }
-
-    public void setConcentration(Double concentration) {
-        this.concentration = concentration;
     }
 
     public String getPurity() {
@@ -491,9 +466,7 @@ public class ItemBean implements Serializable {
         containerSize = null;
         containerController = new ContainerController(this, null);
         solved = false;
-        concentration = null;
-        purityUnit = units.get(0);
-        solvent = "";
+
         amount = null;
 
         amountUnit = units.get(0);
