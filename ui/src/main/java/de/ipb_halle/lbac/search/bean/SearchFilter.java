@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.search.bean;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.structure.Molecule;
@@ -69,6 +70,9 @@ public class SearchFilter {
     }
 
     private List<SearchRequest> createRequestsForSimpleSearch() {
+        if (searchTerms.isEmpty()) {
+            return new ArrayList<>();
+        }
         return Arrays.asList(
                 createExperimentRequest(),
                 createMaterialSearchRequest(),
@@ -78,16 +82,16 @@ public class SearchFilter {
 
     private List<SearchRequest> createRequestsForAdvancedSearch() {
         List<SearchRequest> requests = new ArrayList<>();
-        if (typeFilter.isMaterials()) {
+        if (shouldMaterialsBeSearched()) {
             requests.add(createMaterialSearchRequest());
         }
-        if (typeFilter.isDocuments()) {
+        if (typeFilter.isDocuments() && !searchTerms.trim().isEmpty()) {
             requests.add(createDocumentRequest());
         }
-        if (typeFilter.isItems()) {
+        if (typeFilter.isItems() && !searchTerms.trim().isEmpty()) {
             requests.add(createItemRequest());
         }
-        if (typeFilter.isExperiments()) {
+        if (typeFilter.isExperiments() && !searchTerms.trim().isEmpty()) {
             requests.add(createExperimentRequest());
         }
         if (typeFilter.isProjects()) {
@@ -96,12 +100,24 @@ public class SearchFilter {
         return requests;
     }
 
+    private boolean shouldMaterialsBeSearched() {
+        Molecule m = new Molecule(structureString, 0);
+
+        return typeFilter.isMaterials()
+                && (!searchTerms.trim().isEmpty()
+                || !m.isEmptyMolecule());
+    }
+
     private SearchRequest createMaterialSearchRequest() {
         MaterialSearchRequestBuilder materialRequestBuilder = new MaterialSearchRequestBuilder(user, 0, maxresults);
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
         searchValue.materialName = searchTerms;
         if (advancedSearchActive) {
             searchValue.type.addAll(materialTypeFilter.getTypes());
+            if (searchTerms.trim().isEmpty()) {
+                searchValue.type.remove(MaterialType.BIOMATERIAL);
+                searchValue.type.remove(MaterialType.SEQUENCE);
+            }
             Molecule mol = new Molecule(structureString, maxresults);
             if (!mol.isEmptyMolecule()) {
                 searchValue.molecule = structureString;
