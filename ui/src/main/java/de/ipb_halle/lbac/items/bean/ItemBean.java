@@ -28,7 +28,6 @@ import de.ipb_halle.lbac.items.Solvent;
 import de.ipb_halle.lbac.items.bean.history.HistoryOperation;
 import de.ipb_halle.lbac.container.service.ContainerService;
 
-import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.Material;
@@ -62,7 +61,6 @@ public class ItemBean implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private ItemState state;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private Material material;
     private HistoryOperation historyOperation;
     private boolean customLabel;
 
@@ -183,9 +181,8 @@ public class ItemBean implements Serializable {
     }
 
     private void saveNewItem() {
-        state.getEditedItem().setACList(material.getACList());
+        state.getEditedItem().setACList(state.getEditedItem().getMaterial().getACList());
         state.getEditedItem().setOwner(userBean.getCurrentAccount());
-        state.getEditedItem().setMaterial(material);
         state.getEditedItem().setcTime(new Date());
         if (customLabel) {
             state.getEditedItem().setLabel(customLabelValue);
@@ -222,7 +219,6 @@ public class ItemBean implements Serializable {
             purities = loadPurities();
             state = new ItemState(i);
             this.printBean.setLabelDataObject(state.getEditedItem());
-            this.material = i.getMaterial();
             containerController = new ContainerController(this, i.getContainer());
             historyOperation = new HistoryOperation(state, containerController);
             customLabelValue = i.getLabel();
@@ -234,6 +230,7 @@ public class ItemBean implements Serializable {
     public void actionStartItemCreation(Material m) {
         mode = Mode.CREATE;
         state = new ItemState();
+        state.getEditedItem().setMaterial(m);
         this.printBean.setLabelDataObject(state.getEditedItem());
         directContainer = true;
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(userBean.getCurrentAccount(), 0, Integer.MAX_VALUE);
@@ -250,7 +247,6 @@ public class ItemBean implements Serializable {
         clearFormular();
         containerController = new ContainerController(this, null);
         customLabelValue = "";
-        this.material = m;
     }
 
     public List<ContainerType> getContainerTypes() {
@@ -295,11 +291,7 @@ public class ItemBean implements Serializable {
     }
 
     public String getMaterialName() {
-        if (material == null) {
-            return "no material choosen";
-        } else {
-            return material.getNames().get(0).getValue();
-        }
+        return state.getEditedItem().getMaterial().getNames().get(0).getValue();
     }
 
     public List<Project> getProjects() {
