@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.items.bean;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
@@ -88,6 +89,7 @@ public class ItemBean implements Serializable {
     protected LabelService labelService;
 
     private ContainerController containerController;
+    private ContainerInfoPresenter containerInfoPresenter;
 
     private List<Project> projects = new ArrayList<>();
     private List<Container> containers = new ArrayList<>();
@@ -102,25 +104,14 @@ public class ItemBean implements Serializable {
     @Inject
     protected UserBean userBean;
 
-    private String description;
-
-    //Direct container of items
-    private Double containerSize;
-    private String containerUnit;
-
     //Solvent infos
     private boolean solved;
-
-    //amount infos
-    private Double amount;
-    private String amountUnit;
-    private String purity;
-
     private boolean directContainer;
 
     private String containerName;
     protected Mode mode;
     private String customLabelValue;
+    private ContainerPresenter containerPresenter;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -188,7 +179,6 @@ public class ItemBean implements Serializable {
             state.getEditedItem().setLabel(customLabelValue);
         }
         state.setEditedItem(itemService.saveItem(state.getEditedItem()));
-
     }
 
     public boolean isCustomLabelDisabled() {
@@ -204,49 +194,58 @@ public class ItemBean implements Serializable {
     }
 
     public void actionStartItemEdit(Item i) {
-        try {
-            mode = Mode.EDIT;
-            ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(userBean.getCurrentAccount(), 0, Integer.MAX_VALUE);
-            builder.addDeactivated(false);
-            SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
-            projects = response.getAllFoundObjects(Project.class, response.getNode());
-            containers = containerService.loadContainers(userBean.getCurrentAccount());
-            containerTypes = containerService.loadContainerTypes();
-            filterAndLocalizeContainerTypes();
-            directContainer = i.getContainerType() != null;
-            units = loadUnits();
-            solvents = loadSolvents();
-            purities = loadPurities();
-            state = new ItemState(i);
-            this.printBean.setLabelDataObject(state.getEditedItem());
-            containerController = new ContainerController(this, i.getContainer());
-            historyOperation = new HistoryOperation(state, containerController);
-            customLabelValue = i.getLabel();
-        } catch (Exception e) {
-            logger.error(e);
-        }
+        mode = Mode.EDIT;
+        directContainer = i.getContainerType() != null;
+        state = new ItemState(i);
+        solved = i.getSolvent() != null;
+        containerController = new ContainerController(this, i.getContainer());
+        historyOperation = new HistoryOperation(state, containerController);
+        customLabelValue = i.getLabel();
+        initData();
+    }
+
+    private void initData() {
+        projects = loadReadableProjects(userBean.getCurrentAccount());
+        containers = containerService.loadContainers(userBean.getCurrentAccount());
+        containerTypes = containerService.loadContainerTypes();
+        filterAndLocalizeContainerTypes();
+        units = loadUnits();
+        solvents = loadSolvents();
+        purities = loadPurities();
+        this.printBean.setLabelDataObject(state.getEditedItem());
+        this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
+        this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer());
+
+    }
+
+    public void setContainerInfoPresenter(ContainerInfoPresenter containerInfoPresenter) {
+        this.containerInfoPresenter = containerInfoPresenter;
+    }
+
+    public ContainerInfoPresenter getContainerInfoPresenter() {
+        return containerInfoPresenter;
     }
 
     public void actionStartItemCreation(Material m) {
         mode = Mode.CREATE;
         state = new ItemState();
         state.getEditedItem().setMaterial(m);
-        this.printBean.setLabelDataObject(state.getEditedItem());
         directContainer = true;
-        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(userBean.getCurrentAccount(), 0, Integer.MAX_VALUE);
-        builder.addDeactivated(false);
-        SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
-        projects = response.getAllFoundObjects(Project.class, response.getNode());
-        containers = containerService.loadContainers(userBean.getCurrentAccount());
-        containerTypes = containerService.loadContainerTypes();
-        filterAndLocalizeContainerTypes();
-
-        units = loadUnits();
-        solvents = loadSolvents();
-        purities = loadPurities();
-        clearFormular();
+        solved = false;
         containerController = new ContainerController(this, null);
         customLabelValue = "";
+        initData();
+    }
+
+    private List<Project> loadReadableProjects(User user) {
+        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        builder.addDeactivated(false);
+        SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
+        return response.getAllFoundObjects(Project.class, response.getNode());
+    }
+
+    public ContainerPresenter getContainerPresenter() {
+        return containerPresenter;
     }
 
     public List<ContainerType> getContainerTypes() {
@@ -263,6 +262,7 @@ public class ItemBean implements Serializable {
 
     public void actionChangeContainer(Container c) {
         containerController = new ContainerController(this, c);
+        containerInfoPresenter = new ContainerInfoPresenter(c);
         this.containerName = c.getLabel();
 
     }
@@ -314,105 +314,16 @@ public class ItemBean implements Serializable {
         this.containerName = containerName;
     }
 
-    public String getContainerName() {
-        if (containerController.getContainer() == null || containerController.getContainer().getLabel() == null) {
-            return "";
-        } else {
-            return containerController.getContainer().getLabel();
-        }
-    }
-
-    public String getContainerType() {
-        if (containerController.getContainer() == null) {
-            return "";
-        } else {
-            containerController.getContainer().getType().setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + containerController.getContainer().getType().getName(), null));
-            return containerController.getContainer().getType().getLocalizedName();
-        }
-    }
-
-    public String getContainerProject() {
-        if (containerController.getContainer() == null) {
-            return "";
-        } else {
-            if (containerController.getContainer().getProject() == null) {
-                return "none";
-            } else {
-                return containerController.getContainer().getProject().getName();
-            }
-        }
-    }
-
-    public String getContainerLocation() {
-        if (containerController.getContainer() == null) {
-            return "";
-        } else {
-            if (containerController.getContainer().getLocation(true, true) == null) {
-                return "unknown";
-            } else {
-                return containerController.getContainer().getLocation(true, true);
-            }
-        }
-    }
-
     public List<String> getUnits() {
         return units;
-    }
-
-    public String getContainerUnit() {
-        return containerUnit;
-    }
-
-    public void setContainerUnit(String containerUnit) {
-        this.containerUnit = containerUnit;
     }
 
     public List<Solvent> getSolvents() {
         return solvents;
     }
 
-    public String getPurity() {
-        return purity;
-    }
-
-    public void setPurity(String purity) {
-        this.purity = purity;
-    }
-
     public List<String> getPurities() {
         return purities;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Double getContainerSize() {
-        return containerSize;
-    }
-
-    public void setContainerSize(Double containerSize) {
-        this.containerSize = containerSize;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public String getAmountUnit() {
-        return amountUnit;
-    }
-
-    public void setAmountUnit(String amountUnit) {
-        this.amountUnit = amountUnit;
     }
 
     public ItemState getState() {
@@ -453,18 +364,6 @@ public class ItemBean implements Serializable {
         return units;
     }
 
-    private void clearFormular() {
-        containerUnit = units.get(0);
-        containerSize = null;
-        containerController = new ContainerController(this, null);
-        solved = false;
-
-        amount = null;
-
-        amountUnit = units.get(0);
-        purity = purities.get(0);
-    }
-
     /**
      * Removes all container with a rank greater than zero and set its localized
      * name
@@ -481,10 +380,6 @@ public class ItemBean implements Serializable {
                 }
             }
         }
-    }
-
-    public boolean isIdVisible() {
-        return mode != Mode.CREATE;
     }
 
     public boolean isUnitEditable() {
@@ -517,10 +412,6 @@ public class ItemBean implements Serializable {
     public boolean isNextVersionButtonDisabled() {
         return state.getEditedItem().getHistory().isEmpty() || state.getCurrentHistoryDate() == null;
 
-    }
-
-    public void removeContainer() {
-        containerController = new ContainerController(this, null);
     }
 
     public boolean isCustomLabel() {
