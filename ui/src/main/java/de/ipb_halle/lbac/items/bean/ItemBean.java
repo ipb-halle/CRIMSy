@@ -430,4 +430,8 @@ public class ItemBean implements Serializable {
         this.customLabelValue = customLabelValue;
     }
 
+    public void setState(ItemState state) {
+        this.state = state;
+    }
+
 }
