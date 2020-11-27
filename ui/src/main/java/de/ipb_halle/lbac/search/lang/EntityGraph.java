@@ -32,6 +32,7 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
@@ -255,7 +256,7 @@ public class EntityGraph {
         if (tag != null) {
             addAttributeType(tag.type());
         }
-        processFields(this.entityClass, "", false);
+        processFields(this.entityClass, new ArrayList<Field> (3), "", false);
         buildFieldMap();
     }
 
@@ -267,29 +268,31 @@ public class EntityGraph {
      * Note: Annotations <code>@EntityCollection, @OneTo*, @ManyTo*</code>  
      * are currently ignored.
      * 
+     * @param accessors chain of (embedded) fields for accessing all 
+     * field values (direct and embedded) of an object
      * @param parentFieldName name of the field embedding the class of this field
      * @param field the field
      */
-    private void processColumn(String parentFieldName, Field field) {
+    private void processColumn(List<Field> accessors, String parentFieldName, Field field) {
         String fieldName = parentFieldName.isEmpty() 
                 ? field.getName() 
                 : parentFieldName + "." + field.getName();
 
         if (field.getAnnotation(EmbeddedId.class) != null) {
             Class<?> clazz = field.getType();
-            processFields(clazz, fieldName, true);
+            processFields(clazz, new ArrayList(accessors), fieldName, true);
             return;
         }
 
         if (field.getAnnotation(Id.class) != null) {
-            processId(parentFieldName, field);
+            processId(new ArrayList(accessors), parentFieldName, field);
             return;
         }
 
         Embedded embedded = field.getAnnotation(Embedded.class);
         if (embedded != null) {
             Class clazz = field.getType();
-            processFields(clazz, fieldName, false);
+            processFields(clazz, new ArrayList(accessors), fieldName, false);
             return;
         }
 
@@ -303,11 +306,13 @@ public class EntityGraph {
             if ((column != null) && (! column.name().isEmpty())) {
                 columnName = column.name();
             }
-            DbField dbField = new DbField(false)
+            DbField dbField = new DbField(false, 
+                    (field.getAnnotation(GeneratedValue.class) != null) ? true : false)
                 .setEntityGraph(this)
                 .setFieldName(fieldName)
                 .setColumnName(columnName)
                 .setTableName(this.tableName)
+                .addAccessors(accessors)
                 .addAttributeTag(attributeTag)
                 .addAttributeTag(attributeTags)
                 .addAttributeTypes(this.attributeTypes);
@@ -318,14 +323,18 @@ public class EntityGraph {
     /**
      * process the fields of a class to obtain a map of database fields
      * @param clazz the class to resolve the fields for
+     * @param parentAccessors a chain of (embedded) fields for accessing all 
+     * field values (direct and embedded) of an object
      * @param isIndex if the class is an EmbeddedId
      */
-    private void processFields(Class<?> clazz, String parentFieldName, boolean isIndex) {
+    private void processFields(Class<?> clazz, List<Field> parentAccessors, String parentFieldName, boolean isIndex) {
         for(Field field : clazz.getDeclaredFields()) {
+            List<Field> accessors = new ArrayList(parentAccessors);
+            accessors.add(field);
             if (isIndex) {
-                processId(parentFieldName, field);
+                processId(accessors, parentFieldName, field);
             } else {
-                processColumn(parentFieldName, field);
+                processColumn(accessors, parentFieldName, field);
             }
             String name = parentFieldName.isEmpty() ?
                     field.getName() :
@@ -336,7 +345,7 @@ public class EntityGraph {
         Class<?> superClass = clazz.getSuperclass();
         if ((superClass != null) 
                 && (superClass.getAnnotation(MappedSuperclass.class) != null)) {
-            processFields(superClass, parentFieldName, isIndex);
+            processFields(superClass, parentAccessors, parentFieldName, isIndex);
         }
         processAttributeOverrides(parentFieldName, clazz);
     }
@@ -345,10 +354,12 @@ public class EntityGraph {
      * process an index field; could be either a 
      * single field with @Id annotation or a field from 
      * an @EmbeddedId object.
+     * @param accessors a chain of (embedded) fields for accessing all 
+     * field values (direct and embedded) of an object
      * @param parentFieldName name of the field embedding the class of this field 
      * @param field the index field
      */
-    private void processId(String parentFieldName, Field field) {
+    private void processId(List<Field> accessors, String parentFieldName, Field field) {
         String fieldName = parentFieldName.isEmpty() 
                 ? field.getName() 
                 : parentFieldName + "." + field.getName();
@@ -361,11 +372,13 @@ public class EntityGraph {
         
         AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
         AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
-        DbField dbField = new DbField(true)
+        DbField dbField = new DbField(true, 
+                (field.getAnnotation(GeneratedValue.class) != null) ? true : false)
                 .setEntityGraph(this)
                 .setFieldName(fieldName) 
                 .setColumnName(columnName) 
                 .setTableName(this.tableName)
+                .addAccessors(accessors)
                 .addAttributeTag(attributeTag) 
                 .addAttributeTag(attributeTags) 
                 .addAttributeTypes(this.attributeTypes);

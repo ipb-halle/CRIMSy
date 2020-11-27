@@ -17,7 +17,11 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.HashSet;
+import java.util.ListIterator;
 import java.util.Set;
 
 /**
@@ -32,19 +36,33 @@ public class DbField {
     private EntityGraph entityGraph;
     private String fieldName;
     private boolean indexField;
+    private boolean generatedField;
     private OrderDirection orderDirection;
     private String orderKey;
     private String tableName;
+    private List<Field> valueAccessors;
 
     public DbField() {
-        this(false);
+        this(false, false);
     }
 
-    public DbField(boolean indexField) {
+    public DbField(boolean indexField, boolean generatedField) {
         this.alias = "";
         this.indexField = indexField;
+        this.generatedField = generatedField;
         this.attributeTypes = new HashSet<> ();
         this.orderDirection = OrderDirection.NONE;
+        this.valueAccessors = new ArrayList(3);
+    }
+
+    DbField addAccessor(Field field) {
+        this.valueAccessors.add(field);
+        return this;
+    }
+
+    DbField addAccessors(List<Field> fields) {
+        this.valueAccessors.addAll(fields);
+        return this;
     }
 
     DbField addAttributeTag(AttributeTag tag) {
@@ -68,6 +86,7 @@ public class DbField {
         return this;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -81,6 +100,22 @@ public class DbField {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Obtain the value of a field in a concrete object. The field 
+     * may be buried in the class and hierarchy (embedded fields).
+     * @param obj The object from which the field value should be obtained
+     * @return the value 
+     * @throws java.lang.IllegalAccessException
+     */
+    public Object get(Object obj) throws IllegalAccessException {
+        ListIterator<Field> iter = this.valueAccessors.listIterator();
+        Object result = obj;
+        while (iter.hasNext()) {
+            result = iter.next().get(result);
+        }
+        return result;
     }
 
     public String getAliasedColumnName() {
@@ -98,6 +133,14 @@ public class DbField {
     public EntityGraph getEntityGraph() {
         return this.entityGraph;
     }
+    
+    public Class getFieldClass() {
+        int i = this.valueAccessors.size();
+        if (i > 0) {
+            return this.valueAccessors.get(0).getClass();
+        } 
+        throw new IllegalStateException("DbField has no accessor");
+    }
 
     public OrderDirection getOrderDirection() {
         return this.orderDirection;
@@ -107,8 +150,17 @@ public class DbField {
         return this.tableName;
     }
 
+    /**
+     *
+     * @return hashCode based on alias and columnName
+     */
+    @Override
     public int hashCode() {
         return this.alias.hashCode() + this.columnName.hashCode();
+    }
+
+    public boolean isGeneratedField() {
+        return this.generatedField;
     }
 
     /**
@@ -124,6 +176,7 @@ public class DbField {
      * compares table name, column name and order key of this instance 
      * against another DbField to select matching columns in ORDER BY 
      * clauses.
+     * @param field
      * @return true if both objects have the same columnName, tableName
      * and orderKey.
      */
@@ -134,6 +187,17 @@ public class DbField {
             || this.orderKey.equals(field.orderKey));
     }
 
+    /**
+     * set the value of a field, which may be buried in 
+     * the object hierarchy
+     * @param obj the object in which the value should be set
+     * @param value the value which should be set
+     * @throws java.lang.IllegalAccessException
+     */
+    public void set(Object obj, Object value) throws IllegalAccessException {
+        throw new IllegalAccessException("Not implemented");
+    }
+    
     public DbField setAlias(String alias) {
         this.alias = alias;
         return this;

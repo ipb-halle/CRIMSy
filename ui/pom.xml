@@ -355,6 +355,45 @@
             <scope>compile</scope>
         </dependency>
         
+        <!-- CDK -->
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-core</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-ctab</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-data</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-formula</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-interfaces</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-io</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+
+
         <!-- PrimeFaces Ui Library for jsf-->
         <dependency>
             <groupId>org.primefaces</groupId>

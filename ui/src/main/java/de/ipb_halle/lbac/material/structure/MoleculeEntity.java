@@ -33,11 +33,35 @@ public class MoleculeEntity {
     @Id
     private Integer id;
 
-    @Column
+       @Column
     private String format;
 
     @Column
     @AttributeTag(type = AttributeType.MOLECULE)
     private String molecule;
 
+
+    public String getFormat() {
+        return format;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getMolecule() {
+        return molecule;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setMolecule(String molecule) {
+        this.molecule = molecule;
+    }
 }
