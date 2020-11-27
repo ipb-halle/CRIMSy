@@ -35,6 +35,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -86,6 +87,7 @@ public class InhouseDB {
 
     private final Connection connection;
     private final Map<String, SqlInsertBuilder> builderMap;
+    private final Map<String, Integer> materialPropertiesMap;
 
     private JsonObject jsonConfig;
 
@@ -93,7 +95,9 @@ public class InhouseDB {
         readConfig(configFileName);
         this.connection = DriverManager.getConnection(getConfigString(DATABASE_URL));
         this.builderMap = new HashMap<> ();
+        this.materialPropertiesMap = new HashMap<> ();
         addInsertBuilders();
+        addMaterialProperties();
     }
     
     private void addInsertBuilders() {
@@ -103,6 +107,12 @@ public class InhouseDB {
                 new SqlInsertBuilder(new EntityGraph(StructureEntity.class)));
         this.builderMap.put(MoleculeEntity.class.getName(),
                 new SqlInsertBuilder(new EntityGraph(MoleculeEntity.class)));
+    }
+
+    private void addMaterialProperties() {
+        this.materialPropertiesMap.put("CAS-RN", Integer.valueOf(3));
+        this.materialPropertiesMap.put("Mol_ID", Integer.valueOf(6));
+        this.materialPropertiesMap.put("IPBCode", Integer.valueOf(7));
     }
     
     private void close() throws SQLException {
@@ -195,13 +205,20 @@ public class InhouseDB {
         this.jsonConfig = element.getAsJsonObject();
     }
     
-    private void saveMolProperties(IAtomContainer cdkMolecule, Integer id) {
-        // molId
-        // IPBcode
-        // date
-        // reliability
-        // InChi, InChiKey
-        //
+    private void saveMolProperties(IAtomContainer cdkMolecule, Integer id)
+            throws Exception {
+        String sql = "INSERT INTO material_indices (materialid, typeid, value) VALUES (?,?,?)";
+        String sql2 = "INSERT INTO temp_import (old_id, new_id, type) VALUES (?, ?, ?)";
+        for( Map.Entry<String, Integer> entry : this.materialPropertiesMap.entrySet()) {
+            String key = entry.getKey();
+            String propValue = cdkMolecule.getProperty(key);
+            if (propValue != null) {
+                saveTriple(sql, id, entry.getValue(), propValue);
+                if (key.equals("Mol_ID")) {
+                    saveTriple(sql2, Integer.valueOf(propValue), id, key);
+                }
+            }
+        }
     }
 
     private void saveMolString(MoleculeEntity mol, IAtomContainer cdkMolecule) throws CDKException, IOException {
@@ -217,6 +234,14 @@ public class InhouseDB {
         cdkWriter.write(cdkMolecule);
         cdkWriter.close();
         mol.setMolecule(molStream.toString());
+    }
+
+    private void saveTriple(String sql, Integer id, Integer other, String value) throws SQLException {
+        PreparedStatement statement = this.connection.prepareStatement(sql);
+        statement.setInt(1, id);
+        statement.setInt(2, other);
+        statement.setString(3, value);
+        statement.execute();
     }
 
     public static void doTheStuff(String config) {

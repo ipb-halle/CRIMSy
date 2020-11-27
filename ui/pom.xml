@@ -355,6 +355,13 @@
             <scope>compile</scope>
         </dependency>
         
+        <!-- RTF ParserKit -->
+        <dependency>
+            <groupId>com.github.joniles</groupId>
+            <artifactId>rtfparserkit</artifactId>
+            <version>1.15.0</version>
+        </dependency>
+
         <!-- CDK -->
         <dependency>
             <groupId>org.openscience.cdk</groupId>

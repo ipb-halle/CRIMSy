@@ -226,7 +226,7 @@ insert into storageconditions(id,name)values(12,'storeUnderMinus80Degrees');
 
 insert into indextypes(id,name,javaclass)values(1,'name',null);
 insert into indextypes(id,name,javaclass)values(2,'GESTIS/ZVG',null);
-insert into indextypes(id,name,javaclass)values(3,'CAS/RM',null);
+insert into indextypes(id,name,javaclass)values(3,'CAS/RN',null);
 insert into indextypes(id,name,javaclass)values(4,'Carl Roth Sicherheitsdatenblatt',null);
 
 insert into storageclasses(id,name)values(1,'1');
