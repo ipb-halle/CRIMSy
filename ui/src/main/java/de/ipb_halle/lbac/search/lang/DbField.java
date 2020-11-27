@@ -113,7 +113,9 @@ public class DbField {
         ListIterator<Field> iter = this.valueAccessors.listIterator();
         Object result = obj;
         while (iter.hasNext()) {
-            result = iter.next().get(result);
+            Field field = iter.next();
+            field.setAccessible(true);
+            result = field.get(result);
         }
         return result;
     }
@@ -137,13 +139,23 @@ public class DbField {
     public Class getFieldClass() {
         int i = this.valueAccessors.size();
         if (i > 0) {
-            return this.valueAccessors.get(0).getClass();
+            return this.valueAccessors.get(i - 1).getType();
         } 
         throw new IllegalStateException("DbField has no accessor");
     }
 
     public OrderDirection getOrderDirection() {
         return this.orderDirection;
+    }
+
+    public String getPlaceHolder() {
+        Field field = this.valueAccessors.get(
+                this.valueAccessors.size() - 1);
+        CustomCast cast = field.getAnnotation(CustomCast.class);
+        if (cast == null) {
+            return "?";
+        }
+        return cast.expression();
     }
 
     public String getTableName() {
@@ -195,7 +207,10 @@ public class DbField {
      * @throws java.lang.IllegalAccessException
      */
     public void set(Object obj, Object value) throws IllegalAccessException {
-        throw new IllegalAccessException("Not implemented");
+        Field field = this.valueAccessors.get(
+                this.valueAccessors.size() - 1);
+        field.setAccessible(true);
+        field.set(obj, value);
     }
     
     public DbField setAlias(String alias) {

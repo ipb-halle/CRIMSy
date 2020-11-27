@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.migration;
 
-// import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -55,6 +54,22 @@ import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
 /**
  * Migration tool for the InhouseDB
  * This is work in progress.
+ *
+ * Example config file:
+ * <pre>
+ *  {
+ *  ACLIST_ID:      1,
+ *  DATABASE_URL:   "jdbc:postgresql://localhost:5432/lbac?charSet=UTF-8&user=lbac&password=lbac",
+ *
+ *  INPUT_STRUCTURE_NAMES: "/dataPOOL/fblocal/inhouse/tblCompoundSynonym_20140325.txt",
+ *  INPUT_STRUCTURES:      "/dataPOOL/fblocal/inhouse/Structure_20140325.SDF",
+ *
+ *  MOLECULE_MATERIAL_TYPE_ID: 1,
+ *  OWNER_ID:       1,
+ *  PROJECT_ID:     1
+ * }
+ * </pre>
+ *
  * @author fbroda
  */
 public class InhouseDB {
@@ -204,18 +219,25 @@ public class InhouseDB {
         mol.setMolecule(molStream.toString());
     }
 
-    public static void main(String argv[]) {
-        if (argv.length != 1) {
-            System.out.println("Usage: java -cp ... InhouseDB JSON_CONFIG_FILE");
-            return;
-        }
-
+    public static void doTheStuff(String config) {
         try {
-            InhouseDB inhouseDB = new InhouseDB(argv[0]);
+            InhouseDB inhouseDB = new InhouseDB(config);
             inhouseDB.importData();
             inhouseDB.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String argv[]) {
+        if (argv.length != 1) {
+//          System.out.println("Usage: java -cp ... InhouseDB JSON_CONFIG_FILE");
+
+            // during development / debugging
+            doTheStuff("/dataPOOL/fblocal/inhouse/config.json");
+            return;
+        }
+
+        doTheStuff(argv[0]);
     }
 }

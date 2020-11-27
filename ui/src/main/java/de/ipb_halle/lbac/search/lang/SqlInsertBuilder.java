@@ -79,7 +79,7 @@ public class SqlInsertBuilder {
                 sb.append(sep);
                 sb.append(field.getColumnName());
                 sbParam.append(sep);
-                sbParam.append("?");
+                sbParam.append(field.getPlaceHolder());
                 sep = ", ";
             }
         }
@@ -121,6 +121,7 @@ public class SqlInsertBuilder {
         if (generatedValues.size() > 0) {
             index = 1;
             ResultSet result = statement.getGeneratedKeys();
+            result.next();
 
             for (DbField field : generatedValues) {
                     field.set(obj, result.getObject(index));
@@ -136,9 +137,6 @@ public class SqlInsertBuilder {
         switch(clazz.getName()) {
             case "java.lang.Boolean" :
                 statement.setNull(index, Types.BOOLEAN);
-                break;
-            case "java.lang.Date" :
-                statement.setNull(index, Types.DATE);
                 break;
             case "java.lang.Double" :
                 statement.setNull(index, Types.DOUBLE);
@@ -158,6 +156,9 @@ public class SqlInsertBuilder {
             case "java.sql.Timestamp" :
                 statement.setNull(index, Types.TIMESTAMP);
                 break;
+            case "java.util.Date" :
+                statement.setNull(index, Types.DATE);
+                break;
             case "java.util.UUID" :
                 statement.setNull(index, Types.VARCHAR);
             default : throw new IllegalArgumentException("Unrecognized type: " 
@@ -170,10 +171,6 @@ public class SqlInsertBuilder {
         switch(obj.getClass().getName()) {
             case "java.lang.Boolean" :
                 statement.setBoolean(index, (Boolean) obj);
-                break;
-            case "java.lang.Date" :
-                statement.setDate(index, new java.sql.Date(
-                    ((Date) obj).getTime()));
                 break;
             case "java.lang.Double" :
                 statement.setDouble(index, (Double) obj);
@@ -192,6 +189,10 @@ public class SqlInsertBuilder {
                 break;
             case "java.sql.TimeStamp" :
                 statement.setTimestamp(index, (Timestamp) obj);
+                break;
+            case "java.util.Date" :
+                statement.setDate(index, new java.sql.Date(
+                    ((java.util.Date) obj).getTime()));
                 break;
 //            case "java.util.UUID" :
 //                statement.setString(index, obj.toString());
