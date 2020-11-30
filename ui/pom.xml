@@ -399,6 +399,11 @@
             <version>2.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-valencycheck</artifactId>
+            <version>2.3</version>
+        </dependency>
 
 
         <!-- PrimeFaces Ui Library for jsf-->

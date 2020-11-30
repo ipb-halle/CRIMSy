@@ -129,7 +129,8 @@ INSERT INTO materialInformations VALUES(10,4,3,false);
 CREATE TABLE indextypes (
         id SERIAL NOT NULL PRIMARY KEY,
         name VARCHAR NOT NULL,
-        javaclass VARCHAR);
+        javaclass VARCHAR,
+        UNIQUE(name));
 
 CREATE TABLE materials (
         materialid SERIAL NOT NULL PRIMARY KEY,

@@ -21,16 +21,15 @@ import com.rtfparserkit.parser.RtfListenerAdaptor;
 import com.rtfparserkit.parser.RtfStringSource;
 import com.rtfparserkit.parser.raw.RawRtfParser;
 import com.rtfparserkit.rtf.Command;
+import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import de.ipb_halle.lbac.search.lang.SqlInsertBuilder;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -48,54 +47,73 @@ import java.util.Map;
  * 
  *     iconv -f ISO8859-1 -t UTF-8 -o OUTPUT.txt ../INPUT.txt
  *
- * followed by manual curation.
+ * followed by manual curation. This code was originally
+ * developed by in 2014 for KICKS.
+ *
+ * @author: fbroda
  */
 public class RTF extends RtfListenerAdaptor {
+
+    private final static String MATERIAL_INDEX_NAME = "name";
+    private final static String MATERIAL_NAME_DEFAULT_LANG = "en";
 
     public enum MODE { FONTDEF, IGNORE, TEXTOUT };
     public enum LANG { NORMAL, GREEK };
 
+    private final Connection        connection;
+    private final Map<Character, String>   greekmap;
+    private final Map<String, SqlInsertBuilder> builderMap;
+    private final Map<String, Integer> materialIndices;
+
     private String                  currentFont;
     private int                     depth;
     private Map<String, LANG>       fontmap;
-    private static Map<Character, String>   greekmap;
     private LANG                    lang;
     private MODE                    mode;
     private String                  nosupersub;
     private StringBuilder           outString;
-        
-    static {
-        RTF.greekmap = new HashMap<Character, String> ();
-        RTF.greekmap.put(Character.valueOf('a'), "&#945;");
-        RTF.greekmap.put(Character.valueOf('b'), "&#946;");
-        RTF.greekmap.put(Character.valueOf('g'), "&#947;");
-        RTF.greekmap.put(Character.valueOf('d'), "&#948;");
-        RTF.greekmap.put(Character.valueOf('D'), "&#916;");
-        RTF.greekmap.put(Character.valueOf('0'), "0");
-        RTF.greekmap.put(Character.valueOf('1'), "1");
-        RTF.greekmap.put(Character.valueOf('2'), "2");
-        RTF.greekmap.put(Character.valueOf('3'), "3");
-        RTF.greekmap.put(Character.valueOf('4'), "4");
-        RTF.greekmap.put(Character.valueOf('5'), "5");
-        RTF.greekmap.put(Character.valueOf('6'), "6");
-        RTF.greekmap.put(Character.valueOf('7'), "7");
-        RTF.greekmap.put(Character.valueOf('8'), "8");
-        RTF.greekmap.put(Character.valueOf('9'), "9");
-        RTF.greekmap.put(Character.valueOf('('), "(");
-        RTF.greekmap.put(Character.valueOf(')'), ")");
-        RTF.greekmap.put(Character.valueOf('{'), "{");
-        RTF.greekmap.put(Character.valueOf('}'), "}");
-        RTF.greekmap.put(Character.valueOf('['), "[");
-        RTF.greekmap.put(Character.valueOf(']'), "]");
-        RTF.greekmap.put(Character.valueOf('.'), ".");
-        RTF.greekmap.put(Character.valueOf(','), ",");
-        RTF.greekmap.put(Character.valueOf(':'), ":");
-        RTF.greekmap.put(Character.valueOf('-'), "-");
-        RTF.greekmap.put(Character.valueOf('+'), "+");
-        RTF.greekmap.put(Character.valueOf('/'), "/");
-        RTF.greekmap.put(Character.valueOf('*'), "*");
-        RTF.greekmap.put(Character.valueOf(';'), ";");
-        RTF.greekmap.put(Character.valueOf('_'), "_");
+
+    public RTF(Connection connection,
+            Map<String, SqlInsertBuilder> builderMap,
+            Map<String, Integer> materialIndices) {
+        this.connection = connection;
+        this.builderMap = builderMap;
+        this.materialIndices = materialIndices;
+        this.greekmap = new HashMap<> ();
+        init();
+    }
+
+    private void init() {
+        this.greekmap.put('a', "&#945;");
+        this.greekmap.put('b', "&#946;");
+        this.greekmap.put('g', "&#947;");
+        this.greekmap.put('d', "&#948;");
+        this.greekmap.put('D', "&#916;");
+        this.greekmap.put('0', "0");
+        this.greekmap.put('1', "1");
+        this.greekmap.put('2', "2");
+        this.greekmap.put('3', "3");
+        this.greekmap.put('4', "4");
+        this.greekmap.put('5', "5");
+        this.greekmap.put('6', "6");
+        this.greekmap.put('7', "7");
+        this.greekmap.put('8', "8");
+        this.greekmap.put('9', "9");
+        this.greekmap.put('(', "(");
+        this.greekmap.put(')', ")");
+        this.greekmap.put('{', "{");
+        this.greekmap.put('}', "}");
+        this.greekmap.put('[', "[");
+        this.greekmap.put(']', "]");
+        this.greekmap.put('.', ".");
+        this.greekmap.put(',', ",");
+        this.greekmap.put(':', ":");
+        this.greekmap.put('-', "-");
+        this.greekmap.put('+', "+");
+        this.greekmap.put('/', "/");
+        this.greekmap.put('*', "*");
+        this.greekmap.put(';', ";");
+        this.greekmap.put('_', "_");
     }
 
     public void readCompoundSynonym(String fileName) throws Exception {
@@ -104,7 +122,7 @@ public class RTF extends RtfListenerAdaptor {
         SqlQuery.execute("CREATE TABLE tmp_names (rowid SERIAL, name_id INTEGER, legacy_molid INTEGER, "
           + "name VARCHAR, prio INTEGER, PRIMARY KEY(name, legacy_molid))", null);
 */
-        int mode = 0;
+        int lineMode = 0;
         String line = "";
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         reader.readLine(); // discard header
@@ -123,10 +141,10 @@ public class RTF extends RtfListenerAdaptor {
             line += st;
             if(st.matches("^[0-9]+;[0-9]+;'\\{\\\\rtf1.*")) {
                 // System.out.println("RTF MODE");
-                mode = 1;
+                lineMode = 1;
             }
-            if((mode == 1) && (st.matches("^';'Y'$") || st.matches("^';'N'$"))) {
-                mode = 0;
+            if((lineMode == 1) && (st.matches("^';'Y'$") || st.matches("^';'N'$"))) {
+                lineMode = 0;
                 String a = line.replaceAll("^([0-9]+;[0-9]+;')(.*)(';'[NY]')$", "$1");
                 String b = line.replaceAll("^([0-9]+;[0-9]+;')(.*)(';'[NY]')$", "$2");
                 String c = line.replaceAll("^([0-9]+;[0-9]+;')(.*)(';'[NY]')$", "$3");
@@ -153,17 +171,45 @@ public class RTF extends RtfListenerAdaptor {
         reader.close();
     }
 
-    private void update(int a, int b, String n, boolean p) throws Exception {
-        List<Object> l = new ArrayList<> ();
-        l.add(Integer.valueOf(a));
-        l.add(Integer.valueOf(b));
-        l.add(n.replaceAll("^'(.*)'$", "$1"));
-        l.add(Integer.valueOf(p ? 1 : 10));
-        try {
-                // SqlQuery.execute("INSERT INTO tmp_names (name_id, legacy_molid, name, prio) VALUES (?,?,?,?)", l);
-        } catch(Exception e) {
-                // index violation, do nothing
+    /**
+     *
+     * @param name_id name record primary key in the inhouse database (ignored)
+     * @param mol_id reference id to structure
+     * @param name the quoted name (quotes are stripped)
+     * @param prioFlag priority name
+     * @throws Exception
+     */
+    private void update(int name_id, int mol_id, String name, boolean prioFlag) throws Exception {
+        PreparedStatement statement = this.connection.prepareStatement(
+                "SELECT new_id FROM tmp_import WHERE old_id=? AND type=?");
+        statement.setInt(1, mol_id);
+        statement.setString(2, InhouseDB.TMP_MatId_MolId);
+        ResultSet result = statement.executeQuery();
+        if (! result.next()) {
+            return;
         }
+        int id = result.getInt(1);
+
+        MaterialIndexEntryEntity entity = new MaterialIndexEntryEntity();
+        entity.setLanguage(MATERIAL_NAME_DEFAULT_LANG);
+        entity.setRank(prioFlag ? 0 : 1);
+        entity.setTypeid(this.materialIndices.get(MATERIAL_INDEX_NAME));
+        entity.setValue(name.replaceAll("^'(.*)'$", "$1"));
+        entity.setMaterialid(id);
+        this.builderMap.get(entity.getClass().getName())
+                .insert(this.connection, entity);
+        /*
+        String sql = "INSERT INTO material_indices (materialid, typeid, value, language, rank) "
+                + "SELECT new_id AS materialid, ? AS typeid, ? AS value, ? AS language, ? AS rank) "
+                + "FROM tmp_import WHERE CAST? = old_id";
+        PreparedStatement statement = this.connection.prepareStatement(sql);
+        statement.setInt(1, this.materialIndices.get(MATERIAL_INDEX_NAME));
+        statement.setString(2, name.replaceAll("^'(.*)'$", "$1"));
+        statement.setString(3, MATERIAL_NAME_DEFAULT_LANG);
+        statement.setInt(4, prioFlag ? 0 : 1);
+        statement.setInt(5, mol_id);
+        statement.execute();
+        */
     }
 
     /*
@@ -319,7 +365,7 @@ public class RTF extends RtfListenerAdaptor {
             } else {
                 for(int i=0; i<st.length(); i++) {
                     char c = st.charAt(i);
-                    String x = RTF.greekmap.get(Character.valueOf(c));
+                    String x = this.greekmap.get(c);
                     if(x != null) {
                         this.outString.append(x);
                     } else {
