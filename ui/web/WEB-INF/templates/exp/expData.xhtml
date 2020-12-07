@@ -30,9 +30,9 @@
     <ui:composition>
         <div>
             <p:commandButton type="button" 
-                             value="Hallo" 
                              ajax="true"
                              class="experimentActionButton"
+                             value="#{experimentBean.experimentEditLabel}" 
                              onclick="#{experimentBean.actionNewExperiment()};
                                      PF('dlg_experimentData').show();"
                              update="@(.expDataClass)"

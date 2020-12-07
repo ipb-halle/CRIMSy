@@ -726,8 +726,9 @@ CREATE TABLE experiments (
     description     VARCHAR,
     template        BOOLEAN NOT NULL DEFAULT FALSE,
     aclist_id       INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    owner_id         INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    ctime           TIMESTAMP NOT NULL
+    owner_id        INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    ctime           TIMESTAMP NOT NULL,
+    projectid       INTEGER REFERENCES projects(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE exp_records (
