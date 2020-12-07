@@ -58,6 +58,9 @@ public class ExperimentEntity extends ACObjectEntity implements Serializable {
     @Column
     private Date ctime;
 
+    @Column
+    private Integer projectid;
+
     public String getCode() {
         return this.code;
     }
@@ -102,4 +105,13 @@ public class ExperimentEntity extends ACObjectEntity implements Serializable {
         this.template = template;
         return this;
     }
+
+    public Integer getProjectid() {
+        return projectid;
+    }
+
+    public void setProjectid(Integer projectid) {
+        this.projectid = projectid;
+    }
+
 }

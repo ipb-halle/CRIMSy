@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
 import de.ipb_halle.lbac.globals.ACObjectController;
+import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 
@@ -303,7 +304,14 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public void actionSaveExperiment() {
-        this.experimentService.save(this.experiment);
+        this.experiment.setProject(projectController.getChoosenProject());
+        Experiment savedExp = this.experimentService.save(this.experiment);
+        if (this.experiment.getExperimentId() == null) {
+            UIMessage.info("exp_save_new");
+        } else {
+            UIMessage.info("exp_save_edit");
+        }
+        this.experiment = savedExp;
     }
 
     /**

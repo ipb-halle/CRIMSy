@@ -27,21 +27,15 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.exp.assay.Assay;
-import de.ipb_halle.lbac.exp.assay.AssayRecord;
 import de.ipb_halle.lbac.exp.search.ExpRecordAccessChecker;
 import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
-import de.ipb_halle.lbac.exp.text.Text;
-import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.AttributeType;
-import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
@@ -49,9 +43,6 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +75,9 @@ public class ExperimentService implements Serializable {
 
     @Inject
     private ExpRecordService recordService;
+
+    @Inject
+    private ProjectService projectService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -148,14 +142,23 @@ public class ExperimentService implements Serializable {
             boolean shouldExpBeShown = recordAccessChecker.checkExpRecords(e.getExperimentId(), searchString, request.getUser());
             if (shouldExpBeShown
                     || recordAccessChecker.textContainsSearchTerm(e.getDescription(), searchString)) {
+
                 Experiment exp = new Experiment(
                         e,
                         aclistService.loadById(e.getACList()),
-                        memberService.loadUserById(e.getOwner()));
+                        memberService.loadUserById(e.getOwner()),
+                        loadProject(e));
                 back.addResult(exp);
             }
         }
         return back;
+    }
+
+    private Project loadProject(ExperimentEntity e) {
+        if (e.getProjectid() != null) {
+            return projectService.loadProjectById(e.getProjectid());
+        }
+        return null;
     }
 
     /**
@@ -172,7 +175,8 @@ public class ExperimentService implements Serializable {
                 id);
         return new Experiment(
                 entity, aclistService.loadById(entity.getACList()),
-                memberService.loadUserById(entity.getOwner()));
+                memberService.loadUserById(entity.getOwner()),
+                loadProject(entity));
     }
 
     public void updateExperimentAcl(int experimentid, ACList newAcList) {
@@ -193,7 +197,8 @@ public class ExperimentService implements Serializable {
         return new Experiment(
                 this.em.merge(e.createEntity()),
                 e.getACList(),
-                e.getOwner());
+                e.getOwner(),
+                e.getProject());
     }
 
     private EntityGraph createEntityGraph(SearchRequest request) {
