@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.MaterialAgent;
+import de.ipb_halle.lbac.project.ProjectService;
 
 /**
  *
@@ -56,10 +57,13 @@ public class ExperimentBeanMock extends ExperimentBean {
         return this;
     }
 
-   
-
     public ExperimentBeanMock setMemberService(MemberService memberService) {
         this.memberService = memberService;
+        return this;
+    }
+
+    public ExperimentBeanMock setProjectService(ProjectService projectService) {
+        this.projectService = projectService;
         return this;
     }
 

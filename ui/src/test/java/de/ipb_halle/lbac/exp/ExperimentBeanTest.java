@@ -39,6 +39,7 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.Collection;
 import java.util.Date;
@@ -60,29 +61,29 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ExperimentBeanTest extends TestBase {
-    
+
     @Inject
     private ProjectService projectService;
-    
+
     @Inject
     private ExperimentService experimentService;
-    
+
     @Inject
     private ExpRecordService expRecordService;
-    
+
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
-    
+
     @Inject
     private ItemService itemService;
-    
+
     @Inject
     private MaterialService materialService;
-    
+
     private ExperimentBeanMock experimentBean;
     private User publicUser;
     private ACList publicReadAcl;
-    
+
     @Before
     @Override
     public void setUp() {
@@ -90,39 +91,39 @@ public class ExperimentBeanTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
-        
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-        
+
         MaterialAgent materialAgentMock = new MaterialAgentMock()
                 .setGlobalAdmissionContext(globalAdmissionContext)
                 .setMaterialService(this.materialService)
                 .setUserBean(userBean);
-        
+
         ItemAgent itemAgentMock = new ItemAgentMock()
                 .setGlobalAdmissionContext(globalAdmissionContext)
                 .setItemService(this.itemService)
                 .setUserBean(userBean);
-        
+
         experimentBean = new ExperimentBeanMock()
                 .setExpRecordService(expRecordService)
                 .setExperimentService(experimentService)
                 .setGlobalAdmissionContext(globalAdmissionContext)
                 .setMaterialAgent(materialAgentMock)
                 .setMemberService(memberService)
+                .setProjectService(projectService)
                 .setItemAgent(itemAgentMock);
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
-        
+
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE name NOT IN('Public Group','Admin Group') AND membertype='G'");
-        
+
     }
-    
+
     @After
     public void cleanUp() {
         entityManagerService.doSqlUpdate("DELETE FROM experiments");
-        
+
     }
-    
+
     @Test
     public void test001_createExpRecordController() {
         experimentBean.experimentBeanInit();
@@ -133,7 +134,7 @@ public class ExperimentBeanTest extends TestBase {
         experimentBean.createExpRecordController("XYZ");
         Assert.assertTrue(experimentBean.getExpRecordController() instanceof NullController);
     }
-    
+
     @Test
     public void test002_getExpRecordStyle() {
         experimentBean.experimentBeanInit();
@@ -142,11 +143,11 @@ public class ExperimentBeanTest extends TestBase {
         Assert.assertEquals("expRecordEven", experimentBean.getExpRecordStyle(false, true));
         Assert.assertEquals("expRecordEdit", experimentBean.getExpRecordStyle(true, true));
     }
-    
+
     @Test
     public void test003_loadExperimentsAndRecords() {
         experimentBean.experimentBeanInit();
-        
+
         Experiment exp1 = createAndSaveExperiment("EXP-1", "EXP-1-DESC", publicReadAcl, publicUser, false);
         Experiment exp2 = createAndSaveExperiment("EXP-2", "EXP-2-DESC", publicReadAcl, publicUser, false);
         Experiment exp3 = createAndSaveExperiment("EXP-3", "EXP-3-DESC", publicReadAcl, publicUser, true);
@@ -157,7 +158,7 @@ public class ExperimentBeanTest extends TestBase {
         experimentBean.saveExpRecord(createTextrecord(exp1, "Section 1"));
         experimentBean.saveExpRecord(createTextrecord(exp1, "Section 2"));
         experimentBean.saveExpRecord(createTextrecord(exp1, "Ending"));
-        
+
         experimentBean.setTemplateMode(false);
         Assert.assertFalse(experimentBean.getTemplateMode());
         Assert.assertEquals(2, experimentBean.getExperiments().size());
@@ -179,14 +180,14 @@ public class ExperimentBeanTest extends TestBase {
         Assert.assertEquals(1, experimentBean.getExpRecordsWithNullRecord().size());
         experimentBean.actionToggleExperiment(exp1);
         experimentBean.reIndex();
-        
+
         experimentBean.setNewRecordType("TEXT");
         // append at last position
         experimentBean.actionAppendRecord(experimentBean.getExpRecordsWithNullRecord().size() - 1);
         Assert.assertEquals(6, experimentBean.getExpRecordsWithNullRecord().size());
         experimentBean.actionCancel();
     }
-    
+
     @Test
     public void test004_testAclChange() {
         experimentBean.experimentBeanInit();
@@ -198,15 +199,15 @@ public class ExperimentBeanTest extends TestBase {
         Assert.assertEquals(127, ace.getPerm());
         ace = getACEntryByName("Public Group", acentries);
         Assert.assertEquals(1, ace.getPerm());
-        
+
         ace.setPermEdit(true);
-        
+
         experimentBean.getAcObjectController().saveNewAcList();
-        
+
         Experiment loadedExp = experimentService.loadById((exp1.getId()));
         ACEntry loadedAce = getACEntryByName("Public Group", loadedExp.getACList().getACEntries().values());
         Assert.assertEquals(3, loadedAce.getPerm());
-        
+
         experimentBean.actionStartAclChange(loadedExp);
         acentries = experimentBean.getAcObjectController().getAcEntries();
         ace = getACEntryByName("Public Group", acentries);
@@ -215,14 +216,14 @@ public class ExperimentBeanTest extends TestBase {
         experimentBean.getAcObjectController().handleClose(null);
         loadedAce = getACEntryByName("Public Group", loadedExp.getACList().getACEntries().values());
         Assert.assertEquals(3, loadedAce.getPerm());
-        
+
         experimentBean.actionStartAclChange(loadedExp);
         experimentBean.getAcObjectController().removeGroupFromAcList(loadedAce);
         experimentBean.getAcObjectController().saveNewAcList();
-        
+
         loadedExp = experimentService.loadById((exp1.getId()));
         Assert.assertEquals(1, loadedExp.getACList().getACEntries().size());
-        
+
         experimentBean.actionStartAclChange(loadedExp);
         Assert.assertEquals(1, experimentBean.getAcObjectController().getGroupsNotInAcList().size());
         Assert.assertEquals(2, experimentBean.getAcObjectController().getPossibleGroupsToAdd().size());
@@ -231,7 +232,15 @@ public class ExperimentBeanTest extends TestBase {
         getACEntryByName("Public Group", experimentBean.getAcObjectController().getAcEntries()).setPermRead(true);
         experimentBean.getAcObjectController().saveNewAcList();
     }
-    
+
+    @Test
+    public void test005_actionNewExperiment() {
+        creationTools.createAndSaveProject("ExperimentBeanTest-Test-Project");
+        experimentBean.actionNewExperiment();
+        List<Project> projects = experimentBean.getProjectController().getChoosableProjects();
+        Assert.assertEquals(1, projects.size());
+    }
+
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {
         for (ACEntry ace : aces) {
             if (ace.getMember().getName().equals(name)) {
@@ -239,9 +248,9 @@ public class ExperimentBeanTest extends TestBase {
             }
         }
         return null;
-        
+
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ExperimentBeanTest.war")
@@ -255,13 +264,13 @@ public class ExperimentBeanTest extends TestBase {
                 .addClass(ProjectService.class);
         return UserBeanDeployment.add(ItemDeployment.add(deployment));
     }
-    
+
     private Experiment createAndSaveExperiment(String name, String desc, ACList acl, User user, boolean template) {
         Date creationDate = new Date();
         Experiment exp = new Experiment(null, name, desc, template, acl, user, creationDate);
         return experimentService.save(exp);
     }
-    
+
     private Text createTextrecord(Experiment exp, String text) {
         Text text1 = new Text();
         text1.setExperiment(exp);

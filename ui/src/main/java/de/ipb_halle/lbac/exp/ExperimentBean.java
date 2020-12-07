@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
 import de.ipb_halle.lbac.globals.ACObjectController;
+import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 
 import java.io.Serializable;
@@ -78,6 +79,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     @Inject
     protected MemberService memberService;
 
+    @Inject
+    protected ProjectService projectService;
+
     private Experiment experiment;
 
     private List<ExpRecord> expRecords;
@@ -95,6 +99,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Experiment experimentInFocus;
+    private ExpProjectController projectController;
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
@@ -102,6 +107,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     @PostConstruct
     protected void experimentBeanInit() {
+        projectController = new ExpProjectController(projectService, currentUser);
         /*
          * ToDo: create an experiment with real user and ACL
          */
@@ -232,7 +238,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * creates a new Experiment or a new template
      */
     public void actionNewExperiment() {
-        experimentBeanInit();
+        projectController = new ExpProjectController(projectService, currentUser);
     }
 
     public void actionNewExperimentRecord(String type, int index) {
@@ -570,4 +576,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public ACObjectController getAcObjectController() {
         return acoController;
     }
+
+    public ExpProjectController getProjectController() {
+        return projectController;
+    }
+
 }

@@ -30,11 +30,18 @@
     <ui:composition>
         <div>
             <p:commandButton type="button" 
-                        value="#{experimentBean.experimentEditLabel}" 
-                        class="experimentActionButton"
-                        onclick="PF('dlg_experimentData').show();" />
+                             value="Hallo" 
+                             ajax="true"
+                             class="experimentActionButton"
+                             onclick="#{experimentBean.actionNewExperiment()};
+                                     PF('dlg_experimentData').show();"
+                             update="@(.expDataClass)"
+                             />
             <p:dialog header="#{experimentBean.getExperiment().experimentId == null ? 'New Experiment' : 'Edit Experiment'}" 
-                              widgetVar="dlg_experimentData" modal="true" height="300">
+                      widgetVar="dlg_experimentData"
+                      modal="true"
+                      height="300"
+                      styleClass="expDataClass">
 
                 <div class="ui-g">
                     <div class="ui-g-3">Code</div>
@@ -47,22 +54,29 @@
                 <div class="ui-g">
                     <div class="ui-g-3">Project</div>
                     <div class="ui-g-9">
-                        <p:selectOneMenu label="Project" >
-                            <f:selectItem itemLabel="Not implemented" />
+                        <p:selectOneMenu 
+                            label="Project"
+                            value="#{experimentBean.getProjectController().choosenProject}"
+                            converter="ExpProjectConverter">
+                            <f:selectItems 
+                                var="project"
+                                value="#{experimentBean.getProjectController().getChoosableProjects()}"
+                                itemValue="#{project}"
+                                itemLabel="#{project.name}"/>
                         </p:selectOneMenu>
                     </div>
                 </div>
                 <div class="ui-g">
                     <div class="ui-g-3"><p:commandButton value="Save" 
-                            action="#{experimentBean.actionSaveExperiment}" 
-                            update="@all"
-                            onclick="PF('dlg_experimentData').hide();" />
+                                                         action="#{experimentBean.actionSaveExperiment}" 
+                                                         update="@all"
+                                                         onclick="PF('dlg_experimentData').hide();" />
                     </div>
                     <div class="ui-g-3"><p:commandButton value="Clone"
-                            rendered="#{experimentBean.copyEnabled}"
-                            action="#{experimentBean.actionCopyTemplate}" 
-                            update="@all"
-                            onclick="PF('dlg_experimentData').hide();" />
+                                                         rendered="#{experimentBean.copyEnabled}"
+                                                         action="#{experimentBean.actionCopyTemplate}" 
+                                                         update="@all"
+                                                         onclick="PF('dlg_experimentData').hide();" />
                     </div>
                     <div class="ui-g-6"> </div>
                 </div> 
