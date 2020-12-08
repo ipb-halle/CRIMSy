@@ -161,7 +161,12 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
 
     @Override
     public String getNameToDisplay() {
-        return getFirstName();
+        try {
+            return getFirstName();
+        } catch (Exception e) {
+            // ignore
+        }
+        return "Name not set: MaterialId " + Integer.toString(id);
     }
 
     public String getFirstName() {
