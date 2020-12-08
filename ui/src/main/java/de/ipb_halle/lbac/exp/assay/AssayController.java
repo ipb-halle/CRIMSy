@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
  * @author fbroda
  */
 public class AssayController extends ExpRecordController implements ItemHolder, MaterialHolder {
-
+    
     private AssayRecord assayRecord;
     private String materialTarget;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -70,27 +70,28 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
             this.logger.info("actionAppendAssayRecord() caught an exception", (Throwable) e);
         }
     }
-
+    
     public AssayRecord getAssayRecord() {
         return this.assayRecord;
     }
-
+    
     public Item getItem() {
         if (this.assayRecord != null) {
             return this.assayRecord.getItem();
         }
         return null;
     }
-
+    
     public Material getMaterial() {
         if (this.assayRecord != null) {
             return this.assayRecord.getMaterial();
         }
         return null;
     }
-
+    
     @Override
     public List<MaterialType> getMaterialTypes() {
+        logger.info("ALLOWED MATERIALTYPE " + this.materialTarget);
         switch (this.materialTarget) {
             case "TARGET":
                 return Arrays.asList(MaterialType.BIOMATERIAL);
@@ -99,23 +100,23 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         }
         return new ArrayList<>();
     }
-
+    
     public boolean isDiagrammButtonVisible(Assay assay) {
         return !assay.getRecords().isEmpty();
     }
-
+    
     public ExpRecord getNewRecord() {
         ExpRecord rec = new Assay();
         rec.setEdit(true);
         return rec;
     }
-
+    
     public void setItem(Item item) {
         if (this.assayRecord != null) {
             this.assayRecord.setItem(item);
         }
     }
-
+    
     public void setMaterial(Material material) {
         switch (this.materialTarget) {
             case "TARGET":
@@ -128,7 +129,7 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
                 break;
         }
     }
-
+    
     public void setMaterialTarget(String target) {
         this.materialTarget = target;
         switch (target) {
@@ -157,11 +158,11 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
             }
         }
     }
-
+    
     public void editRecord(AssayRecord record) {
         this.assayRecord = record;
         this.assayRecord.setEdit(true);
         setMaterialTarget("RECORD");
-
+        
     }
 }

@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 
@@ -63,6 +64,7 @@ public class MaterialAgent implements Serializable {
     private boolean showMolEditor = false;
 
     private Integer materialId;
+    private List<Material> choosableMaterials = new ArrayList<>();
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -82,7 +84,6 @@ public class MaterialAgent implements Serializable {
     }
 
     public void actionSetMaterial(Material m) {
-        logger.info("Set material " + m.getFirstName());
         materialId = m.getId();
         this.materialHolder.setMaterial(m);
     }
@@ -92,16 +93,26 @@ public class MaterialAgent implements Serializable {
                 this.userBean.getCurrentAccount(),
                 0,
                 MAX_MATERIALS_TO_SEARCH);
+        logger.info("name " + this.materialSearch);
         if (this.materialSearch != null && !this.materialSearch.trim().isEmpty()) {
+            logger.info(" -> into");
             builder.addIndexName(this.materialSearch);
         }
-        if (this.moleculeSearch != null && !this.moleculeSearch.trim().isEmpty()) {
+        
+        if (isMoleculeSearch()) {
             builder.addSubMolecule(this.moleculeSearch);
         }
         int size = this.materialHolder.getMaterialTypes().size();
         MaterialType[] types = new MaterialType[size];
         builder.addTypes(this.materialHolder.getMaterialTypes().toArray(types));
         return builder.buildSearchRequest();
+    }
+
+    private boolean shouldSearchBeDone() {
+        boolean nameSet = this.materialSearch != null && !this.materialSearch.trim().isEmpty();
+        boolean moleculeSet = isMoleculeSearch();
+        boolean targetSet = this.materialHolder != null && this.materialHolder.getMaterialTypes().size() > 0;
+        return targetSet && (nameSet || moleculeSet);
     }
 
     public MaterialHolder getMaterialHolder() {
@@ -112,16 +123,25 @@ public class MaterialAgent implements Serializable {
      * get the list of appropriate materials
      */
     public List<Material> getMaterialList() {
+
+        return choosableMaterials;
+    }
+
+    public void actionTriggerMaterialSearch() {
+        logger.info("Start material Search");
+        if (!shouldSearchBeDone()) {
+            logger.info(" No search needed");
+            choosableMaterials = new ArrayList<>();
+        }
         if (this.materialHolder != null) {
             try {
                 SearchResult result = this.materialService.getReadableMaterials(
                         createSearchRequest());
-                return extractMaterialsFromResult(result);
+                choosableMaterials = extractMaterialsFromResult(result);
             } catch (Exception e) {
                 this.logger.warn("getMaterialList() caught an exception: ", (Throwable) e);
             }
         }
-        return new ArrayList<>();
     }
 
     private List<Material> extractMaterialsFromResult(SearchResult result) {
@@ -171,6 +191,14 @@ public class MaterialAgent implements Serializable {
 
     public void setShowMolEditor(boolean show) {
         this.showMolEditor = show;
+    }
+
+    private boolean isMoleculeSearch() {
+        if (this.moleculeSearch != null && !this.moleculeSearch.trim().isEmpty()) {
+            Molecule mol = new Molecule(moleculeSearch, 0);
+            return !mol.isEmptyMolecule();
+        }
+        return false;
     }
 
 }
