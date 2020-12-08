@@ -39,7 +39,7 @@ import org.apache.logging.log4j.Logger;
 @Dependent
 public class ItemAgent implements Serializable {
 
-    private final static long   serialVersionUID = 1L;
+    private final static long serialVersionUID = 1L;
 
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
@@ -58,10 +58,11 @@ public class ItemAgent implements Serializable {
     private Integer itemId;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private List<Item> chooseableItems = new ArrayList<>();
 
     public void actionSetItem(Item item) {
         if (this.itemHolder != null) {
-                this.itemHolder.setItem(item);
+            this.itemHolder.setItem(item);
         } else {
             this.logger.info("actionSetItem(): itemHolder not set");
         }
@@ -74,27 +75,33 @@ public class ItemAgent implements Serializable {
 
     /**
      * get the list of appropriate items
+     * @return 
      */
     public List<Item> getItemList() {
-        ArrayList<Item> result = new ArrayList<> ();
-        if ( (this.itemHolder != null) 
-                && (this.itemSearch != null) 
-                && (! this.itemSearch.isEmpty())) {
+        return chooseableItems;
+    }
+
+    public void actionTriggerItemSearch() {
+        chooseableItems = new ArrayList<>();
+        if ((this.itemHolder != null)
+                && (this.itemSearch != null)
+                && (!this.itemSearch.isEmpty())) {
             try {
                 int id = Integer.parseInt(this.itemSearch);
-                Item item = this.itemService.loadItemById(id); 
+                Item item = this.itemService.loadItemById(id);
                 if (item != null) {
-                    result.add(item);
+                    chooseableItems.add(item);
                 }
             } catch (NumberFormatException nfe) {
                 // ignore and return an empty list
-                return result;
+                chooseableItems = new ArrayList<>();
             } catch (Exception e) {
                 this.logger.warn("getItemList() caught an exception: ", (Throwable) e);
             }
-        } 
-        return result;
+        }
     }
+    
+    
 
     public Integer getItemId() {
         return this.itemId;

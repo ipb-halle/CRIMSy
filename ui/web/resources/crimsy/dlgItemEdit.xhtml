@@ -57,9 +57,12 @@
                                  columnClasses="ui-g-12 ui-md-12 ui-xl-12">
 
                         <p:outputLabel id="nameSearchLabel" for="nameSearch" value="Item Id" />
-                        <p:inputText id="nameSearch" value="#{cc.attrs.agent.itemSearch}">
-                            <p:ajax event="keyup" update="@(.itemEdit)" />
-                        </p:inputText> 
+                        <p:inputText id="nameSearch" value="#{cc.attrs.agent.itemSearch}"/>
+                        <p:commandButton
+                            value="Suchen"
+                            action="#{cc.attrs.agent.actionTriggerItemSearch()}"
+                            update="@(.itemEdit)">
+                        </p:commandButton>
 
                         <p:fragment id="cmdItemFragment">
                             <h:inputHidden id="itemId" 
@@ -91,18 +94,13 @@
                                 <f:facet name="header">
                                     Action
                                 </f:facet>
-                                <!--
-                                <p:button id="selectBtn"
-                                    value="Select"
-                                    onclick="$('input[class=cmdItemId]').val(#{item.id}); cmdActionSetItem();" />
-                                -->
                                 <p:commandButton
                                     ajax="true"
                                     action="#{cc.attrs.agent.actionSetItem(item)}"
+                                    value="Einfügen"
                                     update="@(.assayRecordTable)"
                                     oncomplete="PF('dlg_itemEdit').hide();"
                                     />
-
                             </p:column>
                         </p:dataTable>
                     </h:panelGroup>
