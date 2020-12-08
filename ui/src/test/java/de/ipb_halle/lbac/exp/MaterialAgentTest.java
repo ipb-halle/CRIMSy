@@ -146,6 +146,7 @@ public class MaterialAgentTest extends TestBase {
         Assert.assertTrue(materials.isEmpty());
 
         createBiomaterial(taxo1, project, "BioMat1", "Mouse Kidney");
+        materialAgent.actionTriggerMaterialSearch();
         materials = materialAgent.getMaterialList();
         Assert.assertEquals(1, materials.size());
 
@@ -155,6 +156,7 @@ public class MaterialAgentTest extends TestBase {
         createBiomaterial(taxo1, project, "BioMat5", "Cat Liver");
         createBiomaterial(taxo1, project, "BioMat6", "Dog Kidney");
         createBiomaterial(taxo1, project, "BioMat7", "Dog Liver");
+         materialAgent.actionTriggerMaterialSearch();
         materials = materialAgent.getMaterialList();
         Assert.assertEquals(5, materials.size());
     }
