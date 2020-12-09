@@ -80,4 +80,12 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
+    public ItemSearchRequestBuilder addSubMolecule(String molecule) {
+        addConditionWithCast(Operator.SUBSTRUCTURE,
+                molecule,
+                " CAST(%s AS MOLECULE) ",
+                AttributeType.MOLECULE);
+        return this;
+    }
+
 }

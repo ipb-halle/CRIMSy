@@ -22,7 +22,10 @@ import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import de.ipb_halle.lbac.material.structure.MoleculeEntity;
+import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.Condition;
@@ -37,6 +40,7 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
     private EntityGraph nestedContainerGraph;
     private ACListService aclistService;
+    private EntityGraph materialSubgraph;
 
     public ItemEntityGraphBuilder(ACListService aclistService) {
         super(ItemEntity.class);
@@ -61,13 +65,25 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
     }
 
+    private void addMaterial() {
+        materialSubgraph = addJoin(JoinType.INNER, MaterialEntity.class, "materialid", "materialid");
+    }
+
+    protected void addStructure() {
+        EntityGraph subGraph = addJoin(JoinType.LEFT, StructureEntity.class, "materialid", "id");
+        addJoinToChild(JoinType.LEFT, subGraph, MoleculeEntity.class, "moleculeid", "id");
+    }
+
     @Override
     public EntityGraph buildEntityGraph(Condition condition) {
         addUser();
         addContainer();
         addProject();
         addMaterialName();
+        addMaterial();
+        addStructure();
         addACListContraint(graph, aclistService.getEntityGraph(), "aclist_id");
+        addACListContraint(materialSubgraph, aclistService.getEntityGraph(), "aclist_id");
         return graph;
     }
 

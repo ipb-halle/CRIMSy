@@ -88,7 +88,7 @@ public class SearchFilter {
         if (typeFilter.isDocuments() && !searchTerms.trim().isEmpty()) {
             requests.add(createDocumentRequest());
         }
-        if (typeFilter.isItems() && !searchTerms.trim().isEmpty()) {
+        if (typeFilter.isItems() && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
             requests.add(createItemRequest());
         }
         if (typeFilter.isExperiments() && !searchTerms.trim().isEmpty()) {
@@ -146,7 +146,14 @@ public class SearchFilter {
 
     private SearchRequest createItemRequest() {
         ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(user, 0, maxresults);
-        itemBuilder.addLabel(searchTerms);
+        if (searchTerms != null && !searchTerms.isEmpty()) {
+            itemBuilder.addLabel(searchTerms);
+        }
+        Molecule mol = new Molecule(structureString, maxresults);
+        if (!mol.isEmptyMolecule()) {
+            itemBuilder.addSubMolecule(structureString);
+        }
+
         return itemBuilder.buildSearchRequest();
     }
 

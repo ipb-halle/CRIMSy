@@ -47,6 +47,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.DbField;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.OrderDirection;
@@ -64,6 +65,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -125,10 +127,17 @@ public class ItemService {
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
-        permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
-                addFields(AttributeType.ITEM, AttributeType.MEMBER);
+        permissionConditionBuilder = new PermissionConditionBuilder(
+                aclistService,
+                request.getUser(), ACPermission.permREAD).
+                addFields(AttributeType.ITEM, AttributeType.MEMBER)
+                .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
+        Condition con = permissionConditionBuilder.addPermissionCondition(request.getCondition());
+        con = permissionConditionBuilder.addPermissionCondition(con);
+      
+
         String sql = sqlBuilder.query(
-                permissionConditionBuilder.addPermissionCondition(request.getCondition()),
+                con,
                 createOrderList());
 
         logger.info(sql);
@@ -148,6 +157,8 @@ public class ItemService {
 
         return result;
     }
+
+  
 
     private List<DbField> createOrderList() {
         DbField labelField = new DbField()

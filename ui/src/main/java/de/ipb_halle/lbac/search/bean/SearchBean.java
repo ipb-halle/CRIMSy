@@ -157,11 +157,16 @@ public class SearchBean implements Serializable {
 
     private SearchState doSearch() {
         searchState = new SearchState();
+        //local
         SearchResult result = searchService.search(searchFilter.createRequests());
         searchState.addNetObjects(result.getAllFoundObjects());
+        
+        
         searchState.addNewStats(
                 result.getDocumentStatistic().getTotalDocsInNode(),
                 result.getDocumentStatistic().getAverageWordLength());
+        
+        //remote
         orchestrator.startRemoteSearch(searchState, currentUser, searchFilter.createRequests());
 
         return searchState;
