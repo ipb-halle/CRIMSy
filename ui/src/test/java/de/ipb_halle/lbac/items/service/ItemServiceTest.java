@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.UUID;
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -74,30 +75,30 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ItemServiceTest extends TestBase {
-
+    
     private Container c0, c1, c2;
     @Inject
     private ItemService instance;
-
+    
     @Inject
     private EntityManagerService emService;
-
+    
     @Inject
     private ContainerService containerService;
-
+    
     @Inject
     private GlobalAdmissionContext globalContext;
-
+    
     @Inject
     private ContainerPositionService positionService;
-
+    
     @Inject
     private ProjectService projectService;
     private User owner;
     private Project project;
     private Integer ownerid;
     private Integer userGroups;
-
+    
     String INSERT_MATERIAL_SQL = "INSERT INTO MATERIALS VALUES("
             + "1,"
             + "1,"
@@ -105,17 +106,17 @@ public class ItemServiceTest extends TestBase {
             + " %d, "
             + "%d, "
             + "false,%d)";
-
+    
     @Before
     @Override
     public void setUp() {
         super.setUp();
         creationTools = new CreationTools("", "", "", memberService, projectService);
-
+        
         cleanItemsFromDb();
         cleanMaterialsFromDB();
         createAndSaveMaterial();
-
+        
         c0 = new Container();
         c0.setBarCode(null);
         c0.setDimension("3;3;1");
@@ -124,7 +125,7 @@ public class ItemServiceTest extends TestBase {
         c0.setLabel("R302");
         c0.setType(new ContainerType("ROOM", 90, false, true));
         c0.setItems(new Item[3][3][1]);
-
+        
         c1 = new Container();
         c1.setBarCode("9845893457");
         c1.setDimension("2;2;1");
@@ -134,7 +135,7 @@ public class ItemServiceTest extends TestBase {
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90, true, false));
         c1.setItems(new Item[2][2][1]);
-
+        
         c2 = new Container();
         c2.setBarCode("43753456");
         c2.setDimension(null);
@@ -143,13 +144,13 @@ public class ItemServiceTest extends TestBase {
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
         c2.setType(new ContainerType("CARTON", 90, true, false));
-
+        
         containerService.saveContainer(c0);
         containerService.saveContainer(c1);
         containerService.saveContainer(c2);
-
+        
     }
-
+    
     @After
     public void finish() {
         cleanItemsFromDb();
@@ -158,7 +159,7 @@ public class ItemServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("DELETE FROM nested_containers");
         entityManagerService.doSqlUpdate("DELETE FROM containers");
     }
-
+    
     @Test
     public void test001_saveAndLoadItem() {
         //Create and save one item
@@ -175,9 +176,9 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
 
-        //Load item by id
+        //Load item by label
         builder = new ItemSearchRequestBuilder(owner, 0, 25);
-        builder.addID(item.getId());
+        builder.addLabel(item.getLabel());
         result = instance.loadItems(builder.buildSearchRequest());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
         Assert.assertEquals(1, instance.getItemAmount(builder.buildSearchRequest()));
@@ -201,16 +202,16 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals(1, instance.getItemAmount(builder.buildSearchRequest()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
-
+        
     }
-
+    
     @Test
     public void test002_saveAndLoadItemHistory() throws InterruptedException {
         Item item = createItem();
         Item item2 = createItem();
         instance.saveItem(item);
         instance.saveItem(item2);
-
+        
         ItemHistory history1 = new ItemHistory();
         Thread.sleep(100);
         Date date1 = new Date();
@@ -270,19 +271,19 @@ public class ItemServiceTest extends TestBase {
         history5.setOwnerOld(owner);
         history5.setAction("EDIT");
         instance.saveItemHistory(history5);
-
+        
         SortedMap<Date, List<ItemDifference>> histories = instance.loadHistoryOfItem(item);
-
+        
         Assert.assertEquals("4 Histories must be found", 4, histories.size());
         Iterator i = histories.keySet().iterator();
-
+        
         Assert.assertTrue("test002: history1 differs", compareHistories(history1, histories.get(i.next())));
         Assert.assertTrue("test002: history2 differs", compareHistories(history2, histories.get(i.next())));
         Assert.assertTrue("test002: history3 differs", compareHistories(history3, histories.get(i.next())));
         Assert.assertTrue("test002: history4 differs", compareHistories(history4, histories.get(i.next())));
-
+        
     }
-
+    
     @Test
     public void test003_editUserRights() {
         Item item = createItem();
@@ -295,7 +296,7 @@ public class ItemServiceTest extends TestBase {
         Item i = instance.loadItemById(item.getId());
         Assert.assertEquals("test003_editUserRights - test-acl", i.getACList().getName());
     }
-
+    
     @Test
     public void test004_moveItem() {
         //Create two items
@@ -355,14 +356,14 @@ public class ItemServiceTest extends TestBase {
         //Item should not be able to move to wellPlate_2 because item 2 is blocking the slot
         Assert.assertFalse(positionService.moveItemToNewPosition(item, wellPlate_2, places, owner, new Date()));
     }
-
+    
     @Test
     public void test005_saveAndLoadEditedItem() {
         Item original = createItem();
         original.setContainer(c0);
         c0.getItems()[2][1][0] = original;
         c0.getItems()[1][1][0] = original;
-
+        
         original.setAmount(1.5);
         instance.saveItem(original);
         positionService.saveItemInContainer(original.getId(), c0.getId(), 2, 1);
@@ -380,9 +381,9 @@ public class ItemServiceTest extends TestBase {
         Set<int[]> positions = new HashSet<>();
         positions.add(new int[]{1, 1});
         instance.saveEditedItem(edited, original, owner, positions);
-
+        
         Item loadedItem = instance.loadItemById(original.getId());
-
+        
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
         Assert.assertEquals(1, loadedItem.getHistory().size());
         List<ItemDifference> diffs = loadedItem.getHistory().values().iterator().next();
@@ -550,34 +551,34 @@ public class ItemServiceTest extends TestBase {
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(oldHistorySize, loadedItem.getHistory().size());
     }
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ItemServiceTest.war");
-
+        
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
-
+    
     private void createAndSaveMaterial() {
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         //Preparing project and material
         project = creationTools.createProject();
         userGroups = project.getUserGroups().getId();
         ownerid = owner.getId();
-
+        
         entityManagerService.doSqlUpdate(String.format(INSERT_MATERIAL_SQL, userGroups, ownerid, project.getId()));
         entityManagerService.doSqlUpdate("INSERT INTO structures  VALUES(1,'',0,0,null)");
         entityManagerService.doSqlUpdate("INSERT INTO storages VALUES(1,1,'')");
         entityManagerService.doSqlUpdate("INSERT INTO material_indices VALUES(1,1,1,'TESTMATERIAL','de',0)");
         entityManagerService.doSqlUpdate("INSERT INTO material_indices VALUES(2,1,1,'TESTMATERIA2','en',0)");
     }
-
+    
     private Item createItem() {
-
+        
         Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
-
+        
         item.setACList(GlobalAdmissionContext.getPublicReadACL());
         item.setUnit("kg");
         item.setArticle(null);
@@ -591,11 +592,12 @@ public class ItemServiceTest extends TestBase {
         item.setPurity("rein");
         item.setcTime(new Date());
         item.setSolvent(null);
+        item.setLabel(UUID.randomUUID().toString());
         return item;
     }
-
+    
     private boolean compareHistories(ItemHistory orig, List<ItemDifference> diffList) {
-
+        
         ItemHistory loaded = (ItemHistory) diffList.get(0);
         boolean equal = orig.getAction().equals(loaded.getAction())
                 && orig.getActor().getId().equals(loaded.getActor().getId())
@@ -622,7 +624,7 @@ public class ItemServiceTest extends TestBase {
         }
         return equal;
     }
-
+    
     private void checkItem(Item loadedItem) {
         Assert.assertEquals("Testcase 001: Amount must be 23", 23d, (double) loadedItem.getAmount(), 0);
         Assert.assertEquals("Testcase 001: Unit must be kg", "kg", loadedItem.getUnit());
@@ -638,7 +640,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: One nested Container must be found", 2, loadedItem.getNestedContainer().size());
         Assert.assertNull("Testcase 001: Solvent must be null", loadedItem.getSolvent());
         Assert.assertNotNull(loadedItem.getcTime());
-
+        
         Assert.assertNotNull("Testcase 001: Material must not be null", loadedItem.getMaterial());
     }
 }

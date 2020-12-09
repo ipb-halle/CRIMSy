@@ -146,7 +146,7 @@ public class SearchFilter {
 
     private SearchRequest createItemRequest() {
         ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(user, 0, maxresults);
-        itemBuilder.addDescription(searchTerms);
+        itemBuilder.addLabel(searchTerms);
         return itemBuilder.buildSearchRequest();
     }
 

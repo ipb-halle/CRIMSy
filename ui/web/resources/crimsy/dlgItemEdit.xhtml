@@ -57,7 +57,9 @@
                                  columnClasses="ui-g-12 ui-md-12 ui-xl-12">
 
                         <p:outputLabel id="nameSearchLabel" for="nameSearch" value="Item Id" />
-                        <p:inputText id="nameSearch" value="#{cc.attrs.agent.itemSearch}"/>
+                        <p:inputText 
+                            id="nameSearch" 
+                            value="#{cc.attrs.agent.itemSearch}"/>
                         <p:commandButton
                             value="Suchen"
                             action="#{cc.attrs.agent.actionTriggerItemSearch()}"
@@ -97,7 +99,7 @@
                                 <p:commandButton
                                     ajax="true"
                                     action="#{cc.attrs.agent.actionSetItem(item)}"
-                                    value="Einfügen"
+                                    value="EinfÃ¼gen"
                                     update="@(.assayRecordTable)"
                                     oncomplete="PF('dlg_itemEdit').hide();"
                                     />

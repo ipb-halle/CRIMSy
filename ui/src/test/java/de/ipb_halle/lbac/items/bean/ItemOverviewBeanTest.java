@@ -83,6 +83,7 @@ public class ItemOverviewBeanTest extends TestBase {
     private ACList aclist;
     private Integer materialid_1, materialid_2, materialid_3;
     private Integer itemid_1, itemid_2, itemid_3, restrictedItemId, itemid_project, itemid_container, itemid_containerAndProject;
+    private String item1_Label;
     protected ContainerCreator containerCreator;
 
     @Before
@@ -146,8 +147,8 @@ public class ItemOverviewBeanTest extends TestBase {
         itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(3, itemOverviewBean.getItems().size());
 
-        //Load item by id
-        itemOverviewBean.getSearchMaskValues().setItemId(itemid_1.toString());
+        //Load item by label
+        itemOverviewBean.getSearchMaskValues().setLabel(item1_Label);
         itemOverviewBean.actionApplySearchFilter();
         Assert.assertEquals(1, itemOverviewBean.getItems().size());
         itemOverviewBean.actionClearSearchFilter();
@@ -345,6 +346,8 @@ public class ItemOverviewBeanTest extends TestBase {
                 null,
                 "Wasserstoff");
         itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+
+        item1_Label = itemService.loadItemById(itemid_1).getLabel();
         itemid_2 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_2, "TestItem2");
         itemid_3 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_3, "TestItem3");
 
