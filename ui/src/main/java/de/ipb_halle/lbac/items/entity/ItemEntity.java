@@ -45,7 +45,6 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
      */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @AttributeTag(type = AttributeType.LABEL)
     private Integer id;
 
     @Column
@@ -90,8 +89,9 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
 
     @Column
     private Date expiry_date;
-    
+
     @Column
+    @AttributeTag(type = AttributeType.LABEL)
     private String label;
 
     public Integer getId() {

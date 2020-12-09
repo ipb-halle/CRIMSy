@@ -31,13 +31,13 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
 
     public ItemSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
-         target=SearchTarget.ITEM;
+        target = SearchTarget.ITEM;
 
     }
 
-    public ItemSearchRequestBuilder addID(Integer id) {
+    public ItemSearchRequestBuilder addLabel(String label) {
         addCondition(Operator.EQUAL,
-                id,
+                label,
                 AttributeType.ITEM,
                 AttributeType.LABEL);
         return this;

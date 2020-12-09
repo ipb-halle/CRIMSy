@@ -22,21 +22,20 @@ package de.ipb_halle.lbac.items.bean;
  * @author fmauz
  */
 public class SearchMaskValues {
+
     private String description;
-    private String itemId;
+    private String label;
     private String location;
     private String projectName;
     private String materialName;
     private String userName;
 
-    
-   
     public String getDescription() {
         return description;
     }
 
-    public String getItemId() {
-        return itemId;
+    public String getLabel() {
+        return label;
     }
 
     public String getLocation() {
@@ -59,8 +58,8 @@ public class SearchMaskValues {
         this.description = description;
     }
 
-    public void setItemId(String itemId) {
-        this.itemId = itemId;
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public void setLocation(String location) {
@@ -78,7 +77,5 @@ public class SearchMaskValues {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    
-    
-    
+
 }

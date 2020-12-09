@@ -140,8 +140,8 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         if (searchMaskValues.getMaterialName() != null && !searchMaskValues.getMaterialName().isEmpty()) {
             builder.addIndexName(searchMaskValues.getMaterialName());
         }
-        if (searchMaskValues.getItemId() != null && !searchMaskValues.getItemId().isEmpty()) {
-            builder.addID(Integer.parseInt(searchMaskValues.getItemId()));
+        if (searchMaskValues.getLabel() != null && !searchMaskValues.getLabel().isEmpty()) {
+            builder.addLabel(searchMaskValues.getLabel());
         }
         if (searchMaskValues.getUserName() != null && !searchMaskValues.getUserName().isEmpty()) {
             builder.addUserName(searchMaskValues.getUserName());
@@ -197,7 +197,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public String getItemId(Item i) {
-        logger.info("Try to get Item ID "+i.getId());
+        logger.info("Try to get Item ID " + i.getId());
         return String.format("ID: %d", i.getId());
     }
 

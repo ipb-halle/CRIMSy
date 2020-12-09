@@ -130,9 +130,12 @@ public class ItemService {
         String sql = sqlBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(request.getCondition()),
                 createOrderList());
+
+        logger.info(sql);
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
+            logger.info(param.getArgumentKey() + " - " + param.getValue());
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());

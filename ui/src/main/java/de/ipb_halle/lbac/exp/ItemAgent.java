@@ -20,7 +20,9 @@ package de.ipb_halle.lbac.exp;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.search.SearchResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -75,7 +77,8 @@ public class ItemAgent implements Serializable {
 
     /**
      * get the list of appropriate items
-     * @return 
+     *
+     * @return
      */
     public List<Item> getItemList() {
         return chooseableItems;
@@ -87,11 +90,10 @@ public class ItemAgent implements Serializable {
                 && (this.itemSearch != null)
                 && (!this.itemSearch.isEmpty())) {
             try {
-                int id = Integer.parseInt(this.itemSearch);
-                Item item = this.itemService.loadItemById(id);
-                if (item != null) {
-                    chooseableItems.add(item);
-                }
+                ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(userBean.getCurrentAccount(), 0, 1);
+                builder.addLabel(itemSearch);
+                SearchResult result = itemService.loadItems(builder.buildSearchRequest());
+                chooseableItems = result.getAllFoundObjects(Item.class, result.getNode());
             } catch (NumberFormatException nfe) {
                 // ignore and return an empty list
                 chooseableItems = new ArrayList<>();
@@ -100,8 +102,6 @@ public class ItemAgent implements Serializable {
             }
         }
     }
-    
-    
 
     public Integer getItemId() {
         return this.itemId;
