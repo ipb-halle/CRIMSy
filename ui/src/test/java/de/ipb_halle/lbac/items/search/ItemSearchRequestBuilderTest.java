@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.items.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import org.apache.sis.internal.metadata.sql.SQLBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

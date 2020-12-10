@@ -98,7 +98,7 @@ public class MaterialAgent implements Serializable {
             logger.info(" -> into");
             builder.addIndexName(this.materialSearch);
         }
-        
+
         if (isMoleculeSearch()) {
             builder.addSubMolecule(this.moleculeSearch);
         }
@@ -123,14 +123,11 @@ public class MaterialAgent implements Serializable {
      * get the list of appropriate materials
      */
     public List<Material> getMaterialList() {
-
         return choosableMaterials;
     }
 
     public void actionTriggerMaterialSearch() {
-        logger.info("Start material Search");
         if (!shouldSearchBeDone()) {
-            logger.info(" No search needed");
             choosableMaterials = new ArrayList<>();
         }
         if (this.materialHolder != null) {

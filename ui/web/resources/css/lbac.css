@@ -559,3 +559,6 @@ select.selCollection {
     font-size: 1.5em;
     margin-left: -20px;
 }
+body.waiting * {
+    cursor: progress;
+}

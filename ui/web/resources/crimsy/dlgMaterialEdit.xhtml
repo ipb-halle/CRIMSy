@@ -39,6 +39,7 @@
     <composite:implementation >
 
         <h:form id="dlgMaterialEditForm">
+
             <p:dialog id="dlgMaterialEdit"
                       header="Select Material" 
                       styleClass="dlgMaterialEdit"
@@ -74,22 +75,10 @@
                         <p:commandButton id="submitButton" 
                                          value="Update" 
                                          rendered="#{cc.attrs.agent.showMolEditor}"
-                                         onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
+                                         onclick="$('body').addClass('waiting');$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
                                          action="#{cc.attrs.agent.actionTriggerMaterialSearch()}"
+                                         oncomplete="$('body').removeClass('waiting');"
                                          update="@(.materialEdit)" />
-
-                        <p:fragment id="cmdMaterialFragment">
-                            <h:inputHidden id="materialId" 
-                                           pass:class="cmdMaterialId" 
-                                           value="#{cc.attrs.agent.materialId}" />
-                            <p:remoteCommand 
-                                id="cmdMaterialCmd"
-                                name="cmdActionSetMaterial" 
-                                update="@all" 
-                                action="#{cc.attrs.agent.actionSetMaterial}" >
-                            </p:remoteCommand>
-                        </p:fragment>
-
                     </p:panelGrid>
 
                     <!-- rendered attribute of table is irrelevant -->
@@ -111,15 +100,10 @@
                                 <p:commandButton
                                     action="#{cc.attrs.agent.actionSetMaterial(material)}"
                                     ajax="true"
-                                    value="Einfügen"
+                                    value="EinfÃ¼gen"
                                     update="@(.assayRecordTable)"
                                     oncomplete="PF('dlg_materialEdit').hide();"
                                     />
-                                <!--
-                                <p:button id="selectBtn"
-                                    value="Select"
-                                    onclick="$('input[class=cmdMaterialId]').val(#{material.id}); cmdActionSetMaterial();" />
-                                -->
                             </p:column>
                         </p:dataTable>
                     </h:panelGroup>
