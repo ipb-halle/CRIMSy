@@ -91,7 +91,6 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
     
     @Override
     public List<MaterialType> getMaterialTypes() {
-        logger.info("ALLOWED MATERIALTYPE " + this.materialTarget);
         switch (this.materialTarget) {
             case "TARGET":
                 return Arrays.asList(MaterialType.BIOMATERIAL);
@@ -140,7 +139,6 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
                 getExperimentBean().getMaterialAgent().setShowMolEditor(true);
                 break;
         }
-        this.logger.info("setMaterialTarget() {}", target);
     }
 
     /**

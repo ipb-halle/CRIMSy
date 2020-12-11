@@ -562,3 +562,15 @@ select.selCollection {
 body.waiting * {
     cursor: progress;
 }
+
+.topAlign{
+    vertical-align: top;
+}
+
+.borderless {
+    border-width: 0px !important;
+}
+
+.centeredText{
+    text-align: center;
+}

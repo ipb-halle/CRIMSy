@@ -93,9 +93,7 @@ public class MaterialAgent implements Serializable {
                 this.userBean.getCurrentAccount(),
                 0,
                 MAX_MATERIALS_TO_SEARCH);
-        logger.info("name " + this.materialSearch);
         if (this.materialSearch != null && !this.materialSearch.trim().isEmpty()) {
-            logger.info(" -> into");
             builder.addIndexName(this.materialSearch);
         }
 
@@ -160,7 +158,6 @@ public class MaterialAgent implements Serializable {
     }
 
     public String getMoleculeSearch() {
-        this.logger.info("getMoleculeSearch() len={}", this.moleculeSearch.length());
         return this.moleculeSearch;
     }
 
@@ -173,7 +170,6 @@ public class MaterialAgent implements Serializable {
     }
 
     public void setMaterialId(Integer materialId) {
-        this.logger.info("setMaterialId() {}", materialId);
         this.materialId = materialId;
     }
 
@@ -182,7 +178,6 @@ public class MaterialAgent implements Serializable {
     }
 
     public void setMoleculeSearch(String moleculeSearch) {
-        this.logger.info("setMoleculeSearch() len={}", moleculeSearch.length());
         this.moleculeSearch = moleculeSearch;
     }
 

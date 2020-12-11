@@ -104,6 +104,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
+        cleanup();
+        initEmptyExperiment();
     }
 
     @PostConstruct
@@ -113,8 +115,12 @@ public class ExperimentBean implements Serializable, ACObjectBean {
          * ToDo: create an experiment with real user and ACL
          */
         cleanup();
+        initEmptyExperiment();
         this.expRecords = new ArrayList<ExpRecord>();
 
+    }
+
+    private void initEmptyExperiment() {
         this.experiment = new Experiment(
                 null, // experiment id
                 "code", // code
