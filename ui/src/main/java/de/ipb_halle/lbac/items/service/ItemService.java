@@ -134,17 +134,14 @@ public class ItemService {
                 .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
         Condition con = permissionConditionBuilder.addPermissionCondition(request.getCondition());
         con = permissionConditionBuilder.addPermissionCondition(con);
-      
 
         String sql = sqlBuilder.query(
                 con,
                 createOrderList());
 
-        logger.info(sql);
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
-            logger.info(param.getArgumentKey() + " - " + param.getValue());
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
@@ -157,8 +154,6 @@ public class ItemService {
 
         return result;
     }
-
-  
 
     private List<DbField> createOrderList() {
         DbField labelField = new DbField()

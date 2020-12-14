@@ -124,4 +124,12 @@ public class ItemAgent implements Serializable {
         this.itemSearch = itemSearch;
     }
 
+    public String getAmount(Item item) {
+        if (item.getUnit() == null) {
+            return String.format("%f", item.getAmount());
+        } else {
+            return String.format("%f  %s", item.getAmount(), item.getUnit());
+        }
+    }
+
 }

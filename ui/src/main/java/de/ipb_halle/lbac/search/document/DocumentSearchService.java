@@ -179,7 +179,6 @@ public class DocumentSearchService {
         List<Searchable> foundDocs = new ArrayList<>();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
-
         String sql = sqlBuilder.query(request.getCondition());
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {

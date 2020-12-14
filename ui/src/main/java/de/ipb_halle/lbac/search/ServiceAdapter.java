@@ -25,12 +25,16 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.NodeService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author fmauz
  */
 public class ServiceAdapter {
+
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private ItemService itemService;
     private MaterialService materialService;
@@ -63,6 +67,7 @@ public class ServiceAdapter {
     public SearchResult doSearch(SearchRequest request) {
         SearchTarget target = request.getSearchTarget();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
+        
         if (target == SearchTarget.EXPERIMENT) {
             result = experimentService.load(request);
         }
