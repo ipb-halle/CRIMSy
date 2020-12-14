@@ -22,55 +22,59 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:panel 
+            <p:tab
                 title="Biodata"
-                rendered="#{materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
-                <b:container>
-                    <b:row>
-                        <b:column span="4">
-                            <p:tree     
-                                value="#{materialBean.taxonomyController.treeController.taxonomyTree}"
-                                var ="node"
-                                selectionMode="single"
-                                styleClass="taxonomyTree"
-                                selection="#{materialBean.taxonomyController.selectedTaxonomy}">
-                                <p:ajax
-                                    event="select"
-                                    update="@(.taxonomyInfos)"
-                                    listener="#{materialBean.taxonomyController.onTaxonomySelect}" />
-                                <p:treeNode >
-                                    <h:outputText value="#{node.getFirstName()}"/>
-                                </p:treeNode>
-                            </p:tree>
-                        </b:column>
-                        <b:column offset="1" span="4"  styleClass="taxonomyInfos">
-                            <b:row>
-                                <b:column span="10">
-                                    <b:inputText
-                                        label="choosen Taxonomyentry"
-                                        disabled="true"
-                                        value="#{materialBean.taxonomyController.getSelectedTaxonomyName()}"/>
-                                </b:column>
-                            </b:row>
-                            <b:row>
-                                <b:column 
-                                    span="10"
-                                    rendered="#{materialBean.isTissueSelectionVisible()}">
-                                    <b:selectOneMenu
-                                        label="Select tissue">
-                                    </b:selectOneMenu>
-                                </b:column>
-                            </b:row>
-                        </b:column>
-                    </b:row>
-                </b:container>
-            </b:panel>
+                disabled="#{!materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
+                <p:outputPanel
+                    styleClass="storagePanelClass"
+                    rendered="#{materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
+
+                    <b:container>
+                        <b:row>
+                            <b:column span="4">
+                                <p:tree     
+                                    value="#{materialBean.taxonomyController.treeController.taxonomyTree}"
+                                    var ="node"
+                                    selectionMode="single"
+                                    styleClass="taxonomyTree"
+                                    selection="#{materialBean.taxonomyController.selectedTaxonomy}">
+                                    <p:ajax
+                                        event="select"
+                                        update="@(.taxonomyInfos)"
+                                        listener="#{materialBean.taxonomyController.onTaxonomySelect}" />
+                                    <p:treeNode >
+                                        <h:outputText value="#{node.getFirstName()}"/>
+                                    </p:treeNode>
+                                </p:tree>
+                            </b:column>
+                            <b:column offset="1" span="4"  styleClass="taxonomyInfos">
+                                <b:row>
+                                    <b:column span="10">
+                                        <b:inputText
+                                            label="choosen Taxonomyentry"
+                                            disabled="true"
+                                            value="#{materialBean.taxonomyController.getSelectedTaxonomyName()}"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column 
+                                        span="10"
+                                        rendered="#{materialBean.isTissueSelectionVisible()}">
+                                        <b:selectOneMenu
+                                            label="Select tissue">
+                                        </b:selectOneMenu>
+                                    </b:column>
+                                </b:row>
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </p:outputPanel>
+            </p:tab>
         </ui:composition>
     </h:body>
 

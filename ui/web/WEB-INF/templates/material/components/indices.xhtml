@@ -28,85 +28,88 @@
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:panel 
-                styleClass="indicesPanelClass"
+            <p:tab
                 title="#{msgs.materialCreation_panelIndices_name}"
-                rendered="#{materialBean.permission.isDetailPanelVisible('INDEX')}">
-                <b:container>
-                    <b:row>
-                        <b:column span="4"
-                                  styleClass="selectOneMenuIndexCategoriesClass">
-                            <b:selectOneMenu
-                                value="#{materialBean.materialIndexBean.indexCatergory}"
-                                rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                >
+                disabled="#{!materialBean.permission.isDetailPanelVisible('INDEX')}">
+                <p:outputPanel
+                    styleClass="indicesPanelClass"
+                    rendered="#{materialBean.permission.isDetailPanelVisible('INDEX')}">
+                    <b:container>
+                        <b:row>
+                            <b:column span="4"
+                                      styleClass="selectOneMenuIndexCategoriesClass">
+                                <b:selectOneMenu
+                                    value="#{materialBean.materialIndexBean.indexCatergory}"
+                                    rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
+                                    >
 
-                                <f:selectItems 
-                                    value="#{materialBean.materialIndexBean.indexCategories}"/>
-                            </b:selectOneMenu>
-                        </b:column>
-                        <b:column span="4"
-                                  styleClass="selectOneMenuIndexCategoriesClass">
-                            <b:inputText 
-                                rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                value="#{materialBean.materialIndexBean.indexValue}"/>
-                        </b:column>
+                                    <f:selectItems 
+                                        value="#{materialBean.materialIndexBean.indexCategories}"/>
+                                </b:selectOneMenu>
+                            </b:column>
+                            <b:column span="4"
+                                      styleClass="selectOneMenuIndexCategoriesClass">
+                                <b:inputText 
+                                    rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
+                                    value="#{materialBean.materialIndexBean.indexValue}"/>
+                            </b:column>
 
-                        <b:column offset="2" span="1">
-                            <b:commandButton style="padding: 0 4px;"
-                                             icon-awesome="fa-plus "
-                                             look="link"
-                                             rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                             ajax="true"
-                                             value="#{msgs.materialCreation_panelIndices_add}"
-                                             update="@(.selectOneMenuIndexCategoriesClass)"
-                                             process="@form"
-                                             onclick="ajax:materialBean.materialIndexBean.addNewIndex();"
-                                             type="button"/>
-                        </b:column>
-                    </b:row>
-                    <b:row>
-                        <b:column span="11"
-                                  styleClass="selectOneMenuIndexCategoriesClass">
-                            <b:dataTable
-                                styleClass="materialNameTableClass"
-                                paginated="false"
-                                value="#{materialBean.materialIndexBean.indices}"
-                                searching="false"
-                                var="index">
-                                <b:dataTableColumn
-                                    orderable="false"
-                                    label="#{msgs.materialCreation_panelIndices_tableHeader_name}"
-                                    value="#{materialBean.materialIndexBean.getIndexName(index)}">
-                                </b:dataTableColumn>
-                                <b:dataTableColumn
-                                    orderable="false"
-                                    label="#{msgs.materialCreation_panelIndices_tableHeader_value}">
-                                    <b:inputText 
-                                        disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                        value="#{index.value}">
-                                        <f:converter converterId="InputConverter" />
-                                    </b:inputText>
-                                </b:dataTableColumn>
-                                <b:dataTableColumn
-                                    orderable="false"
-                                    label="#{msgs.materialCreation_panelIndices_tableHeader_action}">
-                                    <b:commandButton style="padding: 0 4px;"
-                                                     icon="trash"
-                                                     look="link"
-                                                     ajax="true"
-                                                     disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
-                                                     process="@(.selectOneMenuIndexCategoriesClass)"
-                                                     update="@(.selectOneMenuIndexCategoriesClass)"
-                                                     onclick="ajax:materialBean.materialIndexBean.removeIndex(index);"
-                                                     tooltip="#{msgs.materialCreation_panelIndices_tooltip_delete}"
-                                                     type="button"/>
-                                </b:dataTableColumn>
-                            </b:dataTable>
-                        </b:column>
-                    </b:row>
-                </b:container>
-            </b:panel>
+                            <b:column offset="2" span="1">
+                                <b:commandButton style="padding: 0 4px;"
+                                                 icon-awesome="fa-plus "
+                                                 look="link"
+                                                 rendered="#{materialBean.permission.isDetailInformationEditable('INDEX')}"
+                                                 ajax="true"
+                                                 value="#{msgs.materialCreation_panelIndices_add}"
+                                                 update="@(.selectOneMenuIndexCategoriesClass)"
+                                                 process="@form"
+                                                 onclick="ajax:materialBean.materialIndexBean.addNewIndex();"
+                                                 type="button"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="11"
+                                      styleClass="selectOneMenuIndexCategoriesClass">
+                                <b:dataTable
+                                    styleClass="materialNameTableClass"
+                                    paginated="false"
+                                    value="#{materialBean.materialIndexBean.indices}"
+                                    searching="false"
+                                    var="index">
+                                    <b:dataTableColumn
+                                        orderable="false"
+                                        label="#{msgs.materialCreation_panelIndices_tableHeader_name}"
+                                        value="#{materialBean.materialIndexBean.getIndexName(index)}">
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        orderable="false"
+                                        label="#{msgs.materialCreation_panelIndices_tableHeader_value}">
+                                        <b:inputText 
+                                            disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
+                                            value="#{index.value}">
+                                            <f:converter converterId="InputConverter" />
+                                        </b:inputText>
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        orderable="false"
+                                        label="#{msgs.materialCreation_panelIndices_tableHeader_action}">
+                                        <b:commandButton style="padding: 0 4px;"
+                                                         icon="trash"
+                                                         look="link"
+                                                         ajax="true"
+                                                         disabled="#{!materialBean.permission.isDetailInformationEditable('INDEX')}"
+                                                         process="@(.selectOneMenuIndexCategoriesClass)"
+                                                         update="@(.selectOneMenuIndexCategoriesClass)"
+                                                         onclick="ajax:materialBean.materialIndexBean.removeIndex(index);"
+                                                         tooltip="#{msgs.materialCreation_panelIndices_tooltip_delete}"
+                                                         type="button"/>
+                                    </b:dataTableColumn>
+                                </b:dataTable>
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </p:outputPanel>
+            </p:tab>
         </ui:composition>
     </h:body>
 

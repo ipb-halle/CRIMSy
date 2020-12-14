@@ -133,13 +133,11 @@
             <b:panel
                 rendered="#{materialBean.isValideProjectChoosen()}"
                 styleClass="materialDetailPanel">
-                <b:accordion
-                    styleClass="materialDetailPanel">
-
+                <p:tabView styleClass="itemEditTabView">
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/materialNames.xhtml"/>
                     </ui:insert>
-                    
+
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/indices.xhtml"/>
                     </ui:insert>
@@ -152,11 +150,10 @@
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/storageClasses.xhtml"/>
                     </ui:insert>
-                     <ui:insert> 
+                    <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/biodata.xhtml"/>
                     </ui:insert>
-                    
-                </b:accordion>
+                </p:tabView>
             </b:panel>
 
         </b:form>

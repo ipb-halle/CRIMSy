@@ -399,6 +399,9 @@ public class MaterialBean implements Serializable {
     }
 
     public boolean isValideProjectChoosen() {
+        if (materialEditState.getCurrentProject() == null) {
+            return false;
+        }
         return materialEditState.getCurrentProject().getProjectType() != ProjectType.DUMMY_PROJECT;
     }
 

@@ -24,69 +24,73 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:panel 
-                styleClass="hazardsPanelClass"
+            <p:tab
                 title="#{msgs.materialCreation_panelHazard_name}"
-                rendered="#{materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
-                <h:outputText 
-                    value="#{msgs.materialCreation_panelHazard_title}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.explosive}"
-                    caption="#{msgs.materialCreation_panelHazard_explosive}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.highlyFlammable}"
-                    caption="#{msgs.materialCreation_panelHazard_highlyFlammable}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.compressedGas}"
-                    caption="#{msgs.materialCreation_panelHazard_compressedGas}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.corrosive}"
-                    caption="#{msgs.materialCreation_panelHazard_corrosive}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.poisonous}"
-                    caption="#{msgs.materialCreation_panelHazard_poisonous}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.irritant}"
-                    caption="#{msgs.materialCreation_panelHazard_irritant}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.unhealthy}"
-                    caption="#{msgs.materialCreation_panelHazard_unhealthy}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.environmentallyHazardous}"
-                    caption="#{msgs.materialCreation_panelHazard_environmentallyHazardous}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.danger}"
-                    caption="#{msgs.materialCreation_panelHazard_danger}"/>
-                <b:selectBooleanCheckbox
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.attention}"
-                    caption="#{msgs.materialCreation_panelHazard_attention}"/>
-                <b:inputText
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.hazardStatements}"
-                    label="#{msgs.materialCreation_panelHazard_hazard}">
-                    <f:converter converterId="InputConverter" />
-                </b:inputText>
-                <b:inputText
-                    disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
-                    value="#{materialBean.hazards.precautionaryStatements}"
-                    label="#{msgs.materialCreation_panelHazard_precautionary}">
-                    <f:converter converterId="InputConverter" />
-                </b:inputText>
-            </b:panel>
+                disabled="#{!materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
+                <p:outputPanel
+                    styleClass="indicesPanelClass"
+                    rendered="#{materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
 
+                    <h:outputText 
+                        value="#{msgs.materialCreation_panelHazard_title}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.explosive}"
+                        caption="#{msgs.materialCreation_panelHazard_explosive}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.highlyFlammable}"
+                        caption="#{msgs.materialCreation_panelHazard_highlyFlammable}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.compressedGas}"
+                        caption="#{msgs.materialCreation_panelHazard_compressedGas}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.corrosive}"
+                        caption="#{msgs.materialCreation_panelHazard_corrosive}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.poisonous}"
+                        caption="#{msgs.materialCreation_panelHazard_poisonous}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.irritant}"
+                        caption="#{msgs.materialCreation_panelHazard_irritant}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.unhealthy}"
+                        caption="#{msgs.materialCreation_panelHazard_unhealthy}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.environmentallyHazardous}"
+                        caption="#{msgs.materialCreation_panelHazard_environmentallyHazardous}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.danger}"
+                        caption="#{msgs.materialCreation_panelHazard_danger}"/>
+                    <b:selectBooleanCheckbox
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.attention}"
+                        caption="#{msgs.materialCreation_panelHazard_attention}"/>
+                    <b:inputText
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.hazardStatements}"
+                        label="#{msgs.materialCreation_panelHazard_hazard}">
+                        <f:converter converterId="InputConverter" />
+                    </b:inputText>
+                    <b:inputText
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('HAZARD_INFORMATION')}"
+                        value="#{materialBean.hazards.precautionaryStatements}"
+                        label="#{msgs.materialCreation_panelHazard_precautionary}">
+                        <f:converter converterId="InputConverter" />
+                    </b:inputText>
+                </p:outputPanel>
+            </p:tab>
         </ui:composition>
     </h:body>
 
