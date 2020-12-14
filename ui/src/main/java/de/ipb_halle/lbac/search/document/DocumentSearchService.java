@@ -63,44 +63,44 @@ import org.apache.logging.log4j.LogManager;
  */
 @Stateless
 public class DocumentSearchService {
-
+    
     private final Logger LOGGER = LogManager.getLogger(DocumentSearchService.class);
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
+    
     @Inject
     private FileEntityService fileEntityService;
-
+    
     @Inject
     private NodeService nodeService;
-
+    
     @Inject
     private CollectionService collectionService;
-
+    
     @Inject
     private MemberService memberService;
-
+    
     @Inject
     private TermVectorEntityService termVectorEntityService;
-
+    
     private final int MAX_TERMS = Integer.MAX_VALUE;
-
+    
     private boolean development = false;
-
+    
     private String uriOfPublicColl;
     protected SearchQueryStemmer searchQueryStemmer;
     private DocumentEntityGraphBuilder graphBuilder;
-
+    
     @PostConstruct
     public void init() {
         graphBuilder = new DocumentEntityGraphBuilder();
         if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development) {
             development = true;
         }
-
+        
     }
-
+    
     protected String SQL_LOAD_DOCUMENTS = "SELECT DISTINCT "
             + "f.id, "
             + "f.name,"
@@ -114,16 +114,16 @@ public class DocumentSearchService {
             + "JOIN termvectors tv ON tv.file_id=f.id "
             + "WHERE f.collection_id=:collectionid "
             + "AND (:termvectorLength=0 OR tv.wordroot IN (:termvector))";
-
+    
     protected String SQL_LOAD_DOCUMENT_LENGTH
             = "SELECT sum(termfrequency) "
             + "FROM termvectors "
             + "WHERE file_id=:file_id";
-
+    
     protected String SQL_LOAD_DOCUMENT_COUNT
             = "SELECT count(*) "
             + "FROM files";
-
+    
     public DocumentSearchState actionStartDocumentSearch(
             DocumentSearchState searchState,
             List<Collection> collsToSearchIn,
@@ -147,18 +147,18 @@ public class DocumentSearchService {
                 searchState.getFoundDocuments().addAll(foundDocs);
                 searchState.addToTotalDocs(foundDocs.size());
             }
-
+            
         }
-
+        
         List<Integer> docIds = new ArrayList<>();
         for (Document d : searchState.getFoundDocuments()) {
             docIds.add(d.getId());
         }
-
+        
         TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
                 normalizedTerms.getAllStemmedWords());
-
+        
         for (Document d : searchState.getFoundDocuments()) {
             d.setWordCount(getLengthOfDocument(d.getId()));
             Map<String, Integer> words = totalTerms.getTermsOfDocument(d.getId());
@@ -168,21 +168,22 @@ public class DocumentSearchService {
         }
         return searchState;
     }
-
+    
     private int loadTotalCountOfFiles() {
         Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
         List<BigInteger> result = q.getResultList();
         return result.get(0).intValue();
     }
-
+    
     public SearchResult loadDocuments(SearchRequest request) {
-        List<Searchable> foundDocs = new ArrayList<>();
+        List<Searchable> foundDocs = new ArrayList<>();       
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
         String sql = sqlBuilder.query(request.getCondition());
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
+            LOGGER.info(param.getArgumentKey() + " -> " + param.getValue());
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
@@ -193,11 +194,11 @@ public class DocumentSearchService {
                             entity,
                             collectionService.loadById(entity.getCollection()),
                             memberService.loadUserById(entity.getUser()))));
-
+            
         }
         result.addResults(foundDocs);
         List<Integer> docIds = getDocIds(foundDocs);
-
+        
         TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
                 getWordRoots(request.getCondition()));
@@ -208,7 +209,7 @@ public class DocumentSearchService {
         }
         return result;
     }
-
+    
     private Set<String> getWordRoots(Condition con) {
         Set<String> wordRoots = new HashSet<>();
         if (con != null) {
@@ -225,7 +226,7 @@ public class DocumentSearchService {
         }
         return wordRoots;
     }
-
+    
     private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOcurrence totalTerms) {
         for (Searchable searchable : foundDocs) {
             Document d = (Document) searchable;
@@ -236,7 +237,7 @@ public class DocumentSearchService {
             }
         }
     }
-
+    
     private List<Integer> getDocIds(List<Searchable> foundDocs) {
         List<Integer> ids = new ArrayList<>();
         for (Searchable s : foundDocs) {
@@ -253,7 +254,7 @@ public class DocumentSearchService {
     public long getSumOfWordsOfAllDocs() {
         return termVectorEntityService.getSumOfAllWordsFromAllDocs();
     }
-
+    
     private int getLengthOfDocument(int documentId) {
         return ((BigInteger) em.createNativeQuery(SQL_LOAD_DOCUMENT_LENGTH)
                 .setParameter("file_id", documentId).getResultList()
@@ -278,32 +279,31 @@ public class DocumentSearchService {
         for (String s : tagList) {
             back += " AND " + s;
         }
-
+        
         back = back.substring(4, back.length());
         return back.trim();
     }
-
+    
     public String getUriOfPublicCollection() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("name", "public");
         List<Collection> colls = collectionService.load(cmap);
-
+        
         String restUri = null;
         if (colls != null && colls.size() > 0) {
             restUri = colls.get(0).getIndexPath();
         }
         return restUri;
     }
-
+    
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
-
         Set<Document> documents = new HashSet<>();
         List<FileObjectEntity> results = this.em.createNativeQuery(SQL_LOAD_DOCUMENTS, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
                 .setParameter("termvectorLength", request.wordsToSearchFor.getAllStemmedWords().size())
                 .setParameter("termvector", request.wordsToSearchFor.getAllStemmedWords())
                 .getResultList();
-
+        
         int count = 0;
         for (FileObjectEntity foe : results) {
             if (count < limit) {
@@ -318,7 +318,7 @@ public class DocumentSearchService {
         }
         return documents;
     }
-
+    
     private Document convertFileObjectToDocument(FileObject fo) {
         Document d = new Document();
         d.setId(fo.getId());
@@ -331,9 +331,9 @@ public class DocumentSearchService {
         d.setContentType(fo.getName().split("\\.")[fo.getName().split("\\.").length - 1]);
         d.setOriginalName(fo.getName());
         return d;
-
+        
     }
-
+    
     public String createSqlReplaceString(Map<String, Set<String>> stemmedWords) {
         if (stemmedWords.isEmpty()) {
             return "";
@@ -344,15 +344,15 @@ public class DocumentSearchService {
             for (String w : stemmedWords.get(word)) {
                 stemmedWordsWithQuotationMark.add("'" + w + "'");
             }
-
+            
             subClauses.add(
                     String.format(" tv.wordroot IN (%s) ",
                             String.join(",", stemmedWordsWithQuotationMark)));
         }
-
+        
         return " AND (" + String.join(" OR ", subClauses) + ")";
     }
-
+    
     private EntityGraph createEntityGraph(SearchRequest request) {
         graphBuilder = new DocumentEntityGraphBuilder();
         return graphBuilder.buildEntityGraph(request.getCondition());

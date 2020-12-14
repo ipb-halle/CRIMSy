@@ -24,13 +24,16 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.structure.Molecule;
+import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -139,8 +142,10 @@ public class SearchFilter {
     }
 
     private SearchRequest createDocumentRequest() {
+        SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
+        Set<String> normalizedTerms = searchQueryStemmer.stemmQuery(searchTerms.toLowerCase()).getAllStemmedWords();
         DocumentSearchRequestBuilder docBuilder = new DocumentSearchRequestBuilder(user, 0, maxresults);
-        docBuilder.addWordRoots(new HashSet(Arrays.asList(searchTerms.toLowerCase().split(" "))));
+        docBuilder.addWordRoots(normalizedTerms);
         return docBuilder.buildSearchRequest();
     }
 

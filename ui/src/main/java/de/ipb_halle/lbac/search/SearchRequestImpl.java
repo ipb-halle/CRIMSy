@@ -107,7 +107,6 @@ public class SearchRequestImpl implements SearchRequest {
     }
 
     public void switchToLocalMode() {
-
         if (getCondition() != null) {
             getCondition().switchToLocalMode();
             if (getCondition().getConditions() != null) {
@@ -118,5 +117,4 @@ public class SearchRequestImpl implements SearchRequest {
         }
 
     }
-
 }
