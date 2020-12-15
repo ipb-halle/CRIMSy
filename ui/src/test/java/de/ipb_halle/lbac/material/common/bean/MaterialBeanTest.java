@@ -167,6 +167,7 @@ public class MaterialBeanTest extends TestBase {
     @Test
     public void test002_navigateInHistory() throws Exception {
         MaterialIndexBean indexBean = new MaterialIndexBean();
+        instance.setProjectService(projectService);
         indexBean.setIndexService(indexService);
         instance.setMaterialIndexBean(indexBean);
 
