@@ -43,7 +43,7 @@
 
     <composite:implementation >
 
-        <ui:repeat value="#{cc.attrs.assay.records}" var="assayRec">
+        <ui:repeat value="#{cc.attrs.assay.linkedData}" var="assayRec">
 
             <tr>
                 <td class="assayTableCell">
@@ -68,8 +68,8 @@
                     </h:commandLink>
                 </td>
 
-                <crimsy:singlepointView id="SPview" outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and (! assayRec.edit)}" />
-                <crimsy:singlepointEdit id="SPedit" outcome="#{assayRec.outcome}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and assayRec.edit}" />
+                <crimsy:singlepointView id="SPview" payload="#{assayRec.payload}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and (! assayRec.edit)}" />
+                <crimsy:singlepointEdit id="SPedit" payload="#{assayRec.payload}" rendered="#{(assayRec.facelet eq 'SINGLE_POINT') and assayRec.edit}" />
                 
                 <td class="assayTableCell">
                     <p:commandLink 

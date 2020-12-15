@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
@@ -38,7 +39,7 @@ public class AssayEntity implements Serializable {
     private Long exprecordid;
 
     @Column
-    private AssayOutcomeType outcomeType;
+    private LinkedDataType outcomeType;
 
     @AttributeTag(type = AttributeType.TEXT)
     @Column
@@ -54,7 +55,7 @@ public class AssayEntity implements Serializable {
         return this.exprecordid;
     }
 
-    public AssayOutcomeType getOutcomeType() {
+    public LinkedDataType getOutcomeType() {
         return this.outcomeType;
     }
 
@@ -75,7 +76,7 @@ public class AssayEntity implements Serializable {
         return this;
     }
 
-    public AssayEntity setOutcomeType(AssayOutcomeType outcomeType) {
+    public AssayEntity setOutcomeType(LinkedDataType outcomeType) {
         this.outcomeType = outcomeType;
         return this;
     }

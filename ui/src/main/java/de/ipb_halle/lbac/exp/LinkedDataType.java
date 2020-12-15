@@ -15,22 +15,24 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.assay;
+package de.ipb_halle.lbac.exp;
 
 
 
 /**
- * Record types for assay outcomes
+ * Record types for LinkedData
  *
  * @author fbroda
  */
-public enum AssayOutcomeType {
-    SINGLE_POINT(0),
-    MULTI_POINT(1);
+public enum LinkedDataType {
+    SINGLE_POINT_ASSAY_OUTCOME(0),
+    MULTI_POINT_ASSAY_OUTCOME(1),
+    MATERIAL_LINK(2),
+    ITEM_LINK(3);
 
     private int typeId;
 
-    private AssayOutcomeType(int typeId) {
+    private LinkedDataType(int typeId) {
         this.typeId = typeId;
     }
 
@@ -42,8 +44,8 @@ public enum AssayOutcomeType {
         this.typeId = typeId;
     }
 
-    public static AssayOutcomeType getAssayOutcomeTypeById(int id) {
-        for (AssayOutcomeType t : AssayOutcomeType.values()) {
+    public static LinkedDataType getAssayOutcomeTypeById(int id) {
+        for (LinkedDataType t : LinkedDataType.values()) {
             if (t.getTypeId() == id) {
                 return t;
             }

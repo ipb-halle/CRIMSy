@@ -17,13 +17,17 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import de.ipb_halle.lbac.exp.LinkedDataEntity;
+import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,7 +45,7 @@ public class AssayRecordTest {
     private Item item1, item2;
     private long exportRecordId = 0L;
     private Assay assay;
-    private AssayRecord record;
+    private LinkedData record;
 
     @Before
     public void setUp() {
@@ -55,12 +59,13 @@ public class AssayRecordTest {
 
         assay = new Assay();
         assay.setExpRecordId(exportRecordId);
-        record = new AssayRecord(assay, 1);
+        record = new LinkedData(assay,  
+                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 1);
     }
 
     @Test
     public void testItemSet() {
-        Assert.assertEquals(exportRecordId, (long) record.getAssay().getExpRecordId());
+        Assert.assertEquals(exportRecordId, (long) record.getExpRecord().getExpRecordId());
 
         record.setItem(item1);
         Assert.assertEquals(item1.getId(), record.getItem().getId());
@@ -89,14 +94,14 @@ public class AssayRecordTest {
 
     @Test
     public void testCreateFromEntity() {
-        AssayRecordEntity entity = new AssayRecordEntity();
+        LinkedDataEntity entity = new LinkedDataEntity();
         entity.setExpRecordId(exportRecordId);
         entity.setItemId(item1.getId());
         entity.setMaterialId(struc1.getId());
-        entity.setOutcome(null);
+        entity.setPayload(null);
         entity.setRank(1);
         entity.setRecordId(exportRecordId);
-        record = new AssayRecord(entity, assay, struc1, item1);
+        record = new LinkedData(entity, assay, struc1, item1);
 
         Assert.assertEquals(item1.getId(), record.getItem().getId());
         Assert.assertEquals(struc1.getId(), record.getMaterial().getId());
@@ -104,23 +109,25 @@ public class AssayRecordTest {
 
     @Test
     public void testCreateEntity() {
-        AssayRecordEntity entity = record.createEntity();
+        LinkedDataEntity entity = record.createEntity();
 
-        Assert.assertNull(entity.getRecordId());
-        Assert.assertEquals(assay.getExpRecordId(), entity.getExpRecordId());
-        Assert.assertEquals(record.getOutcome().toString(), entity.getOutcome());
-        Assert.assertEquals(record.getRank(), entity.getRank());
-        Assert.assertNull(entity.getItemId());
-        Assert.assertNull(entity.getMaterialId());
+        Assert.assertNull("recordId is null", entity.getRecordId());
+        Assert.assertEquals("expRecordId is equal", assay.getExpRecordId(), entity.getExpRecordId());
+        Assert.assertEquals("payload is equal", 
+                ((record.getPayload() != null) ? record.getPayload().toString() : null),
+                entity.getPayload());
+        Assert.assertEquals("rank is equal", record.getRank(), entity.getRank());
+        Assert.assertNull("itemId is null", entity.getItemId());
+        Assert.assertNull("materialId is null", entity.getMaterialId());
 
         record.setMaterial(struc1);
         entity = record.createEntity();
-        Assert.assertEquals(struc1.getId(), entity.getMaterialId(), 0);
+        Assert.assertEquals("materialId is equal(1)", struc1.getId(), entity.getMaterialId(), 0);
 
         record.setItem(item2);
         entity = record.createEntity();
-        Assert.assertEquals(struc2.getId(), entity.getMaterialId(), 0);
-        Assert.assertEquals(item2.getId(), entity.getItemId(), 0);
+        Assert.assertEquals("materialId is equal(2)", struc2.getId(), entity.getMaterialId(), 0);
+        Assert.assertEquals("itemId is equal", item2.getId(), entity.getItemId(), 0);
     }
 
     private Material createMaterial(int id, String... names) {

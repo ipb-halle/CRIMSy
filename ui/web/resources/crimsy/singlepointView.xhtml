@@ -32,13 +32,13 @@
                      preferred="true"
                      expert="false"
                      shortDescription="Displays value and unit of the outcome">
-        <composite:attribute name="outcome" required="true" />
+        <composite:attribute name="payload" required="true" />
     </composite:interface>
 
     <composite:implementation >
 
-        <td class="assayTableCell">#{cc.attrs.outcome.value}</td>
-        <td class="assayTableCell">#{cc.attrs.outcome.unit}</td>
+        <td class="assayTableCell">#{cc.attrs.payload.value}</td>
+        <td class="assayTableCell">#{cc.attrs.payload.unit}</td>
 
     </composite:implementation>
 </html>

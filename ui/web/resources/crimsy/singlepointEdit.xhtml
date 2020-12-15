@@ -32,7 +32,7 @@
                      preferred="true"
                      expert="false"
                      shortDescription="Edit component for single point assay outcomes">
-        <composite:attribute name="outcome" required="true" >
+        <composite:attribute name="payload" required="true" >
             <composite:editableValueHolder name="unit" />
             <composite:editableValueHolder name="value" />
         </composite:attribute>
@@ -41,11 +41,11 @@
     <composite:implementation >
 
             <td class="assayTableCell">
-                <p:inputText value="#{cc.attrs.outcome.value}" size="6" />
+                <p:inputText value="#{cc.attrs.payload.value}" size="6" />
             </td>
             <td class="assayTableCell">
-                <p:selectOneMenu value="#{cc.attrs.outcome.unit}" >
-                    <f:selectItems value="#{cc.attrs.outcome.units}" />
+                <p:selectOneMenu value="#{cc.attrs.payload.unit}" >
+                    <f:selectItems value="#{cc.attrs.payload.units}" />
                 </p:selectOneMenu>
             </td>
 

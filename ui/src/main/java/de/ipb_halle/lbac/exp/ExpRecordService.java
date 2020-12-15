@@ -26,9 +26,15 @@ package de.ipb_halle.lbac.exp;
  * The current implementation is rather a mock implementation as many important
  * aspects (permissions, history, filtering, ...) are missing.
  */
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
+import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -43,6 +49,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -64,11 +73,20 @@ public class ExpRecordService implements Serializable {
     private EntityManager em;
 
     @Inject
+    private ACListService aclistService;
+
+    @Inject
     private ExperimentService experimentService;
 
     @Inject
     private AssayService assayService;
 
+    @Inject
+    private ItemService itemService;
+    
+    @Inject
+    private MaterialService materialService;
+    
     @Inject
     private TextService textService;
 
@@ -118,16 +136,19 @@ public class ExpRecordService implements Serializable {
 
         for (ExpRecordEntity e : (List<ExpRecordEntity>) q.getResultList()) {
             Experiment experiment = this.experimentService.loadById(e.getExperimentId());
+            ExpRecord record;
             switch (e.getType()) {
                 case ASSAY:
-                    result.add(this.assayService.loadAssayById(experiment, e, user));
+                    record = this.assayService.loadAssayById(experiment, e, user);
                     break;
                 case TEXT:
-                    result.add(this.textService.loadTextById(experiment, e));
+                    record = this.textService.loadTextById(experiment, e);
                     break;
                 default:
                     throw new UnsupportedOperationException("load(): invalid ExpRecord.type");
             }
+            record.setLinkedData(loadLinkedData(record, user));
+            result.add(record);
         }
         return result;
     }
@@ -145,13 +166,65 @@ public class ExpRecordService implements Serializable {
         }
         Experiment experiment = this.experimentService.loadById(e.getExperimentId());
 
+        ExpRecord record;
         switch (e.getType()) {
             case ASSAY:
-                return this.assayService.loadAssayById(experiment, e, user);
+                record = this.assayService.loadAssayById(experiment, e, user);
+                break;
             case TEXT:
-                return this.textService.loadTextById(experiment, e);
+                record = this.textService.loadTextById(experiment, e);
+                break;
+            default :
+                throw new UnsupportedOperationException("loadById(): invalid ExpRecord.type");
         }
-        throw new UnsupportedOperationException("loadById(): invalid ExpRecord.type");
+        record.setLinkedData(loadLinkedData(record, user));
+        return record;
+    }
+
+    /**
+     * Load a list of LinkRecords for a given Assay.
+     *
+     * @return the list of AssayRecords
+     */
+    @SuppressWarnings("unchecked")
+    public List<LinkedData> loadLinkedData(ExpRecord expRecord, User user) {
+
+        // this.logger.info("loadAssayRecords() called");
+        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        CriteriaQuery<LinkedDataEntity> criteriaQuery = builder.createQuery(LinkedDataEntity.class);
+        Root<LinkedDataEntity> root = criteriaQuery.from(LinkedDataEntity.class);
+        criteriaQuery.select(root);
+        criteriaQuery.where(builder.equal(root.get("exprecordid"), expRecord.getExpRecordId()));
+
+        List<LinkedData> result = new ArrayList<LinkedData>();
+        for (LinkedDataEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
+
+            Material material = null;
+            Item item = null;
+
+            if (e.getItemId() != null) {
+
+                item = this.itemService.loadItemById(e.getItemId());
+                material = item.getMaterial();
+                if (!aclistService.isPermitted(ACPermission.permREAD, item, user)) {
+                    item = null;
+                    material = null;
+                    expRecord.setHasHiddenLinkedData();
+                }
+            } else {
+                if (e.getMaterialId() != null) {
+                    material = this.materialService.loadMaterialById(e.getMaterialId());
+                    if (!aclistService.isPermitted(ACPermission.permREAD, material, user)) {
+                        material = null;
+                        expRecord.setHasHiddenLinkedData();
+                    }
+                }
+            }
+            if (material != null) {
+                result.add(new LinkedData(e, expRecord, material, item));
+            }
+        }
+        return result;
     }
 
     /**
@@ -209,6 +282,7 @@ public class ExpRecordService implements Serializable {
      */
     public ExpRecord save(ExpRecord record) {
         record = saveOnly(record);
+        record.setLinkedData(saveLinkedData(record));
         switch (record.getType()) {
             case ASSAY:
                 return this.assayService.saveAssay(record);
@@ -217,6 +291,16 @@ public class ExpRecordService implements Serializable {
         }
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }
+    
+    private List<LinkedData> saveLinkedData(ExpRecord record) {
+        List<LinkedData> records = new ArrayList<LinkedData>();
+        for (LinkedData data : record.getLinkedData()) {
+            LinkedDataEntity entity = this.em.merge(data.createEntity());
+            records.add(new LinkedData(entity, record, data.getMaterial(), data.getItem()));
+        }
+        return records;
+    }
+
 
     /**
      * save a only single experiment object (i.e. do not update the type
