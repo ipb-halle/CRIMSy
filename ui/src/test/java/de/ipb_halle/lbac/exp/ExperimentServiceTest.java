@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.base.ItemCreator;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.exp.assay.Assay;
-import de.ipb_halle.lbac.exp.assay.AssayRecord;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.Text;
@@ -39,6 +38,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.util.Date;
 import java.util.HashMap;
@@ -203,7 +203,7 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(2, loadedExp.getAllFoundObjects().size());
 
         builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
-        builder.addUserName("no-valide-user");
+        builder.addUserName("invalid-user");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
@@ -255,21 +255,22 @@ public class ExperimentServiceTest extends TestBase {
         assay.setTarget(material1);
         assay.setExperiment(exp);
 
-        AssayRecord assayRecord = new AssayRecord(assay, 1);
-        assayRecord.setItem(item1);
-        assayRecord.setMaterial(material1);
-        assay.getRecords().add(assayRecord);
+        LinkedData assayRecord = new LinkedData(assay,  
+                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 1);
+        assayRecord.setItem(item1);     // automatically sets material
+        assay.getLinkedData().add(assayRecord);
         recordService.save(assay);
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.addDescription("Benzol");
         SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
-        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+        Assert.assertEquals("Search for 'Benzol'", 1, loadedExp.getAllFoundObjects().size());
 
         builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.addDescription("Flasche");
-        loadedExp = experimentService.load(builder.buildSearchRequest());
-        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+        SearchRequest req = builder.buildSearchRequest();
+        loadedExp = experimentService.load(req);
+        Assert.assertEquals("Search for 'Flasche'", 1, loadedExp.getAllFoundObjects().size());
     }
 
     @Test
@@ -281,7 +282,8 @@ public class ExperimentServiceTest extends TestBase {
         assay.setTarget(material1);
         assay.setExperiment(exp);
 
-        AssayRecord assayRecord = new AssayRecord(assay, 1);
+        LinkedData assayRecord = new LinkedData(assay,
+                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 1);
         assayRecord.setItem(item1);
         assayRecord.setMaterial(material1);
         int materialId = materialCreator.createStructure(
@@ -289,11 +291,12 @@ public class ExperimentServiceTest extends TestBase {
                 context.getNoAccessACL().getId(),
                 project1.getId(), "Phenol");
 
-        AssayRecord assayRecord_unreadable = new AssayRecord(assay, 2);
+        LinkedData assayRecord_unreadable = new LinkedData(assay, 
+                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 2);
         assayRecord_unreadable.setMaterial(materialService.loadMaterialById(materialId));
 
-        assay.getRecords().add(assayRecord);
-        assay.getRecords().add(assayRecord_unreadable);
+        assay.getLinkedData().add(assayRecord);
+        assay.getLinkedData().add(assayRecord_unreadable);
         recordService.save(assay);
 
         //Search by readable Material should be a success

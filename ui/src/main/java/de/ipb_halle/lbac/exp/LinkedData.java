@@ -15,9 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.assay;
+package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.exp.assay.Assay;
+import de.ipb_halle.lbac.exp.assay.SinglePointOutcome;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 
@@ -25,61 +27,67 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A record object holding an outcome (either single valued or multivalued) for
- * a specific material or item. The records are ordered by rank, counting from
+ * A record object linking to other entities like Material,
+ * Item, Document and possibly carrying additional data 
+ * (e.g. in case of assay outcomes). Payload data is stored 
+ * as JSON in the database. The records are ordered by rank, counting from
  * zero. Reordering of records is deemed unnecessary and _currently_ not
  * planned.
  *
  * @author fbroda
  */
-public class AssayRecord implements DTO {
+public class LinkedData implements DTO {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Long recordid;
-    private Assay assay;
+    private ExpRecord expRecord;
     private transient boolean edit;
     private Material material;
     private Item item;
+//    private Document document;
     private int rank;
-    private AssayOutcome outcome;
-    private transient AssayOutcomeType outcomeType;
+    private Payload payload;
+    private LinkedDataType linkedDataType;
 
     /**
      * constructor
      */
-    public AssayRecord(Assay assay, int rank) {
-        this.assay = assay;
+    public LinkedData(ExpRecord expRecord, LinkedDataType type, int rank) {
+        this.expRecord = expRecord;
         this.edit = true;
-        this.outcomeType = assay.getOutcomeType();
         this.rank = rank;
-        this.outcome = new SinglePointOutcome(assay.getPossibleUnits().iterator().next().getUnit())
-                .setAssay(assay);
+        this.linkedDataType = type;
     }
 
     /**
      * constructor
      */
-    public AssayRecord(AssayRecordEntity entity, Assay assay, Material material, Item item) {
-        this.assay = assay;
+    public LinkedData(LinkedDataEntity entity, ExpRecord expRecord, Material material, Item item) {
+        this.expRecord = expRecord;
         this.edit = false;
         this.material = material;
         this.item = item;
         this.rank = entity.getRank();
         this.recordid = entity.getRecordId();
-        this.outcomeType = assay.getOutcomeType();
-        outcome = AssayOutcome.fromString(this.outcomeType, entity.getOutcome());
-        if (outcome != null) {
-            outcome.setAssay(assay);
+        this.linkedDataType = entity.getType();
+        if (entity.getPayload() != null) {
+            this.payload = Payload.fromString(this.linkedDataType, entity.getPayload());
+            if (this.payload != null) {
+                payload.setExpRecord(expRecord);
+            }
         }
     }
 
-    public AssayRecordEntity createEntity() {
-        AssayRecordEntity entity = new AssayRecordEntity()
-                .setExpRecordId(this.assay.getExpRecordId())
+    public LinkedDataEntity createEntity() {
+        LinkedDataEntity entity = new LinkedDataEntity()
+                .setExpRecordId(this.expRecord.getExpRecordId())
                 .setRank(this.rank)
                 .setRecordId(this.recordid)
-                .setType(this.outcomeType.getTypeId())
-                .setOutcome(this.outcome.toString());
+                .setType(this.linkedDataType);
+        
+        if (this.payload != null) {
+            entity.setPayload(this.payload.toString());
+        }
 
         if (this.item != null) {
             entity.setItemId(this.item.getId());
@@ -90,8 +98,8 @@ public class AssayRecord implements DTO {
         return entity;
     }
 
-    public Assay getAssay() {
-        return this.assay;
+    public ExpRecord getExpRecord() {
+        return this.expRecord;
     }
 
     public boolean isMaterialEditable() {
@@ -107,7 +115,7 @@ public class AssayRecord implements DTO {
     }
 
     public String getFacelet() {
-        return this.outcomeType.toString();
+        return this.linkedDataType.toString();
     }
 
     public Item getItem() {
@@ -132,8 +140,11 @@ public class AssayRecord implements DTO {
         return "";
     }
 
-    public AssayOutcome getOutcome() {
-        return this.outcome.setAssay(this.assay);
+    public Payload getPayload() {
+        if (this.payload != null) {
+            return this.payload.setExpRecord(this.expRecord);
+        }
+        return null;
     }
 
     public int getRank() {
@@ -144,15 +155,15 @@ public class AssayRecord implements DTO {
         return this.recordid;
     }
 
-    public AssayRecord setAssay(Assay assay) {
-        this.assay = assay;
-        if (this.outcome != null) {
-            this.outcome.setAssay(assay);
+    public LinkedData setExpRecord(ExpRecord expRecord) {
+        this.expRecord = expRecord;
+        if (this.payload != null) {
+            this.payload.setExpRecord(expRecord);
         }
         return this;
     }
 
-    public AssayRecord setEdit(boolean edit) {
+    public LinkedData setEdit(boolean edit) {
         this.edit = edit;
         return this;
     }
@@ -163,7 +174,7 @@ public class AssayRecord implements DTO {
      * @param item the item for this record
      * @return this
      */
-    public AssayRecord setItem(Item item) {
+    public LinkedData setItem(Item item) {
         this.item = item;
         if (item != null) {
             this.material = item.getMaterial();
@@ -178,25 +189,27 @@ public class AssayRecord implements DTO {
      * @param material the new material
      * @return this
      */
-    public AssayRecord setMaterial(Material material) {
+    public LinkedData setMaterial(Material material) {
         if (this.item == null) {
             this.material = material;
         }
         return this;
     }
 
-    public AssayRecord setOutcome(AssayOutcome outcome) {
-        this.outcome = outcome.setAssay(this.assay);
-        // this.outcomeType = outcome.getType();
+    public LinkedData setPayload(Payload payload) {
+        this.payload = payload;
+        if (payload != null) {
+            this.payload.setExpRecord(this.expRecord);
+        }
         return this;
     }
 
-    public AssayRecord setRank(int rank) {
+    public LinkedData setRank(int rank) {
         this.rank = rank;
         return this;
     }
 
-    public AssayRecord setRecordId(Long recordid) {
+    public LinkedData setRecordId(Long recordid) {
         this.recordid = recordid;
         return this;
     }

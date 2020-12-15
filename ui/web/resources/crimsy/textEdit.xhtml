@@ -65,5 +65,28 @@
             </f:facet>
         </p:textEditor>
 
+
+        <!-- links 
+        <h:commandLink title="material link"
+                id="addMaterialLink"
+                update="@this" >
+            <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="LINK" />
+            <p:ajax oncomplete="PF('dlg_materialEdit').show();" process="@namingcontainer" update="@(.linkCollection)" />
+            <span class="fa fa-hashtag"> </span>
+        </h:commandLink>
+        <h:commandLink title="item link"
+                id="addItemLink"
+                update="@this" >
+            <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="LINK" />
+            <p:ajax oncomplete="PF('dlg_itemEdit').show();" process="@namingcontainer" update="@(.linkCollection)" />
+            <span class="fa fa-flask"> </span>
+        </h:commandLink>
+
+        ... documents, etc. ...
+
+        RENDER A CLICKABLE LIST OF RESOURCE LINKS 
+
+        -->
+
     </composite:implementation>
 </html>

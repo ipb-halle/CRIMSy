@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.exp.LinkedData;
 import com.corejsf.util.Messages;
 
 import de.ipb_halle.lbac.entity.DTO;
@@ -74,17 +76,10 @@ public class Assay extends ExpRecord implements DTO {
 
     /**
      * outcometype limits the type of outcome this assay object accepts. This is
-     * done becaus rendering multiple outcome types in the same table might
+     * done because rendering multiple outcome types in the same table might
      * prove difficult.
      */
-    private AssayOutcomeType outcomeType;
-
-    /**
-     * the tupels (material, outcome)
-     */
-    private List<AssayRecord> records;
-
-    private boolean allRecordsShown;
+    private LinkedDataType outcomeType;
 
     /**
      * default constructor
@@ -94,9 +89,7 @@ public class Assay extends ExpRecord implements DTO {
         setType(ExpRecordType.ASSAY);
         this.remarks = "";
         this.units = "mM, µM, nM";
-        this.records = new ArrayList<AssayRecord>();
-        this.outcomeType = AssayOutcomeType.SINGLE_POINT;
-        allRecordsShown = true;
+        this.outcomeType = LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME;
     }
 
     public Assay(AssayEntity entity, Material target) {
@@ -105,26 +98,10 @@ public class Assay extends ExpRecord implements DTO {
         this.remarks = entity.getRemarks();
         this.target = target;
         this.units = entity.getUnits();
-        this.records = new ArrayList<AssayRecord>();
         if (entity != null) {
             this.outcomeType = entity.getOutcomeType();
         }
-        allRecordsShown = true;
-    }
 
-    public void activateEditModeForRecord(AssayRecord recordToEdit) {
-        for (AssayRecord record : records) {
-            record.setEdit(false);
-        }
-        recordToEdit.setEdit(true);
-    }
-
-    @Override
-    public void copy() {
-        for (AssayRecord rec : this.records) {
-            rec.setAssay(this);
-            rec.setRecordId(null);
-        }
     }
 
     public AssayEntity createEntity() {
@@ -144,11 +121,11 @@ public class Assay extends ExpRecord implements DTO {
         List<Double> values = new ArrayList<Double>();
         List<Double> logValues = new ArrayList<Double>();
 
-        for (AssayRecord r : this.records) {
-            double v = ((SinglePointOutcome) r.getOutcome()).getValue();
-            logger.info("Found unit " + ((SinglePointOutcome) r.getOutcome()).getUnit());
+        for (LinkedData r : this.getLinkedData()) {
+            double v = ((SinglePointOutcome) r.getPayload()).getValue();
+            logger.info("Found unit " + ((SinglePointOutcome) r.getPayload()).getUnit());
 
-            Unit u = Unit.getUnit(((SinglePointOutcome) r.getOutcome()).getUnit());
+            Unit u = Unit.getUnit(((SinglePointOutcome) r.getPayload()).getUnit());
             v *= u.getFactor();
 
             min = Double.min(min, v);
@@ -204,13 +181,13 @@ public class Assay extends ExpRecord implements DTO {
     @Override
     public BarChartModel getBarChart() {
         switch (this.outcomeType) {
-            case SINGLE_POINT:
+            case SINGLE_POINT_ASSAY_OUTCOME:
                 return computeSinglePointBarChart();
         }
         return null;
     }
 
-    public AssayOutcomeType getOutcomeType() {
+    public LinkedDataType getOutcomeType() {
         return this.outcomeType;
     }
 
@@ -219,7 +196,7 @@ public class Assay extends ExpRecord implements DTO {
      */
     public List<SelectItem> getOutcomeTypes() {
         List<SelectItem> l = new ArrayList<SelectItem>();
-        for (AssayOutcomeType t : AssayOutcomeType.values()) {
+        for (LinkedDataType t : LinkedDataType.values()) {
             l.add(new SelectItem(t,
                     Messages.getString(MESSAGE_BUNDLE, "AssayOutcomeType_" + t.toString(), null)));
         }
@@ -228,10 +205,6 @@ public class Assay extends ExpRecord implements DTO {
 
     public Set<Unit> getPossibleUnits() {
         return UnitsValidator.getUnitSet(units);
-    }
-
-    public List<AssayRecord> getRecords() {
-        return this.records;
     }
 
     public String getRemarks() {
@@ -246,13 +219,8 @@ public class Assay extends ExpRecord implements DTO {
         return this.units;
     }
 
-    public void setOutcomeType(AssayOutcomeType outcomeType) {
+    public void setOutcomeType(LinkedDataType outcomeType) {
         this.outcomeType = outcomeType;
-    }
-
-    public Assay setRecords(List<AssayRecord> records) {
-        this.records = records;
-        return this;
     }
 
     public void setRemarks(String remarks) {
@@ -266,13 +234,4 @@ public class Assay extends ExpRecord implements DTO {
     public void setUnits(String units) {
         this.units = units;
     }
-
-    public boolean isAllRecordsShown() {
-        return allRecordsShown;
-    }
-
-    public void setAllRecordsShown(boolean allRecordsShown) {
-        this.allRecordsShown = allRecordsShown;
-    }
-
 }

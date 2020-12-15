@@ -17,14 +17,17 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.ItemHolder;
+import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.exp.MaterialHolder;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.util.UnitsValidator;
 import java.util.ArrayList;
 
 import java.util.Arrays;
@@ -40,7 +43,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class AssayController extends ExpRecordController implements ItemHolder, MaterialHolder {
     
-    private AssayRecord assayRecord;
+    private LinkedData assayRecord;
     private String materialTarget;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -61,9 +64,16 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         this.logger.info("actionAppendAssayRecord()");
         try {
             Assay rec = (Assay) getExpRecord();
-            List<AssayRecord> records = rec.getRecords();
+            List<LinkedData> records = rec.getLinkedData();
             int rank = records.size();
-            this.assayRecord = new AssayRecord(rec, rank);
+            this.assayRecord = new LinkedData(rec,  
+                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, rank);
+            this.assayRecord.setPayload(
+                    new SinglePointOutcome(
+                    UnitsValidator.getUnitSet(rec.getUnits())
+                    .iterator()
+                    .next()
+                    .toString()));
             records.add(this.assayRecord);
             setRecordEdit(rank);    // select this record for edit
         } catch (Exception e) {
@@ -71,7 +81,7 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         }
     }
     
-    public AssayRecord getAssayRecord() {
+    public LinkedData getAssayRecord() {
         return this.assayRecord;
     }
     
@@ -101,7 +111,7 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
     }
     
     public boolean isDiagrammButtonVisible(Assay assay) {
-        return !assay.getRecords().isEmpty();
+        return !assay.getLinkedData().isEmpty();
     }
     
     public ExpRecord getNewRecord() {
@@ -145,8 +155,8 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
      * set record
      */
     public void setRecordEdit(int rank) {
-        List<AssayRecord> records = ((Assay) getExpRecord()).getRecords();
-        for (AssayRecord rec : records) {
+        List<LinkedData> records = ((Assay) getExpRecord()).getLinkedData();
+        for (LinkedData rec : records) {
             if (rec.getRank() == rank) {
                 rec.setEdit(true);
                 this.assayRecord = rec;
@@ -157,7 +167,7 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         }
     }
     
-    public void editRecord(AssayRecord record) {
+    public void editRecord(LinkedData record) {
         this.assayRecord = record;
         this.assayRecord.setEdit(true);
         setMaterialTarget("RECORD");

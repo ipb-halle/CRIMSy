@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.exp.assay.Assay;
-import de.ipb_halle.lbac.exp.assay.AssayRecord;
+import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
@@ -80,7 +80,7 @@ public class ExpRecordAccessChecker {
         if (checkMaterial(assay.getTarget(), user, searchString)) {
             shouldExpBeShown = true;
         }
-        for (AssayRecord assayRec : assay.getRecords()) {
+        for (LinkedData assayRec : assay.getLinkedData()) {
             if (checkMaterial(assayRec.getMaterial(), user, searchString)) {
                 shouldExpBeShown = true;
             }

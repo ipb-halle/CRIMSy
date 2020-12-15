@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
+import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.exp.Payload;
 import de.ipb_halle.lbac.util.Unit;
 import de.ipb_halle.lbac.util.UnitsValidator;
 
@@ -28,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author fbroda
  */
-public class SinglePointOutcome extends AssayOutcome {
+public class SinglePointOutcome extends Payload {
 
     private double stddev;
     private double value;
@@ -49,8 +51,8 @@ public class SinglePointOutcome extends AssayOutcome {
         return this.stddev;
     }
 
-    public AssayOutcomeType getType() {
-        return AssayOutcomeType.SINGLE_POINT;
+    public LinkedDataType getType() {
+        return LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME;
     }
 
     public String getUnit() {
@@ -60,7 +62,7 @@ public class SinglePointOutcome extends AssayOutcome {
     public Set<Unit> getUnits() {
         try {
             return UnitsValidator.getUnitSet(
-                    getAssay()
+                    ((Assay) getExpRecord())
                             .getUnits());
         } catch (Exception e) {
             this.logger.warn("getUnits() caught an exception", (Throwable) e);

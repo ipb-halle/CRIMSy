@@ -15,36 +15,38 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.assay;
+package de.ipb_halle.lbac.exp;
 
 import com.google.gson.Gson;
+import de.ipb_halle.lbac.exp.assay.SinglePointOutcome;
 
 /**
  * @author fbroda
  */
-public abstract class AssayOutcome {
+public abstract class Payload {
 
-    private transient Assay       assay;
+    private transient ExpRecord expRecord;
 
-    public static AssayOutcome fromString(AssayOutcomeType type, String outcome) {
+    public static Payload fromString(LinkedDataType type, String outcome) {
         Gson gson = new Gson();
         switch(type) {
-            case SINGLE_POINT : return gson.fromJson(outcome, SinglePointOutcome.class);
+            case SINGLE_POINT_ASSAY_OUTCOME : return gson.fromJson(outcome, SinglePointOutcome.class);
         }
         throw new IllegalArgumentException("fromString() illegal arguments");
     }
 
-    public Assay getAssay() {
-        return this.assay;
+    public ExpRecord getExpRecord() {
+        return this.expRecord;
     }
 
-    public abstract AssayOutcomeType getType(); 
+    public abstract LinkedDataType getType(); 
 
-    public AssayOutcome setAssay(Assay assay) {
-        this.assay = assay;
+    public Payload setExpRecord(ExpRecord expRecord) {
+        this.expRecord = expRecord;
         return this;
     }
 
+    @Override
     public String toString() {
         Gson gson = new Gson();
         return gson.toJson(this);

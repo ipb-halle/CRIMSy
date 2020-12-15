@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
 import de.ipb_halle.lbac.exp.ExperimentEntity;
 import de.ipb_halle.lbac.exp.assay.AssayEntity;
-import de.ipb_halle.lbac.exp.assay.AssayRecordEntity;
+import de.ipb_halle.lbac.exp.LinkedDataEntity;
 import de.ipb_halle.lbac.exp.text.TextEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
@@ -39,7 +39,7 @@ import javax.persistence.criteria.JoinType;
 public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
     private EntityGraph assayEntityGraph;
-    private EntityGraph assayRecordEntityGraph;
+    private EntityGraph linkedDataEntityGraph;
     private EntityGraph expRecordGraph;
     private EntityGraph materialGraph;
     private ACListService aclistService;
@@ -57,13 +57,19 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
         expRecordGraph = addJoin(JoinType.LEFT, ExpRecordEntity.class, "experimentid", "experimentid");
 
-        addJoinToChild(JoinType.LEFT, expRecordGraph, TextEntity.class, "exprecordid", "exprecordid");
-        assayEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, AssayEntity.class, "exprecordid", "exprecordid");
+        // LinkedData
+        linkedDataEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, LinkedDataEntity.class, "exprecordid", "exprecordid");
 
-        assayRecordEntityGraph = addJoinToChild(JoinType.LEFT, assayEntityGraph, AssayRecordEntity.class, "exprecordid", "exprecordid");
-        addJoinToChild(JoinType.LEFT, assayRecordEntityGraph, MaterialIndexEntryEntity.class, "materialid", "materialid");
-        materialGraph=addJoinToChild(JoinType.LEFT, assayRecordEntityGraph, MaterialEntity.class, "materialid", "materialid");
-        addJoinToChild(JoinType.LEFT, assayRecordEntityGraph, ItemEntity.class, "itemid", "id");
+        addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, MaterialIndexEntryEntity.class, "materialid", "materialid");
+        materialGraph=addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, MaterialEntity.class, "materialid", "materialid");
+
+        addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, ItemEntity.class, "itemid", "id");
+
+        // Text
+        addJoinToChild(JoinType.LEFT, expRecordGraph, TextEntity.class, "exprecordid", "exprecordid");
+
+        // Assay
+        assayEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, AssayEntity.class, "exprecordid", "exprecordid");
     }
 
     @Override

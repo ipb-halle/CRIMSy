@@ -52,6 +52,8 @@ public abstract class ExpRecord implements DTO {
     private Long            exprecordid;
     private Experiment      experiment;
     private ExpRecordType   type;
+    private List<LinkedData> linkedData;
+    private boolean         hasHiddenLinkedData;
     private Date            creationtime;
     private Date            changetime;
     private Long            next;
@@ -67,13 +69,26 @@ public abstract class ExpRecord implements DTO {
         this.changetime = new Date();
         this.revision = 0;
         this.dateFormatter = new SimpleDateFormat(DATE_FORMAT);
+        this.hasHiddenLinkedData = false;
+        this.linkedData = new ArrayList<LinkedData>(2);
     }
 
+    public void activateEditModeForRecord(LinkedData recordToEdit) {
+        for (LinkedData record : this.linkedData) {
+            record.setEdit(false);
+        }
+        recordToEdit.setEdit(true);
+    }
+    
     /**
      * perform any actions necessary when cloning this record from 
-     * an experiment template. Does nothing per default.
+     * an experiment template. Copies linkedDataRecords.
      */
     public void copy() {
+        for (LinkedData rec : this.linkedData) {
+            rec.setExpRecord(this);
+            rec.setRecordId(null);
+        }
     }
 
     public ExpRecordEntity createExpRecordEntity() {
@@ -155,6 +170,10 @@ public abstract class ExpRecord implements DTO {
         return this.isFirst;
     }
 
+    public boolean getHasHiddenLinkedData() {
+        return this.hasHiddenLinkedData;
+    }
+
     /**
      * the index in a list of ExpRecords
      */
@@ -166,6 +185,10 @@ public abstract class ExpRecord implements DTO {
         return this.isLast;
     }
 
+    public List<LinkedData> getLinkedData() {
+        return this.linkedData;
+    }
+    
     public Long getNext() {
         return this.next;
     }
@@ -251,15 +274,23 @@ public abstract class ExpRecord implements DTO {
         this.isFirst = isFirst;
     }
 
+    public void setHasHiddenLinkedData() {
+        this.hasHiddenLinkedData = true;
+    }
+
     public ExpRecord setIndex(int index) {
         this.index = index;
         return this;
     }
 
-    public  void setLast(boolean isLast) {
+    public void setLast(boolean isLast) {
         this.isLast = isLast;
     }
 
+    public void setLinkedData(List<LinkedData> data) {
+        this.linkedData = data;
+    }
+    
     public ExpRecord setNext(Long next) {
         this.next = next;
         return this;

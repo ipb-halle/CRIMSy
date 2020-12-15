@@ -744,16 +744,18 @@ CREATE TABLE exp_records (
 /*
  * Note: either materialid or itemid must be set
  *
- * ToDo: xxxxx additional indexing for outcome column (example see below)
+ * ToDo: see below
+ *   - additional indexing for payload column (example see below)
+ *   - additional references (documents, users, ...)
  */
-CREATE TABLE exp_assay_records (
+CREATE TABLE exp_linked_data (
     recordid        BIGSERIAL NOT NULL PRIMARY KEY,
     exprecordid     BIGINT NOT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     materialid      INTEGER REFERENCES materials(materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     itemid          INTEGER REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
     rank            INTEGER DEFAULT 0,
     type            INTEGER NOT NULL,
-    outcome         VARCHAR
+    payload         VARCHAR
 );
 
 /*

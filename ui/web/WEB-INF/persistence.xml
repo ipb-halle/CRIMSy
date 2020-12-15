@@ -33,8 +33,8 @@
         <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>
         <class>de.ipb_halle.lbac.exp.ExperimentEntity</class>
         <class>de.ipb_halle.lbac.exp.ExpRecordEntity</class>
+        <class>de.ipb_halle.lbac.exp.LinkedDataEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.AssayEntity</class>
-        <class>de.ipb_halle.lbac.exp.assay.AssayRecordEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.SOPEntity</class>
         <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity</class>

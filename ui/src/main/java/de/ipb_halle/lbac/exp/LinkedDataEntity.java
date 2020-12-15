@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.assay;
+package de.ipb_halle.lbac.exp;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -31,8 +31,8 @@ import org.hibernate.annotations.Type;
  * @author fbroda
  */
 @Entity
-@Table(name = "exp_assay_records")
-public class AssayRecordEntity implements Serializable {
+@Table(name = "exp_linked_data")
+public class LinkedDataEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
@@ -53,10 +53,10 @@ public class AssayRecordEntity implements Serializable {
     private int rank;
 
     @Column
-    private int type;
+    private LinkedDataType type;
 
     @Column
-    private String outcome;
+    private String payload;
 
     public Long getExpRecordId() {
         return this.exprecordid;
@@ -70,8 +70,8 @@ public class AssayRecordEntity implements Serializable {
         return this.materialid;
     }
 
-    public String getOutcome() {
-        return this.outcome;
+    public String getPayload() {
+        return this.payload;
     }
 
     public int getRank() {
@@ -82,41 +82,41 @@ public class AssayRecordEntity implements Serializable {
         return this.recordid;
     }
 
-    public int getType() {
+    public LinkedDataType getType() {
         return type;
     }
 
-    public AssayRecordEntity setExpRecordId(Long exprecordid) {
+    public LinkedDataEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
         return this;
     }
 
-    public AssayRecordEntity setItemId(Integer itemid) {
+    public LinkedDataEntity setItemId(Integer itemid) {
         this.itemid = itemid;
         return this;
     }
 
-    public AssayRecordEntity setMaterialId(Integer materialid) {
+    public LinkedDataEntity setMaterialId(Integer materialid) {
         this.materialid = materialid;
         return this;
     }
 
-    public AssayRecordEntity setOutcome(String outcome) {
-        this.outcome = outcome;
+    public LinkedDataEntity setPayload(String payload) {
+        this.payload = payload;
         return this;
     }
 
-    public AssayRecordEntity setRank(int rank) {
+    public LinkedDataEntity setRank(int rank) {
         this.rank = rank;
         return this;
     }
 
-    public AssayRecordEntity setRecordId(Long recordid) {
+    public LinkedDataEntity setRecordId(Long recordid) {
         this.recordid = recordid;
         return this;
     }
 
-    public AssayRecordEntity setType(int type) {
+    public LinkedDataEntity setType(LinkedDataType type) {
         this.type = type;
         return this;
     }
