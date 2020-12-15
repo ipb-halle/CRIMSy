@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import javax.ejb.Init;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -163,6 +162,10 @@ public class ProjectBean implements Serializable, ACObjectBean {
     public void actionDeleteProject(Project p) {
         projectService.changeDeactivationState(p.getId(), true);
         reloadReadableProjects();
+    }
+
+    public ProjectService getProjectService() {
+        return projectService;
     }
 
 }

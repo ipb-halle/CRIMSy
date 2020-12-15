@@ -43,7 +43,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class HistoryOperation  implements Serializable{
+public class HistoryOperation implements Serializable {
 
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected ProjectBean projectBean;
@@ -107,7 +107,6 @@ public class HistoryOperation  implements Serializable{
         applyNegativeHazards();
         applyNegativeStorage();
         materialEditState.changeVersionDateToPrevious(materialEditState.getCurrentVersiondate());
-
     }
 
     public void applyPositiveStorage() {
@@ -228,7 +227,7 @@ public class HistoryOperation  implements Serializable{
         MaterialOverviewDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialOverviewDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
             if (diff.getProjectIdOld() != null) {
-                materialEditState.setCurrentProject(projectBean.getReadableProjectById(diff.getProjectIdOld()));
+                materialEditState.setCurrentProject(projectBean.getProjectService().loadProjectById(diff.getProjectIdOld()));
             }
         }
     }
@@ -237,7 +236,7 @@ public class HistoryOperation  implements Serializable{
         MaterialOverviewDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialOverviewDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
             if (diff.getProjectIdOld() != null) {
-                materialEditState.setCurrentProject(projectBean.getReadableProjectById(diff.getProjectIdNew()));
+                materialEditState.setCurrentProject(projectBean.getProjectService().loadProjectById(diff.getProjectIdNew()));
             }
         }
     }
@@ -291,8 +290,8 @@ public class HistoryOperation  implements Serializable{
         if (indexDiff != null) {
             for (int i = 0; i < indexDiff.getEntries(); i++) {
                 if (indexDiff.getTypeId().get(i) == 1) {
-                    int currentSize=materialNameBean.getNames().size();
-                    for (int j =  currentSize- 1; j >= 0; j--) {
+                    int currentSize = materialNameBean.getNames().size();
+                    for (int j = currentSize - 1; j >= 0; j--) {
                         MaterialName mn = materialNameBean.getNames().get(j);
                         String newLan = indexDiff.getLanguageNew().get(i);
                         String newValue = indexDiff.getValuesNew().get(i);

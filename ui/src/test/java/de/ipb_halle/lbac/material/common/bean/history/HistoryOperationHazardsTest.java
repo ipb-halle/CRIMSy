@@ -36,7 +36,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 
