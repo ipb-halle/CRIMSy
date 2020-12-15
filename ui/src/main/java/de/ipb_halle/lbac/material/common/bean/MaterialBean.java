@@ -175,7 +175,7 @@ public class MaterialBean implements Serializable {
                 currentVersionDate = m.getHistory().getChanges().lastKey();
             }
             hazards = new HazardInformation(m);
-            Project p = projectBean.getReadableProjectById(m.getProjectId());
+            Project p = projectService.loadProjectById(m.getProjectId());
             materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m, hazards);
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
