@@ -242,7 +242,7 @@ public class MaterialService implements Serializable {
         permissionConditionBuilder
                 = new PermissionConditionBuilder(aclService, request.getUser(), ACPermission.permREAD)
                         .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
-        
+
         String sql = sqlBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(
                         request.getCondition()),
@@ -289,6 +289,7 @@ public class MaterialService implements Serializable {
                 taxonomyService.loadTaxonomyById(entity.getTaxoid()),
                 tissue
         );
+        b.setCreationTime(me.getCtime());
         b.setACList(aclService.loadById(me.getAclist_id()));
         b.setOwner(memberService.loadUserById(me.getOwnerid()));
         return b;
@@ -489,7 +490,6 @@ public class MaterialService implements Serializable {
         }
         editedMaterialSaver.init(comparator, diffs, newMaterial, oldMaterial,
                 projectAcl, actorId);
-
         editedMaterialSaver.saveEditedMaterialOverview();
         editedMaterialSaver.saveEditedMaterialIndices();
         editedMaterialSaver.saveEditedMaterialStructure();
@@ -497,7 +497,6 @@ public class MaterialService implements Serializable {
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
-
     }
 
     /**

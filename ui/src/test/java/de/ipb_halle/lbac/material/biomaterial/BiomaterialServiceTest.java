@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
@@ -24,13 +25,17 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchTarget;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,13 +97,39 @@ public class BiomaterialServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadBioMaterials() {
-
+        String materialName = "Löwnzahn";
         Taxonomy taxo = taxonomyService.loadTaxonomy(new HashMap<>(), true).get(15);
         Tissue tissue = saveTissueInDB(taxo);
         List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName("Löwnzahn", "de", 1));
+        names.add(new MaterialName(materialName, "de", 1));
         BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
-        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>());
+        ACList materialACList = project.getUserGroups();
+        materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>());
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(owner, 0, 100);
+        requestBuilder.addTypes(MaterialType.BIOMATERIAL);
+        SearchResult result = materialService.getReadableMaterials(requestBuilder.buildSearchRequest());
+        List<BioMaterial> bioMaterials = result.getAllFoundObjects(BioMaterial.class, result.getNode());
+        Assert.assertEquals(1, bioMaterials.size());
+        BioMaterial bm = bioMaterials.get(0);
+        Assert.assertEquals(materialACList.getId(), bm.getACList().getId());
+        Assert.assertNotNull(bm.getCreationTime());
+        Assert.assertEquals(0, bm.getDetailRights().size());
+        Assert.assertEquals(materialName, bm.getFirstName());
+        Assert.assertNotNull(bm.getHazards());
+        Assert.assertEquals(0, bm.getHistory().getChanges().size());
+        Assert.assertEquals(0, bm.getIndices().size());
+        Assert.assertEquals(materialName, bm.getNameToDisplay());
+        Assert.assertEquals(1, bm.getNames().size());
+        Assert.assertEquals("", bm.getNumber());
+        Assert.assertEquals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, bm.getOwner().getId());
+        Assert.assertEquals(project.getId(), bm.getProjectId(), 0);
+        Assert.assertNotNull(bm.getStorageInformation());
+        Assert.assertEquals(taxo.getId(), bm.getTaxonomy().getId());
+        Assert.assertEquals(taxo.getId(), bm.getTaxonomyId(), 0);
+        Assert.assertEquals(tissue.getId(), bm.getTissueId(), 0);
+        Assert.assertEquals(tissue.getNameToDisplay(), bm.getTissueName());
+        Assert.assertEquals(MaterialType.BIOMATERIAL, bm.getType());
+        Assert.assertEquals(SearchTarget.MATERIAL, bm.getTypeToDisplay().getGeneralType());
 
     }
 

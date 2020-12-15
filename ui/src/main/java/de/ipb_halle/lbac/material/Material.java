@@ -110,10 +110,6 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
         return type;
     }
 
-    public String getSecurityInformation() {
-        return "danger";
-    }
-
     public Integer getProjectId() {
         return projectId;
     }

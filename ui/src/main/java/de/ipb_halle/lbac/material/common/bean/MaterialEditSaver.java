@@ -206,17 +206,19 @@ public class MaterialEditSaver implements Serializable {
 
     public void saveEditedMaterialHazards() {
         MaterialHazardDifference hazardDiff = comparator.getDifferenceOfType(diffs, MaterialHazardDifference.class);
+
         if (hazardDiff != null) {
             List<HazardsMaterialHistEntity> dbEntities = hazardDiff.createDbInstances();
             for (HazardsMaterialHistEntity dbEntity : dbEntities) {
                 this.materialService.getEm().persist(dbEntity);
             }
+            deleteOldHazards(newMaterial);
+            List<HazardsMaterialsEntity> newDbEntities = newMaterial.getHazards().createDBInstances(newMaterial.getId());
+            for (HazardsMaterialsEntity dbEntity : newDbEntities) {
+                this.materialService.getEm().persist(dbEntity);
+            }
         }
-        deleteOldHazards(newMaterial);
-        List<HazardsMaterialsEntity> dbEntities = newMaterial.getHazards().createDBInstances(newMaterial.getId());
-        for (HazardsMaterialsEntity dbEntity : dbEntities) {
-            this.materialService.getEm().persist(dbEntity);
-        }
+
     }
 
     public void saveEditedMaterialStructure() {
