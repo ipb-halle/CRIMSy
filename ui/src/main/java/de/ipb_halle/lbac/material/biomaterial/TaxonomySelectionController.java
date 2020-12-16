@@ -99,5 +99,12 @@ public class TaxonomySelectionController implements Serializable {
     public void setSelectedTaxonomyById(int id) {
         setSelectedTaxonomy(treeController.getTaxonomyService().loadTaxonomyById(id));
     }
+    
+    public void deactivateTree(){
+        treeController.deactivateTree();
+    }
+     public void activateTree(){
+        treeController.activateTree();
+    }
 
 }

@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -425,6 +426,14 @@ public class HistoryOperation implements Serializable {
         if (bioMatDiff != null && bioMatDiff.getTaxonomyid_new() != null) {
             taxonomySelectionController.setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_new());
         }
+        if (taxonomySelectionController != null) {
+            if (!materialEditState.isMostRecentVersion()) {
+                taxonomySelectionController.deactivateTree();
+            } else {
+                taxonomySelectionController.activateTree();
+            }
+        }
+
     }
 
     public void applyNegativeTaxonomy() {
@@ -438,6 +447,10 @@ public class HistoryOperation implements Serializable {
         if (bioMatDiff != null && bioMatDiff.getTaxonomyid_old() != null) {
             taxonomySelectionController.setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_old());
         }
+        if (taxonomySelectionController != null) {
+            taxonomySelectionController.deactivateTree();
+        }
+
     }
 
 }

@@ -269,5 +269,18 @@ public class TaxonomyTreeController implements Serializable {
     public TaxonomyService getTaxonomyService() {
         return taxonomyService;
     }
+    
+    public void deactivateTree(){
+         for (TreeNode tn : getAllChildren(taxonomyTree)) {
+             tn.setSelectable(false);
+         }
+    }
+    public void activateTree(){
+         for (TreeNode tn : getAllChildren(taxonomyTree)) {
+             tn.setSelectable(true);
+         }
+    }
+    
+   
 
 }
