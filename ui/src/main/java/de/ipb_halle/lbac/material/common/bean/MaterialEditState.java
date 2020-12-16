@@ -110,11 +110,15 @@ public class MaterialEditState implements Serializable{
                 getMaterialBeforeEdit()
                         .getHistory()
                         .getFollowingKey(date));
-
     }
 
     public HazardInformation getHazards() {
         return hazards;
     }
+    
+    public boolean isMostRecentVersion() {
+        return materialToEdit.getHistory().isMostRecentVersion(currentVersiondate);
+    }
+            
 
 }
