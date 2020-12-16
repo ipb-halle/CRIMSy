@@ -224,6 +224,7 @@ public class TaxonomyTreeController implements Serializable {
             if (ta.getId() == t.getId()) {
                 n.setSelected(true);
                 selectedTaxonomy = n;
+                idOfSelectedTaxonomy=ta.getId();
                 expandTree();
             } else {
                 n.setSelected(false);
@@ -263,6 +264,10 @@ public class TaxonomyTreeController implements Serializable {
      */
     public void setTaxonomyTree(TreeNode taxonomyTree) {
         this.taxonomyTree = taxonomyTree;
+    }
+
+    public TaxonomyService getTaxonomyService() {
+        return taxonomyService;
     }
 
 }

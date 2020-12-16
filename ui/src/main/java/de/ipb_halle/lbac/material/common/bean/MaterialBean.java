@@ -51,7 +51,6 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -133,7 +132,7 @@ public class MaterialBean implements Serializable {
     private MaterialCreationSaver creationSaver;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    TaxonomySelectionController taxonomyController;
+    private TaxonomySelectionController taxonomyController;
     private TissueController tissueController;
 
     public enum Mode {
@@ -164,9 +163,9 @@ public class MaterialBean implements Serializable {
         } catch (Exception e) {
             logger.error(e);
         }
-        
+
     }
-    
+
     public void startMaterialEdit(Material m) {
         try {
             initState();
@@ -198,7 +197,14 @@ public class MaterialBean implements Serializable {
                 BioMaterial bm = (BioMaterial) m;
                 taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, bm.getTaxonomy());
             }
-            historyOperation = new HistoryOperation(materialEditState, projectBean, materialNameBean, materialIndexBean, structureInfos, storageClassInformation);
+            historyOperation = new HistoryOperation(
+                    materialEditState,
+                    projectBean,
+                    materialNameBean,
+                    materialIndexBean,
+                    structureInfos,
+                    storageClassInformation,
+                    taxonomyController);
             mode = Mode.EDIT;
         } catch (Exception e) {
             logger.info("Error in Line " + e.getStackTrace()[0].getLineNumber());

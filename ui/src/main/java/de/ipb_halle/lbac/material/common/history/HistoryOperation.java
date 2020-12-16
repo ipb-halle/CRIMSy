@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
@@ -52,6 +54,7 @@ public class HistoryOperation implements Serializable {
     protected MaterialIndexBean indexBean;
     protected StructureInformation structureInfos;
     protected StorageClassInformation storageInformation;
+    protected TaxonomySelectionController taxonomySelectionController;
 
     /**
      * Initialises the functionality by neccessary services and the history
@@ -64,6 +67,7 @@ public class HistoryOperation implements Serializable {
      * @param indexBean
      * @param structureInfos
      * @param storageClassInformation
+     * @param taxonomySelectionController
      */
     public HistoryOperation(
             MaterialEditState materialEditState,
@@ -71,13 +75,15 @@ public class HistoryOperation implements Serializable {
             MaterialNameBean nameBean,
             MaterialIndexBean indexBean,
             StructureInformation structureInfos,
-            StorageClassInformation storageClassInformation) {
+            StorageClassInformation storageClassInformation,
+            TaxonomySelectionController taxonomySelectionController) {
         this.projectBean = projectBean;
         this.materialEditState = materialEditState;
         this.materialNameBean = nameBean;
         this.indexBean = indexBean;
         this.structureInfos = structureInfos;
         this.storageInformation = storageClassInformation;
+        this.taxonomySelectionController = taxonomySelectionController;
     }
 
     /**
@@ -92,6 +98,7 @@ public class HistoryOperation implements Serializable {
         applyPositiveIndices();
         applyPositiveHazards();
         applyPositiveStorage();
+        applyPositiveTaxonomy();
 
     }
 
@@ -106,6 +113,7 @@ public class HistoryOperation implements Serializable {
         applyNegativeIndices();
         applyNegativeHazards();
         applyNegativeStorage();
+        applyNegativeTaxonomy();
         materialEditState.changeVersionDateToPrevious(materialEditState.getCurrentVersiondate());
     }
 
@@ -404,6 +412,32 @@ public class HistoryOperation implements Serializable {
             }
         }
         return null;
+    }
+
+    public void applyPositiveTaxonomy() {
+        BioMaterialDifference bioMatDiff = materialEditState
+                .getMaterialBeforeEdit()
+                .getHistory()
+                .getDifferenceOfTypeAtDate(
+                        BioMaterialDifference.class,
+                        materialEditState.getCurrentVersiondate());
+
+        if (bioMatDiff != null && bioMatDiff.getTaxonomyid_new() != null) {
+            taxonomySelectionController.setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_new());
+        }
+    }
+
+    public void applyNegativeTaxonomy() {
+        BioMaterialDifference bioMatDiff = materialEditState
+                .getMaterialBeforeEdit()
+                .getHistory()
+                .getDifferenceOfTypeAtDate(
+                        BioMaterialDifference.class,
+                        materialEditState.getCurrentVersiondate());
+
+        if (bioMatDiff != null && bioMatDiff.getTaxonomyid_old() != null) {
+            taxonomySelectionController.setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_old());
+        }
     }
 
 }
