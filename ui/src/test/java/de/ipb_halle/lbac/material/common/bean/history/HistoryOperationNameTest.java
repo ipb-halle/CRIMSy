@@ -65,7 +65,7 @@ public class HistoryOperationNameTest {
         mnb.setNames(names);
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(),new StorageClassInformation());
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(),new StorageClassInformation(),null);
     }
 
     @Test

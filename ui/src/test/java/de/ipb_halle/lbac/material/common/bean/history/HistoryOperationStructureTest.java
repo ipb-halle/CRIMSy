@@ -48,8 +48,6 @@ public class HistoryOperationStructureTest {
     HistoryOperation instance;
     MaterialStructureDifference sdiff;
 
-    ;
-
     @Before
     public void init() {
 
@@ -60,7 +58,7 @@ public class HistoryOperationStructureTest {
         mes.setCurrentVersiondate(currentDate);
         strucInfo = new StructureInformation();
 
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), new MaterialIndexBean(), strucInfo, new StorageClassInformation());
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), new MaterialIndexBean(), strucInfo, new StorageClassInformation(), null);
     }
 
     @Test
