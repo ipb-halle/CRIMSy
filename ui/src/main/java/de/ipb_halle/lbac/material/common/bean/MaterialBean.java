@@ -319,65 +319,75 @@ public class MaterialBean implements Serializable {
         }
     }
 
-    public void saveEditedMaterial() {
+    public void saveEditedMaterial() throws Exception {
+        setBasicInfos();
+        if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
+            saveEditedStructure();
+        }
+        if (materialEditState.getMaterialToEdit().getType() == MaterialType.BIOMATERIAL) {
+            saveEditedBioMaterial();
+        }
+
+        materialService.saveEditedMaterial(
+                materialEditState.getMaterialToEdit(),
+                materialEditState.getMaterialBeforeEdit(),
+                materialEditState.getCurrentProject().getUserGroups().getId(),
+                userBean.getCurrentAccount().getId());
+
+    }
+
+    private void setBasicInfos() {
         materialEditState.getMaterialToEdit().setProjectId(materialEditState.getCurrentProject().getId());
         materialEditState.getMaterialToEdit().setNames(materialNameBean.getNames());
         materialEditState.getMaterialToEdit().setIndices(materialIndexBean.getIndices());
         materialEditState.getMaterialToEdit().setHazards(hazards);
         materialEditState.getMaterialToEdit().setStorageInformation(storageClassInformation);
+    }
 
-        if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
-            Structure s = (Structure) materialEditState.getMaterialToEdit();
-            Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
-            if (m.isEmptyMolecule()) {
-                s.setMolecule(null);
-                if (calculateFormulaAndMassesByDb) {
-                    structureInfos.setExactMolarMass(null);
-                    structureInfos.setMolarMass(null);
-                    structureInfos.setSumFormula(null);
-                }
-            } else {
-                s.setMolecule(m);
-                if (calculateFormulaAndMassesByDb) {
-                    structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));
-                    structureInfos.setExactMolarMass(moleculeService.getExactMolarMassOfMolecule(structureInfos.getStructureModel()));
-                    structureInfos.setMolarMass(moleculeService.getMolarMassOfMolecule(structureInfos.getStructureModel()));
-                }
+    private void saveEditedStructure() {
+        Structure s = (Structure) materialEditState.getMaterialToEdit();
+        Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
+        if (m.isEmptyMolecule()) {
+            s.setMolecule(null);
+            if (calculateFormulaAndMassesByDb) {
+                structureInfos.setExactMolarMass(null);
+                structureInfos.setMolarMass(null);
+                structureInfos.setSumFormula(null);
             }
-            s.setExactMolarMass(structureInfos.getExactMolarMass());
-            s.setMolarMass(structureInfos.getMolarMass());
-            s.setSumFormula(structureInfos.getSumFormula());
+        } else {
+            s.setMolecule(m);
+            if (calculateFormulaAndMassesByDb) {
+                structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));
+                structureInfos.setExactMolarMass(moleculeService.getExactMolarMassOfMolecule(structureInfos.getStructureModel()));
+                structureInfos.setMolarMass(moleculeService.getMolarMassOfMolecule(structureInfos.getStructureModel()));
+            }
         }
+        s.setExactMolarMass(structureInfos.getExactMolarMass());
+        s.setMolarMass(structureInfos.getMolarMass());
+        s.setSumFormula(structureInfos.getSumFormula());
+    }
 
-        if (materialEditState.getMaterialToEdit().getType() == MaterialType.BIOMATERIAL) {
-            BioMaterial biomaterial = (BioMaterial) materialEditState.getMaterialToEdit();
-            biomaterial.setTaxonomy((Taxonomy) taxonomyController.getSelectedTaxonomy().getData());
-        }
-        try {
-            materialService.saveEditedMaterial(
-                    materialEditState.getMaterialToEdit(),
-                    materialEditState.getMaterialBeforeEdit(),
-                    materialEditState.getCurrentProject().getUserGroups().getId(),
-                    userBean.getCurrentAccount().getId()
-            );
-        } catch (Exception e) {
-            logger.error(e);
-        }
+    private void saveEditedBioMaterial() {
+        BioMaterial biomaterial = (BioMaterial) materialEditState.getMaterialToEdit();
+        biomaterial.setTaxonomy((Taxonomy) taxonomyController.getSelectedTaxonomy().getData());
     }
 
     public void actionSaveMaterial() {
-        if (mode == Mode.CREATE) {
-            saveNewMaterial();
-            UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_new_completed");
+        try {
+            if (mode == Mode.CREATE) {
+                saveNewMaterial();
+                UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_new_completed");
 
-        } else {
-            saveEditedMaterial();
-            UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_edit_completed");
+            } else {
+                saveEditedMaterial();
+                UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_edit_completed");
 
+            }
+            overviewBean.getSearchController().actionStartMaterialSearch();
+            navigator.navigate("/material/materials");
+        } catch (Exception e) {
+            UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_error");
         }
-        overviewBean.getSearchController().actionStartMaterialSearch();
-        navigator.navigate("/material/materials");
-
     }
 
     public StructureInformation getStructureInfos() {
