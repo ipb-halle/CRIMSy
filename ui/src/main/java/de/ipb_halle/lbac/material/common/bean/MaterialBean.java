@@ -375,7 +375,7 @@ public class MaterialBean implements Serializable {
             UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_edit_completed");
 
         }
-        overviewBean.getTableController().reloadDataTableItems();
+        overviewBean.getSearchController().actionStartMaterialSearch();
         navigator.navigate("/material/materials");
 
     }
@@ -427,13 +427,11 @@ public class MaterialBean implements Serializable {
         errorMessages.clear();
         int count = 1;
         for (MaterialName mn : materialNameBean.getNames()) {
-
             if (mn.getValue().isEmpty()) {
                 isValide = false;
                 errorMessages.add("Materialname at position " + count + " must not be empty");
             }
             count++;
-
         }
         return isValide;
     }

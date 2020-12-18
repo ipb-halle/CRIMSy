@@ -24,9 +24,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -125,8 +123,6 @@ public class MaterialSearchMaskController implements Serializable {
 
     private MaterialSearchMaskValues getValues() {
         values = new MaterialSearchMaskValues();
-
-        Map<String, Object> cmap = new HashMap<>();
         if (name != null && !name.trim().isEmpty()) {
             values.materialName = name;
         }
