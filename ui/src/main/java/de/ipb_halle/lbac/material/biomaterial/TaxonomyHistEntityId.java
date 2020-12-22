@@ -41,8 +41,33 @@ public class TaxonomyHistEntityId implements Serializable {
         this.actorid = actorid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            assert(mdate != null);
+            assert(taxonomyId != null);
+            assert(actorid != null);
+
+            if (o instanceof TaxonomyHistEntityId) {
+                TaxonomyHistEntityId otherId = (TaxonomyHistEntityId) o;
+                return taxonomyId.equals(otherId.taxonomyId)
+                    && mdate.equals(otherId.mdate)
+                    && actorid.equals(otherId.actorid);
+            }
+        }
+        return false;
+    }
+
     public Date getMdate() {
         return mdate;
+    }
+
+    public int hashCode() {
+        return taxonomyId.intValue() + mdate.hashCode() + actorid.intValue();
     }
 
     public void setMdate(Date mdate) {

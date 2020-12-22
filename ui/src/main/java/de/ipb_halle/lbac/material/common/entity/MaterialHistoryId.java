@@ -39,8 +39,30 @@ public class MaterialHistoryId implements Serializable {
         this.mDate = mDate;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            assert(mDate != null);
+            if (o instanceof MaterialHistoryId) {
+                MaterialHistoryId otherId = (MaterialHistoryId) o;
+                return (otherId.materialid == this.materialid)
+                    && mDate.equals(otherId.mDate);
+            }
+        }
+        return false;
+    }
+
     public int getMaterialid() {
         return materialid;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.materialid + this.mDate.hashCode();
     }
 
     public void setMaterialid(int materialid) {

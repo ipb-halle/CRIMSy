@@ -39,8 +39,30 @@ public class StructureHistEntityId implements Serializable {
         this.mtime = mtime;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            assert(mtime != null);
+            if (o instanceof StructureHistEntityId) {
+                StructureHistEntityId otherId = (StructureHistEntityId) o;
+                return (otherId.id == this.id)
+                    && mtime.equals(otherId.mtime);
+            }
+        }
+        return false;
+    }
+
+
     public int getId() {
         return id;
+    }
+
+    public int hashCode() {
+        return this.id + this.mtime.hashCode();
     }
 
     public void setId(int id) {

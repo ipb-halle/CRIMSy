@@ -12,11 +12,4 @@
             <component-class>de.ipb_halle.lbac.plugin.UIMolPlugin</component-class>
         </component>
     </tag>
-    <tag>
-        <tag-name>container</tag-name>
-        <component>
-            <component-type>ContainerComponent</component-type> 
-            <component-class>de.ipb_halle.lbac.items.components.ContainerComponent</component-class>
-        </component>
-    </tag>
 </facelet-taglib>

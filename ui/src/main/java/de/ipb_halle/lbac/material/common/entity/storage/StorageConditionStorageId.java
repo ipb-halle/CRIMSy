@@ -38,8 +38,29 @@ public class StorageConditionStorageId implements Serializable {
         this.materialid = materialID;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            if (o instanceof StorageConditionStorageId) {
+                StorageConditionStorageId otherId = (StorageConditionStorageId) o;
+                return (otherId.materialid == this.materialid)
+                    && (otherId.conditionid == this.conditionid);
+            }
+        }
+        return false;
+    }
+
     public int getConditionid() {
         return conditionid;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.conditionid + this.materialid;
     }
 
     public void setConditionid(int conditionid) {

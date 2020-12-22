@@ -41,8 +41,34 @@ public class BioMaterialHistEntityId implements Serializable {
         this.actorid = actorid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            assert(mtime != null);
+            assert(id != null);
+            assert(actorid != null);
+
+            if (o instanceof BioMaterialHistEntityId) {
+                BioMaterialHistEntityId otherId = (BioMaterialHistEntityId) o;
+                return id.equals(otherId.id)
+                    && mtime.equals(otherId.mtime)
+                    && actorid.equals(otherId.actorid);
+            }
+        }
+        return false;
+    }
+
     public Date getMtime() {
         return mtime;
+    }
+
+    @Override
+    public int hashCode() {
+        return id.intValue() + mtime.hashCode() + actorid.intValue();
     }
 
     public void setMtime(Date mtime) {

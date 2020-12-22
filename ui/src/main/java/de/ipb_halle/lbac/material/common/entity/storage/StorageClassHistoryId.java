@@ -39,8 +39,30 @@ public class StorageClassHistoryId implements Serializable {
         this.mdate = mdate;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            assert(mdate != null);
+            if (o instanceof StorageClassHistoryId) {
+                StorageClassHistoryId otherId = (StorageClassHistoryId) o;
+                return (otherId.materialid == this.materialid)
+                    && mdate.equals(otherId.mdate);
+            }
+        }
+        return false;
+    }
+
     public int getMaterialid() {
         return materialid;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.materialid + this.mdate.hashCode();
     }
 
     public void setMaterialid(int materialid) {

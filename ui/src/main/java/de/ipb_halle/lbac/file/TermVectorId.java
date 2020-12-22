@@ -41,12 +41,36 @@ public class TermVectorId implements Serializable {
         this.file_id = fileId;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            assert(file_id != null);
+            assert(wordroot != null);
+
+            if (o instanceof TermVectorId) {
+                TermVectorId otherId = (TermVectorId) o;
+                return file_id.equals(otherId.file_id)
+                    && wordroot.equals(otherId.wordroot);
+            }
+        }
+        return false;
+    }
+
     public Integer getFile_id() {
         return file_id;
     }
 
     public String getWordroot() {
         return wordroot;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.wordroot.hashCode() + this.file_id.intValue();
     }
 
     public void setFile_id(Integer file_id) {

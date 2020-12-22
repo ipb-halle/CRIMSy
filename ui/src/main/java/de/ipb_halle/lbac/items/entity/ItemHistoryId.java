@@ -41,8 +41,32 @@ public class ItemHistoryId implements Serializable {
         this.mdate = mdate;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            assert(mdate != null);
+            assert(actorid != null);
+            if (o instanceof ItemHistoryId) {
+                 ItemHistoryId otherId = (ItemHistoryId) o;
+                return (otherId.itemid == this.itemid)
+                    && actorid.equals(otherId.actorid)
+                    && mdate.equals(otherId.mdate);
+            }
+        }
+        return false;
+    }
+
     public int getItemid() {
         return itemid;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.itemid + this.actorid.intValue() + this.mdate.hashCode();
     }
 
     public void setItemid(int itemid) {

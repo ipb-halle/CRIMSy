@@ -513,12 +513,117 @@ INSERT INTO taxonomy_level VALUES(19,'subspecies',1900);
 INSERT INTO taxonomy_level VALUES(20,'variety',2000);
 INSERT INTO taxonomy_level VALUES(21,'form',2100);
 
+
+
+/*
+ * ToDo: xxxxx add ON UPDATE CASCADE/ ON DELETE CASCADE ?
+ */
+
+CREATE TABLE experiments (
+    experimentid    SERIAL NOT NULL PRIMARY KEY,
+    code            VARCHAR,
+    description     VARCHAR,
+    template        BOOLEAN NOT NULL DEFAULT FALSE,
+    aclist_id       INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    owner_id        INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    ctime           TIMESTAMP NOT NULL DEFAULT now(),
+    projectid       INTEGER REFERENCES projects(id)  ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE exp_records (
+    exprecordid     BIGSERIAL NOT NULL PRIMARY KEY,
+    experimentid    INTEGER NOT NULL REFERENCES experiments (experimentid) ON UPDATE CASCADE ON DELETE CASCADE,
+    changetime      TIMESTAMP,
+    creationtime    TIMESTAMP,
+    type            INTEGER,
+    revision        INTEGER NOT NULL DEFAULT 1,
+    next            BIGINT DEFAULT NULL REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+/*
+ * Note: currently either materialid or itemid must be set
+ *
+ * ToDo: 
+ * - add references to documents, users, etc.
+ * - additional indexing for payload column (works 
+ *   only if payload is of JSON type; see example below)
+ */
+CREATE TABLE exp_linked_data (
+    recordid        BIGSERIAL NOT NULL PRIMARY KEY,
+    exprecordid     BIGINT NOT NULL 
+                    REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    materialid      INTEGER 
+                    REFERENCES materials(materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    itemid          INTEGER CHECK (COALESCE(materialid, itemid) IS NOT NULL)
+                    REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    rank            INTEGER DEFAULT 0,
+    type            INTEGER NOT NULL,
+    payload         VARCHAR
+);
+
+/*
+ * B-tree index example:
+ * CREATE INDEX i_exp_linked_data_val ON exp_linked_data (((payload->>'val')::DOUBLE PRECISION))
+ *      WHERE (payload->>'val') IS NOT NULL;
+ */
+
+CREATE TABLE exp_assays (
+    exprecordid     BIGINT NOT NULL PRIMARY KEY REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    outcometype     INTEGER NOT NULL,
+    remarks         VARCHAR,
+    targetid        INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE SET NULL,
+    units           VARCHAR
+);
+
+/* ToDo: xxxxx create fulltext index on exp_texts! */
+CREATE TABLE exp_texts (
+    exprecordid     BIGINT NOT NULL PRIMARY KEY REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    text            VARCHAR 
+);
+
+/**
+ * - Agency: job scheduling
+ * - barcode printing
+ */
+CREATE TABLE jobs (
+    jobid       SERIAL NOT NULL PRIMARY KEY,
+    input       BYTEA,
+    jobdate     TIMESTAMP NOT NULL DEFAULT now(),
+    jobtype     INTEGER NOT NULL,
+    output      BYTEA,
+    ownerid     INTEGER REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    queue       VARCHAR NOT NULL,
+    status      INTEGER NOT NULL
+);
+
+CREATE TABLE printers (
+    queue       VARCHAR NOT NULL PRIMARY KEY,
+    name        VARCHAR NOT NULL,
+    aclistid    INTEGER NOT NULL REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    config      VARCHAR NOT NULL DEFAULT '',
+    contact     VARCHAR NOT NULL DEFAULT '',
+    driver      VARCHAR NOT NULL,
+    model       VARCHAR NOT NULL DEFAULT '',
+    ownerid     INTEGER NOT NULL REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    place       VARCHAR NOT NULL DEFAULT '',
+    status      INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE labels (
+    id          SERIAL NOT NULL PRIMARY KEY,
+    name        VARCHAR NOT NULL DEFAULT '',
+    description VARCHAR NOT NULL DEFAULT '',
+    labeltype   VARCHAR NOT NULL DEFAULT '',
+    printermodel VARCHAR NOT NULL DEFAULT '',
+    config      VARCHAR NOT NULL DEFAULT ''
+);
+
+CREATE TABLE preferences (
+    id          SERIAL NOT NULL PRIMARY KEY,
+    user_id     INTEGER NOT NULL REFERENCES usersgroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    key         VARCHAR NOT NULL,
+    value       VARCHAR,
+    UNIQUE (user_id, key)
+);
+
 COMMIT TRANSACTION;
-
-
-
-
-
-
-
-

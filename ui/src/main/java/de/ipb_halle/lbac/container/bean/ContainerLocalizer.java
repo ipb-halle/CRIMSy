@@ -18,12 +18,15 @@
 package de.ipb_halle.lbac.container.bean;
 
 import com.corejsf.util.Messages;
+import java.io.Serializable;
 
 /**
  *
  * @author fmauz
  */
-public class ContainerLocalizer {
+public class ContainerLocalizer implements Serializable {
+
+    private final static long serialVersionUID = 1L;
 
     private String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 

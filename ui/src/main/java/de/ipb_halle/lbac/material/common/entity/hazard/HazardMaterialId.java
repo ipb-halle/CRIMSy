@@ -40,8 +40,29 @@ public class HazardMaterialId implements Serializable {
         this.materialID = materialID;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            if (o instanceof HazardMaterialId) {
+                HazardMaterialId otherId = (HazardMaterialId) o;
+                return (otherId.materialID == this.materialID)
+                    && (otherId.typeID == this.typeID);
+            }
+        }
+        return false;
+    }
+
     public int getTypeID() {
         return typeID;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.typeID + this.materialID;
     }
 
     public void setTypeID(int typeID) {

@@ -20,15 +20,22 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <description>Leibniz Bioactives Cloud</description>
     <display-name>Leibniz Bioactives Cloud (UI and REST)</display-name>
+
+    <!--
+        2020-12-22: FBroda
+        According to TomEE logs, this parameter is not needed, because it is 
+        specified already in the deployment descriptor.
+
     <context-param>
         <param-name>javax.faces.CONFIG_FILES</param-name>
         <param-value>/WEB-INF/faces-config.xml</param-value>
-        <!--
+
             Comma separated list of URIs of (additional) faces configs files.
             (e.g. /WEB-INF/my-configs.xml)
             See JSF 1.0 PRD2, 10.3.2
-        -->
+
     </context-param>
+    -->
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>

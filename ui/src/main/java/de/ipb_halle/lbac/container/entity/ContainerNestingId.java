@@ -38,8 +38,29 @@ public class ContainerNestingId implements Serializable {
         this.targetid = targetid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o != null) {
+            if (this == o) {
+                return true;
+            }
+
+            if (o instanceof ContainerNestingId) {
+                ContainerNestingId otherId = (ContainerNestingId) o;
+                return (otherId.sourceid == this.sourceid)
+                    && (otherId.targetid == this.targetid);
+            }
+        }
+        return false;
+    }
+
     public int getSourceid() {
         return sourceid;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.sourceid + this.targetid;
     }
 
     public void setSourceid(int sourceid) {

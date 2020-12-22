@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.search.document.DocumentStatistic;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,7 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SearchResultImpl implements SearchResult {
+public class SearchResultImpl implements SearchResult, Serializable {
+
+    private final static long serialVersionUID = 1L;
 
     private Node node;
     protected List<Searchable> foundObjectsOfNode = new ArrayList<>();

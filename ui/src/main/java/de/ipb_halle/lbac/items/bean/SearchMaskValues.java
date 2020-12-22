@@ -17,11 +17,15 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import java.io.Serializable; 
+
 /**
  *
  * @author fmauz
  */
-public class SearchMaskValues {
+public class SearchMaskValues implements Serializable {
+
+    private final static long serialVersionUID = 1L;
 
     private String description;
     private String label;
