@@ -11,5 +11,12 @@
             <component-type>UIMolPlugin</component-type> 
             <component-class>de.ipb_halle.lbac.plugin.UIMolPlugin</component-class>
         </component>
+    <tag>
+    </tag>
+        <tag-name>augmentedText</tag-name>
+        <component>
+            <component-type>UIAugmentedText</component-type>
+            <component-class>de.ipb_halle.lbac.plugin.UIAugmentedText</component-class>
+        </component>
     </tag>
 </facelet-taglib>
