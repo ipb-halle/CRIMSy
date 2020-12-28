@@ -18,7 +18,10 @@
 package de.ipb_halle.lbac.plugin; 
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // import javax.el.ValueExpression;
 // import javax.el.ELContext;
@@ -106,4 +109,57 @@ public class UIAugmentedText extends UIInput {
           .replace("\n", "\\n")
           .replace("\r", "");
     }
+
+/*
+ * transform LinkedData records into clickable links
+ * (h:commandLink etc.)
+ *
+    public void setup() {
+        linkMap = new HashMap<> ();
+        linkMap.put("foo", "http://foofoo.foo");
+        linkMap.put("bar", "http://barbar.bar");
+    }
+
+    public String findLinks(String st) {
+        StringBuilder sb = new StringBuilder();
+
+        // does not recognize tokens at end of input
+        // when there is no trailing comma, dot, whitespace!
+        Pattern pattern = Pattern.compile("#\\w+[,\\.\\s]{1}");
+        Matcher matcher = pattern.matcher(st);
+
+        int start = 0;
+        int end = 0;
+        while(matcher.find()) {
+            end = matcher.start();
+            if (end > start) {
+                sb.append(st.substring(start, end));
+            }
+            start = matcher.end();
+            insertLink(sb, st.substring(end, start));
+        }
+        sb.append(st.substring(start));
+        return sb.toString();
+    }
+
+     *
+     * @param sb the StringBuilder to which the link should be appended
+     * @param linkMarker the link marker including a trailing character
+     * (comma, dot or whitespace), which will not be rendered as a link.
+     *
+    public void insertLink(StringBuilder sb, String linkMarker) {
+        int len = linkMarker.length();
+        String replacement = this.linkMap.get(linkMarker.substring(1, len - 1));
+        if (replacement != null) {
+            sb.append("<a href='");
+            sb.append(replacement);
+            sb.append("'>");
+            sb.append(linkMarker.substring(0, len - 1));
+            sb.append("</a>");
+            sb.append(linkMarker.substring(len - 1));
+        } else {
+            sb.append(linkMarker);
+        }
+    }
+*/
 }
