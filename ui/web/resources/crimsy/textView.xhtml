@@ -25,6 +25,7 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <composite:interface name="textView"
@@ -38,9 +39,9 @@
     <composite:implementation>
 
         <span class="ql-editor">
-            <h:outputText value="#{cc.attrs.text}" escape="false"> 
+            <nwc:augmentedText value="#{cc.attrs.text}">
                 <f:converter converterId="RichTextConverter" />
-            </h:outputText>
+            </nwc:augmentedText>
         </span>
 
     </composite:implementation>

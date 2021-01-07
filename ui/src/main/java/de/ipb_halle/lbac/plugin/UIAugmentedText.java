@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 // import javax.el.ELContext;
 // import javax.faces.component.EditableValueHolder;
 import javax.faces.component.FacesComponent;
-import javax.faces.component.UIInput;
+import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 // import javax.faces.render.FacesRenderer;
@@ -37,9 +37,11 @@ import org.apache.logging.log4j.Logger;
 
 
 @FacesComponent(value="UIAugmentedText")
-public class UIAugmentedText extends UIInput {    
+public class UIAugmentedText extends UIOutput {
 
+    private Map<String, String> linkMap;
     private Logger logger;
+
 
     /**
      * Default constructor
@@ -47,15 +49,15 @@ public class UIAugmentedText extends UIInput {
     public UIAugmentedText() {
         super();
         logger = LogManager.getLogger(this.getClass().getName());
-        logger.info("UIAugmentedText constructor");
-
         setRendererType(null); 
+
+        setupDummyData();
     }
 
-        /**
-         * decode browser response
-         */
-      @Override
+    /**
+     * decode browser response
+     */
+    @Override
     public void decode(FacesContext context) {
                 Map<String, String> requestMap = context.getExternalContext().getRequestParameterMap();
                 String clientId = this.getClientId(context);
@@ -64,11 +66,6 @@ public class UIAugmentedText extends UIInput {
         String pt = (String) getAttributes().get("pluginType");
         setPluginType(clientId, pt);
 */
-
-        String value = requestMap.get(clientId);
-        this.logger.info("decode(): " + value);
-        setSubmittedValue(value);
-        setValid(true);
     }
 
     /**
@@ -81,7 +78,7 @@ public class UIAugmentedText extends UIInput {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = this.getClientId(context);
 
-        writer.write("HALLO");
+        writer.write(findLinks(getValue().toString())); 
 
         writer.flush();
     }
@@ -110,16 +107,12 @@ public class UIAugmentedText extends UIInput {
           .replace("\r", "");
     }
 
-/*
- * transform LinkedData records into clickable links
- * (h:commandLink etc.)
- *
-    public void setup() {
-        linkMap = new HashMap<> ();
-        linkMap.put("foo", "http://foofoo.foo");
-        linkMap.put("bar", "http://barbar.bar");
-    }
-
+    /**
+     * scan a (HTML) String and transform it into a HTML output
+     * string augmented by link elements
+     * @param st the input string
+     * @return the output string possibly containing link elements
+     */
     public String findLinks(String st) {
         StringBuilder sb = new StringBuilder();
 
@@ -142,18 +135,19 @@ public class UIAugmentedText extends UIInput {
         return sb.toString();
     }
 
-     *
+    /*
      * @param sb the StringBuilder to which the link should be appended
      * @param linkMarker the link marker including a trailing character
      * (comma, dot or whitespace), which will not be rendered as a link.
-     *
+     */
     public void insertLink(StringBuilder sb, String linkMarker) {
         int len = linkMarker.length();
         String replacement = this.linkMap.get(linkMarker.substring(1, len - 1));
         if (replacement != null) {
-            sb.append("<a href='");
+            sb.append("<a href='#' ");
+            sb.append("onclick='alert(");
             sb.append(replacement);
-            sb.append("'>");
+            sb.append(");'>");
             sb.append(linkMarker.substring(0, len - 1));
             sb.append("</a>");
             sb.append(linkMarker.substring(len - 1));
@@ -161,5 +155,14 @@ public class UIAugmentedText extends UIInput {
             sb.append(linkMarker);
         }
     }
-*/
+
+    /**
+     * add some dummy data during development
+     */
+    private void setupDummyData() {
+        linkMap = new HashMap<> ();
+        linkMap.put("BENZOL", "{ \"type\":\"MATERIAL\", \"id\":2 }");
+        linkMap.put("ITEM", "{ \"type\":\"ITEM\", \"id\":2 }");
+    }
+
 }
