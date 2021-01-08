@@ -542,8 +542,12 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         return this.expRecordService.save(record);
     }
 
-    public void setBarChartModel(int rank) {
-        this.barChart = this.expRecords.get(rank).getBarChart();
+    /**
+     * Obtain a BarChart from an ExpRecord at the given index 
+     * @param index the transient index property of the experiment record
+     */
+    public void setBarChartModel(int index) {
+        this.barChart = this.expRecords.get(index).getBarChart();
     }
 
     public void setExperiment(Experiment experiment) {
