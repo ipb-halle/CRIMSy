@@ -95,12 +95,10 @@
                                       layout="block"
                                       styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
                             <crimsy:assay assay="#{rec}"
-                                          materialAgent="#{materialAgent}" 
                                           bean="#{experimentBean}"
                                           rendered="#{rec.facelet eq 'ASSAY'}">
                                 <crimsy:assayRecords assay="#{rec}"
-                                                     bean="#{experimentBean}"
-                                                     materialAgent="#{materialAgent}" />
+                                                     bean="#{experimentBean}" />
                             </crimsy:assay>
 
                             <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />

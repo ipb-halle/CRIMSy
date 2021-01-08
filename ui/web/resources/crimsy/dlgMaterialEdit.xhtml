@@ -64,12 +64,13 @@
                                         </p:inputText> 
                                     </p:column>
                                     <p:column colspan="4" styleClass="borderless">
-                                        <p:commandButton id="submitButton" 
+                                        <p:commandButton id="searchButton" 
                                                          styleClass="materialDlgSearchButton"
                                                          value="#{msgs.materialAgent_label_search}"
-                                                         rendered="#{cc.attrs.agent.showMolEditor}"
                                                          onclick="$('body').addClass('waiting');
-                                                                 $('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
+                                                                if ( #{cc.attrs.agent.showMolEditor} ) { 
+                                                                    $('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));
+                                                                }"
                                                          action="#{cc.attrs.agent.actionTriggerMaterialSearch()}"
                                                          oncomplete="$('body').removeClass('waiting');"
                                                          update="@(.materialEdit)" /> 

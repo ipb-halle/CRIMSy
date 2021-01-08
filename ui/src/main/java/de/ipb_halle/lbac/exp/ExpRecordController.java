@@ -34,6 +34,7 @@ public abstract class ExpRecordController {
     protected ExpRecordController(ExperimentBean bean) {
         this.bean = bean;
         bean.getMaterialAgent().setMaterialHolder(null);
+        bean.getItemAgent().setItemHolder(null);
     }
 
     public void actionCancel() {
