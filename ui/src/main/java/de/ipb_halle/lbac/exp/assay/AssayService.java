@@ -28,8 +28,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
-import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.items.service.ItemService;
 
 import java.io.Serializable;
@@ -52,11 +50,7 @@ public class AssayService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    @Inject
-    private MaterialService materialService;
-    
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-
 
     /**
      * load an Assay record by id
@@ -69,11 +63,7 @@ public class AssayService implements Serializable {
             ExpRecordEntity expRecordEntity,
             User user) {
         AssayEntity e = this.em.find(AssayEntity.class, expRecordEntity.getExpRecordId());
-        Material material = null;
-        if (e.getTargetId() != null) {
-            material = materialService.loadMaterialById(e.getTargetId());
-        }
-        Assay assay = new Assay(e, material);
+        Assay assay = new Assay(e);
         assay.setExperiment(experiment);
         assay.setExpRecordEntity(expRecordEntity);
 

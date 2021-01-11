@@ -46,9 +46,6 @@ public class AssayEntity implements Serializable {
     private String remarks;
 
     @Column
-    private Integer targetid;
-
-    @Column
     private String units;
 
     public Long getExpRecordId() {
@@ -61,10 +58,6 @@ public class AssayEntity implements Serializable {
 
     public String getRemarks() {
         return this.remarks;
-    }
-
-    public Integer getTargetId() {
-        return this.targetid;
     }
 
     public String getUnits() {
@@ -83,11 +76,6 @@ public class AssayEntity implements Serializable {
 
     public AssayEntity setRemarks(String remarks) {
         this.remarks = remarks;
-        return this;
-    }
-
-    public AssayEntity setTargetId(Integer targetid) {
-        this.targetid = targetid;
         return this;
     }
 

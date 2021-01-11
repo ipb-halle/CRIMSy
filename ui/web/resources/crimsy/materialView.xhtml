@@ -36,7 +36,8 @@
     </composite:interface>
 
     <composite:implementation >
-        #{cc.attrs.material.names.get(0).value}
+        <h:outputText value="#{cc.attrs.material.names.get(0).value}" 
+            rendered="#{cc.attrs.material != null}" />
     </composite:implementation>
 
 </html>

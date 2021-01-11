@@ -256,7 +256,7 @@ public class ExperimentServiceTest extends TestBase {
         assay.setExperiment(exp);
 
         LinkedData assayRecord = new LinkedData(assay,  
-                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 1);
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
         assayRecord.setItem(item1);     // automatically sets material
         assay.getLinkedData().add(assayRecord);
         recordService.save(assay);
@@ -283,7 +283,7 @@ public class ExperimentServiceTest extends TestBase {
         assay.setExperiment(exp);
 
         LinkedData assayRecord = new LinkedData(assay,
-                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 1);
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
         assayRecord.setItem(item1);
         assayRecord.setMaterial(material1);
         int materialId = materialCreator.createStructure(
@@ -292,7 +292,7 @@ public class ExperimentServiceTest extends TestBase {
                 project1.getId(), "Phenol");
 
         LinkedData assayRecord_unreadable = new LinkedData(assay, 
-                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 2);
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 2);
         assayRecord_unreadable.setMaterial(materialService.loadMaterialById(materialId));
 
         assay.getLinkedData().add(assayRecord);

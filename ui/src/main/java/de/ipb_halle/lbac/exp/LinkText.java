@@ -17,45 +17,30 @@
  */
 package de.ipb_halle.lbac.exp;
 
-
+import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.exp.Payload;
 
 /**
- * Record types for LinkedData
- *
+ * Payload record for links containing the link text
  * @author fbroda
  */
-public enum LinkedDataType {
-    LINK_DOCUMENT(0),
-    LINK_MATERIAL(1),
-    LINK_ITEM(2),
-    LINK_EXPERIMENT(3),
-    LINK_LINKTEXT(4),
+public class LinkText extends Payload {
 
-    ASSAY_TARGET(5),
-    ASSAY_SINGLE_POINT_OUTCOME(6),
-    ASSAY_MULTI_POINT_OUTCOME(7);
+    private String text;
 
-    private int typeId;
-
-    private LinkedDataType(int typeId) {
-        this.typeId = typeId;
+    public LinkText(String text) {
+        this.text = text;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public String getText() {
+        return this.text;
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public LinkedDataType getType() {
+        return LinkedDataType.LINK_LINKTEXT;
     }
 
-    public static LinkedDataType getAssayOutcomeTypeById(int id) {
-        for (LinkedDataType t : LinkedDataType.values()) {
-            if (t.getTypeId() == id) {
-                return t;
-            }
-        }
-        return null;
+    public void setText(String text) {
+        this.text = text;
     }
 }
-

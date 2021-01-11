@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.util.UnitsValidator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.faces.model.SelectItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,9 +66,11 @@ public class Assay extends ExpRecord implements DTO {
     private String remarks;
 
     /*
-     * the target material (an enzyme, organ, organism etc.)
+     * index in the LinkedData list, pointing to a record 
+     * containing the target material (an enzyme, organ, 
+     * organism etc.)
      */
-    private Material target;
+    private Integer target;
 
     /**
      * comma separated list of acceptable units
@@ -89,19 +92,15 @@ public class Assay extends ExpRecord implements DTO {
         setType(ExpRecordType.ASSAY);
         this.remarks = "";
         this.units = "mM, µM, nM";
-        this.outcomeType = LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME;
+        this.outcomeType = LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME;
     }
 
-    public Assay(AssayEntity entity, Material target) {
+    public Assay(AssayEntity entity) {
         super();
         setType(ExpRecordType.ASSAY);
         this.remarks = entity.getRemarks();
-        this.target = target;
         this.units = entity.getUnits();
-        if (entity != null) {
-            this.outcomeType = entity.getOutcomeType();
-        }
-
+        this.outcomeType = entity.getOutcomeType();
     }
 
     public AssayEntity createEntity() {
@@ -109,7 +108,6 @@ public class Assay extends ExpRecord implements DTO {
                 .setExpRecordId(getExpRecordId())
                 .setOutcomeType(this.outcomeType)
                 .setRemarks(this.remarks)
-                .setTargetId(this.target.getId())
                 .setUnits(this.units);
     }
 
@@ -178,10 +176,17 @@ public class Assay extends ExpRecord implements DTO {
         return model;
     }
 
+    public List<LinkedData> getAssayRecords() {
+        return getLinkedData()
+            .stream()
+            .filter(record -> record.getLinkedDataType() == this.outcomeType)
+            .collect(Collectors.toList());
+    }
+
     @Override
     public BarChartModel getBarChart() {
         switch (this.outcomeType) {
-            case SINGLE_POINT_ASSAY_OUTCOME:
+            case ASSAY_SINGLE_POINT_OUTCOME:
                 return computeSinglePointBarChart();
         }
         return null;
@@ -195,11 +200,13 @@ public class Assay extends ExpRecord implements DTO {
      * @return a localized list of outcometypes for selection in template mode
      */
     public List<SelectItem> getOutcomeTypes() {
-        List<SelectItem> l = new ArrayList<SelectItem>();
-        for (LinkedDataType t : LinkedDataType.values()) {
-            l.add(new SelectItem(t,
-                    Messages.getString(MESSAGE_BUNDLE, "AssayOutcomeType_" + t.toString(), null)));
-        }
+        List<SelectItem> l = new ArrayList<SelectItem>(2);
+        l.add(new SelectItem(LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME,
+            Messages.getString(MESSAGE_BUNDLE, "AssayOutcomeType_" 
+            + LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME.toString(), null)));
+        l.add(new SelectItem(LinkedDataType.ASSAY_MULTI_POINT_OUTCOME,
+            Messages.getString(MESSAGE_BUNDLE, "AssayOutcomeType_" 
+            + LinkedDataType.ASSAY_MULTI_POINT_OUTCOME.toString(), null)));
         return l;
     }
 
@@ -212,7 +219,18 @@ public class Assay extends ExpRecord implements DTO {
     }
 
     public Material getTarget() {
-        return this.target;
+        if (this.target == null) {
+            for (LinkedData linkedData : getLinkedData()) {
+                if (linkedData.getLinkedDataType() == LinkedDataType.ASSAY_TARGET) {
+                    this.target = linkedData.getRank();
+                    break;
+                }
+            }
+        }
+        if (this.target != null) {
+            return getLinkedData().get(this.target).getMaterial();
+        }
+        return null; 
     }
 
     public String getUnits() {
@@ -227,8 +245,19 @@ public class Assay extends ExpRecord implements DTO {
         this.remarks = remarks;
     }
 
-    public void setTarget(Material target) {
-        this.target = target;
+    public void setTarget(Material material) {
+        if (material != null) {
+            if (this.target == null) {
+                List<LinkedData> records = getLinkedData();
+                synchronized(this) {
+                    this.target = records.size();
+                    records.add(new LinkedData(this, 
+                        LinkedDataType.ASSAY_TARGET,
+                        this.target));
+                }
+            }
+            getLinkedData().get(this.target).setMaterial(material);
+        }
     }
 
     public void setUnits(String units) {

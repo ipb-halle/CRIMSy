@@ -571,7 +571,6 @@ CREATE TABLE exp_assays (
     exprecordid     BIGINT NOT NULL PRIMARY KEY REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     outcometype     INTEGER NOT NULL,
     remarks         VARCHAR,
-    targetid        INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE SET NULL,
     units           VARCHAR
 );
 
