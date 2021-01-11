@@ -56,6 +56,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Material> materials = new ArrayList<>();
     private Material materialInFocus;
+    private NamePresenter namePresenter;
     private MaterialSearchMaskController searchController;
     private MaterialTableController tableController;
 
@@ -99,6 +100,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.CONSUMABLE,
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
+        namePresenter = new NamePresenter();
     }
 
     /**
@@ -125,18 +127,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
      * @return
      */
     public String getWrappedNames(Material material, int maxNamesShown) {
-        String back = "";
-        for (int i = 0; i < Math.min(material.getNames().size(), maxNamesShown); i++) {
-            back += material.getNames().get(i).getValue() + "<br>";
-        }
-        if (material.getNames().size() > maxNamesShown) {
-            back += "...";
-        }
-
-        if (back.endsWith("<br>")) {
-            back = back.substring(0, back.length() - "<br>".length());
-        }
-        return back;
+        return namePresenter.getFormatedNames(material, maxNamesShown);
     }
 
     public List<Material> getReadableMaterials() {
