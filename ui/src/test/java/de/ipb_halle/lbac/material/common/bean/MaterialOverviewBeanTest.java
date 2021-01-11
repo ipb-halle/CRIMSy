@@ -141,10 +141,9 @@ public class MaterialOverviewBeanTest extends TestBase {
     public void test001_getNamesforUiAndToolTip() {
         instance = new MaterialOverviewBeanMock();
         Material m = materialService.loadMaterialById(material.getId());
+        instance.init();
         Assert.assertEquals("Test-Struktur<br>...", instance.getWrappedNames(m, 1));
         Assert.assertEquals("Test-Struktur<br>Test-Structure", instance.getWrappedNames(m, 2));
-        
-
     }
 
     @Deployment
