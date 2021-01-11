@@ -236,6 +236,8 @@ public class MemberServiceTest extends TestBase {
         Assert.assertEquals(groupsBeforeDeacitivation,memberService.loadGroups(new HashMap<>()).size());
         memberService.deactivateGroup(g);
         Assert.assertEquals(groupsBeforeDeacitivation-1,memberService.loadGroups(new HashMap<>()).size());
+        
+     entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id="+g.getId());
     }
 
 }
