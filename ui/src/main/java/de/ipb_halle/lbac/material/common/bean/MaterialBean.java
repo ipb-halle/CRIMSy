@@ -151,6 +151,7 @@ public class MaterialBean implements Serializable {
 
     }
 
+    
     public void startMaterialCreation() {
         try {
             initState();
@@ -163,7 +164,6 @@ public class MaterialBean implements Serializable {
         } catch (Exception e) {
             logger.error(e);
         }
-
     }
 
     public void startMaterialEdit(Material m) {
@@ -219,7 +219,6 @@ public class MaterialBean implements Serializable {
         materialNameBean.init();
         materialIndexBean.init();
         currentMaterialType = MaterialType.CONSUMABLE;
-
         creationSaver = new MaterialCreationSaver(
                 moleculeService,
                 materialNameBean,
@@ -231,7 +230,6 @@ public class MaterialBean implements Serializable {
             if (materialEditState.getCurrentProject() == null) {
                 return new ArrayList<>();
             } else {
-
                 return materialEditState.getCurrentProject().getProjectType().getMaterialTypes();
             }
         } catch (Exception e) {
@@ -265,7 +263,6 @@ public class MaterialBean implements Serializable {
         try {
             this.materialEditState.setCurrentProject(currentProject);
             currentMaterialType = currentProject.getProjectType().getMaterialTypes().get(0);
-
         } catch (Exception e) {
             logger.info("Error in setCurrentProject(): " + currentProject.getName());
             logger.warn(e);
@@ -294,7 +291,6 @@ public class MaterialBean implements Serializable {
     }
 
     public void saveNewMaterial() {
-
         if (checkInputValidity()) {
             if (currentMaterialType == MaterialType.STRUCTURE) {
                 creationSaver.saveNewStructure(
@@ -428,7 +424,6 @@ public class MaterialBean implements Serializable {
         if (materialEditState.getCurrentProject() == null || materialEditState.getCurrentProject().getProjectType() == ProjectType.DUMMY_PROJECT) {
             return false;
         }
-
         return true;
     }
 

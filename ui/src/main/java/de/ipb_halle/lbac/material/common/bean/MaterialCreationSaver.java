@@ -87,7 +87,6 @@ public class MaterialCreationSaver implements Serializable {
             StorageClassInformation storageClassInformation,
             List<IndexEntry> indices
     ) {
-
         try {
             if (calculateFormulaAndMassesByDb && !moleculeModel.isEmptyMolecule(structureInfos.getStructureModel())) {
                 structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));

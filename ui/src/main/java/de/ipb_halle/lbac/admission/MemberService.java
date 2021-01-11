@@ -92,6 +92,27 @@ public class MemberService implements Serializable {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
+    public void deactivateGroup(Group group) {
+        if (canGroupBeDeactivated(group)) {
+            group.setName(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER);
+            em.merge(group.createEntity());
+        }
+    }
+
+    private boolean canGroupBeDeactivated(Group group) {
+        if (group == null) {
+            return false;
+        }
+        if (group.getSubSystem().getSubSystemType().BUILTIN == group.getSubSystem().getSubSystemType()
+                || group.getSubSystem().getSubSystemType().LBAC_REMOTE == group.getSubSystem().getSubSystemType()) {
+            return false;
+        }
+        if (group.getName().equals("admin")) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * load groups which match the definition given by the criteria map.
      *
@@ -137,8 +158,10 @@ public class MemberService implements Serializable {
 
         List<Group> result = new ArrayList<>();
         for (GroupEntity ge : this.em.createQuery(criteriaQuery).getResultList()) {
-            Node node = this.nodeService.loadById(ge.getNode());
-            result.add(new Group(ge, node));
+            if (!ge.getName().equals(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER)) {
+                Node node = this.nodeService.loadById(ge.getNode());
+                result.add(new Group(ge, node));
+            }
         }
         return result;
     }

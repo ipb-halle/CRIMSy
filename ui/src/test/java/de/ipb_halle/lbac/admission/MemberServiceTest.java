@@ -226,7 +226,16 @@ public class MemberServiceTest extends TestBase {
         cmap.put("INSTITUTE", "%Anonymous%");
         groups = memberService.loadGroupsFuzzy(cmap);
         Assert.assertEquals(1, groups.size());
+    }
 
+    @Test
+    public void testDeactivateGroup() {
+        Group g=createGroup("groupToDelete", nodeService.getLocalNode(), memberService, membershipService);
+        int groupsBeforeDeacitivation=memberService.loadGroups(new HashMap<>()).size();
+        memberService.deactivateGroup(null);
+        Assert.assertEquals(groupsBeforeDeacitivation,memberService.loadGroups(new HashMap<>()).size());
+        memberService.deactivateGroup(g);
+        Assert.assertEquals(groupsBeforeDeacitivation-1,memberService.loadGroups(new HashMap<>()).size());
     }
 
 }
