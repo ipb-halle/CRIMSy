@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
@@ -44,6 +43,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Manages the presentation of readable materials of the logged in user.
  *
  * @author fmauz
  */
@@ -51,10 +51,20 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
-    private List<Material> materials = new ArrayList<>();
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private MaterialTableController tableController;
     private ACObjectController acObjectController;
+    private User currentUser;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private List<Material> materials = new ArrayList<>();
+    private Material materialInFocus;
+    private MaterialSearchMaskController searchController;
+    private MaterialTableController tableController;
+
+    private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
+    private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
+
+    @Inject
+    private ItemBean itemBean;
+
     @Inject
     private MaterialBean materialEditBean;
 
@@ -62,22 +72,18 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private MaterialService materialService;
 
     @Inject
-    private Navigator navigator;
+    private MemberService memberService;
 
-    private User currentUser;
+    @Inject
+    private Navigator navigator;
 
     @Inject
     private ProjectService projectService;
 
-    @Inject
-    private MemberService memberService;
-
-    private MaterialSearchMaskController searchController;
-    private Material materialInFocus;
-
-    @Inject
-    ItemBean itemBean;
-
+    /**
+     * Creates the tablecontroller and the controller for managing the search
+     * values
+     */
     @PostConstruct
     public void init() {
         tableController = new MaterialTableController(materialService);
@@ -93,9 +99,12 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.CONSUMABLE,
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
-
     }
 
+    /**
+     *
+     * @param evt
+     */
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         tableController.setLastUser(currentUser);
@@ -107,6 +116,14 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         return tableController;
     }
 
+    /**
+     * Creates a html tag to show the materialnames in a an appropriate way for
+     * the ui
+     *
+     * @param material
+     * @param maxNamesShown
+     * @return
+     */
     public String getWrappedNames(Material material, int maxNamesShown) {
         String back = "";
         for (int i = 0; i < Math.min(material.getNames().size(), maxNamesShown); i++) {
@@ -124,7 +141,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public List<Material> getReadableMaterials() {
         return tableController.getShownMaterials();
-
     }
 
     public boolean isDetailSubComponentVisisble(String type, Material mat) {
@@ -137,7 +153,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
-        navigator.navigate("material/materialsEdit");
+        navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
 
     public void actionEditMaterial(Material m) {
@@ -148,7 +164,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         } catch (Exception e) {
             logger.error(e);
         }
-        navigator.navigate("material/materialsEdit");
+        navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
 
     public void actionDeactivateMaterial(Material m) {
@@ -159,7 +175,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateNewItem(Material m) {
         itemBean.actionStartItemCreation(m);
-        navigator.navigate("item/itemEdit");
+        navigator.navigate(NAVIGATION_ITEM_EDIT);
     }
 
     public User getCurrentUser() {
@@ -175,19 +191,22 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         materialService.updateMaterialAcList(materialInFocus);
         searchController.actionStartMaterialSearch();
         materialInFocus = null;
-
     }
 
     @Override
     public void cancelAclChanges() {
-
         materialInFocus = null;
     }
 
     @Override
     public void actionStartAclChange(ACObject aco) {
         materialInFocus = (Material) aco;
-        acObjectController = new ACObjectController(materialInFocus, memberService.loadGroups(new HashMap<>()), this, materialInFocus.getFirstName());
+        acObjectController = new ACObjectController(
+                materialInFocus,
+                memberService.loadGroups(
+                        new HashMap<>()),
+                this,
+                materialInFocus.getFirstName());
     }
 
     @Override
