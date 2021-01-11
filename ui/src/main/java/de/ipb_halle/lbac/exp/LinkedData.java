@@ -122,6 +122,17 @@ public class LinkedData implements DTO {
         return this.item;
     }
 
+    public String getItemLabel() {
+        if (item != null) {
+            return item.getItemIdPlain();
+        }
+        return "";
+    }
+
+    public LinkedDataType getLinkedDataType() {
+        return this.linkedDataType;
+    }
+
     public Material getMaterial() {
         return this.material;
     }
@@ -129,13 +140,6 @@ public class LinkedData implements DTO {
     public String getMaterialName() {
         if (material != null) {
             return material.getFirstName();
-        }
-        return "";
-    }
-
-    public String getItemLabel() {
-        if (item != null) {
-            return item.getItemIdPlain();
         }
         return "";
     }

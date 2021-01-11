@@ -67,7 +67,7 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
             List<LinkedData> records = rec.getLinkedData();
             int rank = records.size();
             this.assayRecord = new LinkedData(rec,  
-                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, rank);
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, rank);
             this.assayRecord.setPayload(
                     new SinglePointOutcome(
                     UnitsValidator.getUnitSet(rec.getUnits())

@@ -30,7 +30,13 @@ public abstract class Payload {
     public static Payload fromString(LinkedDataType type, String outcome) {
         Gson gson = new Gson();
         switch(type) {
-            case SINGLE_POINT_ASSAY_OUTCOME : return gson.fromJson(outcome, SinglePointOutcome.class);
+            case LINK_DOCUMENT :
+            case LINK_MATERIAL : 
+            case LINK_ITEM : 
+            case LINK_LINKTEXT :
+                return gson.fromJson(outcome, LinkText.class);
+            case ASSAY_SINGLE_POINT_OUTCOME : 
+                return gson.fromJson(outcome, SinglePointOutcome.class);
         }
         throw new IllegalArgumentException("fromString() illegal arguments");
     }

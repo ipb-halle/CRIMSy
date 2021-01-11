@@ -76,7 +76,7 @@
                                 <h:panelGroup>
                                     <crimsy:materialView material="#{cc.attrs.assay.target}" />
                                     <p:commandLink title="Action"
-                                                   rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getLinkedData().size() == 0)}"
+                                                   rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getAssayRecords().size() == 0)}"
                                                    update="@form" > 
                                         <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
                                         <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
@@ -95,7 +95,7 @@
                                     <p:inputText
                                         id="assayUnitsList"
                                         value="#{cc.attrs.assay.units}" 
-                                        disabled="#{(! cc.attrs.assay.edit) or (cc.attrs.assay.getLinkedData().size() gt 0)}">
+                                        disabled="#{(! cc.attrs.assay.edit) or (cc.attrs.assay.getAssayRecords().size() gt 0)}">
                                         <f:validator validatorId="UnitsValidator" />
                                     </p:inputText>
                                     <p:message for="assayUnitsList" />
@@ -122,7 +122,7 @@
         </b:container>
         <b:dataTable
             var ="assayRecord"
-            value="#{cc.attrs.assay.getLinkedData()}"
+            value="#{cc.attrs.assay.getAssayRecords()}"
             styleClass="assayRecordTable"
             paginated="false">
             <b:dataTableColumn

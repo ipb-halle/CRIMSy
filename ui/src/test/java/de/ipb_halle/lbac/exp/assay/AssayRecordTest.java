@@ -60,7 +60,7 @@ public class AssayRecordTest {
         assay = new Assay();
         assay.setExpRecordId(exportRecordId);
         record = new LinkedData(assay,  
-                LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME, 1);
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
     }
 
     @Test

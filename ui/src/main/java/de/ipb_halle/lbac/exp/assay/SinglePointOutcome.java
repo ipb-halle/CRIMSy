@@ -52,7 +52,7 @@ public class SinglePointOutcome extends Payload {
     }
 
     public LinkedDataType getType() {
-        return LinkedDataType.SINGLE_POINT_ASSAY_OUTCOME;
+        return LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME;
     }
 
     public String getUnit() {
