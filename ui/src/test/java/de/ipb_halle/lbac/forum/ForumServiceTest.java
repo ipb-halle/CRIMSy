@@ -28,9 +28,10 @@ import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.entity.Node;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -101,7 +102,7 @@ public class ForumServiceTest extends TestBase {
                 + "cloud_name FROM topics");
         Assert.assertEquals("Exact one topic must be found", 1, o.size());
         Object[] z = (Object[]) o.get(0);
-        Integer entityId = (Integer)z[0];
+        Integer entityId = (Integer) z[0];
         Assert.assertEquals("IDs do not match", id, entityId);
         String name = (String) z[1];
         Assert.assertEquals("name does not match", "Test Topic", name);
@@ -183,7 +184,29 @@ public class ForumServiceTest extends TestBase {
 
         entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id=" + cloudNode.getId());
         entityManagerService.doSqlUpdate("DELETE FROM clouds WHERE name='Cloud2'");
+    }
 
+    @Test
+    public void test04_upsertTopicList() {
+        Node localNode = new Node();
+        Node remoteNode = new Node();
+        Topic topic_local1 = createTopic(1, localNode);
+        Topic topic_local2 = createTopic(2, localNode);
+        Topic topic_remote1 = createTopic(1, remoteNode);
+        Topic topic_remote2 = createTopic(2, remoteNode);
+
+        List<Topic> upsertedList = instance.upsertTopicList(topic_local1, new ArrayList<>());
+        Assert.assertEquals(1, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_local1, upsertedList);
+        Assert.assertEquals(1, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_local2, upsertedList);
+        Assert.assertEquals(2, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_remote1, upsertedList);
+        Assert.assertEquals(3, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_remote1, upsertedList);
+        Assert.assertEquals(3, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_remote2, upsertedList);
+        Assert.assertEquals(4, upsertedList.size());
     }
 
     @Deployment
@@ -194,7 +217,13 @@ public class ForumServiceTest extends TestBase {
                 .addClass(PostingWebClient.class)
                 .addClass(EntityManagerService.class)
                 .addClass(KeyManager.class);
+    }
 
+    private Topic createTopic(int id, Node n) {
+        Topic topic = new Topic();
+        topic.setNode(n);
+        topic.setId(id);
+        return topic;
     }
 
 }
