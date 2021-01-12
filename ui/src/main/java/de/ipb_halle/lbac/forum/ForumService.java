@@ -244,7 +244,7 @@ public class ForumService implements Serializable {
         ListIterator<Topic> li = oldTopics.listIterator();
         while (li.hasNext()) {
             Topic tmp = li.next();
-            if (Objects.equals(tmp.getId(), newTopic.getId())) {
+            if (isSameTopic(tmp, newTopic)) {
                 li.set(newTopic); // replace the last element returned by next()
                 isNew = false;
             }
@@ -252,7 +252,11 @@ public class ForumService implements Serializable {
         if (isNew) {
             oldTopics.add(newTopic);
         }
-
         return oldTopics;
+    }
+
+    private boolean isSameTopic(Topic topic1, Topic topic2) {
+        return Objects.equals(topic1.getId(), topic2.getId())
+                && topic1.getNode().getId().equals(topic2.getNode().getId());
     }
 }
