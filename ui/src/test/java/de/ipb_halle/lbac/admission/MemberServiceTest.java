@@ -235,19 +235,18 @@ public class MemberServiceTest extends TestBase {
         int groupsBeforeDeacitivation = memberService.loadGroups(new HashMap<>()).size();
         //Null should not be deactivated
         memberService.deactivateGroup(null);
-        
+        Assert.assertEquals(groupsBeforeDeacitivation, memberService.loadGroups(new HashMap<>()).size());
         // Admin group is not allowed to be deactivated
         Group adminGroup = loadGroupByName("Admin Group");
         memberService.deactivateGroup(adminGroup);
-        Assert.assertEquals(groupsBeforeDeacitivation - 1, memberService.loadGroups(new HashMap<>()).size());
+        Assert.assertEquals(groupsBeforeDeacitivation, memberService.loadGroups(new HashMap<>()).size());
         
         //Public group is not allowed to be deactivated
         Group publicGroup = loadGroupByName("Public Group");
         memberService.deactivateGroup(publicGroup);
-        Assert.assertEquals(groupsBeforeDeacitivation - 1, memberService.loadGroups(new HashMap<>()).size());
-
-        //This group can be deactivated
         Assert.assertEquals(groupsBeforeDeacitivation, memberService.loadGroups(new HashMap<>()).size());
+
+        //This group can be deactivated      
         memberService.deactivateGroup(g);
         Assert.assertEquals(groupsBeforeDeacitivation - 1, memberService.loadGroups(new HashMap<>()).size());
         
