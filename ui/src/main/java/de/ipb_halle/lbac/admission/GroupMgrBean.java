@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.i18n.UIMessage;
 
 import de.ipb_halle.lbac.service.NodeService;
 
@@ -91,9 +92,30 @@ public class GroupMgrBean implements Serializable {
     }
 
     public void actionCreate() {
-        this.memberService.save(this.group);
-        initGroup();
+        if (isGroupNameValide(this.group.getName())) {
+            this.memberService.save(this.group);
+            initGroup();
+            UIMessage.info("groupMgr_group_added");
+        } else {
+            UIMessage.error("groupMgr_no_valide_name");
+        }
         this.mode = MODE.READ;
+        
+    }
+
+    public boolean isGroupNameValide(String groupName) {
+        if (groupName.toLowerCase().equals("public group")
+                || groupName.toLowerCase().equals("admin group")) {
+            return false;
+        }
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("name", groupName);
+        List<Group> loadedGroup = memberService.loadGroups(cmap);
+        if (loadedGroup.isEmpty()) {
+            return true;
+        }
+        return loadedGroup.get(0).getSubSystemType()
+                != AdmissionSubSystemType.LOCAL;
     }
 
     /**
@@ -104,6 +126,7 @@ public class GroupMgrBean implements Serializable {
         this.memberService.deactivateGroup(this.group);
         initGroup();
         this.mode = MODE.READ;
+         UIMessage.info("groupMgr_group_deactivated");
     }
 
     public void actionDeleteMembership(Membership ms) {

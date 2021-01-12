@@ -112,14 +112,11 @@ public class MemberService implements Serializable {
         if (group == null) {
             return false;
         }
-        if (group.getSubSystem().getSubSystemType().BUILTIN == group.getSubSystem().getSubSystemType()
-                || group.getSubSystem().getSubSystemType().LBAC_REMOTE == group.getSubSystem().getSubSystemType()) {
+        if (AdmissionSubSystemType.BUILTIN == group.getSubSystem().getSubSystemType()
+                || AdmissionSubSystemType.LBAC_REMOTE == group.getSubSystem().getSubSystemType()) {
             return false;
         }
-        if (group.getName().equals(ADMIN_GROUP_NAME)) {
-            return false;
-        }
-        return true;
+        return !group.getName().equals(ADMIN_GROUP_NAME);
     }
 
     /**
@@ -353,5 +350,7 @@ public class MemberService implements Serializable {
         }
         return null;
     }
+    
+    
 
 }
