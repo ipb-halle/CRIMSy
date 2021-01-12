@@ -295,7 +295,7 @@
                                          look="link"
                                          ajax="true"
                                          type="button"
-                                         disabled="#{groupMgrBean.isOperationForbidden(group, 'delete')}"
+                                         disabled="#{groupMgrBean.isDeactivationForbidden(group)}"
                                          update="modalGroupDialog frmModalGroupDialog"
                                          onclick="ajax:groupMgrBean.setModeDelete();groupMgrBean.setGroup(group);"
                                          oncomplete="$('.modalGroupDialog').modal();"/>

@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -230,14 +231,36 @@ public class MemberServiceTest extends TestBase {
 
     @Test
     public void testDeactivateGroup() {
-        Group g=createGroup("groupToDelete", nodeService.getLocalNode(), memberService, membershipService);
-        int groupsBeforeDeacitivation=memberService.loadGroups(new HashMap<>()).size();
+        Group g = createGroup("groupToDelete", nodeService.getLocalNode(), memberService, membershipService);
+        int groupsBeforeDeacitivation = memberService.loadGroups(new HashMap<>()).size();
+        //Null should not be deactivated
         memberService.deactivateGroup(null);
-        Assert.assertEquals(groupsBeforeDeacitivation,memberService.loadGroups(new HashMap<>()).size());
-        memberService.deactivateGroup(g);
-        Assert.assertEquals(groupsBeforeDeacitivation-1,memberService.loadGroups(new HashMap<>()).size());
         
-        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id="+g.getId());
+        // Admin group is not allowed to be deactivated
+        Group adminGroup = loadGroupByName("Admin Group");
+        memberService.deactivateGroup(adminGroup);
+        Assert.assertEquals(groupsBeforeDeacitivation - 1, memberService.loadGroups(new HashMap<>()).size());
+        
+        //Public group is not allowed to be deactivated
+        Group publicGroup = loadGroupByName("Public Group");
+        memberService.deactivateGroup(publicGroup);
+        Assert.assertEquals(groupsBeforeDeacitivation - 1, memberService.loadGroups(new HashMap<>()).size());
+
+        //This group can be deactivated
+        Assert.assertEquals(groupsBeforeDeacitivation, memberService.loadGroups(new HashMap<>()).size());
+        memberService.deactivateGroup(g);
+        Assert.assertEquals(groupsBeforeDeacitivation - 1, memberService.loadGroups(new HashMap<>()).size());
+        
+        //Clean up the created and deactivated group
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + g.getId());
+
+    }
+
+    private Group loadGroupByName(String name) {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("name", name);
+        return memberService.loadGroups(cmap).get(0);
+
     }
 
 }

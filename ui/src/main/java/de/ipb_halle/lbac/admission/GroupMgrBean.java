@@ -101,7 +101,7 @@ public class GroupMgrBean implements Serializable {
      * subSystemType - node - no delete for adminGroup or publicGroup - ...
      */
     public void actionDelete() {
-//      this.memberService.delete(this.group);
+        this.memberService.deactivateGroup(this.group);
         initGroup();
         this.mode = MODE.READ;
     }
@@ -151,7 +151,7 @@ public class GroupMgrBean implements Serializable {
     public List<Membership> getMembershipList() {
         Map<String, Object> cmap = new HashMap<String, Object>();
         if (this.group.getId() == null) {
-            return new ArrayList<Membership> ();
+            return new ArrayList<Membership>();
         }
         cmap.put("group_id", this.group.getId());
 
@@ -188,7 +188,7 @@ public class GroupMgrBean implements Serializable {
      */
     public List<Member> getMemberList() {
         HashMap<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, 
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
                 new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP, AdmissionSubSystemType.LBAC_REMOTE});
         List<Member> members = new ArrayList<Member>();
 
@@ -278,4 +278,7 @@ public class GroupMgrBean implements Serializable {
         return OPERATIONNAME_MANAGE_MEMBERS;
     }
 
+    public boolean isDeactivationForbidden(Group g) {
+        return !memberService.canGroupBeDeactivated(g);
+    }
 }

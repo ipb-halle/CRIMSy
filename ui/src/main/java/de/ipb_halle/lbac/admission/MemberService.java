@@ -54,6 +54,7 @@ public class MemberService implements Serializable {
     public final static String PARAM_SUBSYSTEM_DATA = "subSystemData";
     public final static String PARAM_NAME = "name";
     public final static String PARAM_LOGIN = "login";
+    private final String ADMIN_GROUP_NAME = "Admin Group";
 
     private static final long serialVersionUID = 1L;
     private final String SQL_GET_SIMILAR_NAMES
@@ -84,6 +85,8 @@ public class MemberService implements Serializable {
     private EntityManager em;
 
     @Inject
+    private MembershipService membershipService;
+    @Inject
     private NodeService nodeService;
 
     private Logger logger;
@@ -94,12 +97,18 @@ public class MemberService implements Serializable {
 
     public void deactivateGroup(Group group) {
         if (canGroupBeDeactivated(group)) {
+            for (Membership ms : membershipService.loadMemberOf(group)) {
+                membershipService.removeMembership(ms);
+            }
+            for (Membership ms : membershipService.loadMembers(group)) {
+                membershipService.removeMembership(ms);
+            }
             group.setName(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER);
             em.merge(group.createEntity());
         }
     }
 
-    private boolean canGroupBeDeactivated(Group group) {
+    public boolean canGroupBeDeactivated(Group group) {
         if (group == null) {
             return false;
         }
@@ -107,7 +116,7 @@ public class MemberService implements Serializable {
                 || group.getSubSystem().getSubSystemType().LBAC_REMOTE == group.getSubSystem().getSubSystemType()) {
             return false;
         }
-        if (group.getName().equals("admin")) {
+        if (group.getName().equals(ADMIN_GROUP_NAME)) {
             return false;
         }
         return true;
