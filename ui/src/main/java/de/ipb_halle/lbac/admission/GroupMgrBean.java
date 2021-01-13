@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,7 @@ public class GroupMgrBean implements Serializable {
     private Group group;
     private transient Logger logger;
     private boolean nestedFlag;
+    private GroupNameValidator groupNameValidator;
 
     private MODE mode;
 
@@ -98,6 +100,7 @@ public class GroupMgrBean implements Serializable {
         this.memberService = memberService;
         this.membershipService = membershipService;
         this.messagePresenter = messagePresenter;
+        this.groupNameValidator = new GroupNameValidator(memberService);
         initGroup();
 
     }
@@ -107,8 +110,8 @@ public class GroupMgrBean implements Serializable {
      */
     @PostConstruct
     private void InitGroupMgrBean() {
-        messagePresenter = JsfMessagePresenter.getInstance();
-
+        this.messagePresenter = JsfMessagePresenter.getInstance();
+        this.groupNameValidator = new GroupNameValidator(memberService);
         initGroup();
     }
 
@@ -117,7 +120,7 @@ public class GroupMgrBean implements Serializable {
     }
 
     public void actionCreate() {
-        if (isGroupNameValide(this.group.getName())) {
+        if (groupNameValidator.isGroupNameValide(this.group.getName())) {
             this.memberService.save(this.group);
             initGroup();
             messagePresenter.info("groupMgr_group_added");
@@ -126,22 +129,6 @@ public class GroupMgrBean implements Serializable {
         }
         this.mode = MODE.READ;
 
-    }
-
-    public boolean isGroupNameValide(String groupName) {
-        if (groupName == null
-                || groupName.toLowerCase().equals("public group")
-                || groupName.toLowerCase().equals("admin group")) {
-            return false;
-        }
-        Map<String, Object> cmap = new HashMap<>();
-        cmap.put("name", groupName);
-        List<Group> loadedGroup = memberService.loadGroups(cmap);
-        if (loadedGroup.isEmpty()) {
-            return true;
-        }
-        return loadedGroup.get(0).getSubSystemType()
-                != AdmissionSubSystemType.LOCAL;
     }
 
     /**
@@ -167,13 +154,20 @@ public class GroupMgrBean implements Serializable {
     }
 
     public void actionUpdate() {
-        this.memberService.save(this.group);
+        if (groupNameValidator.isGroupNameValide(this.group.getName())) {
+            this.memberService.save(this.group);
+            messagePresenter.info("groupMgr_group_edited");
+        } else {
+            messagePresenter.error("groupMgr_no_valide_name");
+        }
         initGroup();
         this.mode = MODE.READ;
     }
 
     /**
      * return a title for the modal group dialog
+     *
+     * @return
      */
     public String getDialogTitle() {
         switch (this.mode) {
@@ -188,19 +182,23 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
-     * get a list of groups
+     * get a list of groups. Queries directly the database.
+     *
+     * @return
      */
     public List<Group> getGroupList() {
-        return this.memberService.loadGroups(new HashMap<String, Object>());
+        return this.memberService.loadGroups(new HashMap<>());
     }
 
     /**
      * return a list of memberships for the currently active group
+     *
+     * @return
      */
     public List<Membership> getMembershipList() {
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Object> cmap = new HashMap<>();
         if (this.group.getId() == null) {
-            return new ArrayList<Membership>();
+            return new ArrayList<>();
         }
         cmap.put("group_id", this.group.getId());
 
@@ -220,8 +218,9 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
-     * return the currently selected group. The group instance may be a detached
-     * instance.
+     * return the currently selected group.
+     *
+     * @return
      */
     public Group getGroup() {
         return this.group;
@@ -236,21 +235,31 @@ public class GroupMgrBean implements Serializable {
      * @return a list of Member objects (users followed by groups)
      */
     public List<Member> getMemberList() {
-        HashMap<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
-                new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP, AdmissionSubSystemType.LBAC_REMOTE});
-        List<Member> members = new ArrayList<Member>();
+        List<Member> members = new ArrayList<>();
+        List<User> users = this.memberService.loadUsers(createcMapForSubSystem());
+        removeDeactivatedUsers(users);
+        members.addAll(users);
+        members.addAll(this.memberService.loadGroups(createcMapForSubSystem()));
+        return members;
+    }
 
-        List<User> users = this.memberService.loadUsers(cmap);
+    private HashMap<String, Object> createcMapForSubSystem() {
+        HashMap<String, Object> cmap = new HashMap<>();
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
+                new AdmissionSubSystemType[]{
+                    AdmissionSubSystemType.LOCAL,
+                    AdmissionSubSystemType.LDAP,
+                    AdmissionSubSystemType.LBAC_REMOTE});
+        return cmap;
+    }
+
+    private void removeDeactivatedUsers(List<User> users) {
         for (int i = users.size() - 1; i >= 0; i--) {
-            if (users.get(i).getName().equals(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER)) {
+            if (users.get(i).getName()
+                    .equals(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER)) {
                 users.remove(i);
             }
         }
-
-        members.addAll(users);
-        members.addAll(this.memberService.loadGroups(cmap));
-        return members;
     }
 
     /**
