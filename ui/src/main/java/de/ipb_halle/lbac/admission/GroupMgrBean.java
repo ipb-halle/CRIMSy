@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 
 import de.ipb_halle.lbac.service.NodeService;
 
@@ -39,6 +41,8 @@ import org.apache.logging.log4j.LogManager;
 @SessionScoped
 public class GroupMgrBean implements Serializable {
 
+    private MessagePresenter messagePresenter;
+
     private enum MODE {
         CREATE, READ, UPDATE, DELETE
     };
@@ -48,9 +52,6 @@ public class GroupMgrBean implements Serializable {
     private final static Long serialVersionUID = 1L;
 
     @Inject
-    private ACListService aclistService;
-
-    @Inject
     private NodeService nodeService;
 
     @Inject
@@ -58,9 +59,6 @@ public class GroupMgrBean implements Serializable {
 
     @Inject
     private MembershipService membershipService;
-
-    @Inject
-    private UserBean userBean;
 
     private Group group;
     private transient Logger logger;
@@ -80,10 +78,37 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
+     * Constructor for injecting the dependencies if class is instanciated not
+     * by container (via @Inject) but by new.(This happens in tests, because we
+     * have problems with starting @SessionScoped containers in the arquillian
+     * environment)
+     *
+     * @param nodeService
+     * @param memberService
+     * @param membershipService
+     * @param messagePresenter
+     */
+    public GroupMgrBean(
+            NodeService nodeService,
+            MemberService memberService,
+            MembershipService membershipService,
+            MessagePresenter messagePresenter) {
+        this();
+        this.nodeService = nodeService;
+        this.memberService = memberService;
+        this.membershipService = membershipService;
+        this.messagePresenter = messagePresenter;
+        initGroup();
+
+    }
+
+    /**
      * Initialization depending on injected resources
      */
     @PostConstruct
     private void InitGroupMgrBean() {
+        messagePresenter = JsfMessagePresenter.getInstance();
+
         initGroup();
     }
 
@@ -95,16 +120,17 @@ public class GroupMgrBean implements Serializable {
         if (isGroupNameValide(this.group.getName())) {
             this.memberService.save(this.group);
             initGroup();
-            UIMessage.info("groupMgr_group_added");
+            messagePresenter.info("groupMgr_group_added");
         } else {
-            UIMessage.error("groupMgr_no_valide_name");
+            messagePresenter.error("groupMgr_no_valide_name");
         }
         this.mode = MODE.READ;
-        
+
     }
 
     public boolean isGroupNameValide(String groupName) {
-        if (groupName.toLowerCase().equals("public group")
+        if (groupName == null
+                || groupName.toLowerCase().equals("public group")
                 || groupName.toLowerCase().equals("admin group")) {
             return false;
         }
@@ -126,7 +152,7 @@ public class GroupMgrBean implements Serializable {
         this.memberService.deactivateGroup(this.group);
         initGroup();
         this.mode = MODE.READ;
-         UIMessage.info("groupMgr_group_deactivated");
+        messagePresenter.info("groupMgr_group_deactivated");
     }
 
     public void actionDeleteMembership(Membership ms) {
@@ -303,5 +329,9 @@ public class GroupMgrBean implements Serializable {
 
     public boolean isDeactivationForbidden(Group g) {
         return !memberService.canGroupBeDeactivated(g);
+    }
+
+    public void setMessagePresenter(MessagePresenter messagePresenter) {
+        this.messagePresenter = messagePresenter;
     }
 }

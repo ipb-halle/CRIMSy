@@ -25,6 +25,9 @@ import de.ipb_halle.lbac.material.MessagePresenter;
  */
 public class MessagePresenterMock implements MessagePresenter {
 
+    private String lastErrorMessage;
+    private String lastInfoMessage;
+
     @Override
     public String presentMessage(String messageKey, Object... args) {
         return messageKey;
@@ -32,11 +35,26 @@ public class MessagePresenterMock implements MessagePresenter {
 
     @Override
     public void error(String message, Object... args) {
-
+        lastErrorMessage = message;
     }
 
     @Override
     public void info(String message, Object... args) {
-
+        lastInfoMessage = message;
     }
+
+    public String getLastErrorMessage() {
+        return lastErrorMessage;
+    }
+
+    public String getLastInfoMessage() {
+        return lastInfoMessage;
+    }
+    public void reseLastMessages(){
+        lastErrorMessage=null;
+        lastInfoMessage=null;
+    }
+    
+    
+    
 }
