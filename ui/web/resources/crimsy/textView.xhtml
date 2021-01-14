@@ -42,6 +42,7 @@
 
         <span class="ql-editor">
             <nwc:augmentedText value="#{cc.attrs.text}"
+                    bean="#{cc.attrs.bean}" 
                     linkedDataHolder="#{cc.attrs.linkedDataHolder}" >
                 <f:converter converterId="RichTextConverter" />
             </nwc:augmentedText>

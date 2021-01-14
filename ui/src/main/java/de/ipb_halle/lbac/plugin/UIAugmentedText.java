@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.plugin; 
 
+import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.LinkedDataHolder;
 import de.ipb_halle.lbac.exp.LinkText;
@@ -60,13 +61,29 @@ public class UIAugmentedText extends UIOutput {
      */
     @Override
     public void decode(FacesContext context) {
-                Map<String, String> requestMap = context.getExternalContext().getRequestParameterMap();
-                String clientId = this.getClientId(context);
 
-/*
-        String pt = (String) getAttributes().get("pluginType");
-        setPluginType(clientId, pt);
-*/
+        Map<String, String> requestMap = context.getExternalContext().getRequestParameterMap();
+        String clientId = getClientId(context);
+
+        try {
+            String index = requestMap.get("linkedDataIndex");
+            if (index == null) {
+                // abort on requests not originating from links
+                return;
+            }
+
+            ExperimentBean bean = (ExperimentBean) getAttributes().get("bean");
+            LinkedDataHolder holder = (LinkedDataHolder) getAttributes().get("linkedDataHolder");
+
+            this.logger.info(String.format("decode(): Material=%s", holder
+                .getLinkedData()
+                .get(Integer.valueOf(index))
+                .getMaterial()
+                .getFirstName()));
+
+        } catch(Exception e) {
+            this.logger.warn("decode caught an exception: ", (Throwable) e);
+        }
     }
 
     /**
@@ -140,12 +157,12 @@ public class UIAugmentedText extends UIOutput {
         while(matcher.find()) {
             end = matcher.start();
             if (end > start) {
-                writer.writeText(st.substring(start, end), null);
+                writer.write(st.substring(start, end));
             }
             start = matcher.end();
             insertLink(writer, linkMap, clientId, st.substring(end, start));
         }
-        writer.writeText(st.substring(start), null);
+        writer.write(st.substring(start));
     }
 
     /**
@@ -162,7 +179,7 @@ public class UIAugmentedText extends UIOutput {
             sb.append("', '");
             sb.append(clientId);
             sb.append("', ");
-            sb.append("1");     // data.getIndex();
+            sb.append(Integer.toString(data.getRank()));
             sb.append("); return false;");
             return sb.toString();
         }

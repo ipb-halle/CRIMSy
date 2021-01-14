@@ -40,7 +40,8 @@ function openLinkDialog(linkType, clientId, index) {
 
     PrimeFaces.ab({
         source: clientId,
-        params: index,
+        params: [ {name: "linkedDataIndex", value: index}, ],
+        process : clientId,
         update: "@(.dlg" + linkType + ")",
         oncomplete: function(xhr, status, args) {PF("dlg_" + linkType).show(); }
     });
