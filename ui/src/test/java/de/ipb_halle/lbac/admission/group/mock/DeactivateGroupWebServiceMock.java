@@ -15,9 +15,9 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.announcement.membership.mock;
+package de.ipb_halle.lbac.admission.group.mock;
 
-import de.ipb_halle.lbac.admission.MembershipWebRequest;
+import de.ipb_halle.lbac.admission.group.GroupWebRequest;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -30,18 +30,18 @@ import javax.ws.rs.core.Response;
  *
  * @author fmauz
  */
-@Path("rest/members/")
+@Path("rest/groups/deactivate/")
 @Stateless
-public class MembershipWebServiceMock {
+public class DeactivateGroupWebServiceMock {
 
     public static boolean SUCCESS = true;
 
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response handleRequest(MembershipWebRequest request) {
+    public Response handleRequest(GroupWebRequest request) {
         if (!SUCCESS) {
-            request.setStatusCode("500:Failure from Mocking Server");
+             return Response.serverError().build();
         }
         return Response.ok(request).build();
     }

@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.admission.group;
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.Group;
-import de.ipb_halle.lbac.admission.GroupWebRequest;
 import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.User;
