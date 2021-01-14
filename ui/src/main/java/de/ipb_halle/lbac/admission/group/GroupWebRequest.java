@@ -15,11 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.admission;
+package de.ipb_halle.lbac.admission.group;
 
 /**
  *
  */
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.webservice.WebRequest;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
@@ -32,6 +33,9 @@ public class GroupWebRequest
 
     private final static long serialVersionUID = 1L;
     private Group group;
+
+    public GroupWebRequest() {
+    }
 
     public GroupWebRequest(Group g) {
         this.group = g;

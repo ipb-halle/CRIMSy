@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.admission.group;
 
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.Group;
-import de.ipb_halle.lbac.admission.GroupWebRequest;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
