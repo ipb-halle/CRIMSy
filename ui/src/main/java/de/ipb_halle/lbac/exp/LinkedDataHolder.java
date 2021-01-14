@@ -1,5 +1,5 @@
 /*
- * Cloud Resource & Information Management System (CRIMSy)
+ * CRIMSy 
  * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,26 +17,19 @@
  */
 package de.ipb_halle.lbac.exp;
 
-import de.ipb_halle.lbac.exp.LinkedDataType;
-import de.ipb_halle.lbac.exp.Payload;
+import java.util.List;
 
 /**
- * Payload record for links containing the link text
+ * Interface for classes holding a single item and 
+ * having that item assigned / changed by a ItemAgent
+ *
  * @author fbroda
  */
-public class LinkText extends Payload {
+public interface LinkedDataHolder {
 
-    private String text;
+    /** 
+     * @return the list of linked data 
+     */
+    public List<LinkedData> getLinkedData();
 
-    public LinkText(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return this.text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 }

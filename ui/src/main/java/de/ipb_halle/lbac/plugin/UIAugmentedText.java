@@ -17,6 +17,10 @@
  */
 package de.ipb_halle.lbac.plugin; 
 
+import de.ipb_halle.lbac.exp.LinkedData;
+import de.ipb_halle.lbac.exp.LinkedDataHolder;
+import de.ipb_halle.lbac.exp.LinkText;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +43,6 @@ import org.apache.logging.log4j.Logger;
 @FacesComponent(value="UIAugmentedText")
 public class UIAugmentedText extends UIOutput {
 
-    private Map<String, String> linkMap;
     private Logger logger;
 
 
@@ -50,8 +53,6 @@ public class UIAugmentedText extends UIOutput {
         super();
         logger = LogManager.getLogger(this.getClass().getName());
         setRendererType(null); 
-
-        setupDummyData();
     }
 
     /**
@@ -78,7 +79,18 @@ public class UIAugmentedText extends UIOutput {
         ResponseWriter writer = context.getResponseWriter();
         String clientId = this.getClientId(context);
 
-        writer.write(findLinks(getValue().toString())); 
+        Map<String, LinkedData> linkMap;
+        try {
+            LinkedDataHolder holder = (LinkedDataHolder) getAttributes().get("linkedDataHolder");
+            linkMap = setup(holder); 
+
+        } catch(Exception e) {
+            this.logger.warn("Could not obtain linked data");
+            linkMap = new HashMap<> ();
+        }
+
+        
+        findLinks(writer, linkMap, clientId, getValue().toString()); 
 
         writer.flush();
     }
@@ -110,11 +122,13 @@ public class UIAugmentedText extends UIOutput {
     /**
      * scan a (HTML) String and transform it into a HTML output
      * string augmented by link elements
+     * @param writer the ResponseWriter
+     * @param linkMap the map of LinkedData
+     * @param clientId the clientid of this UIObject
      * @param st the input string
-     * @return the output string possibly containing link elements
      */
-    public String findLinks(String st) {
-        StringBuilder sb = new StringBuilder();
+    public void findLinks(ResponseWriter writer, Map<String, LinkedData> linkMap, String clientId, String st) 
+        throws IOException {
 
         // does not recognize tokens at end of input
         // when there is no trailing comma, dot, whitespace!
@@ -126,43 +140,73 @@ public class UIAugmentedText extends UIOutput {
         while(matcher.find()) {
             end = matcher.start();
             if (end > start) {
-                sb.append(st.substring(start, end));
+                writer.writeText(st.substring(start, end), null);
             }
             start = matcher.end();
-            insertLink(sb, st.substring(end, start));
+            insertLink(writer, linkMap, clientId, st.substring(end, start));
         }
-        sb.append(st.substring(start));
-        return sb.toString();
-    }
-
-    /*
-     * @param sb the StringBuilder to which the link should be appended
-     * @param linkMarker the link marker including a trailing character
-     * (comma, dot or whitespace), which will not be rendered as a link.
-     */
-    public void insertLink(StringBuilder sb, String linkMarker) {
-        int len = linkMarker.length();
-        String replacement = this.linkMap.get(linkMarker.substring(1, len - 1));
-        if (replacement != null) {
-            sb.append("<a href='#' ");
-            sb.append("onclick='alert(");
-            sb.append(replacement);
-            sb.append(");'>");
-            sb.append(linkMarker.substring(0, len - 1));
-            sb.append("</a>");
-            sb.append(linkMarker.substring(len - 1));
-        } else {
-            sb.append(linkMarker);
-        }
+        writer.writeText(st.substring(start), null);
     }
 
     /**
-     * add some dummy data during development
+     * construct a replacement out of the given LinkedData object
+     * @param clientId the clientId of this object
+     * @param data a link which may point to material, items, experiments etc.
+     * @return a JavaScript action to open a matching dialog window upon a user 
+     * clicking the link
      */
-    private void setupDummyData() {
-        linkMap = new HashMap<> ();
-        linkMap.put("BENZOL", "{ \"type\":\"MATERIAL\", \"id\":2 }");
-        linkMap.put("ITEM", "{ \"type\":\"ITEM\", \"id\":2 }");
+    private String getReplacement(String clientId, LinkedData data) {
+        if (data != null) {
+            StringBuilder sb = new StringBuilder("openLinkDialog('");
+            sb.append(data.getLinkedDataType().toString());
+            sb.append("', '");
+            sb.append(clientId);
+            sb.append("', ");
+            sb.append("1");     // data.getIndex();
+            sb.append("); return false;");
+            return sb.toString();
+        }
+        return null;
+    }
+
+    /*
+     * @param writer the ResponseWriter to receive the output
+     * @param linkMap the map with LinkedData
+     * @param clientId the clientId
+     * @param linkMarker the link marker including a trailing character
+     * (comma, dot or whitespace), which will not be rendered as a link.
+     */
+    public void insertLink(ResponseWriter writer, Map<String, LinkedData> linkMap, String clientId, String linkMarker) 
+        throws IOException { 
+        int len = linkMarker.length();
+        String replacement = getReplacement(clientId, 
+            linkMap.get(linkMarker.substring(1, len - 1)));
+        if (replacement != null) {
+            writer.startElement("a", this);
+            writer.writeAttribute("href", "#", null);
+            writer.writeAttribute("onclick", replacement, null);
+            writer.writeText(linkMarker.substring(0, len - 1), null);
+            writer.endElement("a");
+            writer.writeText(linkMarker.substring(len - 1), null);
+        } else {
+            writer.writeText(linkMarker, null);
+        }
+    }
+
+    private Map<String, LinkedData> setup(LinkedDataHolder holder) {
+        Map<String, LinkedData> map = new HashMap<> ();
+        for (LinkedData data : holder.getLinkedData()) {
+            switch (data.getLinkedDataType()) {
+                case LINK_DOCUMENT:
+                case LINK_MATERIAL :
+                case LINK_ITEM :
+                case LINK_EXPERIMENT :
+                    map.put(
+                        ((LinkText) data.getPayload()).getText(), 
+                        data);
+            }
+        }
+        return map;
     }
 
 }

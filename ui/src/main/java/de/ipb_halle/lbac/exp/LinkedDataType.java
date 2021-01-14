@@ -29,7 +29,7 @@ public enum LinkedDataType {
     LINK_MATERIAL(1),
     LINK_ITEM(2),
     LINK_EXPERIMENT(3),
-    LINK_LINKTEXT(4),
+    LINK_USER(4),
 
     ASSAY_TARGET(5),
     ASSAY_SINGLE_POINT_OUTCOME(6),

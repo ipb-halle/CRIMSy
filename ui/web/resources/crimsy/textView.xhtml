@@ -34,12 +34,15 @@
                          expert="false"
                          shortDescription="Displays text">
         <composite:attribute name="text" required="true" />
+        <composite:attribute name="bean" required="true" />
+        <composite:attribute name="linkedDataHolder" required="true" />
     </composite:interface>
 
     <composite:implementation>
 
         <span class="ql-editor">
-            <nwc:augmentedText value="#{cc.attrs.text}">
+            <nwc:augmentedText value="#{cc.attrs.text}"
+                    linkedDataHolder="#{cc.attrs.linkedDataHolder}" >
                 <f:converter converterId="RichTextConverter" />
             </nwc:augmentedText>
         </span>

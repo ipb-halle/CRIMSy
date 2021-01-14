@@ -97,7 +97,10 @@
                             <crimsy:assay assay="#{rec}"
                                           bean="#{experimentBean}"
                                           rendered="#{rec.facelet eq 'ASSAY'}" />
-                            <crimsy:textView text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
+                            <crimsy:textView text="#{rec.text}" 
+                                bean="#{experimentBean}"
+                                linkedDataHolder="#{rec}"
+                                rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
                             <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
                         </h:panelGroup>
 

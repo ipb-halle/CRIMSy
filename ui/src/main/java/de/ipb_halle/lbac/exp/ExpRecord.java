@@ -44,7 +44,7 @@ import org.primefaces.model.chart.BarChartModel;
  *
  * @author fbroda
  */
-public abstract class ExpRecord implements DTO {
+public abstract class ExpRecord implements DTO, LinkedDataHolder {
 
     private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private Logger logger = LogManager.getLogger(this.getClass().getName());

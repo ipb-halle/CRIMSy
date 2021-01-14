@@ -33,7 +33,8 @@ public abstract class Payload {
             case LINK_DOCUMENT :
             case LINK_MATERIAL : 
             case LINK_ITEM : 
-            case LINK_LINKTEXT :
+            case LINK_EXPERIMENT :
+            case LINK_USER:
                 return gson.fromJson(outcome, LinkText.class);
             case ASSAY_SINGLE_POINT_OUTCOME : 
                 return gson.fromJson(outcome, SinglePointOutcome.class);
@@ -44,8 +45,6 @@ public abstract class Payload {
     public ExpRecord getExpRecord() {
         return this.expRecord;
     }
-
-    public abstract LinkedDataType getType(); 
 
     public Payload setExpRecord(ExpRecord expRecord) {
         this.expRecord = expRecord;

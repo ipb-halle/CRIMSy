@@ -51,10 +51,6 @@ public class SinglePointOutcome extends Payload {
         return this.stddev;
     }
 
-    public LinkedDataType getType() {
-        return LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME;
-    }
-
     public String getUnit() {
         return this.unit;
     }

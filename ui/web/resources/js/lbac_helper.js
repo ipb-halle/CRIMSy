@@ -16,44 +16,40 @@
  *
  */
 
-
-var isInitModalError = false,
-    modalError,
-    modalErrorBody;
-
-/** calc offset between server and client time and save it to cookie **/
-function calcOffset() {
-    var serverTime = $.cookie('serverTime');
-    serverTime = serverTime == null ? null : Math.abs(serverTime);
-    var clientTimeOffset = (new Date()).getTime() - serverTime;
-    $.cookie('clientTimeOffset', clientTimeOffset);
-}
-
-/** check session time out every 10 seconds **/
-function checkSession() {
-    var sessionExpiry = Math.abs($.cookie('sessionExpiry'));
-    var timeOffset = Math.abs($.cookie('clientTimeOffset'));
-    var localTime = (new Date()).getTime();
-
-    if ((localTime - timeOffset) > (sessionExpiry + 15000)) {
-        console.log('Session TimeOut!');
-        if (isInitModalError) {
-            $("h4#modalError_Label").text('Session TimeOut');
-            modalErrorBody.html(
-                '<b>Web-Session Zeitüberschreitung.</b>' +
-                '<p>Bitte laden Sie die Seite neu.</p>' +
-                '<b>Session timeout.</b>' +
-                '<p>Please reload page.</p>');
-            modalError.modal('show');
-        } else {
-            alert('Session timeout. please reload page.')
-        }
-    } else {
-        setTimeout('checkSession()', 10000);
+/*
+ * used by UIAugmentedText
+ * determine the styleclass ('.dlgXxxx') and 
+ * name ('dlg_Xxxx') of a dialog widget appropriate 
+ * for a given link type.
+ */
+function getLinkDialog(linkType) {
+    switch(linkType) {
+        case "LINK_MATERIAL" : return "MaterialView";
+        case "LINK_ITEM" : return "ItemView";
     }
+    alert("Invalid link type");
+    return null;
 }
 
-//*** encode font awesome symbol for file types ***
+/*
+ * used by UIAugmentedText to display link elements 
+ * which open a modal dialog window
+ */
+function openLinkDialog(linkType, clientId, index) {
+    var linkType = getLinkDialog(linkType);
+
+    PrimeFaces.ab({
+        source: clientId,
+        params: index,
+        update: "@(.dlg" + linkType + ")",
+        oncomplete: function(xhr, status, args) {PF("dlg_" + linkType).show(); }
+    });
+    return false;
+}
+
+/*
+ * encode font awesome symbol for file types 
+ */
 function encodeFontAwesomeDocSymbol(docExt) {
     switch (docExt.toLowerCase()) {
         case 'pdf':
@@ -68,42 +64,4 @@ function encodeFontAwesomeDocSymbol(docExt) {
             return 'fa fa-file-text-o';
     }
 }
-
-//*** create download link with font awesome symbol: <a ..><i class=".." ..> LinkText </a>
-function getDocumentDownloadLink(resultDoc) {
-    if (resultDoc === undefined) return "";
-    var originalName = (resultDoc.body.originalName ? resultDoc.body.originalName : resultDoc.body.path.split('/').reverse()[0]);
-    var docSymbol = encodeFontAwesomeDocSymbol(originalName.split('.').pop());
-    var $i = $("<i>", {class: docSymbol, 'aria-hidden': "true"}).append('&nbsp;' + originalName);
-    return $("<a>", {target: "_blank", download: originalName, href: resultDoc.body.link, html: $i}).prop('outerHTML');
-}
-
-//*** show/hide search in progress ***
-function enableSpinner() {
-    if (isDataTableInit) {
-        cloudIcon.removeClass('fa-cloud').addClass('fa-spinner fa-spin');
-    }
-}
-
-function disableSpinner() {
-    if (isDataTableInit) {
-        cloudIcon.removeClass('fa-spinner fa-spin').addClass('fa-cloud');
-    }
-}
-
-//*** check browser canvas support ***
-function isCanvasSupported() {
-    var elem = document.createElement('canvas');
-    return !!(elem.getContext && elem.getContext('2d'));
-}
-
-$(function () {
-
-    modalError = $(".modalError");
-    modalErrorBody = $(".modalErrorBody");
-    isInitModalError = typeof modalError !== "undefined";
-
-    calcOffset();
-    checkSession();
-});
 
