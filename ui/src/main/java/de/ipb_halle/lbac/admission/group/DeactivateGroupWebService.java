@@ -15,34 +15,17 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.admission;
+package de.ipb_halle.lbac.admission.group;
 
-/**
- * MembershipWebService This service takes user, group and membership
- * announcements from other nodes and stores them into the local database. The
- * service has to make sure, that the following constraints are met:
- * <ul>
- * <li> local users and groups (AdmissionSubSystems BUILTIN, LOCAL, LDAP) cannot
- * be overwritten
- * <li> remote users originate from the node contacting this service
- * <li> there are only direct memberships of remote users in remote groups, i.e.
- * no nesting
- * <li> passwords and other sensitive information is wiped
- * </ul>
- */
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.service.NodeService;
-
+import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.GroupWebRequest;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
-
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -61,22 +44,16 @@ import org.apache.logging.log4j.LogManager;
  *
  * @author fmauz
  */
-@Path("/groups")
+@Path("/groups/deactivate")
 @Stateless
-public class GroupWebService extends LbacWebService {
-
-    @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
+public class DeactivateGroupWebService extends LbacWebService {
 
     @Inject
     private MemberService memberService;
 
     private Logger logger;
 
-    /**
-     * default constructor
-     */
-    public GroupWebService() {
+    public DeactivateGroupWebService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
@@ -86,10 +63,11 @@ public class GroupWebService extends LbacWebService {
     }
 
     /**
-     * save a remote group from a node
+     * Deactivated a remote group. Checks if this group is present and can be
+     * deleted.
      *
-     * @param request the current node object
-     * @return the serialized node list
+     * @param request the request with the group to deactivate
+     * @return Webresponse with status of operation
      */
     @POST
     @Consumes(MediaType.APPLICATION_XML)
@@ -105,9 +83,12 @@ public class GroupWebService extends LbacWebService {
             if (memberService.canGroupBeDeactivated(request.getGroup())) {
                 memberService.deactivateGroup(localGroup);
             }
-
             return Response.ok(request).build();
         } catch (Exception e) {
+            logger.warn(String.format(
+                    "Request to deactivate group %s from node %s was not successfull",
+                    request.getGroup().getName(),
+                    request.getNodeIdOfRequest().toString()));
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
@@ -121,7 +102,7 @@ public class GroupWebService extends LbacWebService {
         if (!foundGroups.isEmpty()) {
             return foundGroups.get(0);
         }
-        throw new Exception("No goup found");
+        throw new Exception("No group found to delete");
     }
 
 }

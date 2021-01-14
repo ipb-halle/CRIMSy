@@ -15,13 +15,13 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.announcement;
+package de.ipb_halle.lbac.admission.group;
 
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.GroupWebRequest;
-import de.ipb_halle.lbac.admission.GroupWebService;
+import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.base.TestBase;
@@ -50,13 +50,17 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class GroupWebServiceTest extends TestBase {
+public class DeactivateGroupWebServiceTest extends TestBase {
 
     @Inject
-    private GroupWebService groupWebService;
+    private DeactivateGroupWebService groupWebService;
 
     @Inject
     protected KeyManager keymanager;
+
+    private User publicUser;
+    private Cloud cloud;
+    private Node node;
 
     @Deployment
     public static WebArchive createDeployment() {
@@ -68,52 +72,63 @@ public class GroupWebServiceTest extends TestBase {
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(FileService.class)
                 .addClass(KeyManager.class)
-                .addClass(GroupWebService.class)
+                .addClass(DeactivateGroupWebService.class)
                 .addClass(KeyManager.class)
                 .addClass(FileEntityService.class);
     }
 
     @Test
-    public void test01_groupWebService() throws Exception {
-          Cloud c = cloudService.loadByName(TESTCLOUD);
-           Node n = createNode(
-                nodeService,
-                "remove this parameter"
-        );
-           
-             CloudNode testCloudNode = new CloudNode(c, n);
-        testCloudNode.setPublicKey(Base64.getEncoder().encodeToString(keymanager.getLocalPublicKey(TESTCLOUD).getEncoded()));
-        testCloudNode = cloudNodeService.save(testCloudNode);
-        
-        
-        Group g = new Group();
-        g.setNode(nodeService.getLocalNode());
-        g.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
-        g.setName("GroupWebServiceTest:test01_groupWebService");
-        g = memberService.save(g);
-        LbacWebClient client = new LbacWebClient();
-        WebRequestSignature signature = client.createWebRequestSignature(keymanager.getLocalPrivateKey(TESTCLOUD));
-        User publicUser = memberService.loadUserById((GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-
-        GroupWebRequest request = new GroupWebRequest(g);
-        request.setUser(publicUser);
-        request.setCloudName(TESTCLOUD);
-        request.setNodeIdOfRequest(testCloudNode.getNode().getId());
-        request.setSignature(signature);
+    public void test001_deactivateGroup() throws Exception {
+        createAndSaveCloudNode();
+        Group remoteGroup = createAndSaveRemoteGroup();
+        GroupWebRequest request = createWebRequest(node, remoteGroup);
         groupWebService.handleRequest(request);
 
-        Group deactivatedGroup = memberService.loadGroupById(g.getId());
+        Group deactivatedGroup = memberService.loadGroupById(remoteGroup.getId());
         Assert.assertNotNull(deactivatedGroup);
-        Assert.assertEquals("deactivated",deactivatedGroup.getName());
-        
-        entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id="+g.getId());
+        Assert.assertEquals("deactivated", deactivatedGroup.getName());
+
+        entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + remoteGroup.getId());
     }
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         initializeBaseUrl();
         initializeKeyStoreFactory();
+        publicUser = memberService.loadUserById((GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+    }
+
+    private Group createAndSaveRemoteGroup() {
+        Group g = new Group();
+        g.setNode(nodeService.getLocalNode());
+        g.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+        g.setName("GroupWebServiceTest:test001_deactivateGroup");
+        g = memberService.save(g);
+        return g;
+    }
+
+    private void createAndSaveCloudNode() throws Exception {
+        cloud = cloudService.loadByName(TESTCLOUD);
+        node = createNode(nodeService, "remove this parameter");
+        CloudNode testCloudNode = new CloudNode(cloud, node);
+        testCloudNode.setPublicKey(Base64.getEncoder().encodeToString(keymanager.getLocalPublicKey(TESTCLOUD).getEncoded()));
+        testCloudNode = cloudNodeService.save(testCloudNode);
+    }
+
+    private GroupWebRequest createWebRequest(
+            Node nodeOfRequest,
+            Group g) throws Exception {
+        GroupWebRequest request = new GroupWebRequest(g);
+        request.setUser(publicUser);
+        request.setCloudName(TESTCLOUD);
+        request.setNodeIdOfRequest(nodeOfRequest.getId());
+
+        LbacWebClient client = new LbacWebClient();
+        WebRequestSignature signature = client.createWebRequestSignature(keymanager.getLocalPrivateKey(TESTCLOUD));
+        request.setSignature(signature);
+        return request;
     }
 
 }

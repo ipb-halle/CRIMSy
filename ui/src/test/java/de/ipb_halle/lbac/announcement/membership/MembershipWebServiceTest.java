@@ -56,8 +56,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Test for receipt of an webrequest with the inquiry to save a remote user in
- * the local database inclusive its groups.
  *
  * @author fmauz
  */
