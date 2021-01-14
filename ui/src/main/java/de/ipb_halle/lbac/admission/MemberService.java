@@ -112,8 +112,7 @@ public class MemberService implements Serializable {
         if (group == null) {
             return false;
         }
-        if (AdmissionSubSystemType.BUILTIN == group.getSubSystem().getSubSystemType()
-                || AdmissionSubSystemType.LBAC_REMOTE == group.getSubSystem().getSubSystemType()) {
+        if (AdmissionSubSystemType.BUILTIN == group.getSubSystem().getSubSystemType()) {
             return false;
         }
         return !group.getName().equals(ADMIN_GROUP_NAME);

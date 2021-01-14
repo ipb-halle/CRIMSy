@@ -38,6 +38,7 @@ public class ApplicationConfig extends Application {
         return new HashSet<Class<?>>(Arrays.asList(
                 CloudNodeWebService.class,
                 CollectionWebService.class,
+                MembershipWebService.class,
                 SearchWebService.class,
                 MembershipWebService.class,
                 WordCloudWebService.class,

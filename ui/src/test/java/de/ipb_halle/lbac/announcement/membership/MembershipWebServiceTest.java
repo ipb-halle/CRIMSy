@@ -43,7 +43,6 @@ import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.util.Base64;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -204,7 +203,6 @@ public class MembershipWebServiceTest extends TestBase {
         boolean group2Flag = false;
 
         for (Membership m : memberships) {
-            System.out.println("Groupid " + m.getGroup().getId() + " -> " + m.getGroup().getName());
             if (m.getGroup().equals(publicGroup)) {
                 publicGroupFlag = true;
             } else if (m.getGroup().getSubSystemData().equals(remoteGroup2.getId().toString())) {
