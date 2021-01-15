@@ -286,7 +286,7 @@ public class ProjectEditBean implements Serializable {
     public void saveProject() {
         if (projectName == null
                 || projectName.trim().isEmpty()) {
-            UIMessage.error("projectEdit_invalide_projectname");
+            UIMessage.error("projectEdit_invalid_projectname");
             return;
         }
         if (!creationNameConditionMet() || !editNameConditionMet()) {
