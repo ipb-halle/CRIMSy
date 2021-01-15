@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.webservice;
 
 import de.ipb_halle.lbac.admission.MembershipWebService;
+import de.ipb_halle.lbac.admission.group.DeactivateGroupWebService;
 import de.ipb_halle.lbac.collections.CollectionWebService;
 import de.ipb_halle.lbac.device.job.JobWebService;
 import de.ipb_halle.lbac.forum.postings.PostingWebService;
@@ -38,7 +39,7 @@ public class ApplicationConfig extends Application {
         return new HashSet<Class<?>>(Arrays.asList(
                 CloudNodeWebService.class,
                 CollectionWebService.class,
-                MembershipWebService.class,
+                DeactivateGroupWebService.class,
                 SearchWebService.class,
                 MembershipWebService.class,
                 WordCloudWebService.class,

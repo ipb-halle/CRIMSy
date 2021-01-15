@@ -71,7 +71,7 @@ public class DeactivateGroupWebService extends LbacWebService {
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
-    public Response handleRequest(GroupWebRequest request) {
+    public Response handleRequest(DeactivateGroupWebRequest request) {
         try {
             checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
@@ -88,7 +88,8 @@ public class DeactivateGroupWebService extends LbacWebService {
                     "Request to deactivate group %s from node %s was not successfull",
                     request.getGroup().getName(),
                     request.getNodeIdOfRequest().toString()));
-            return Response.status(Response.Status.NOT_FOUND).build();
+            logger.error(e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 

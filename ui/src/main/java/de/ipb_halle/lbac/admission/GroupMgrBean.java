@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.admission.group.DeactivateGroupOrchestrator;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 
@@ -26,12 +26,12 @@ import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -61,10 +61,14 @@ public class GroupMgrBean implements Serializable {
     @Inject
     private MembershipService membershipService;
 
+    @Inject
+    private DeactivateGroupOrchestrator deactivateOrchestrator;
+
     private Group group;
     private transient Logger logger;
     private boolean nestedFlag;
     private GroupNameValidator groupNameValidator;
+    private User currentUser;
 
     private MODE mode;
 
@@ -136,7 +140,9 @@ public class GroupMgrBean implements Serializable {
      * subSystemType - node - no delete for adminGroup or publicGroup - ...
      */
     public void actionDelete() {
+        deactivateOrchestrator.startGroupDeactivation(group.copy(), currentUser);
         this.memberService.deactivateGroup(this.group);
+
         initGroup();
         this.mode = MODE.READ;
         messagePresenter.info("groupMgr_group_deactivated");
@@ -260,6 +266,16 @@ public class GroupMgrBean implements Serializable {
                 users.remove(i);
             }
         }
+    }
+
+    /**
+     *
+     *
+     *
+     * @param evt the LoginEvent scheduled by UserBean
+     */
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
     }
 
     /**

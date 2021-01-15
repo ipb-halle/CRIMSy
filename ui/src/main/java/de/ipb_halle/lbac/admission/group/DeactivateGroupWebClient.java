@@ -65,7 +65,7 @@ public class DeactivateGroupWebClient
             UUID localNodeId,
             PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 
-        GroupWebRequest membershipAnnouncement = new GroupWebRequest(groupToDeactivate);
+        DeactivateGroupWebRequest membershipAnnouncement = new DeactivateGroupWebRequest(groupToDeactivate);
         membershipAnnouncement.setUser(u);
         membershipAnnouncement.setSignature(
                 createWebRequestSignature(privateKey)
@@ -74,10 +74,10 @@ public class DeactivateGroupWebClient
         membershipAnnouncement.setNodeIdOfRequest(localNodeId);
 
         WebClient wc = SecureWebClientBuilder.createWebClient(
-                cloudNode, REST_PATH);
+                cloudNode,
+                REST_PATH);
         wc.accept(MediaType.APPLICATION_XML_TYPE);
         wc.type(MediaType.APPLICATION_XML_TYPE);
-
         Response response = wc.post(membershipAnnouncement);
 
         if (response.getStatus() != 200) {

@@ -27,17 +27,17 @@ import java.io.Serializable;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GroupWebRequest
+public class DeactivateGroupWebRequest
         extends WebRequest
         implements Serializable {
 
     private final static long serialVersionUID = 1L;
     private Group group;
 
-    public GroupWebRequest() {
+    public DeactivateGroupWebRequest() {
     }
 
-    public GroupWebRequest(Group g) {
+    public DeactivateGroupWebRequest(Group g) {
         this.group = g;
     }
 

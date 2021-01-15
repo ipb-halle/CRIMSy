@@ -17,32 +17,28 @@
  */
 package de.ipb_halle.lbac.admission.group.mock;
 
-import de.ipb_halle.lbac.admission.group.DeactivateGroupWebRequest;
-import javax.ejb.Stateless;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.group.DeactivateGroupWebClient;
+import de.ipb_halle.lbac.entity.CloudNode;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SignatureException;
+import java.util.UUID;
 
 /**
  *
  * @author fmauz
  */
-@Path("rest/groups/deactivate/")
-@Stateless
-public class DeactivateGroupWebServiceMock {
+public class DeactivateGroupWebClientMock extends DeactivateGroupWebClient {
 
-    public static boolean SUCCESS = true;
-
-    @POST
-    @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
-    public Response handleRequest(DeactivateGroupWebRequest request) {
-        if (!SUCCESS) {
-             return Response.serverError().build();
-        }
-        return Response.ok(request).build();
+    @Override
+    public void deactivateGroupAtRemoteNodes(
+            User u,
+            CloudNode cloudNode,
+            Group groupToDeactivate,
+            UUID localNodeId,
+            PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
     }
 }

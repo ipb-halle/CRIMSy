@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import java.io.Serializable;
 
-
 /**
  * Represents a List of Users or other Groups as members
  *
@@ -69,6 +68,17 @@ public class Group extends Member implements Serializable, DTO {
         return "Group{id=" + getId() + ", name="
                 + getName() + ",\n     node="
                 + this.getNode() + "}";
+    }
+
+    public Group copy() {
+        Group g = new Group();
+        g.setId(getId());
+        g.setModified(getModified());
+        g.setName(getName());
+        g.setNode(getNode());
+        g.setSubSystemData(getSubSystemData());
+        g.setSubSystemType(getSubSystemType());
+        return g;
     }
 
 }

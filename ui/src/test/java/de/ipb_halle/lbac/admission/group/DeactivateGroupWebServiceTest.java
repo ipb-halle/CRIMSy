@@ -80,7 +80,7 @@ public class DeactivateGroupWebServiceTest extends TestBase {
     public void test001_deactivateGroup() throws Exception {
         createAndSaveCloudNode();
         Group remoteGroup = createAndSaveRemoteGroup();
-        GroupWebRequest request = createWebRequest(node, remoteGroup);
+        DeactivateGroupWebRequest request = createWebRequest(node, remoteGroup);
         groupWebService.handleRequest(request);
 
         Group deactivatedGroup = memberService.loadGroupById(remoteGroup.getId());
@@ -116,10 +116,10 @@ public class DeactivateGroupWebServiceTest extends TestBase {
         testCloudNode = cloudNodeService.save(testCloudNode);
     }
 
-    private GroupWebRequest createWebRequest(
+    private DeactivateGroupWebRequest createWebRequest(
             Node nodeOfRequest,
             Group g) throws Exception {
-        GroupWebRequest request = new GroupWebRequest(g);
+        DeactivateGroupWebRequest request = new DeactivateGroupWebRequest(g);
         request.setUser(publicUser);
         request.setCloudName(TESTCLOUD);
         request.setNodeIdOfRequest(nodeOfRequest.getId());
