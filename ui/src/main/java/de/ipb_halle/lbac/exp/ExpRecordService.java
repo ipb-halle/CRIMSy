@@ -195,6 +195,7 @@ public class ExpRecordService implements Serializable {
         Root<LinkedDataEntity> root = criteriaQuery.from(LinkedDataEntity.class);
         criteriaQuery.select(root);
         criteriaQuery.where(builder.equal(root.get("exprecordid"), expRecord.getExpRecordId()));
+        criteriaQuery.orderBy(builder.asc(root.get("rank")));
 
         List<LinkedData> result = new ArrayList<LinkedData>();
         for (LinkedDataEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
