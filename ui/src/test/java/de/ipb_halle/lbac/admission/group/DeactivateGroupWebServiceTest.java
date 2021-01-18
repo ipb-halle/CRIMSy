@@ -103,6 +103,7 @@ public class DeactivateGroupWebServiceTest extends TestBase {
         Group g = new Group();
         g.setNode(nodeService.getLocalNode());
         g.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+        g.setSubSystemData("1");
         g.setName("GroupWebServiceTest:test001_deactivateGroup");
         g = memberService.save(g);
         return g;

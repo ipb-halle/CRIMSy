@@ -131,11 +131,11 @@ public class MaterialAgentTest extends TestBase {
                 .setMaterialAgent(materialAgent)
                 .setMemberService(memberService)
                 .setItemAgent(itemAgentMock);
+        experimentBean.experimentBeanInit();
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
 
-/*
 
-        *** Hier knallt's ***
+
 
         Experiment experiment = new Experiment(null,
                 "code",
@@ -152,7 +152,7 @@ public class MaterialAgentTest extends TestBase {
         experimentBean.getExpRecords().add(assay);
         experimentBean.createExpRecordController("ASSAY");
 
-*/
+
         holder = experimentBean.getExpRecordController();
 
         materialAgent.setMaterialHolder(holder);
@@ -164,9 +164,7 @@ public class MaterialAgentTest extends TestBase {
     @Test
     public void testLoadMaterials() {
 
-        Assert.assertTrue("All Tests disabled", true);
 
-/*
         holder.setLinkedDataIndex(0);   // select the assay target record
         List<Material> materials = materialAgent.getMaterialList();
 
@@ -186,7 +184,7 @@ public class MaterialAgentTest extends TestBase {
         materialAgent.actionTriggerMaterialSearch();
         materials = materialAgent.getMaterialList();
         Assert.assertEquals("materials list size should be 5", 5, materials.size());
-*/
+
     }
 
     @After
