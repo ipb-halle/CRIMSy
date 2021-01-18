@@ -98,6 +98,7 @@ public class DeactivateGroupWebService extends LbacWebService {
         cmap.put("name", g.getName());
         cmap.put("subSystemType", AdmissionSubSystemType.LBAC_REMOTE);
         cmap.put("node_id", g.getNode().getId());
+        cmap.put("subSystemData",g.getSubSystemData());
         List<Group> foundGroups = memberService.loadGroups(cmap);
         if (!foundGroups.isEmpty()) {
             return foundGroups.get(0);
