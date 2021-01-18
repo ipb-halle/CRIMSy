@@ -41,13 +41,15 @@ public class LinkedData implements DTO {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Long recordid;
     private ExpRecord expRecord;
-    private transient boolean edit;
     private Material material;
     private Item item;
 //    private Document document;
     private int rank;
     private Payload payload;
     private LinkedDataType linkedDataType;
+
+    private transient boolean edit;
+    private transient int index;
 
     /**
      * constructor
@@ -118,6 +120,10 @@ public class LinkedData implements DTO {
         return this.linkedDataType.toString();
     }
 
+    public int getIndex() {
+        return this.index;
+    }
+
     public Item getItem() {
         return this.item;
     }
@@ -169,6 +175,11 @@ public class LinkedData implements DTO {
 
     public LinkedData setEdit(boolean edit) {
         this.edit = edit;
+        return this;
+    }
+
+    public LinkedData setIndex(int index) {
+        this.index = index;
         return this;
     }
 

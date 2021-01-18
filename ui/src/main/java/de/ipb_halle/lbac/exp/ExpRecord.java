@@ -63,6 +63,7 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     private transient boolean isFirst = false;
     private transient boolean isLast =  false;
     private transient int       index;
+    private transient int       linkedDataMaxRank;
 
     protected ExpRecord() {
         this.creationtime = new Date();
@@ -71,6 +72,7 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         this.dateFormatter = new SimpleDateFormat(DATE_FORMAT);
         this.hasHiddenLinkedData = false;
         this.linkedData = new ArrayList<LinkedData>(2);
+        this.linkedDataMaxRank = -1;
     }
 
     public void activateEditModeForRecord(LinkedData recordToEdit) {
@@ -188,6 +190,11 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     public List<LinkedData> getLinkedData() {
         return this.linkedData;
     }
+
+    public int getLinkedDataNextRank() {
+        this.linkedDataMaxRank++;
+        return this.linkedDataMaxRank;
+    }
     
     public Long getNext() {
         return this.next;
@@ -233,6 +240,14 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     public void incrementRevision() {
         this.changetime =  new Date();
         this.revision += 1;
+    }
+
+    public void reIndexLinkedData() {
+        int i = 0;
+        for (LinkedData d : this.linkedData) {
+            d.setIndex(i);
+            i++;
+        }
     }
 
     public ExpRecord setCreationTime(Date creationtime) {
@@ -291,6 +306,10 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         this.linkedData = data;
     }
     
+    public void setLinkedDataMaxRank(int rank) {
+        this.linkedDataMaxRank = rank;
+    }
+
     public ExpRecord setNext(Long next) {
         this.next = next;
         return this;

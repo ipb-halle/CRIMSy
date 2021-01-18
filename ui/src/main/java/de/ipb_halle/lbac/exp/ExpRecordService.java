@@ -221,10 +221,13 @@ public class ExpRecordService implements Serializable {
                     }
                 }
             }
+            expRecord.setLinkedDataMaxRank(e.getRank());
+
             if (material != null) {
                 result.add(new LinkedData(e, expRecord, material, item));
             }
         }
+        expRecord.reIndexLinkedData();
         return result;
     }
 

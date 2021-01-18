@@ -70,7 +70,7 @@ public class Assay extends ExpRecord implements DTO {
      * containing the target material (an enzyme, organ, 
      * organism etc.)
      */
-    private Integer target;
+    private Integer assayTargetIndex;
 
     /**
      * comma separated list of acceptable units
@@ -93,6 +93,9 @@ public class Assay extends ExpRecord implements DTO {
         this.remarks = "";
         this.units = "mM, µM, nM";
         this.outcomeType = LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME;
+        getLinkedData().add(new LinkedData(this, 
+                LinkedDataType.ASSAY_TARGET, 
+                getLinkedDataNextRank()));
     }
 
     public Assay(AssayEntity entity) {
@@ -219,16 +222,16 @@ public class Assay extends ExpRecord implements DTO {
     }
 
     public Material getTarget() {
-        if (this.target == null) {
+        if (this.assayTargetIndex == null) {
             for (LinkedData linkedData : getLinkedData()) {
                 if (linkedData.getLinkedDataType() == LinkedDataType.ASSAY_TARGET) {
-                    this.target = linkedData.getRank();
+                    this.assayTargetIndex = linkedData.getIndex();
                     break;
                 }
             }
         }
-        if (this.target != null) {
-            return getLinkedData().get(this.target).getMaterial();
+        if (this.assayTargetIndex != null) {
+            return getLinkedData().get(this.assayTargetIndex).getMaterial();
         }
         return null; 
     }
@@ -237,27 +240,18 @@ public class Assay extends ExpRecord implements DTO {
         return this.units;
     }
 
+    @Override
+    public void reIndexLinkedData() {
+        super.reIndexLinkedData();
+        this.assayTargetIndex = null;
+    }
+
     public void setOutcomeType(LinkedDataType outcomeType) {
         this.outcomeType = outcomeType;
     }
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
-    }
-
-    public void setTarget(Material material) {
-        if (material != null) {
-            if (this.target == null) {
-                List<LinkedData> records = getLinkedData();
-                synchronized(this) {
-                    this.target = records.size();
-                    records.add(new LinkedData(this, 
-                        LinkedDataType.ASSAY_TARGET,
-                        this.target));
-                }
-            }
-            getLinkedData().get(this.target).setMaterial(material);
-        }
     }
 
     public void setUnits(String units) {

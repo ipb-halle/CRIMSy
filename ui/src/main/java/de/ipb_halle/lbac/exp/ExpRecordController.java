@@ -18,6 +18,11 @@
 package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.exp.assay.Assay;
+import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.MaterialType;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,9 +31,10 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public abstract class ExpRecordController {
+public abstract class ExpRecordController implements ItemHolder, MaterialHolder {
 
     private ExperimentBean bean;
+    private int linkedDataIndex;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     protected ExpRecordController(ExperimentBean bean) {
@@ -88,10 +94,62 @@ public abstract class ExpRecordController {
         return null;
     }
 
+    public Item getItem() {
+        List<LinkedData> list = getExpRecord().getLinkedData();
+        int index = getLinkedDataIndex();
+        if ((index >= 0) && (index < list.size())) {
+             return list.get(index).getItem();
+        }
+        return null;
+    }
+
+    /**
+     * @return the current record in edit mode
+     */
+    public int getLinkedDataIndex() {
+        return this.linkedDataIndex;
+    }
+
+    public Material getMaterial() {
+        List<LinkedData> list = getExpRecord().getLinkedData();
+        int index = getLinkedDataIndex();
+        if ((index >= 0) && (index < list.size())) {
+             return list.get(index).getMaterial();
+        }
+        return null;
+    }
+
+    public List<MaterialType> getMaterialTypes() {
+        return Arrays.asList(
+            MaterialType.BIOMATERIAL, 
+            MaterialType.STRUCTURE);
+    }
+
     public abstract ExpRecord getNewRecord();
 
     public boolean isDiagrammButtonVisible(Assay assay) {
         return false;
+    }
+
+    public void setItem(Item item) {
+        List<LinkedData> list = getExpRecord().getLinkedData();
+        if ((this.linkedDataIndex >= 0) && (this.linkedDataIndex < list.size())) {
+            list.get(this.linkedDataIndex).setItem(item);
+        }
+    }
+
+    /**
+     * select a LinkedData record for editing
+     */
+    public void setLinkedDataIndex(int index) {
+        this.linkedDataIndex = index;
+    }
+
+    public void setMaterial(Material material) {
+        List<LinkedData> list = getExpRecord().getLinkedData();
+        if ((this.linkedDataIndex >= 0) && (this.linkedDataIndex < list.size())) {
+            list.get(this.linkedDataIndex).setMaterial(material);
+        }
     }
 
 }

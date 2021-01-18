@@ -252,7 +252,7 @@ public class ExperimentServiceTest extends TestBase {
         Experiment exp = new Experiment(null, "TEST-EXP-003", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
         exp = experimentService.save(exp);
         Assay assay = new Assay();
-        assay.setTarget(material1);
+        assay.getLinkedData().get(0).setMaterial(material1);
         assay.setExperiment(exp);
 
         LinkedData assayRecord = new LinkedData(assay,  
@@ -279,7 +279,7 @@ public class ExperimentServiceTest extends TestBase {
         Experiment exp = new Experiment(null, "TEST-EXP-003", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
         exp = experimentService.save(exp);
         Assay assay = new Assay();
-        assay.setTarget(material1);
+        assay.getLinkedData().get(0).setMaterial(material1);
         assay.setExperiment(exp);
 
         LinkedData assayRecord = new LinkedData(assay,

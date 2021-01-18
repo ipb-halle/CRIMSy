@@ -21,11 +21,7 @@ import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
-import de.ipb_halle.lbac.exp.ItemHolder;
 import de.ipb_halle.lbac.exp.LinkedDataType;
-import de.ipb_halle.lbac.exp.MaterialHolder;
-import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.util.UnitsValidator;
 import java.util.ArrayList;
@@ -41,10 +37,8 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fbroda
  */
-public class AssayController extends ExpRecordController implements ItemHolder, MaterialHolder {
+public class AssayController extends ExpRecordController {
     
-    private LinkedData assayRecord;
-    private String materialTarget;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
@@ -54,7 +48,6 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         super(bean);
         bean.getMaterialAgent().setMaterialHolder(this);
         bean.getItemAgent().setItemHolder(this);
-        this.materialTarget = "";
     }
 
     /**
@@ -64,50 +57,43 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         this.logger.info("actionAppendAssayRecord()");
         try {
             Assay rec = (Assay) getExpRecord();
+
             List<LinkedData> records = rec.getLinkedData();
-            int rank = records.size();
-            this.assayRecord = new LinkedData(rec,  
+
+            int rank = rec.getLinkedDataNextRank();
+
+            LinkedData assayRecord = new LinkedData(rec,  
                 LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, rank);
-            this.assayRecord.setPayload(
-                    new SinglePointOutcome(
-                    UnitsValidator.getUnitSet(rec.getUnits())
-                    .iterator()
-                    .next()
-                    .toString()));
-            records.add(this.assayRecord);
-            setRecordEdit(rank);    // select this record for edit
+            assayRecord.setPayload(
+                new SinglePointOutcome(
+                UnitsValidator.getUnitSet(rec.getUnits())
+                .iterator()
+                .next()
+                .toString()));
+
+            records.add(assayRecord);
+            rec.reIndexLinkedData();
+            setLinkedDataIndex(assayRecord.getIndex());
+
         } catch (Exception e) {
             this.logger.info("actionAppendAssayRecord() caught an exception", (Throwable) e);
         }
     }
     
-    public LinkedData getAssayRecord() {
-        return this.assayRecord;
-    }
-    
-    public Item getItem() {
-        if (this.assayRecord != null) {
-            return this.assayRecord.getItem();
-        }
-        return null;
-    }
-    
-    public Material getMaterial() {
-        if (this.assayRecord != null) {
-            return this.assayRecord.getMaterial();
-        }
-        return null;
-    }
-    
     @Override
     public List<MaterialType> getMaterialTypes() {
-        switch (this.materialTarget) {
-            case "TARGET":
+        switch (getExpRecord()
+                .getLinkedData()
+                .get(getLinkedDataIndex())
+                .getLinkedDataType()) {
+            case ASSAY_TARGET :
                 return Arrays.asList(MaterialType.BIOMATERIAL);
-            case "RECORD":
+            case ASSAY_SINGLE_POINT_OUTCOME :
+            case ASSAY_MULTI_POINT_OUTCOME :
                 return Arrays.asList(MaterialType.STRUCTURE);
+            default :
+                return super.getMaterialTypes();
         }
-        return new ArrayList<>();
     }
     
     public boolean isDiagrammButtonVisible(Assay assay) {
@@ -120,57 +106,30 @@ public class AssayController extends ExpRecordController implements ItemHolder, 
         return rec;
     }
     
-    public void setItem(Item item) {
-        if (this.assayRecord != null) {
-            this.assayRecord.setItem(item);
+    /**
+     * select a LinkedData record for editing and adjust the showMolEditor property
+     * of the material agent
+     */
+    @Override
+    public void setLinkedDataIndex(int index) {
+        super.setLinkedDataIndex(index);
+        if (index < 0) {
+            return;
         }
-    }
-    
-    public void setMaterial(Material material) {
-        switch (this.materialTarget) {
-            case "TARGET":
-                ((Assay) getExpRecord()).setTarget(material);
-                break;
-            case "RECORD":
-                if (this.assayRecord != null) {
-                    this.assayRecord.setMaterial(material);
-                }
-                break;
-        }
-    }
-    
-    public void setMaterialTarget(String target) {
-        this.materialTarget = target;
-        switch (target) {
-            case "TARGET":
+
+        switch (getExpRecord()
+                .getLinkedData()
+                .get(index)
+                .getLinkedDataType()) {
+
+            case ASSAY_TARGET :
                 getExperimentBean().getMaterialAgent().setShowMolEditor(false);
                 break;
-            case "RECORD":
+
+            case ASSAY_SINGLE_POINT_OUTCOME :
+            case ASSAY_MULTI_POINT_OUTCOME :
                 getExperimentBean().getMaterialAgent().setShowMolEditor(true);
                 break;
         }
-    }
-
-    /**
-     * set record
-     */
-    public void setRecordEdit(int rank) {
-        List<LinkedData> records = ((Assay) getExpRecord()).getLinkedData();
-        for (LinkedData rec : records) {
-            if (rec.getRank() == rank) {
-                rec.setEdit(true);
-                this.assayRecord = rec;
-                this.logger.info("setRecordEdit({})", rank);
-            } else {
-                rec.setEdit(false);
-            }
-        }
-    }
-    
-    public void editRecord(LinkedData record) {
-        this.assayRecord = record;
-        this.assayRecord.setEdit(true);
-        setMaterialTarget("RECORD");
-        
     }
 }

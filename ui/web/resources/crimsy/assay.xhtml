@@ -133,7 +133,7 @@
                 <p:commandLink title="Edit material"
                                ajax="true"
                                rendered="#{cc.attrs.assay.edit}"
-                               action="#{experimentBean.expRecordController.editRecord(assayRecord)}"
+                               action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
                                update="@(.dlgMaterialEdit)"
                                oncomplete="PF('dlg_materialEdit').show();"
                                disabled="#{!assayRecord.isMaterialEditable()}">
@@ -148,7 +148,7 @@
                 <p:commandLink title="Action"
                                rendered="#{cc.attrs.assay.edit}"
                                ajax="true"
-                               action="#{experimentBean.expRecordController.editRecord(assayRecord)}"
+                               action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
                                oncomplete="PF('dlg_itemEdit').show();"
                                update="@(.itemEdit)"
                                disabled="#{!assayRecord.isItemEditable()}">
@@ -159,14 +159,14 @@
                 orderable="false"
                 label="Value">
                 <h:inputText 
-                    disabled="#{!assayRecord.edit}"
+                    disabled="#{assayRecord.index != cc.attrs.bean.expRecordController.getLinkedDataIndex}"
                     value="#{assayRecord.payload.value}"/>
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
                 label="Unit">
                 <p:selectOneMenu 
-                    disabled="#{!assayRecord.edit}"
+                    disabled="#{assayRecord.index != cc.attrs.bean.expRecordController.getLinkedDataIndex}"
                     value="#{assayRecord.payload.unit}" >
                     <f:selectItems value="#{cc.attrs.assay.getPossibleUnits()}" />
                 </p:selectOneMenu>
@@ -177,9 +177,9 @@
                 <p:commandLink title="Edit"
                                rendered ="#{cc.attrs.assay.edit}"
                                ajax="true"
-                               action="#{cc.attrs.assay.activateEditModeForRecord(assayRecord)}"
+                               action="#{cc.attrs.bean.expRecordController.getLinkedDataIndex(assayRecord.index)}"
                                update="@form"
-                               disabled="#{assayRecord.edit}">
+                               disabled="#{assayRecord.index == cc.attrs.bean.expRecordController.getLinkedDataIndex}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>
             </b:dataTableColumn>
