@@ -22,9 +22,9 @@ import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.util.UnitsValidator;
-import java.util.ArrayList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  * @author fbroda
  */
 public class AssayController extends ExpRecordController {
-    
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
@@ -55,21 +55,22 @@ public class AssayController extends ExpRecordController {
      */
     public void actionAppendAssayRecord() {
         this.logger.info("actionAppendAssayRecord()");
+
         try {
             Assay rec = (Assay) getExpRecord();
 
             List<LinkedData> records = rec.getLinkedData();
-
+            this.logger.info("We have  " + records.size());
             int rank = rec.getLinkedDataNextRank();
 
-            LinkedData assayRecord = new LinkedData(rec,  
-                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, rank);
+            LinkedData assayRecord = new LinkedData(rec,
+                    LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, rank);
             assayRecord.setPayload(
-                new SinglePointOutcome(
-                UnitsValidator.getUnitSet(rec.getUnits())
-                .iterator()
-                .next()
-                .toString()));
+                    new SinglePointOutcome(
+                            UnitsValidator.getUnitSet(rec.getUnits())
+                                    .iterator()
+                                    .next()
+                                    .toString()));
 
             records.add(assayRecord);
             rec.reIndexLinkedData();
@@ -79,36 +80,59 @@ public class AssayController extends ExpRecordController {
             this.logger.info("actionAppendAssayRecord() caught an exception", (Throwable) e);
         }
     }
+
+    public Material getMaterialTarget() {
+        for (LinkedData data : getExpRecord().getLinkedData()) {
+            if (data.getLinkedDataType() == LinkedDataType.ASSAY_TARGET) {
+                return data.getMaterial();
+            }
+        }
+        return null;
+    }
     
+    public void setMaterialTarget(Material m) {
+        for (LinkedData data : getExpRecord().getLinkedData()) {
+            if (data.getLinkedDataType() == LinkedDataType.ASSAY_TARGET) {
+                 data.setMaterial(m);
+            }
+        }
+      
+    }
+    
+
     @Override
     public List<MaterialType> getMaterialTypes() {
         switch (getExpRecord()
                 .getLinkedData()
                 .get(getLinkedDataIndex())
                 .getLinkedDataType()) {
-            case ASSAY_TARGET :
+            case ASSAY_TARGET:
                 return Arrays.asList(MaterialType.BIOMATERIAL);
-            case ASSAY_SINGLE_POINT_OUTCOME :
-            case ASSAY_MULTI_POINT_OUTCOME :
+            case ASSAY_SINGLE_POINT_OUTCOME:
+            case ASSAY_MULTI_POINT_OUTCOME:
                 return Arrays.asList(MaterialType.STRUCTURE);
-            default :
+            default:
                 return super.getMaterialTypes();
         }
     }
-    
+
+    @Override
     public boolean isDiagrammButtonVisible(Assay assay) {
         return !assay.getLinkedData().isEmpty();
     }
-    
+
+    @Override
     public ExpRecord getNewRecord() {
         ExpRecord rec = new Assay();
         rec.setEdit(true);
         return rec;
     }
-    
+
     /**
-     * select a LinkedData record for editing and adjust the showMolEditor property
-     * of the material agent
+     * select a LinkedData record for editing and adjust the showMolEditor
+     * property of the material agent
+     *
+     * @param index
      */
     @Override
     public void setLinkedDataIndex(int index) {
@@ -122,12 +146,12 @@ public class AssayController extends ExpRecordController {
                 .get(index)
                 .getLinkedDataType()) {
 
-            case ASSAY_TARGET :
+            case ASSAY_TARGET:
                 getExperimentBean().getMaterialAgent().setShowMolEditor(false);
                 break;
 
-            case ASSAY_SINGLE_POINT_OUTCOME :
-            case ASSAY_MULTI_POINT_OUTCOME :
+            case ASSAY_SINGLE_POINT_OUTCOME:
+            case ASSAY_MULTI_POINT_OUTCOME:
                 getExperimentBean().getMaterialAgent().setShowMolEditor(true);
                 break;
         }

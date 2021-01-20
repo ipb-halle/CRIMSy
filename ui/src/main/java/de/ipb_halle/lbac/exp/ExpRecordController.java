@@ -32,17 +32,17 @@ import org.apache.logging.log4j.Logger;
  * @author fbroda
  */
 public abstract class ExpRecordController implements ItemHolder, MaterialHolder {
-
+    
     private ExperimentBean bean;
     private int linkedDataIndex;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-
+    
     protected ExpRecordController(ExperimentBean bean) {
         this.bean = bean;
         bean.getMaterialAgent().setMaterialHolder(null);
         bean.getItemAgent().setItemHolder(null);
     }
-
+    
     public void actionCancel() {
         ExpRecord rec = getExpRecord();
         if (rec != null) {
@@ -61,10 +61,11 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         this.bean.cleanup();
         this.logger.info("actionCancel() completed");
     }
-
+    
     public void actionSaveRecord() {
         try {
             ExpRecord rec = getExpRecord();
+            
             if (rec == null) {
                 throw new NullPointerException("attempt to save non-existent ExpRecord");
             }
@@ -77,15 +78,15 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
             this.logger.warn("actionSaveRecord() caught an exception: ", (Throwable) e);
         }
     }
-
+    
     public boolean getEdit() {
         return false;
     }
-
+    
     public ExperimentBean getExperimentBean() {
         return this.bean;
     }
-
+    
     public ExpRecord getExpRecord() {
         int i = this.bean.getExpRecordIndex();
         if ((i >= 0) && (i < this.bean.getExpRecords().size())) {
@@ -93,12 +94,12 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         }
         return null;
     }
-
+    
     public Item getItem() {
         List<LinkedData> list = getExpRecord().getLinkedData();
         int index = getLinkedDataIndex();
         if ((index >= 0) && (index < list.size())) {
-             return list.get(index).getItem();
+            return list.get(index).getItem();
         }
         return null;
     }
@@ -109,28 +110,28 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
     public int getLinkedDataIndex() {
         return this.linkedDataIndex;
     }
-
+    
     public Material getMaterial() {
         List<LinkedData> list = getExpRecord().getLinkedData();
         int index = getLinkedDataIndex();
         if ((index >= 0) && (index < list.size())) {
-             return list.get(index).getMaterial();
+            return list.get(index).getMaterial();
         }
         return null;
     }
-
+    
     public List<MaterialType> getMaterialTypes() {
         return Arrays.asList(
-            MaterialType.BIOMATERIAL, 
-            MaterialType.STRUCTURE);
+                MaterialType.BIOMATERIAL,
+                MaterialType.STRUCTURE);
     }
-
+    
     public abstract ExpRecord getNewRecord();
-
+    
     public boolean isDiagrammButtonVisible(Assay assay) {
         return false;
     }
-
+    
     public void setItem(Item item) {
         List<LinkedData> list = getExpRecord().getLinkedData();
         if ((this.linkedDataIndex >= 0) && (this.linkedDataIndex < list.size())) {
@@ -144,12 +145,13 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
     public void setLinkedDataIndex(int index) {
         this.linkedDataIndex = index;
     }
-
+    
     public void setMaterial(Material material) {
         List<LinkedData> list = getExpRecord().getLinkedData();
+      
         if ((this.linkedDataIndex >= 0) && (this.linkedDataIndex < list.size())) {
             list.get(this.linkedDataIndex).setMaterial(material);
         }
     }
-
+    
 }

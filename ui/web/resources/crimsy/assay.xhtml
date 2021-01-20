@@ -78,7 +78,10 @@
                                     <p:commandLink title="Action"
                                                    rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getAssayRecords().size() == 0)}"
                                                    update="@form" > 
+                                        <!--
                                         <f:setPropertyActionListener target="#{cc.attrs.bean.expRecordController.materialTarget}" value="TARGET" />
+                                        
+                                        -->
                                         <p:ajax oncomplete="PF('dlg_materialEdit').show();" update="@(.materialEdit)" />
                                         <span class="fa fa-cog"> </span>
                                     </p:commandLink>
