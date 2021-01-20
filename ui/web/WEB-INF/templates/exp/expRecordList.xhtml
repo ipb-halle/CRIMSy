@@ -36,17 +36,17 @@
                         <h:outputText 
                             rendered="#{!recStatus.last}"
                             value=" #{rec.expRecordInfo}"
-                             title="#{rec.expRecordDetails}">
-                            
+                            title="#{rec.expRecordDetails}">
+
                         </h:outputText>
                         <!--
             <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
-                      
+
                     </b:column>
                     <b:column span="2" offset="6">
                         <p:commandLink title="#{msgs.MoveUp}"
-                                        rendered="#{!recStatus.last}"
+                                       rendered="#{!recStatus.last}"
                                        update="@all"
                                        styleClass="experimentRecordOrderButton experimentRecordButton"
                                        disabled="#{rec.moveUpDisabled}"
@@ -56,18 +56,27 @@
                         </p:commandLink>
                         <p:commandLink title="#{msgs.MoveDown}"
                                        update="@all"
-                                        rendered="#{!recStatus.last}"
+                                       rendered="#{!recStatus.last}"
                                        disabled="#{rec.moveDownDisabled}"
                                        styleClass="experimentRecordOrderButton experimentRecordButton"
                                        action="#{experimentBean.actionRearrangeRecord(1)}">
                             <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
                             <span class="fa fa-angle-down"> </span>
                         </p:commandLink>
+                        <p:commandLink title="Link erstellen" 
+                                       styleClass="experimentRecordButton"
+                                       update="@(.experimentRecordContainer)"
+                                       rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
+                                       action="#{experimentBean.actionEditRecord()}"
+                                       onclick="PF('dlg_createLink').show();">
+                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                            <span class="fa fa-link"> </span>
+                        </p:commandLink>
                         <p:commandLink title="#{msgs.Edit}" 
                                        update="@all"
                                        styleClass="experimentRecordButton"
                                        rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
-                                       action="#{experimentBean.actionEditRecord}">
+                                       action="#{experimentBean.actionEditRecord()}">
                             <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
                             <span class="fa fa-pencil"> </span>
                         </p:commandLink>
@@ -98,9 +107,9 @@
                                           bean="#{experimentBean}"
                                           rendered="#{rec.facelet eq 'ASSAY'}" />
                             <crimsy:textView text="#{rec.text}" 
-                                bean="#{experimentBean}"
-                                linkedDataHolder="#{rec}"
-                                rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
+                                             bean="#{experimentBean}"
+                                             linkedDataHolder="#{rec}"
+                                             rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
                             <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
                         </h:panelGroup>
 
