@@ -97,8 +97,7 @@
                     <!--   </div> -->
                 </b:row>
 
-                <b:row
-                    styleClass="#{experimentBean.getRowStyle(recStatus.last)}">
+                <b:row>
                     <b:column>
                         <h:panelGroup id="recordDetails" 
                                       layout="block"
@@ -120,8 +119,15 @@
                         </ui:fragment>
                     </b:column>
                 </b:row>
+                <p:panelGrid 
+                    styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
+                    columns="10">
+                        <b:badge
+                            styleClass="linkText"
+                            value="#{linkName}" style-class="tag-badge"/>
+                    </ui:repeat>
+                </p:panelGrid>
             </b:container>
         </ui:repeat>
-
     </ui:composition>
 </html>
