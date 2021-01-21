@@ -35,6 +35,7 @@ public class ExperimentDeployment {
                 .addClass(TextService.class)
                 .addClass(AssayService.class)
                 .addClass(ItemService.class)
+                .addClass(LinkedDataAgent.class)
                 .addClass(ExperimentBean.class)
                 .addClass(ExperimentService.class)
                 .addClass(ItemAgent.class)
