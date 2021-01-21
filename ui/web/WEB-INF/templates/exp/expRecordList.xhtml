@@ -66,6 +66,7 @@
                         <p:commandLink title="Link erstellen" 
                                        styleClass="experimentRecordButton"
                                        update="@(.experimentRecordContainer)"
+                                       disabled="false"
                                        rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
                                        action="#{experimentBean.actionEditRecord()}"
                                        onclick="PF('dlg_createLink').show();">
@@ -122,6 +123,7 @@
                 <p:panelGrid 
                     styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
                     columns="10">
+                      <ui:repeat value="#{rec.getLinkNames()}" var="linkName">
                         <b:badge
                             styleClass="linkText"
                             value="#{linkName}" style-class="tag-badge"/>

@@ -25,57 +25,6 @@
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:p="http://primefaces.org/ui">
     <h:body>
-        <h:form>
-            <p:dialog id="dlgCreateLink"
-                      header="Create Link"
-                      styleClass="dlgMaterialEdit"
-                      widgetVar="dlg_createLink"
-                      modal="true" 
-                      width="1200"
-                      height="600">
-                <p:panel>
-                    <p:wizard 
-                        widgetVar="wiz"
-                        flowListener="#{linkCreationProcess.onFlowProcess}">
-                        <p:tab
-                            id="step1"
-                            title="step1: choose type and name">
-                            <p:panelGrid columns="2">
-
-                                <h:outputText 
-                                    value="Bitte den Linktext angeben"/>
-
-                                <p:inputText
-                                    styleClass="linkWizardTextInput"
-                                    required="true"
-                                    value="#{linkCreationProcess.linkText}"/>
-
-                                <h:outputText 
-                                    value="Bitte den Linktyp angeben"/>
-
-                                <h:selectOneMenu
-                                    styleClass="linkWizardTypeSelect"
-                                    value="#{linkCreationProcess.type}">
-                                    <f:selectItems
-                                        value="#{linkCreationProcess.types}"/>
-                                </h:selectOneMenu>
-
-                            </p:panelGrid>
-                        </p:tab>
-                        <p:tab
-                            id="step2"
-                            title="step2: choose object">
-                            <crimsy:panelMaterialEdit
-                                id="ccDlgMaterialEdit" 
-                                agent="#{linkCreationProcess.materialAgent}" />
-                        </p:tab>
-                    </p:wizard>
-
-
-                </p:panel>
-            </p:dialog>
-        </h:form>
-
         <!-- plugin modules -->
         <crimsy:dlgMaterialEdit
             id="ccDlgMaterialEdit" 
@@ -88,6 +37,9 @@
         <crimsy:dlgItemEdit
             id="ccDlgItemEdit"
             agent="#{experimentBean.itemAgent}" />
+        
+        <crimsy:dlgLinkCreation
+            id="ccDlgLinkCreation"/>
 
         <crimsy:acobjectModal
             acobjectController="#{experimentBean.acObjectController}"
@@ -152,7 +104,6 @@
                             </b:panel>
                         </b:column>
                     </h:form>
-
                 </b:row> 
             </p:outputPanel>
         </b:panel>
