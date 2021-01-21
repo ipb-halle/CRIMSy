@@ -75,6 +75,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     protected ItemAgent itemAgent;
 
     @Inject
+    protected LinkedDataAgent linkedDataAgent;
+
+    @Inject
     protected MaterialAgent materialAgent;
 
     @Inject
@@ -464,6 +467,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public ItemAgent getItemAgent() {
         return this.itemAgent;
+    }
+
+    public LinkedDataAgent getLinkedDataAgent() {
+        return this.linkedDataAgent;
     }
 
     public MaterialAgent getMaterialAgent() {

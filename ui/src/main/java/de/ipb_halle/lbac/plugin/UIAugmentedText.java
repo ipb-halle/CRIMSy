@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.plugin; 
 
-import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.LinkedData;
+import de.ipb_halle.lbac.exp.LinkedDataAgent;
 import de.ipb_halle.lbac.exp.LinkedDataHolder;
 import de.ipb_halle.lbac.exp.LinkText;
 
@@ -28,24 +28,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-// import javax.el.ValueExpression;
-// import javax.el.ELContext;
-// import javax.faces.component.EditableValueHolder;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-// import javax.faces.render.FacesRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 
 @FacesComponent(value="UIAugmentedText")
 public class UIAugmentedText extends UIOutput {
 
     private Logger logger;
-
 
     /**
      * Default constructor
@@ -72,14 +66,12 @@ public class UIAugmentedText extends UIOutput {
                 return;
             }
 
-            ExperimentBean bean = (ExperimentBean) getAttributes().get("bean");
+            LinkedDataAgent agent = (LinkedDataAgent) getAttributes().get("agent");
             LinkedDataHolder holder = (LinkedDataHolder) getAttributes().get("linkedDataHolder");
 
-            this.logger.info(String.format("decode(): Material=%s", holder
+            agent.setLinkedData(holder
                 .getLinkedData()
-                .get(Integer.valueOf(index))
-                .getMaterial()
-                .getFirstName()));
+                .get(Integer.valueOf(index)));
 
         } catch(Exception e) {
             this.logger.warn("decode caught an exception: ", (Throwable) e);

@@ -49,13 +49,13 @@
                              styleClass="materialView borderless">
 
                     <nwc:molPlugin id="molViewer"
-                               rendered="#{cc.attrs.agent.showMolEditor}"
-                               value="#{cc.attrs.agent.moleculeSearch}" 
+                               rendered="#{cc.attrs.agent.hasStructure}"
+                               value="#{cc.attrs.agent.material.molecule.structureModel}" 
                                plugintype="MolPaintJS"
                                edit="false"/>
 
                     <br/>
-                    #{cc.attrs.agent.materialHolder.material.firstName}
+                    #{cc.attrs.agent.material.firstName}
 
                 </p:panelGrid>
             </p:dialog>

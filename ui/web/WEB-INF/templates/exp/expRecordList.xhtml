@@ -107,7 +107,7 @@
                                           bean="#{experimentBean}"
                                           rendered="#{rec.facelet eq 'ASSAY'}" />
                             <crimsy:textView text="#{rec.text}" 
-                                             bean="#{experimentBean}"
+                                             agent="#{experimentBean.linkedDataAgent}"
                                              linkedDataHolder="#{rec}"
                                              rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
                             <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
