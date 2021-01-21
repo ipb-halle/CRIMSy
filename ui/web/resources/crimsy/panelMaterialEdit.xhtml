@@ -119,7 +119,7 @@
                                         <p:commandButton
                                             action="#{cc.attrs.agent.actionSetMaterial(material)}"
                                             ajax="true"
-                                            value=" #{msgs.materialAgent_table_insert}"
+                                            value="#{msgs.materialAgent_table_insert}"
                                             update="@(.assayRecordTable)"
                                             oncomplete="PF('wiz').loadStep('step1', false);PF('dlg_createLink').hide();"
                                             />

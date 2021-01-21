@@ -17,14 +17,15 @@
  */
 package de.ipb_halle.lbac.exp.link;
 
-import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentBean;
+import de.ipb_halle.lbac.exp.ItemAgent;
+import de.ipb_halle.lbac.exp.ItemHolder;
 import de.ipb_halle.lbac.exp.LinkText;
 import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.exp.MaterialHolder;
-import de.ipb_halle.lbac.exp.Payload;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import java.io.Serializable;
@@ -44,15 +45,18 @@ import org.primefaces.event.FlowEvent;
  */
 @SessionScoped
 @Named
-public class LinkCreationProcess implements Serializable, MaterialHolder {
+public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHolder {
 
-    public enum LinkType {
+    private enum LinkType {
         STRUCTURE,
         BIOMATERIAL,
         ITEM
     }
     @Inject
     protected MaterialAgent materialAgent;
+
+    @Inject
+    protected ItemAgent itemAgent;
 
     @Inject
     private ExperimentBean expBean;
@@ -62,15 +66,18 @@ public class LinkCreationProcess implements Serializable, MaterialHolder {
     private Material material;
     private String linkText;
     private LinkType type;
+    private Item item;
 
     @PostConstruct
     public void init() {
         materialAgent.setMaterialHolder(this);
+        itemAgent.setItemHolder(this);
     }
 
     public void startLinkCreation() {
         material = null;
         linkText = null;
+        type = LinkType.STRUCTURE;
     }
 
     public String onFlowProcess(FlowEvent e) {
@@ -123,6 +130,49 @@ public class LinkCreationProcess implements Serializable, MaterialHolder {
 
     public void setType(LinkType type) {
         this.type = type;
+    }
+
+    public boolean isMaterialViewEnabled() {
+        return type == LinkType.BIOMATERIAL || type == LinkType.STRUCTURE;
+    }
+
+    public boolean isItemViewEnabled() {
+        return type == LinkType.ITEM;
+    }
+
+    public ItemAgent getItemAgent() {
+        return itemAgent;
+    }
+
+    public String getStepTwoHeader() {
+        if (type == LinkType.BIOMATERIAL) {
+            return "choose biomaterial";
+        }
+        if (type == LinkType.STRUCTURE) {
+            return "choose structure";
+        }
+        if (type == LinkType.ITEM) {
+            return "choose item";
+        }
+        return "choose object";
+    }
+
+    @Override
+    public Item getItem() {
+        return item;
+    }
+
+    @Override
+    public void setItem(Item item) {
+        this.item = item;
+          LinkedData link = new LinkedData(
+                expBean.getExpRecordController().getExpRecord(),
+                LinkedDataType.LINK_ITEM,
+                expBean.getExpRecordController().getExpRecord().getLinkedDataNextRank()
+        );
+        link.setPayload(new LinkText(linkText));
+        link.setItem(item);
+        expBean.getExpRecordController().getExpRecord().getLinkedData().add(link);
     }
 
 }
