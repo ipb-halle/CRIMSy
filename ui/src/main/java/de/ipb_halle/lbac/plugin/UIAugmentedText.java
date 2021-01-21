@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.plugin; 
+package de.ipb_halle.lbac.plugin;
 
 import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.LinkedDataAgent;
@@ -48,7 +48,7 @@ public class UIAugmentedText extends UIOutput {
     public UIAugmentedText() {
         super();
         logger = LogManager.getLogger(this.getClass().getName());
-        setRendererType(null); 
+        setRendererType(null);
     }
 
     /**
@@ -92,7 +92,7 @@ public class UIAugmentedText extends UIOutput {
         Map<String, LinkedData> linkMap;
         try {
             LinkedDataHolder holder = (LinkedDataHolder) getAttributes().get("linkedDataHolder");
-            linkMap = setup(holder); 
+            linkMap = setup(holder);
 
         } catch(Exception e) {
             this.logger.warn("Could not obtain linked data");
@@ -100,7 +100,7 @@ public class UIAugmentedText extends UIOutput {
         }
 
         
-        findLinks(writer, linkMap, clientId, getValue().toString() + " "); 
+        findLinks(writer, linkMap, clientId, getValue().toString() + " ");
 
         writer.flush();
     }
@@ -140,8 +140,6 @@ public class UIAugmentedText extends UIOutput {
     public void findLinks(ResponseWriter writer, Map<String, LinkedData> linkMap, String clientId, String st) 
         throws IOException {
 
-        // does not recognize tokens at end of input
-        // when there is no trailing comma, dot, whitespace!
         Pattern pattern = Pattern.compile(LINKTEXT_PATTERN);
         Matcher matcher = pattern.matcher(st);
 
@@ -187,7 +185,7 @@ public class UIAugmentedText extends UIOutput {
      * (comma, dot or whitespace), which will not be rendered as a link.
      */
     public void insertLink(ResponseWriter writer, Map<String, LinkedData> linkMap, String clientId, String linkMarker) 
-        throws IOException { 
+        throws IOException {
         int len = linkMarker.length();
         String replacement = getReplacement(clientId, 
             linkMap.get(linkMarker.substring(1, len - 1)));
