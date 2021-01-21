@@ -39,6 +39,7 @@ import org.apache.logging.log4j.Logger;
 @FacesComponent(value="UIAugmentedText")
 public class UIAugmentedText extends UIOutput {
 
+    protected final static String LINKTEXT_PATTERN = "#\\w+[[\\p{Punct}\\p{Space}]&&[^_]]{1}";
     private Logger logger;
 
     /**
@@ -99,7 +100,7 @@ public class UIAugmentedText extends UIOutput {
         }
 
         
-        findLinks(writer, linkMap, clientId, getValue().toString()); 
+        findLinks(writer, linkMap, clientId, getValue().toString() + " "); 
 
         writer.flush();
     }
@@ -141,7 +142,7 @@ public class UIAugmentedText extends UIOutput {
 
         // does not recognize tokens at end of input
         // when there is no trailing comma, dot, whitespace!
-        Pattern pattern = Pattern.compile("#\\w+[,\\.\\s]{1}");
+        Pattern pattern = Pattern.compile(LINKTEXT_PATTERN);
         Matcher matcher = pattern.matcher(st);
 
         int start = 0;
@@ -196,9 +197,9 @@ public class UIAugmentedText extends UIOutput {
             writer.writeAttribute("onclick", replacement, null);
             writer.writeText(linkMarker.substring(0, len - 1), null);
             writer.endElement("a");
-            writer.writeText(linkMarker.substring(len - 1), null);
+            writer.write(linkMarker.substring(len - 1));
         } else {
-            writer.writeText(linkMarker, null);
+            writer.write(linkMarker);
         }
     }
 
