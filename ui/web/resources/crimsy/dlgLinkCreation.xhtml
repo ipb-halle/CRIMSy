@@ -81,11 +81,13 @@
                             <crimsy:panelMaterialEdit
                                 rendered="#{linkCreationProcess.isMaterialViewEnabled()}" 
                                 id="ccDlgMaterialEdit" 
-                                agent="#{linkCreationProcess.materialAgent}" />
+                                agent="#{linkCreationProcess.materialAgent}" 
+                                updateTarget="@(.expLinks)"/>
                             <crimsy:panelItemEdit
                                 rendered="#{linkCreationProcess.isItemViewEnabled()}" 
                                 id="ccDlgItemEdit" 
-                                agent="#{linkCreationProcess.itemAgent}" />
+                                agent="#{linkCreationProcess.itemAgent}" 
+                                updateTarget="@(.expLinks)"/>
                         </p:tab>
                     </p:wizard>
                 </p:panel>

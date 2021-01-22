@@ -32,6 +32,7 @@
                          preferred="true"
                          expert="false"
                          shortDescription="material edit dialog">
+        <composite:attribute name="updateTarget" required="true" />
         <composite:attribute name="agent" required="true" />
     </composite:interface>
 
@@ -61,7 +62,7 @@
                                 </p:commandButton>
                             </p:column>
                         </p:row>
-                       
+
 
                     </p:panelGrid>
                 </p:column>
@@ -94,7 +95,7 @@
                                     action="#{cc.attrs.agent.actionSetItem(item)}"
                                     ajax="true"
                                     value=" #{msgs.materialAgent_table_insert}"
-                                    update="@(.assayRecordTable)"
+                                    update="#{cc.attrs.updateTarget}"
                                     oncomplete="PF('wiz').loadStep('step1', false);PF('dlg_createLink').hide();"
                                     />
                             </p:column>
