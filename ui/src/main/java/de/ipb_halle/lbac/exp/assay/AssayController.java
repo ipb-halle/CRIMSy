@@ -144,6 +144,7 @@ public class AssayController extends ExpRecordController {
 
     public void triggerAssayRecordEdit(LinkedData assayRecord) {
         assayRecord.setEdit(true);
+        assayRecord.getExpRecord().reIndexLinkedData();
         setLinkedDataIndex(assayRecord.getIndex());
         toogleVisibilityOfMolEditor(assayRecord.getLinkedDataType());
     }
