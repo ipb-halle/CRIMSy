@@ -272,4 +272,10 @@ public class Assay extends ExpRecord implements DTO {
     public void setUnits(String units) {
         this.units = units;
     }
+
+    @Override
+    public boolean isValide() {
+        Material target = getTarget();
+        return target != null;
+    }
 }

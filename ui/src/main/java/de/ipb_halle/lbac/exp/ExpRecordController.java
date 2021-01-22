@@ -17,10 +17,14 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.container.bean.ErrorMessagePresenter;
 import de.ipb_halle.lbac.exp.assay.Assay;
+import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -32,17 +36,19 @@ import org.apache.logging.log4j.Logger;
  * @author fbroda
  */
 public abstract class ExpRecordController implements ItemHolder, MaterialHolder {
-    
+
     private ExperimentBean bean;
     private int linkedDataIndex;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+    private MessagePresenter messagePresenter;
+
     protected ExpRecordController(ExperimentBean bean) {
+        messagePresenter = JsfMessagePresenter.getInstance();
         this.bean = bean;
         bean.getMaterialAgent().setMaterialHolder(null);
         bean.getItemAgent().setItemHolder(null);
     }
-    
+
     public void actionCancel() {
         ExpRecord rec = getExpRecord();
         if (rec != null) {
@@ -61,11 +67,16 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         this.bean.cleanup();
         this.logger.info("actionCancel() completed");
     }
-    
+
     public void actionSaveRecord() {
         try {
             ExpRecord rec = getExpRecord();
-            
+            if (!rec.isValide()) {
+                logger.info("Record is not valide");
+                messagePresenter.error("expAddRecord_no_target");
+                return;
+
+            }
             if (rec == null) {
                 throw new NullPointerException("attempt to save non-existent ExpRecord");
             }
@@ -74,19 +85,22 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
             this.bean.cleanup();
             this.bean.reIndex();
             this.logger.info("actionSaveRecord() completed");
+            messagePresenter.info("expAddRecord_add_success");
+
         } catch (Exception e) {
+            messagePresenter.error("expAddRecord_no_target");
             this.logger.warn("actionSaveRecord() caught an exception: ", (Throwable) e);
         }
     }
-    
+
     public boolean getEdit() {
         return false;
     }
-    
+
     public ExperimentBean getExperimentBean() {
         return this.bean;
     }
-    
+
     public ExpRecord getExpRecord() {
         int i = this.bean.getExpRecordIndex();
         if ((i >= 0) && (i < this.bean.getExpRecords().size())) {
@@ -94,7 +108,7 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         }
         return null;
     }
-    
+
     public Item getItem() {
         List<LinkedData> list = getExpRecord().getLinkedData();
         int index = getLinkedDataIndex();
@@ -110,7 +124,7 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
     public int getLinkedDataIndex() {
         return this.linkedDataIndex;
     }
-    
+
     public Material getMaterial() {
         List<LinkedData> list = getExpRecord().getLinkedData();
         int index = getLinkedDataIndex();
@@ -119,19 +133,19 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         }
         return null;
     }
-    
+
     public List<MaterialType> getMaterialTypes() {
         return Arrays.asList(
                 MaterialType.BIOMATERIAL,
                 MaterialType.STRUCTURE);
     }
-    
+
     public abstract ExpRecord getNewRecord();
-    
+
     public boolean isDiagrammButtonVisible(Assay assay) {
         return false;
     }
-    
+
     public void setItem(Item item) {
         List<LinkedData> list = getExpRecord().getLinkedData();
         if ((this.linkedDataIndex >= 0) && (this.linkedDataIndex < list.size())) {
@@ -145,13 +159,13 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
     public void setLinkedDataIndex(int index) {
         this.linkedDataIndex = index;
     }
-    
+
     public void setMaterial(Material material) {
         List<LinkedData> list = getExpRecord().getLinkedData();
-      
+
         if ((this.linkedDataIndex >= 0) && (this.linkedDataIndex < list.size())) {
             list.get(this.linkedDataIndex).setMaterial(material);
         }
     }
-    
+
 }

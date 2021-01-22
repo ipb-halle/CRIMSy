@@ -331,4 +331,8 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         }
         return names;
     }
+    
+    public boolean isValide(){
+        return true;
+    }
 }
