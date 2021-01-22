@@ -48,8 +48,7 @@ import org.primefaces.event.FlowEvent;
 public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHolder {
 
     private enum LinkType {
-        STRUCTURE,
-        BIOMATERIAL,
+        MATERIAL,
         ITEM
     }
     @Inject
@@ -71,13 +70,14 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     @PostConstruct
     public void init() {
         materialAgent.setMaterialHolder(this);
+        materialAgent.setShowMolEditor(true);
         itemAgent.setItemHolder(this);
     }
 
     public void startLinkCreation() {
         material = null;
         linkText = null;
-        type = LinkType.STRUCTURE;
+        type = LinkType.MATERIAL;
     }
 
     public String onFlowProcess(FlowEvent e) {
@@ -133,7 +133,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     }
 
     public boolean isMaterialViewEnabled() {
-        return type == LinkType.BIOMATERIAL || type == LinkType.STRUCTURE;
+        return type == LinkType.MATERIAL;
     }
 
     public boolean isItemViewEnabled() {
@@ -145,12 +145,10 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     }
 
     public String getStepTwoHeader() {
-        if (type == LinkType.BIOMATERIAL) {
-            return "choose biomaterial";
+        if (type == LinkType.MATERIAL) {
+            return "choose material";
         }
-        if (type == LinkType.STRUCTURE) {
-            return "choose structure";
-        }
+
         if (type == LinkType.ITEM) {
             return "choose item";
         }
@@ -165,7 +163,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     @Override
     public void setItem(Item item) {
         this.item = item;
-          LinkedData link = new LinkedData(
+        LinkedData link = new LinkedData(
                 expBean.getExpRecordController().getExpRecord(),
                 LinkedDataType.LINK_ITEM,
                 expBean.getExpRecordController().getExpRecord().getLinkedDataNextRank()
