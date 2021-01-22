@@ -162,14 +162,14 @@
                 orderable="false"
                 label="Value">
                 <h:inputText 
-                    disabled="#{assayRecord.index != cc.attrs.bean.expRecordController.getLinkedDataIndex()}"
+                    disabled="#{!assayRecord.edit}"
                     value="#{assayRecord.payload.value}"/>
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
                 label="Unit">
                 <p:selectOneMenu 
-                    disabled="#{assayRecord.index != cc.attrs.bean.expRecordController.getLinkedDataIndex()}"
+                    disabled="#{!assayRecord.edit}"
                     value="#{assayRecord.payload.unit}" >
                     <f:selectItems value="#{cc.attrs.assay.getPossibleUnits()}" />
                 </p:selectOneMenu>
@@ -180,9 +180,9 @@
                 <p:commandLink title="Edit"
                                rendered ="#{cc.attrs.assay.edit}"
                                ajax="true"
-                               action="#{cc.attrs.bean.expRecordController.getLinkedDataIndex(assayRecord.index)}"
+                               action="#{cc.attrs.bean.expRecordController.triggerAssayRecordEdit(assayRecord)}"
                                update="@form"
-                               disabled="#{assayRecord.index == cc.attrs.bean.expRecordController.getLinkedDataIndex()}">
+                               disabled="#{assayRecord.edit}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>
             </b:dataTableColumn>

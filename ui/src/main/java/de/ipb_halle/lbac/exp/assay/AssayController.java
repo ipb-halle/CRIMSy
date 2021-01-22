@@ -54,13 +54,9 @@ public class AssayController extends ExpRecordController {
      * append an AssayRecord to the current Assay
      */
     public void actionAppendAssayRecord() {
-        this.logger.info("actionAppendAssayRecord()");
-
         try {
             Assay rec = (Assay) getExpRecord();
-
             List<LinkedData> records = rec.getLinkedData();
-            this.logger.info("We have  " + records.size());
             int rank = rec.getLinkedDataNextRank();
 
             LinkedData assayRecord = new LinkedData(rec,
@@ -89,16 +85,15 @@ public class AssayController extends ExpRecordController {
         }
         return null;
     }
-    
+
     public void setMaterialTarget(Material m) {
         for (LinkedData data : getExpRecord().getLinkedData()) {
             if (data.getLinkedDataType() == LinkedDataType.ASSAY_TARGET) {
-                 data.setMaterial(m);
+                data.setMaterial(m);
             }
         }
-      
+
     }
-    
 
     @Override
     public List<MaterialType> getMaterialTypes() {
@@ -141,15 +136,23 @@ public class AssayController extends ExpRecordController {
             return;
         }
 
-        switch (getExpRecord()
+        toogleVisibilityOfMolEditor(getExpRecord()
                 .getLinkedData()
                 .get(index)
-                .getLinkedDataType()) {
+                .getLinkedDataType());
+    }
 
+    public void triggerAssayRecordEdit(LinkedData assayRecord) {
+        assayRecord.setEdit(true);
+        setLinkedDataIndex(assayRecord.getIndex());
+        toogleVisibilityOfMolEditor(assayRecord.getLinkedDataType());
+    }
+
+    private void toogleVisibilityOfMolEditor(LinkedDataType type) {
+        switch (type) {
             case ASSAY_TARGET:
                 getExperimentBean().getMaterialAgent().setShowMolEditor(false);
                 break;
-
             case ASSAY_SINGLE_POINT_OUTCOME:
             case ASSAY_MULTI_POINT_OUTCOME:
                 getExperimentBean().getMaterialAgent().setShowMolEditor(true);
