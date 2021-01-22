@@ -519,11 +519,23 @@ INSERT INTO taxonomy_level VALUES(21,'form',2100);
  * ToDo: xxxxx add ON UPDATE CASCADE/ ON DELETE CASCADE ?
  */
 
+CREATE TABLE folders (
+    folderid        SERIAL NOT NULL PRIMARY KEY,
+    name            VARCHAR,
+    parentid        INTEGER REFERENCES folders(folderid) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    aclist_id       INTEGER REFERENCES aclists(id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    owner_id        INTEGER REFERENCES usersGroups(id) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    ctime           TIMESTAMP NOT NULL DEFAULT now(),
+    projectid       INTEGER REFERENCES projects(id)  ON UPDATE RESTRICT ON DELETE RESTRICT
+);
+INSERT INTO folders (name) VALUES ('default');
+
 CREATE TABLE experiments (
     experimentid    SERIAL NOT NULL PRIMARY KEY,
     code            VARCHAR,
     description     VARCHAR,
     template        BOOLEAN NOT NULL DEFAULT FALSE,
+    folderid        INTEGER REFERENCES folders(folderid)  ON UPDATE RESTRICT ON DELETE RESTRICT,
     aclist_id       INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     owner_id        INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     ctime           TIMESTAMP NOT NULL DEFAULT now(),

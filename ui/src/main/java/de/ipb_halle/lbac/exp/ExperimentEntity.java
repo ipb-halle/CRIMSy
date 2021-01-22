@@ -56,6 +56,9 @@ public class ExperimentEntity extends ACObjectEntity implements Serializable {
     private boolean template;
 
     @Column
+    private Integer folderid;
+
+    @Column
     private Date ctime;
 
     @Column
@@ -75,6 +78,10 @@ public class ExperimentEntity extends ACObjectEntity implements Serializable {
 
     public Integer getExperimentId() {
         return this.experimentid;
+    }
+
+    public Integer getFolderId() {
+        return this.folderid;
     }
 
     public boolean getTemplate() {
@@ -98,6 +105,11 @@ public class ExperimentEntity extends ACObjectEntity implements Serializable {
 
     public ExperimentEntity setExperimentId(Integer experimentid) {
         this.experimentid = experimentid;
+        return this;
+    }
+
+    public ExperimentEntity setFolderId(Integer folderid) {
+        this.folderid = folderid;
         return this;
     }
 

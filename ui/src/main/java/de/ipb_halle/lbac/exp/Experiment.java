@@ -129,7 +129,8 @@ public class Experiment extends ACObject implements DTO, Searchable {
                 .setExperimentId(this.experimentid)
                 .setCode(this.code)
                 .setDescription(this.description)
-                .setTemplate(this.template);
+                .setTemplate(this.template)
+                .setFolderId(1);
         if (project != null) {
             entity.setProjectid(project.getId());
         }
