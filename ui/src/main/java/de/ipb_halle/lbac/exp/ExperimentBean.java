@@ -605,5 +605,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public ExpProjectController getProjectController() {
         return projectController;
     }
+    
+    public boolean areLinksAddable(ExpRecord record){
+        return record.getType()!=ExpRecordType.NULL;
+    }
 
 }

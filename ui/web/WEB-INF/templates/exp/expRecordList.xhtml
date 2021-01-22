@@ -67,7 +67,7 @@
                                        styleClass="experimentRecordButton"
                                        update="@(.experimentRecordContainer)"
                                        disabled="false"
-                                       rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
+                                       rendered="#{experimentBean.areLinksAddable(rec)}"
                                        action="#{experimentBean.actionEditRecord()}"
                                        onclick="PF('dlg_createLink').show();">
                             <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
@@ -125,7 +125,7 @@
                 <p:panelGrid 
                     styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
                     columns="10">
-                      <ui:repeat value="#{rec.getLinkNames()}" var="linkName">
+                    <ui:repeat value="#{rec.getLinkNames()}" var="linkName">
                         <b:badge
                             styleClass="linkText"
                             value="#{linkName}" style-class="tag-badge"/>
