@@ -535,7 +535,7 @@ CREATE TABLE experiments (
     code            VARCHAR,
     description     VARCHAR,
     template        BOOLEAN NOT NULL DEFAULT FALSE,
-    folderid        INTEGER REFERENCES folders(folderid)  ON UPDATE RESTRICT ON DELETE RESTRICT,
+    folderid        INTEGER NOT NULL REFERENCES folders(folderid)  ON UPDATE RESTRICT ON DELETE RESTRICT,
     aclist_id       INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     owner_id        INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     ctime           TIMESTAMP NOT NULL DEFAULT now(),
