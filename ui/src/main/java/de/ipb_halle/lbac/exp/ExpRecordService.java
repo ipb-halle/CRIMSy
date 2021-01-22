@@ -51,6 +51,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
@@ -83,10 +84,10 @@ public class ExpRecordService implements Serializable {
 
     @Inject
     private ItemService itemService;
-    
+
     @Inject
     private MaterialService materialService;
-    
+
     @Inject
     private TextService textService;
 
@@ -174,7 +175,7 @@ public class ExpRecordService implements Serializable {
             case TEXT:
                 record = this.textService.loadTextById(experiment, e);
                 break;
-            default :
+            default:
                 throw new UnsupportedOperationException("loadById(): invalid ExpRecord.type");
         }
         record.setLinkedData(loadLinkedData(record, user));
@@ -295,7 +296,7 @@ public class ExpRecordService implements Serializable {
         }
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }
-    
+
     private List<LinkedData> saveLinkedData(ExpRecord record) {
         List<LinkedData> records = new ArrayList<LinkedData>();
         for (LinkedData data : record.getLinkedData()) {
@@ -304,7 +305,6 @@ public class ExpRecordService implements Serializable {
         }
         return records;
     }
-
 
     /**
      * save a only single experiment object (i.e. do not update the type
@@ -320,5 +320,4 @@ public class ExpRecordService implements Serializable {
         record.setExpRecordEntity(e);
         return record;
     }
-
 }

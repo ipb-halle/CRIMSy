@@ -134,3 +134,7 @@
 .expLinks .badge{
     margin: 3px;
 }
+
+.errorMessageText{
+    text-align: center;
+}

@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.link;
 
+import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.ItemHolder;
@@ -25,6 +27,7 @@ import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.exp.MaterialHolder;
+import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -47,6 +50,8 @@ import org.primefaces.event.FlowEvent;
 @Named
 public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHolder {
 
+    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+
     private enum LinkType {
         MATERIAL,
         ITEM
@@ -62,10 +67,14 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
+    @Inject
+    private ExpRecordService recordService;
+
     private Material material;
     private String linkText;
     private LinkType type;
     private Item item;
+    private String errorMessage;
 
     @PostConstruct
     public void init() {
@@ -75,12 +84,27 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     }
 
     public void startLinkCreation() {
+        errorMessage = "";
         material = null;
         linkText = null;
         type = LinkType.MATERIAL;
     }
 
     public String onFlowProcess(FlowEvent e) {
+        if (e.getNewStep().equals("step2")) {
+            for (LinkedData data : expBean.getExpRecordController().getExpRecord().getLinkedData()) {
+                if (data.getPayload() instanceof LinkText) {
+                    if (((LinkText) data.getPayload()).getText().toLowerCase().equals(linkText.toLowerCase())) {
+                        errorMessage = String.format("%s : %s",
+                                linkText,
+                                Messages.getString(MESSAGE_BUNDLE, "expAddRecord_addLink_nameDuplicate", null));
+                        return e.getOldStep();
+                    }
+                }
+            }
+
+        }
+        errorMessage = "";
         return e.getNewStep();
     }
 
@@ -171,6 +195,10 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
         link.setPayload(new LinkText(linkText));
         link.setItem(item);
         expBean.getExpRecordController().getExpRecord().getLinkedData().add(link);
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
 }

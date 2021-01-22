@@ -50,28 +50,46 @@
                         flowListener="#{linkCreationProcess.onFlowProcess}">
                         <p:tab
                             id="step1"
-                            title="step1: choose type and name">
-                            <p:panelGrid columns="2">
-                                <h:outputText 
-                                    value="Bitte den Linktext angeben"/>
+                            title="choose type and linktext">
+                            <p:panelGrid>
+                                <p:row>
+                                    <p:column colspan="1">
+                                        <h:outputText 
+                                            value="Bitte den Linktext angeben"/>
+                                    </p:column>
+                                    <p:column colspan="1">
+                                        <p:inputText
+                                            styleClass="linkWizardTextInput"
+                                            required="true"
+                                            value="#{linkCreationProcess.linkText}"/>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="1">
+                                        <h:outputText 
+                                            value="Bitte den Linktyp angeben"/>
+                                    </p:column>
+                                    <p:column colspan="1">
+                                        <p:selectOneMenu
+                                            styleClass="linkWizardTypeSelect"
 
-                                <p:inputText
-                                    styleClass="linkWizardTextInput"
-                                    required="true"
-                                    value="#{linkCreationProcess.linkText}"/>
-                                <h:outputText 
-                                    value="Bitte den Linktyp angeben"/>
-                                <p:selectOneMenu
-                                    styleClass="linkWizardTypeSelect"
-
-                                    value="#{linkCreationProcess.type}">
-                                    <p:ajax
-                                        event="change"
-                                        update="@(.linkWizardPanel)"
-                                        process="@this @(.linkWizardTextInput)"/>
-                                    <f:selectItems
-                                        value="#{linkCreationProcess.types}"/>
-                                </p:selectOneMenu>
+                                            value="#{linkCreationProcess.type}">
+                                            <p:ajax
+                                                event="change"
+                                                update="@(.linkWizardPanel)"
+                                                process="@this @(.linkWizardTextInput)"/>
+                                            <f:selectItems
+                                                value="#{linkCreationProcess.types}"/>
+                                        </p:selectOneMenu>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column colspan="2">
+                                        <h:outputText
+                                            styleClass="errorMessageText"
+                                            value="#{linkCreationProcess.errorMessage}"/>
+                                    </p:column>
+                                </p:row>
                             </p:panelGrid>
                         </p:tab>
                         <p:tab
