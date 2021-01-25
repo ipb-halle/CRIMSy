@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.NodeService;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -58,6 +59,9 @@ public class SearchService {
     @Inject
     private NodeService nodeService;
 
+    private int AUGMENT_DOC_REQUEST_MAX_MATERIALS = 5;
+    private int AUGMENT_DOC_REQUEST_MAX_NAMES_PER_MATERIALS = 5;
+
     @PostConstruct
     public void init() {
         adpater = new ServiceAdapter(
@@ -72,6 +76,7 @@ public class SearchService {
     }
 
     public SearchResult search(List<SearchRequest> requests) {
+        sortSearchRequestsByPrio(requests);
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         if (requests != null) {
             for (SearchRequest request : requests) {
@@ -83,6 +88,7 @@ public class SearchService {
 
     private SearchResult handleSingleSearch(SearchRequest request, SearchResult result) {
         if (shouldSearchBeDone(request)) {
+            augmentDocumentSearchRequest(request, result);
             SearchResult partialResult = adpater.doSearch(request);
             result = mergeResults(result, partialResult);
         }
@@ -98,6 +104,21 @@ public class SearchService {
         totalResult.addResults(partialResult.getAllFoundObjects(node));
         totalResult.getDocumentStatistic().merge(partialResult.getDocumentStatistic());
         return totalResult;
+    }
+
+    private void augmentDocumentSearchRequest(
+            SearchRequest request,
+            SearchResult result) {
+
+    }
+
+    private void sortSearchRequestsByPrio(List<SearchRequest> requests) {
+        if (requests != null) {
+            Collections.sort(requests,
+                    (SearchRequest sr1, SearchRequest sr2)
+                    -> sr1.getSearchTarget().getSearchPrio()
+                            .compareTo(sr2.getSearchTarget().getSearchPrio()));
+        }
     }
 
 }

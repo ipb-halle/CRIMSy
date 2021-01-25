@@ -22,11 +22,22 @@ package de.ipb_halle.lbac.search;
  * @author fmauz
  */
 public enum SearchTarget {
-    ITEM,
-    DOCUMENT,
-    MATERIAL,
-    PROJECT,
-    USER,
-    EXPERIMENT,
-    CONTAINER
+    ITEM(2),
+    DOCUMENT(7),
+    MATERIAL(1),
+    PROJECT(3),
+    USER(4),
+    EXPERIMENT(5),
+    CONTAINER(6);
+
+    private final Integer searchPrio;
+
+    SearchTarget(int prio) {
+        searchPrio = prio;
+    }
+
+    public Integer getSearchPrio() {
+        return searchPrio;
+    }
+
 }
