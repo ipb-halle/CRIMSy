@@ -83,6 +83,7 @@ public class SearchRequestImpl implements SearchRequest {
         this.searchTarget = searchTarget;
     }
 
+    @Override
     public void setCondition(Condition condition) {
         this.condition = condition;
     }

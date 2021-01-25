@@ -33,6 +33,8 @@ public interface SearchRequest {
     public int getMaxResults();
 
     public User getUser();
+    
+    public void setCondition(Condition c);
 
     public SearchTarget getSearchTarget();
 

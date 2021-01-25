@@ -21,11 +21,13 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.base.ItemCreator;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentService;
@@ -43,11 +45,17 @@ import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.inject.Inject;
+import org.apache.openejb.loader.Files;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -221,6 +229,65 @@ public class SearchServiceTest extends TestBase {
 
         SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest));
         Assert.assertEquals(6, response.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test010_searchWithAugmentedDocumentRequest() {
+        uploadDocuments();
+        materialCreator.createStructure(
+                publicUser.getId(),
+                GlobalAdmissionContext.getPublicReadACL().getId(),
+                project1.getId(),
+                "H", "wasserstoff");
+
+        MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.addIndexName("H");
+        DocumentSearchRequestBuilder docRequestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
+
+        SearchResult result = searchService.search(
+                Arrays.asList(docRequestBuilder.buildSearchRequest(),
+                        matRequestbuilder.buildSearchRequest()));
+
+        Assert.assertEquals(2, result.getAllFoundObjects().size());
+
+        deleteDocuments();
+    }
+
+    private void uploadDocuments() {
+        deleteDocuments();
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+
+        DocumentCreator documentCreator = new DocumentCreator(
+                fileEntityService,
+                collectionService,
+                nodeService,
+                termVectorEntityService);
+
+        try {
+            Collection col = documentCreator.uploadDocuments(
+                    publicUser,
+                    "DocumentSearchServiceTest",
+                    "Wasserstoff.docx"
+            );
+        } catch (FileNotFoundException | InterruptedException ex) {
+            throw new RuntimeException("Could not upload file");
+        }
+        DocumentSearchRequestBuilder requestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
+        Set<String> wordRoots = new HashSet<>();
+        wordRoots.add("wasserstoff");
+        requestBuilder.addWordRoots(wordRoots);
+        SearchResult result = searchService.search(Arrays.asList(requestBuilder.buildSearchRequest()));
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+    }
+
+    private void deleteDocuments() {
+
+        Files.delete(Paths.get("target/test-classes/collections").toFile());
+        entityManagerService.doSqlUpdate("DELETE FROM collections");
+        entityManagerService.doSqlUpdate("DELETE from unstemmed_words");
+        entityManagerService.doSqlUpdate("DELETE from termvectors");
+        entityManagerService.doSqlUpdate("DELETE from files");
+        Files.delete(Paths.get("target/test-classes/collections").toFile());
     }
 
     @Deployment

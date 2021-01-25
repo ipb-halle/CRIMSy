@@ -23,13 +23,21 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.service.NodeService;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import de.ipb_halle.lbac.search.lang.Attribute;
+import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Operator;
+import de.ipb_halle.lbac.search.lang.Value;
+import java.util.HashSet;
+import java.util.Set;
 import javax.inject.Inject;
 
 /**
@@ -109,6 +117,23 @@ public class SearchService {
     private void augmentDocumentSearchRequest(
             SearchRequest request,
             SearchResult result) {
+        List<Structure> structures = result.getAllFoundObjects(Structure.class, result.getNode());
+        int maxMats = Math.min(structures.size(), AUGMENT_DOC_REQUEST_MAX_MATERIALS);
+        if (request.getSearchTarget() == SearchTarget.DOCUMENT) {
+            for (int i = 0; i < maxMats; i++) {
+                Structure struc = structures.get(i);
+                for (int j = 0; j < struc.getNames().size(); j++) {
+                    Set<String> valueSet = new HashSet<String>();
+                    valueSet.add(struc.getNames().get(j).getValue());
+                    Condition con = new Condition(
+                            new Attribute(AttributeType.WORDROOT),
+                            Operator.IN,
+                            new Value(valueSet));
+                    request.setCondition(con);
+                    //hier neuen namen rein. Dieser muss allerdings gestemmt werden
+                }
+            }
+        }
 
     }
 
