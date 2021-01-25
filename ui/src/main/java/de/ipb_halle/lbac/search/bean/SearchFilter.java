@@ -86,7 +86,7 @@ public class SearchFilter {
         if (shouldMaterialsBeSearched()) {
             requests.add(createMaterialSearchRequest());
         }
-        if (typeFilter.isDocuments() && !searchTerms.trim().isEmpty()) {
+        if (typeFilter.isDocuments()) {
             requests.add(createDocumentRequest());
         }
         if (typeFilter.isItems() && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {

@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -34,11 +35,14 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.Value;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -69,6 +73,8 @@ public class SearchService {
 
     private int AUGMENT_DOC_REQUEST_MAX_MATERIALS = 5;
     private int AUGMENT_DOC_REQUEST_MAX_NAMES_PER_MATERIALS = 5;
+
+    private final Logger logger = LogManager.getLogger(DocumentSearchService.class);
 
     @PostConstruct
     public void init() {
@@ -117,24 +123,57 @@ public class SearchService {
     private void augmentDocumentSearchRequest(
             SearchRequest request,
             SearchResult result) {
-        List<Structure> structures = result.getAllFoundObjects(Structure.class, result.getNode());
-        int maxMats = Math.min(structures.size(), AUGMENT_DOC_REQUEST_MAX_MATERIALS);
         if (request.getSearchTarget() == SearchTarget.DOCUMENT) {
-            for (int i = 0; i < maxMats; i++) {
-                Structure struc = structures.get(i);
-                for (int j = 0; j < struc.getNames().size(); j++) {
-                    Set<String> valueSet = new HashSet<String>();
-                    valueSet.add(struc.getNames().get(j).getValue());
-                    Condition con = new Condition(
-                            new Attribute(AttributeType.WORDROOT),
-                            Operator.IN,
-                            new Value(valueSet));
-                    request.setCondition(con);
-                    //hier neuen namen rein. Dieser muss allerdings gestemmt werden
+            Set<String> materialNames = getNamesOfMaterials(result);
+
+            if (request.getCondition() == null) {
+                createAndAddNewCondition(materialNames, request);
+            } else {
+                if (!materialNames.isEmpty()) {
+                    addNamesToExistingCondition(materialNames, request);
                 }
             }
         }
+    }
 
+    private void addNamesToExistingCondition(Set<String> materialNames, SearchRequest request) {
+        ConditionValueFetcher fetcher = new ConditionValueFetcher();
+        List<Object> searchTerms = fetcher.getValuesOfType(request.getCondition(), AttributeType.WORDROOT);
+        if (searchTerms.size() > 0) {
+            ((HashSet) searchTerms.get(0)).addAll(materialNames);
+        } else {
+            //Kann nicht passieren
+        }
+    }
+
+    private void createAndAddNewCondition(Set<String> materialNames, SearchRequest request) {
+        Condition con = new Condition(
+                new Attribute(AttributeType.WORDROOT),
+                Operator.IN,
+                new Value(materialNames));
+        request.setCondition(con);
+    }
+
+    private Set<String> getNamesOfMaterials(SearchResult result) {
+        Set<String> newNames = new HashSet<>();
+        List<Structure> structures = result.getAllFoundObjects(Structure.class, result.getNode());
+        int maxMats = Math.min(structures.size(), AUGMENT_DOC_REQUEST_MAX_MATERIALS);
+        for (int i = 0; i < maxMats; i++) {
+            addNamesOfMaterial(
+                    structures.get(i),
+                    AUGMENT_DOC_REQUEST_MAX_NAMES_PER_MATERIALS,
+                    newNames);
+        }
+        return newNames;
+    }
+
+    private void addNamesOfMaterial(Material m, int maxNamesBorder, Set<String> newNames) {
+        int maxNames = Math.min(
+                maxNamesBorder,
+                m.getNames().size());
+        for (int j = 0; j < maxNames; j++) {
+            newNames.add(m.getNames().get(j).getValue().toLowerCase());
+        }
     }
 
     private void sortSearchRequestsByPrio(List<SearchRequest> requests) {

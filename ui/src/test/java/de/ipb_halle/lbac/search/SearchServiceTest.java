@@ -243,7 +243,9 @@ public class SearchServiceTest extends TestBase {
         MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         matRequestbuilder.addIndexName("H");
         DocumentSearchRequestBuilder docRequestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
-
+        Set<String> words=new HashSet<>();
+        words.add("x");
+        docRequestBuilder.addWordRoots(words);
         SearchResult result = searchService.search(
                 Arrays.asList(docRequestBuilder.buildSearchRequest(),
                         matRequestbuilder.buildSearchRequest()));
