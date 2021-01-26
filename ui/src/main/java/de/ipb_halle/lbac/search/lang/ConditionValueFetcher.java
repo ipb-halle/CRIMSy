@@ -38,7 +38,7 @@ public class ConditionValueFetcher {
         } else {
             if (con.getConditions() != null) {
                 for (Condition c : con.getConditions()) {
-                    back.addAll(getValuesOfType(c));
+                    back.addAll(getValuesOfType(c,type));
                 }
             }
         }

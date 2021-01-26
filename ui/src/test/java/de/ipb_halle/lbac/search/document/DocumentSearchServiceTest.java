@@ -47,8 +47,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -118,16 +116,13 @@ public class DocumentSearchServiceTest extends TestBase {
     }
 
     @Test
-    public void test001_loadDocuments() throws FileNotFoundException, InterruptedException {
-
+    public void test001_loadDocuments_withoutWordRoot() throws FileNotFoundException, InterruptedException {
         DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
         builder.addCollectionID(col.getId());
-
         SearchRequest request = builder.buildSearchRequest();
-
         SearchResult result = documentSearchService.loadDocuments(request);
         List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
-        Assert.assertEquals(3, netObjects.size());
+        Assert.assertEquals(0, netObjects.size());
     }
 
     @Test

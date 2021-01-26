@@ -191,7 +191,6 @@ public class DocumentSearchService {
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
-            LOGGER.info(param.getArgumentKey() + " -> " + param.getValue());
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
@@ -231,7 +230,6 @@ public class DocumentSearchService {
             }
         }
         return hasWord;
-
     }
 
     private Set<String> getWordRoots(Condition con) {
