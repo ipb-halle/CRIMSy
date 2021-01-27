@@ -172,3 +172,12 @@
     font-size: 125%;
     text-align: center;
 }
+
+.dlgItemViewText{
+    margin-bottom: 10px;
+    margin-top: 10px;
+} 
+
+.dlgItemViewHeader{
+    font-weight: bold;
+}    

@@ -51,6 +51,7 @@ public class LinkedDataAgent implements Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Map<Hazard, String> hazardImageLocs = new HashMap<>();
+    private Material material;
 
     @PostConstruct
     public void init() {
@@ -73,8 +74,8 @@ public class LinkedDataAgent implements Serializable {
 
     public boolean getHasStructure() {
         if ((this.linkedData != null)
-                && (this.linkedData.getMaterial() != null)
-                && (this.linkedData.getMaterial().getType() == MaterialType.STRUCTURE)) {
+                && (material != null)
+                && (material.getType() == MaterialType.STRUCTURE)) {
             return true;
         }
         return false;
@@ -88,21 +89,25 @@ public class LinkedDataAgent implements Serializable {
     }
 
     public Material getMaterial() {
-        if (this.linkedData != null) {
-            return this.linkedData.getMaterial();
-        }
-        return null;
+        return material;
     }
 
     public void setLinkedData(LinkedData data) {
+        if (data.getMaterial() != null) {
+            material = data.getMaterial();
+        }
+        if (data.getItem() != null) {
+            material = data.getItem().getMaterial();
+        }
+
         this.linkedData = data;
     }
 
     public Set<Hazard> getHazards() {
-        if (linkedData == null || linkedData.getMaterial() == null) {
+        if (material == null) {
             return new HashSet<>();
         }
-        return linkedData.getMaterial().getHazards().getHazards();
+        return material.getHazards().getHazards();
     }
 
     public String getImageIconOf(Hazard hazard) {
@@ -110,22 +115,20 @@ public class LinkedDataAgent implements Serializable {
     }
 
     public List<String> getNamesOfMaterial(int maxNames) {
-        if (linkedData == null || linkedData.getMaterial() == null) {
+        if (material == null) {
             return new ArrayList<>();
         }
         List<String> names = new ArrayList<>();
-        int nameCount = Math.min(linkedData.getMaterial().getNames().size(), maxNames);
+        int nameCount = Math.min(material.getNames().size(), maxNames);
         for (int i = 0; i < nameCount; i++) {
-            names.add(linkedData.getMaterial().getNames().get(i).getValue());
+            names.add(material.getNames().get(i).getValue());
         }
         return names;
     }
 
-   
-
     public List<String[]> getIndices() {
         List<String[]> indices = new ArrayList<>();
-        if (linkedData == null || linkedData.getMaterial() == null) {
+        if (material == null) {
             return new ArrayList<>();
         }
         addIndex(indices, 3, "CAS");
@@ -136,7 +139,7 @@ public class LinkedDataAgent implements Serializable {
 
     private void addIndex(List<String[]> indices, int typeid, String indexName) {
         boolean indexFound = false;
-        for (IndexEntry ie : linkedData.getMaterial().getIndices()) {
+        for (IndexEntry ie : material.getIndices()) {
             if (ie.getTypeId() == typeid) {
                 indices.add(new String[]{indexName, ie.getValue()});
                 indexFound = true;
@@ -145,5 +148,40 @@ public class LinkedDataAgent implements Serializable {
         if (!indexFound) {
             indices.add(new String[]{indexName, "not available"});
         }
+    }
+
+    public String getAmountOfItem() {
+        if (linkedData == null || linkedData.getItem() == null) {
+            return "";
+        }
+
+        double amount = linkedData.getItem().getAmount();
+
+        String unit = linkedData.getItem().getUnit() == null ? "" : linkedData.getItem().getUnit();
+
+        if (linkedData.getItem().getContainerSize() == null) {
+
+            return String.format("%.2f %s", amount, unit);
+
+        }
+
+        return String.format("%.2f of %.2f %s", amount, linkedData.getItem().getContainerSize(), unit);
+    }
+
+    public String getItemLabel() {
+        if (linkedData == null || linkedData.getItem() == null) {
+            return "";
+        }
+        return linkedData.getItem().getLabel();
+    }
+
+    public String getLocationOfItem() {
+        if (linkedData == null || linkedData.getItem() == null) {
+            return "";
+        }
+        if (linkedData.getItem().getContainer() != null) {
+            return linkedData.getItem().getContainer().getNameToDisplay() +" -> "+linkedData.getItem().getContainer().getLocation(true, false);
+        }
+        return "";
     }
 }

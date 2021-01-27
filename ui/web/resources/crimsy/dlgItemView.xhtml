@@ -25,39 +25,82 @@
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:nwc="http://ipb-halle.de/nwc"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
 
-    <composite:interface name="dlgMaterialView"
-                         displayName="Material view dialog"
+    <composite:interface name="dlgItemView"
+                         displayName="Item view dialog"
                          preferred="true"
                          expert="false"
-                         shortDescription="material view dialog">
+                         shortDescription="">
         <composite:attribute name="agent" required="true" />
     </composite:interface>
 
     <composite:implementation >
         <h:form id="dlgMaterialViewForm">
             <p:dialog id="dlgMaterialView"
-                      header="#{msgs.materialAgent_dialog_header}"
-                      styleClass="dlgMaterialView"
-                      widgetVar="dlg_MaterialView"
+                      header="#{cc.attrs.agent.material.firstName}"
+                      styleClass="dlgItemView"
+                      widgetVar="dlg_ItemView"
                       modal="true" 
-                      width="1200"
+                      width="600"
                       height="600">
 
-                <p:panelGrid id="materialView" 
-                             styleClass="materialView borderless">
+                <b:container
+                    styleClass="materialView">
+                    <b:row>
+                        <b:column 
+                            span="2"
+                            styleClass="dlgItemViewHeader dlgItemViewText">
+                            Menge
+                        </b:column>    
+                        <b:column 
+                            styleClass="dlgItemViewText"
+                            span="4">
+                            #{cc.attrs.agent.getAmountOfItem()}
+                        </b:column>    
+                        <b:column
+                            styleClass="dlgItemViewHeader dlgItemViewText"
+                            span="2">
+                            Nummer
+                        </b:column>    
+                        <b:column 
+                            styleClass="dlgItemViewText"
+                            span="4">
+                            #{cc.attrs.agent.getItemLabel()}
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column
+                            span="12"
+                            styleClass="dlgMaterialViewStructure">
+                            <nwc:molPlugin id="molViewer"
+                                           rendered="#{cc.attrs.agent.hasStructure}"
+                                           value="#{cc.attrs.agent.material.molecule.structureModel}" 
+                                           plugintype="MolPaintJS"
+                                           edit="false"/>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column
+                            span="2"
+                             styleClass="dlgItemViewHeader dlgItemViewText">
+                            Standort
+                        </b:column>    
+                        <b:column
+                            styleClass="dlgItemViewText"
+                            span="9">
+                            <h:outputText
+                                escape="false"
+                                value="#{cc.attrs.agent. getLocationOfItem() }"/>           
 
-                    <nwc:molPlugin id="molViewer"
-                               rendered="#{cc.attrs.agent.hasStructure}"
-                               value="#{cc.attrs.agent.material.molecule.structureModel}" 
-                               plugintype="MolPaintJS"
-                               edit="false"/>
+                        </b:column>    
 
-                    <br/>
-                    #{cc.attrs.agent.material.firstName}
+                    </b:row>
+                </b:container>
 
-                </p:panelGrid>
+
+
             </p:dialog>
         </h:form>
     </composite:implementation>
