@@ -25,7 +25,9 @@
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
       xmlns:nwc="http://ipb-halle.de/nwc"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui">
 
     <composite:interface name="dlgMaterialView"
                          displayName="Material view dialog"
@@ -38,26 +40,100 @@
     <composite:implementation >
         <h:form id="dlgMaterialViewForm">
             <p:dialog id="dlgMaterialView"
-                      header="#{msgs.materialAgent_dialog_header}"
+                      header="Detail information of: #{cc.attrs.agent.material.firstName}"
                       styleClass="dlgMaterialView"
                       widgetVar="dlg_MaterialView"
                       modal="true" 
-                      width="1200"
+                      width="600"
                       height="600">
 
-                <p:panelGrid id="materialView" 
+                <b:container id="materialView" 
                              styleClass="materialView borderless">
+                    <b:row>
+                        <b:column
+                            span="11"
+                            styleClass="dlgMaterialViewStructure">
+                            <nwc:molPlugin id="molViewer"
+                                           rendered="#{cc.attrs.agent.hasStructure}"
+                                           value="#{cc.attrs.agent.material.molecule.structureModel}" 
+                                           plugintype="MolPaintJS"
+                                           edit="false"/>
+                        </b:column>
+                        <b:column
+                            span="1"
+                            styleClass="dlgMaterialViewHazards dlgMaterialViewBorderLess">
+                            <p:panelGrid>
+                                <ui:repeat
+                                    var="hazard"
+                                    value="#{cc.attrs.agent.getHazards()}">
+                                    <p:row>
+                                        <p:column>
+                                            <b:image value="#{cc.attrs.agent.getImageIconOf(hazard)}"
+                                                     styleClass="img-hazard"/>
+                                        </p:column>
+                                    </p:row>
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column span="6"
+                                  styleClass="dlgMaterialViewHeader">
+                            <h:outputText
+                                value="Alternative names"/>
+                        </b:column>
+                        <b:column span="6"
+                                  styleClass="dlgMaterialViewHeader">
+                            <b:column span="6">
+                                <h:outputText
+                                    value="Indices"/>
+                            </b:column>
 
-                    <nwc:molPlugin id="molViewer"
-                               rendered="#{cc.attrs.agent.hasStructure}"
-                               value="#{cc.attrs.agent.material.molecule.structureModel}" 
-                               plugintype="MolPaintJS"
-                               edit="false"/>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column
 
-                    <br/>
-                    #{cc.attrs.agent.material.firstName}
+                            span="6"
+                            styleClass="dlgMaterialViewNames dlgMaterialViewBorderLess">
+                            <p:panelGrid>
+                                <ui:repeat
+                                    var="name"
+                                    value="#{cc.attrs.agent.getNamesOfMaterial(3)}">
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText
+                                                value="#{name}"/>
+                                        </p:column>
+                                    </p:row>
 
-                </p:panelGrid>
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </b:column>
+                        <b:column
+                            span="6"
+                            styleClass="dlgMaterialViewIndex dlgMaterialViewBorderLess">
+                            <p:panelGrid>
+                                <ui:repeat
+                                    var="index"
+                                    value="#{cc.attrs.agent.getIndices()}">
+                                    <p:row>
+                                        <p:column
+                                            colspan="1">
+                                            <h:outputText
+                                                value="#{index[0]}"/>
+                                        </p:column>
+                                        <p:column
+                                            colspan="1">
+                                            <h:outputText
+                                                value="#{index[1]}"/>
+                                        </p:column>
+                                    </p:row>
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </b:column>
+                    </b:row>
+                </b:container>
             </p:dialog>
         </h:form>
     </composite:implementation>

@@ -138,3 +138,37 @@
 .errorMessageText{
     text-align: center;
 }
+
+.dlgMaterialViewStructure{
+
+}
+.dlgMaterialViewHazards{
+    margin-top: 6px;
+    margin-left: 0px;
+    padding-left:20px;
+}
+
+
+
+.dlgMaterialViewBorderLess *{
+    border-width: 0px !important; 
+}
+
+.dlgMaterialViewNames{
+    margin-top: 10px;
+}
+.dlgMaterialViewIndex{
+    margin-top: 10px;
+
+}
+.materialView{
+    margin-left: 10px;
+    width:450px;
+}
+.dlgMaterialViewHeader{
+    margin: auto;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 125%;
+    text-align: center;
+}
