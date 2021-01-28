@@ -38,11 +38,29 @@ public class ConditionValueFetcher {
         } else {
             if (con.getConditions() != null) {
                 for (Condition c : con.getConditions()) {
-                    back.addAll(getValuesOfType(c,type));
+                    back.addAll(getValuesOfType(c, type));
                 }
             }
         }
         return back;
+    }
+
+    public List<Condition> getConditionsOfType(Condition startCon, AttributeType... type) {
+        List<Condition> conditions = new ArrayList<>();
+        if (startCon != null) {
+            if (startCon.getAttribute() != null) {
+                if (containsAtributes(startCon, type)) {
+                    conditions.add(startCon);
+                }
+            } else {
+                if (startCon.getConditions() != null) {
+                    for (Condition c : startCon.getConditions()) {
+                        conditions.addAll(getConditionsOfType(c, type));
+                    }
+                }
+            }
+        }
+        return conditions;
     }
 
     private boolean containsAtributes(Condition con, AttributeType... types) {

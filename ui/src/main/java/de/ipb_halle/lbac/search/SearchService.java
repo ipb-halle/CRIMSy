@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.Value;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
@@ -50,14 +51,14 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 public class SearchService {
-
+    
     private ServiceAdapter adpater;
     @Inject
     private ItemService itemService;
-
+    
     @Inject
     private ProjectService projectService;
-
+    
     @Inject
     private MaterialService materialService;
     @Inject
@@ -70,12 +71,12 @@ public class SearchService {
     private MemberService memberService;
     @Inject
     private NodeService nodeService;
-
+    
     private int AUGMENT_DOC_REQUEST_MAX_MATERIALS = 5;
     private int AUGMENT_DOC_REQUEST_MAX_NAMES_PER_MATERIALS = 5;
-
+    
     private final Logger logger = LogManager.getLogger(DocumentSearchService.class);
-
+    
     @PostConstruct
     public void init() {
         adpater = new ServiceAdapter(
@@ -88,7 +89,7 @@ public class SearchService {
                 memberService,
                 nodeService);
     }
-
+    
     public SearchResult search(List<SearchRequest> requests) {
         sortSearchRequestsByPrio(requests);
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
@@ -99,7 +100,7 @@ public class SearchService {
         }
         return result;
     }
-
+    
     private SearchResult handleSingleSearch(SearchRequest request, SearchResult result) {
         if (shouldSearchBeDone(request)) {
             augmentDocumentSearchRequest(request, result);
@@ -108,24 +109,24 @@ public class SearchService {
         }
         return result;
     }
-
+    
     private boolean shouldSearchBeDone(SearchRequest request) {
         return request != null && request.getSearchTarget() != null;
     }
-
+    
     private SearchResult mergeResults(SearchResult totalResult, SearchResult partialResult) {
         Node node = partialResult.getNode();
         totalResult.addResults(partialResult.getAllFoundObjects(node));
         totalResult.getDocumentStatistic().merge(partialResult.getDocumentStatistic());
         return totalResult;
     }
-
+    
     private void augmentDocumentSearchRequest(
             SearchRequest request,
             SearchResult result) {
         if (request.getSearchTarget() == SearchTarget.DOCUMENT) {
+            logger.info("ill augment ");
             Set<String> materialNames = getNamesOfMaterials(result);
-
             if (request.getCondition() == null) {
                 createAndAddNewCondition(materialNames, request);
             } else {
@@ -135,17 +136,21 @@ public class SearchService {
             }
         }
     }
-
+    
     private void addNamesToExistingCondition(Set<String> materialNames, SearchRequest request) {
         ConditionValueFetcher fetcher = new ConditionValueFetcher();
-        List<Object> searchTerms = fetcher.getValuesOfType(request.getCondition(), AttributeType.WORDROOT);
-        if (searchTerms.size() > 0) {
-            ((HashSet) searchTerms.get(0)).addAll(materialNames);
-        } else {
-            //Kann nicht passieren
+        List<Condition> conditions = fetcher.getConditionsOfType(request.getCondition(), AttributeType.WORDROOT);
+        if (conditions.size() > 0) {
+            Value value = conditions.get(0).getValue();
+            if (value.getValueSet() == null) {
+                conditions.get(0).setValue(new Value(new HashSet<>()));
+            }
+            Value v = conditions.get(0).getValue();
+            ((HashSet<String>) v.getValue()).addAll(materialNames);
+            
         }
     }
-
+    
     private void createAndAddNewCondition(Set<String> materialNames, SearchRequest request) {
         Condition con = new Condition(
                 new Attribute(AttributeType.WORDROOT),
@@ -153,7 +158,7 @@ public class SearchService {
                 new Value(materialNames));
         request.setCondition(con);
     }
-
+    
     private Set<String> getNamesOfMaterials(SearchResult result) {
         Set<String> newNames = new HashSet<>();
         List<Structure> structures = result.getAllFoundObjects(Structure.class, result.getNode());
@@ -166,7 +171,7 @@ public class SearchService {
         }
         return newNames;
     }
-
+    
     private void addNamesOfMaterial(Material m, int maxNamesBorder, Set<String> newNames) {
         int maxNames = Math.min(
                 maxNamesBorder,
@@ -175,7 +180,7 @@ public class SearchService {
             newNames.add(m.getNames().get(j).getValue().toLowerCase());
         }
     }
-
+    
     private void sortSearchRequestsByPrio(List<SearchRequest> requests) {
         if (requests != null) {
             Collections.sort(requests,
@@ -184,5 +189,5 @@ public class SearchService {
                             .compareTo(sr2.getSearchTarget().getSearchPrio()));
         }
     }
-
+    
 }
