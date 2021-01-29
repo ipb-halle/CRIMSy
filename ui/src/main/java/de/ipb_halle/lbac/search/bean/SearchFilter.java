@@ -111,6 +111,7 @@ public class SearchFilter {
 
     private SearchRequest createMaterialSearchRequest() {
         MaterialSearchRequestBuilder materialRequestBuilder = new MaterialSearchRequestBuilder(user, 0, maxresults);
+        materialRequestBuilder.addDeactivated(false);
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
         searchValue.materialName = searchTerms;
         if (advancedSearchActive) {

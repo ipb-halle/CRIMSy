@@ -92,6 +92,7 @@ public class MaterialTableController implements TableController {
                 tableController.getFirstResult(),
                 tableController.getCHUNK_SIZE());
         builder.setConditionsBySearchValues(lastValues);
+        builder.addDeactivated(false);
         return builder.buildSearchRequest();
     }
 

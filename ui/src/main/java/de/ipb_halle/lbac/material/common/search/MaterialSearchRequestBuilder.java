@@ -50,6 +50,14 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
+    public MaterialSearchRequestBuilder addDeactivated(boolean deactivated) {
+        addCondition(Operator.EQUAL,
+                deactivated,
+                AttributeType.MATERIAL,
+                AttributeType.DEACTIVATED);
+        return this;
+    }
+
     public MaterialSearchRequestBuilder addUserName(String userName) {
         addCondition(Operator.ILIKE,
                 "%" + userName + "%",

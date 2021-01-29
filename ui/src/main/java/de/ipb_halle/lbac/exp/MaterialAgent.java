@@ -93,6 +93,7 @@ public class MaterialAgent implements Serializable {
                 this.userBean.getCurrentAccount(),
                 0,
                 MAX_MATERIALS_TO_SEARCH);
+        builder.addDeactivated(false);
         if (this.materialSearch != null && !this.materialSearch.trim().isEmpty()) {
             builder.addIndexName(this.materialSearch);
         }

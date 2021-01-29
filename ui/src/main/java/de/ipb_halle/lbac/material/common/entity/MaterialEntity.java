@@ -62,6 +62,7 @@ public class MaterialEntity implements Serializable {
     private Integer ownerid;
 
     @Column
+     @AttributeTag(type = AttributeType.DEACTIVATED)
     private boolean deactivated;
     @Column
     private Integer projectid;
