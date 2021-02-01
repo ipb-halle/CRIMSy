@@ -571,6 +571,25 @@ body.waiting * {
     border-width: 0px !important;
 }
 
+.searchExperimentButton button{
+    width: 100px;
+    height:27px;
+    margin-bottom: 10px;
+}
+
+.addEditExperimentButton button{
+    width: 100px;
+    height:27px;
+    margin-bottom: 10px;
+}
+
 .centeredText{
     text-align: center;
+}
+
+.borderlessButtonTable td{
+     border-width: 0px !important;
+}
+.borderlessButtonTable tr{
+     border-width: 0px !important;
 }

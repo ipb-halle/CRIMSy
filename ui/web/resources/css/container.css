@@ -106,6 +106,9 @@
 .containerEditModal > div > span {
     text-align: center;
 }
+.containerEditModal .containerEditButton{
+    width: 100px;
+}
 
 
 /** format info box test results in ldpap check **/

@@ -31,6 +31,8 @@ import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 
@@ -104,6 +106,27 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Experiment experimentInFocus;
     private ExpProjectController projectController;
+    private MessagePresenter messagePresenter;
+
+    public ExperimentBean() {
+    }
+
+    public ExperimentBean(
+            ItemAgent itemAgent,
+            MaterialAgent materialAgent,
+            GlobalAdmissionContext globalAdmissionContext,
+            ProjectService projectService,
+            ExperimentService experimentService,
+            MessagePresenter messagePresenter,
+            ExpRecordService expRecordService) {
+        this.itemAgent = itemAgent;
+        this.materialAgent = materialAgent;
+        this.globalAdmissionContext = globalAdmissionContext;
+        this.projectService = projectService;
+        this.experimentService = experimentService;
+        this.messagePresenter = messagePresenter;
+        this.expRecordService = expRecordService;
+    }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
@@ -120,6 +143,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         cleanup();
         initEmptyExperiment();
         this.expRecords = new ArrayList<ExpRecord>();
+        this.messagePresenter = JsfMessagePresenter.getInstance();
 
     }
 
@@ -133,6 +157,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 this.globalAdmissionContext.getPublicAccount(), // owner
                 new Date() // creation time
         );
+        this.expRecords = new ArrayList<>();
     }
 
     /**
@@ -316,9 +341,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.experiment.setProject(projectController.getChoosenProject());
         Experiment savedExp = this.experimentService.save(this.experiment);
         if (this.experiment.getExperimentId() == null) {
-            UIMessage.info("exp_save_new");
+            messagePresenter.info("exp_save_new");
         } else {
-            UIMessage.info("exp_save_edit");
+            messagePresenter.info("exp_save_edit");
         }
         this.experiment = savedExp;
     }
@@ -550,7 +575,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     /**
-     * Obtain a BarChart from an ExpRecord at the given index 
+     * Obtain a BarChart from an ExpRecord at the given index
+     *
      * @param index the transient index property of the experiment record
      */
     public void setBarChartModel(int index) {
@@ -605,9 +631,13 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public ExpProjectController getProjectController() {
         return projectController;
     }
-    
-    public boolean areLinksAddable(ExpRecord record){
-        return record.getType()!=ExpRecordType.NULL;
+
+    public boolean areLinksAddable(ExpRecord record) {
+        return record.getType() != ExpRecordType.NULL;
+    }
+
+    public MessagePresenter getMessagePresenter() {
+        return messagePresenter;
     }
 
 }

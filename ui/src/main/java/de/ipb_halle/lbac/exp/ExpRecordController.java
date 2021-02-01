@@ -43,10 +43,10 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
     private MessagePresenter messagePresenter;
 
     protected ExpRecordController(ExperimentBean bean) {
-        messagePresenter = JsfMessagePresenter.getInstance();
         this.bean = bean;
         bean.getMaterialAgent().setMaterialHolder(null);
         bean.getItemAgent().setItemHolder(null);
+        messagePresenter = bean.getMessagePresenter();
     }
 
     public void actionCancel() {

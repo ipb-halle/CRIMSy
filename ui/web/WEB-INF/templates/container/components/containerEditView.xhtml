@@ -223,9 +223,9 @@ limitations under the License.
                         </b:row>
 
                         <b:row styleClass="containerEditButtonRowClass">
-                            <b:commandButton
+                            <p:commandButton
                                 id="CancelButtonId"
-                                styleClass="containerEditButtonLeft"
+                                styleClass="containerEditButtonLeft containerEditButton"
                                 onclick="ajax:containerOverviewBean.actionCancel();"
                                 immediate="true"
                                 value="#{msgs.container_button_cancel}"
@@ -233,6 +233,7 @@ limitations under the License.
                                 update="@(.topLevelRowForm)"
                                 oncomplete="PF('dlgcontainerEdit').hide();"/>
                             <p:commandButton
+                                styleClass="containerEditButton"
                                 id="SaveButtonId"
                                 action="#{containerOverviewBean.actionTriggerContainerSave()}"
                                 process="@form"

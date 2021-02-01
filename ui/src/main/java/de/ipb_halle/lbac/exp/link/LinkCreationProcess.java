@@ -67,15 +67,23 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    @Inject
-    private ExpRecordService recordService;
-
     private Material material;
     private String linkText;
     private LinkType type;
     private Item item;
     private String errorMessage;
 
+    public LinkCreationProcess(
+            MaterialAgent materialAgent,
+            ItemAgent itemAgent,
+            ExperimentBean experimentBean) {
+        this.materialAgent = materialAgent;
+        this.itemAgent = itemAgent;
+        this.expBean=experimentBean;
+    }
+
+    
+    
     @PostConstruct
     public void init() {
         materialAgent.setMaterialHolder(this);
@@ -133,7 +141,6 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
         link.setPayload(new LinkText(linkText));
         link.setMaterial(material);
         expBean.getExpRecordController().getExpRecord().getLinkedData().add(link);
-        logger.info("new Link set");
     }
 
     public String getLinkText() {

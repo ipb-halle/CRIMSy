@@ -81,12 +81,6 @@
                                 </p:menuitem>
                             </p:tabMenu>
 
-                            <ui:insert name="expSearch">
-                                <ui:include src="expSearch.xhtml" />
-                            </ui:insert>
-                            <ui:insert name="expData">
-                                <ui:include src="expData.xhtml" />
-                            </ui:insert>
 
                             <b:panel collapsible="false" 
                                      title="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
@@ -95,6 +89,21 @@
                                     <ui:include src="experimentList.xhtml"/>
                                 </ui:insert>
                             </b:panel>
+                            <p:panelGrid styleClass="borderlessButtonTable">
+                                <p:row>
+                                    <p:column styleClass="searchExperimentButton">
+                                        <ui:insert name="expSearch">
+                                            <ui:include src="expSearch.xhtml" />
+                                        </ui:insert>
+                                    </p:column>
+                                    <p:column
+                                        styleClass="addEditExperimentButton">
+                                        <ui:insert name="expData">
+                                            <ui:include src="expData.xhtml" />
+                                        </ui:insert>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
                         </b:column> 
                     </h:form>
 
