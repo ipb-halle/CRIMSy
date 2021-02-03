@@ -28,6 +28,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -70,9 +71,12 @@ public class LinkCreationProcessTest extends TestBase {
     private ExpRecordService expRecService;
     @Inject
     private MaterialService materialService;
+    @Inject
+    private ItemService itemService;
 
     private User publicUser;
     private int materialId;
+    private int itemId;
 
     @Before
     @Override
@@ -90,17 +94,14 @@ public class LinkCreationProcessTest extends TestBase {
         linkCreationProcess = new LinkCreationProcess(materialAgent, itemAgent, experimentBean);
         linkCreationProcess.init();
         materialId = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M1");
+        itemId = itemCreator.createItem(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), materialId, "LinkCreationProcessTest_I1");
 
     }
 
     @Test
     public void test001_createMaterialLink() {
-        linkCreationProcess.startLinkCreation();
-        experimentBean.actionNewExperiment();
-        experimentBean.getExperiment().setCode("LinkCreationProcessTest_EXP1");
-        experimentBean.getProjectController().setChoosenProject(experimentBean.getProjectController().getChoosableProjects().get(0));
-        experimentBean.actionSaveExperiment();
-        experimentBean.actionNewExperimentRecord("TEXT", 0);
+        prepareLinkCreation();
+
         linkCreationProcess.setLinkText("test001_createMaterialLink");
         linkCreationProcess.onFlowProcess(new FlowEvent(new TestUIComponent(), "step1", "step2"));
         linkCreationProcess.setMaterial(materialService.loadMaterialById(materialId));
@@ -110,7 +111,21 @@ public class LinkCreationProcessTest extends TestBase {
         Assert.assertEquals(1, o.size());
 
         cleanUp();
+    }
 
+    @Test
+    public void test002_createItemLink() {
+        prepareLinkCreation();
+
+        linkCreationProcess.setLinkText("test001_createItemLink");
+        linkCreationProcess.onFlowProcess(new FlowEvent(new TestUIComponent(), "step1", "step2"));
+        linkCreationProcess.setItem(itemService.loadItemById(itemId));
+        experimentBean.getExpRecordController().actionSaveRecord();
+
+        ArrayList o = (ArrayList) entityManagerService.doSqlQuery("SELECT * from exp_linked_data");
+        Assert.assertEquals(1, o.size());
+
+        cleanUp();
     }
 
     @Deployment
@@ -125,6 +140,15 @@ public class LinkCreationProcessTest extends TestBase {
                 .addClass(MaterialService.class)
                 .addClass(ProjectService.class);
         return UserBeanDeployment.add(ItemDeployment.add(deployment));
+    }
+
+    private void prepareLinkCreation() {
+        linkCreationProcess.startLinkCreation();
+        experimentBean.actionNewExperiment();
+        experimentBean.getExperiment().setCode("LinkCreationProcessTest_EXP1");
+        experimentBean.getProjectController().setChoosenProject(experimentBean.getProjectController().getChoosableProjects().get(0));
+        experimentBean.actionSaveExperiment();
+        experimentBean.actionNewExperimentRecord("TEXT", 0);
     }
 
     private void cleanUp() {
