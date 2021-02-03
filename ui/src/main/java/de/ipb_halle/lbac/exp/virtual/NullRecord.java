@@ -20,10 +20,11 @@ package de.ipb_halle.lbac.exp.virtual;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  * @author fbroda
@@ -54,6 +55,16 @@ public class NullRecord extends ExpRecord implements DTO {
     @Override
     public String getExpRecordInfo() {
         return " # -- # ";
+    }
+
+    @Override
+    public boolean validate() {
+        return true;
+    }
+
+    @Override
+    public Set<ValidationError> getErrors() {
+        return new HashSet<>();
     }
 
 }

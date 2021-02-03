@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,6 +60,11 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     private transient boolean isLast = false;
     private transient int index;
     private transient int linkedDataMaxRank;
+
+    public enum ValidationError {
+        NO_TARGET,
+        ASSAY_RECORD_HAS_NO_OBJECT
+    }
 
     protected ExpRecord() {
         this.creationtime = new Date();
@@ -331,8 +337,8 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         }
         return names;
     }
-    
-    public boolean isValide(){
-        return true;
-    }
+
+    public abstract boolean validate();
+
+    public abstract Set<ValidationError> getErrors();
 }

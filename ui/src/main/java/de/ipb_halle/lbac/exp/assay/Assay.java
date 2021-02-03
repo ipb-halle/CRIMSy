@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.util.Unit;
 import de.ipb_halle.lbac.util.UnitsValidator;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -83,6 +84,8 @@ public class Assay extends ExpRecord implements DTO {
      * prove difficult.
      */
     private LinkedDataType outcomeType;
+
+    private Set<ValidationError> errors = new HashSet<>();
 
     /**
      * default constructor
@@ -274,8 +277,25 @@ public class Assay extends ExpRecord implements DTO {
     }
 
     @Override
-    public boolean isValide() {
+    public boolean validate() {
+        errors = new HashSet<>();
+        boolean valide = true;
         Material target = getTarget();
-        return target != null;
+        if (target == null) {
+            valide = false;
+            errors.add(ValidationError.NO_TARGET);
+        }
+        for (LinkedData ld : getLinkedData()) {
+            if (ld.getMaterial() == null && ld.getItem() == null) {
+                valide = false;
+                errors.add(ValidationError.ASSAY_RECORD_HAS_NO_OBJECT);
+            }
+        }
+        return valide;
+    }
+
+    @Override
+    public Set<ValidationError> getErrors() {
+        return errors;
     }
 }

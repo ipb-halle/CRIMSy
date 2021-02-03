@@ -17,17 +17,14 @@
  */
 package de.ipb_halle.lbac.exp.text;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 
 /**
  * @author fbroda
@@ -49,8 +46,8 @@ public class Text extends ExpRecord implements DTO {
     @Override
     public TextEntity createEntity() {
         return new TextEntity()
-            .setExpRecordId(getExpRecordId())
-            .setText(this.text);
+                .setExpRecordId(getExpRecordId())
+                .setText(this.text);
     }
 
     public String getText() {
@@ -59,5 +56,15 @@ public class Text extends ExpRecord implements DTO {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public boolean validate() {
+        return true;
+    }
+
+    @Override
+    public Set<ValidationError> getErrors() {
+        return new HashSet<>();
     }
 }

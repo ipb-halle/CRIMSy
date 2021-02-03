@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.exp.link;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.ItemHolder;
@@ -27,7 +26,6 @@ import de.ipb_halle.lbac.exp.LinkedData;
 import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.exp.MaterialHolder;
-import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -73,6 +71,9 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     private Item item;
     private String errorMessage;
 
+    public LinkCreationProcess() {
+        
+    }
     public LinkCreationProcess(
             MaterialAgent materialAgent,
             ItemAgent itemAgent,
@@ -82,8 +83,6 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
         this.expBean=experimentBean;
     }
 
-    
-    
     @PostConstruct
     public void init() {
         materialAgent.setMaterialHolder(this);
@@ -110,7 +109,6 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
                     }
                 }
             }
-
         }
         errorMessage = "";
         return e.getNewStep();
