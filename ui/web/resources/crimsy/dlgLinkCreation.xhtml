@@ -24,20 +24,19 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <composite:interface name="dlgLinkCreation"
                          displayName="Link Creation"
                          preferred="true"
                          expert="false"
-                         shortDescription="Link creation dialog">
+                         shortDescription="xxx">
     </composite:interface>
 
     <composite:implementation >
         <h:form id="dlgLinkCreationForm">
             <p:dialog id="dlgCreateLink"
-                      header="Create Link"
+                      header="#{msgs.linkCreation_dialogHeader}"
                       styleClass="dlgMaterialEdit"
                       widgetVar="dlg_createLink"
                       modal="true" 
@@ -50,12 +49,13 @@
                         flowListener="#{linkCreationProcess.onFlowProcess}">
                         <p:tab
                             id="step1"
-                            title="choose type and linktext">
-                            <p:panelGrid>
+                            title="#{msgs.linkCreation_step1_header}">
+                            <p:panelGrid
+                                styleClass="panelBorderless">
                                 <p:row>
                                     <p:column colspan="1">
                                         <h:outputText 
-                                            value="Bitte den Linktext angeben"/>
+                                            value="#{msgs.linkCreation_step1_addLinkText}"/>
                                     </p:column>
                                     <p:column colspan="1">
                                         <p:inputText
@@ -67,12 +67,11 @@
                                 <p:row>
                                     <p:column colspan="1">
                                         <h:outputText 
-                                            value="Bitte den Linktyp angeben"/>
+                                            value="#{msgs.linkCreation_step1_addLinkType}"/>
                                     </p:column>
                                     <p:column colspan="1">
                                         <p:selectOneMenu
                                             styleClass="linkWizardTypeSelect"
-
                                             value="#{linkCreationProcess.type}">
                                             <p:ajax
                                                 event="change"
@@ -94,7 +93,6 @@
                         </p:tab>
                         <p:tab
                             id="step2"
-
                             title="#{linkCreationProcess.getStepTwoHeader()}">
                             <crimsy:panelMaterialEdit
                                 rendered="#{linkCreationProcess.isMaterialViewEnabled()}" 

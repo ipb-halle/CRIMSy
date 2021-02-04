@@ -120,6 +120,7 @@
 }
 .linkWizardTypeSelect {
     margin-top: 10px;
+    width:100%;
 }
 .expLinks{
     border: 0px;
@@ -180,4 +181,11 @@
 
 .dlgItemViewHeader{
     font-weight: bold;
-}    
+}
+
+.panelBorderless tbody tr {
+     border-width: 0px !important;
+}
+.panelBorderless tbody tr td{
+     border-width: 0px !important;
+}

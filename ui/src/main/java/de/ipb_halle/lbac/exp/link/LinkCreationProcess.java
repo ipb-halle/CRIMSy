@@ -27,8 +27,10 @@ import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.exp.MaterialHolder;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +51,7 @@ import org.primefaces.event.FlowEvent;
 public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHolder {
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private MessagePresenter messagePresenter;
 
     private enum LinkType {
         MATERIAL,
@@ -72,15 +75,16 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     private String errorMessage;
 
     public LinkCreationProcess() {
-        
+
     }
+
     public LinkCreationProcess(
             MaterialAgent materialAgent,
             ItemAgent itemAgent,
             ExperimentBean experimentBean) {
         this.materialAgent = materialAgent;
         this.itemAgent = itemAgent;
-        this.expBean=experimentBean;
+        this.expBean = experimentBean;
     }
 
     @PostConstruct
@@ -88,6 +92,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
         materialAgent.setMaterialHolder(this);
         materialAgent.setShowMolEditor(true);
         itemAgent.setItemHolder(this);
+        messagePresenter = JsfMessagePresenter.getInstance();
     }
 
     public void startLinkCreation() {
@@ -175,13 +180,12 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     public String getStepTwoHeader() {
         if (type == LinkType.MATERIAL) {
-            return "choose material";
+            return messagePresenter.presentMessage("materialCreation_step1_chooseMaterial");
         }
-
         if (type == LinkType.ITEM) {
-            return "choose item";
+            return messagePresenter.presentMessage("materialCreation_step1_chooseItem");
         }
-        return "choose object";
+        return messagePresenter.presentMessage("materialCreation_step1_chooseObject");
     }
 
     @Override
