@@ -42,11 +42,11 @@
                         var="mName">
                         <b:dataTableColumn
                             orderable="false"
-                            label="#{msgs.materialCreation_panelNames_tableHeader_name}">
+                            label="#{msgs.materialCreation_panelNames_tableHeader_name}"
+                            styleClass="materialNameText">
                             <b:inputText
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 value="#{mName.value}"
-
                                 placeholder="#{msgs.materialCreation_panelNames_placeHolder}"
                                 onkeypress="if (event.keyCode === 13) {
                                             return false;
@@ -56,20 +56,18 @@
 
                         </b:dataTableColumn>
                         <b:dataTableColumn
+                            styleClass="materialNameLanguage"
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_language}">
-
                             <b:selectOneMenu
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 value="#{mName.language}">
                                 <f:selectItems 
                                     value="#{materialBean.materialNameBean.getPossibleLanguages()}"/>
                             </b:selectOneMenu>
-
-
                         </b:dataTableColumn>
-
                         <b:dataTableColumn
+                            styleClass="materialNameAction"
                             orderable="false"
                             label="#{msgs.materialCreation_panelNames_tableHeader_action}">
                             <b:commandButton style="padding: 0 4px;"

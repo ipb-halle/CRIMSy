@@ -72,5 +72,23 @@
     top: 6px;
     left: 22px;
 }
+.materialNameText div {
+ width: 100% !important;  
+}
 
+.materialNameLanguage{
+    width:150px !important;
+}
+
+
+.materialNameText div input{
+ width: 100% !important;  
+}
+
+.materialNameLanguage *{
+    width:100% !important;
+}
+.materialNameAction{
+    width:150px !important;
+}
 
