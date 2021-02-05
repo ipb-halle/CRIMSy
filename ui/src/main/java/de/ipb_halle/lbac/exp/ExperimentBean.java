@@ -245,7 +245,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             rec.setExperiment(this.experiment);
             rec.setExpRecordId(null);
             rec.copy();
-            this.expRecordService.save(rec);
+            this.expRecordService.save(rec,currentUser);
         }
 
         // activate the copied experiment 
@@ -329,7 +329,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             for (ExpRecord rec : saveList) {
                 this.expRecordService.saveOnly(rec);
             }
-            record = this.expRecordService.save(record);
+            record = this.expRecordService.save(record,currentUser);
             this.expRecords.add(newPosition, record);
 
             reIndex();
@@ -571,7 +571,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * @return
      */
     public ExpRecord saveExpRecord(ExpRecord record) {
-        return this.expRecordService.save(record);
+        return this.expRecordService.save(record,currentUser);
     }
 
     /**
@@ -638,6 +638,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public MessagePresenter getMessagePresenter() {
         return messagePresenter;
+    }
+
+    public ExpRecordService getExpRecordService() {
+        return expRecordService;
     }
 
 }

@@ -51,7 +51,8 @@
                             id="step1"
                             title="#{msgs.linkCreation_step1_header}">
                             <p:panelGrid
-                                styleClass="panelBorderless">
+                                
+                                styleClass="panelBorderless linkCreation_panelStep1">
                                 <p:row>
                                     <p:column colspan="1">
                                         <h:outputText 
@@ -83,7 +84,9 @@
                                     </p:column>
                                 </p:row>
                                 <p:row>
-                                    <p:column colspan="2">
+                                    <p:column
+                                        colspan="2"
+                                        styleClass="errorMessageText">
                                         <h:outputText
                                             styleClass="errorMessageText"
                                             value="#{linkCreationProcess.errorMessage}"/>

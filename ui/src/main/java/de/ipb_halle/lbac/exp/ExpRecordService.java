@@ -39,9 +39,11 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -51,7 +53,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.logging.log4j.Logger;
@@ -59,44 +60,44 @@ import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class ExpRecordService implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     public final static String EXPERIMENT_ID = "EXPERIMENT_ID";
-
+    
     private final static String SQL_LOAD = "SELECT DISTINCT "
             + "r.exprecordid, r.experimentid, r.changetime, r.creationtime, r.next, r.revision, r.type "
             + "FROM exp_records AS r WHERE "
             + "(r.experimentid = :EXPERIMENT_ID OR :EXPERIMENT_ID = -1) "
             + "ORDER BY r.exprecordid";
-
+    
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
-
+    
     @Inject
     private ACListService aclistService;
-
+    
     @Inject
     private ExperimentService experimentService;
-
+    
     @Inject
     private AssayService assayService;
-
+    
     @Inject
     private ItemService itemService;
-
+    
     @Inject
     private MaterialService materialService;
-
+    
     @Inject
     private TextService textService;
-
+    
     private Logger logger;
-
+    
     public ExpRecordService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
-
+    
     @PostConstruct
     public void ExpRecordServiceInit() {
         if (em == null) {
@@ -114,8 +115,14 @@ public class ExpRecordService implements Serializable {
         } else {
             q = this.em.createNativeQuery(rawSql, targetClass);
         }
-
+        
         return q.setParameter(EXPERIMENT_ID, cmap.getOrDefault(EXPERIMENT_ID, Integer.valueOf(-1)));
+    }
+    
+    public void deleteAssayRecord(long recordId) {
+        em.createNativeQuery(
+                String.format("DELETE FROM exp_linked_data WHERE recordid = %d", recordId))
+                .executeUpdate();
     }
 
     /**
@@ -127,7 +134,7 @@ public class ExpRecordService implements Serializable {
     @SuppressWarnings("unchecked")
     public List<ExpRecord> load(Map<String, Object> cmap, User user) {
         List<ExpRecord> result = new ArrayList<ExpRecord>();
-
+        
         Query q = createExpRecordQuery(SQL_LOAD,
                 (cmap == null) ? new HashMap<String, Object>() : cmap,
                 ExpRecordEntity.class);
@@ -166,7 +173,7 @@ public class ExpRecordService implements Serializable {
             return null;
         }
         Experiment experiment = this.experimentService.loadById(e.getExperimentId());
-
+        
         ExpRecord record;
         switch (e.getType()) {
             case ASSAY:
@@ -185,6 +192,8 @@ public class ExpRecordService implements Serializable {
     /**
      * Load a list of LinkRecords for a given Assay.
      *
+     * @param expRecord
+     * @param user
      * @return the list of AssayRecords
      */
     @SuppressWarnings("unchecked")
@@ -197,15 +206,15 @@ public class ExpRecordService implements Serializable {
         criteriaQuery.select(root);
         criteriaQuery.where(builder.equal(root.get("exprecordid"), expRecord.getExpRecordId()));
         criteriaQuery.orderBy(builder.asc(root.get("rank")));
-
+        
         List<LinkedData> result = new ArrayList<LinkedData>();
         for (LinkedDataEntity e : this.em.createQuery(criteriaQuery).getResultList()) {
-
+            
             Material material = null;
             Item item = null;
-
+            
             if (e.getItemId() != null) {
-
+                
                 item = this.itemService.loadItemById(e.getItemId());
                 material = item.getMaterial();
                 if (!aclistService.isPermitted(ACPermission.permREAD, item, user)) {
@@ -223,7 +232,7 @@ public class ExpRecordService implements Serializable {
                 }
             }
             expRecord.setLinkedDataMaxRank(e.getRank());
-
+            
             if (material != null) {
                 result.add(new LinkedData(e, expRecord, material, item));
             }
@@ -236,15 +245,15 @@ public class ExpRecordService implements Serializable {
      * order the list of records according to their next field
      */
     public List<ExpRecord> orderList(List<ExpRecord> records) {
-
+        
         if (records.size() < 2) {
             return records;
         }
-
+        
         ArrayList<ExpRecord> result = new ArrayList<ExpRecord>();
         ExpRecord first = null;
         ExpRecord last = null;
-
+        
         boolean changed = true;
         while (changed && (records.size() > 0)) {
             ListIterator<ExpRecord> iter = records.listIterator();
@@ -283,11 +292,12 @@ public class ExpRecordService implements Serializable {
      * save a single experiment record object
      *
      * @param record the experiment record to save
+     * @param user
      * @return the persisted Experiment DTO
      */
-    public ExpRecord save(ExpRecord record) {
+    public ExpRecord save(ExpRecord record, User user) {
         record = saveOnly(record);
-        record.setLinkedData(saveLinkedData(record));
+        record.setLinkedData(saveLinkedData(record, user));
         switch (record.getType()) {
             case ASSAY:
                 return this.assayService.saveAssay(record);
@@ -296,21 +306,36 @@ public class ExpRecordService implements Serializable {
         }
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }
-
-    private List<LinkedData> saveLinkedData(ExpRecord record) {
-        List<LinkedData> records = new ArrayList<LinkedData>();
+    
+    private List<LinkedData> saveLinkedData(ExpRecord record, User user) {
+        List<LinkedData> records = new ArrayList<>();
+        Set<Long> idsOfAssayRecords = findAssayRecordsToDelete(record, user);
+        
         for (LinkedData data : record.getLinkedData()) {
             LinkedDataEntity entity = this.em.merge(data.createEntity());
             records.add(new LinkedData(entity, record, data.getMaterial(), data.getItem()));
+            idsOfAssayRecords.remove(data.getRecordId());
+        }
+        for (Long id : idsOfAssayRecords) {
+            deleteAssayRecord(id);
         }
         return records;
     }
+    
+    private Set<Long> findAssayRecordsToDelete(ExpRecord record, User user) {
+        Set<Long> ids = new HashSet<>();
+        for (LinkedData ld : loadLinkedData(record, user)) {
+            ids.add(ld.getRecordId());
+        }
+        return ids;
+        
+    }
 
     /**
-     * save a only single experiment object (i.e. do not update the type
-     * specific data. Used i.e. for updating record ordering.
+     * save a only single experiment object (i.e.do not update the type specific
+     * data.Used i.e. for updating record ordering.
      *
-     * @param r the experiment to save
+     * @param record
      * @return the persisted Experiment DTO
      */
     public ExpRecord saveOnly(ExpRecord record) {
@@ -320,4 +345,5 @@ public class ExpRecordService implements Serializable {
         record.setExpRecordEntity(e);
         return record;
     }
+    
 }

@@ -138,18 +138,19 @@
 
 .errorMessageText{
     text-align: center;
+    font-size: 1.25em;
+    font-weight: bold;
 }
 
-.dlgMaterialViewStructure{
-
+.linkCreation_panelStep1{
+    margin-left: 100px;
 }
+
 .dlgMaterialViewHazards{
     margin-top: 6px;
     margin-left: 0px;
     padding-left:20px;
 }
-
-
 
 .dlgMaterialViewBorderLess *{
     border-width: 0px !important; 
@@ -184,8 +185,8 @@
 }
 
 .panelBorderless tbody tr {
-     border-width: 0px !important;
+    border-width: 0px !important;
 }
 .panelBorderless tbody tr td{
-     border-width: 0px !important;
+    border-width: 0px !important;
 }

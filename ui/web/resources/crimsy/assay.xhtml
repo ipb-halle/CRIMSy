@@ -182,12 +182,19 @@
                                disabled="#{assayRecord.edit}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>
+                  <p:commandLink title="Delete"
+                               rendered ="#{cc.attrs.assay.edit}"
+                               ajax="true"
+                               action="#{cc.attrs.bean.expRecordController.actionDeleteRecord(assayRecord)}"
+                               update="@form"
+                               disabled="#{assayRecord.edit}">
+                    <span class="fa fa-trash"/>
+                </p:commandLink>
             </b:dataTableColumn>
         </b:dataTable>
         <h:outputText
             rendered="#{cc.attrs.assay.getHasHiddenLinkedData()}"
-            value="#{msgs.HiddenEntriesNoPermission}"
-            />
+            value="#{msgs.HiddenEntriesNoPermission}"/>
         <b:container>
             <b:row>
                 <b:column span="1">

@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ExpRecordController implements ItemHolder, MaterialHolder {
 
-    private ExperimentBean bean;
+    protected ExperimentBean bean;
     private int linkedDataIndex;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private MessagePresenter messagePresenter;

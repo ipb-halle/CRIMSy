@@ -122,7 +122,6 @@ public class ExperimentServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadExp() {
-
         Date creationDate = new Date();
         Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment x56df", false, publicReadAcl, publicUser, creationDate);
         exp = experimentService.save(exp);
@@ -135,12 +134,12 @@ public class ExperimentServiceTest extends TestBase {
         text1.setExperiment(exp);
         text1.setCreationTime(creationDate);
         text1.setText("Test001");
-        text1 = (Text) recordService.save(text1);
+        text1 = (Text) recordService.save(text1,publicUser);
 
         Text text2 = new Text();
         text2.setExperiment(exp2);
         text2.setText("Test001-A");
-        text2 = (Text) recordService.save(text2);
+        text2 = (Text) recordService.save(text2,publicUser);
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         Experiment loadedExperiment = experimentService.loadById(exp.getExperimentId());
@@ -180,7 +179,7 @@ public class ExperimentServiceTest extends TestBase {
         text3.setExperiment(exp);
         text3.setCreationTime(creationDate);
         text3.setText("Test001-text3");
-        text3 = (Text) recordService.save(text3);
+        text3 = (Text) recordService.save(text3,publicUser);
 
         text1.setNext(text3.getExpRecordId());
         recordService.saveOnly(text1);
@@ -233,7 +232,7 @@ public class ExperimentServiceTest extends TestBase {
         text1.setExperiment(exp);
         text1.setCreationTime(creationDate);
         text1.setText("C# is also good");
-        text1 = (Text) recordService.save(text1);
+        text1 = (Text) recordService.save(text1,publicUser);
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.addDescription("C#");
@@ -259,7 +258,7 @@ public class ExperimentServiceTest extends TestBase {
                 LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
         assayRecord.setItem(item1);     // automatically sets material
         assay.getLinkedData().add(assayRecord);
-        recordService.save(assay);
+        recordService.save(assay,publicUser);
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.addDescription("Benzol");
@@ -297,7 +296,7 @@ public class ExperimentServiceTest extends TestBase {
 
         assay.getLinkedData().add(assayRecord);
         assay.getLinkedData().add(assayRecord_unreadable);
-        recordService.save(assay);
+        recordService.save(assay,publicUser);
 
         //Search by readable Material should be a success
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
