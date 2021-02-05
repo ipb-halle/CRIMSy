@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -50,6 +51,7 @@ import org.primefaces.event.FlowEvent;
 @Named
 public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHolder {
 
+    protected final static String LINKTEXT_PATTERN = "#\\w+[[\\p{Punct}\\p{Space}]&&[^_]]{1}";
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private MessagePresenter messagePresenter;
 
@@ -69,7 +71,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private Material material;
-    private String linkText;
+    private String linkText="";
     private LinkType type;
     private Item item;
     private String errorMessage;
@@ -89,6 +91,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     @PostConstruct
     public void init() {
+        linkText="";
         materialAgent.setMaterialHolder(this);
         materialAgent.setShowMolEditor(true);
         itemAgent.setItemHolder(this);
@@ -113,6 +116,10 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
                         return e.getOldStep();
                     }
                 }
+            }
+            if (!checkLinkTextValidity()) {
+                errorMessage = Messages.getString(MESSAGE_BUNDLE, "expAddRecord_addLink_invalideLinkText", null);
+                     return e.getOldStep();
             }
         }
         errorMessage = "";
@@ -208,6 +215,10 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    private boolean checkLinkTextValidity() {
+        return Pattern.matches("[\\w]+", linkText);
     }
 
 }
