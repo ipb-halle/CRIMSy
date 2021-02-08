@@ -30,7 +30,6 @@ import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
 import de.ipb_halle.lbac.globals.ACObjectController;
-import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -106,7 +105,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Experiment experimentInFocus;
     private ExpProjectController projectController;
-    private MessagePresenter messagePresenter;
+    protected MessagePresenter messagePresenter;
 
     public ExperimentBean() {
     }
@@ -135,6 +134,11 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     @PostConstruct
+    public void init() {
+        experimentBeanInit();
+        this.messagePresenter = JsfMessagePresenter.getInstance();
+    }
+
     protected void experimentBeanInit() {
         projectController = new ExpProjectController(projectService, currentUser);
         /*
@@ -143,7 +147,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         cleanup();
         initEmptyExperiment();
         this.expRecords = new ArrayList<ExpRecord>();
-        this.messagePresenter = JsfMessagePresenter.getInstance();
 
     }
 
@@ -245,7 +248,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             rec.setExperiment(this.experiment);
             rec.setExpRecordId(null);
             rec.copy();
-            this.expRecordService.save(rec,currentUser);
+            this.expRecordService.save(rec, currentUser);
         }
 
         // activate the copied experiment 
@@ -329,7 +332,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             for (ExpRecord rec : saveList) {
                 this.expRecordService.saveOnly(rec);
             }
-            record = this.expRecordService.save(record,currentUser);
+            record = this.expRecordService.save(record, currentUser);
             this.expRecords.add(newPosition, record);
 
             reIndex();
@@ -364,7 +367,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 loadExpRecords();
             } catch (Exception e) {
                 this.logger.warn("actionToggleExperiment() caught an exception: ", (Throwable) e);
-                this.expRecords = new ArrayList<ExpRecord>();
+                this.expRecords = new ArrayList<>();
             }
         }
     }
@@ -571,7 +574,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * @return
      */
     public ExpRecord saveExpRecord(ExpRecord record) {
-        return this.expRecordService.save(record,currentUser);
+        return this.expRecordService.save(record, currentUser);
     }
 
     /**

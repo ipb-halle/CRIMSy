@@ -39,6 +39,7 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.Collection;
@@ -111,6 +112,7 @@ public class ExperimentBeanTest extends TestBase {
                 .setMaterialAgent(materialAgentMock)
                 .setMemberService(memberService)
                 .setProjectService(projectService)
+                .setMessagePresenter(new MessagePresenterMock())
                 .setItemAgent(itemAgentMock);
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
 
@@ -234,11 +236,37 @@ public class ExperimentBeanTest extends TestBase {
     }
 
     @Test
-    public void test005_actionNewExperiment() {
+    public void test005_actionToogleExperiment() {
         creationTools.createAndSaveProject("ExperimentBeanTest-Test-Project");
         experimentBean.actionNewExperiment();
         List<Project> projects = experimentBean.getProjectController().getChoosableProjects();
         Assert.assertEquals(1, projects.size());
+        setExperimentProperties("test005_actionNewExperiment()", false, projects.get(0));
+
+        experimentBean.actionSaveExperiment();
+        int expId=experimentBean.getExperiment().getId();
+        experimentBean.actionToggleExperiment(experimentBean.getExperiment());
+        experimentBean.getExperiment();
+
+        Assert.assertNull(experimentBean.getExperiment().getId());
+        
+        experimentBean.actionToggleExperiment(experimentService.loadById(expId));
+        
+        Assert.assertEquals(expId,experimentBean.getExperiment().getId(),0);
+    }
+
+    @Test
+    public void test006_actionCopyTemplate() {
+        creationTools.createAndSaveProject("ExperimentBeanTest-Test-Project");
+        experimentBean.experimentBeanInit();
+        experimentBean.actionNewExperiment();
+        List<Project> projects = experimentBean.getProjectController().getChoosableProjects();
+        Assert.assertEquals(1, projects.size());
+        setExperimentProperties("test006_actionCopyTemplate()", true, projects.get(0));
+        experimentBean.actionSaveExperiment();
+        experimentBean.actionCopyTemplate();
+        
+        Assert.assertEquals( 2,entityManagerService.doSqlQuery("SELECT experimentid FROM experiments").size());
     }
 
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {
@@ -279,4 +307,14 @@ public class ExperimentBeanTest extends TestBase {
         return text1;
         //  return (Text) expRecordService.save(text1);
     }
+
+    private void setExperimentProperties(String text, boolean template, Project project) {
+        experimentBean.getProjectController().setChoosenProject(project);
+        experimentBean.getExperiment().setCode(text + "-expCode");
+        experimentBean.getExperiment().setDescription(text + "-description");
+        experimentBean.getExperiment().setOwner(publicUser);
+        experimentBean.getExperiment().setACList(publicReadAcl);
+        experimentBean.getExperiment().setTemplate(template);
+    }
+
 }
