@@ -259,9 +259,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     /**
      * select a record for editing
      */
-    public void actionEditRecord() {
+    public void actionEditRecord(ExpRecord recordIn) {
+        setExpRecordIndex(recordIn.getIndex());
         if ((this.expRecordIndex > -1) && (this.expRecordIndex < this.expRecords.size())) {
-            ExpRecord record = this.expRecords.get(this.expRecordIndex);
+            ExpRecord record = recordIn;//this.expRecords.get(this.expRecordIndex);
             this.logger.info("actionEditRecord(): ExpRecordId = {}", record.getExpRecordId());
             record.setEdit(true);
             createExpRecordController(record.getType().toString());

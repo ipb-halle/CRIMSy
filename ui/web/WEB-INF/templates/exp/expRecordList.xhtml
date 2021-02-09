@@ -68,17 +68,17 @@
                                        update="@(.experimentRecordContainer)"
                                        disabled="false"
                                        rendered="#{experimentBean.areLinksAddable(rec)}"
-                                       action="#{experimentBean.actionEditRecord()}"
+                                       action="#{experimentBean.actionEditRecord(rec)}"
                                        onclick="PF('dlg_createLink').show();">
-                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+
                             <span class="fa fa-link"> </span>
                         </p:commandLink>
                         <p:commandLink title="#{msgs.Edit}" 
                                        update="@all"
                                        styleClass="experimentRecordButton"
                                        rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
-                                       action="#{experimentBean.actionEditRecord()}">
-                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                                       action="#{experimentBean.actionEditRecord(rec)}">
+
                             <span class="fa fa-pencil"> </span>
                         </p:commandLink>
                         <b:dropMenu value="New" 
