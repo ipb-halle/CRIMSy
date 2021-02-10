@@ -106,6 +106,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private Experiment experimentInFocus;
     private ExpProjectController projectController;
     protected MessagePresenter messagePresenter;
+    private List<Experiment> experiments = new ArrayList<>();
+    private List<Experiment> templates = new ArrayList<>();
 
     public ExperimentBean() {
     }
@@ -129,6 +131,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
+        templates = loadExperiments(true);
+        experiments = loadExperiments(false);
         cleanup();
         initEmptyExperiment();
     }
@@ -438,15 +442,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public List<Experiment> getExperiments() {
-        Map<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(currentUser, 0, Integer.MAX_VALUE);
-        builder.addTemplate(this.templateMode);
-        SearchResult result = experimentService.load(builder.buildSearchRequest());
-        if (!result.getAllFoundObjects().isEmpty()) {
-            return result.getAllFoundObjects(Experiment.class, result.getNode());
+        if (templateMode) {
+            return templates;
         } else {
-            return new ArrayList<>();
+            return experiments;
         }
     }
 
@@ -476,7 +475,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      */
     public List<ExpRecord> getExpRecordsWithNullRecord() {
         if (this.experiment.getExperimentId() != null) {
-            List<ExpRecord> list = new ArrayList<ExpRecord>(this.expRecords);
+            List<ExpRecord> list = new ArrayList<>(this.expRecords);
             list.add(new NullRecord().setIndex(list.size()));
             return list;
         }
@@ -524,6 +523,17 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public boolean isRecordEditable(ExpRecord record) {
         return record.getEdit();
+    }
+
+    public List<Experiment> loadExperiments(boolean template) {
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(currentUser, 0, Integer.MAX_VALUE);
+        builder.addTemplate(template);
+        SearchResult result = experimentService.load(builder.buildSearchRequest());
+        if (!result.getAllFoundObjects().isEmpty()) {
+            return result.getAllFoundObjects(Experiment.class, result.getNode());
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     /**

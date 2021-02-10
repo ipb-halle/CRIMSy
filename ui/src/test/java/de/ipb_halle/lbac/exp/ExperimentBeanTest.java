@@ -153,7 +153,7 @@ public class ExperimentBeanTest extends TestBase {
         Experiment exp1 = createAndSaveExperiment("EXP-1", "EXP-1-DESC", publicReadAcl, publicUser, false);
         Experiment exp2 = createAndSaveExperiment("EXP-2", "EXP-2-DESC", publicReadAcl, publicUser, false);
         Experiment exp3 = createAndSaveExperiment("EXP-3", "EXP-3-DESC", publicReadAcl, publicUser, true);
-        experimentBean.setExperiment(exp1);
+       
 
         // whe have 4 records in experiment exp1
         experimentBean.saveExpRecord(createTextrecord(exp1, "Overview"));
@@ -161,6 +161,9 @@ public class ExperimentBeanTest extends TestBase {
         experimentBean.saveExpRecord(createTextrecord(exp1, "Section 2"));
         experimentBean.saveExpRecord(createTextrecord(exp1, "Ending"));
 
+        experimentBean.setCurrentAccount(new LoginEvent(publicUser));
+       
+         experimentBean.setExperiment(exp1);
         experimentBean.setTemplateMode(false);
         Assert.assertFalse(experimentBean.getTemplateMode());
         Assert.assertEquals(2, experimentBean.getExperiments().size());
