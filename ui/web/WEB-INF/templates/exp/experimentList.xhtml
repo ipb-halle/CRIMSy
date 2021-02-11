@@ -21,32 +21,41 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
-      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <ui:composition>
-
-        <ui:repeat value="#{experimentBean.experiments}" var="experiment">
-            <div title="#{experiment.description}" 
-                 class="#{experiment.experimentId eq experimentBean.getExperiment().experimentId ? 'expSelectedEntry' : 'expNormalEntry'}" >
-                <p:commandLink action="#{experimentBean.actionToggleExperiment(experiment)}" ajax="false">
-                    <span class="fa fa-search" > #{experiment.code}</span>
-                </p:commandLink>
-                <b:commandButton style="padding: 0 4px;"
-                                 icon="glyphicon glyphicon-user"
-                                 look="link"
-                                 ajax="true"
-                                 process="@this"
-                                 tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                 update="@(.acoEditModal)"
-                                 type="button"
-                                 onclick="ajax:experimentBean.actionStartAclChange(experiment)"
-                                 oncomplete="PF('dlgAcl').show();"
-                                 disabled="false"/>
-                <br/>
-            </div>
+        <ui:repeat 
+            value="#{experimentBean.experiments}"
+            var="experiment">
+            <p:outputPanel  styleClass="expListEntry #{experimentBean.getStyleClassOfLink(experiment)}">
+                <div
+                    title="#{experiment.description}" 
+                    >
+                    <p:commandLink
+                        action="#{experimentBean.actionToggleExperiment(experiment)}"
+                        process="@this"
+                        update="
+                        expRecordsForm
+                        @(.expListEntry)
+                        @(.experimentActionButton)">
+                        <span class="fa fa-search" > #{experiment.code}</span>
+                    </p:commandLink>
+                    <b:commandButton style="padding: 0 4px;"
+                                     icon="glyphicon glyphicon-user"
+                                     look="link"
+                                     ajax="true"
+                                     process="@this"
+                                     tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                     update="@(.acoEditModal)"
+                                     type="button"
+                                     onclick="ajax:experimentBean.actionStartAclChange(experiment)"
+                                     oncomplete="PF('dlgAcl').show();"
+                                     disabled="false"/>
+                    <br/>
+                </div>
+            </p:outputPanel>
         </ui:repeat>
     </ui:composition>
 </html>

@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -258,6 +259,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         // activate the copied experiment 
         this.templateMode = false;
         loadExpRecords();
+        this.experiments.add(experiment);
     }
 
     /**
@@ -353,6 +355,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         } else {
             messagePresenter.info("exp_save_edit");
         }
+        this.experiments.add(savedExp);
         this.experiment = savedExp;
     }
 
@@ -362,18 +365,31 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * @param exp
      */
     public void actionToggleExperiment(Experiment exp) {
-        if ((exp != null) && (exp.getExperimentId() != null)) {
-            if (exp.getExperimentId().equals(this.experiment.getExperimentId())) {
+        if (isSavedInDb(exp)) {
+            if (isExpSelected(exp)) {
                 experimentBeanInit();
-                return;
+            } else {
+                selectExperiment(exp);
             }
-            this.experiment = exp;
-            try {
-                loadExpRecords();
-            } catch (Exception e) {
-                this.logger.warn("actionToggleExperiment() caught an exception: ", (Throwable) e);
-                this.expRecords = new ArrayList<>();
-            }
+        }
+    }
+
+    private boolean isSavedInDb(Experiment exp) {
+        return (exp != null) && (exp.getExperimentId() != null);
+    }
+
+    private boolean isExpSelected(Experiment exp) {
+        return exp.getExperimentId().equals(this.experiment.getExperimentId());
+    }
+
+    private void selectExperiment(Experiment exp) {
+         this.logger.warn("Select exp ",exp);
+        this.experiment = exp;
+        try {
+            loadExpRecords();
+        } catch (Exception e) {
+            this.logger.warn("actionToggleExperiment() caught an exception: ", (Throwable) e);
+            this.expRecords = new ArrayList<>();
         }
     }
 
@@ -447,6 +463,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         } else {
             return experiments;
         }
+    }
+
+    public String getStyleClassOfLink(Experiment expToStyle) {
+        return Objects.equals(expToStyle.getExperimentId(), experiment.getExperimentId()) ? "expSelectedEntry" : "expNormalEntry";
     }
 
     public ExpRecordController getExpRecordController() {
@@ -550,14 +570,15 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * load experiment records
      */
     public void loadExpRecords() {
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Object> cmap = new HashMap<>();
         if ((this.experiment != null) && (this.experiment.getExperimentId() != null)) {
             cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
         }
         cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
         this.expRecords = this.expRecordService.orderList(
                 this.expRecordService.load(cmap, currentUser));
-        reIndex();
+       reIndex();
+
     }
 
     /**
