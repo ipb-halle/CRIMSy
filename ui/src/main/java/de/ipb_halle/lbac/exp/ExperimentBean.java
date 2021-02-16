@@ -104,7 +104,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private User currentUser;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private Experiment experimentInFocus;
     private ExpProjectController projectController;
     protected MessagePresenter messagePresenter;
     private List<Experiment> experiments = new ArrayList<>();
@@ -151,15 +150,14 @@ public class ExperimentBean implements Serializable, ACObjectBean {
          */
         cleanup();
         initEmptyExperiment();
-        this.expRecords = new ArrayList<ExpRecord>();
-
+        this.expRecords = new ArrayList<>();
     }
 
     private void initEmptyExperiment() {
         this.experiment = new Experiment(
                 null, // experiment id
-                "code", // code
-                "description", // description
+                "", // code
+                "", // description
                 templateMode, // template or experiment
                 this.globalAdmissionContext.getPublicReadACL(), // aclist
                 this.globalAdmissionContext.getPublicAccount(), // owner
@@ -279,10 +277,16 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.logger.info("actionLog()");
     }
 
+    public void actionStartEditExperiment(Experiment exp) {
+        this.experiment = exp;
+    }
+
     /**
      * creates a new Experiment or a new template
      */
     public void actionNewExperiment() {
+        initEmptyExperiment();
+        this.expRecords = new ArrayList<>();
         projectController = new ExpProjectController(projectService, currentUser);
     }
 
@@ -355,8 +359,25 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         } else {
             messagePresenter.info("exp_save_edit");
         }
-        this.experiments.add(savedExp);
+
+        if (templateMode) {
+            putExpInList(savedExp, templates);
+        } else {
+            putExpInList(savedExp, experiments);
+        }
         this.experiment = savedExp;
+    }
+
+    private void putExpInList(Experiment exp, List<Experiment> list) {
+        boolean alreadyIn = false;
+        for (Experiment e : list) {
+            if (Objects.equals(e.getId(), exp.getExperimentId())) {
+                alreadyIn = true;
+            }
+        }
+        if (!alreadyIn) {
+            list.add(exp);
+        }
     }
 
     /**
@@ -383,7 +404,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     private void selectExperiment(Experiment exp) {
-         this.logger.warn("Select exp ",exp);
         this.experiment = exp;
         try {
             loadExpRecords();
@@ -447,14 +467,16 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     /**
      * @return a localized label for the experiment edit button
      */
-    public String getExperimentEditLabel() {
-        if (this.experiment.getExperimentId() == null) {
-            return Messages.getString(MESSAGE_BUNDLE, "NewBtnDlg", null);
-        }
+    public String getCreateNewExperimentButtonLabel() {
         if (this.templateMode) {
-            return Messages.getString(MESSAGE_BUNDLE, "expEditCloneDlg", null);
+            if (experiment.getId() == null) {
+                return Messages.getString(MESSAGE_BUNDLE, "expNewTemplate", null);
+            } else {
+                return Messages.getString(MESSAGE_BUNDLE, "expNewExperimentFromTemplate", null);
+            }
+        } else {
+            return Messages.getString(MESSAGE_BUNDLE, "expNewExperiment", null);
         }
-        return Messages.getString(MESSAGE_BUNDLE, "editBtnDlg", null);
     }
 
     public List<Experiment> getExperiments() {
@@ -574,10 +596,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         if ((this.experiment != null) && (this.experiment.getExperimentId() != null)) {
             cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
         }
-        cmap.put(ExperimentService.TEMPLATE_FLAG, Boolean.valueOf(this.templateMode));
+        cmap.put(ExperimentService.TEMPLATE_FLAG, this.templateMode);
         this.expRecords = this.expRecordService.orderList(
                 this.expRecordService.load(cmap, currentUser));
-       reIndex();
+        reIndex();
 
     }
 
@@ -638,8 +660,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     @Override
     public void applyAclChanges() {
         experimentService.updateExperimentAcl(
-                experimentInFocus.getId(),
-                experimentInFocus.getACList());
+                experiment.getId(),
+                experiment.getACList());
     }
 
     @Override
@@ -649,7 +671,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     @Override
     public void actionStartAclChange(ACObject aco) {
-        experimentInFocus = (Experiment) aco;
+        experiment = (Experiment) aco;
         acoController = new ACObjectController(
                 aco,
                 memberService.loadGroups(new HashMap<>()),
@@ -677,6 +699,16 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public ExpRecordService getExpRecordService() {
         return expRecordService;
+    }
+
+    public String getExperimentDialogHeader() {
+        if (templateMode == false) {
+            return getExperiment().getId() == null
+                    ? messagePresenter.presentMessage("expAddNew_dialogHeader_new")
+                    : messagePresenter.presentMessage("expAddNew_dialogHeader_edit");
+        } else {
+            return messagePresenter.presentMessage("expAddNew_dialogHeader_clone");
+        }
     }
 
 }

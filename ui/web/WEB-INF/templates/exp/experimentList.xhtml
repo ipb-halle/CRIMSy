@@ -22,17 +22,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
         <ui:repeat 
             value="#{experimentBean.experiments}"
             var="experiment">
             <p:outputPanel  styleClass="expListEntry #{experimentBean.getStyleClassOfLink(experiment)}">
-                <div
-                    title="#{experiment.description}" 
-                    >
+                <div title="#{experiment.description}">
                     <p:commandLink
                         action="#{experimentBean.actionToggleExperiment(experiment)}"
                         process="@this"
@@ -53,7 +50,17 @@
                                      onclick="ajax:experimentBean.actionStartAclChange(experiment)"
                                      oncomplete="PF('dlgAcl').show();"
                                      disabled="false"/>
-                    <br/>
+                    <b:commandButton style="padding: 0 4px;"
+                                     icon="pencil"
+                                     look="link"
+                                     ajax="true"
+                                     process="@this"
+                                     tooltip="#{msgs.expEdit_iconTooltip}"
+                                     update="@(.expDataClass)"
+                                     type="button"
+                                     action ="#{experimentBean.actionStartEditExperiment(experiment)}"
+                                     oncomplete="PF('dlg_experimentData').show()"
+                                     disabled="false"/>
                 </div>
             </p:outputPanel>
         </ui:repeat>

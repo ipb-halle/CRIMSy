@@ -20,42 +20,42 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:b="http://bootsfaces.net/ui"
-      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-
-
     <ui:composition>
         <div>
-            <p:commandButton type="button" 
-                             ajax="true"
-                             class="experimentActionButton"
-                             value="#{experimentBean.experimentEditLabel}" 
-                             onclick="#{experimentBean.actionNewExperiment()};
-                                     PF('dlg_experimentData').show();"
-                             update="@(.expDataClass)"
-                             />
-            <p:dialog header="#{experimentBean.getExperiment().experimentId == null ? 'New Experiment' : 'Edit Experiment'}" 
+            <p:dialog header="#{experimentBean.getExperimentDialogHeader()}" 
                       widgetVar="dlg_experimentData"
                       modal="true"
                       height="300"
+                      width="600"
                       styleClass="expDataClass">
-
                 <div class="ui-g">
-                    <div class="ui-g-3">Code</div>
-                    <div class="ui-g-9"><p:inputText label="Code" value="#{experimentBean.getExperiment().code}" /></div>
+                    <div class="ui-g-3">
+                        #{msgs.expAddNew_dialog_code}
+                    </div>
+                    <div class="ui-g-9">
+                        <p:inputText 
+                            label="#{msgs.expAddNew_dialog_code}" 
+                            value="#{experimentBean.getExperiment().code}" />
+                    </div>
                 </div>
                 <div class="ui-g">
-                    <div class="ui-g-3">Description</div>
-                    <div class="ui-g-9"><p:inputText label="Description" value="#{experimentBean.getExperiment().description}"/></div>
+                    <div class="ui-g-3">
+                        #{msgs.expAddNew_dialog_description}
+                    </div>
+                    <div class="ui-g-9">
+                        <p:inputText
+                            label="#{msgs.expAddNew_dialog_description}"
+                            value="#{experimentBean.getExperiment().description}"/>
+                    </div>
                 </div>
                 <div class="ui-g">
-                    <div class="ui-g-3">Project</div>
+                    <div class="ui-g-3">#{msgs.expAddNew_dialog_project}</div>
                     <div class="ui-g-9">
                         <p:selectOneMenu 
-                            label="Project"
+                            label="#{msgs.expAddNew_dialog_project}"
                             value="#{experimentBean.getProjectController().choosenProject}"
                             converter="ExpProjectConverter">
                             <f:selectItems 
@@ -67,20 +67,21 @@
                     </div>
                 </div>
                 <div class="ui-g">
-                    <div class="ui-g-3"><p:commandButton value="Save" 
-                                                         action="#{experimentBean.actionSaveExperiment}" 
-                                                         update="@all"
-                                                         onclick="PF('dlg_experimentData').hide();" />
+                    <div class="ui-g-3">
+                        <p:commandButton value="#{msgs.expAddNew_dialog_save}" 
+                                         action="#{experimentBean.actionSaveExperiment}" 
+                                         update="@all"
+                                         onclick="PF('dlg_experimentData').hide();" />
                     </div>
-                    <div class="ui-g-3"><p:commandButton value="Clone"
-                                                         rendered="#{experimentBean.copyEnabled}"
-                                                         action="#{experimentBean.actionCopyTemplate}" 
-                                                         update="@all"
-                                                         onclick="PF('dlg_experimentData').hide();" />
+                    <div class="ui-g-3">
+                        <p:commandButton value="#{msgs.expAddNew_dialog_clone}"
+                                         rendered="#{experimentBean.copyEnabled}"
+                                         action="#{experimentBean.actionCopyTemplate}" 
+                                         update="@all"
+                                         onclick="PF('dlg_experimentData').hide();" />
                     </div>
                     <div class="ui-g-6"> </div>
                 </div> 
-
             </p:dialog>
         </div>
     </ui:composition>

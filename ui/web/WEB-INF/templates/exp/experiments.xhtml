@@ -49,6 +49,12 @@
             groupsAgent="#{groupAgent}"
             updateTargetClass="shownExperiments"/>
 
+        <h:form>
+            <ui:insert name="expData">
+                <ui:include src="expData.xhtml" />
+            </ui:insert>
+        </h:form>
+
         <ui:insert name="barChartPanel">
             <ui:include src="dlgBarChart.xhtml" >
                 <ui:param name="chartController" value="#{experimentBean}" />
@@ -61,6 +67,7 @@
             title="#{msgs.expExperiments}"
             styleClass="shownExperiments">
             <p:outputPanel deferred="false">
+
                 <b:row>
 
                     <h:form id="experimentForm">
@@ -80,11 +87,8 @@
                                     <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="False" />
                                 </p:menuitem>
                             </p:tabMenu>
-
-
                             <b:panel collapsible="false" 
                                      title="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
-
                                 <ui:insert name="experimentList">
                                     <ui:include src="experimentList.xhtml"/>
                                 </ui:insert>
@@ -98,9 +102,13 @@
                                     </p:column>
                                     <p:column
                                         styleClass="addEditExperimentButton">
-                                        <ui:insert name="expData">
-                                            <ui:include src="expData.xhtml" />
-                                        </ui:insert>
+                                        <p:commandButton 
+                                            ajax="true"
+                                            styleClass="experimentActionButton"
+                                            value="#{experimentBean.getCreateNewExperimentButtonLabel()}" 
+                                            action="#{experimentBean.actionNewExperiment()}"
+                                            update="@(.expDataClass)"
+                                            oncomplete="PF('dlg_experimentData').show();"/>
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>

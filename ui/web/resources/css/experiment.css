@@ -54,6 +54,11 @@
     visibility: hidden;
 }
 
+.experimentActionButton{
+    width:150px !important;
+    height:45px !important;
+}
+
 .experimentRecordOrderButton{
     width: 15px;
 }
