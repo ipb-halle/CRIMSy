@@ -12,3 +12,9 @@ ui/nbactions.xml
 ui/nb-configuration.xml
 ui/target
 *~
+
+# Eclipse IDE
+*/.classpath
+*/.project
+*/.settings/
+*/.metadata/
