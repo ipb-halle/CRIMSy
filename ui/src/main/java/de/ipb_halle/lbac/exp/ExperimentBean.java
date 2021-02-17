@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
+import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextController;
@@ -108,6 +109,12 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     protected MessagePresenter messagePresenter;
     private List<Experiment> experiments = new ArrayList<>();
     private List<Experiment> templates = new ArrayList<>();
+    private CreationState creationState = CreationState.CREATE;
+
+    public enum CreationState {
+        CREATE,
+        EDIT,
+    }
 
     public ExperimentBean() {
     }
@@ -164,6 +171,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 new Date() // creation time
         );
         this.expRecords = new ArrayList<>();
+        creationState = CREATE;
     }
 
     /**
@@ -230,7 +238,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      */
     public void actionCopyTemplate() {
         Date copyDate = new Date();
-
         // load the template records
         Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
@@ -278,6 +285,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public void actionStartEditExperiment(Experiment exp) {
+        creationState = CreationState.EDIT;
         this.experiment = exp;
     }
 
@@ -285,9 +293,12 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * creates a new Experiment or a new template
      */
     public void actionNewExperiment() {
-        initEmptyExperiment();
-        this.expRecords = new ArrayList<>();
-        projectController = new ExpProjectController(projectService, currentUser);
+        //New exp from template
+        if (!templateMode || experiment.getId() == null) {
+            this.expRecords = new ArrayList<>();
+            projectController = new ExpProjectController(projectService, currentUser);
+            initEmptyExperiment();
+        }
     }
 
     public void actionNewExperimentRecord(String type, int index) {
@@ -457,7 +468,13 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * @return true if in template mode and an experiment has been selected
      */
     public boolean getCopyEnabled() {
-        return this.templateMode && (this.experiment.getExperimentId() != null);
+        return this.templateMode
+                && (this.experiment.getExperimentId() != null)
+                && creationState == CREATE;
+    }
+
+    public void closeDialog() {
+        creationState = CREATE;
     }
 
     public Experiment getExperiment() {
@@ -702,13 +719,21 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public String getExperimentDialogHeader() {
-        if (templateMode == false) {
-            return getExperiment().getId() == null
-                    ? messagePresenter.presentMessage("expAddNew_dialogHeader_new")
-                    : messagePresenter.presentMessage("expAddNew_dialogHeader_edit");
-        } else {
+        if (!templateMode && creationState == CREATE) {
+            return messagePresenter.presentMessage("expAddNew_dialogHeader_new");
+
+        } else if (templateMode && experiment.getId() != null && creationState == CREATE) {
             return messagePresenter.presentMessage("expAddNew_dialogHeader_clone");
+
+        } else if (templateMode && experiment.getId() != null && creationState == EDIT) {
+            return "Template anpassen";
+
+        } else if (experiment.getId() != null && creationState == EDIT) {
+            return messagePresenter.presentMessage("expAddNew_dialogHeader_edit");
+        } else if (experiment.getId() == null && templateMode && creationState == CREATE) {
+            return messagePresenter.presentMessage("expAddNew_dialogHeader_new");
         }
+        return "no state set";
     }
 
 }
