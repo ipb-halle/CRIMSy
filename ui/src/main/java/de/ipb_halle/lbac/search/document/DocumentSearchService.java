@@ -186,7 +186,7 @@ public class DocumentSearchService {
                 ||  !hasWordRoots(request)) {
             return result;
         }
-        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
+        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
         String sql = sqlBuilder.query(request.getCondition());
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
@@ -375,8 +375,8 @@ public class DocumentSearchService {
         return " AND (" + String.join(" OR ", subClauses) + ")";
     }
 
-    private EntityGraph createEntityGraph(SearchRequest request) {
+    private EntityGraph createEntityGraph() {
         graphBuilder = new DocumentEntityGraphBuilder();
-        return graphBuilder.buildEntityGraph(request.getCondition());
+        return graphBuilder.buildEntityGraph();
     }
 }
