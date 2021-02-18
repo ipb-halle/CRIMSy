@@ -119,14 +119,14 @@ public class ExperimentService implements Serializable {
 
     public SearchResult load(SearchRequest request) {
         SearchResult back = new SearchResultImpl(nodeService.getLocalNode());
-        graph = createEntityGraph(request);
+        graph = createEntityGraph();
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
 
         permissionConditionBuilder = new PermissionConditionBuilder(
                 aclistService,
                 request.getUser(),
                 ACPermission.permREAD)
-                .addFields(AttributeType.EXPERIMENT, AttributeType.MEMBER);
+                .addFields(AttributeType.EXPERIMENT);
 
         String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request.getCondition()));
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
@@ -201,9 +201,9 @@ public class ExperimentService implements Serializable {
                 e.getProject());
     }
 
-    private EntityGraph createEntityGraph(SearchRequest request) {
+    private EntityGraph createEntityGraph() {
         graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
 
-        return graphBuilder.buildEntityGraph(request.getCondition());
+        return graphBuilder.buildEntityGraph();
     }
 }

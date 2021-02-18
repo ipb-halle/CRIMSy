@@ -58,7 +58,5 @@ public abstract class EntityGraphBuilder {
         mainGraph.addChild(aclSubGraph);
     }
 
-    public EntityGraph buildEntityGraph(Condition condition) {
-        return graph;
-    }
+    public abstract EntityGraph buildEntityGraph();
 }

@@ -72,7 +72,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     @Override
-    public EntityGraph buildEntityGraph(Condition condition) {
+    public EntityGraph buildEntityGraph() {
         addProject();
         addIndex();
         addUser();

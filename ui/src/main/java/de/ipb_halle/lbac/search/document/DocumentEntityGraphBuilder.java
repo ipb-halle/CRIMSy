@@ -40,7 +40,7 @@ public class DocumentEntityGraphBuilder extends EntityGraphBuilder {
     }
       
        @Override
-    public EntityGraph buildEntityGraph(Condition condition) {
+    public EntityGraph buildEntityGraph() {
         addTermVector();
         return graph;
     }

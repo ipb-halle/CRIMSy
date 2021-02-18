@@ -73,11 +73,10 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     @Override
-    public EntityGraph buildEntityGraph(Condition condition) {
+    public EntityGraph buildEntityGraph() {
         addUser();
         addExpRecords();
         addACListContraint(graph,aclistService.getEntityGraph(), "aclist_id");
-       // addACListContraint(materialGraph,aclistService.getEntityGraph(), "aclist_id");
         return graph;
     }
 

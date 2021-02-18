@@ -161,12 +161,14 @@ public class ProjectService implements Serializable {
 
     public SearchResult loadProjects(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-        EntityGraph graph = createEntityGraph(request.getCondition());
+        EntityGraph graph = createEntityGraph();
         SqlBuilder builder = new SqlBuilder(graph);
 
         permissionConditionBuilder = new PermissionConditionBuilder(
-                aclistService, request.getUser(), ACPermission.permREAD)
-                .addFields(AttributeType.PROJECT, AttributeType.MEMBER);
+                aclistService, 
+                request.getUser(),
+                ACPermission.permREAD)
+                .addFields(AttributeType.PROJECT);
         String sql = builder.query(
                 permissionConditionBuilder.addPermissionCondition(request.getCondition()));
 
@@ -247,9 +249,9 @@ public class ProjectService implements Serializable {
         }
     }
 
-    private EntityGraph createEntityGraph(Condition con) {
+    private EntityGraph createEntityGraph() {
         graphBuilder = new ProjectEntityGraphBuilder(acListService);
-        return graphBuilder.buildEntityGraph(con);
+        return graphBuilder.buildEntityGraph();
     }
 
 }

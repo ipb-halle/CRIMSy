@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
-import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 
 /**
@@ -35,7 +34,7 @@ public class ProjectEntityGraphBuilder extends EntityGraphBuilder {
         this.acListService = acListService;
     }
 
-    public EntityGraph buildEntityGraph(Condition condition) {
+    public EntityGraph buildEntityGraph() {
         addACListContraint(graph, acListService.getEntityGraph(), "aclist_id");
         return graph;
     }

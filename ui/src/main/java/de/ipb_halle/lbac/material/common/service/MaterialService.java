@@ -214,7 +214,7 @@ public class MaterialService implements Serializable {
     public int loadMaterialAmount(SearchRequest request) {
 
         SqlCountBuilder countBuilder = new SqlCountBuilder(
-                createEntityGraph(request),
+                createEntityGraph(),
                 new Attribute(new AttributeType[]{
             AttributeType.MATERIAL,
             AttributeType.LABEL
@@ -236,7 +236,7 @@ public class MaterialService implements Serializable {
     }
 
     public SearchResult getReadableMaterials(SearchRequest request) {
-        EntityGraph graph = createEntityGraph(request);
+        EntityGraph graph = createEntityGraph();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         permissionConditionBuilder
@@ -685,9 +685,9 @@ public class MaterialService implements Serializable {
         return classes;
     }
 
-    private EntityGraph createEntityGraph(SearchRequest request) {
+    private EntityGraph createEntityGraph() {
         graphBuilder = new MaterialEntityGraphBuilder(aclService);
 
-        return graphBuilder.buildEntityGraph(request.getCondition());
+        return graphBuilder.buildEntityGraph();
     }
 }

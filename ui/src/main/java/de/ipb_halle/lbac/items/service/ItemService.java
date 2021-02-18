@@ -126,19 +126,20 @@ public class ItemService {
 
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph(request));
+        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
         permissionConditionBuilder = new PermissionConditionBuilder(
                 aclistService,
-                request.getUser(), ACPermission.permREAD).
-                addFields(AttributeType.ITEM, AttributeType.MEMBER)
-                .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
+                request.getUser(),
+                ACPermission.permREAD)
+                .addFields(AttributeType.ITEM)
+                .addFields(AttributeType.MATERIAL);
         Condition con = permissionConditionBuilder.addPermissionCondition(request.getCondition());
-        con = permissionConditionBuilder.addPermissionCondition(con);
-
+       
         String sql = sqlBuilder.query(
                 con,
                 createOrderList());
 
+        logger.info(sql);
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -168,13 +169,13 @@ public class ItemService {
 
     public int getItemAmount(SearchRequest request) {
         SqlCountBuilder countBuilder = new SqlCountBuilder(
-                createEntityGraph(request),
+                createEntityGraph(),
                 new Attribute(new AttributeType[]{
             AttributeType.ITEM,
             AttributeType.LABEL
         }));
         permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
-                addFields(AttributeType.ITEM, AttributeType.MEMBER);
+                addFields(AttributeType.ITEM);
         String sql = countBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(request.getCondition()));
         Query q = em.createNativeQuery(sql);
@@ -359,9 +360,9 @@ public class ItemService {
         return null;
     }
 
-    private EntityGraph createEntityGraph(SearchRequest request) {
+    private EntityGraph createEntityGraph() {
         graphBuilder = new ItemEntityGraphBuilder(aclistService);
-        return graphBuilder.buildEntityGraph(request.getCondition());
+        return graphBuilder.buildEntityGraph();
     }
 
 }

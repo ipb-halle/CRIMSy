@@ -28,7 +28,6 @@ import de.ipb_halle.lbac.material.structure.MoleculeEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
-import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
 
@@ -75,7 +74,7 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     @Override
-    public EntityGraph buildEntityGraph(Condition condition) {
+    public EntityGraph buildEntityGraph() {
         addUser();
         addContainer();
         addProject();
