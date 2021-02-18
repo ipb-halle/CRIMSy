@@ -35,6 +35,7 @@ import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.search.relevance.RelevanceCalculator;
+import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,14 +88,25 @@ public class SearchBean implements Serializable {
     @Inject
     private SearchOrchestrator orchestrator;
 
+    @Inject
+    private NodeService nodeService;
+
     public SearchBean() {
     }
 
+    /**
+     * Constructor for tests
+     * @param searchService
+     * @param user
+     * @param nodeService 
+     */
     public SearchBean(
             SearchService searchService,
-            User user) {
+            User user,
+            NodeService nodeService) {
         this.searchService = searchService;
         setCurrentAccount(new LoginEvent(user));
+        this.nodeService = nodeService;
 
     }
 
@@ -158,7 +170,9 @@ public class SearchBean implements Serializable {
     private SearchState doSearch() {
         searchState = new SearchState();
         //local
-        SearchResult result = searchService.search(searchFilter.createRequests());
+        SearchResult result = searchService.search(
+                searchFilter.createRequests(),
+                nodeService.getLocalNode());
         searchState.addNetObjects(result.getAllFoundObjects());
         searchState.addNewStats(
                 result.getDocumentStatistic().getTotalDocsInNode(),
@@ -223,7 +237,7 @@ public class SearchBean implements Serializable {
 
     public void toogleAdvancedSearch() {
         searchFilter.toogleAdvancedSearch();
-        if(searchFilter.isAdvancedSearch()){
+        if (searchFilter.isAdvancedSearch()) {
             searchFilter.init();
         }
 

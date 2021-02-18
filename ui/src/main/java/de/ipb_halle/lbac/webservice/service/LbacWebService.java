@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.webservice.service;
 
 import de.ipb_halle.lbac.entity.CloudNode;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.webservice.WebRequest;
 import java.io.Serializable;
@@ -37,7 +38,7 @@ public abstract class LbacWebService implements Serializable {
     @Inject
     protected CloudNodeService cloudNodeService;
 
-    public void checkAuthenticityOfRequest(WebRequest webReq) throws NotAuthentificatedException {
+    public Node checkAuthenticityOfRequest(WebRequest webReq) throws NotAuthentificatedException {
         try {
             CloudNode cloudNode = this.cloudNodeService.loadCloudNode(webReq.getCloudName(), webReq.getNodeIdOfRequest());
 
@@ -46,6 +47,7 @@ public abstract class LbacWebService implements Serializable {
                     cloudNode)) {
                 throw new NotAuthentificatedException("Node of Webrequest ist not authentificated.");
             }
+            return cloudNode.getNode();
         } catch (Exception e) {
             if (webReq == null) {
                 throw new NotAuthentificatedException("Webrequest was null", e);

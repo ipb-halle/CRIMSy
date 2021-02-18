@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import static de.ipb_halle.lbac.admission.MemberEntity_.node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
@@ -29,6 +30,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
@@ -89,6 +91,7 @@ public class SearchServiceTest extends TestBase {
 
     @Inject
     private GlobalAdmissionContext context;
+    private Node node;
 
     @Before
     @Override
@@ -129,7 +132,7 @@ public class SearchServiceTest extends TestBase {
                 publicAclId,
                 materialid2,
                 "Testitem-002");
-
+        node = nodeService.getLocalNode();
     }
 
     @After
@@ -141,11 +144,11 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test001_searchEmpty() {
-        SearchResult result = searchService.search(null);
+        SearchResult result = searchService.search(null, node);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
 
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
-        result = searchService.search(Arrays.asList(request));
+        result = searchService.search(Arrays.asList(request), node);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
     }
 
@@ -153,43 +156,43 @@ public class SearchServiceTest extends TestBase {
     public void test002_searchDocuments() {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         request.setSearchTarget(SearchTarget.DOCUMENT);
-        searchService.search(Arrays.asList(request));
+        searchService.search(Arrays.asList(request), node);
     }
 
     @Test(expected = Exception.class)
     public void test003_searchUser() {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         request.setSearchTarget(SearchTarget.USER);
-        searchService.search(Arrays.asList(request));
+        searchService.search(Arrays.asList(request), node);
     }
 
     @Test(expected = Exception.class)
     public void test004_searchContainer() {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         request.setSearchTarget(SearchTarget.CONTAINER);
-        searchService.search(Arrays.asList(request));
+        searchService.search(Arrays.asList(request), node);
     }
 
     @Test
     public void test005_searchProject() {
         ProjectSearchRequestBuilder requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = requestBuilder.buildSearchRequest();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
         requestBuilder.addExactName("SearchServiceTest-Project-02-XYZ");
         request = requestBuilder.buildSearchRequest();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
     }
 
     @Test
     public void test006_searchMaterials() {
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = builder.buildSearchRequest();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
         builder.addIndexName("-002");
         request = builder.buildSearchRequest();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
 
@@ -197,16 +200,16 @@ public class SearchServiceTest extends TestBase {
     public void test007_searchItems() {
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = builder.buildSearchRequest();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
         builder.addIndexName("-002");
         request = builder.buildSearchRequest();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.addDescription("material");
         request = builder.buildSearchRequest();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
 
@@ -214,7 +217,7 @@ public class SearchServiceTest extends TestBase {
     public void test008_searchExperiments() {
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = builder.buildSearchRequest();
-        Assert.assertEquals(0, searchService.search(Arrays.asList(request)).getAllFoundObjects().size());
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
 
@@ -227,7 +230,7 @@ public class SearchServiceTest extends TestBase {
         SearchRequest materialRequest = materialBuilder.buildSearchRequest();
         SearchRequest projectRequest = projectBuilder.buildSearchRequest();
 
-        SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest));
+        SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest), node);
         Assert.assertEquals(6, response.getAllFoundObjects().size());
     }
 
@@ -243,12 +246,12 @@ public class SearchServiceTest extends TestBase {
         MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         matRequestbuilder.addIndexName("H");
         DocumentSearchRequestBuilder docRequestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
-        Set<String> words=new HashSet<>();
+        Set<String> words = new HashSet<>();
         words.add("x");
         docRequestBuilder.addWordRoots(words);
         SearchResult result = searchService.search(
                 Arrays.asList(docRequestBuilder.buildSearchRequest(),
-                        matRequestbuilder.buildSearchRequest()));
+                        matRequestbuilder.buildSearchRequest()), node);
 
         Assert.assertEquals(2, result.getAllFoundObjects().size());
 
@@ -278,7 +281,7 @@ public class SearchServiceTest extends TestBase {
         Set<String> wordRoots = new HashSet<>();
         wordRoots.add("wasserstoff");
         requestBuilder.addWordRoots(wordRoots);
-        SearchResult result = searchService.search(Arrays.asList(requestBuilder.buildSearchRequest()));
+        SearchResult result = searchService.search(Arrays.asList(requestBuilder.buildSearchRequest()), node);
         Assert.assertEquals(1, result.getAllFoundObjects().size());
     }
 

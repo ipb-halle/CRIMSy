@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.ArrayList;
@@ -58,12 +59,12 @@ public class SearchWebService extends LbacWebService {
         try {
             SearchWebResponse response = new SearchWebResponse();
             try {
-                checkAuthenticityOfRequest(request);
+                Node node = checkAuthenticityOfRequest(request);
                 List<SearchRequest> requests = new ArrayList<>();
                 for (SearchRequestImpl i : request.getSearchRequests()) {
                     requests.add((SearchRequest) i);
                 }
-                SearchResult localResult = searchService.search(requests);
+                SearchResult localResult = searchService.search(requests,node);
                 response.setAverageWordLength(localResult.getDocumentStatistic().getAverageWordLength());
                 response.setTotalDocsInNode(localResult.getDocumentStatistic().getTotalDocsInNode());
                 for (Searchable searchable : localResult.getAllFoundObjects(localResult.getNode())) {

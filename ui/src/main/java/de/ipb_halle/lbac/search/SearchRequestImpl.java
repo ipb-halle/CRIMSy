@@ -30,6 +30,8 @@ public class SearchRequestImpl implements SearchRequest {
 
     private SearchTarget searchTarget;
     private Condition condition;
+    
+    
     private int firstResultIndex;
     private int maxResults;
     private User user;
@@ -92,6 +94,7 @@ public class SearchRequestImpl implements SearchRequest {
         this.maxResults = maxResults;
     }
 
+    @Override
     public void setUser(User user) {
         this.user = user;
     }

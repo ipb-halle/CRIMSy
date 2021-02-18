@@ -32,16 +32,16 @@ import java.util.List;
  */
 public class PermissionConditionBuilder {
 
-    private ACListService aclistService;
+    private SearchRequestBuilder searchRequestBuilder;
     private List<AttributeType[]> fieldsToCheckAgainstAcl = new ArrayList<>();
     private User user;
     private ACPermission permission;
 
     public PermissionConditionBuilder(
-            ACListService aclistService,
+            SearchRequestBuilder searchRequestBuilder,
             User user,
             ACPermission permission) {
-        this.aclistService = aclistService;
+        this.searchRequestBuilder = searchRequestBuilder;
         this.user = user;
         this.permission = permission;
     }
@@ -60,7 +60,7 @@ public class PermissionConditionBuilder {
     }
 
     private Condition addAclCondition(Condition originalCondition, AttributeType[] fields) {
-        Condition condition = aclistService.getCondition(
+        Condition condition = searchRequestBuilder.getCondition(
                 user,
                 permission,
                 fields);

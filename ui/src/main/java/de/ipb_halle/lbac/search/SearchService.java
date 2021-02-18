@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExperimentService;
@@ -90,16 +91,24 @@ public class SearchService {
                 nodeService);
     }
     
-    public SearchResult search(List<SearchRequest> requests) {
+    public SearchResult search(
+            List<SearchRequest> requests,
+            Node node) {
         sortSearchRequestsByPrio(requests);
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         if (requests != null) {
             for (SearchRequest request : requests) {
+                User u = request.getUser();
+                if (this.nodeService.isRemoteNode(node)) {
+                    request.setUser(memberService.mapRemoteUserToLocalUser(u, node));
+                }
                 result = handleSingleSearch(request, result);
             }
         }
         return result;
     }
+    
+ 
     
     private SearchResult handleSingleSearch(SearchRequest request, SearchResult result) {
         if (shouldSearchBeDone(request)) {

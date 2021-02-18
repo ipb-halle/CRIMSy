@@ -40,6 +40,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -127,8 +128,9 @@ public class ItemService {
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
+        ItemSearchRequestBuilder itemBuilder =new ItemSearchRequestBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
         permissionConditionBuilder = new PermissionConditionBuilder(
-                aclistService,
+                itemBuilder,
                 request.getUser(),
                 ACPermission.permREAD)
                 .addFields(AttributeType.ITEM)
@@ -174,7 +176,11 @@ public class ItemService {
             AttributeType.ITEM,
             AttributeType.LABEL
         }));
-        permissionConditionBuilder = new PermissionConditionBuilder(aclistService, request.getUser(), ACPermission.permREAD).
+        
+        
+        ItemSearchRequestBuilder itemBuilder =new ItemSearchRequestBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
+        
+        permissionConditionBuilder = new PermissionConditionBuilder(itemBuilder, request.getUser(), ACPermission.permREAD).
                 addFields(AttributeType.ITEM);
         String sql = countBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(request.getCondition()));

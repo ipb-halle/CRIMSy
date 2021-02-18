@@ -160,12 +160,19 @@ public class ProjectService implements Serializable {
     }
 
     public SearchResult loadProjects(SearchRequest request) {
+ 
+        //Switch User to local one
+        ProjectSearchRequestBuilder requestBuilder=new ProjectSearchRequestBuilder(
+                request.getUser(),
+                request.getFirstResult(),
+                request.getMaxResults());
+ 
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         EntityGraph graph = createEntityGraph();
         SqlBuilder builder = new SqlBuilder(graph);
 
         permissionConditionBuilder = new PermissionConditionBuilder(
-                aclistService, 
+                requestBuilder, 
                 request.getUser(),
                 ACPermission.permREAD)
                 .addFields(AttributeType.PROJECT);

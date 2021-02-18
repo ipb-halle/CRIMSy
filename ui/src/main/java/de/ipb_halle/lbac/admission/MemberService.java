@@ -263,6 +263,21 @@ public class MemberService implements Serializable {
         return result;
     }
 
+    public User mapRemoteUserToLocalUser(User u, Node n) {
+        if(u.getId().equals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)){
+            return u;
+        }
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, u.getId().toString());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LBAC_REMOTE);
+        cmap.put(MemberService.PARAM_NODE_ID, n.getId());
+        List<User> localUserList = loadUsers(cmap);
+        if ((localUserList != null) && (localUserList.size() == 1)) {
+            return localUserList.get(0);
+        }
+        return null;
+    }
+
     /**
      * load a Group object by id
      *
@@ -349,7 +364,5 @@ public class MemberService implements Serializable {
         }
         return null;
     }
-    
-    
 
 }

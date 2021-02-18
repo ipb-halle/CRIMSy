@@ -107,19 +107,23 @@ public class MembershipWebService extends LbacWebService {
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_XML)
     public Response handleRequest(MembershipWebRequest request) {
+        Node node;
         try {
-            checkAuthenticityOfRequest(request);
+            node = checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
-            Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
 
         Boolean result = Boolean.FALSE;
         User user = request.getUser();
-        Node node = this.nodeService.loadById(user.getNode().getId());
-
+        if (! node.equals(user.getNode())) {
+            this.logger.warn("handleUser(): node of origin and user node do not match");
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+        
         // do not allow to update the local node
         // and make sure the user originates from the node given in the request
-        if ((node != null) 
+        if ((node != null)
                 && this.nodeService.isRemoteNode(node)
                 && node.getId().equals(request.getNodeIdOfRequest())) {
 
@@ -135,9 +139,9 @@ public class MembershipWebService extends LbacWebService {
             this.logger.warn("handleRequest() received update request for illegal node");
         }
         if (!result) {
-            request.setStatusCode("500:Could not announce user" 
-                    + user.getId().toString() 
-                    + " at node " 
+            request.setStatusCode("500:Could not announce user"
+                    + user.getId().toString()
+                    + " at node "
                     + node.getId().toString());
         }
 
@@ -162,10 +166,10 @@ public class MembershipWebService extends LbacWebService {
             Set<Group> gs,
             Node remoteNode) {
 
-        Set<Group> groupSet = new HashSet<> ();
+        Set<Group> groupSet = new HashSet<>();
         for (Group group : gs) {
             try {
-                Map<String, Object> cmap = new HashMap<> ();
+                Map<String, Object> cmap = new HashMap<>();
                 cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, group.getId().toString());
                 cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LBAC_REMOTE);
                 cmap.put(MemberService.PARAM_NODE_ID, remoteNode.getId());
@@ -233,9 +237,10 @@ public class MembershipWebService extends LbacWebService {
     }
 
     /**
-     * Saves the group in the database as a remote group
-     * The SubSystemType is changed to LBAC_REMOTE and SubSystemData is 
-     * set with the groupId from the remote system.
+     * Saves the group in the database as a remote group The SubSystemType is
+     * changed to LBAC_REMOTE and SubSystemData is set with the groupId from the
+     * remote system.
+     *
      * @param group
      * @param n home node of the group
      * @return the persisted group
@@ -247,7 +252,7 @@ public class MembershipWebService extends LbacWebService {
         localGroup.setSubSystemData(localGroup.getId().toString());
         localGroup.setId(null);
         localGroup.setNode(n);
-        localGroup=this.memberService.save(localGroup);
+        localGroup = this.memberService.save(localGroup);
         this.membershipService.addMembership(localGroup, localGroup);
         return localGroup;
     }
@@ -261,28 +266,21 @@ public class MembershipWebService extends LbacWebService {
      * @return the persisted local user DTO
      */
     private User handleUser(User u, Node n) {
-
         if (u.getId() == null) {
             this.logger.warn("handleUser(): Attempt to announce remote user without Id");
             return null;
         }
 
-        Map<String, Object> cmap = new HashMap<> ();
-        cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, u.getId().toString());
-        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LBAC_REMOTE);
-        cmap.put(MemberService.PARAM_NODE_ID, n.getId());
-        List<User> localUserList = this.memberService.loadUsers(cmap);
-        if ((localUserList != null) && (localUserList.size() ==  1)) {
-            return localUserList.get(0);
+        User localUser = memberService.mapRemoteUserToLocalUser(u, n);
+        if (localUser == null) {
+            u.obfuscate();
+            u.setSubSystemData(u.getId().toString());
+            u.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+            u.setId(null);
+            localUser = this.memberService.save(u);
+            this.membershipService.addMembership(localUser, localUser);
+            this.membershipService.addMembership(this.globalAdmissionContext.getPublicGroup(), localUser);
         }
-
-        u.obfuscate();
-        u.setSubSystemData(u.getId().toString());
-        u.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
-        u.setId(null);
-        User localUser = this.memberService.save(u);
-        this.membershipService.addMembership(localUser, localUser);
-        this.membershipService.addMembership(this.globalAdmissionContext.getPublicGroup(), localUser);
         return localUser;
     }
 

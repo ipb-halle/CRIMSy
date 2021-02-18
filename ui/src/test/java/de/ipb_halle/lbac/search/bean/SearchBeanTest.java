@@ -149,7 +149,7 @@ public class SearchBeanTest extends TestBase {
 
     @Test
     public void test002_actionTriggerSearch() {
-        SearchBean bean = new SearchBean(searchService, publicUser);
+        SearchBean bean = new SearchBean(searchService, publicUser,nodeService);
         bean.getSearchFilter().setSearchTerms("java");
         bean.setOrchestrator(orchestrator);
         bean.actionTriggerSearch();

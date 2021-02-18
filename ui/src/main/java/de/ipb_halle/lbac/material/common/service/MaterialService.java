@@ -57,6 +57,7 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -219,9 +220,9 @@ public class MaterialService implements Serializable {
             AttributeType.MATERIAL,
             AttributeType.LABEL
         }));
-
+        MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
         permissionConditionBuilder
-                = new PermissionConditionBuilder(aclService, request.getUser(), ACPermission.permREAD)
+                = new PermissionConditionBuilder(materialBuilder, request.getUser(), ACPermission.permREAD)
                         .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
         String sql = countBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(
@@ -239,8 +240,9 @@ public class MaterialService implements Serializable {
         EntityGraph graph = createEntityGraph();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
+        MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
         permissionConditionBuilder
-                = new PermissionConditionBuilder(aclService, request.getUser(), ACPermission.permREAD)
+                = new PermissionConditionBuilder(materialBuilder, request.getUser(), ACPermission.permREAD)
                         .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
 
         String sql = sqlBuilder.query(

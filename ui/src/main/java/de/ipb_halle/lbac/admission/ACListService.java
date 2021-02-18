@@ -93,57 +93,6 @@ public class ACListService implements Serializable {
     }
 
     /**
-     * @param user the user for whom the access control condition is to be built
-     * @param permission the permission to check
-     * @param acObjAttrtype one or more values of <code>AttributeType</code> to select 
-     * the entity to which the generated condition should be applied
-     * @return a <code>Condition</code> object to be applied to an EntityGraph which 
-     * contains an entity sub graph created by the getEntityGraph() method of this class.
-     * The built condition honours the two possibilities of obtaining access: either by 
-     * group membership in an allowed group or by object ownership and a specific 
-     * owner ACE:
-     * <code>
-     *       ((acObjAttrType:MEMBER = user AND ACE:MEMBER = OWNER_ACCOUNT) OR
-     *       MEMBERSHIP:MEMBER = user)
-     *     AND
-     *       PERM_XXX IS TRUE
-     * </code>
-     */
-    public Condition getCondition(User user, ACPermission permission, AttributeType... acObjAttrType) {
-
-        Condition ownerCondition = new Condition(
-            Operator.AND,
-            new Condition(
-                new Attribute(acObjAttrType).addType(AttributeType.MEMBER),
-                Operator.EQUAL,
-                new Value(user.getId())),
-            new Condition(
-                new Attribute(new AttributeType[] {
-                    AttributeType.ACE,
-                    AttributeType.MEMBER }),
-                Operator.EQUAL,
-                new Value(GlobalAdmissionContext.OWNER_ACCOUNT_ID))
-            );
-
-        Condition memberCondition = new Condition(
-            Operator.OR,
-            ownerCondition, 
-            new Condition(
-                new Attribute(new AttributeType[] { 
-                    AttributeType.MEMBERSHIP, 
-                    AttributeType.MEMBER }),
-                Operator.EQUAL,
-                new Value(user.getId()))
-            );
-
-        return new Condition(
-            Operator.AND, 
-            memberCondition, 
-            new Condition(getPermissionAttribute(permission), 
-                Operator.IS_TRUE));
-    }
-
-    /**
      * @return an entity subgraph suitable for access control and relating  
      * to the acentries and memberships tables. The returned 
      * <code>EntityGraph</code> object requires its link field to be set via 
@@ -172,18 +121,7 @@ public class ACListService implements Serializable {
         return this.ownerAccount;
     }
 
-    public Attribute getPermissionAttribute(ACPermission perm) {
-        switch(perm) {
-            case permREAD : return new Attribute(AttributeType.PERM_READ);
-            case permEDIT : return new Attribute(AttributeType.PERM_EDIT);
-            case permCHOWN : return new Attribute(AttributeType.PERM_CHOWN);
-            case permGRANT : return new Attribute(AttributeType.PERM_GRANT);
-            case permSUPER : return new Attribute(AttributeType.PERM_SUPER);
-            case permCREATE : return new Attribute(AttributeType.PERM_CREATE);
-            case permDELETE : return new Attribute(AttributeType.PERM_DELETE);
-        }
-        throw new IllegalArgumentException("illegal argument");
-    }
+    
 
     /**
      * check if User u is permitted to perform action perm under ACList acl.
