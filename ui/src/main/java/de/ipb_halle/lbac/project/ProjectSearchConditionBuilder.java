@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -27,21 +27,21 @@ import de.ipb_halle.lbac.search.lang.Operator;
  *
  * @author fmauz
  */
-public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
+public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ProjectSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+    public ProjectSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
         target = SearchTarget.PROJECT;
     }
 
-    public ProjectSearchRequestBuilder addDeactivated(boolean deactivated) {
+    public ProjectSearchConditionBuilder addDeactivated(boolean deactivated) {
         addCondition(Operator.EQUAL,
                 deactivated,
                 AttributeType.DEACTIVATED);
         return this;
     }
 
-    public ProjectSearchRequestBuilder addExactName(String name) {
+    public ProjectSearchConditionBuilder addExactName(String name) {
         addCondition(Operator.EQUAL,
                 name,
                 AttributeType.PROJECT_NAME);

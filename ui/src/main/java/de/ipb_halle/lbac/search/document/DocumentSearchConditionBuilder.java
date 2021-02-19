@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.search.document;
 
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -28,21 +28,21 @@ import java.util.Set;
  *
  * @author fmauz
  */
-public class DocumentSearchRequestBuilder extends SearchRequestBuilder {
+public class DocumentSearchConditionBuilder extends SearchConditionBuilder {
 
-    public DocumentSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+    public DocumentSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
         this.target = SearchTarget.DOCUMENT;
     }
 
-    public DocumentSearchRequestBuilder addCollectionID(Integer id) {
+    public DocumentSearchConditionBuilder addCollectionID(Integer id) {
         addCondition(Operator.EQUAL,
                 id,
                 AttributeType.COLLECTION);
         return this;
     }
 
-    public DocumentSearchRequestBuilder addWordRoots(Set<String> wordRoots) {
+    public DocumentSearchConditionBuilder addWordRoots(Set<String> wordRoots) {
         addCondition(Operator.IN,
                 wordRoots,
                 AttributeType.WORDROOT);

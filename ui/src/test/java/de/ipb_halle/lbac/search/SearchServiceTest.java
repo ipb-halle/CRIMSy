@@ -34,20 +34,20 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
-import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
+import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
+import de.ipb_halle.lbac.search.document.DocumentSearchConditionBuilder;
 
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -175,7 +175,7 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test005_searchProject() {
-        ProjectSearchRequestBuilder requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        ProjectSearchConditionBuilder requestBuilder = new ProjectSearchConditionBuilder(publicUser, 0, 25);
         SearchRequest request = requestBuilder.buildSearchRequest();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
@@ -186,7 +186,7 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test006_searchMaterials() {
-        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        MaterialSearchConditionBuilder builder = new MaterialSearchConditionBuilder(publicUser, 0, 25);
         SearchRequest request = builder.buildSearchRequest();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
@@ -198,7 +198,7 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test007_searchItems() {
-        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(publicUser, 0, 25);
         SearchRequest request = builder.buildSearchRequest();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
@@ -206,7 +206,7 @@ public class SearchServiceTest extends TestBase {
         request = builder.buildSearchRequest();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
-        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ItemSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("material");
         request = builder.buildSearchRequest();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
@@ -215,7 +215,7 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test008_searchExperiments() {
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         SearchRequest request = builder.buildSearchRequest();
         Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
@@ -223,9 +223,9 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test009_searchForEveryTarget() {
-        ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(publicUser, 0, 25);
-        MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
-        ProjectSearchRequestBuilder projectBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(publicUser, 0, 25);
+        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(publicUser, 0, 25);
+        ProjectSearchConditionBuilder projectBuilder = new ProjectSearchConditionBuilder(publicUser, 0, 25);
         SearchRequest itemRequest = itemBuilder.buildSearchRequest();
         SearchRequest materialRequest = materialBuilder.buildSearchRequest();
         SearchRequest projectRequest = projectBuilder.buildSearchRequest();
@@ -243,9 +243,9 @@ public class SearchServiceTest extends TestBase {
                 project1.getId(),
                 "H", "wasserstoff");
 
-        MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        MaterialSearchConditionBuilder matRequestbuilder = new MaterialSearchConditionBuilder(publicUser, 0, 25);
         matRequestbuilder.addIndexName("H");
-        DocumentSearchRequestBuilder docRequestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
+        DocumentSearchConditionBuilder docRequestBuilder = new DocumentSearchConditionBuilder(publicUser, 0, 25);
         Set<String> words = new HashSet<>();
         words.add("x");
         docRequestBuilder.addWordRoots(words);
@@ -277,7 +277,7 @@ public class SearchServiceTest extends TestBase {
         } catch (FileNotFoundException | InterruptedException ex) {
             throw new RuntimeException("Could not upload file");
         }
-        DocumentSearchRequestBuilder requestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
+        DocumentSearchConditionBuilder requestBuilder = new DocumentSearchConditionBuilder(publicUser, 0, 25);
         Set<String> wordRoots = new HashSet<>();
         wordRoots.add("wasserstoff");
         requestBuilder.addWordRoots(wordRoots);

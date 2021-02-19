@@ -36,7 +36,7 @@ import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.ItemPositionHistoryList;
 import de.ipb_halle.lbac.items.ItemPositionsHistory;
-import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.HazardInformation;

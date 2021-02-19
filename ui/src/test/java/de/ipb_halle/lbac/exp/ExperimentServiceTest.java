@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.exp.assay.Assay;
 import de.ipb_halle.lbac.exp.assay.AssayService;
-import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.Item;
@@ -141,7 +141,7 @@ public class ExperimentServiceTest extends TestBase {
         text2.setText("Test001-A");
         text2 = (Text) recordService.save(text2,publicUser);
 
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         Experiment loadedExperiment = experimentService.loadById(exp.getExperimentId());
 
         SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
@@ -155,7 +155,7 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(publicUser.getId(), loadedExperiment.getOwner().getId());
         Assert.assertEquals(creationDate, loadedExperiment.getCreationTime());
 
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addId(exp.getExperimentId());
         loadedExp = experimentService.load(builder.buildSearchRequest());
 
@@ -191,17 +191,17 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(0).getNext());
         Assert.assertNull(loadedRecords.get(1).getNext());
 
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("x56df");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
 
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addUserName("public");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(2, loadedExp.getAllFoundObjects().size());
 
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addUserName("invalid-user");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
@@ -213,7 +213,7 @@ public class ExperimentServiceTest extends TestBase {
         Experiment exp = new Experiment(null, "TEST-EXP-001", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
         exp = experimentService.save(exp);
 
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("java");
         SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
@@ -234,12 +234,12 @@ public class ExperimentServiceTest extends TestBase {
         text1.setText("C# is also good");
         text1 = (Text) recordService.save(text1,publicUser);
 
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("C#");
         SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
 
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("PROLOG");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
@@ -260,12 +260,12 @@ public class ExperimentServiceTest extends TestBase {
         assay.getLinkedData().add(assayRecord);
         recordService.save(assay,publicUser);
 
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("Benzol");
         SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals("Search for 'Benzol'", 1, loadedExp.getAllFoundObjects().size());
 
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("Flasche");
         SearchRequest req = builder.buildSearchRequest();
         loadedExp = experimentService.load(req);
@@ -299,19 +299,19 @@ public class ExperimentServiceTest extends TestBase {
         recordService.save(assay,publicUser);
 
         //Search by readable Material should be a success
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("Benzol");
         SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
 
         //Search by unreadable Material should be a success
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("Phenol");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
 
         //Search by unreadable Material should be a success
-        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
         builder.addDescription("ol");
         loadedExp = experimentService.load(builder.buildSearchRequest());
         Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());

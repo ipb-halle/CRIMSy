@@ -32,13 +32,13 @@ import java.util.List;
  */
 public class PermissionConditionBuilder {
 
-    private SearchRequestBuilder searchRequestBuilder;
+    private SearchConditionBuilder searchRequestBuilder;
     private List<AttributeType[]> fieldsToCheckAgainstAcl = new ArrayList<>();
     private User user;
     private ACPermission permission;
 
     public PermissionConditionBuilder(
-            SearchRequestBuilder searchRequestBuilder,
+            SearchConditionBuilder searchRequestBuilder,
             User user,
             ACPermission permission) {
         this.searchRequestBuilder = searchRequestBuilder;

@@ -29,8 +29,8 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.exp.search.ExpRecordAccessChecker;
 import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
-import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
@@ -123,7 +123,7 @@ public class ExperimentService implements Serializable {
         SearchResult back = new SearchResultImpl(nodeService.getLocalNode());
         graph = createEntityGraph();
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        ExperimentSearchRequestBuilder expBuilder = new ExperimentSearchRequestBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
+        ExperimentSearchConditionBuilder expBuilder = new ExperimentSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
         permissionConditionBuilder = new PermissionConditionBuilder(
                 expBuilder,
                 request.getUser(),

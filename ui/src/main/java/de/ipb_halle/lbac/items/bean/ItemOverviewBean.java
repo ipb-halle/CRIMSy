@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
-import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -136,7 +136,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     private SearchRequest createSearchRequest() {
-        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(currentUser, firstResult, PAGE_SIZE);
+        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(currentUser, firstResult, PAGE_SIZE);
         if (searchMaskValues.getMaterialName() != null && !searchMaskValues.getMaterialName().isEmpty()) {
             builder.addIndexName(searchMaskValues.getMaterialName());
         }

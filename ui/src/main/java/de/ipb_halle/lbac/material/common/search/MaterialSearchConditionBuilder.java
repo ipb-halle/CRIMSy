@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.common.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
-import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -33,16 +33,16 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
+public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    public MaterialSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+    public MaterialSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
         target = SearchTarget.MATERIAL;
     }
 
-    public MaterialSearchRequestBuilder addID(Integer id) {
+    public MaterialSearchConditionBuilder addID(Integer id) {
         addCondition(Operator.EQUAL,
                 id,
                 AttributeType.MATERIAL,
@@ -50,7 +50,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public MaterialSearchRequestBuilder addDeactivated(boolean deactivated) {
+    public MaterialSearchConditionBuilder addDeactivated(boolean deactivated) {
         addCondition(Operator.EQUAL,
                 deactivated,
                 AttributeType.MATERIAL,
@@ -58,14 +58,14 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public MaterialSearchRequestBuilder addUserName(String userName) {
+    public MaterialSearchConditionBuilder addUserName(String userName) {
         addCondition(Operator.ILIKE,
                 "%" + userName + "%",
                 AttributeType.MEMBER_NAME);
         return this;
     }
 
-    public MaterialSearchRequestBuilder addIndexName(String name) {
+    public MaterialSearchConditionBuilder addIndexName(String name) {
         addCondition(Operator.ILIKE,
                 "%" + name + "%",
                 AttributeType.MATERIAL,
@@ -73,21 +73,21 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public MaterialSearchRequestBuilder addProject(String projectName) {
+    public MaterialSearchConditionBuilder addProject(String projectName) {
         addCondition(Operator.ILIKE,
                 "%" + projectName + "%",
                 AttributeType.PROJECT_NAME);
         return this;
     }
 
-    public MaterialSearchRequestBuilder addTypes(MaterialType... types) {
+    public MaterialSearchConditionBuilder addTypes(MaterialType... types) {
         addCondition(Operator.IN,
                 getIdsFromMaterialTypes(types),
                 AttributeType.MATERIAL_TYPE);
         return this;
     }
 
-    public MaterialSearchRequestBuilder addSubMolecule(String molecule) {
+    public MaterialSearchConditionBuilder addSubMolecule(String molecule) {
         addConditionWithCast(Operator.SUBSTRUCTURE,
                 molecule,
                 " CAST(%s AS MOLECULE) ",

@@ -55,7 +55,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
@@ -482,7 +482,7 @@ public class MaterialServiceTest extends TestBase {
         //Create a biomaterial
 
         //Only one of the two materials must be found because user has no read right for the other one
-        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        MaterialSearchConditionBuilder requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.buildSearchRequest();
         SearchResult result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.buildSearchRequest()));
@@ -501,7 +501,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
 
         //load materials of project with name 'xyz'
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addProject("xyz");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -509,7 +509,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(0, structures.size());
 
         //load only structures
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addTypes(MaterialType.STRUCTURE);
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -518,7 +518,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
 
         //load only biomaterials
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addTypes(MaterialType.BIOMATERIAL);
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -526,7 +526,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(0, structures.size());
 
         //load only structures or biomaterials
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addTypes(MaterialType.STRUCTURE, MaterialType.BIOMATERIAL);
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -535,7 +535,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(struture1.getId(), loadedMaterial.getId());
 
         //load only materials with name matches pattern 'Test-Struc'
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addIndexName("Test-Struc");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -543,7 +543,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, structures.size());
 
         //load only materials with name matches pattern 'Test-Fail'
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addIndexName("Test-Fail");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -551,7 +551,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(0, structures.size());
 
         //load material by id
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addID(struture1.getId());
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -559,7 +559,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, structures.size());
 
         //load material by id without right to read
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addID(structure2.getId());
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -567,7 +567,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(0, structures.size());
 
         //load material of user
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addUserName(testUser.getName());
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -575,7 +575,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, structures.size());
 
         //load material of user (which not exists)
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addUserName("xz");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
@@ -583,7 +583,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(0, structures.size());
 
         //load material by index
-        requestBuilder = new MaterialSearchRequestBuilder(testUser, 0, 25);
+        requestBuilder = new MaterialSearchConditionBuilder(testUser, 0, 25);
         requestBuilder.addIndexName("Gest");
         result = instance.getReadableMaterials(requestBuilder.buildSearchRequest());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());

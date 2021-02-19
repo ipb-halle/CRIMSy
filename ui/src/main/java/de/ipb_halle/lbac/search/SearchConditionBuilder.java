@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author fmauz
  */
-public abstract class SearchRequestBuilder {
+public abstract class SearchConditionBuilder {
 
     protected List<Condition> leafConditions = new ArrayList<>();
     protected int firstResultIndex;
@@ -40,7 +40,7 @@ public abstract class SearchRequestBuilder {
     protected User user;
     protected SearchTarget target;
 
-    public SearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+    public SearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         this.user = u;
         this.firstResultIndex = firstResultIndex;
         this.maxResults = maxResults;

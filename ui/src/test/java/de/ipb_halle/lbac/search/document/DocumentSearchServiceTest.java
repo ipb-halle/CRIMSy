@@ -117,7 +117,7 @@ public class DocumentSearchServiceTest extends TestBase {
 
     @Test
     public void test001_loadDocuments_withoutWordRoot() throws FileNotFoundException, InterruptedException {
-        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        DocumentSearchConditionBuilder builder = new DocumentSearchConditionBuilder(new User(), 0, 25);
         builder.addCollectionID(col.getId());
         SearchRequest request = builder.buildSearchRequest();
         SearchResult result = documentSearchService.loadDocuments(request);
@@ -130,7 +130,7 @@ public class DocumentSearchServiceTest extends TestBase {
 
         RelevanceCalculator calculator = new RelevanceCalculator(Arrays.asList("java"));
 
-        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        DocumentSearchConditionBuilder builder = new DocumentSearchConditionBuilder(new User(), 0, 25);
         builder.addCollectionID(col.getId());
         builder.addWordRoots(new HashSet<>(Arrays.asList("java")));
 
@@ -154,7 +154,7 @@ public class DocumentSearchServiceTest extends TestBase {
     @Test
     public void test003_loadDocuments_withTwoWordRoot() throws FileNotFoundException, InterruptedException {
 
-        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        DocumentSearchConditionBuilder builder = new DocumentSearchConditionBuilder(new User(), 0, 25);
         builder.addCollectionID(col.getId());
         builder.addWordRoots(new HashSet<>(Arrays.asList("java", "failure")));
 

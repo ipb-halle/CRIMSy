@@ -75,7 +75,7 @@ public class ProjectBean implements Serializable, ACObjectBean {
     private Navigator navigator;
 
     public void reloadReadableProjects() {
-        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        ProjectSearchConditionBuilder builder = new ProjectSearchConditionBuilder(user, 0, Integer.MAX_VALUE);
         builder.addDeactivated(false);
         SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
         readableProjects = new ArrayList<>();

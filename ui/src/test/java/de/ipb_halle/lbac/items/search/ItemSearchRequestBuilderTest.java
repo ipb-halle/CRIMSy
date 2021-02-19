@@ -43,7 +43,7 @@ public class ItemSearchRequestBuilderTest {
 
     @Test
     public void test001_createItemSearchRequest() {
-        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(user, 0, 5);
+        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(user, 0, 5);
         builder.addIndexName("Wasser");
         SearchRequest request = builder.buildSearchRequest();
 

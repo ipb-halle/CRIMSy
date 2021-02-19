@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
+import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -98,26 +98,26 @@ public class ProjectServiceTest extends TestBase {
         p.getDetailTemplates().put(MaterialDetailType.TAXONOMY, projectAcList);
 
         instance.saveProjectToDb(p);
-        ProjectSearchRequestBuilder requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
+        ProjectSearchConditionBuilder requestBuilder = new ProjectSearchConditionBuilder(u, 0, 25);
 
         SearchResult result = instance.loadProjects(requestBuilder.buildSearchRequest());
         List<Project> projectsOfPublicUser = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertEquals("Only 1 project should be found", 1, projectsOfPublicUser.size());
 
         User user2 = createUser("UserWithoutPermission", "no name");
-        requestBuilder = new ProjectSearchRequestBuilder(user2, 0, 25);
+        requestBuilder = new ProjectSearchConditionBuilder(user2, 0, 25);
         result = instance.loadProjects(requestBuilder.buildSearchRequest());
         List<Project> projectsOfUser2 = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
 
-        requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
+        requestBuilder = new ProjectSearchConditionBuilder(u, 0, 25);
         requestBuilder.addExactName("biochemical-test-project");
         result = instance.loadProjects(requestBuilder.buildSearchRequest());
         List<Project> loadedByName = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertNotNull("test001: loaded by name should not be null ", loadedByName);
         Assert.assertEquals("test001: loaded by name wrong project loaded", p.getId(), loadedByName.get(0).getId());
 
-        requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
+        requestBuilder = new ProjectSearchConditionBuilder(u, 0, 25);
         requestBuilder.addExactName("biochemical-test-project-XXX");
         result = instance.loadProjects(requestBuilder.buildSearchRequest());
         loadedByName = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());

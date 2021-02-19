@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.items.search;
 
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -27,15 +27,15 @@ import de.ipb_halle.lbac.search.lang.Operator;
  *
  * @author fmauz
  */
-public class ItemSearchRequestBuilder extends SearchRequestBuilder {
+public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ItemSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+    public ItemSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
         target = SearchTarget.ITEM;
 
     }
 
-    public ItemSearchRequestBuilder addLabel(String label) {
+    public ItemSearchConditionBuilder addLabel(String label) {
         addCondition(Operator.EQUAL,
                 label,
                 AttributeType.ITEM,
@@ -43,7 +43,7 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public ItemSearchRequestBuilder addIndexName(String name) {
+    public ItemSearchConditionBuilder addIndexName(String name) {
         addCondition(Operator.ILIKE,
                 "%" + name + "%",
                 AttributeType.MATERIAL,
@@ -51,7 +51,7 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public ItemSearchRequestBuilder addLocation(String location) {
+    public ItemSearchConditionBuilder addLocation(String location) {
         addCondition(Operator.ILIKE,
                 "%" + location + "%",
                 AttributeType.CONTAINER,
@@ -59,28 +59,28 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public ItemSearchRequestBuilder addProject(String projectName) {
+    public ItemSearchConditionBuilder addProject(String projectName) {
         addCondition(Operator.ILIKE,
                 "%" + projectName + "%",
                 AttributeType.PROJECT_NAME);
         return this;
     }
 
-    public ItemSearchRequestBuilder addUserName(String userName) {
+    public ItemSearchConditionBuilder addUserName(String userName) {
         addCondition(Operator.ILIKE,
                 "%" + userName + "%",
                 AttributeType.MEMBER_NAME);
         return this;
     }
 
-    public ItemSearchRequestBuilder addDescription(String description) {
+    public ItemSearchConditionBuilder addDescription(String description) {
         addCondition(Operator.ILIKE,
                 "%" + description + "%",
                 AttributeType.TEXT);
         return this;
     }
 
-    public ItemSearchRequestBuilder addSubMolecule(String molecule) {
+    public ItemSearchConditionBuilder addSubMolecule(String molecule) {
         addConditionWithCast(Operator.SUBSTRUCTURE,
                 molecule,
                 " CAST(%s AS MOLECULE) ",

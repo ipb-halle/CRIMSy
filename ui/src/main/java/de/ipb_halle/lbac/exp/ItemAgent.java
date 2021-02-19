@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.exp;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.search.SearchResult;
 
@@ -90,7 +90,7 @@ public class ItemAgent implements Serializable {
                 && (this.itemSearch != null)
                 && (!this.itemSearch.isEmpty())) {
             try {
-                ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(userBean.getCurrentAccount(), 0, 1);
+                ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(userBean.getCurrentAccount(), 0, 1);
                 builder.addLabel(itemSearch);
                 SearchResult result = itemService.loadItems(builder.buildSearchRequest());
                 chooseableItems = result.getAllFoundObjects(Item.class, result.getNode());

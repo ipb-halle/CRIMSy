@@ -162,7 +162,7 @@ public class ProjectService implements Serializable {
     public SearchResult loadProjects(SearchRequest request) {
  
         //Switch User to local one
-        ProjectSearchRequestBuilder requestBuilder=new ProjectSearchRequestBuilder(
+        ProjectSearchConditionBuilder requestBuilder=new ProjectSearchConditionBuilder(
                 request.getUser(),
                 request.getFirstResult(),
                 request.getMaxResults());

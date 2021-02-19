@@ -36,7 +36,7 @@ import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.ItemPositionHistoryList;
 import de.ipb_halle.lbac.items.ItemPositionsHistory;
-import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
@@ -168,7 +168,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: One Item must be found after save (native Query)", 1, emService.doSqlQuery("select * from items").size());
 
         //Load item by description
-        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(owner, 0, 25);
+        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(owner, 0, 25);
         builder.addIndexName("%TESTMAT%");
         SearchResult result = instance.loadItems(builder.buildSearchRequest());
         List<Item> items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
@@ -177,7 +177,7 @@ public class ItemServiceTest extends TestBase {
         checkItem(items.get(0));
 
         //Load item by label
-        builder = new ItemSearchRequestBuilder(owner, 0, 25);
+        builder = new ItemSearchConditionBuilder(owner, 0, 25);
         builder.addLabel(item.getLabel());
         result = instance.loadItems(builder.buildSearchRequest());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
@@ -186,7 +186,7 @@ public class ItemServiceTest extends TestBase {
         checkItem(items.get(0));
 
         //Load item by project
-        builder = new ItemSearchRequestBuilder(owner, 0, 25);
+        builder = new ItemSearchConditionBuilder(owner, 0, 25);
         builder.addProject("%biochemi%");
         result = instance.loadItems(builder.buildSearchRequest());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
@@ -195,7 +195,7 @@ public class ItemServiceTest extends TestBase {
         checkItem(items.get(0));
 
         //Load item by location
-        builder = new ItemSearchRequestBuilder(owner, 0, 25);
+        builder = new ItemSearchConditionBuilder(owner, 0, 25);
         builder.addLocation("Schrank1");
         result = instance.loadItems(builder.buildSearchRequest());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());

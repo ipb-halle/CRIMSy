@@ -34,10 +34,10 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.RemoteItem;
-import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -160,7 +160,7 @@ public class SearchWebServiceTest extends TestBase {
         int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item");
 
         SearchWebRequest wr = createEmptyRequest();
-        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(context.getPublicAccount(), 0, 25);
+        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(context.getPublicAccount(), 0, 25);
 
         wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
         Response response = webService.search(wr);
@@ -181,7 +181,7 @@ public class SearchWebServiceTest extends TestBase {
                 "SearchWebServiceTest-Structure");
 
         SearchWebRequest wr = createEmptyRequest();
-        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(context.getPublicAccount(), 0, 25);
+        MaterialSearchConditionBuilder builder = new MaterialSearchConditionBuilder(context.getPublicAccount(), 0, 25);
         builder.addTypes(MaterialType.STRUCTURE);
         wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
         Response response = webService.search(wr);

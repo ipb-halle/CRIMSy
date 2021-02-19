@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.SearchRequestBuilder;
+import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Operator;
@@ -27,14 +27,14 @@ import de.ipb_halle.lbac.search.lang.Operator;
  *
  * @author fmauz
  */
-public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
+public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ExperimentSearchRequestBuilder(User u, int firstResultIndex, int maxResults) {
+    public ExperimentSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
         target=SearchTarget.EXPERIMENT;
     }
 
-    public ExperimentSearchRequestBuilder addTemplate(boolean isTemplate) {
+    public ExperimentSearchConditionBuilder addTemplate(boolean isTemplate) {
         addCondition(Operator.EQUAL,
                 isTemplate,
                 AttributeType.EXPERIMENT,
@@ -42,7 +42,7 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public ExperimentSearchRequestBuilder addId(int id) {
+    public ExperimentSearchConditionBuilder addId(int id) {
         addCondition(Operator.EQUAL,
                 id,
                 AttributeType.EXPERIMENT,
@@ -50,14 +50,14 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         return this;
     }
 
-    public ExperimentSearchRequestBuilder addUserName(String userName) {
+    public ExperimentSearchConditionBuilder addUserName(String userName) {
         addCondition(Operator.ILIKE,
                 "%" + userName + "%",
                 AttributeType.MEMBER_NAME);
         return this;
     }
 
-    public ExperimentSearchRequestBuilder addDescription(String description) {
+    public ExperimentSearchConditionBuilder addDescription(String description) {
         addCondition(Operator.ILIKE,
                 "%" + description + "%",
                 AttributeType.TEXT);

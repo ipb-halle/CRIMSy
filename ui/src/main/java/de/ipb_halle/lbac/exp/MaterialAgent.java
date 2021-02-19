@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -89,7 +89,7 @@ public class MaterialAgent implements Serializable {
     }
 
     private SearchRequest createSearchRequest() {
-        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(
+        MaterialSearchConditionBuilder builder = new MaterialSearchConditionBuilder(
                 this.userBean.getCurrentAccount(),
                 0,
                 MAX_MATERIALS_TO_SEARCH);
