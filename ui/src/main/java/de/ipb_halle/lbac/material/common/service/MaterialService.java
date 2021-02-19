@@ -64,6 +64,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.DbField;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.OrderDirection;
@@ -240,7 +241,10 @@ public class MaterialService implements Serializable {
         EntityGraph graph = createEntityGraph();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
+        //Achtung, hier neue Sachen
+        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder();
+        Condition con =materialBuilder.convertRequestToCondition(request);
+        // Ende
         permissionConditionBuilder
                 = new PermissionConditionBuilder(materialBuilder, request.getUser(), ACPermission.permREAD)
                         .addFields(AttributeType.MATERIAL);

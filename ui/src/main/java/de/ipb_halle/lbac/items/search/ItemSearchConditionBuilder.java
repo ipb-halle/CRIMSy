@@ -19,9 +19,12 @@ package de.ipb_halle.lbac.items.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
+import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.Operator;
+import java.util.HashMap;
 
 /**
  *
@@ -86,6 +89,11 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                 " CAST(%s AS MOLECULE) ",
                 AttributeType.MOLECULE);
         return this;
+    }
+
+    @Override
+    public Condition convertRequestToCondition(SearchRequest request) {
+        return null;
     }
 
 }

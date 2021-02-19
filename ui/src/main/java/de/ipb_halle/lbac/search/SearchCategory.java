@@ -31,5 +31,5 @@ public enum SearchCategory {
     TYPE,
     MATERIAL,
     LOCATION,
-    DESCRIPTION
+    TEXT
 }

@@ -83,18 +83,19 @@ public abstract class SearchConditionBuilder {
 
         return searchRequest;
     }
-    
-      /**
+
+    public abstract Condition convertRequestToCondition(SearchRequest request);
+
+    /**
      * @param user the user for whom the access control condition is to be built
      * @param permission the permission to check
-     * @param acObjAttrtype one or more values of <code>AttributeType</code> to select 
-     * the entity to which the generated condition should be applied
-     * @return a <code>Condition</code> object to be applied to an EntityGraph which 
-     * contains an entity sub graph created by the getEntityGraph() method of this class.
-     * The built condition honours the two possibilities of obtaining access: either by 
-     * group membership in an allowed group or by object ownership and a specific 
-     * owner ACE:
-     * <code>
+     * @param acObjAttrtype one or more values of <code>AttributeType</code> to
+     * select the entity to which the generated condition should be applied
+     * @return a <code>Condition</code> object to be applied to an EntityGraph
+     * which contains an entity sub graph created by the getEntityGraph() method
+     * of this class. The built condition honours the two possibilities of
+     * obtaining access: either by group membership in an allowed group or by
+     * object ownership and a specific owner ACE:      <code>
      *       ((acObjAttrType:MEMBER = user AND acObjAttrType:ACE:MEMBER = OWNER_ACCOUNT) OR
      *       acObjAttrType:MEMBERSHIP:MEMBER = user)
      *     AND
@@ -103,50 +104,57 @@ public abstract class SearchConditionBuilder {
      */
     public Condition getCondition(
             User user,
-            ACPermission permission, 
+            ACPermission permission,
             AttributeType... acObjAttrType) {
 
         Condition ownerCondition = new Condition(
-            Operator.AND,
-            new Condition(
-                new Attribute(acObjAttrType).addType(AttributeType.MEMBER),
-                Operator.EQUAL,
-                new Value(user.getId())),
-            new Condition(
-                new Attribute(acObjAttrType).addTypes(new AttributeType[] {
+                Operator.AND,
+                new Condition(
+                        new Attribute(acObjAttrType).addType(AttributeType.MEMBER),
+                        Operator.EQUAL,
+                        new Value(user.getId())),
+                new Condition(
+                        new Attribute(acObjAttrType).addTypes(new AttributeType[]{
                     AttributeType.ACE,
-                    AttributeType.MEMBER }),
-                Operator.EQUAL,
-                new Value(GlobalAdmissionContext.OWNER_ACCOUNT_ID))
-            );
+                    AttributeType.MEMBER}),
+                        Operator.EQUAL,
+                        new Value(GlobalAdmissionContext.OWNER_ACCOUNT_ID))
+        );
 
         Condition memberCondition = new Condition(
-            Operator.OR,
-            ownerCondition, 
-            new Condition(
-                new Attribute(acObjAttrType).addTypes(new AttributeType[] { 
-                    AttributeType.MEMBERSHIP, 
-                    AttributeType.MEMBER }),
-                Operator.EQUAL,
-                new Value(user.getId()))
-            );
+                Operator.OR,
+                ownerCondition,
+                new Condition(
+                        new Attribute(acObjAttrType).addTypes(new AttributeType[]{
+                    AttributeType.MEMBERSHIP,
+                    AttributeType.MEMBER}),
+                        Operator.EQUAL,
+                        new Value(user.getId()))
+        );
 
         return new Condition(
-            Operator.AND, 
-            memberCondition, 
-            new Condition(getPermissionAttribute(permission).addTypes(acObjAttrType), 
-                Operator.IS_TRUE));
+                Operator.AND,
+                memberCondition,
+                new Condition(getPermissionAttribute(permission).addTypes(acObjAttrType),
+                        Operator.IS_TRUE));
     }
-    
+
     private Attribute getPermissionAttribute(ACPermission perm) {
-        switch(perm) {
-            case permREAD : return new Attribute(AttributeType.PERM_READ);
-            case permEDIT : return new Attribute(AttributeType.PERM_EDIT);
-            case permCHOWN : return new Attribute(AttributeType.PERM_CHOWN);
-            case permGRANT : return new Attribute(AttributeType.PERM_GRANT);
-            case permSUPER : return new Attribute(AttributeType.PERM_SUPER);
-            case permCREATE : return new Attribute(AttributeType.PERM_CREATE);
-            case permDELETE : return new Attribute(AttributeType.PERM_DELETE);
+        switch (perm) {
+            case permREAD:
+                return new Attribute(AttributeType.PERM_READ);
+            case permEDIT:
+                return new Attribute(AttributeType.PERM_EDIT);
+            case permCHOWN:
+                return new Attribute(AttributeType.PERM_CHOWN);
+            case permGRANT:
+                return new Attribute(AttributeType.PERM_GRANT);
+            case permSUPER:
+                return new Attribute(AttributeType.PERM_SUPER);
+            case permCREATE:
+                return new Attribute(AttributeType.PERM_CREATE);
+            case permDELETE:
+                return new Attribute(AttributeType.PERM_DELETE);
         }
         throw new IllegalArgumentException("illegal argument");
     }

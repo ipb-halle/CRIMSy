@@ -20,9 +20,12 @@ package de.ipb_halle.lbac.material.common.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
+import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
+import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +39,21 @@ import org.apache.logging.log4j.Logger;
 public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    public MaterialSearchConditionBuilder() {
+        super(null, 0, 0);
+    }
+    
+    @Override
+    public  Condition convertRequestToCondition(SearchRequest request){
+//        for(SearchCategory sc : request.getSearchValues().keySet()){
+//            if(sc==SearchCategory.STRUCTURE){
+//                addSubMolecule(request.getSearchValues().get(sc).iterator().next());
+//            }
+//        }
+//        
+       return null;
+    }
 
     public MaterialSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);

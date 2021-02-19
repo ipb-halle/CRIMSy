@@ -19,8 +19,10 @@ package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
+import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.Operator;
 
 /**
@@ -31,7 +33,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
     public ExperimentSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
-        target=SearchTarget.EXPERIMENT;
+        target = SearchTarget.EXPERIMENT;
     }
 
     public ExperimentSearchConditionBuilder addTemplate(boolean isTemplate) {
@@ -62,6 +64,11 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
                 "%" + description + "%",
                 AttributeType.TEXT);
         return this;
+    }
+
+    @Override
+    public Condition convertRequestToCondition(SearchRequest request) {
+        return null;
     }
 
 }

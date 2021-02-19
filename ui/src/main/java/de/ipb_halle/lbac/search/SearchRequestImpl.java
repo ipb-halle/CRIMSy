@@ -138,4 +138,9 @@ public class SearchRequestImpl implements SearchRequest {
         }
 
     }
+
+    @Override
+    public Map<SearchCategory, Set<String>> getSearchValues() {
+        return new HashMap<>();
+    }
 }
