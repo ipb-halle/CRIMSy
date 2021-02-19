@@ -80,7 +80,7 @@ public class PreferenceEntity implements Serializable {
      * @param id
      * @return
      */
-    public PreferenceEntity setId(Integer i) {
+    public PreferenceEntity setId(Integer id) {
         this.id = id;
         return this;
     }

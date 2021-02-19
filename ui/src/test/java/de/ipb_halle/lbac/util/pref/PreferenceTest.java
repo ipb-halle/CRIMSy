@@ -17,62 +17,24 @@
  */
 package de.ipb_halle.lbac.util.pref;
 
-import de.ipb_halle.lbac.EntityManagerService;
-import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.admission.UserEntity;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
 import org.junit.Assert;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 
 /**
  * This class will provide some test cases around Preferences.
  */
-@RunWith(Arquillian.class)
-public class PreferenceTest extends TestBase {
-
-    private final static String TESTKEY = "TESTKEY";
-    @Inject
-    private PreferenceService preferenceService;
-
-    @Inject
-    private EntityManagerService entityManagerService;
-
-    @Deployment
-    public static WebArchive createDeployment() {
-        return prepareDeployment("PreferenceTest.war")
-                .addClass(EntityManagerService.class)
-                .addClass(PreferenceService.class);
-    }
-
+public class PreferenceTest {
     private User user;
 
-    /**
-     * preference tests
-     */
-    @Test(expected = NullPointerException.class)
-    public void testPreference() {
-        this.user = createUser("ptester", "Preference Tester");
+    @Before
+    public void beforeTest() {
+        this.user = new User();
+        user.setName("Preference Tester");
+    }
 
-        assertEquals("testPermissions(): return default preference initially",
-                this.preferenceService.getPreferenceValue(this.user, TESTKEY, "default"),
-                "default");
-
-        this.preferenceService.setPreference(this.user, TESTKEY, "success");
-
-        assertEquals("testPermissions(): return real preference value",
-                this.preferenceService.getPreferenceValue(this.user, TESTKEY, "default"),
-                "success");
-
+    public void test001_equals_hashCode_toString() {
         Preference pref1 = new Preference(user, "category-1", "1");
         Preference pref2 = new Preference(user, "category-1", "1");
         Assert.assertTrue(pref1.equals(pref2));
@@ -90,18 +52,27 @@ public class PreferenceTest extends TestBase {
 
         Assert.assertEquals(1537730926, pref3.hashCode());
 
-        Assert.assertEquals("Preference{key='category-2', value='1', user='Preference Tester'}", pref3.toString());
+        Assert.assertEquals(
+                "Preference{id='null', key='category-2', value='1', user='Preference Tester'}",
+                pref3.toString());
+    }
 
-        new Preference();
+    @Test(expected = NullPointerException.class)
+    public void test002_constructor1_NPE() {
         new Preference(null, null, null);
     }
 
-    @After
-    public void finish() {
-        /*
-         * deletion cascades to preferences table
-         */
-        this.entityManagerService.removeEntity(UserEntity.class, this.user.getId());
+    @Test(expected = NullPointerException.class)
+    public void test003_constructor2_nullKey_NPE() {
+        PreferenceEntity entity = new PreferenceEntity();
+        entity.setKey(null);
+        new Preference(entity, user);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void test003_constructor2_nullUser_NPE() {
+        PreferenceEntity entity = new PreferenceEntity();
+        entity.setKey("abc");
+        new Preference(entity, null);
+    }
 }
