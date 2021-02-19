@@ -18,7 +18,12 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
+import static de.ipb_halle.lbac.entity.InfoObjectEntity_.value;
 import de.ipb_halle.lbac.search.lang.Condition;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -30,13 +35,25 @@ public class SearchRequestImpl implements SearchRequest {
 
     private SearchTarget searchTarget;
     private Condition condition;
-    
-    
+
+    private Map<SearchCategory, Set<String>> searchValues;
+
     private int firstResultIndex;
     private int maxResults;
     private User user;
 
     public SearchRequestImpl() {
+        searchValues = new HashMap<>();
+    }
+
+    @Override
+    public SearchRequest addSearchCategory(SearchCategory cat, String... values) {
+        Set<String> valueSet = new HashSet<>();
+        for (String s : values) {
+            valueSet.add(s);
+        }
+        searchValues.put(cat, valueSet);
+        return this;
     }
 
     public int getFirstResultIndex() {

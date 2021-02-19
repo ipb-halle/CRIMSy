@@ -17,31 +17,19 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.lang.Condition;
-
 /**
  *
  * @author fmauz
  */
-public interface SearchRequest {
-
-    public Condition getCondition();
-
-    public int getFirstResult();
-
-    public int getMaxResults();
-
-    public User getUser();
-
-    public void setCondition(Condition c);
-
-    public SearchTarget getSearchTarget();
-
-    public void setSearchTarget(SearchTarget searchTarget);
-
-    public void setUser(User user);
-    
-    public SearchRequest addSearchCategory(SearchCategory cat,String ... values);
-
+public enum SearchCategory {
+    LABEL,
+    STRUCTURE,
+    NAME,
+    USER,
+    PROJECT,
+    INDEX,
+    TYPE,
+    MATERIAL,
+    LOCATION,
+    DESCRIPTION
 }

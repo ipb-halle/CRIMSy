@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.webservice.WebRequest;
 import java.util.ArrayList;
 import java.util.List;
