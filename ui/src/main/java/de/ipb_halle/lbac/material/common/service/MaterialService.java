@@ -223,7 +223,7 @@ public class MaterialService implements Serializable {
         MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
         permissionConditionBuilder
                 = new PermissionConditionBuilder(materialBuilder, request.getUser(), ACPermission.permREAD)
-                        .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
+                        .addFields(AttributeType.MATERIAL);
         String sql = countBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(
                         request.getCondition()));
@@ -243,7 +243,7 @@ public class MaterialService implements Serializable {
         MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
         permissionConditionBuilder
                 = new PermissionConditionBuilder(materialBuilder, request.getUser(), ACPermission.permREAD)
-                        .addFields(AttributeType.MATERIAL, AttributeType.MEMBER);
+                        .addFields(AttributeType.MATERIAL);
 
         String sql = sqlBuilder.query(
                 permissionConditionBuilder.addPermissionCondition(

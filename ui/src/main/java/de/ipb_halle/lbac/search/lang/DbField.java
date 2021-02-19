@@ -81,6 +81,11 @@ public class DbField {
         return this;
     }
 
+    DbField addAttributeType(AttributeType type) {
+        this.attributeTypes.add(type);
+        return this;
+    }
+
     DbField addAttributeTypes(Set<AttributeType> types) {
         this.attributeTypes.addAll(types);
         return this;

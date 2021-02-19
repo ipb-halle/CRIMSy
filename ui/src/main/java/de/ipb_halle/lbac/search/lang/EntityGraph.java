@@ -95,6 +95,9 @@ public class EntityGraph {
 
     protected EntityGraph addAttributeType(AttributeType type) {
         this.attributeTypes.add(type);
+        for (DbField field : this.fieldMap.values()) {
+            field.addAttributeType(type);
+        }        
         for (EntityGraph eg : this.children) {
             eg.addAttributeType(type);
         }
@@ -103,6 +106,9 @@ public class EntityGraph {
 
     protected EntityGraph addAttributeTypes(Set<AttributeType> types) {
         this.attributeTypes.addAll(types);
+        for (DbField field : this.fieldMap.values()) {
+            field.addAttributeTypes(types);
+        }
         for (EntityGraph eg : this.children) {
             eg.addAttributeTypes(types);
         }
@@ -118,7 +124,22 @@ public class EntityGraph {
         return this;
     }
 
+    public EntityGraph addChildInherit(EntityGraph child) {
+        addChild(child);
+        child.addAttributeTypes(this.attributeTypes);
+        return this;
+    }
+
+    /**
+     * add a field definition for query type EntityGraph objects
+     * @param dbField a field returned from the query string of the EntityGraph object
+     * @return the EntityGraph object
+     * @throws UnsupportedOperationException if object is not a query type EntityGraph
+     */
     public EntityGraph addField(DbField dbField) {
+        if (isEntityClass()) {
+            throw new UnsupportedOperationException("Illegal attempt to add field to entity class");
+        }
         this.fieldMap.put(dbField.getColumnName(), dbField); 
         return this;
     }

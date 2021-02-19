@@ -100,7 +100,7 @@ public class ACListService implements Serializable {
      */
     public EntityGraph getEntityGraph() {
         return new EntityGraph(ACEntryEntity.class)
-            .addChild(new EntityGraph(MembershipEntity.class)
+            .addChildInherit(new EntityGraph(MembershipEntity.class)
                 .addLinkField("member_id", "group_id")
             );
     }

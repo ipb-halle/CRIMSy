@@ -55,7 +55,7 @@ public abstract class EntityGraphBuilder {
             EntityGraph aclSubGraph,
             String linkField) {
         aclSubGraph.addLinkField(linkField, "aclist_id");
-        mainGraph.addChild(aclSubGraph);
+        mainGraph.addChildInherit(aclSubGraph);
     }
 
     public abstract EntityGraph buildEntityGraph();

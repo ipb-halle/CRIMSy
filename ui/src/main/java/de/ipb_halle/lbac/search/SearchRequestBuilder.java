@@ -95,10 +95,10 @@ public abstract class SearchRequestBuilder {
      * group membership in an allowed group or by object ownership and a specific 
      * owner ACE:
      * <code>
-     *       ((acObjAttrType:MEMBER = user AND ACE:MEMBER = OWNER_ACCOUNT) OR
-     *       MEMBERSHIP:MEMBER = user)
+     *       ((acObjAttrType:MEMBER = user AND acObjAttrType:ACE:MEMBER = OWNER_ACCOUNT) OR
+     *       acObjAttrType:MEMBERSHIP:MEMBER = user)
      *     AND
-     *       PERM_XXX IS TRUE
+     *       acObjAttrType:PERM_XXX IS TRUE
      * </code>
      */
     public Condition getCondition(
@@ -113,7 +113,7 @@ public abstract class SearchRequestBuilder {
                 Operator.EQUAL,
                 new Value(user.getId())),
             new Condition(
-                new Attribute(new AttributeType[] {
+                new Attribute(acObjAttrType).addTypes(new AttributeType[] {
                     AttributeType.ACE,
                     AttributeType.MEMBER }),
                 Operator.EQUAL,
@@ -124,7 +124,7 @@ public abstract class SearchRequestBuilder {
             Operator.OR,
             ownerCondition, 
             new Condition(
-                new Attribute(new AttributeType[] { 
+                new Attribute(acObjAttrType).addTypes(new AttributeType[] { 
                     AttributeType.MEMBERSHIP, 
                     AttributeType.MEMBER }),
                 Operator.EQUAL,
@@ -134,7 +134,7 @@ public abstract class SearchRequestBuilder {
         return new Condition(
             Operator.AND, 
             memberCondition, 
-            new Condition(getPermissionAttribute(permission), 
+            new Condition(getPermissionAttribute(permission).addTypes(acObjAttrType), 
                 Operator.IS_TRUE));
     }
     
