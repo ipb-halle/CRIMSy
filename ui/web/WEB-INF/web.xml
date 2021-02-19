@@ -202,6 +202,35 @@
         <param-name>net.bootsfaces.defaults.decorator</param-name>
         <param-value>false</param-value>
     </context-param>
+
+    <!-- MolecularFaces plugin settings -->
+    <context-param>
+        <param-name>de.ipb_halle.molecularfaces.OPENCHEMLIBJS_URL</param-name>
+        <param-value>/plugins/openchemlib-js/openchemlib-full.js</param-value>
+    </context-param>
+    <context-param>
+        <param-name>de.ipb_halle.molecularfaces.MOLPAINTJS_URL</param-name>
+        <param-value>/plugins/molpaintjs</param-value>
+    </context-param>
+    <!--<context-param>
+        <param-name>de.ipb_halle.molecularfaces.MARVINJS_BASE_URL</param-name>
+        <param-value>/plugins/marvinjs</param-value>
+    </context-param>
+    <context-param>
+        <param-name>de.ipb_halle.molecularfaces.MARVINJS_LICENSE_URL</param-name>
+        <param-value>marvin4js-license.cxl</param-value>
+    </context-param>-->
+
+    <!-- Plugin types from MolecularFaces that are available for users. -->
+    <!-- Available molecular structure plugin types: This needs to be a 
+         comma-separated list of item names from the enum class 
+         de.ipb_halle.molecularfaces.MolPluginCore.PluginType. The first
+         entry is taken as default plugin type. -->
+    <context-param>
+        <param-name>de.ipb_halle.lbac.AvailableMolPluginTypes</param-name>
+        <param-value>OpenChemLibJS,MolPaintJS</param-value>
+    </context-param>
+
     <!-- Document Servlet -->
     <servlet>
         <servlet-name>DocumentServlet</servlet-name>

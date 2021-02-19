@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+
+<h:body>
+    <ui:composition>
+        <p:tab title="#{msgs.admission_plugins_title}">
+            <b:form rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}">
+                <b:panel title="#{msgs.admission_plugins_molPlugin_title}" collapsible="false" look="info">
+                    <b:panelGrid colSpans="2,5,5">
+                        <h:panelGroup>
+                            <b:radiobutton value="#{pluginSettingsDialogControlerBean.molPluginType}"
+                                           ajax="true"
+                                           update="editorMolPluginPreview viewerMolPluginPreview">
+                                <f:selectItems value="#{pluginSettingsDialogControlerBean.availableMolPluginTypes}" />
+                            </b:radiobutton>
+
+                            <br />
+                            <h:outputText value="#{msgs.admission_plugins_molPlugin_loadExamples}" />
+                            <br />
+
+                            <br />
+                            <b:commandButton value="#{msgs.admission_plugins_molPlugin_benzene}"
+                                             look="info"
+                                             ajax="true"
+                                             process="@this"
+                                             action="#{pluginSettingsDialogControlerBean.actionLoadBenzene()}"
+                                             update="editorMolPluginPreview viewerMolPluginPreview" />
+                            <br />
+
+                            <br />
+                            <b:commandButton value="Chlorophyll a" 
+                                             look="info"
+                                             ajax="true"
+                                             process="@this"
+                                             action="#{pluginSettingsDialogControlerBean.actionLoadChlorophyllA()}"
+                                             update="editorMolPluginPreview viewerMolPluginPreview" />
+                            <br />
+
+                            <br />
+                            <b:commandButton value="Gramicidin S"
+                                             look="info"
+                                             ajax="true"
+                                             process="@this"
+                                             action="#{pluginSettingsDialogControlerBean.actionLoadGramicidinS()}"
+                                             update="editorMolPluginPreview viewerMolPluginPreview" />
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <h:outputText value="#{msgs.admission_plugins_molPlugin_editorPreview}" />
+                            <br />
+                            <br />
+
+                            <mol:molecule id="editorMolPluginPreview"
+                                          value="#{pluginSettingsDialogControlerBean.previewStructure}"
+                                          pluginType="#{pluginSettingsDialogControlerBean.molPluginType}"
+                                          border="true" />
+                        </h:panelGroup>
+
+                        <h:panelGroup>
+                            <h:outputText value="#{msgs.admission_plugins_molPlugin_viewerPreview}" />
+                            <br />
+                            <br />
+
+                            <mol:molecule id="viewerMolPluginPreview"
+                                          value="#{pluginSettingsDialogControlerBean.previewStructure}"
+                                          pluginType="#{pluginSettingsDialogControlerBean.molPluginType}"
+                                          readonly="true"
+                                          border="true" />
+                        </h:panelGroup>
+                    </b:panelGrid>
+                </b:panel>
+                <b:column styleClass="text-center">
+                    <b:commandButton ajax="true" update="@form growlMsg"
+                                     action="#{pluginSettingsDialogControlerBean.actionSave()}"
+                                     value="#{msgs.Save}"/>
+                </b:column>
+            </b:form>
+        </p:tab>
+    </ui:composition>
+</h:body>
+</html>

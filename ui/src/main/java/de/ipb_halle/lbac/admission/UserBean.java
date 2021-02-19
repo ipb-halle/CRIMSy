@@ -89,6 +89,9 @@ public class UserBean implements Serializable {
     @Inject
     private CollectionService collectionService;
 
+    @Inject
+    private UserPluginSettingsBean pluginSettings;
+
     private Navigator navigator;
 
     private String login = "";
@@ -294,6 +297,10 @@ public class UserBean implements Serializable {
 
     protected NodeService getNodeService() {
         return this.nodeService;
+    }
+
+    public UserPluginSettingsBean getPluginSettings() {
+        return pluginSettings;
     }
 
     public String getNewPassword() {
