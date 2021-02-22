@@ -117,6 +117,7 @@ public class SearchServiceTest extends TestBase {
                 publicAclId,
                 project1.getId(),
                 "Testmaterial-001");
+        materialCreator.addIndexToMaterial(materialid1, 2, "Index of material 1");
         materialid2 = materialCreator.createStructure(
                 publicUser.getId(),
                 publicAclId,
@@ -173,7 +174,7 @@ public class SearchServiceTest extends TestBase {
         request.setSearchTarget(SearchTarget.CONTAINER);
         searchService.search(Arrays.asList(request), node);
     }
-    
+
     @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test005_searchProject() {
@@ -207,8 +208,33 @@ public class SearchServiceTest extends TestBase {
         request = builder.build();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setId(String.valueOf(materialid1));
+        request = builder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setIndex("Index of material");
+        request = builder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setProjectName("Project-01");
+        request = builder.build();
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setStructure("XXX");
+        request = builder.build();
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setUserName(publicUser.getName());
+        request = builder.build();
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
     }
-    
+
     @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test007_searchItems() {
@@ -226,6 +252,7 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
+
     @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test008_searchExperiments() {

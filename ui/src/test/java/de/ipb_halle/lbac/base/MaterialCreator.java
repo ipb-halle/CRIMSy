@@ -69,6 +69,17 @@ public class MaterialCreator {
         return materialid;
     }
 
+    public void addIndexToMaterial(int materialId, int indexType, String indexValue) {
+        entityManagerService.doSqlUpdate(
+                String.format(
+                        SQL_INSERT_MATERIAL_INDEX,
+                        materialId,
+                        indexType,
+                        indexValue,
+                        "de",
+                        0));
+    }
+
     String SQL_INSERT_DETAIL_RIGHTS = "INSERT INTO materialdetailrights("
             + "materialid,aclistid,materialtypeid) VALUES(%d,%d,%d)";
 
