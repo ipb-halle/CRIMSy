@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
@@ -167,9 +168,9 @@ public class SearchFilter {
     }
 
     private SearchRequest createExperimentRequest() {
-        ExperimentSearchConditionBuilder expBuilder = new ExperimentSearchConditionBuilder(user, 0, maxresults);
-        expBuilder.addDescription(searchTerms);
-        return expBuilder.buildSearchRequest();
+        ExperimentSearchRequestBuilder expBuilder = new ExperimentSearchRequestBuilder(user, 0, maxresults);
+        expBuilder.addText(searchTerms);
+        return expBuilder.build();
     }
 
     public String getSearchTerms() {

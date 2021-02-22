@@ -64,6 +64,14 @@ public class SearchRequestImpl implements SearchRequest {
         this.firstResultIndex = firstResultIndex;
     }
 
+    public SearchRequestImpl(User u, int fistResults, int maxResults) {
+        this.firstResultIndex = fistResults;
+        this.maxResults = maxResults;
+        this.user = u;
+        this.searchValues = new HashMap<>();
+    }
+
+    @Deprecated
     public SearchRequestImpl(User u, Condition condition, int firstResult, int maxResults) {
         this.firstResultIndex = firstResult;
         this.maxResults = maxResults;
@@ -141,6 +149,6 @@ public class SearchRequestImpl implements SearchRequest {
 
     @Override
     public Map<SearchCategory, Set<String>> getSearchValues() {
-        return new HashMap<>();
+        return searchValues;
     }
 }

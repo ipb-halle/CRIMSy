@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import static de.ipb_halle.lbac.admission.MemberEntity_.node;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
@@ -34,7 +33,7 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
-import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.ItemDeployment;
@@ -215,8 +214,9 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test008_searchExperiments() {
-        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-        SearchRequest request = builder.buildSearchRequest();
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.addText("xxx");
+        SearchRequest request = builder.build();
         Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
