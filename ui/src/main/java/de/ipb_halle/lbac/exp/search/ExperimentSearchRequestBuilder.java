@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.exp.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchRequestImpl;
 import de.ipb_halle.lbac.search.SearchTarget;
 
@@ -27,26 +28,22 @@ import de.ipb_halle.lbac.search.SearchTarget;
  *
  * @author fmauz
  */
-public class ExperimentSearchRequestBuilder {
+public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
 
-    private User user;
-    private int firstResult;
-    private int maxResults;
     private String text;
     private SearchTarget target;
-
+    
     public ExperimentSearchRequestBuilder(User u, int firstResult, int maxResults) {
-        this.user = u;
-        this.firstResult = firstResult;
-        this.maxResults = maxResults;
+        super(u, firstResult, maxResults);
         this.target = SearchTarget.EXPERIMENT;
     }
-
+    
     public ExperimentSearchRequestBuilder addText(String text) {
         this.text = text;
         return this;
     }
-
+    
+    @Override
     public SearchRequest build() {
         SearchRequest request = new SearchRequestImpl(user, firstResult, maxResults);
         request.setSearchTarget(target);
