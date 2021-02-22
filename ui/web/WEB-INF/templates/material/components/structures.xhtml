@@ -25,8 +25,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:nwc="http://ipb-halle.de/nwc"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
     <h:body>
 
         <ui:composition>
@@ -49,11 +49,11 @@
                         </b:row>
                         <b:row>
                             <b:column span="6">
-                                <nwc:molPlugin
+                                <mol:molecule
                                     value="#{materialBean.structureInfos.structureModel}"
-                                    pluginType="MolPaintJS" 
-                                    edit="#{materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}">
-                                </nwc:molPlugin>
+                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}" 
+                                    readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}">
+                                </mol:molecule>
 
                             </b:column>
                             <b:column span="6">
