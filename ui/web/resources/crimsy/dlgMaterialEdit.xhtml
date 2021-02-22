@@ -24,8 +24,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:nwc="http://ipb-halle.de/nwc"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
     <composite:interface name="dlgMaterialEdit"
                          displayName="material edit dialog"
@@ -67,10 +67,7 @@
                                         <p:commandButton id="searchButton" 
                                                          styleClass="materialDlgSearchButton"
                                                          value="#{msgs.materialAgent_label_search}"
-                                                         onclick="$('body').addClass('waiting');
-                                                                if ( #{cc.attrs.agent.showMolEditor} ) { 
-                                                                    $('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));
-                                                                }"
+                                                         onclick="$('body').addClass('waiting');"
                                                          action="#{cc.attrs.agent.actionTriggerMaterialSearch()}"
                                                          oncomplete="$('body').removeClass('waiting');"
                                                          update="@(.materialEdit)" /> 
@@ -88,11 +85,12 @@
                                 </p:row>
                                 <p:row styleClass="borderless">
                                     <p:column colspan="12" styleClass="borderless">
-                                        <nwc:molPlugin id="molEditor"
-                                                       rendered="#{cc.attrs.agent.showMolEditor}"
-                                                       value="#{cc.attrs.agent.moleculeSearch}" 
-                                                       plugintype="MolPaintJS"
-                                                       edit="true"/>
+                                        <mol:molecule id="molEditor"
+                                                      rendered="#{cc.attrs.agent.showMolEditor}"
+                                                      value="#{cc.attrs.agent.moleculeSearch}"
+                                                      border="true"
+                                                      plugintype="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                      readonly="false"/>
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>
