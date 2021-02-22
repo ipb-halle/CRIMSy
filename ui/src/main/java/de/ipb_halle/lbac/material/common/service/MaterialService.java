@@ -241,17 +241,11 @@ public class MaterialService implements Serializable {
         EntityGraph graph = createEntityGraph();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        //Achtung, hier neue Sachen
-        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder();
-        Condition con =materialBuilder.convertRequestToCondition(request);
-        // Ende
-        permissionConditionBuilder
-                = new PermissionConditionBuilder(materialBuilder, request.getUser(), ACPermission.permREAD)
-                        .addFields(AttributeType.MATERIAL);
 
-        String sql = sqlBuilder.query(
-                permissionConditionBuilder.addPermissionCondition(
-                        request.getCondition()),
+        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder();
+        Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
+
+        String sql = sqlBuilder.query(con,
                 createOrderList());
         Query q = em.createNativeQuery(sql, MaterialEntity.class);
         q.setFirstResult(request.getFirstResult());
@@ -692,8 +686,7 @@ public class MaterialService implements Serializable {
     }
 
     private EntityGraph createEntityGraph() {
-        graphBuilder = new MaterialEntityGraphBuilder(aclService);
-
+        graphBuilder = new MaterialEntityGraphBuilder();
         return graphBuilder.buildEntityGraph();
     }
 }

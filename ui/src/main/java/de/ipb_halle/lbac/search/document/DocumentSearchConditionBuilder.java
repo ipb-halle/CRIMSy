@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.document;
 
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -52,7 +53,7 @@ public class DocumentSearchConditionBuilder extends SearchConditionBuilder {
     }
 
     @Override
-    public Condition convertRequestToCondition(SearchRequest request) {
+    public Condition convertRequestToCondition(SearchRequest request, ACPermission ...acPermission) {
         return null;
     }
 

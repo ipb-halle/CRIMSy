@@ -93,7 +93,7 @@ public class EntityGraph {
         }
     }
 
-    protected EntityGraph addAttributeType(AttributeType type) {
+    public EntityGraph addAttributeType(AttributeType type) {
         this.attributeTypes.add(type);
         for (DbField field : this.fieldMap.values()) {
             field.addAttributeType(type);
@@ -104,7 +104,7 @@ public class EntityGraph {
         return this;
     }
 
-    protected EntityGraph addAttributeTypes(Set<AttributeType> types) {
+    public EntityGraph addAttributeTypes(Set<AttributeType> types) {
         this.attributeTypes.addAll(types);
         for (DbField field : this.fieldMap.values()) {
             field.addAttributeTypes(types);

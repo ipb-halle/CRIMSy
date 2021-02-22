@@ -25,6 +25,9 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import static java.util.stream.Collectors.toMap;
+import java.util.stream.Stream;
 
 /**
  * Represents a materialtpye from the database. Every type has some detail
@@ -59,6 +62,7 @@ public enum MaterialType implements Serializable {
             7, MaterialDetailType.COMMON_INFORMATION);
 
     private final List<MaterialDetailType> types;
+    private static final Map<String, MaterialType>  string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
     private final int id;
 
     /**
@@ -71,6 +75,10 @@ public enum MaterialType implements Serializable {
         this.id = id;
     }
 
+    public static MaterialType fromString(String type) {
+        return string2Enum.get(type);
+    }
+    
     /**
      * Returns all detail informations of the specific type
      *

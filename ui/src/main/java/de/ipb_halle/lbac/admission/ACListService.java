@@ -93,11 +93,13 @@ public class ACListService implements Serializable {
     }
 
     /**
+     * Deprecated; use EntityGraphBuilder.getACESubGraph() instead!
      * @return an entity subgraph suitable for access control and relating  
      * to the acentries and memberships tables. The returned 
      * <code>EntityGraph</code> object requires its link field to be set via 
      * <code>.setLinkField(..., "aclist_id")</code>.
      */
+    @Deprecated
     public EntityGraph getEntityGraph() {
         return new EntityGraph(ACEntryEntity.class)
             .addChildInherit(new EntityGraph(MembershipEntity.class)

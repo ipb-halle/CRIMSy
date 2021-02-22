@@ -60,7 +60,7 @@ public class PermissionConditionBuilder {
     }
 
     private Condition addAclCondition(Condition originalCondition, AttributeType[] fields) {
-        Condition condition = searchRequestBuilder.getCondition(
+        Condition condition = searchRequestBuilder.getACLCondition(
                 user,
                 permission,
                 fields);

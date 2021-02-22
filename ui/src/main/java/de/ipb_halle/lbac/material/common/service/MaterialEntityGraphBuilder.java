@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.material.structure.MoleculeEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
@@ -39,21 +40,27 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     protected ACListService aclistService;
     protected EntityGraph detailRightSubGraph;
 
+    @Deprecated
     public MaterialEntityGraphBuilder(ACListService aclistService) {
         super(MaterialEntity.class);
         this.aclistService = aclistService;
     }
+    
+    public MaterialEntityGraphBuilder() {
+        super(MaterialEntity.class);
+    }
 
     protected void addProject() {
-        addJoin(JoinType.LEFT, ProjectEntity.class, "projectid", "id");
+        addJoinInherit(JoinType.LEFT, ProjectEntity.class, "projectid", "id");
     }
 
     protected void addIndex() {
         addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
     }
 
-    protected void addUser() {
-        addJoin(JoinType.INNER, MemberEntity.class, "ownerid", "id");
+    protected void addOwner() {
+        EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "ownerid", "id");
+        owner.addAttributeType(AttributeType.OWNER);
     }
 
     protected void addDetailRights() {
@@ -75,7 +82,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     public EntityGraph buildEntityGraph() {
         addProject();
         addIndex();
-        addUser();
+        addOwner();
         addStructure();
         addDetailRights();
         addAcls();

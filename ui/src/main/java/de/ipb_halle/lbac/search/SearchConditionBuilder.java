@@ -40,12 +40,14 @@ public abstract class SearchConditionBuilder {
     protected User user;
     protected SearchTarget target;
 
+    @Deprecated
     public SearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         this.user = u;
         this.firstResultIndex = firstResultIndex;
         this.maxResults = maxResults;
     }
 
+    @Deprecated
     protected void addCondition(Operator op, Object value, AttributeType... types) {
         leafConditions.add(new Condition(
                 new Attribute(types),
@@ -53,6 +55,7 @@ public abstract class SearchConditionBuilder {
                 new de.ipb_halle.lbac.search.lang.Value(value)));
     }
 
+    @Deprecated
     protected void addConditionWithCast(Operator op, Object value, String castExpression, AttributeType... types) {
         de.ipb_halle.lbac.search.lang.Value valueWithCast = new de.ipb_halle.lbac.search.lang.Value(value);
         valueWithCast.setCastExpression(castExpression);
@@ -62,6 +65,7 @@ public abstract class SearchConditionBuilder {
                 valueWithCast));
     }
 
+    @Deprecated
     private Condition buildConditions() {
         switch (this.leafConditions.size()) {
             case 0:
@@ -72,6 +76,7 @@ public abstract class SearchConditionBuilder {
         return new Condition(Operator.AND, leafConditions.toArray(new Condition[]{}));
     }
 
+    @Deprecated
     public SearchRequest buildSearchRequest() {
         SearchRequestImpl searchRequest = new SearchRequestImpl(
                 user,
@@ -84,7 +89,7 @@ public abstract class SearchConditionBuilder {
         return searchRequest;
     }
 
-    public abstract Condition convertRequestToCondition(SearchRequest request);
+    public abstract Condition convertRequestToCondition(SearchRequest request, ACPermission ...perm);
 
     /**
      * @param user the user for whom the access control condition is to be built
@@ -102,7 +107,7 @@ public abstract class SearchConditionBuilder {
      *       acObjAttrType:PERM_XXX IS TRUE
      * </code>
      */
-    public Condition getCondition(
+    protected Condition getACLCondition(
             User user,
             ACPermission permission,
             AttributeType... acObjAttrType) {
@@ -139,6 +144,24 @@ public abstract class SearchConditionBuilder {
                         Operator.IS_TRUE));
     }
 
+    protected Condition getBinaryLeafCondition(Operator op, Object value, AttributeType ...attrTypes) {
+        return new Condition(
+                new Attribute(attrTypes),
+                op,
+                new Value(value));
+    }
+
+    protected Condition getBinaryLeafConditionWithCast(Operator op, Object value, String castExpression, AttributeType... attrTypes) {
+        Value valueWithCast = new Value(value)
+                .setCastExpression(castExpression);
+        return new Condition(
+                new Attribute(attrTypes),
+                op,
+                valueWithCast);
+    }
+
+    
+    
     private Attribute getPermissionAttribute(ACPermission perm) {
         switch (perm) {
             case permREAD:

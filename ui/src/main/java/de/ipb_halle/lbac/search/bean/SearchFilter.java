@@ -116,7 +116,6 @@ public class SearchFilter {
 
     private SearchRequest createMaterialSearchRequest() {
         MaterialSearchConditionBuilder materialRequestBuilder = new MaterialSearchConditionBuilder(user, 0, maxresults);
-        materialRequestBuilder.addDeactivated(false);
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
         searchValue.materialName = searchTerms;
         if (advancedSearchActive) {

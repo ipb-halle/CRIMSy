@@ -27,9 +27,10 @@ public enum SearchCategory {
     NAME,
     USER,
     PROJECT,
-    INDEX,
-    TYPE,
-    MATERIAL,
+    INDEX,      // need also INDEX_TYPE?
+    TYPE,       // should be MATERIAL_TYPE?
+    MATERIAL,   // used by Item...
     LOCATION,
+    DEACTIVATED,
     TEXT
 }

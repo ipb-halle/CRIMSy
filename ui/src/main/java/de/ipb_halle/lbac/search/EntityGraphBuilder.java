@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.admission.ACEntryEntity;
+import de.ipb_halle.lbac.admission.MembershipEntity;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
@@ -40,6 +42,13 @@ public abstract class EntityGraphBuilder {
         graph.addChild(child);
         return child;
     }
+    protected EntityGraph addJoinInherit(JoinType type, Class joinedEntity, String leftJoinField, String rightJoinField) {
+        EntityGraph child = new EntityGraph(joinedEntity)
+                .addLinkField(leftJoinField, rightJoinField)
+                .setJoinType(type);
+        graph.addChildInherit(child);
+        return child;
+    }
 
     protected EntityGraph addJoinToChild(JoinType type, EntityGraph subGraph, Class joinedEntity, String leftJoinField, String rightJoinField) {
         EntityGraph child = new EntityGraph(joinedEntity)
@@ -59,4 +68,18 @@ public abstract class EntityGraphBuilder {
     }
 
     public abstract EntityGraph buildEntityGraph();
+    
+    /**
+     * @return an entity subgraph suitable for access control and relating  
+     * to the acentries and memberships tables. The returned 
+     * <code>EntityGraph</code> object requires its link field to be set via 
+     * <code>.setLinkField(..., "aclist_id")</code>.
+     */
+    public EntityGraph getACESubGraph() {
+        return new EntityGraph(ACEntryEntity.class)
+            .addChildInherit(new EntityGraph(MembershipEntity.class)
+                .addLinkField("member_id", "group_id")
+            );
+    }
+
 }

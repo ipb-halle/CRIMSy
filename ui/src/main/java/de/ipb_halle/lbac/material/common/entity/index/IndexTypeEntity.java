@@ -32,6 +32,13 @@ import javax.persistence.Table;
 public class IndexTypeEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
+    
+    /**
+     * Index id 1 corresponds to names and is always
+     * present
+     */
+    public final static int INDEX_TYPE_NAME = 1;
+    
     @Id
     private Integer id;
 

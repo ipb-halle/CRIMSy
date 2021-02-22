@@ -44,6 +44,7 @@ public enum Operator {
     LESS(" < "),
     LESS_EQUAL(" <= "),
     EQUAL(" = "),
+    NOT_EQUAL(" <> "),
     GREATER_EQUAL(" >= "),
     GREATER(" = "),
     LIKE(" LIKE "),

@@ -46,6 +46,7 @@ public class MaterialIndexEntryEntity implements Serializable {
     private int materialid;
 
     @Column
+    @AttributeTag(type=AttributeType.INDEX_TYPE)
     private int typeid;
 
     @Column
