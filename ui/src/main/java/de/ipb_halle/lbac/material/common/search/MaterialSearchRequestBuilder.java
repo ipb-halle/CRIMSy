@@ -39,6 +39,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private String userName;
     private String projectName;
     private final Set<MaterialType> types = new HashSet<>();
+    private String materialName;
 
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -55,6 +56,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         addId(request);
         addUser(request);
         addProject(request);
+        addMaterialName(request);
 
         return request;
     }
@@ -82,6 +84,14 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
             request.addSearchCategory(SearchCategory.USER, userName);
         }
     }
+    
+     private void addMaterialName(SearchRequest request) {
+        if (materialName != null) {
+            request.addSearchCategory(SearchCategory.NAME, materialName);
+        }
+    }
+    
+    
 
     private void addProject(SearchRequest request) {
         if (projectName != null) {
@@ -121,6 +131,10 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
     }
 
 }

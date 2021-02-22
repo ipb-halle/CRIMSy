@@ -49,7 +49,6 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
     public MaterialSearchConditionBuilder() {
         super(null, 0, 0);
     }
-    
 
     @Deprecated
     public MaterialSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
@@ -59,24 +58,25 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     /**
      * Create an access control condition and combine it with other conditions.
+     *
      * @param conditionList
      * @param request
      * @param acPermission
      * @return the combined condition
      */
-    private Condition addACL(List<Condition> conditionList, SearchRequest request, ACPermission ...acPermission) {
-        List<Condition> subCondition = new ArrayList<> ();
-        for (ACPermission perm: acPermission) {
+    private Condition addACL(List<Condition> conditionList, SearchRequest request, ACPermission... acPermission) {
+        List<Condition> subCondition = new ArrayList<>();
+        for (ACPermission perm : acPermission) {
             subCondition.add(getACLCondition(
-                request.getUser(),
-                perm,
-                AttributeType.MATERIAL));
+                    request.getUser(),
+                    perm,
+                    AttributeType.MATERIAL));
         }
-        
-        Condition aclCondition = (subCondition.size() > 1) 
+
+        Condition aclCondition = (subCondition.size() > 1)
                 ? new Condition(
-                    Operator.OR,
-                    subCondition.toArray(new Condition[0]))
+                        Operator.OR,
+                        subCondition.toArray(new Condition[0]))
                 : subCondition.get(0);
 
         if (conditionList.isEmpty()) {
@@ -84,28 +84,31 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         }
         conditionList.add(aclCondition);
         return new Condition(
-            Operator.AND,
-            conditionList.toArray(new Condition[0]));
+                Operator.AND,
+                conditionList.toArray(new Condition[0]));
     }
-    
+
     private void addDeactivatedCondition(List<Condition> conditionList, Set<String> values) {
         Boolean deactivated = Boolean.FALSE;
-        for(String val : values) {
+        for (String val : values) {
             deactivated |= (val.compareToIgnoreCase("deactivated") == 0);
         }
         Condition con = getBinaryLeafCondition(
-                    Operator.EQUAL,
-                    deactivated,
-                    AttributeType.MATERIAL,
-                    AttributeType.DEACTIVATED);
+                Operator.EQUAL,
+                deactivated,
+                AttributeType.MATERIAL,
+                AttributeType.DIRECT,
+                AttributeType.DEACTIVATED);
         conditionList.add(con);
     }
-    
+
     /**
      * Create an ORed condition for index values
+     *
      * @param conditionList
-     * @param values 
-     * @param isName limit search to names (true), indices (false) or not at all (null) 
+     * @param values
+     * @param isName limit search to names (true), indices (false) or not at all
+     * (null)
      */
     private void addIndexCondition(List<Condition> conditionList, Set<String> values, Boolean isName) {
         if (isName != null) {
@@ -115,23 +118,23 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     AttributeType.MATERIAL,
                     AttributeType.INDEX_TYPE);
             conditionList.add(new Condition(
-                Operator.AND,
-                getIndexCondition(values),
-                typeCondition));
+                    Operator.AND,
+                    getIndexCondition(values),
+                    typeCondition));
             return;
         }
         conditionList.add(getIndexCondition(values));
     }
 
     private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
-        Set<Integer> idSet = new HashSet<> ();
+        Set<Integer> idSet = new HashSet<>();
         for (String value : values) {
             try {
                 int id = Integer.parseInt(value);
                 if (id > 0) {
                     idSet.add(id);
                 }
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 // ignore
             }
         }
@@ -145,11 +148,11 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
     }
 
     private void addMaterialTypeCondition(List<Condition> conditionList, Set<String> values) {
-        Set<MaterialType> types = new HashSet<> ();
+        Set<MaterialType> types = new HashSet<>();
         for (String val : values) {
             MaterialType t = MaterialType.fromString(val);
             if (t != null) {
-                    types.add(t);
+                types.add(t);
             }
         }
         if (types.size() > 0) {
@@ -170,6 +173,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
                 AttributeType.MATERIAL,
+                AttributeType.DIRECT,
                 AttributeType.OWNER,
                 AttributeType.MEMBER_NAME);
         conditionList.add(con);
@@ -187,7 +191,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                 AttributeType.PROJECT_NAME);
         conditionList.add(con);
     }
-    
+
     private void addStructureCondition(List<Condition> conditionList, Set<String> values) {
         if (values.size() != 1) {
             throw new IllegalArgumentException("Addition of multiple structures currently not supported");
@@ -200,45 +204,45 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
     }
 
     @Override
-    public Condition convertRequestToCondition(SearchRequest request, ACPermission ...perm) {
-        List<Condition> conditionList = new ArrayList<> ();
+    public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
+        List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
             switch (entry.getKey()) {
-                case DEACTIVATED :
+                case DEACTIVATED:
                     addDeactivatedCondition(conditionList, entry.getValue());
                     break;
-                case INDEX :
+                case INDEX:
                     addIndexCondition(conditionList, entry.getValue(), Boolean.FALSE);
                     break;
-                case LABEL : 
+                case LABEL:
                     addLabelCondition(conditionList, entry.getValue());
                     break;
-                case NAME :
+                case NAME:
                     addIndexCondition(conditionList, entry.getValue(), Boolean.TRUE);
                     break;
-                case PROJECT :
+                case PROJECT:
                     addProjectCondition(conditionList, entry.getValue());
                     break;
-                case STRUCTURE :
+                case STRUCTURE:
                     addStructureCondition(conditionList, entry.getValue());
                     break;
-                case TEXT :
+                case TEXT:
                     addIndexCondition(conditionList, entry.getValue(), null);
                     break;
-                case TYPE :
+                case TYPE:
                     addMaterialTypeCondition(conditionList, entry.getValue());
                     break;
-                case USER :
+                case USER:
                     addOwnerCondition(conditionList, entry.getValue());
                     break;
             }
         }
-        return addACL(conditionList, request);
+        return addACL(conditionList, request, perm);
     }
 
     @Deprecated
     public void setConditionsBySearchValues(MaterialSearchMaskValues values) {
-/*
+        /*
         if (values != null) {
             if (values.id != null) {
                 addID(values.id);
@@ -270,23 +274,23 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
             }
 
         }
-*/  
+         */
     }
 
     private Condition getIndexCondition(Set<String> values) {
-        ArrayList<Condition> subConditionList = new ArrayList<> ();
+        ArrayList<Condition> subConditionList = new ArrayList<>();
         for (String value : values) {
             subConditionList.add(getBinaryLeafCondition(
-                Operator.ILIKE,
-                "%" + value + "%",
-                AttributeType.MATERIAL,
-                AttributeType.TEXT));
+                    Operator.ILIKE,
+                    "%" + value + "%",
+                    AttributeType.MATERIAL,
+                    AttributeType.TEXT));
         }
         if (subConditionList.size() > 1) {
             return new Condition(
-                        Operator.OR,
-                        subConditionList.toArray(new Condition[0])
-                );
+                    Operator.OR,
+                    subConditionList.toArray(new Condition[0])
+            );
         }
         if (subConditionList.size() > 0) {
             return subConditionList.get(0);
@@ -294,7 +298,6 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         throw new IllegalArgumentException("Could not create Condition");
     }
 
- 
     private Set<Integer> getIdsFromMaterialTypes(MaterialType... types) {
         Set<Integer> ids = new HashSet<>();
         for (MaterialType t : types) {

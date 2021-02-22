@@ -173,7 +173,8 @@ public class SearchServiceTest extends TestBase {
         request.setSearchTarget(SearchTarget.CONTAINER);
         searchService.search(Arrays.asList(request), node);
     }
-
+    
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test005_searchProject() {
         ProjectSearchConditionBuilder requestBuilder = new ProjectSearchConditionBuilder(publicUser, 0, 25);
@@ -185,19 +186,30 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
     }
 
-    @Ignore("Ignored because of refactroring request API")
+    //@Ignore("Ignored because of refactroring request API")
     @Test
     public void test006_searchMaterials() {
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = builder.build();
+        request.addSearchCategory(SearchCategory.DEACTIVATED, "deactivated");
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        request.addSearchCategory(SearchCategory.DEACTIVATED, "activated");
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setIndex("-002");
+        request = builder.build();
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("-002");
         request = builder.build();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
-
+    
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test007_searchItems() {
         ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(publicUser, 0, 25);
@@ -214,7 +226,7 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
-
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test008_searchExperiments() {
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
@@ -223,8 +235,8 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
     }
-    
-    @Ignore 
+
+    @Ignore
     @Test
     public void test009_searchForEveryTarget() {
         ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(publicUser, 0, 25);
@@ -239,7 +251,7 @@ public class SearchServiceTest extends TestBase {
     }
 
     @Ignore
-    @Test 
+    @Test
     public void test010_searchWithAugmentedDocumentRequest() {
         uploadDocuments();
         materialCreator.createStructure(

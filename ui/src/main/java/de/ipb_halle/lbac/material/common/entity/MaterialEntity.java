@@ -58,7 +58,7 @@ public class MaterialEntity implements Serializable {
     private Integer aclist_id;
 
     @Column
-    @AttributeTag(type = AttributeType.MEMBER)
+    @AttributeTag(type = AttributeType.OWNER)
     private Integer ownerid;
 
     @Column

@@ -42,6 +42,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.primefaces.event.FlowEvent;
@@ -97,7 +98,7 @@ public class LinkCreationProcessTest extends TestBase {
         itemId = itemCreator.createItem(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), materialId, "LinkCreationProcessTest_I1");
 
     }
-
+@Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test001_createMaterialLink() {
         prepareLinkCreation();
@@ -112,7 +113,7 @@ public class LinkCreationProcessTest extends TestBase {
 
         cleanUp();
     }
-
+@Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test002_createItemLink() {
         prepareLinkCreation();

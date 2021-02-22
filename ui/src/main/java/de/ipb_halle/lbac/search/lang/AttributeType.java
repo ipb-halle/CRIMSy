@@ -26,6 +26,7 @@ public enum AttributeType {
 
     /* */
     TOPLEVEL,
+    DIRECT,
     /* entities */
     ACE,
     COLLECTION,
@@ -54,6 +55,7 @@ public enum AttributeType {
     WORDROOT,
     /* general attribute types */
     DEACTIVATED,
+    PROJECT_DEACTIVATED,
     LABEL,
     STRUCTURE,
     TEXT,

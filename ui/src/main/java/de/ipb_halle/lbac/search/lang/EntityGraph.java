@@ -93,13 +93,28 @@ public class EntityGraph {
         }
     }
 
+    /**
+     * Add an AttributeType to this EntityGraph and all its fields only.
+     * @param type
+     * @return 
+     */
     public EntityGraph addAttributeType(AttributeType type) {
         this.attributeTypes.add(type);
         for (DbField field : this.fieldMap.values()) {
             field.addAttributeType(type);
         }        
+        return this;
+    }
+    
+    /**
+     * Add an AttributeType to this EntityGraph, all its fields and all its children.
+     * @param type
+     * @return 
+     */
+    public EntityGraph addAttributeTypeInherit(AttributeType type) {
+        addAttributeType(type);
         for (EntityGraph eg : this.children) {
-            eg.addAttributeType(type);
+            eg.addAttributeTypeInherit(type);
         }
         return this;
     }

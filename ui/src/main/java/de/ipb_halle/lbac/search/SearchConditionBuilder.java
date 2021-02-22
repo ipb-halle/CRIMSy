@@ -115,12 +115,15 @@ public abstract class SearchConditionBuilder {
         Condition ownerCondition = new Condition(
                 Operator.AND,
                 new Condition(
-                        new Attribute(acObjAttrType).addType(AttributeType.MEMBER),
+                        new Attribute(acObjAttrType)
+                                .addType(AttributeType.OWNER)
+                                .addType(AttributeType.DIRECT),
                         Operator.EQUAL,
                         new Value(user.getId())),
                 new Condition(
                         new Attribute(acObjAttrType).addTypes(new AttributeType[]{
                     AttributeType.ACE,
+                    AttributeType.DIRECT,
                     AttributeType.MEMBER}),
                         Operator.EQUAL,
                         new Value(GlobalAdmissionContext.OWNER_ACCOUNT_ID))
@@ -132,6 +135,7 @@ public abstract class SearchConditionBuilder {
                 new Condition(
                         new Attribute(acObjAttrType).addTypes(new AttributeType[]{
                     AttributeType.MEMBERSHIP,
+                    AttributeType.DIRECT,
                     AttributeType.MEMBER}),
                         Operator.EQUAL,
                         new Value(user.getId()))
@@ -140,7 +144,9 @@ public abstract class SearchConditionBuilder {
         return new Condition(
                 Operator.AND,
                 memberCondition,
-                new Condition(getPermissionAttribute(permission).addTypes(acObjAttrType),
+                new Condition(getPermissionAttribute(permission)
+                        .addTypes(acObjAttrType)
+                        .addType(AttributeType.DIRECT),
                         Operator.IS_TRUE));
     }
 

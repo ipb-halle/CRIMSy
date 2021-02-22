@@ -150,6 +150,7 @@ public class SearchWebServiceTest extends TestBase {
         Assert.assertEquals(String.format("401:Could note authentificate request from node %s", TEST_NODE_ID), searchResponse.getStatusCode());
     }
 
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test004_searchWithItemRequest() throws Exception {
         project = creationTools.createAndSaveProject("SearchWebServiceTest-Test");

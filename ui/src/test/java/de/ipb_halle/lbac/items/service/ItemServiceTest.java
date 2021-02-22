@@ -66,6 +66,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -160,6 +161,7 @@ public class ItemServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("DELETE FROM containers");
     }
 
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test001_saveAndLoadItem() {
         //Create and save one item

@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.ACEntryEntity;
 import de.ipb_halle.lbac.admission.MembershipEntity;
-import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
 
@@ -59,12 +59,24 @@ public abstract class EntityGraphBuilder {
         return child;
     }
 
+    public void addACListConstraint(
+            EntityGraph mainGraph,
+            EntityGraph aclSubGraph,
+            String linkField,
+            boolean direct) {
+        aclSubGraph.addLinkField(linkField, "aclist_id");
+        if (direct) {
+            aclSubGraph.addAttributeTypeInherit(AttributeType.DIRECT);
+        }
+        mainGraph.addChildInherit(aclSubGraph);
+    }
+    
+    @Deprecated
     public void addACListContraint(
             EntityGraph mainGraph,
             EntityGraph aclSubGraph,
-            String linkField) {
-        aclSubGraph.addLinkField(linkField, "aclist_id");
-        mainGraph.addChildInherit(aclSubGraph);
+           String linkField) {
+        addACListConstraint(mainGraph, aclSubGraph, linkField, false);
     }
 
     public abstract EntityGraph buildEntityGraph();
@@ -77,7 +89,7 @@ public abstract class EntityGraphBuilder {
      */
     public EntityGraph getACESubGraph() {
         return new EntityGraph(ACEntryEntity.class)
-            .addChildInherit(new EntityGraph(MembershipEntity.class)
+            .addChild(new EntityGraph(MembershipEntity.class)
                 .addLinkField("member_id", "group_id")
             );
     }

@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;
-import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
 
@@ -45,7 +44,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         super(MaterialEntity.class);
         this.aclistService = aclistService;
     }
-    
+
     public MaterialEntityGraphBuilder() {
         super(MaterialEntity.class);
     }
@@ -60,7 +59,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
 
     protected void addOwner() {
         EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "ownerid", "id");
-        owner.addAttributeType(AttributeType.OWNER);
+        owner.addAttributeTypeInherit(AttributeType.OWNER);
     }
 
     protected void addDetailRights() {
@@ -73,19 +72,18 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     protected void addAcls() {
-
-        addACListContraint(graph, aclistService.getEntityGraph(), "aclist_id");
-        //addACListContraint(detailRightSubGraph, aclistService.getEntityGraph(), "aclistid");
+        addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
     }
 
     @Override
     public EntityGraph buildEntityGraph() {
-        addProject();
         addIndex();
         addOwner();
         addStructure();
         addDetailRights();
+        addProject();
         addAcls();
+        graph.addAttributeType(AttributeType.DIRECT);
         return graph;
     }
 

@@ -40,6 +40,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,7 +63,7 @@ public class ProjectServiceTest extends TestBase {
         super.setUp();
         cleanAllProjectsFromDb();
     }
-
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test001_saveLoadProject() {
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "biochemical-test-project");
