@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.util.pref.PreferenceService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
@@ -33,6 +34,8 @@ public class UserBeanDeployment {
                 .addClass(LdapProperties.class)
                 .addClass(MembershipOrchestrator.class)
                 .addClass(SystemSettings.class)
+                .addClass(PreferenceService.class)
+                .addClass(UserPluginSettingsBean.class)
                 .addClass(UserBeanMock.class);
     }
 }
