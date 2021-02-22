@@ -21,8 +21,8 @@ limitations under the License.
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:nwc="http://ipb-halle.de/nwc"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
     <h:body>
         <b:form id="materialSearchMaskForm">
             <b:container>
@@ -148,10 +148,11 @@ limitations under the License.
 
                 <b:row>
                     <b:column span="2">
-                        <nwc:molPlugin id="molEditor"
-                                       value="#{materialOverviewBean.searchController.molecule}" 
-                                       plugintype="MolPaintJS"
-                                       edit="true"/>
+                        <mol:molecule id="molEditor"
+                                      value="#{materialOverviewBean.searchController.molecule}" 
+                                      plugintype="#{userBean.pluginSettings.preferredMolPluginType}"
+                                      border="true"
+                                      readonly="false"/>
                     </b:column>
 
 
@@ -177,8 +178,7 @@ limitations under the License.
                             value="Search"
                             ajax="true"
                             update="materialForm materialSearchMaskForm @(.materialOverviewTableContainer)"
-                            action="#{materialOverviewBean.searchController.actionStartMaterialSearch()}"
-                            onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"/>
+                            action="#{materialOverviewBean.searchController.actionStartMaterialSearch()}"/>
                     </b:column>
                 </b:row>
             </b:container>
