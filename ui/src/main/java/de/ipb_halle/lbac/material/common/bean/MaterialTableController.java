@@ -91,7 +91,7 @@ public class MaterialTableController implements TableController {
                 lastUser,
                 tableController.getFirstResult(),
                 tableController.getCHUNK_SIZE());
-        builder.setConditionsBySearchValues(lastValues);
+//        builder.setConditionsBySearchValues(lastValues);
 //        builder.addDeactivated(false);
         return builder.buildSearchRequest();
     }

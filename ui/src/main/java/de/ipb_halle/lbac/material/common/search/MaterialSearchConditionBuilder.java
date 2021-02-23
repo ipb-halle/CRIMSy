@@ -56,38 +56,6 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         target = SearchTarget.MATERIAL;
     }
 
-    /**
-     * Create an access control condition and combine it with other conditions.
-     *
-     * @param conditionList
-     * @param request
-     * @param acPermission
-     * @return the combined condition
-     */
-    private Condition addACL(List<Condition> conditionList, SearchRequest request, ACPermission... acPermission) {
-        List<Condition> subCondition = new ArrayList<>();
-        for (ACPermission perm : acPermission) {
-            subCondition.add(getACLCondition(
-                    request.getUser(),
-                    perm,
-                    AttributeType.MATERIAL));
-        }
-
-        Condition aclCondition = (subCondition.size() > 1)
-                ? new Condition(
-                        Operator.OR,
-                        subCondition.toArray(new Condition[0]))
-                : subCondition.get(0);
-
-        if (conditionList.isEmpty()) {
-            return aclCondition;
-        }
-        conditionList.add(aclCondition);
-        return new Condition(
-                Operator.AND,
-                conditionList.toArray(new Condition[0]));
-    }
-
     private void addDeactivatedCondition(List<Condition> conditionList, Set<String> values) {
         Boolean deactivated = Boolean.FALSE;
         for (String val : values) {
@@ -205,6 +173,23 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
+        List<Condition> conditionList = getMaterialCondition(request);
+        return addACL(conditionList, request, AttributeType.MATERIAL, perm);
+    }
+
+    private Condition getIndexCondition(Set<String> values) {
+        ArrayList<Condition> subConditionList = new ArrayList<>();
+        for (String value : values) {
+            subConditionList.add(getBinaryLeafCondition(
+                    Operator.ILIKE,
+                    "%" + value + "%",
+                    AttributeType.MATERIAL,
+                    AttributeType.TEXT));
+        }
+        return getDisjunction(subConditionList);
+    }
+
+    public List<Condition> getMaterialCondition(SearchRequest request) {
         List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
             switch (entry.getKey()) {
@@ -237,67 +222,9 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     break;
             }
         }
-        return addACL(conditionList, request, perm);
+        return conditionList;
     }
-
-    @Deprecated
-    public void setConditionsBySearchValues(MaterialSearchMaskValues values) {
-        /*
-        if (values != null) {
-            if (values.id != null) {
-                addID(values.id);
-            }
-            if (values.index != null && !values.index.trim().isEmpty()) {
-                addIndexName(values.index);
-            }
-            if (values.materialName != null && !values.materialName.trim().isEmpty()) {
-                addIndexName(values.materialName);
-            }
-            if (values.molecule != null && !values.molecule.trim().isEmpty()) {
-                addSubMolecule(values.molecule);
-            }
-            if (values.projectName != null && !values.projectName.trim().isEmpty()) {
-                addProject(values.projectName);
-            }
-
-            if (values.type != null && !values.type.isEmpty()) {
-                int size = values.type.size();
-                MaterialType[] types = new MaterialType[size];
-                addTypes(values.type.toArray(types));
-            } else {
-                addTypes(MaterialType.BIOMATERIAL,
-                        MaterialType.COMPOSITION,
-                        MaterialType.CONSUMABLE,
-                        MaterialType.SEQUENCE,
-                        MaterialType.STRUCTURE,
-                        MaterialType.TISSUE);
-            }
-
-        }
-         */
-    }
-
-    private Condition getIndexCondition(Set<String> values) {
-        ArrayList<Condition> subConditionList = new ArrayList<>();
-        for (String value : values) {
-            subConditionList.add(getBinaryLeafCondition(
-                    Operator.ILIKE,
-                    "%" + value + "%",
-                    AttributeType.MATERIAL,
-                    AttributeType.TEXT));
-        }
-        if (subConditionList.size() > 1) {
-            return new Condition(
-                    Operator.OR,
-                    subConditionList.toArray(new Condition[0])
-            );
-        }
-        if (subConditionList.size() > 0) {
-            return subConditionList.get(0);
-        }
-        throw new IllegalArgumentException("Could not create Condition");
-    }
-
+    
     private Set<Integer> getIdsFromMaterialTypes(MaterialType... types) {
         Set<Integer> ids = new HashSet<>();
         for (MaterialType t : types) {

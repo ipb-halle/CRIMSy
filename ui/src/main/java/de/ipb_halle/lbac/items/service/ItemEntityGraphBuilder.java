@@ -81,8 +81,8 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         addMaterialName();
         addMaterial();
         addStructure();
-        addACListContraint(graph, aclistService.getEntityGraph(), "aclist_id");
-        addACListContraint(materialSubgraph, aclistService.getEntityGraph(), "aclist_id");
+        addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
+        addACListConstraint(materialSubgraph, getACESubGraph(), "aclist_id", true);
         return graph;
     }
 

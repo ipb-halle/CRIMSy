@@ -88,6 +88,38 @@ public abstract class SearchConditionBuilder {
 
         return searchRequest;
     }
+    
+    /**
+     * Create an access control condition and combine it with other conditions.
+     *
+     * @param conditionList
+     * @param request
+     * @param acPermission
+     * @return the combined condition
+     */
+    protected Condition addACL(List<Condition> conditionList, 
+            SearchRequest request, 
+            AttributeType type, 
+            ACPermission... acPermission) {
+        List<Condition> subCondition = new ArrayList<>();
+        for (ACPermission perm : acPermission) {
+            subCondition.add(getACLCondition(
+                    request.getUser(),
+                    perm,
+                    type));
+        }
+
+        Condition aclCondition = getDisjunction(subCondition);
+
+        if (conditionList.isEmpty()) {
+            return aclCondition;
+        }
+        conditionList.add(aclCondition);
+        return new Condition(
+                Operator.AND,
+                conditionList.toArray(new Condition[0]));
+    }
+
 
     public abstract Condition convertRequestToCondition(SearchRequest request, ACPermission ...perm);
 
@@ -166,7 +198,19 @@ public abstract class SearchConditionBuilder {
                 valueWithCast);
     }
 
-    
+    protected Condition getDisjunction(List<Condition> subConditionList) {
+        if (subConditionList.size() > 1) {
+            return new Condition(
+                    Operator.OR,
+                    subConditionList.toArray(new Condition[0])
+            );
+        }
+        if (subConditionList.size() > 0) {
+            return subConditionList.get(0);
+        }
+        throw new IllegalArgumentException("Could not create Condition");
+    }
+
     
     private Attribute getPermissionAttribute(ACPermission perm) {
         switch (perm) {

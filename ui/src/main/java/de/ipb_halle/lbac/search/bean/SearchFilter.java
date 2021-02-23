@@ -130,7 +130,7 @@ public class SearchFilter {
                 searchValue.molecule = structureString;
             }
         }
-        materialRequestBuilder.setConditionsBySearchValues(searchValue);
+//        materialRequestBuilder.setConditionsBySearchValues(searchValue);
         return materialRequestBuilder.buildSearchRequest();
     }
 
