@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -136,28 +137,9 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     private SearchRequest createSearchRequest() {
-        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(currentUser, firstResult, PAGE_SIZE);
-        if (searchMaskValues.getMaterialName() != null && !searchMaskValues.getMaterialName().isEmpty()) {
-            builder.addIndexName(searchMaskValues.getMaterialName());
-        }
-        if (searchMaskValues.getLabel() != null && !searchMaskValues.getLabel().isEmpty()) {
-            builder.addLabel(searchMaskValues.getLabel());
-        }
-        if (searchMaskValues.getUserName() != null && !searchMaskValues.getUserName().isEmpty()) {
-            builder.addUserName(searchMaskValues.getUserName());
-        }
-        if (searchMaskValues.getProjectName() != null && !searchMaskValues.getProjectName().isEmpty()) {
-            builder.addProject(searchMaskValues.getProjectName());
-        }
-        if (searchMaskValues.getDescription() != null && !searchMaskValues.getDescription().isEmpty()) {
-            builder.addDescription(searchMaskValues.getDescription());
-
-        }
-        if (searchMaskValues.getLocation() != null && !searchMaskValues.getLocation().isEmpty()) {
-            builder.addLocation(searchMaskValues.getLocation());
-        }
-        return builder.buildSearchRequest();
-
+        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(currentUser, firstResult, PAGE_SIZE);
+        builder.setSearchMaskValues(searchMaskValues);
+        return builder.build();
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
