@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.common.search;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
@@ -32,7 +33,7 @@ import java.util.Set;
  * @author fmauz
  */
 public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
-
+    
     private String structure;
     private String index;
     private String id;
@@ -40,12 +41,12 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private String projectName;
     private final Set<MaterialType> types = new HashSet<>();
     private String materialName;
-
+    
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
         this.target = SearchTarget.MATERIAL;
     }
-
+    
     @Override
     public SearchRequest build() {
         SearchRequest request = new SearchRequestImpl(user, firstResult, maxResults);
@@ -57,48 +58,58 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
         addUser(request);
         addProject(request);
         addMaterialName(request);
-
+        
         return request;
     }
-
+    
+    public void setSearchValues(MaterialSearchMaskValues values) {
+        setMaterialName(values.materialName);
+        setStructure(values.molecule);
+        setProjectName(values.projectName);
+        setId(String.valueOf(values.id));
+        setUserName(values.userName);
+        for(MaterialType t:values.type){
+            types.add(t);
+        }
+        
+    }
+    
     private void addStructure(SearchRequest request) {
         if (structure != null) {
             request.addSearchCategory(SearchCategory.STRUCTURE, structure);
         }
     }
-
+    
     private void addIndex(SearchRequest request) {
         if (index != null) {
             request.addSearchCategory(SearchCategory.INDEX, index);
         }
     }
-
+    
     private void addId(SearchRequest request) {
         if (id != null) {
             request.addSearchCategory(SearchCategory.LABEL, id);
         }
     }
-
+    
     private void addUser(SearchRequest request) {
         if (userName != null) {
             request.addSearchCategory(SearchCategory.USER, userName);
         }
     }
     
-     private void addMaterialName(SearchRequest request) {
+    private void addMaterialName(SearchRequest request) {
         if (materialName != null) {
             request.addSearchCategory(SearchCategory.NAME, materialName);
         }
     }
     
-    
-
     private void addProject(SearchRequest request) {
         if (projectName != null) {
             request.addSearchCategory(SearchCategory.PROJECT, projectName);
         }
     }
-
+    
     private void addTypes(SearchRequest request) {
         if (!types.isEmpty()) {
             Set<String> typeNames = new HashSet<>();
@@ -108,33 +119,33 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
             request.addSearchCategory(SearchCategory.TYPE, typeNames.toArray(new String[typeNames.size()]));
         }
     }
-
+    
     public void addMaterialType(MaterialType type) {
         types.add(type);
     }
-
+    
     public void setStructure(String structure) {
         this.structure = structure;
     }
-
+    
     public void setIndex(String index) {
         this.index = index;
     }
-
+    
     public void setId(String id) {
         this.id = id;
     }
-
+    
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
+    
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
-
+    
     public void setMaterialName(String materialName) {
         this.materialName = materialName;
     }
-
+    
 }

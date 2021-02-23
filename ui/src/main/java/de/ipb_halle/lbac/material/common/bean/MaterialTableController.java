@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -87,13 +88,12 @@ public class MaterialTableController implements TableController {
     }
 
     private SearchRequest createRequest() {
-        MaterialSearchConditionBuilder builder = new MaterialSearchConditionBuilder(
-                lastUser,
+
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(lastUser,
                 tableController.getFirstResult(),
                 tableController.getCHUNK_SIZE());
-        builder.setConditionsBySearchValues(lastValues);
-//        builder.addDeactivated(false);
-        return builder.buildSearchRequest();
+        builder.setSearchValues(lastValues);
+        return builder.build();
     }
 
     private List<Material> extractAllMaterialsFromResponse(SearchResult response) {

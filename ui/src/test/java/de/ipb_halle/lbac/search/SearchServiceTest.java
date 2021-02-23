@@ -36,8 +36,11 @@ import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
@@ -86,6 +89,9 @@ public class SearchServiceTest extends TestBase {
 
     @Inject
     private SearchService searchService;
+
+    @Inject
+    private ItemService itemService;
 
     @Inject
     private ProjectService projectService;
@@ -233,24 +239,57 @@ public class SearchServiceTest extends TestBase {
         request = builder.build();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.addMaterialType(MaterialType.STRUCTURE);
+        request = builder.build();
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 1);
+        builder.setUserName(publicUser.getName());
+        request = builder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
     }
 
     @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test007_searchItems() {
-        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(publicUser, 0, 25);
-        SearchRequest request = builder.buildSearchRequest();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
-
-        builder.addIndexName("-002");
-        request = builder.buildSearchRequest();
+        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        SearchRequest request = builder.build();
+        builder.setDescription("item-001");
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
-        builder = new ItemSearchConditionBuilder(publicUser, 0, 25);
-        builder.addDescription("material");
-        request = builder.buildSearchRequest();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Item item1 = itemService.loadItemById(itemid1);
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setLabel(item1.getLabel());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
 
+        //TO do: add a location to an item
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setLocation("room-001");
+        Assert.assertEquals(0, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
+
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("Testmaterial-001");
+        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
+
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setProjectName("SearchServiceTest-Project-01");
+        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
+
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setUserName("public");
+        Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
+
+//
+//        builder.addIndexName("-002");
+//        request = builder.buildSearchRequest();
+//        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+//
+//        builder = new ItemSearchConditionBuilder(publicUser, 0, 25);
+//        builder.addDescription("material");
+//        request = builder.buildSearchRequest();
+//        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
     }
 
     @Ignore("Ignored until new API is implemented for requests")
@@ -355,6 +394,7 @@ public class SearchServiceTest extends TestBase {
                 .addClass(ExperimentService.class)
                 .addClass(ExpRecordService.class)
                 .addClass(AssayService.class)
+                .addClass(ItemService.class)
                 .addClass(TextService.class)
                 .addClass(TaxonomyNestingService.class);
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
