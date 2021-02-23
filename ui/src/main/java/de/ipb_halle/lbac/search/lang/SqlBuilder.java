@@ -93,7 +93,12 @@ public class SqlBuilder {
         Operator operator = condition.getOperator();
         Set<DbField> columns = getMatchingColumns(condition.getAttribute());
         if (columns.size() == 0) {
-            throw new NoSuchElementException("No matching field found in addLeafCondition()");
+            String s="";
+            for(AttributeType t : condition.getAttribute().getTypes()){
+                s+=t+":";
+            }
+            
+            throw new NoSuchElementException("No matching field found in addLeafCondition(): "+s);
         }
         if (operator.isUnary()) {
             addUnaryLeafCondition(sb, columns, operator);
@@ -222,6 +227,11 @@ public class SqlBuilder {
     private Set<DbField> getMatchingColumns(Attribute attribute) {
         Set<DbField> fields = new HashSet<>();
         for (DbField field : this.allFields) {
+            String s="";
+            for(AttributeType t:field.getAttributeTypes()){
+                s+=t.name()+":";
+            }
+            System.out.println(s);
             if (field.matches(attribute)) {
                 fields.add(field);
             }

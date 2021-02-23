@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
+import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
@@ -242,9 +243,9 @@ public class ContainerOverviewBean implements Serializable {
     }
 
     private Project loadProjectByName() {
-        ProjectSearchConditionBuilder builder = new ProjectSearchConditionBuilder(currentUser, 0, 1);
-        builder.addExactName(editBean.getPreferredProjectName().trim());
-        SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
+        ProjectSearchRequestBuilder builder=new ProjectSearchRequestBuilder(currentUser, 0, 1);
+        builder.setProjectName(editBean.getPreferredProjectName().trim());
+        SearchResult result = projectService.loadProjects(builder.build());
         Node n = result.getNode();
         return (Project) result.getAllFoundObjects(Project.class, n).get(0);
 

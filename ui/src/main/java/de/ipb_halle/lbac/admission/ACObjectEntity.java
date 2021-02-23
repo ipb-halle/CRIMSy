@@ -32,7 +32,7 @@ public class ACObjectEntity {
     private Integer aclist;
 
     @Column(name = "owner_id")
-    @AttributeTag(type = AttributeType.MEMBER)
+    @AttributeTag(type = AttributeType.OWNER)
     private Integer owner;
 
     /**

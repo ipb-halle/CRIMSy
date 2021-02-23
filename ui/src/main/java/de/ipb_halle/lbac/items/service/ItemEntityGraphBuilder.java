@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.material.structure.MoleculeEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
 
@@ -81,8 +82,11 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         addMaterialName();
         addMaterial();
         addStructure();
+            graph.addAttributeType(AttributeType.DIRECT);
         addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
         addACListConstraint(materialSubgraph, getACESubGraph(), "aclist_id", true);
+        materialSubgraph.addAttributeType(AttributeType.DIRECT);
+      
         return graph;
     }
 

@@ -43,6 +43,10 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     private final static String itemLabelPattern = "[0-9]{8,12}";
 
+    public ItemSearchConditionBuilder() {
+        super(null, 0, 0);
+    }
+
     @Deprecated
     public ItemSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
         super(u, firstResultIndex, maxResults);
@@ -112,7 +116,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         }
         if (idSet.size() > 0) {
             conditionList.add(getBinaryLeafCondition(
-                    Operator.IN,
+                    Operator.EQUAL,
                     idSet,
                     AttributeType.ITEM,
                     AttributeType.LABEL));

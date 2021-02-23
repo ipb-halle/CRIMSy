@@ -94,6 +94,7 @@ public abstract class SearchConditionBuilder {
      *
      * @param conditionList
      * @param request
+     * @param type
      * @param acPermission
      * @return the combined condition
      */

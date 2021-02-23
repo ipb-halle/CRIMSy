@@ -128,17 +128,10 @@ public class ItemService {
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
-        ItemSearchConditionBuilder itemBuilder =new ItemSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
-        permissionConditionBuilder = new PermissionConditionBuilder(
-                itemBuilder,
-                request.getUser(),
-                ACPermission.permREAD)
-                .addFields(AttributeType.ITEM)
-                .addFields(AttributeType.MATERIAL);
-        Condition con = permissionConditionBuilder.addPermissionCondition(request.getCondition());
-       
+        ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder();
+        Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(
-                con,
+                condition,
                 createOrderList());
 
         logger.info(sql);
@@ -176,10 +169,9 @@ public class ItemService {
             AttributeType.ITEM,
             AttributeType.LABEL
         }));
-        
-        
-        ItemSearchConditionBuilder itemBuilder =new ItemSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
-        
+
+        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
+
         permissionConditionBuilder = new PermissionConditionBuilder(itemBuilder, request.getUser(), ACPermission.permREAD).
                 addFields(AttributeType.ITEM);
         String sql = countBuilder.query(

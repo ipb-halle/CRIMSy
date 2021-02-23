@@ -41,8 +41,13 @@ public class ItemCreator {
     }
 
     public int createItem(int userid, int aclid, Integer materialid, String desc) {
+        String label="";
+        for(int i=0;i<10;i++){
+            label+=String.valueOf((int)(Math.random()*10));
+        }
+        
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, null,UUID.randomUUID().toString()));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, null,label));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
