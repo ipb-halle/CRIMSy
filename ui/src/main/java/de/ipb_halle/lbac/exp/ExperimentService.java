@@ -206,6 +206,6 @@ public class ExperimentService implements Serializable {
     private EntityGraph createEntityGraph() {
         graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
 
-        return graphBuilder.buildEntityGraph();
+        return graphBuilder.buildEntityGraph(true);
     }
 }

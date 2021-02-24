@@ -687,6 +687,6 @@ public class MaterialService implements Serializable {
 
     private EntityGraph createEntityGraph() {
         graphBuilder = new MaterialEntityGraphBuilder();
-        return graphBuilder.buildEntityGraph();
+        return graphBuilder.buildEntityGraph(true);
     }
 }

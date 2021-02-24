@@ -67,7 +67,7 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
 
     private void addMaterialName(SearchRequest request) {
         if (materialName != null && !materialName.isEmpty()) {
-            request.addSearchCategory(SearchCategory.MATERIAL, materialName);
+            request.addSearchCategory(SearchCategory.NAME, materialName);
         }
     }
 

@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.structure.MoleculeEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.project.ProjectEntity;
@@ -47,8 +48,11 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         this.aclistService = aclistService;
     }
 
-    private void addUser() {
-        addJoin(JoinType.INNER, MemberEntity.class, "owner_id", "id");
+    private void addOwner() {
+        EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "owner_id", "id");
+//        owner.addAttributeType(AttributeType.DIRECT);
+        owner.addAttributeTypeInherit(AttributeType.OWNER);
+
     }
 
     private void addContainer() {
@@ -61,12 +65,11 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         addJoin(JoinType.LEFT, ProjectEntity.class, "projectid", "id");
     }
 
-    private void addMaterialName() {
-        addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
-    }
-
     private void addMaterial() {
-        materialSubgraph = addJoin(JoinType.INNER, MaterialEntity.class, "materialid", "materialid");
+        MaterialEntityGraphBuilder matBuilder = new MaterialEntityGraphBuilder();
+        materialSubgraph = matBuilder.buildEntityGraph(false);
+        materialSubgraph.addLinkField("materialid", "materialid");
+        graph.addChild(materialSubgraph);
     }
 
     protected void addStructure() {
@@ -75,18 +78,17 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     @Override
-    public EntityGraph buildEntityGraph() {
-        addUser();
+    public EntityGraph buildEntityGraph(boolean toplevel) {
+        addOwner();
         addContainer();
         addProject();
-        addMaterialName();
         addMaterial();
-        addStructure();
-            graph.addAttributeType(AttributeType.DIRECT);
+
+        graph.addAttributeType(AttributeType.DIRECT);
         addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
-        addACListConstraint(materialSubgraph, getACESubGraph(), "aclist_id", true);
-        materialSubgraph.addAttributeType(AttributeType.DIRECT);
-      
+        if (toplevel) {
+            graph.addAttributeType(AttributeType.TOPLEVEL);
+        }
         return graph;
     }
 

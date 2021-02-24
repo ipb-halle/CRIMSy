@@ -129,6 +129,7 @@ public class ItemService {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder();
+        
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(
                 condition,
@@ -360,7 +361,7 @@ public class ItemService {
 
     private EntityGraph createEntityGraph() {
         graphBuilder = new ItemEntityGraphBuilder(aclistService);
-        return graphBuilder.buildEntityGraph();
+        return graphBuilder.buildEntityGraph(true);
     }
 
 }

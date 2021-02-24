@@ -255,19 +255,19 @@ public class SearchServiceTest extends TestBase {
     @Test
     public void test007_searchItems() {
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
-         builder.setDescription("estmaterial-001");
+        builder.setDescription("estitem-001");
         SearchRequest request = builder.build();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
-        Item item1 = itemService.loadItemById(itemid1);
-        
-        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
-        builder.setLabel(item1.getLabel());
-        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
-
-
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("Testmaterial-001");
+        request = builder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+
+        Item item1 = itemService.loadItemById(itemid1);
+
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setLabel(item1.getLabel());
         Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
 
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
@@ -277,11 +277,9 @@ public class SearchServiceTest extends TestBase {
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName("public");
         Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
-        
+
         //TO DO:
-        
         //Look for an item which material is not accessable
-        
 //        add a location to an item
 //        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
 //        builder.setLocation("room-001");

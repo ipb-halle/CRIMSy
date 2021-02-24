@@ -258,7 +258,7 @@ public class ProjectService implements Serializable {
 
     private EntityGraph createEntityGraph() {
         graphBuilder = new ProjectEntityGraphBuilder(acListService);
-        return graphBuilder.buildEntityGraph();
+        return graphBuilder.buildEntityGraph(true);
     }
 
 }

@@ -75,8 +75,8 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
      *
      * @param conditionList
      * @param values
-     * @param isName limit search to names (true), indices (false) or not at all
-     * (null)
+     * @param isName limit search to names (true; SearchCategory=NAME), indices
+     * (false; SearchCategory=INDEX) or not at all (SearchCategory=TEXT) (null)
      */
     private void addIndexCondition(List<Condition> conditionList, Set<String> values, Boolean isName) {
         if (isName != null) {
@@ -87,11 +87,11 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     AttributeType.INDEX_TYPE);
             conditionList.add(new Condition(
                     Operator.AND,
-                    getIndexCondition(values),
+                    getIndexCondition(values, false),
                     typeCondition));
             return;
         }
-        conditionList.add(getIndexCondition(values));
+        conditionList.add(getIndexCondition(values, true));
     }
 
     private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
@@ -141,7 +141,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
                 AttributeType.MATERIAL,
-                AttributeType.DIRECT,
+                //                AttributeType.DIRECT,
                 AttributeType.OWNER,
                 AttributeType.MEMBER_NAME);
         conditionList.add(con);
@@ -173,23 +173,35 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
-        List<Condition> conditionList = getMaterialCondition(request);
+        List<Condition> conditionList = getMaterialCondition(request, true);
         return addACL(conditionList, request, AttributeType.MATERIAL, perm);
     }
 
-    private Condition getIndexCondition(Set<String> values) {
+    private AttributeType[] getIndexAttributes(boolean requireTopLevel) {
+        if (requireTopLevel) {
+            return new AttributeType[]{
+                AttributeType.MATERIAL,
+                AttributeType.TOPLEVEL,
+                AttributeType.TEXT
+            };
+        }
+        return new AttributeType[]{
+            AttributeType.MATERIAL,
+            AttributeType.TEXT};
+    }
+
+    private Condition getIndexCondition(Set<String> values, boolean requireTopLevel) {
         ArrayList<Condition> subConditionList = new ArrayList<>();
         for (String value : values) {
             subConditionList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
-                    AttributeType.MATERIAL,
-                    AttributeType.TEXT));
+                    getIndexAttributes(requireTopLevel)));
         }
         return getDisjunction(subConditionList);
     }
 
-    public List<Condition> getMaterialCondition(SearchRequest request) {
+    public List<Condition> getMaterialCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
             switch (entry.getKey()) {
@@ -200,19 +212,25 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     addIndexCondition(conditionList, entry.getValue(), Boolean.FALSE);
                     break;
                 case LABEL:
-                    addLabelCondition(conditionList, entry.getValue());
+                    if (toplevel) {
+                        addLabelCondition(conditionList, entry.getValue());
+                    }
                     break;
                 case NAME:
                     addIndexCondition(conditionList, entry.getValue(), Boolean.TRUE);
                     break;
                 case PROJECT:
-                    addProjectCondition(conditionList, entry.getValue());
+                    if (toplevel) {
+                        addProjectCondition(conditionList, entry.getValue());
+                    }
                     break;
                 case STRUCTURE:
                     addStructureCondition(conditionList, entry.getValue());
                     break;
                 case TEXT:
-                    addIndexCondition(conditionList, entry.getValue(), null);
+                    if (toplevel) {
+                        addIndexCondition(conditionList, entry.getValue(), null);
+                    }
                     break;
                 case TYPE:
                     addMaterialTypeCondition(conditionList, entry.getValue());
@@ -224,7 +242,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         }
         return conditionList;
     }
-    
+
     private Set<Integer> getIdsFromMaterialTypes(MaterialType... types) {
         Set<Integer> ids = new HashSet<>();
         for (MaterialType t : types) {

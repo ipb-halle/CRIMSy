@@ -38,6 +38,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
 
     protected ACListService aclistService;
     protected EntityGraph detailRightSubGraph;
+    private EntityGraph indexGraph;
 
     @Deprecated
     public MaterialEntityGraphBuilder(ACListService aclistService) {
@@ -54,12 +55,12 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     protected void addIndex() {
-        addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
+        indexGraph = addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
     }
 
     protected void addOwner() {
         EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "ownerid", "id");
-        owner.addAttributeType(AttributeType.DIRECT);
+//        owner.addAttributeType(AttributeType.DIRECT);
         owner.addAttributeTypeInherit(AttributeType.OWNER);
     }
 
@@ -77,7 +78,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     @Override
-    public EntityGraph buildEntityGraph() {
+    public EntityGraph buildEntityGraph(boolean toplevel) {
         addIndex();
         addOwner();
         addStructure();
@@ -85,7 +86,10 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         addProject();
         addAcls();
         graph.addAttributeType(AttributeType.DIRECT);
+        if (toplevel) {
+            indexGraph.addAttributeType(AttributeType.TOPLEVEL);
+            graph.addAttributeType(AttributeType.TOPLEVEL);
+        }
         return graph;
     }
-
 }

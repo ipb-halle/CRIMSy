@@ -40,7 +40,7 @@ public class DocumentEntityGraphBuilder extends EntityGraphBuilder {
     }
       
        @Override
-    public EntityGraph buildEntityGraph() {
+    public EntityGraph buildEntityGraph(boolean toplevel) {
         addTermVector();
         return graph;
     }

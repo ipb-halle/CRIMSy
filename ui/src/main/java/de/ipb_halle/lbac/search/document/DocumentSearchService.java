@@ -377,6 +377,6 @@ public class DocumentSearchService {
 
     private EntityGraph createEntityGraph() {
         graphBuilder = new DocumentEntityGraphBuilder();
-        return graphBuilder.buildEntityGraph();
+        return graphBuilder.buildEntityGraph(true);
     }
 }

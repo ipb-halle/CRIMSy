@@ -115,9 +115,10 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
             }
         }
         if (idSet.size() > 0) {
-            conditionList.add(getBinaryLeafCondition(
-                    Operator.EQUAL,
+            conditionList.add(getBinaryLeafConditionWithCast(
+                    Operator.IN,
                     idSet,
+                    "(%s)",
                     AttributeType.ITEM,
                     AttributeType.LABEL));
         }
@@ -143,7 +144,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
                 AttributeType.ITEM,
-                AttributeType.DIRECT,
+                //                AttributeType.DIRECT,
                 AttributeType.OWNER,
                 AttributeType.MEMBER_NAME);
         conditionList.add(con);
@@ -176,10 +177,10 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... acPermission) {
 
-        List<Condition> itemConditionList = getItemCondition(request);
+        List<Condition> itemConditionList = getItemCondition(request, true);
 
         MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder();
-        List<Condition> subList = matBuilder.getMaterialCondition(request);
+        List<Condition> subList = matBuilder.getMaterialCondition(request, false);
 
         if (!subList.isEmpty()) {
             Condition matCondition = addACL(
@@ -196,7 +197,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                 acPermission);
     }
 
-    public List<Condition> getItemCondition(SearchRequest request) {
+    public List<Condition> getItemCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
             switch (entry.getKey()) {
@@ -204,16 +205,22 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                     addDeactivatedCondition(conditionList, entry.getValue());
                     break;
                 case LABEL:
-                    addLabelCondition(conditionList, entry.getValue());
+                    if (toplevel) {
+                        addLabelCondition(conditionList, entry.getValue());
+                    }
                     break;
                 case LOCATION:
                     addLocationCondition(conditionList, entry.getValue());
                     break;
                 case PROJECT:
-                    addProjectCondition(conditionList, entry.getValue());
+                    if (toplevel) {
+                        addProjectCondition(conditionList, entry.getValue());
+                    }
                     break;
                 case TEXT:
-                    addTextCondition(conditionList, entry.getValue());
+                    if (toplevel) {
+                        addTextCondition(conditionList, entry.getValue());
+                    }
                     break;
                 case USER:
                     addOwnerCondition(conditionList, entry.getValue());
@@ -229,7 +236,8 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
             subConditionList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
-                    AttributeType.MATERIAL,
+                    AttributeType.ITEM,
+                    AttributeType.TOPLEVEL,
                     AttributeType.TEXT));
         }
         if (subConditionList.size() > 1) {

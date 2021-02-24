@@ -79,8 +79,8 @@ public abstract class EntityGraphBuilder {
         addACListConstraint(mainGraph, aclSubGraph, linkField, false);
     }
 
-    public abstract EntityGraph buildEntityGraph();
-    
+    public abstract EntityGraph buildEntityGraph(boolean toplevel);
+
     /**
      * @return an entity subgraph suitable for access control and relating  
      * to the acentries and memberships tables. The returned 

@@ -34,7 +34,7 @@ public class ProjectEntityGraphBuilder extends EntityGraphBuilder {
         this.acListService = acListService;
     }
 
-    public EntityGraph buildEntityGraph() {
+    public EntityGraph buildEntityGraph(boolean toplevel) {
         addACListContraint(graph, acListService.getEntityGraph(), "aclist_id");
         return graph;
     }
