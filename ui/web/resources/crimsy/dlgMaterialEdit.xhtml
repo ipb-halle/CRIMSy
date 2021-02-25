@@ -77,7 +77,7 @@
                                     <p:column
                                         colspan="12"
                                         styleClass="borderless centeredText">
-                                        <p:outputLabel id="molEditorLabel" 
+                                        <h:outputLabel id="molEditorLabel" 
                                                        for="molEditor" 
                                                        value="#{msgs.materialAgent_label_substructure}"
                                                        rendered="#{cc.attrs.agent.showMolEditor}"/>
@@ -89,8 +89,9 @@
                                                       rendered="#{cc.attrs.agent.showMolEditor}"
                                                       value="#{cc.attrs.agent.moleculeSearch}"
                                                       border="true"
-                                                      plugintype="#{userBean.pluginSettings.preferredMolPluginType}"
-                                                      readonly="false"/>
+                                                      pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                      readonly="false"
+                                                      widgetVar="dlg_materialEdit_molEditor"/>
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>
