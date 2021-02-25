@@ -69,7 +69,11 @@
                                        disabled="false"
                                        rendered="#{experimentBean.areLinksAddable(rec)}"
                                        action="#{experimentBean.actionEditRecord(rec)}"
-                                       onclick="PF('dlg_createLink').show();">
+                                       onclick="PF('dlg_createLink').show();
+                                                molecularfaces.onDocumentReady(function () {
+                                                  if (dlg_createLink_panelMaterialEdit_molEditor != null) 
+                                                	dlg_createLink_panelMaterialEdit_molEditor.init();
+                                                });">
 
                             <span class="fa fa-link"> </span>
                         </p:commandLink>
