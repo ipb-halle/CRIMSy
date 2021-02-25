@@ -154,7 +154,8 @@ public class SearchFilter {
     }
 
     private SearchRequest createItemRequest() {
-        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(user, 0, maxresults);
+/*
+        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder();
         if (searchTerms != null && !searchTerms.isEmpty()) {
             itemBuilder.addLabel(searchTerms);
         }
@@ -164,6 +165,8 @@ public class SearchFilter {
         }
 
         return itemBuilder.buildSearchRequest();
+*/
+        return null;
     }
 
     private SearchRequest createExperimentRequest() {

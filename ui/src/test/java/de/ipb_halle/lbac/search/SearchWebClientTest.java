@@ -54,6 +54,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -113,6 +114,7 @@ public class SearchWebClientTest extends TestBase {
         int i = 0;
     }
 
+    @Ignore
     @Test
     @RunAsClient
     public void test002_serialisation() throws Exception {

@@ -162,7 +162,7 @@ public class SearchWebServiceTest extends TestBase {
         int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item");
 
         SearchWebRequest wr = createEmptyRequest();
-        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(context.getPublicAccount(), 0, 25);
+        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(null /* ItemEntityGraphBuilder */);
 
         wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
         Response response = webService.search(wr);

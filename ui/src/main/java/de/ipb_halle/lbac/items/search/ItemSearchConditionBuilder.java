@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.items.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
@@ -42,17 +43,13 @@ import java.util.regex.Pattern;
 public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     private final static String itemLabelPattern = "[0-9]{8,12}";
+    private ItemEntityGraphBuilder itemEntityGraphBuilder;
 
-    public ItemSearchConditionBuilder() {
+    public ItemSearchConditionBuilder(ItemEntityGraphBuilder graphBuilder) {
         super(null, 0, 0);
+        this.itemEntityGraphBuilder = graphBuilder;
     }
 
-    @Deprecated
-    public ItemSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
-        super(u, firstResultIndex, maxResults);
-        target = SearchTarget.ITEM;
-
-    }
 
     @Deprecated
     public ItemSearchConditionBuilder addLabel(String label) {
@@ -183,12 +180,18 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         List<Condition> subList = matBuilder.getMaterialCondition(request, false);
 
         if (!subList.isEmpty()) {
-            Condition matCondition = addACL(
-                    subList,
-                    request,
-                    AttributeType.MATERIAL,
-                    ACPermission.permREAD);
-            itemConditionList.add(matCondition);
+            this.itemEntityGraphBuilder
+                    .getMaterialSubgraph()
+                    .setSubSelectCondition(
+                    addACL(
+                        null,
+                        request,
+                        AttributeType.MATERIAL,
+                        ACPermission.permREAD));
+            this.itemEntityGraphBuilder
+                    .getMaterialSubgraph()
+                    .setSubSelectAttribute(AttributeType.DIRECT);
+            itemConditionList.addAll(subList);
         }
 
         return addACL(itemConditionList,

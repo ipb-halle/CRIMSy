@@ -43,9 +43,11 @@ import javax.persistence.criteria.JoinType;
  * @author fbroda
  */
 public class EntityGraph {
-    
+
     private Class<?> entityClass;
     private String query;
+    private AttributeType subSelectAttribute;
+    private Condition subSelectCondition;
 
     private Set<AttributeType> attributeTypes;
     private List<EntityGraph> children;
@@ -55,10 +57,9 @@ public class EntityGraph {
 
     private Map<String, DbField> fieldMap;
     private String alias;
-    private boolean active;
+    private Set<String> active;
     private int indexCount;
     private String tableName;
-
 
     /**
      * constructor
@@ -69,47 +70,49 @@ public class EntityGraph {
         processClass();
     }
 
-
     public EntityGraph(String query) {
         this();
         this.query = query;
         this.tableName = "__QUERY__";
     }
-        
+
     private EntityGraph() {
-        this.active = false;
-        this.attributeTypes = new HashSet<> ();
-        this.children = new ArrayList<> ();
+        this.active = new HashSet<> ();
+        this.attributeTypes = new HashSet<>();
+        this.children = new ArrayList<>();
         this.joinType = JoinType.INNER;
-        this.linkFields = new ArrayList<> ();
+        this.linkFields = new ArrayList<>();
         this.indexCount = 0;
-        this.fieldMap = new HashMap<> ();
+        this.fieldMap = new HashMap<>();
     }
 
-    protected void activate() {
-        this.active = true;
+    protected void activate(String context) {
+        this.active.add(context);
         if (this.parent != null) {
-            this.parent.activate();
+            this.parent.activate(context);
         }
     }
 
     /**
      * Add an AttributeType to this EntityGraph and all its fields only.
+     *
      * @param type
-     * @return 
+     * @return
      */
     public EntityGraph addAttributeType(AttributeType type) {
         this.attributeTypes.add(type);
         for (DbField field : this.fieldMap.values()) {
             field.addAttributeType(type);
-        }        
+        }
         return this;
     }
-    
+
     /**
-     * Add an AttributeType to this EntityGraph, all its fields and all its children.
+     * Add an AttributeType to this EntityGraph, all its fields and all its
+     * children.
+     *
      * @param type
-     * @return 
+     * @return
      */
     public EntityGraph addAttributeTypeInherit(AttributeType type) {
         addAttributeType(type);
@@ -147,15 +150,18 @@ public class EntityGraph {
 
     /**
      * add a field definition for query type EntityGraph objects
-     * @param dbField a field returned from the query string of the EntityGraph object
+     *
+     * @param dbField a field returned from the query string of the EntityGraph
+     * object
      * @return the EntityGraph object
-     * @throws UnsupportedOperationException if object is not a query type EntityGraph
+     * @throws UnsupportedOperationException if object is not a query type
+     * EntityGraph
      */
     public EntityGraph addField(DbField dbField) {
         if (isEntityClass()) {
             throw new UnsupportedOperationException("Illegal attempt to add field to entity class");
         }
-        this.fieldMap.put(dbField.getColumnName(), dbField); 
+        this.fieldMap.put(dbField.getColumnName(), dbField);
         return this;
     }
 
@@ -168,7 +174,7 @@ public class EntityGraph {
      * convert the fieldName:DbField mapping into a columnName:DbField mapping
      */
     protected void buildFieldMap() {
-        Map<String, DbField> tempMap = new HashMap<> ();
+        Map<String, DbField> tempMap = new HashMap<>();
         for (DbField field : this.fieldMap.values()) {
             tempMap.put(field.getColumnName(), field);
         }
@@ -183,20 +189,20 @@ public class EntityGraph {
         return this.fieldMap.containsKey(column);
     }
 
-    protected boolean getActive() {
-        return this.active;
+    protected boolean getActive(String context) {
+        return this.active.contains(context);
     }
 
     protected String getAlias() {
         return this.alias;
     }
 
-    /** 
-     * @return recursively return all fields of this EntityGraph and 
-     * all of its children
+    /**
+     * @return recursively return all fields of this EntityGraph and all of its
+     * children
      */
     protected Set<DbField> getAllFields() {
-        Set<DbField> fields = new HashSet<> ();
+        Set<DbField> fields = new HashSet<>();
         fields.addAll(this.fieldMap.values());
         for (EntityGraph eg : this.children) {
             fields.addAll(eg.getAllFields());
@@ -210,7 +216,18 @@ public class EntityGraph {
     protected List<EntityGraph> getChildren() {
         return this.children;
     }
- 
+
+    protected EntityGraphType getEntityGraphType() {
+        if (this.entityClass != null) {
+            if (this.subSelectCondition == null) {
+                return EntityGraphType.ENTITYCLASS;
+            } else {
+                return EntityGraphType.SUBSELECT;
+            }
+        }
+        return EntityGraphType.QUERY;
+    }
+
     /**
      * @return returns the fields of this EntityGraph only (excluding children)
      */
@@ -243,6 +260,17 @@ public class EntityGraph {
         return this.query;
     }
 
+    protected AttributeType getSubSelectAttribute() {
+        return this.subSelectAttribute;
+    }
+
+    /**
+     * @return the subselect condition
+     */
+    protected Condition getSubSelectCondition() {
+        return this.subSelectCondition;
+    }
+
     /**
      * @return the table name (or a user specified alias for queries)
      */
@@ -250,19 +278,22 @@ public class EntityGraph {
         return this.tableName;
     }
 
-    protected boolean hasChildren() {
-        return this.children.size() > 0; 
+    protected boolean hasAttribute(AttributeType attr) {
+        return this.attributeTypes.contains(attr);
     }
 
+    protected boolean hasChildren() {
+        return this.children.size() > 0;
+    }
 
     protected boolean isEntityClass() {
         return this.entityClass != null;
     }
 
     private void processAttributeOverride(String parentFieldName, AttributeOverride override) {
-        String name = parentFieldName.isEmpty() ?
-                override.name() :
-                parentFieldName + "." + override.name();
+        String name = parentFieldName.isEmpty()
+                ? override.name()
+                : parentFieldName + "." + override.name();
 
         DbField dbField = this.fieldMap.get(name);
         dbField.setColumnName(override.column().name());
@@ -282,9 +313,9 @@ public class EntityGraph {
         }
     }
 
-    /** 
-     * Process the annotations of a class. Many of the 
-     * 'more special' Hibernate annotations will be ignored.
+    /**
+     * Process the annotations of a class. Many of the 'more special' Hibernate
+     * annotations will be ignored.
      */
     private void processClass() {
         processTable();
@@ -292,26 +323,28 @@ public class EntityGraph {
         if (tag != null) {
             addAttributeType(tag.type());
         }
-        processFields(this.entityClass, new ArrayList<Field> (3), "", false);
+        processFields(this.entityClass, new ArrayList<Field>(3), "", false);
         buildFieldMap();
     }
 
     /**
-     * Process a single field of a class. The field will not be added 
-     * to the fieldMap, if it is not annotated with <code>@Id</code> or <code>@Column</code>.
-     * Fields annotated with <code>@EmbeddedId</code> will be resolved.
+     * Process a single field of a class. The field will not be added to the
+     * fieldMap, if it is not annotated with <code>@Id</code> or
+     * <code>@Column</code>. Fields annotated with <code>@EmbeddedId</code> will
+     * be resolved.
      *
-     * Note: Annotations <code>@EntityCollection, @OneTo*, @ManyTo*</code>  
-     * are currently ignored.
-     * 
-     * @param accessors chain of (embedded) fields for accessing all 
-     * field values (direct and embedded) of an object
-     * @param parentFieldName name of the field embedding the class of this field
+     * Note: Annotations <code>@EntityCollection, @OneTo*, @ManyTo*</code> are
+     * currently ignored.
+     *
+     * @param accessors chain of (embedded) fields for accessing all field
+     * values (direct and embedded) of an object
+     * @param parentFieldName name of the field embedding the class of this
+     * field
      * @param field the field
      */
     private void processColumn(List<Field> accessors, String parentFieldName, Field field) {
-        String fieldName = parentFieldName.isEmpty() 
-                ? field.getName() 
+        String fieldName = parentFieldName.isEmpty()
+                ? field.getName()
                 : parentFieldName + "." + field.getName();
 
         if (field.getAnnotation(EmbeddedId.class) != null) {
@@ -332,18 +365,85 @@ public class EntityGraph {
             return;
         }
 
-
         AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
         AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
         String columnName = field.getName();
         Column column = field.getAnnotation(Column.class);
         Basic basic = field.getAnnotation(Basic.class);
         if ((basic != null) || (column != null)) {
-            if ((column != null) && (! column.name().isEmpty())) {
+            if ((column != null) && (!column.name().isEmpty())) {
                 columnName = column.name();
             }
-            DbField dbField = new DbField(false, 
+            DbField dbField = new DbField(false,
                     (field.getAnnotation(GeneratedValue.class) != null) ? true : false)
+                    .setEntityGraph(this)
+                    .setFieldName(fieldName)
+                    .setColumnName(columnName)
+                    .setTableName(this.tableName)
+                    .addAccessors(accessors)
+                    .addAttributeTag(attributeTag)
+                    .addAttributeTag(attributeTags)
+                    .addAttributeTypes(this.attributeTypes);
+            this.fieldMap.put(fieldName, dbField);
+        }
+    }
+
+    /**
+     * process the fields of a class to obtain a map of database fields
+     *
+     * @param clazz the class to resolve the fields for
+     * @param parentAccessors a chain of (embedded) fields for accessing all
+     * field values (direct and embedded) of an object
+     * @param isIndex if the class is an EmbeddedId
+     */
+    private void processFields(Class<?> clazz, List<Field> parentAccessors, String parentFieldName, boolean isIndex) {
+        for (Field field : clazz.getDeclaredFields()) {
+            List<Field> accessors = new ArrayList(parentAccessors);
+            accessors.add(field);
+            if (isIndex) {
+                processId(accessors, parentFieldName, field);
+            } else {
+                processColumn(accessors, parentFieldName, field);
+            }
+            String name = parentFieldName.isEmpty()
+                    ? field.getName()
+                    : parentFieldName + "." + field.getName();
+            processAttributeOverrides(name, field);
+        }
+
+        Class<?> superClass = clazz.getSuperclass();
+        if ((superClass != null)
+                && (superClass.getAnnotation(MappedSuperclass.class) != null)) {
+            processFields(superClass, parentAccessors, parentFieldName, isIndex);
+        }
+        processAttributeOverrides(parentFieldName, clazz);
+    }
+
+    /**
+     * process an index field; could be either a single field with @Id
+     * annotation or a field from an @EmbeddedId object.
+     *
+     * @param accessors a chain of (embedded) fields for accessing all field
+     * values (direct and embedded) of an object
+     * @param parentFieldName name of the field embedding the class of this
+     * field
+     * @param field the index field
+     */
+    private void processId(List<Field> accessors, String parentFieldName, Field field) {
+        String fieldName = parentFieldName.isEmpty()
+                ? field.getName()
+                : parentFieldName + "." + field.getName();
+
+        String columnName = field.getName();
+        Column column = field.getAnnotation(Column.class);
+        if ((column != null) && (!column.name().isEmpty())) {
+            columnName = column.name();
+        }
+
+        AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
+        AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
+        DbField dbField = new DbField(true,
+                (field.getAnnotation(GeneratedValue.class) != null) ? true : false)
                 .setEntityGraph(this)
                 .setFieldName(fieldName)
                 .setColumnName(columnName)
@@ -352,100 +452,33 @@ public class EntityGraph {
                 .addAttributeTag(attributeTag)
                 .addAttributeTag(attributeTags)
                 .addAttributeTypes(this.attributeTypes);
-            this.fieldMap.put(fieldName, dbField);
-        }
-    }
-
-    /**
-     * process the fields of a class to obtain a map of database fields
-     * @param clazz the class to resolve the fields for
-     * @param parentAccessors a chain of (embedded) fields for accessing all 
-     * field values (direct and embedded) of an object
-     * @param isIndex if the class is an EmbeddedId
-     */
-    private void processFields(Class<?> clazz, List<Field> parentAccessors, String parentFieldName, boolean isIndex) {
-        for(Field field : clazz.getDeclaredFields()) {
-            List<Field> accessors = new ArrayList(parentAccessors);
-            accessors.add(field);
-            if (isIndex) {
-                processId(accessors, parentFieldName, field);
-            } else {
-                processColumn(accessors, parentFieldName, field);
-            }
-            String name = parentFieldName.isEmpty() ?
-                    field.getName() :
-                    parentFieldName + "." + field.getName();
-            processAttributeOverrides(name, field);
-        }
-
-        Class<?> superClass = clazz.getSuperclass();
-        if ((superClass != null) 
-                && (superClass.getAnnotation(MappedSuperclass.class) != null)) {
-            processFields(superClass, parentAccessors, parentFieldName, isIndex);
-        }
-        processAttributeOverrides(parentFieldName, clazz);
-    }
-
-    /**
-     * process an index field; could be either a 
-     * single field with @Id annotation or a field from 
-     * an @EmbeddedId object.
-     * @param accessors a chain of (embedded) fields for accessing all 
-     * field values (direct and embedded) of an object
-     * @param parentFieldName name of the field embedding the class of this field 
-     * @param field the index field
-     */
-    private void processId(List<Field> accessors, String parentFieldName, Field field) {
-        String fieldName = parentFieldName.isEmpty() 
-                ? field.getName() 
-                : parentFieldName + "." + field.getName();
-
-        String columnName = field.getName();
-        Column column = field.getAnnotation(Column.class);
-        if ((column != null) && (! column.name().isEmpty())) {
-            columnName = column.name();
-        }
-        
-        AttributeTag attributeTag = field.getAnnotation(AttributeTag.class);
-        AttributeTags attributeTags = field.getAnnotation(AttributeTags.class);
-        DbField dbField = new DbField(true, 
-                (field.getAnnotation(GeneratedValue.class) != null) ? true : false)
-                .setEntityGraph(this)
-                .setFieldName(fieldName) 
-                .setColumnName(columnName) 
-                .setTableName(this.tableName)
-                .addAccessors(accessors)
-                .addAttributeTag(attributeTag) 
-                .addAttributeTag(attributeTags) 
-                .addAttributeTypes(this.attributeTypes);
         this.fieldMap.put(fieldName, dbField);
         this.indexCount++;
     }
 
     /**
-     * process <code>@Table</code> annotation for an entity class.
-     * If the annotation is missing, the simple name of the class
-     * is used.
+     * process <code>@Table</code> annotation for an entity class. If the
+     * annotation is missing, the simple name of the class is used.
      */
-    private void processTable(){
+    private void processTable() {
         Table table = this.entityClass.getAnnotation(Table.class);
         if (table != null) {
             StringBuilder sb = new StringBuilder();
-            if ((table.schema() != null) && (! table.schema().isEmpty())) {
+            if ((table.schema() != null) && (!table.schema().isEmpty())) {
                 sb.append(table.schema());
                 sb.append(".");
             }
             sb.append(table.name());
             this.tableName = sb.toString();
             return;
-        } 
+        }
         this.tableName = this.entityClass.getSimpleName();
     }
 
-    protected void reset() {
-        this.active = false;
+    protected void reset(String context) {
+        this.active.remove(context);
         for (EntityGraph graph : this.children) {
-            graph.reset();
+            graph.reset(context);
         }
     }
 
@@ -478,10 +511,39 @@ public class EntityGraph {
     }
 
     /**
-     * set the table name for query type EntityGraphs to assist in debugging
-     * @param tableName 
+     * Restrict sub-selects
+     *
+     * @param attr Only EntityGraph objects with AttributeType attr will be
+     * included in the sub-select
+     * @return
+     */
+    public EntityGraph setSubSelectAttribute(AttributeType attr) {
+        this.subSelectAttribute = attr;
+        return this;
+    }
+
+    /**
+     * Enables the transformation of this EntityGraph subtree into a subselect
+     * instead of a classical JOIN. This enables the handling of access control
+     * conditions within the subselect, making the rest of the conditions much
+     * easier.
+     *
+     * @param con the condition (WHERE clause) for this subtree, usually access
+     * control conditions
      * @return this EntityGraph
-     * @throws UnsupportedOperationException if this is an entity class type EntityGraph object
+     */
+    public EntityGraph setSubSelectCondition(Condition con) {
+        this.subSelectCondition = con;
+        return this;
+    }
+
+    /**
+     * set the table name for query type EntityGraphs to assist in debugging
+     *
+     * @param tableName
+     * @return this EntityGraph
+     * @throws UnsupportedOperationException if this is an entity class type
+     * EntityGraph object
      */
     public EntityGraph setTableName(String tableName) {
         if (isEntityClass()) {

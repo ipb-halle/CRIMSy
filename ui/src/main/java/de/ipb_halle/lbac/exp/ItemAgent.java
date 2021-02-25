@@ -85,22 +85,22 @@ public class ItemAgent implements Serializable {
     }
 
     public void actionTriggerItemSearch() {
-        chooseableItems = new ArrayList<>();
-        if ((this.itemHolder != null)
-                && (this.itemSearch != null)
-                && (!this.itemSearch.isEmpty())) {
-            try {
-                ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(userBean.getCurrentAccount(), 0, 1);
-                builder.addLabel(itemSearch);
-                SearchResult result = itemService.loadItems(builder.buildSearchRequest());
-                chooseableItems = result.getAllFoundObjects(Item.class, result.getNode());
-            } catch (NumberFormatException nfe) {
-                // ignore and return an empty list
-                chooseableItems = new ArrayList<>();
-            } catch (Exception e) {
-                this.logger.warn("getItemList() caught an exception: ", (Throwable) e);
-            }
-        }
+//        chooseableItems = new ArrayList<>();
+//        if ((this.itemHolder != null)
+//                && (this.itemSearch != null)
+//                && (!this.itemSearch.isEmpty())) {
+//            try {
+//                ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(INSERT ItemEntityGraphBuilder HERE!);
+//                builder.addLabel(itemSearch);
+//                SearchResult result = itemService.loadItems(builder.buildSearchRequest());
+//                chooseableItems = result.getAllFoundObjects(Item.class, result.getNode());
+//            } catch (NumberFormatException nfe) {
+//                // ignore and return an empty list
+//                chooseableItems = new ArrayList<>();
+//            } catch (Exception e) {
+//                this.logger.warn("getItemList() caught an exception: ", (Throwable) e);
+//            }
+//        }
     }
 
     public Integer getItemId() {

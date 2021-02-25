@@ -127,8 +127,11 @@ public class ItemService {
 
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
-        ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder();
+        
+        ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
+        SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(true));
+        ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(
+                graphBuilder);
         
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(
@@ -139,14 +142,20 @@ public class ItemService {
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
+            logger.info(String.format("%s %s", param.getArgumentKey(),  param.getValue().toString()));
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
-        List<ItemEntity> entities = q.getResultList();
-        for (ItemEntity ie : entities) {
-            Item item = createItemFromEntity(ie);
-            item.setHistory(loadHistoryOfItem(item));
-            result.addResult(item);
+        try { 
+            List<ItemEntity> entities = q.getResultList();
+            for (ItemEntity ie : entities) {
+                Item item = createItemFromEntity(ie);
+                item.setHistory(loadHistoryOfItem(item));
+                result.addResult(item);
+            }
+        } catch(Exception e) {
+            logger.warn("exception", e);
+            throw e;
         }
 
         return result;
@@ -164,14 +173,15 @@ public class ItemService {
     }
 
     public int getItemAmount(SearchRequest request) {
+        
         SqlCountBuilder countBuilder = new SqlCountBuilder(
-                createEntityGraph(),
+                graphBuilder.buildEntityGraph(true),
                 new Attribute(new AttributeType[]{
             AttributeType.ITEM,
             AttributeType.LABEL
         }));
 
-        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
+        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(graphBuilder);
 
         permissionConditionBuilder = new PermissionConditionBuilder(itemBuilder, request.getUser(), ACPermission.permREAD).
                 addFields(AttributeType.ITEM);
@@ -360,7 +370,7 @@ public class ItemService {
     }
 
     private EntityGraph createEntityGraph() {
-        graphBuilder = new ItemEntityGraphBuilder(aclistService);
+        graphBuilder = new ItemEntityGraphBuilder();
         return graphBuilder.buildEntityGraph(true);
     }
 

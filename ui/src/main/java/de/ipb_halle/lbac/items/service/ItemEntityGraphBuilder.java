@@ -17,13 +17,10 @@
  */
 package de.ipb_halle.lbac.items.service;
 
-import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.material.structure.MoleculeEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
@@ -40,12 +37,10 @@ import javax.persistence.criteria.JoinType;
 public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
     private EntityGraph nestedContainerGraph;
-    private ACListService aclistService;
     private EntityGraph materialSubgraph;
 
-    public ItemEntityGraphBuilder(ACListService aclistService) {
+    public ItemEntityGraphBuilder() {
         super(ItemEntity.class);
-        this.aclistService = aclistService;
     }
 
     private void addOwner() {
@@ -69,6 +64,7 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         MaterialEntityGraphBuilder matBuilder = new MaterialEntityGraphBuilder();
         materialSubgraph = matBuilder.buildEntityGraph(false);
         materialSubgraph.addLinkField("materialid", "materialid");
+        materialSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
         graph.addChild(materialSubgraph);
     }
 
@@ -92,4 +88,7 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         return graph;
     }
 
+    public EntityGraph getMaterialSubgraph() {
+        return this.materialSubgraph;
+    }
 }

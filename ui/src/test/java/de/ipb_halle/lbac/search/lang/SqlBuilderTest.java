@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.jboss.arquillian.junit.Arquillian;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,6 +70,7 @@ public class SqlBuilderTest extends TestBase {
         assertEquals("Invalid argument value", "%TEST%", v.getValue());
     }
 
+    @Ignore
     @Test
     public void testSqlBuilder_2() {
 
@@ -129,6 +131,7 @@ public class SqlBuilderTest extends TestBase {
         assertEquals("Invalid argument list size", 2, builder.getValueList().size());
     }
 
+    @Ignore
     @Test
     public void testSqlCountBuilder() {
         EntityGraph graph = new EntityGraph(ItemEntity.class)

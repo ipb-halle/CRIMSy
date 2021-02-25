@@ -24,9 +24,8 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * Builds a SELECT statement for an EntityGraph using given
- * entity annotations and Conditions. NOTE: The methods of 
- * this class are not thread safe.
+ * Builds a SELECT statement for an EntityGraph using given entity annotations
+ * and Conditions. NOTE: The methods of this class are not thread safe.
  *
  * @author fbroda
  */
@@ -71,7 +70,7 @@ public class SqlBuilder {
                     if (i > 0) {
                         sb.append(operator.getSql());
                     }
-                    addCondition(sb, c); 
+                    addCondition(sb, c);
                     i++;
                 }
             }
@@ -93,12 +92,12 @@ public class SqlBuilder {
         Operator operator = condition.getOperator();
         Set<DbField> columns = getMatchingColumns(condition.getAttribute());
         if (columns.size() == 0) {
-            String s="";
-            for(AttributeType t : condition.getAttribute().getTypes()){
-                s+=t+":";
+            String s = "";
+            for (AttributeType t : condition.getAttribute().getTypes()) {
+                s += t + ":";
             }
-            
-            throw new NoSuchElementException("No matching field found in addLeafCondition(): "+s);
+
+            throw new NoSuchElementException("No matching field found in addLeafCondition(): " + s);
         }
         if (operator.isUnary()) {
             addUnaryLeafCondition(sb, columns, operator);
@@ -110,6 +109,10 @@ public class SqlBuilder {
             this.valueList.add(value);
             addBinaryLeafCondition(sb, columns, operator, value);
         }
+    }
+
+    private int getArgumentCounter() {
+        return this.argumentCounter;
     }
 
     private DbField getOrderColumn(DbField field) {
@@ -164,43 +167,48 @@ public class SqlBuilder {
 
     /**
      * mark entity subgraphs active based on the conditions
-     * @param condition the conditions 
+     *
+     * @param condition the conditions
+     * @param context the activation context
      */
-    private void filter(Condition condition) {
-        List<Attribute> attributes = new ArrayList<> ();
+    private void filter(Condition condition, String context) {
+        List<Attribute> attributes = new ArrayList<>();
         if (condition != null) {
             condition.getAttributes(attributes);
         }
         for (Attribute attr : attributes) {
             for (DbField field : getMatchingColumns(attr)) {
-                field.getEntityGraph().activate();
+                field.getEntityGraph().activate(context);
             }
         }
-
     }
 
     /**
-     * mark entity subgraphs active based on the items in 
-     * the ORDER BY clause.
+     * mark entity subgraphs active based on the items in the ORDER BY clause.
+     *
      * @param orderList a list of fields defining the ORDER BY clause
+     * @param context the activation context
      */
-    private void filter(List<DbField> orderList) {
+    private void filter(List<DbField> orderList, String context) {
         if (orderList == null) {
             return;
         }
         for (DbField field : orderList) {
-            getOrderColumn(field).getEntityGraph().activate();
+            getOrderColumn(field).getEntityGraph().activate(context);
         }
     }
 
     /**
+     * @param context the current query context
+     * @param attr In case of sub-selects: the AttributeType to which the SQL
+     * statement should be restricted, otherwise null
      * @return the FROM clause defined by this EntityGraph for a SELECT
      * statement.
      */
-    protected String from() {
+    protected String from(String context, AttributeType attr) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(" FROM ");
+        sb.append(" \nFROM ");
         if (this.entityGraph.isEntityClass()) {
             sb.append(this.entityGraph.getTableName());
         } else {
@@ -212,7 +220,7 @@ public class SqlBuilder {
         sb.append(this.entityGraph.getAlias());
 
         if (this.entityGraph.hasChildren()) {
-            sb.append(joinChildren(this.entityGraph));
+            sb.append(joinChildren(this.entityGraph, context, attr));
         }
 
         return sb.toString();
@@ -227,9 +235,9 @@ public class SqlBuilder {
     private Set<DbField> getMatchingColumns(Attribute attribute) {
         Set<DbField> fields = new HashSet<>();
         for (DbField field : this.allFields) {
-            String s="";
-            for(AttributeType t:field.getAttributeTypes()){
-                s+=t.name()+":";
+            String s = "";
+            for (AttributeType t : field.getAttributeTypes()) {
+                s += t.name() + ":";
             }
             System.out.println(s);
             if (field.matches(attribute)) {
@@ -269,23 +277,64 @@ public class SqlBuilder {
         return this.valueList;
     }
 
-    private void joinChild(StringBuilder sb, EntityGraph graph, EntityGraph child) {
+    /**
+     * Recursively add a child subtree to the SQL statement.
+     *
+     * @param sb the StringBuilder for the SQL statement
+     * @param graph the parent EntityGraph
+     * @param child the child EntityGraph (may be a tree structure)
+     * @param attr restrict the sub-select to EntityGraph objects with attribute
+     * <code>attr</code>
+     */
+    private void joinChild(StringBuilder sb, EntityGraph graph, EntityGraph child, String context, AttributeType attr) {
+        sb.append("\n");
         sb.append(getJoinType(child));
-        if (child.isEntityClass()) {
-            sb.append(child.getTableName());
-        } else {
-            sb.append(" ( ");
-            sb.append(child.getQuery());
-            sb.append(" ) ");
+        switch (child.getEntityGraphType()) {
+            case ENTITYCLASS:
+                sb.append(child.getTableName());
+                break;
+            case QUERY:
+                sb.append(" ( ");
+                sb.append(child.getQuery());
+                sb.append(" ) ");
+                break;
+            case SUBSELECT:
+                sb.append(" ( ");
+                String tmpAlias = child.getAlias();
+                SqlBuilder builder = new SqlBuilder(child);
+                sb.append(builder.query(
+                        "sub_" + tmpAlias,
+                        child.getSubSelectCondition(),
+                        null, child.getSubSelectAttribute()));
+                this.argumentCounter += builder.getArgumentCounter();
+                sb.append(" ) ");
+                child.setAlias(tmpAlias);
+                this.valueList.addAll(builder.getValueList());
+                break;
         }
         sb.append(" AS ");
         sb.append(child.getAlias());
 
         sb.append(" ON ");
-        sb.append(joinCondition(graph, child)); 
+        sb.append(joinCondition(graph, child));
 
         if (child.hasChildren()) {
-            sb.append(joinChildren(child));
+            sb.append(joinChildren(child, context, attr));
+            /*
+            if (attr == null) {
+                sb.append(joinChildren(child, context, attr));
+            } else {
+                if (child.getAlias().equals("sub_a_4_5")) {
+                    int i = 0;
+                }
+                // JOIN siblings which were not included in the sub-select
+                for (EntityGraph sibling : child.getChildren()) {
+                    if (sibling.getActive(context) && (! sibling.hasAttribute(attr))) {
+                        joinChild(sb, child, sibling, context, null);
+                    }
+                }
+            }
+            */
         }
     }
 
@@ -293,13 +342,17 @@ public class SqlBuilder {
      * add joins of dependent (child) entities
      *
      * @param graph the entity graph
+     * @param context 
+     * @param attr
      * @return the SQL JOIN expression
      */
-    private String joinChildren(EntityGraph graph) {
+    private String joinChildren(EntityGraph graph, String context, AttributeType attr) {
         StringBuilder sb = new StringBuilder();
-        for (EntityGraph child: graph.getChildren()) {
-            if (child.getActive()) {
-                joinChild(sb, graph, child);
+        for (EntityGraph child : graph.getChildren()) {
+            if (child.getActive(context)) {
+                if ((attr == null) || child.hasAttribute(attr)) {
+                    joinChild(sb, graph, child, context, attr);
+                }
             }
         }
         return sb.toString();
@@ -333,7 +386,7 @@ public class SqlBuilder {
                         child.getTableName()));
             }
             sb.append(sep);
-            sb.append(parent.getAlias()); 
+            sb.append(parent.getAlias());
             sb.append(".");
             sb.append(link.getParent());
             sb.append(" = ");
@@ -351,15 +404,15 @@ public class SqlBuilder {
         }
         String sep = "";
         StringBuilder sb = new StringBuilder();
-        sb.append(" ORDER BY ");
+        sb.append(" \nORDER BY ");
         for (DbField field : orderList) {
             sb.append(sep);
             sb.append(getOrderColumn(field).getAliasedColumnName());
-            switch(field.getOrderDirection()) {
-                case ASC :
+            switch (field.getOrderDirection()) {
+                case ASC:
                     sb.append(" ASC ");
                     break;
-                case DESC :
+                case DESC:
                     sb.append(" DESC ");
                     break;
             }
@@ -369,24 +422,24 @@ public class SqlBuilder {
     }
 
     public String query(Condition condition) {
-        return query("a", condition, null);
+        return query("a", condition, null, null);
     }
 
     public String query(Condition condition, List<DbField> orderList) {
-        return query("a", condition, orderList);
+        return query("a", condition, orderList, null);
     }
 
-    public String query(String alias, Condition condition, List<DbField> orderList) {
+    public String query(String alias, Condition condition, List<DbField> orderList, AttributeType attr) {
         this.argumentCounter = 0;
         this.valueList = new ArrayList<>();
-        this.entityGraph.reset();
+        this.entityGraph.reset(alias);
         this.entityGraph.setAlias(alias);
         this.allFields = this.entityGraph.getAllFields();
-        filter(condition);
-        filter(orderList);
+        filter(condition, alias);
+        filter(orderList, alias);
         StringBuilder sb = new StringBuilder();
         sb.append(select());
-        sb.append(from());
+        sb.append(from(alias, attr));
         sb.append(where(condition));
         sb.append(order(orderList));
         return sb.toString();
@@ -418,7 +471,7 @@ public class SqlBuilder {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        sb.append(" WHERE ");
+        sb.append(" \nWHERE ");
         addCondition(sb, condition);
         return sb.toString();
     }

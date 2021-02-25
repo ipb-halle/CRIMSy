@@ -112,7 +112,7 @@ public abstract class SearchConditionBuilder {
 
         Condition aclCondition = getDisjunction(subCondition);
 
-        if (conditionList.isEmpty()) {
+        if ((conditionList == null) || (conditionList.isEmpty())) {
             return aclCondition;
         }
         conditionList.add(aclCondition);
