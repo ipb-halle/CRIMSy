@@ -96,7 +96,7 @@
                     </b:panelGrid>
                 </b:panel>
                 <b:column styleClass="text-center">
-                    <b:commandButton ajax="true" update="@form growlMsg"
+                    <b:commandButton ajax="true" process="@form" update="growlMsg"
                                      action="#{pluginSettingsDialogControlerBean.actionSave()}"
                                      value="#{msgs.Save}"/>
                 </b:column>

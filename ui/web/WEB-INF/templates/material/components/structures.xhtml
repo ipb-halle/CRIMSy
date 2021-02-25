@@ -51,9 +51,14 @@
                             <b:column span="6">
                                 <mol:molecule
                                     value="#{materialBean.structureInfos.structureModel}"
-                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}" 
-                                    readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}">
+                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                    border="true"
+                                    readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                    widgetVar="structurePlugin">
                                 </mol:molecule>
+                                <!-- This JS snippet guarantees proper plugin initialization after
+                                     this p:tab is rendered by AJAX and the tab comes into focus. -->
+                                <script>molecularfaces.onDocumentReady(function () { if (structurePlugin != null) structurePlugin.init(); });</script>
 
                             </b:column>
                             <b:column span="6">
