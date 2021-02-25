@@ -69,7 +69,7 @@
                                     <p:column
                                         colspan="12"
                                         styleClass="borderless centeredText">
-                                        <p:outputLabel id="molEditorLabel" 
+                                        <h:outputLabel id="molEditorLabel" 
                                                        for="molEditor" 
                                                        value="#{msgs.materialAgent_label_substructure}"
                                                        rendered="#{cc.attrs.agent.showMolEditor}"/>
@@ -80,7 +80,7 @@
                                         <mol:molecule id="molEditor"
                                                       rendered="true"
                                                       value="#{cc.attrs.agent.moleculeSearch}" 
-                                                      plugintype="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                      pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                                       border="true"
                                                       readonly="false"/>
                                     </p:column>
