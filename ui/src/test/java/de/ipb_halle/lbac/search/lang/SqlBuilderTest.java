@@ -70,7 +70,6 @@ public class SqlBuilderTest extends TestBase {
         assertEquals("Invalid argument value", "%TEST%", v.getValue());
     }
 
-    @Ignore
     @Test
     public void testSqlBuilder_2() {
 
@@ -87,7 +86,7 @@ public class SqlBuilderTest extends TestBase {
                 Operator.EQUAL,
                 new Value("Benzol"));
 
-        String query = builder.query(condition);
+        String query = builder.query(condition).replace("\n", "");
         assertTrue("Query contains expected keywords",
                 query.startsWith("SELECT ")
                 && query.contains(" FROM ")
@@ -131,7 +130,6 @@ public class SqlBuilderTest extends TestBase {
         assertEquals("Invalid argument list size", 2, builder.getValueList().size());
     }
 
-    @Ignore
     @Test
     public void testSqlCountBuilder() {
         EntityGraph graph = new EntityGraph(ItemEntity.class)
@@ -154,8 +152,8 @@ public class SqlBuilderTest extends TestBase {
                 Operator.EQUAL,
                 new Value(Integer.valueOf(1))
             )
-        );
-        Assert.assertEquals(" SELECT COUNT( DISTINCT a.label) FROM items AS a JOIN materials AS a_0 ON a.materialid = a_0.materialid WHERE (a_0.materialid = :field0)", sql);
+        ).replace("\n", "");
+        Assert.assertEquals("SELECT COUNT( DISTINCT a.label) FROM items AS a JOIN materials AS a_0 ON a.materialid = a_0.materialid WHERE (a_0.materialid = :field0)", sql);
 
     }
 
