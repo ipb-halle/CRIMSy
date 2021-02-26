@@ -37,11 +37,14 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.MemberService;
 
 import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.label.LabelService;
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.unknown.UnknownMaterial;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -127,12 +130,12 @@ public class ItemService {
 
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-        
+
         ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
         SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(true));
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(
                 graphBuilder);
-        
+
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(
                 condition,
@@ -142,18 +145,18 @@ public class ItemService {
         Query q = em.createNativeQuery(sql, ItemEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
-            logger.info(String.format("%s %s", param.getArgumentKey(),  param.getValue().toString()));
+            logger.info(String.format("%s %s", param.getArgumentKey(), param.getValue().toString()));
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
-        try { 
+        try {
             List<ItemEntity> entities = q.getResultList();
             for (ItemEntity ie : entities) {
-                Item item = createItemFromEntity(ie);
+                Item item = createItemFromEntity(ie,request.getUser());
                 item.setHistory(loadHistoryOfItem(item));
                 result.addResult(item);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.warn("exception", e);
             throw e;
         }
@@ -173,7 +176,7 @@ public class ItemService {
     }
 
     public int getItemAmount(SearchRequest request) {
-        
+
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 graphBuilder.buildEntityGraph(true),
                 new Attribute(new AttributeType[]{
@@ -196,11 +199,15 @@ public class ItemService {
 
     }
 
-    private Item createItemFromEntity(ItemEntity entity) {
+    private Item createItemFromEntity(ItemEntity entity, User user) {
+        Material m = materialService.loadMaterialById(entity.getMaterialid());
+        if (!aclistService.isPermitted(ACPermission.permREAD, m, user)) {
+            m = UnknownMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
+        }
         Item item = new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
                 entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
-                materialService.loadMaterialById(entity.getMaterialid()),
+                m,
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),

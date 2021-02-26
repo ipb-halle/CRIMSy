@@ -58,6 +58,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
@@ -79,13 +80,13 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class SearchServiceTest extends TestBase {
 
-    private User publicUser;
+    private User publicUser, anotherUser;
     private ProjectCreator projectCreator;
     private Project project1, project2;
     private MaterialCreator materialCreator;
     private ItemCreator itemCreator;
-    private int materialid1, materialid2;
-    private int itemid1, itemid2;
+    private int materialid1, materialid2, notReadableMaterialId;
+    private int itemid1, itemid2, item3;
 
     @Inject
     private SearchService searchService;
@@ -98,51 +99,22 @@ public class SearchServiceTest extends TestBase {
 
     @Inject
     private GlobalAdmissionContext context;
-    private Node node;
+    private Node localNode;
+    private int publicAclId;
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
+        localNode = nodeService.getLocalNode();
         cleanAllProjectsFromDb();
-        projectCreator = new ProjectCreator(
-                projectService,
-                GlobalAdmissionContext.getPublicReadACL());
-        publicUser = context.getPublicAccount();
-        materialCreator = new MaterialCreator(entityManagerService);
-        itemCreator = new ItemCreator(entityManagerService);
+        publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
 
-        projectCreator.setProjectName("SearchServiceTest-Project-01");
-        project1 = projectCreator.createAndSaveProject(publicUser);
-        projectCreator.setProjectName("SearchServiceTest-Project-02-XYZ");
-        project2 = projectCreator.createAndSaveProject(publicUser);
+        createUsers();
+        createProjects();
+        createMaterials();
+        createItems();
 
-        int publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
-        materialid1 = materialCreator.createStructure(
-                publicUser.getId(),
-                publicAclId,
-                project1.getId(),
-                "Testmaterial-001");
-        materialCreator.addIndexToMaterial(materialid1, 2, "Index of material 1");
-        materialid2 = materialCreator.createStructure(
-                publicUser.getId(),
-                publicAclId,
-                project1.getId(),
-                "Testmaterial-002");
-
-        itemid1 = itemCreator.createItem(
-                publicUser.getId(),
-                publicAclId,
-                materialid1,
-                "Testitem-001",
-                project1.getId());
-        itemid2 = itemCreator.createItem(
-                publicUser.getId(),
-                publicAclId,
-                materialid2,
-                "Testitem-002",
-                project2.getId());
-        node = nodeService.getLocalNode();
     }
 
     @After
@@ -154,11 +126,11 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test001_searchEmpty() {
-        SearchResult result = searchService.search(null, node);
+        SearchResult result = searchService.search(null, localNode);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
 
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
-        result = searchService.search(Arrays.asList(request), node);
+        result = searchService.search(Arrays.asList(request), localNode);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
     }
 
@@ -166,21 +138,21 @@ public class SearchServiceTest extends TestBase {
     public void test002_searchDocuments() {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         request.setSearchTarget(SearchTarget.DOCUMENT);
-        searchService.search(Arrays.asList(request), node);
+        searchService.search(Arrays.asList(request), localNode);
     }
 
     @Test(expected = Exception.class)
     public void test003_searchUser() {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         request.setSearchTarget(SearchTarget.USER);
-        searchService.search(Arrays.asList(request), node);
+        searchService.search(Arrays.asList(request), localNode);
     }
 
     @Test(expected = Exception.class)
     public void test004_searchContainer() {
         SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
         request.setSearchTarget(SearchTarget.CONTAINER);
-        searchService.search(Arrays.asList(request), node);
+        searchService.search(Arrays.asList(request), localNode);
     }
 
     @Ignore("Ignored until new API is implemented for requests")
@@ -188,11 +160,11 @@ public class SearchServiceTest extends TestBase {
     public void test005_searchProject() {
         ProjectSearchConditionBuilder requestBuilder = new ProjectSearchConditionBuilder(publicUser, 0, 25);
         SearchRequest request = requestBuilder.buildSearchRequest();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         requestBuilder.addExactName("SearchServiceTest-Project-02-XYZ");
         request = requestBuilder.buildSearchRequest();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
     }
 
     @Test
@@ -200,87 +172,100 @@ public class SearchServiceTest extends TestBase {
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = builder.build();
         request.addSearchCategory(SearchCategory.DEACTIVATED, "deactivated");
-        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         request.addSearchCategory(SearchCategory.DEACTIVATED, "activated");
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setIndex("-002");
         request = builder.build();
-        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("-002");
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setId(String.valueOf(materialid1));
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setIndex("Index of material");
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setProjectName("Project-01");
         request = builder.build();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("XXX");
         request = builder.build();
-        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName(publicUser.getName());
         request = builder.build();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.addMaterialType(MaterialType.STRUCTURE);
         request = builder.build();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 1);
         builder.setUserName(publicUser.getName());
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
     }
 
-   // @Ignore("Ignored until new API is implemented for requests")
+    // @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test007_searchItems() {
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setDescription("estitem-001");
         SearchRequest request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("Testmaterial-001");
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         Item item1 = itemService.loadItemById(itemid1);
 
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setLabel(item1.getLabel());
-        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
 
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setProjectName("SearchServiceTest-Project-01");
-        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
 
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName("public");
-        Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), node).getAllFoundObjects().size());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
+
+        //Item not found, because material not readable
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("Testmaterial-003");
+        Assert.assertEquals(0, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
+
+        //Item found, but material not readable
+        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        builder.setDescription("estitem-003");
+        List<NetObject> foundItems = searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects();
+
+        Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
+        Item item = (Item) foundItems.get(0).getSearchable();
+        Assert.assertEquals(MaterialType.UNKNOWN, item.getMaterial().getType());
 
         //TO DO:
-        //Look for an item which material is not accessable
 //        add a location to an item
 //        builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
 //        builder.setLocation("room-001");
@@ -293,7 +278,7 @@ public class SearchServiceTest extends TestBase {
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.addText("xxx");
         SearchRequest request = builder.build();
-        Assert.assertEquals(0, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
     }
 
@@ -307,7 +292,7 @@ public class SearchServiceTest extends TestBase {
         SearchRequest materialRequest = materialBuilder.buildSearchRequest();
         SearchRequest projectRequest = projectBuilder.buildSearchRequest();
 
-        SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest), node);
+        SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest), localNode);
         Assert.assertEquals(6, response.getAllFoundObjects().size());
     }
 
@@ -329,7 +314,7 @@ public class SearchServiceTest extends TestBase {
         docRequestBuilder.addWordRoots(words);
         SearchResult result = searchService.search(
                 Arrays.asList(docRequestBuilder.buildSearchRequest(),
-                        matRequestbuilder.buildSearchRequest()), node);
+                        matRequestbuilder.buildSearchRequest()), localNode);
 
         Assert.assertEquals(2, result.getAllFoundObjects().size());
 
@@ -359,7 +344,7 @@ public class SearchServiceTest extends TestBase {
         Set<String> wordRoots = new HashSet<>();
         wordRoots.add("wasserstoff");
         requestBuilder.addWordRoots(wordRoots);
-        SearchResult result = searchService.search(Arrays.asList(requestBuilder.buildSearchRequest()), node);
+        SearchResult result = searchService.search(Arrays.asList(requestBuilder.buildSearchRequest()), localNode);
         Assert.assertEquals(1, result.getAllFoundObjects().size());
     }
 
@@ -371,6 +356,67 @@ public class SearchServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("DELETE from termvectors");
         entityManagerService.doSqlUpdate("DELETE from files");
         Files.delete(Paths.get("target/test-classes/collections").toFile());
+    }
+
+    private void createMaterials() {
+        materialCreator = new MaterialCreator(entityManagerService);
+        materialid1 = materialCreator.createStructure(
+                publicUser.getId(),
+                publicAclId,
+                project1.getId(),
+                "Testmaterial-001");
+        materialCreator.addIndexToMaterial(materialid1, 2, "Index of material 1");
+
+        materialid2 = materialCreator.createStructure(
+                publicUser.getId(),
+                publicAclId,
+                project1.getId(),
+                "Testmaterial-002");
+    }
+
+    private void createItems() {
+        itemCreator = new ItemCreator(entityManagerService);
+        notReadableMaterialId = materialCreator.createStructure(
+                anotherUser.getId(),
+                context.getNoAccessACL().getId(),
+                project1.getId(),
+                "Testmaterial-003-notReadable");
+
+        itemid1 = itemCreator.createItem(
+                publicUser.getId(),
+                publicAclId,
+                materialid1,
+                "Testitem-001",
+                project1.getId());
+        itemid2 = itemCreator.createItem(
+                publicUser.getId(),
+                publicAclId,
+                materialid2,
+                "Testitem-002",
+                project2.getId());
+
+        item3 = itemCreator.createItem(
+                publicUser.getId(),
+                publicAclId,
+                notReadableMaterialId,
+                "Testitem-003",
+                project2.getId());
+    }
+
+    private void createProjects() {
+        projectCreator = new ProjectCreator(
+                projectService,
+                GlobalAdmissionContext.getPublicReadACL());
+        projectCreator.setProjectName("SearchServiceTest-Project-01");
+        project1 = projectCreator.createAndSaveProject(publicUser);
+        projectCreator.setProjectName("SearchServiceTest-Project-02-XYZ");
+        project2 = projectCreator.createAndSaveProject(publicUser);
+    }
+
+    private void createUsers() {
+        publicUser = context.getPublicAccount();
+
+        anotherUser = createUser("SearchServiceTest_user", "SearchServiceTest_user");
     }
 
     @Deployment

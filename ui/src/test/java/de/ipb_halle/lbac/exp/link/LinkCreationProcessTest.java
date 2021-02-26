@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class LinkCreationProcessTest extends TestBase {
         super.setUp();
 
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL())
+        Project project =new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL())
                 .setProjectName("LinkCreationProcessTest_Project")
                 .setType(ProjectType.BIOCHEMICAL_PROJECT)
                 .createAndSaveProject(publicUser);
@@ -95,7 +96,12 @@ public class LinkCreationProcessTest extends TestBase {
         linkCreationProcess = new LinkCreationProcess(materialAgent, itemAgent, experimentBean);
         linkCreationProcess.init();
         materialId = materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), null, "LinkCreationProcessTest_M1");
-        itemId = itemCreator.createItem(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), materialId, "LinkCreationProcessTest_I1");
+        itemId = itemCreator.createItem(
+                publicUser.getId(),
+                GlobalAdmissionContext.getPublicReadACL().getId(),
+                materialId, 
+                "LinkCreationProcessTest_I1",
+                project.getId());
 
     }
 @Ignore("Ignored until new API is implemented for requests")

@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.ContainerCreator;
+import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.container.Container;
@@ -44,6 +45,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.project.ProjectType;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -84,6 +86,7 @@ public class ItemOverviewBeanTest extends TestBase {
     private Integer materialid_1, materialid_2, materialid_3;
     private Integer itemid_1, itemid_2, itemid_3, restrictedItemId, itemid_project, itemid_container, itemid_containerAndProject;
     private String item1_Label;
+    private Project project;
     protected ContainerCreator containerCreator;
 
     @Before
@@ -99,6 +102,10 @@ public class ItemOverviewBeanTest extends TestBase {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(user);
         itemBean = new ItemBeanMock();
+        
+        project= new ProjectCreator(projectService,GlobalAdmissionContext.getPublicReadACL())
+                .setProjectName("ItemOverviewBeanTest")
+                .createAndSaveProject(user);
 
         itemOverviewBean = new ItemOverviewBeanMock()
                 .setItemBean(itemBean)
@@ -199,7 +206,8 @@ public class ItemOverviewBeanTest extends TestBase {
                 null,
                 "Wasser");
         for (int i = 0; i < 106; i++) {
-            itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem " + i);
+            
+            itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem " + i,project.getId());
         }
 
         //Initial table content
@@ -248,7 +256,7 @@ public class ItemOverviewBeanTest extends TestBase {
     @Test
     public void test003_applyAclChanges() {
         materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser");
-        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1",project.getId());
         Item item = itemService.loadItemById(itemid_1);
 
         itemOverviewBean.actionStartAclChange(item);
@@ -268,7 +276,7 @@ public class ItemOverviewBeanTest extends TestBase {
     @Test
     public void test004_startItemEdit() {
         materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser");
-        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1",project.getId());
         Item item = itemService.loadItemById(itemid_1);
         itemOverviewBean.actionStartItemEdit(item);
     }
@@ -277,14 +285,14 @@ public class ItemOverviewBeanTest extends TestBase {
     public void test005_testItemLocalisation() {
         materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser", "water");
         itemid_containerAndProject = createItemWithProjectAndContainer();
-        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1",project.getId());
         Item item = itemService.loadItemById(itemid_1);
         Item item2 = itemService.loadItemById(itemid_containerAndProject);
         item.setUnit("g");
         Assert.assertEquals("0.0 g", itemOverviewBean.getAmountString(item));
         Assert.assertEquals("Wasser<br/>water<br/>", itemOverviewBean.getMaterialName(item));
         Assert.assertEquals("biochemical-test-project/Public Account", itemOverviewBean.getOwnerString(item2)); // mit und ohne Project
-        Assert.assertEquals("/Public Account", itemOverviewBean.getOwnerString(item)); // mit und ohne Project
+        Assert.assertEquals("ItemOverviewBeanTest/Public Account", itemOverviewBean.getOwnerString(item)); // mit und ohne Project
         Assert.assertEquals("", itemOverviewBean.getLocationOfItem(item)); // mit nested containern
         Assert.assertEquals("ROOM.BOX", itemOverviewBean.getLocationOfItem(item2));
         itemOverviewBean.getDatesOfItem(item); // mit historie 
@@ -348,11 +356,11 @@ public class ItemOverviewBeanTest extends TestBase {
                 aclist.getId(),
                 null,
                 "Wasserstoff");
-        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1");
+        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1",project.getId());
 
         item1_Label = itemService.loadItemById(itemid_1).getLabel();
-        itemid_2 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_2, "TestItem2");
-        itemid_3 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_3, "TestItem3");
+        itemid_2 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_2, "TestItem2",project.getId());
+        itemid_3 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_3, "TestItem3",project.getId());
 
     }
 
@@ -364,7 +372,7 @@ public class ItemOverviewBeanTest extends TestBase {
         ACList acl = new ACList();
         acl.addACE(user2, ACPermission.values());
         acl = aclistService.save(acl);
-        restrictedItemId = itemCreator.createItem(user2.getId(), acl.getId(), materialid_1, "RestrictedItem");
+        restrictedItemId = itemCreator.createItem(user2.getId(), acl.getId(), materialid_1, "RestrictedItem",project.getId());
     }
 
     protected void createItemWithProject() {

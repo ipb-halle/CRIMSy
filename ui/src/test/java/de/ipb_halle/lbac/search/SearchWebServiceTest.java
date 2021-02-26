@@ -159,7 +159,7 @@ public class SearchWebServiceTest extends TestBase {
                 publicAclId,
                 project.getId(),
                 "SearchWebServiceTest-Material");
-        int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item");
+        int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item",project.getId());
 
         SearchWebRequest wr = createEmptyRequest();
         ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(null /* ItemEntityGraphBuilder */);

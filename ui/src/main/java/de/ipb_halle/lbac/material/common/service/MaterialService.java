@@ -447,6 +447,8 @@ public class MaterialService implements Serializable {
         material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
         return material;
     }
+    
+
 
     /**
      *

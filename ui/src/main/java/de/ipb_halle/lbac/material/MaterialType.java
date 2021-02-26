@@ -59,7 +59,8 @@ public enum MaterialType implements Serializable {
     TISSUE(
             6, MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
-            7, MaterialDetailType.COMMON_INFORMATION);
+            7, MaterialDetailType.COMMON_INFORMATION),
+    UNKNOWN(8);
 
     private final List<MaterialDetailType> types;
     private static final Map<String, MaterialType>  string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
