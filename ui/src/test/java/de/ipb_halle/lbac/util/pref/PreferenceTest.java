@@ -19,6 +19,10 @@ package de.ipb_halle.lbac.util.pref;
 
 import de.ipb_halle.lbac.admission.User;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -32,9 +36,11 @@ public class PreferenceTest {
     public void beforeTest() {
         this.user = new User();
         user.setName("Preference Tester");
+        user.setId(123);
     }
 
-    public void test001_equals_hashCode_toString() {
+    @Test
+    public void test_equals_hashCode_toString() {
         Preference pref1 = new Preference(user, "category-1", "1");
         Preference pref2 = new Preference(user, "category-1", "1");
         Assert.assertTrue(pref1.equals(pref2));
@@ -57,22 +63,57 @@ public class PreferenceTest {
                 pref3.toString());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void test002_constructor1_NPE() {
-        new Preference(null, null, null);
-    }
+    @Test
+    public void test_constructors_NPE() {
+        assertThrows(NullPointerException.class,
+                () -> new Preference(null, null, null));
+        assertThrows(NullPointerException.class,
+                () -> new Preference(user, null, null));
+        assertThrows(NullPointerException.class,
+                () -> new Preference(null, "key", null));
 
-    @Test(expected = NullPointerException.class)
-    public void test003_constructor2_nullKey_NPE() {
         PreferenceEntity entity = new PreferenceEntity();
         entity.setKey(null);
-        new Preference(entity, user);
+        assertThrows(NullPointerException.class,
+                () -> new Preference(entity, user));
+
+        entity.setKey("key");
+        assertThrows(NullPointerException.class,
+                () -> new Preference(entity, null));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void test003_constructor2_nullUser_NPE() {
+    @Test
+    public void test_getters_setters() {
         PreferenceEntity entity = new PreferenceEntity();
-        entity.setKey("abc");
-        new Preference(entity, null);
+        entity.setId(42).setKey("key abc").setValue("val def");
+        Preference pref = new Preference(entity, user);
+
+        assertEquals(Integer.valueOf(42), pref.getId());
+        assertEquals("key abc", pref.getKey());
+        assertEquals("val def", pref.getValue());
+        assertEquals(user, pref.getUser());
+
+        pref.setValue("new value");
+        assertEquals("new value", pref.getValue());
+
+        pref = new Preference(user, "key abc", "val def");
+        assertEquals(null, pref.getId());
+        assertEquals("key abc", pref.getKey());
+        assertEquals("val def", pref.getValue());
+        assertEquals(user, pref.getUser());
+    }
+
+    @Test
+    public void test_createEntity() {
+        PreferenceEntity entity = new PreferenceEntity();
+        entity.setId(42).setKey("key abc").setUserId(1).setValue("val def");
+        PreferenceEntity newEntity = new Preference(entity, user)
+                .createEntity();
+
+        assertEquals(Integer.valueOf(42), newEntity.getId());
+        // userId from PreferenceEntity will be overridden
+        assertEquals(Integer.valueOf(123), newEntity.getUserId());
+        assertEquals("key abc", newEntity.getKey());
+        assertEquals("val def", newEntity.getValue());
     }
 }

@@ -34,7 +34,7 @@ import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class will provide some test cases around Preferences.
+ * This class will provide some test cases around PreferenceService.
  */
 @RunWith(Arquillian.class)
 public class PreferenceServiceTest extends TestBase {
