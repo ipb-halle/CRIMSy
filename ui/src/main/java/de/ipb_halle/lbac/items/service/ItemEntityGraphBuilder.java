@@ -65,6 +65,7 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         materialSubgraph = matBuilder.buildEntityGraph(false);
         materialSubgraph.addLinkField("materialid", "materialid");
         materialSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
+        materialSubgraph.setJoinType(JoinType.LEFT);
         graph.addChild(materialSubgraph);
     }
 
