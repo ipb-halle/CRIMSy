@@ -34,23 +34,22 @@ import java.util.List;
  */
 public class UnknownMaterial extends Material {
 
-    public UnknownMaterial(int fakeId, List<MaterialName> nameList,ACList aclist) {
-        super(fakeId, nameList, null, new HazardInformation(), new StorageClassInformation());
+    public UnknownMaterial(List<MaterialName> nameList, ACList aclist) {
+        super(-1, nameList, null, new HazardInformation(), new StorageClassInformation());
         this.setType(MaterialType.UNKNOWN);
         this.setACList(aclist);
     }
 
     public static UnknownMaterial createNewInstance(ACList aclist) {
-        int fakeId = (int) Math.random() * 100000000;
         List<MaterialName> nameList = new ArrayList<>();
         nameList.add(new MaterialName("unknown", "en", 0));
-        return new UnknownMaterial(fakeId, nameList,aclist);
+        return new UnknownMaterial(nameList, aclist);
 
     }
 
     @Override
     public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class UnknownMaterial extends Material {
 
     @Override
     public boolean isEqualTo(Object other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return false;
     }
 
     @Override
