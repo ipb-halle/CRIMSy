@@ -57,7 +57,7 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     private void addProject() {
-        addJoin(JoinType.LEFT, ProjectEntity.class, "projectid", "id");
+        addJoinInherit(JoinType.LEFT, ProjectEntity.class, "projectid", "id");
     }
 
     private void addMaterial() {

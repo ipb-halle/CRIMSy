@@ -40,14 +40,14 @@ public class ItemCreator {
         this.entityManagerService = entityManagerService;
     }
 
-    public int createItem(int userid, int aclid, Integer materialid, String desc) {
+    public int createItem(int userid, int aclid, Integer materialid, String desc,Integer projectid) {
         String label="";
         for(int i=0;i<10;i++){
             label+=String.valueOf((int)(Math.random()*10));
         }
         
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, null,label));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, projectid, null,label));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 

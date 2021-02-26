@@ -134,12 +134,14 @@ public class SearchServiceTest extends TestBase {
                 publicUser.getId(),
                 publicAclId,
                 materialid1,
-                "Testitem-001");
+                "Testitem-001",
+                project1.getId());
         itemid2 = itemCreator.createItem(
                 publicUser.getId(),
                 publicAclId,
                 materialid2,
-                "Testitem-002");
+                "Testitem-002",
+                project2.getId());
         node = nodeService.getLocalNode();
     }
 
@@ -193,7 +195,6 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
     }
 
-//    @Ignore("Ignored because of refactroring request API")
     @Test
     public void test006_searchMaterials() {
         MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
@@ -251,13 +252,13 @@ public class SearchServiceTest extends TestBase {
 
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
+   // @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test007_searchItems() {
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setDescription("estitem-001");
         SearchRequest request = builder.build();
-//        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), node).getAllFoundObjects().size());
 
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("Testmaterial-001");
