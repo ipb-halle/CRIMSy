@@ -40,33 +40,37 @@ public class ItemCreator {
         this.entityManagerService = entityManagerService;
     }
 
-    public int createItem(int userid, int aclid, Integer materialid, String desc,Integer projectid) {
-        String label="";
-        for(int i=0;i<10;i++){
-            label+=String.valueOf((int)(Math.random()*10));
-        }
-        
+    public int createItem(int userid, int aclid, Integer materialid, String desc, Integer projectid) {
+
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, projectid, null,label));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, projectid, null, createRandomId()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
     public int createItem(int userid, int aclid, Integer materialid, String desc, Project p) {
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), null,UUID.randomUUID().toString()));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), null, createRandomId()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
     public int createItem(int userid, int aclid, Integer materialid, String desc, Container c) {
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, c.getId(),UUID.randomUUID().toString()));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, null, c.getId(), createRandomId()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
     }
 
     public int createItem(int userid, int aclid, Integer materialid, String desc, Project p, Container c) {
         entityManagerService.doSqlUpdate(
-                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), c.getId(),UUID.randomUUID().toString()));
+                String.format(SQL_INSERT_ITEM, materialid, userid, aclid, desc, p.getId(), c.getId(), createRandomId()));
         return (Integer) entityManagerService.doSqlQuery(SQL_MAX_ITEM_ID).get(0);
+    }
+
+    private String createRandomId() {
+        String label = "";
+        for (int i = 0; i < 10; i++) {
+            label += String.valueOf((int) (Math.random() * 10));
+        }
+        return label;
     }
 
 }
