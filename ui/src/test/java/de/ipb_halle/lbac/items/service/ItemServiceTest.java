@@ -162,7 +162,6 @@ public class ItemServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("DELETE FROM containers");
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test001_saveAndLoadItem() {
         //Create and save one item
@@ -172,10 +171,10 @@ public class ItemServiceTest extends TestBase {
 
         //Load item by description
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(owner, 0, 25);
-        builder.setDescription("%TESTMAT%");
+        builder.setDescription("description");
         SearchResult result = instance.loadItems(builder.build());
         List<Item> items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.getItemAmount(builder.build()));
+        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
 
@@ -184,7 +183,7 @@ public class ItemServiceTest extends TestBase {
         builder.setLabel(item.getLabel());
         result = instance.loadItems(builder.build());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.getItemAmount(builder.build()));
+        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
 
@@ -193,7 +192,7 @@ public class ItemServiceTest extends TestBase {
         builder.setProjectName("%biochemi%");
         result = instance.loadItems(builder.build());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.getItemAmount(builder.build()));
+        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
 
@@ -202,7 +201,7 @@ public class ItemServiceTest extends TestBase {
         builder.setLocation("Schrank1");
         result = instance.loadItems(builder.build());
         items = result.getAllFoundObjects(Item.class, nodeService.getLocalNode());
-        Assert.assertEquals(1, instance.getItemAmount(builder.build()));
+        Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
         

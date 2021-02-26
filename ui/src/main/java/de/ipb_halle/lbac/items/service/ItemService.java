@@ -45,7 +45,6 @@ import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.unknown.UnknownMaterial;
-import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
@@ -53,7 +52,6 @@ import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.DbField;
-import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.OrderDirection;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
@@ -69,7 +67,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -119,8 +116,6 @@ public class ItemService {
     private NodeService nodeService;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private ItemEntityGraphBuilder graphBuilder;
-    private PermissionConditionBuilder permissionConditionBuilder;
     private Code25LabelGenerator labelGenerator;
 
     @PostConstruct
@@ -130,53 +125,31 @@ public class ItemService {
 
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-
         ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
         SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(true));
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(
                 graphBuilder);
-
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(
                 condition,
                 createOrderList());
 
-        logger.info(sql);
-        Query q = em.createNativeQuery(sql, ItemEntity.class);
-        for (Value param : sqlBuilder.getValueList()) {
-            q.setParameter(param.getArgumentKey(), param.getValue());
-            logger.info(String.format("%s %s", param.getArgumentKey(), param.getValue().toString()));
-        }
+        Query q = createQueryWithParams(sqlBuilder, sql, ItemEntity.class);
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
-        try {
-            List<ItemEntity> entities = q.getResultList();
-            for (ItemEntity ie : entities) {
-                Item item = createItemFromEntity(ie,request.getUser());
-                item.setHistory(loadHistoryOfItem(item));
-                result.addResult(item);
-            }
-        } catch (Exception e) {
-            logger.warn("exception", e);
-            throw e;
+
+        List<ItemEntity> entities = q.getResultList();
+        for (ItemEntity ie : entities) {
+            Item item = createItemFromEntity(ie, request.getUser());
+            item.setHistory(loadHistoryOfItem(item));
+            result.addResult(item);
         }
 
         return result;
     }
 
-    private List<DbField> createOrderList() {
-        DbField labelField = new DbField()
-                .setColumnName("id")
-                .setTableName("items")
-                .setOrderDirection(OrderDirection.ASC);
-
-        List<DbField> orderList = new ArrayList<>();
-        orderList.add(labelField);
-        return orderList;
-    }
-
-    public int getItemAmount(SearchRequest request) {
-
+    public int loadItemAmount(SearchRequest request) {
+        ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 graphBuilder.buildEntityGraph(true),
                 new Attribute(new AttributeType[]{
@@ -184,19 +157,29 @@ public class ItemService {
             AttributeType.LABEL
         }));
 
-        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(graphBuilder);
-
-        permissionConditionBuilder = new PermissionConditionBuilder(itemBuilder, request.getUser(), ACPermission.permREAD).
-                addFields(AttributeType.ITEM);
-        String sql = countBuilder.query(
-                permissionConditionBuilder.addPermissionCondition(request.getCondition()));
-        Query q = em.createNativeQuery(sql);
-        for (Value param : countBuilder.getValueList()) {
-            q.setParameter(param.getArgumentKey(), param.getValue());
-        }
+        ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(graphBuilder);
+        Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
+        String sql = countBuilder.query(condition);
+        Query q = createQueryWithParams(countBuilder, sql);
         BigInteger bi = (BigInteger) q.getResultList().get(0);
         return bi.intValue();
+    }
 
+    private Query createQueryWithParams(SqlBuilder builder, String sql) {
+        return createQueryWithParams(builder, sql, null);
+    }
+
+    private Query createQueryWithParams(SqlBuilder builder, String sql, Class entityClass) {
+        Query q;
+        if (entityClass == null) {
+            q = em.createNativeQuery(sql);
+        } else {
+            q = em.createNativeQuery(sql, entityClass);
+        }
+        for (Value param : builder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        return q;
     }
 
     private Item createItemFromEntity(ItemEntity entity, User user) {
@@ -376,9 +359,14 @@ public class ItemService {
         return null;
     }
 
-    private EntityGraph createEntityGraph() {
-        graphBuilder = new ItemEntityGraphBuilder();
-        return graphBuilder.buildEntityGraph(true);
-    }
+    private List<DbField> createOrderList() {
+        DbField labelField = new DbField()
+                .setColumnName("id")
+                .setTableName("items")
+                .setOrderDirection(OrderDirection.ASC);
 
+        List<DbField> orderList = new ArrayList<>();
+        orderList.add(labelField);
+        return orderList;
+    }
 }

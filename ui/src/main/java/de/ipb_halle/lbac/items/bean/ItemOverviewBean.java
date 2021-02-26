@@ -131,7 +131,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public void reloadItems() {
-        itemAmount = itemService.getItemAmount(createSearchRequest());
+        itemAmount = itemService.loadItemAmount(createSearchRequest());
         searchResult = itemService.loadItems(createSearchRequest());
         itemLocaliser.localiseContainerNamesOf(searchResult.getAllFoundObjects(Item.class, nodeService.getLocalNode()));
     }
