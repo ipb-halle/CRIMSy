@@ -39,10 +39,14 @@
 #
 LBAC_UI="ui.war"
 
-MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS
+MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS/releases/download/v0.1.2-alpha
+MOLPAINTJS_RELEASE_TARGZ=molpaintjs.tar.gz
+MOLPAINTJS_RELEASE_DIR=molpaintjs
 JBROWSE_REPO=https://github.com/GMOD/jbrowse/releases/download/1.16.9-release
 JBROWSE_RELEASE_ZIP=JBrowse-1.16.9.zip
 JBROWSE_RELEASE_DIR=JBrowse-1.16.9
+OPENCHEMLIBJS_REPO=https://github.com/cheminfo/openchemlib-js/releases/download/v7.2.3
+OPENCHEMLIBJS_FULL_JS=openchemlib-full.js
 #
 #==========================================================
 #
@@ -216,7 +220,8 @@ function copyPlugins {
         pushd target >/dev/null
         mkdir -p dist/proxy/htdocs/plugins
         cp -r jbrowse/$JBROWSE_RELEASE_DIR dist/proxy/htdocs/plugins/JBrowse
-        cp -r MolPaintJS/docs dist/proxy/htdocs/plugins/MolPaintJS
+        cp -r molpaintjs/$MOLPAINTJS_RELEASE_DIR dist/proxy/htdocs/plugins/molpaintjs
+        cp -r openchemlib-js dist/proxy/htdocs/plugins/openchemlib-js
         popd > /dev/null
 }
 
@@ -252,19 +257,31 @@ function getJBrowse {
 }
 
 function getMolPaintJS {
-        if [ -d MolPaintJS ] ; then
-            pushd MolPaintJS > /dev/null
-            git pull 
-            popd >/dev/null
-        else
-            git clone https://github.com/ipb-halle/MolPaintJS
+        mkdir -p molpaintjs
+        pushd molpaintjs >/dev/null
+        if [ ! -f $MOLPAINTJS_RELEASE_TARGZ ] ; then
+            curl -L --silent --output $MOLPAINTJS_RELEASE_TARGZ $MOLPAINTJS_REPO/$MOLPAINTJS_RELEASE_TARGZ
         fi
+        if [ ! -d $MOLPAINTJS_RELEASE_DIR ] ; then
+            tar -xzf $MOLPAINTJS_RELEASE_TARGZ
+        fi
+        popd >/dev/null
+}
+
+function getOpenChemLibJS {
+        mkdir -p openchemlib-js
+        pushd openchemlib-js >/dev/null
+        if [ ! -f $OPENCHEMLIBJS_FULL_JS ] ; then
+            curl -L --silent --output $OPENCHEMLIBJS_FULL_JS $OPENCHEMLIBJS_REPO/$OPENCHEMLIBJS_FULL_JS
+        fi
+        popd >/dev/null
 }
 
 function getResources {
     mkdir -p target
     pushd target >/dev/null
     getMolPaintJS
+    getOpenChemLibJS
     getJBrowse
     popd >/dev/null
 }
