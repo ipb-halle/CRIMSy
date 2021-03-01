@@ -225,4 +225,8 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
         return new Type(SearchTarget.PROJECT);
     }
 
+    public void setDeactivated(boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+
 }

@@ -86,7 +86,7 @@ public class SearchServiceTest extends TestBase {
 
     private User publicUser, anotherUser;
     private ProjectCreator projectCreator;
-    private Project project1, project2;
+    private Project project1, project2, project3_deactivated, project4_notReadable;
     private MaterialCreator materialCreator;
     private ItemCreator itemCreator;
     private int materialid1, materialid2, notReadableMaterialId;
@@ -165,14 +165,29 @@ public class SearchServiceTest extends TestBase {
         searchService.search(Arrays.asList(request), localNode);
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test005_searchProject() {
         ProjectSearchRequestBuilder requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
         SearchRequest request = requestBuilder.build();
+        Assert.assertEquals(3, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+
+        requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setDeactivated(false);
+        request = requestBuilder.build();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
+        requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setDeactivated(true);
+        request = requestBuilder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+
+        requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setProjectName("SearchServiceTest-Project-02-XYZ");
+        request = requestBuilder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+
+        requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setUsername("SearchServiceTest_user");
         request = requestBuilder.build();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
     }
@@ -443,7 +458,16 @@ public class SearchServiceTest extends TestBase {
         projectCreator.setProjectName("SearchServiceTest-Project-01");
         project1 = projectCreator.createAndSaveProject(publicUser);
         projectCreator.setProjectName("SearchServiceTest-Project-02-XYZ");
-        project2 = projectCreator.createAndSaveProject(publicUser);
+        project2 = projectCreator.createAndSaveProject(anotherUser);
+
+        projectCreator.setProjectName("SearchServiceTest-Project-03-deactivated");
+        projectCreator.setDeactivated(true);
+        project3_deactivated = projectCreator.createAndSaveProject(publicUser);
+        projectService.changeDeactivationState(project3_deactivated.getId(), true);
+
+        projectCreator.setProjectName("SearchServiceTest-Project-04-notReadable");
+        projectCreator.setProjectAcl(context.getNoAccessACL());
+        project4_notReadable = projectCreator.createAndSaveProject(anotherUser);
     }
 
     private void createUsers() {

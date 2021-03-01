@@ -24,13 +24,13 @@ import de.ipb_halle.lbac.globals.SqlStringWrapper;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
-import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.DbField;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.OrderDirection;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
@@ -57,7 +57,10 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class ProjectService implements Serializable {
 
-    private final String SQL_PROJECT_TEMPLATES = "SELECT id,materialdetailtypeid,aclistid,projectid FROM projecttemplates WHERE projectid=:pid";
+    private final String SQL_PROJECT_TEMPLATES = "SELECT id,materialdetailtypeid,aclistid,projectid "
+            + "FROM projecttemplates "
+            + "WHERE projectid=:pid";
+
     private final String SQL_GET_SIMILAR_NAMES
             = "SELECT DISTINCT (p.name) "
             + "FROM projects p "
@@ -66,7 +69,8 @@ public class ProjectService implements Serializable {
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "ORDER BY p.name";
 
-    private final String SQL_GET_NAME_AVAILABLE = "SELECT COUNT(*) FROM projects WHERE LOWER(:name) = LOWER(name)";
+    private final String SQL_GET_NAME_AVAILABLE = "SELECT COUNT(*) "
+            + "FROM projects WHERE LOWER(:name) = LOWER(name)";
 
     private final String SQL_DELETE_PROJECT_TEMPLATES
             = "DELETE FROM projecttemplates "
@@ -90,12 +94,9 @@ public class ProjectService implements Serializable {
     private EntityManager em;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private ProjectEntityGraphBuilder graphBuilder;
 
     @Inject
     private NodeService nodeService;
-
-    private PermissionConditionBuilder permissionConditionBuilder;
 
     @PostConstruct
     public void init() {
@@ -160,30 +161,18 @@ public class ProjectService implements Serializable {
     }
 
     public SearchResult loadProjects(SearchRequest request) {
- 
-        //TO DO: Switch User to local one
-        ProjectSearchConditionBuilder requestBuilder=new ProjectSearchConditionBuilder(
-                request.getUser(),
-                request.getFirstResult(),
-                request.getMaxResults());
- 
+        ProjectSearchConditionBuilder conbuilder = new ProjectSearchConditionBuilder();
+        Condition con = conbuilder.convertRequestToCondition(
+                request, ACPermission.permREAD);
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-        EntityGraph graph = createEntityGraph();
+        ProjectEntityGraphBuilder graphBuilder = new ProjectEntityGraphBuilder();
+        EntityGraph graph = graphBuilder.buildEntityGraph(true);
         SqlBuilder builder = new SqlBuilder(graph);
-
-        permissionConditionBuilder = new PermissionConditionBuilder(
-                requestBuilder, 
-                request.getUser(),
-                ACPermission.permREAD)
-                .addFields(AttributeType.PROJECT);
-        String sql = builder.query(
-                permissionConditionBuilder.addPermissionCondition(request.getCondition()));
-
+        String sql = builder.query(con, createOrderList());
         Query query = this.em.createNativeQuery(sql, ProjectEntity.class);
         for (Value param : builder.getValueList()) {
             query.setParameter(param.getArgumentKey(), param.getValue());
         }
-
         List<ProjectEntity> entities = query.getResultList();
         for (ProjectEntity entity : entities) {
             result.addResult(loadDetailInfosOfProject(entity));
@@ -192,7 +181,10 @@ public class ProjectService implements Serializable {
     }
 
     public boolean isProjectNameAvailable(String name) {
-        BigInteger i = (BigInteger) this.em.createNativeQuery(SQL_GET_NAME_AVAILABLE).setParameter("name", name).getResultList().get(0);
+        BigInteger i = (BigInteger) this.em.createNativeQuery(
+                SQL_GET_NAME_AVAILABLE)
+                .setParameter("name", name)
+                .getResultList().get(0);
         return i.intValue() == 0;
     }
 
@@ -224,7 +216,10 @@ public class ProjectService implements Serializable {
         p.setId(pE.getId());
         for (MaterialDetailType md : p.getDetailTemplates().keySet()) {
             if (!p.getDetailTemplates().get(md).getACEntries().isEmpty()) {
-                ProjectTemplateEntity ptE = new ProjectTemplateEntity(md.getId(), p.getDetailTemplates().get(md).getId(), pE.getId());
+                ProjectTemplateEntity ptE = new ProjectTemplateEntity(
+                        md.getId(),
+                        p.getDetailTemplates().get(md).getId(),
+                        pE.getId());
                 this.em.persist(ptE);
             }
         }
@@ -254,11 +249,17 @@ public class ProjectService implements Serializable {
                 this.em.persist(ptE);
             }
         }
+
     }
 
-    private EntityGraph createEntityGraph() {
-        graphBuilder = new ProjectEntityGraphBuilder(acListService);
-        return graphBuilder.buildEntityGraph(true);
-    }
+    private List<DbField> createOrderList() {
+        DbField labelField = new DbField()
+                .setColumnName("name")
+                .setTableName("projects")
+                .setOrderDirection(OrderDirection.ASC);
 
+        List<DbField> orderList = new ArrayList<>();
+        orderList.add(labelField);
+        return orderList;
+    }
 }

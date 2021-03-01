@@ -19,9 +19,7 @@ package de.ipb_halle.lbac.project;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchCategory;
-import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
-import de.ipb_halle.lbac.search.SearchRequestImpl;
 import de.ipb_halle.lbac.search.SearchTarget;
 
 /**
@@ -31,8 +29,8 @@ import de.ipb_halle.lbac.search.SearchTarget;
 public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
 
     private String projectName;
-    private SearchTarget target;
     private String username;
+    private Boolean deactivated;
 
     public ProjectSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -43,6 +41,7 @@ public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
     protected void addSearchCriteria() {
         addProjectName();
         addUserName();
+        addDeactivated();
     }
 
     public void setProjectName(String name) {
@@ -60,5 +59,20 @@ public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
             request.addSearchCategory(SearchCategory.USER, username);
         }
     }
+
+    private void addDeactivated() {
+        if (deactivated != null) {
+            request.addSearchCategory(SearchCategory.DEACTIVATED, deactivated.toString());
+        }
+    }
+
+    public void setDeactivated(Boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+    
 
 }

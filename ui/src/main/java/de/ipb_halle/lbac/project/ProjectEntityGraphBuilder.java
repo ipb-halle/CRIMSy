@@ -17,9 +17,11 @@
  */
 package de.ipb_halle.lbac.project;
 
-import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import javax.persistence.criteria.JoinType;
 
 /**
  *
@@ -27,15 +29,20 @@ import de.ipb_halle.lbac.search.lang.EntityGraph;
  */
 public class ProjectEntityGraphBuilder extends EntityGraphBuilder {
 
-    private ACListService acListService;
-
-    public ProjectEntityGraphBuilder(ACListService acListService) {
+    public ProjectEntityGraphBuilder() {
         super(ProjectEntity.class);
-        this.acListService = acListService;
+    }
+    
+     protected void addOwner() {
+        EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "owner_id", "id");
+        owner.addAttributeTypeInherit(AttributeType.OWNER);
     }
 
+    @Override
     public EntityGraph buildEntityGraph(boolean toplevel) {
-        addACListContraint(graph, acListService.getEntityGraph(), "aclist_id");
+        addOwner();
+        addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
+        graph.addAttributeType(AttributeType.DIRECT);
         return graph;
     }
 

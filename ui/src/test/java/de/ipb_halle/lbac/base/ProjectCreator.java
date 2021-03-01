@@ -30,30 +30,33 @@ import java.util.Date;
  * @author fmauz
  */
 public class ProjectCreator {
-
+    
     private ProjectService projectService;
     private ACList publicReadAcl;
     private String projectName;
     private String projectDescription;
     private ACList projectAcl;
+    private boolean deactivated;
     private ProjectType type;
     private SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd:HH.mm.ss.SSS");
-
-    public ProjectCreator(ProjectService projectService, ACList publicReadAcl) {
+    
+    public ProjectCreator(ProjectService projectService, ACList acl) {
         this.projectService = projectService;
-        this.publicReadAcl=publicReadAcl;
+        this.publicReadAcl = acl;
+        deactivated = false;
         setPropertiesToDefault();
     }
-
+    
     public Project createAndSaveProject(User user) {
         Project project = new Project(type, projectName);
         project.setDescription(projectDescription);
         project.setOwner(user);
         project.setACList(projectAcl);
+        project.setDeactivated(deactivated);
         project = projectService.saveProjectToDb(project);
         return project;
     }
-
+    
     public ProjectCreator setPropertiesToDefault() {
         this.projectAcl = publicReadAcl;
         this.projectName = "Testproject " + SDF.format(new Date());
@@ -61,25 +64,29 @@ public class ProjectCreator {
         this.type = ProjectType.BIOCHEMICAL_PROJECT;
         return this;
     }
-
+    
     public ProjectCreator setProjectName(String projectName) {
         this.projectName = projectName;
         return this;
     }
-
+    
     public ProjectCreator setProjectDescription(String description) {
         this.projectDescription = description;
         return this;
     }
-
+    
     public ProjectCreator setProjectAcl(ACList acl) {
         this.projectAcl = acl;
         return this;
     }
-
+    
     public ProjectCreator setType(ProjectType type) {
         this.type = type;
         return this;
     }
 
+    public void setDeactivated(boolean deactivated) {
+        this.deactivated = deactivated;
+    }
+    
 }
