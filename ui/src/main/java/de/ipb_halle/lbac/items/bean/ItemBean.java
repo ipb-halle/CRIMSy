@@ -36,7 +36,10 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
+import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -238,9 +241,9 @@ public class ItemBean implements Serializable {
     }
 
     private List<Project> loadReadableProjects(User user) {
-        ProjectSearchConditionBuilder builder = new ProjectSearchConditionBuilder(user, 0, Integer.MAX_VALUE);
-        builder.addDeactivated(false);
-        SearchResult response = projectService.loadProjects(builder.buildSearchRequest());
+        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        builder.setDeactivated(false);
+        SearchResult response = projectService.loadProjects(builder.build());
         return response.getAllFoundObjects(Project.class, response.getNode());
     }
 

@@ -121,7 +121,7 @@ public class ItemBeanTest extends TestBase {
 
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
+   
     @Test
     public void test001_createNewItem() {
         itemBean.actionStartItemCreation(structure);
