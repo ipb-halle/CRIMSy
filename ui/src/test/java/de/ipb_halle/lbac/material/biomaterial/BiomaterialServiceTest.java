@@ -30,6 +30,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.Project;
@@ -96,7 +97,6 @@ public class BiomaterialServiceTest extends TestBase {
         cleanMaterialsFromDB();
     }
 
-    @Ignore
     @Test
     public void test001_saveAndLoadBioMaterials() {
         String materialName = "Löwnzahn";
@@ -107,9 +107,9 @@ public class BiomaterialServiceTest extends TestBase {
         BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
         ACList materialACList = project.getUserGroups();
         materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>());
-        MaterialSearchConditionBuilder requestBuilder = new MaterialSearchConditionBuilder(owner, 0, 100);
-        // requestBuilder.addTypes(MaterialType.BIOMATERIAL);
-        SearchResult result = materialService.getReadableMaterials(requestBuilder.buildSearchRequest());
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(owner, 0, 100);
+         requestBuilder.addMaterialType(MaterialType.BIOMATERIAL);
+        SearchResult result = materialService.getReadableMaterials(requestBuilder.build());
         List<BioMaterial> bioMaterials = result.getAllFoundObjects(BioMaterial.class, result.getNode());
         Assert.assertEquals(1, bioMaterials.size());
         BioMaterial bm = bioMaterials.get(0);

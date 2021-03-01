@@ -31,7 +31,6 @@ import org.junit.Test;
  */
 public class OrderByTest {
     
-    @Ignore
     @Test
     public void test001_orderBy(){
         EntityGraph graph = new EntityGraph(ItemEntity.class);
@@ -46,7 +45,7 @@ public class OrderByTest {
         orderList.add(labelField);
 
         String sql = builder.query(null, orderList);
-        
+        sql=sql.replaceAll("\n", "");
         assertEquals("Invalid ORDER BY clause", "SELECT DISTINCT a.solventid, a.aclist_id, a.amount, a.purity, a.owner_id, a.expiry_date, a.articleid, a.description, a.containersize, a.concentration, a.label, a.materialid, a.containertype, a.unit, a.ctime, a.id, a.containerid, a.projectid FROM items AS a ORDER BY a.id DESC ", sql);
     }
     

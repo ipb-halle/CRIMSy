@@ -214,23 +214,19 @@ public class MaterialService implements Serializable {
     }
 
     public int loadMaterialAmount(SearchRequest request) {
-
-        SqlCountBuilder countBuilder = new SqlCountBuilder(
-                createEntityGraph(),
-                new Attribute(new AttributeType[]{
+        EntityGraph graph = createEntityGraph();
+        SqlBuilder sqlBuilder = new SqlCountBuilder(graph, new Attribute(new AttributeType[]{
             AttributeType.MATERIAL,
             AttributeType.LABEL
         }));
-        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
-        permissionConditionBuilder
-                = new PermissionConditionBuilder(materialBuilder, request.getUser(), ACPermission.permREAD)
-                        .addFields(AttributeType.MATERIAL);
-        String sql = countBuilder.query(
-                permissionConditionBuilder.addPermissionCondition(
-                        request.getCondition()));
+
+        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder();
+        Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
+
+        String sql = sqlBuilder.query(con);
 
         Query q = em.createNativeQuery(sql);
-        for (Value param : countBuilder.getValueList()) {
+        for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
         }
         BigInteger bi = (BigInteger) q.getResultList().get(0);
@@ -447,8 +443,6 @@ public class MaterialService implements Serializable {
         material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
         return material;
     }
-    
-
 
     /**
      *
