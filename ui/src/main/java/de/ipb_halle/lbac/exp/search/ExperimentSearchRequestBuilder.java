@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
@@ -32,22 +33,58 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
 
     private String text;
     private SearchTarget target;
-    
+    private String materialName;
+    private String itemLabel;
+    private String userName;
+    private String structure;
+
     public ExperimentSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
         this.target = SearchTarget.EXPERIMENT;
     }
-    
+
     public ExperimentSearchRequestBuilder addText(String text) {
         this.text = text;
         return this;
     }
-    
+
     @Override
-    public SearchRequest build() {
-        SearchRequest request = new SearchRequestImpl(user, firstResult, maxResults);
-        request.setSearchTarget(target);
-        request.addSearchCategory(SearchCategory.TEXT, text);
-        return request;
+    public void addSearchCriteria() {
+        addItemLabel();
+        addMaterialName();
+        addStructure();
+        addUserName();
+        addText();
+    }
+
+    private void addMaterialName() {
+        if (materialName != null && !materialName.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.NAME, materialName);
+        }
+    }
+
+    private void addStructure() {
+        Molecule m = new Molecule(structure, -1);
+        if (!m.isEmptyMolecule()) {
+            request.addSearchCategory(SearchCategory.STRUCTURE, structure);
+        }
+    }
+
+    private void addItemLabel() {
+        if (itemLabel != null && !itemLabel.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.LABEL, itemLabel);
+        }
+    }
+
+    private void addUserName() {
+        if (userName != null && !userName.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.USER, userName);
+        }
+    }
+
+    private void addText() {
+        if (text != null && !text.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.TEXT, text);
+        }
     }
 }

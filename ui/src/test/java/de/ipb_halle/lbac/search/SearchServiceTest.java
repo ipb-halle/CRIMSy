@@ -52,6 +52,7 @@ import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
+import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchConditionBuilder;
 
@@ -138,28 +139,28 @@ public class SearchServiceTest extends TestBase {
         SearchResult result = searchService.search(null, localNode);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
 
-        SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
+        SearchRequest request = new SearchRequestImpl(publicUser, 0, 25);
         result = searchService.search(Arrays.asList(request), localNode);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
     }
 
     @Test
     public void test002_searchDocuments() {
-        SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
+        SearchRequest request = new SearchRequestImpl(publicUser, 0, 25);
         request.setSearchTarget(SearchTarget.DOCUMENT);
         searchService.search(Arrays.asList(request), localNode);
     }
 
     @Test(expected = Exception.class)
     public void test003_searchUser() {
-        SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
+        SearchRequest request = new SearchRequestImpl(publicUser, 0, 25);
         request.setSearchTarget(SearchTarget.USER);
         searchService.search(Arrays.asList(request), localNode);
     }
 
     @Test(expected = Exception.class)
     public void test004_searchContainer() {
-        SearchRequest request = new SearchRequestImpl(publicUser, null, 0, 25);
+        SearchRequest request = new SearchRequestImpl(publicUser, 0, 25);
         request.setSearchTarget(SearchTarget.CONTAINER);
         searchService.search(Arrays.asList(request), localNode);
     }
@@ -167,12 +168,12 @@ public class SearchServiceTest extends TestBase {
     @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test005_searchProject() {
-        ProjectSearchConditionBuilder requestBuilder = new ProjectSearchConditionBuilder(publicUser, 0, 25);
-        SearchRequest request = requestBuilder.buildSearchRequest();
+        ProjectSearchRequestBuilder requestBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        SearchRequest request = requestBuilder.build();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
-        requestBuilder.addExactName("SearchServiceTest-Project-02-XYZ");
-        request = requestBuilder.buildSearchRequest();
+        requestBuilder.setProjectName("SearchServiceTest-Project-02-XYZ");
+        request = requestBuilder.build();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
     }
 
@@ -246,8 +247,8 @@ public class SearchServiceTest extends TestBase {
         builder.setMaterialName("Testmaterial-001");
         request = builder.build();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
-        
-         //search for a material without read access
+
+        //search for a material without read access
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("Testmaterial-003-notReadable");
         request = builder.build();

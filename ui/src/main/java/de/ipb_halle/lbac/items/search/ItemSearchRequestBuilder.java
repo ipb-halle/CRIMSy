@@ -44,16 +44,13 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
     }
 
     @Override
-    public SearchRequest build() {
-        SearchRequest request = new SearchRequestImpl(user, firstResult, maxResults);
-        request.setSearchTarget(target);
-        addMaterialName(request);
-        addItemLabel(request);
-        addUserName(request);
-        addProjectName(request);
-        addLocation(request);
-        addDescription(request);
-        return request;
+    protected void addSearchCriteria() {
+        addMaterialName();
+        addItemLabel();
+        addUserName();
+        addProjectName();
+        addLocation();
+        addDescription();
     }
 
     public void setSearchMaskValues(SearchMaskValues values) {
@@ -63,42 +60,6 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         projectName = values.getProjectName();
         location = values.getLocation();
         description = values.getDescription();
-    }
-
-    private void addMaterialName(SearchRequest request) {
-        if (materialName != null && !materialName.isEmpty()) {
-            request.addSearchCategory(SearchCategory.NAME, materialName);
-        }
-    }
-
-    private void addItemLabel(SearchRequest request) {
-        if (label != null && !label.isEmpty()) {
-            request.addSearchCategory(SearchCategory.LABEL, label);
-        }
-    }
-
-    private void addUserName(SearchRequest request) {
-        if (userName != null && !userName.isEmpty()) {
-            request.addSearchCategory(SearchCategory.USER, userName);
-        }
-    }
-
-    private void addProjectName(SearchRequest request) {
-        if (projectName != null && !projectName.isEmpty()) {
-            request.addSearchCategory(SearchCategory.PROJECT, projectName);
-        }
-    }
-
-    private void addLocation(SearchRequest request) {
-        if (location != null && !location.isEmpty()) {
-            request.addSearchCategory(SearchCategory.LOCATION, location);
-        }
-    }
-
-    private void addDescription(SearchRequest request) {
-        if (description != null && !description.isEmpty()) {
-            request.addSearchCategory(SearchCategory.TEXT, description);
-        }
     }
 
     public void setMaterialName(String materialName) {
@@ -123,6 +84,42 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    private void addMaterialName() {
+        if (materialName != null && !materialName.isEmpty()) {
+            request.addSearchCategory(SearchCategory.NAME, materialName);
+        }
+    }
+
+    private void addItemLabel() {
+        if (label != null && !label.isEmpty()) {
+            request.addSearchCategory(SearchCategory.LABEL, label);
+        }
+    }
+
+    private void addUserName() {
+        if (userName != null && !userName.isEmpty()) {
+            request.addSearchCategory(SearchCategory.USER, userName);
+        }
+    }
+
+    private void addProjectName() {
+        if (projectName != null && !projectName.isEmpty()) {
+            request.addSearchCategory(SearchCategory.PROJECT, projectName);
+        }
+    }
+
+    private void addLocation() {
+        if (location != null && !location.isEmpty()) {
+            request.addSearchCategory(SearchCategory.LOCATION, location);
+        }
+    }
+
+    private void addDescription() {
+        if (description != null && !description.isEmpty()) {
+            request.addSearchCategory(SearchCategory.TEXT, description);
+        }
     }
 
 }

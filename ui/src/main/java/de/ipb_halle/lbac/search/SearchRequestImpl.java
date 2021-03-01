@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.admission.User;
-import static de.ipb_halle.lbac.entity.InfoObjectEntity_.value;
 import de.ipb_halle.lbac.search.lang.Condition;
 import java.util.HashMap;
 import java.util.HashSet;

@@ -29,8 +29,16 @@ public abstract class SearchRequestBuilder {
     protected final int firstResult;
     protected final int maxResults;
     protected SearchTarget target;
+    protected SearchRequest request;
 
-    public abstract SearchRequest build();
+    public SearchRequest build() {
+        request = new SearchRequestImpl(user, firstResult, maxResults);
+        request.setSearchTarget(target);
+        addSearchCriteria();
+        return request;
+    }
+
+    protected abstract void addSearchCriteria();
 
     public SearchRequestBuilder(User u, int firstResult, int maxResults) {
         this.user = u;

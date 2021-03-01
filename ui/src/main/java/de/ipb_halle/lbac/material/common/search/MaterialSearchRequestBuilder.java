@@ -33,7 +33,7 @@ import java.util.Set;
  * @author fmauz
  */
 public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
-    
+
     private String structure;
     private String index;
     private String id;
@@ -41,76 +41,72 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     private String projectName;
     private final Set<MaterialType> types = new HashSet<>();
     private String materialName;
-    
+
     public MaterialSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
         this.target = SearchTarget.MATERIAL;
     }
-    
+
     @Override
-    public SearchRequest build() {
-        SearchRequest request = new SearchRequestImpl(user, firstResult, maxResults);
-        request.setSearchTarget(target);
-        addStructure(request);
-        addIndex(request);
-        addTypes(request);
-        addId(request);
-        addUser(request);
-        addProject(request);
-        addMaterialName(request);
-        
-        return request;
+    protected void addSearchCriteria() {
+        addStructure();
+        addIndex();
+        addTypes();
+        addId();
+        addUser();
+        addProject();
+        addMaterialName();
     }
-    
+
     public void setSearchValues(MaterialSearchMaskValues values) {
         setMaterialName(values.materialName);
         setStructure(values.molecule);
         setProjectName(values.projectName);
         setId(String.valueOf(values.id));
         setUserName(values.userName);
-        for(MaterialType t:values.type){
+        for (MaterialType t : values.type) {
             types.add(t);
         }
-        
+
     }
-    
-    private void addStructure(SearchRequest request) {
+
+    private void addStructure() {
         if (structure != null) {
             request.addSearchCategory(SearchCategory.STRUCTURE, structure);
         }
     }
-    
-    private void addIndex(SearchRequest request) {
+
+    private void addIndex() {
         if (index != null) {
             request.addSearchCategory(SearchCategory.INDEX, index);
         }
     }
-    
-    private void addId(SearchRequest request) {
+
+    private void addId() {
         if (id != null) {
             request.addSearchCategory(SearchCategory.LABEL, id);
         }
     }
-    
-    private void addUser(SearchRequest request) {
+
+    private void addUser() {
         if (userName != null) {
             request.addSearchCategory(SearchCategory.USER, userName);
         }
     }
-    
-    private void addMaterialName(SearchRequest request) {
+
+    private void addMaterialName() {
         if (materialName != null) {
             request.addSearchCategory(SearchCategory.NAME, materialName);
         }
     }
-    
-    private void addProject(SearchRequest request) {
+
+    private void addProject() {
         if (projectName != null) {
             request.addSearchCategory(SearchCategory.PROJECT, projectName);
         }
     }
-    
-    private void addTypes(SearchRequest request) {
+
+    private void addTypes() {
         if (!types.isEmpty()) {
             Set<String> typeNames = new HashSet<>();
             for (MaterialType t : types) {
@@ -119,33 +115,33 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
             request.addSearchCategory(SearchCategory.TYPE, typeNames.toArray(new String[typeNames.size()]));
         }
     }
-    
+
     public void addMaterialType(MaterialType type) {
         types.add(type);
     }
-    
+
     public void setStructure(String structure) {
         this.structure = structure;
     }
-    
+
     public void setIndex(String index) {
         this.index = index;
     }
-    
+
     public void setId(String id) {
         this.id = id;
     }
-    
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    
+
     public void setProjectName(String projectName) {
         this.projectName = projectName;
     }
-    
+
     public void setMaterialName(String materialName) {
         this.materialName = materialName;
     }
-    
+
 }

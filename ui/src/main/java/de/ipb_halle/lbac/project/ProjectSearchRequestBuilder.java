@@ -32,28 +32,32 @@ public class ProjectSearchRequestBuilder extends SearchRequestBuilder {
 
     private String projectName;
     private SearchTarget target;
+    private String username;
 
     public ProjectSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
         target = SearchTarget.PROJECT;
     }
 
+    @Override
+    protected void addSearchCriteria() {
+        addProjectName();
+        addUserName();
+    }
+
     public void setProjectName(String name) {
         projectName = name;
     }
 
-    @Override
-    public SearchRequest build() {
-        SearchRequest request = new SearchRequestImpl(user, firstResult, maxResults);
-        request.setSearchTarget(target);
-        setProjectName(request);
-        
-        return request;
-    }
-
-    private void setProjectName(SearchRequest request) {
+    private void addProjectName() {
         if (projectName != null && !projectName.isEmpty()) {
             request.addSearchCategory(SearchCategory.PROJECT, projectName);
+        }
+    }
+
+    private void addUserName() {
+        if (username != null && !username.isEmpty()) {
+            request.addSearchCategory(SearchCategory.USER, username);
         }
     }
 
