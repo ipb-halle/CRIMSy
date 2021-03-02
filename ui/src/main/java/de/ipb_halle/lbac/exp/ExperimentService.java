@@ -30,7 +30,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.exp.search.ExpRecordAccessChecker;
 import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.PermissionConditionBuilder;
@@ -38,6 +37,7 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.AttributeType;
+import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
@@ -123,14 +123,12 @@ public class ExperimentService implements Serializable {
         SearchResult back = new SearchResultImpl(nodeService.getLocalNode());
         graph = createEntityGraph();
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        ExperimentSearchConditionBuilder expBuilder = new ExperimentSearchConditionBuilder(request.getUser(), request.getFirstResult(), request.getMaxResults());
-        permissionConditionBuilder = new PermissionConditionBuilder(
-                expBuilder,
-                request.getUser(),
-                ACPermission.permREAD)
-                .addFields(AttributeType.EXPERIMENT);
-
-        String sql = sqlBuilder.query(permissionConditionBuilder.addPermissionCondition(request.getCondition()));
+        ExperimentSearchConditionBuilder conBuilder=new ExperimentSearchConditionBuilder();
+        Condition con=conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
+        
+       
+        
+        String sql = sqlBuilder.query(con);
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());

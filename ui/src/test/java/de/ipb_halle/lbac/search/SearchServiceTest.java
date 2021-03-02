@@ -310,7 +310,7 @@ public class SearchServiceTest extends TestBase {
 
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
+  
     @Test
     public void test008_searchExperiments() {
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);

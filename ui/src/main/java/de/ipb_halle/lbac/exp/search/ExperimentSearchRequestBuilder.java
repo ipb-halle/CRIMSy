@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.search.SearchTarget;
 public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
 
     private String text;
-    private SearchTarget target;
     private String materialName;
     private String itemLabel;
     private String userName;

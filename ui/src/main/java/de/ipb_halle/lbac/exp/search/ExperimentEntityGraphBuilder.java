@@ -25,10 +25,12 @@ import de.ipb_halle.lbac.exp.assay.AssayEntity;
 import de.ipb_halle.lbac.exp.LinkedDataEntity;
 import de.ipb_halle.lbac.exp.text.TextEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
+import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
+import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
-import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import javax.persistence.criteria.JoinType;
 
@@ -41,7 +43,8 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
     private EntityGraph assayEntityGraph;
     private EntityGraph linkedDataEntityGraph;
     private EntityGraph expRecordGraph;
-    private EntityGraph materialGraph;
+    private EntityGraph materialSubgraph;
+    private EntityGraph itemSubgraph;
     private ACListService aclistService;
 
     public ExperimentEntityGraphBuilder(ACListService aclistService) {
@@ -54,29 +57,43 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     private void addExpRecords() {
-
         expRecordGraph = addJoin(JoinType.LEFT, ExpRecordEntity.class, "experimentid", "experimentid");
-
         // LinkedData
         linkedDataEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, LinkedDataEntity.class, "exprecordid", "exprecordid");
-
-        addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, MaterialIndexEntryEntity.class, "materialid", "materialid");
-        materialGraph=addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, MaterialEntity.class, "materialid", "materialid");
-
         addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, ItemEntity.class, "itemid", "id");
-
+        addMaterialSubGraph(linkedDataEntityGraph);
+        addItemSubGraph(linkedDataEntityGraph);
         // Text
         addJoinToChild(JoinType.LEFT, expRecordGraph, TextEntity.class, "exprecordid", "exprecordid");
-
         // Assay
         assayEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, AssayEntity.class, "exprecordid", "exprecordid");
+    }
+
+    private void addMaterialSubGraph(EntityGraph linkDataGraph) {
+        MaterialEntityGraphBuilder materialBuilder = new MaterialEntityGraphBuilder();
+        materialSubgraph = materialBuilder.buildEntityGraph(false);
+        materialSubgraph.addLinkField("materialid", "materialid");
+        materialSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
+        materialSubgraph.setJoinType(JoinType.LEFT);
+        linkDataGraph.addChild(materialSubgraph);
+    }
+
+    private void addItemSubGraph(EntityGraph linkDataGraph) {
+        ItemEntityGraphBuilder materialBuilder = new ItemEntityGraphBuilder();
+        itemSubgraph = materialBuilder.buildEntityGraph(false);
+        itemSubgraph.addLinkField("itemid", "itemid");
+        itemSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
+        itemSubgraph.setJoinType(JoinType.LEFT);
+        linkDataGraph.addChild(itemSubgraph);
     }
 
     @Override
     public EntityGraph buildEntityGraph(boolean toplevel) {
         addUser();
         addExpRecords();
-        addACListContraint(graph,aclistService.getEntityGraph(), "aclist_id");
+        addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
+        graph.addAttributeType(AttributeType.TOPLEVEL);
+        graph.addAttributeType(AttributeType.DIRECT);
         return graph;
     }
 

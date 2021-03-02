@@ -18,13 +18,15 @@
 package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
-import de.ipb_halle.lbac.search.lang.Operator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -32,44 +34,25 @@ import de.ipb_halle.lbac.search.lang.Operator;
  */
 public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ExperimentSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
-        super(u, firstResultIndex, maxResults);
-        target = SearchTarget.EXPERIMENT;
-    }
-
-    public ExperimentSearchConditionBuilder addTemplate(boolean isTemplate) {
-        addCondition(Operator.EQUAL,
-                isTemplate,
-                AttributeType.EXPERIMENT,
-                AttributeType.TEMPLATE);
-        return this;
-    }
-
-    public ExperimentSearchConditionBuilder addId(int id) {
-        addCondition(Operator.EQUAL,
-                id,
-                AttributeType.EXPERIMENT,
-                AttributeType.LABEL);
-        return this;
-    }
-
-    public ExperimentSearchConditionBuilder addUserName(String userName) {
-        addCondition(Operator.ILIKE,
-                "%" + userName + "%",
-                AttributeType.MEMBER_NAME);
-        return this;
-    }
-
-    public ExperimentSearchConditionBuilder addDescription(String description) {
-        addCondition(Operator.ILIKE,
-                "%" + description + "%",
-                AttributeType.TEXT);
-        return this;
+    public ExperimentSearchConditionBuilder() {
+        super(null, 0, 0);
     }
 
     @Override
-    public Condition convertRequestToCondition(SearchRequest request, ACPermission ...acPermission) {
-        return null;
+    public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
+        List<Condition> conditionList = getExperimentCondition(request, true);
+        return addACL(conditionList, request, AttributeType.EXPERIMENT, perm);
+    }
+
+    public List<Condition> getExperimentCondition(SearchRequest request, boolean toplevel) {
+        List<Condition> conditionList = new ArrayList<>();
+        for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
+            switch (entry.getKey()) {
+
+            }
+        }
+
+        return conditionList;
     }
 
 }

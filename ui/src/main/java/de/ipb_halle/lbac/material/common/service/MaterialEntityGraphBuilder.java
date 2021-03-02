@@ -40,12 +40,6 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     protected EntityGraph detailRightSubGraph;
     private EntityGraph indexGraph;
 
-    @Deprecated
-    public MaterialEntityGraphBuilder(ACListService aclistService) {
-        super(MaterialEntity.class);
-        this.aclistService = aclistService;
-    }
-
     public MaterialEntityGraphBuilder() {
         super(MaterialEntity.class);
     }
@@ -60,7 +54,6 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
 
     protected void addOwner() {
         EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "ownerid", "id");
-//        owner.addAttributeType(AttributeType.DIRECT);
         owner.addAttributeTypeInherit(AttributeType.OWNER);
     }
 

@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.admission.User;
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
 import de.ipb_halle.lbac.exp.virtual.NullRecord;
@@ -585,9 +586,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public List<Experiment> loadExperiments(boolean template) {
-        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(currentUser, 0, Integer.MAX_VALUE);
-        builder.addTemplate(template);
-        SearchResult result = experimentService.load(builder.buildSearchRequest());
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(currentUser,0,Integer.MAX_VALUE);
+//        builder.addTemplate(template);
+        SearchResult result = experimentService.load(builder.build());
         if (!result.getAllFoundObjects().isEmpty()) {
             return result.getAllFoundObjects(Experiment.class, result.getNode());
         } else {
