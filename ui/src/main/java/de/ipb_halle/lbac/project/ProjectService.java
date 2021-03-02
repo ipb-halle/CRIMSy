@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Condition;
@@ -60,14 +61,6 @@ public class ProjectService implements Serializable {
     private final String SQL_PROJECT_TEMPLATES = "SELECT id,materialdetailtypeid,aclistid,projectid "
             + "FROM projecttemplates "
             + "WHERE projectid=:pid";
-
-    private final String SQL_GET_SIMILAR_NAMES
-            = "SELECT DISTINCT (p.name) "
-            + "FROM projects p "
-            + SqlStringWrapper.JOIN_KEYWORD + " "
-            + "WHERE p.name ILIKE :name "
-            + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
-            + "ORDER BY p.name";
 
     private final String SQL_GET_NAME_AVAILABLE = "SELECT COUNT(*) "
             + "FROM projects WHERE LOWER(:name) = LOWER(name)";
@@ -112,15 +105,17 @@ public class ProjectService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarProjectNames(String name, User user) {
+        List<String> projectNames = new ArrayList<>();
+        ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        builder.setDeactivated(false);
+        builder.setProjectName(name);
 
-        String sql = SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES,
-                "p.aclist_id",
-                "p.owner_id",
-                ACPermission.permREAD);
-        return this.em.createNativeQuery(sql)
-                .setParameter("name", "%" + name + "%")
-                .setParameter("userid", user.getId())
-                .getResultList();
+        SearchResult result = loadProjects(builder.build());
+        List<Project> projects = result.getAllFoundObjects(Project.class, result.getNode());
+        for (Project p : projects) {
+            projectNames.add(p.getName());
+        }
+        return projectNames;
     }
 
     /**

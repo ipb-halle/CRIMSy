@@ -26,9 +26,10 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
+import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -40,7 +41,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -57,13 +57,16 @@ public class ProjectServiceTest extends TestBase {
     @Inject
     private ACListService aclistService;
 
+    private User publicUser;
+
     @Before
     @Override
     public void setUp() {
         super.setUp();
         cleanAllProjectsFromDb();
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
-    @Ignore("Ignored until new API is implemented for requests")
+
     @Test
     public void test001_saveLoadProject() {
         Project p = new Project(ProjectType.BIOCHEMICAL_PROJECT, "biochemical-test-project");
@@ -99,28 +102,28 @@ public class ProjectServiceTest extends TestBase {
         p.getDetailTemplates().put(MaterialDetailType.TAXONOMY, projectAcList);
 
         instance.saveProjectToDb(p);
-        ProjectSearchConditionBuilder requestBuilder = new ProjectSearchConditionBuilder(u, 0, 25);
+        ProjectSearchRequestBuilder requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
 
-        SearchResult result = instance.loadProjects(requestBuilder.buildSearchRequest());
+        SearchResult result = instance.loadProjects(requestBuilder.build());
         List<Project> projectsOfPublicUser = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertEquals("Only 1 project should be found", 1, projectsOfPublicUser.size());
 
         User user2 = createUser("UserWithoutPermission", "no name");
-        requestBuilder = new ProjectSearchConditionBuilder(user2, 0, 25);
-        result = instance.loadProjects(requestBuilder.buildSearchRequest());
+        requestBuilder = new ProjectSearchRequestBuilder(user2, 0, 25);
+        result = instance.loadProjects(requestBuilder.build());
         List<Project> projectsOfUser2 = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertEquals("No project must be found", 0, projectsOfUser2.size());
 
-        requestBuilder = new ProjectSearchConditionBuilder(u, 0, 25);
-        requestBuilder.addExactName("biochemical-test-project");
-        result = instance.loadProjects(requestBuilder.buildSearchRequest());
+        requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
+        requestBuilder.setProjectName("biochemical-test-project");
+        result = instance.loadProjects(requestBuilder.build());
         List<Project> loadedByName = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertNotNull("test001: loaded by name should not be null ", loadedByName);
         Assert.assertEquals("test001: loaded by name wrong project loaded", p.getId(), loadedByName.get(0).getId());
 
-        requestBuilder = new ProjectSearchConditionBuilder(u, 0, 25);
-        requestBuilder.addExactName("biochemical-test-project-XXX");
-        result = instance.loadProjects(requestBuilder.buildSearchRequest());
+        requestBuilder = new ProjectSearchRequestBuilder(u, 0, 25);
+        requestBuilder.setProjectName("biochemical-test-project-XXX");
+        result = instance.loadProjects(requestBuilder.build());
         loadedByName = result.getAllFoundObjects(Project.class, nodeService.getLocalNode());
         Assert.assertEquals(0, loadedByName.size());
 
@@ -182,7 +185,32 @@ public class ProjectServiceTest extends TestBase {
         deactivated = (boolean) ((List) entityManagerService.doSqlQuery("SELECT deactivated FROM projects")).get(0);
         Assert.assertTrue(deactivated);
         entityManagerService.doSqlUpdate("DELETE FROM projects WHERE name='Test_project'");
+    }
 
+    @Test
+    public void test005_getSimilarProjectNames() {
+        ProjectCreator creator = new ProjectCreator(instance, GlobalAdmissionContext.getPublicReadACL());
+        //Normal project
+        creator.setProjectName("ProjectServiceTest:test005");
+        creator.createAndSaveProject(publicUser);
+        //project with similar name
+        creator.setProjectName("ProjectServiceTest:test005_similarName");
+        creator.createAndSaveProject(publicUser);
+        // project with another name
+        creator.setProjectName("ProjectServiceTest:test0XX05");
+        creator.createAndSaveProject(publicUser);
+        //Not readable project
+        creator.setProjectAcl(context.getNoAccessACL());
+        creator.setProjectName("ProjectServiceTest:test005_notReadable");
+        creator.createAndSaveProject(publicUser);
+        // Deactivated project
+        creator.setProjectAcl(GlobalAdmissionContext.getPublicReadACL());
+        creator.setProjectName("ProjectServiceTest:test005_deactivated");
+        Project p = creator.createAndSaveProject(publicUser);
+        instance.changeDeactivationState(p.getId(), true);
+
+        List<String> names = instance.getSimilarProjectNames("test005", publicUser);
+        Assert.assertEquals(2, names.size());
     }
 
     private void cleanUp(User user2, ACList projectAcList, Project p) {
