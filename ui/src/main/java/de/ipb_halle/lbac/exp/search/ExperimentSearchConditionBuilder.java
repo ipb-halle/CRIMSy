@@ -18,11 +18,13 @@
 package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,11 +50,55 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
             switch (entry.getKey()) {
-
+                case NAME:
+                    if (toplevel) {
+                        addIndexCondition(conditionList, entry.getValue(), true);
+                    }
+                    break;
             }
         }
 
         return conditionList;
+    }
+
+    private void addIndexCondition(List<Condition> conditionList, Set<String> values, Boolean isName) {
+        if (isName != null) {
+            Condition typeCondition = getBinaryLeafCondition(
+                    isName ? Operator.EQUAL : Operator.NOT_EQUAL,
+                    IndexTypeEntity.INDEX_TYPE_NAME,
+                    AttributeType.MATERIAL,
+                    AttributeType.INDEX_TYPE);
+            conditionList.add(new Condition(
+                    Operator.AND,
+                    getIndexCondition(values, false),
+                    typeCondition));
+            return;
+        }
+        conditionList.add(getIndexCondition(values, true));
+    }
+
+    private Condition getIndexCondition(Set<String> values, boolean requireTopLevel) {
+        ArrayList<Condition> subConditionList = new ArrayList<>();
+        for (String value : values) {
+            subConditionList.add(getBinaryLeafCondition(
+                    Operator.ILIKE,
+                    "%" + value + "%",
+                    getIndexAttributes(requireTopLevel)));
+        }
+        return getDisjunction(subConditionList);
+    }
+
+    private AttributeType[] getIndexAttributes(boolean requireTopLevel) {
+        if (requireTopLevel) {
+            return new AttributeType[]{
+                AttributeType.MATERIAL,
+                AttributeType.TOPLEVEL,
+                AttributeType.TEXT
+            };
+        }
+        return new AttributeType[]{
+            AttributeType.MATERIAL,
+            AttributeType.TEXT};
     }
 
 }

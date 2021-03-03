@@ -34,7 +34,11 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExpRecordService;
+import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExperimentService;
+import de.ipb_halle.lbac.exp.LinkedData;
+import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.exp.assay.Assay;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -50,6 +54,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
@@ -61,6 +66,7 @@ import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -103,6 +109,15 @@ public class SearchServiceTest extends TestBase {
 
     @Inject
     private ContainerService containerService;
+
+    @Inject
+    private ExperimentService experimentService;
+
+    @Inject
+    private ExpRecordService expRecordService;
+
+    @Inject
+    private MaterialService materialService;
 
     @Inject
     private GlobalAdmissionContext context;
@@ -309,14 +324,18 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
 
     }
-
-  
+@Ignore
     @Test
     public void test008_searchExperiments() {
+        createExp1();
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
-        builder.addText("xxx");
+        builder.setMaterialName("Testmaterial-001");
         SearchRequest request = builder.build();
-        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+
+        builder.setMaterialName("Testmaterial-002");
+        request = builder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
     }
 
@@ -473,6 +492,28 @@ public class SearchServiceTest extends TestBase {
     private void createUsers() {
         publicUser = context.getPublicAccount();
         anotherUser = createUser("SearchServiceTest_user", "SearchServiceTest_user");
+    }
+
+    private void createExp1() {
+
+        Experiment exp = new Experiment(
+                null,
+                "SearchServiceTest:exp1",
+                "SearchServiceTest:exp1_descr",
+                false,
+                GlobalAdmissionContext.getPublicReadACL(),
+                publicUser,
+                new Date());
+        exp = experimentService.save(exp);
+        Assay assay = new Assay();
+        assay.getLinkedData().get(0).setMaterial(materialService.loadMaterialById(materialid1));
+        assay.setExperiment(exp);
+
+        LinkedData assayRecord = new LinkedData(assay,
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
+    //    assayRecord.setItem(itemService.loadItemById(itemid2));     // automatically sets material
+        assay.getLinkedData().add(assayRecord);
+        expRecordService.save(assay, publicUser);
     }
 
     @Deployment

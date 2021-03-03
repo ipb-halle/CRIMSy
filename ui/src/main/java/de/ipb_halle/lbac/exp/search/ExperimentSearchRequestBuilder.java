@@ -20,9 +20,7 @@ package de.ipb_halle.lbac.exp.search;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchCategory;
-import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
-import de.ipb_halle.lbac.search.SearchRequestImpl;
 import de.ipb_halle.lbac.search.SearchTarget;
 
 /**
@@ -54,6 +52,10 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         addStructure();
         addUserName();
         addText();
+    }
+    
+    public void setMaterialName(String name){
+        this.materialName=name;
     }
 
     private void addMaterialName() {

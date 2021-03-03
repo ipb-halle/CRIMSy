@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
 import de.ipb_halle.lbac.exp.assay.AssayController;
-import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;

@@ -60,7 +60,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
         expRecordGraph = addJoin(JoinType.LEFT, ExpRecordEntity.class, "experimentid", "experimentid");
         // LinkedData
         linkedDataEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, LinkedDataEntity.class, "exprecordid", "exprecordid");
-        addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, ItemEntity.class, "itemid", "id");
+       // addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, ItemEntity.class, "itemid", "id");
         addMaterialSubGraph(linkedDataEntityGraph);
         addItemSubGraph(linkedDataEntityGraph);
         // Text
@@ -81,7 +81,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
     private void addItemSubGraph(EntityGraph linkDataGraph) {
         ItemEntityGraphBuilder materialBuilder = new ItemEntityGraphBuilder();
         itemSubgraph = materialBuilder.buildEntityGraph(false);
-        itemSubgraph.addLinkField("itemid", "itemid");
+        itemSubgraph.addLinkField("itemid", "id");
         itemSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
         itemSubgraph.setJoinType(JoinType.LEFT);
         linkDataGraph.addChild(itemSubgraph);
