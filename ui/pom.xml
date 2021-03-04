@@ -591,9 +591,9 @@
 
         <!-- MolecularFaces -->
         <dependency>
-			<groupId>de.ipb_halle</groupId>
-			<artifactId>molecularfaces</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
-		</dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>molecularfaces</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 </project> 

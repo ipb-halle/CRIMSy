@@ -210,7 +210,7 @@
     </context-param>
     <context-param>
         <param-name>de.ipb_halle.molecularfaces.MOLPAINTJS_URL</param-name>
-        <param-value>/plugins/molpaintjs</param-value>
+        <param-value>/plugins/molpaintjs/molpaint.js</param-value>
     </context-param>
     <!--<context-param>
         <param-name>de.ipb_halle.molecularfaces.MARVINJS_BASE_URL</param-name>

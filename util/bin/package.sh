@@ -39,9 +39,8 @@
 #
 LBAC_UI="ui.war"
 
-MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS/releases/download/v0.1.2-alpha
-MOLPAINTJS_RELEASE_TARGZ=molpaintjs.tar.gz
-MOLPAINTJS_RELEASE_DIR=molpaintjs
+MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS/releases/download/v0.3.2-alpha
+MOLPAINTJS_JS=molpaint.js
 JBROWSE_REPO=https://github.com/GMOD/jbrowse/releases/download/1.16.9-release
 JBROWSE_RELEASE_ZIP=JBrowse-1.16.9.zip
 JBROWSE_RELEASE_DIR=JBrowse-1.16.9
@@ -220,7 +219,7 @@ function copyPlugins {
         pushd target >/dev/null
         mkdir -p dist/proxy/htdocs/plugins
         cp -r jbrowse/$JBROWSE_RELEASE_DIR dist/proxy/htdocs/plugins/JBrowse
-        cp -r molpaintjs/$MOLPAINTJS_RELEASE_DIR dist/proxy/htdocs/plugins/molpaintjs
+        cp -r molpaintjs dist/proxy/htdocs/plugins/molpaintjs
         cp -r openchemlib-js dist/proxy/htdocs/plugins/openchemlib-js
         popd > /dev/null
 }
@@ -259,11 +258,8 @@ function getJBrowse {
 function getMolPaintJS {
         mkdir -p molpaintjs
         pushd molpaintjs >/dev/null
-        if [ ! -f $MOLPAINTJS_RELEASE_TARGZ ] ; then
-            curl -L --silent --output $MOLPAINTJS_RELEASE_TARGZ $MOLPAINTJS_REPO/$MOLPAINTJS_RELEASE_TARGZ
-        fi
-        if [ ! -d $MOLPAINTJS_RELEASE_DIR ] ; then
-            tar -xzf $MOLPAINTJS_RELEASE_TARGZ
+        if [ ! -f $MOLPAINTJS_JS ] ; then
+            curl -L --silent --output $MOLPAINTJS_JS $MOLPAINTJS_REPO/$MOLPAINTJS_JS
         fi
         popd >/dev/null
 }

@@ -58,7 +58,7 @@
                                 </mol:molecule>
                                 <!-- This JS snippet guarantees proper plugin initialization after
                                      this p:tab is rendered by AJAX and the tab comes into focus. -->
-                                <script>molecularfaces.onDocumentReady(function () { if (structurePlugin != null) structurePlugin.init(); });</script>
+                                <script>structurePlugin.then(plugin => plugin.init());</script>
 
                             </b:column>
                             <b:column span="6">

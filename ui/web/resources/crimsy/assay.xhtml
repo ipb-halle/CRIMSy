@@ -135,10 +135,7 @@
                                rendered="#{cc.attrs.assay.edit}"
                                action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
                                update="@(.dlgMaterialEdit)"
-                               oncomplete="PF('dlg_materialEdit').show();
-                                           molecularfaces.onDocumentReady(function () {
-                                             if (dlg_materialEdit_molEditor != null) dlg_materialEdit_molEditor.init();
-                                           });"
+                               oncomplete="PF('dlg_materialEdit').show(); dlg_materialEdit_molEditor.then(e => e.init());"
                                disabled="#{!assayRecord.isMaterialEditable()}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>
