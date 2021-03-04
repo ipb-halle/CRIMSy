@@ -18,12 +18,16 @@
 package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
+import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +46,10 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
-        List<Condition> conditionList = getExperimentCondition(request, true);
-        return addACL(conditionList, request.getUser(), AttributeType.EXPERIMENT, perm);
+        return addACL(getExperimentCondition(request, true),
+                request.getUser(), 
+                AttributeType.EXPERIMENT, 
+                perm);
     }
 
     public List<Condition> getExperimentCondition(SearchRequest request, boolean toplevel) {
@@ -58,6 +64,8 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
             }
         }
 
+        addMaterialCondition(conditionList, request);
+        addItemCondition(conditionList, request);
         return conditionList;
     }
 
@@ -76,7 +84,38 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         }
         conditionList.add(getIndexCondition(values, true));
     }
+    
+    private void addItemCondition(List<Condition> conditionList, SearchRequest request) {
+        EntityGraph itemSubGraph = entityGraph.selectSubGraph(
+                String.join("/", rootGraphName, ExperimentEntityGraphBuilder.itemSubGraphName));
+        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(
+                itemSubGraph, ExperimentEntityGraphBuilder.itemSubGraphName);
+        List<Condition> subList = itemBuilder.getItemCondition(request, false);
 
+        if (!subList.isEmpty()) {
+            addSubGraphACL(itemSubGraph, 
+                    request.getUser(), 
+                    AttributeType.MATERIAL);
+            conditionList.addAll(subList);
+        }
+    }
+
+    private void addMaterialCondition(List<Condition> conditionList, SearchRequest request) {
+        EntityGraph materialSubGraph = entityGraph.selectSubGraph(
+                String.join("/", rootGraphName, ExperimentEntityGraphBuilder.materialSubGraphName));
+        MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
+                materialSubGraph, ExperimentEntityGraphBuilder.materialSubGraphName);
+        List<Condition> subList = matBuilder.getMaterialCondition(request, false);
+
+        if (!subList.isEmpty()) {
+            addSubGraphACL(materialSubGraph, 
+                    request.getUser(), 
+                    AttributeType.MATERIAL);
+            conditionList.addAll(subList);
+        }
+    }
+
+    
     private Condition getIndexCondition(Set<String> values, boolean requireTopLevel) {
         ArrayList<Condition> subConditionList = new ArrayList<>();
         for (String value : values) {

@@ -40,11 +40,12 @@ import javax.persistence.criteria.JoinType;
  */
 public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
+    public final static String itemSubGraphName = "expItems";
+    public final static String materialSubGraphName = "expMaterials";
+    
     private EntityGraph assayEntityGraph;
     private EntityGraph linkedDataEntityGraph;
     private EntityGraph expRecordGraph;
-    private EntityGraph materialSubgraph;
-    private EntityGraph itemSubgraph;
     private ACListService aclistService;
 
     public ExperimentEntityGraphBuilder(ACListService aclistService) {
@@ -71,19 +72,21 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
     private void addMaterialSubGraph(EntityGraph linkDataGraph) {
         MaterialEntityGraphBuilder materialBuilder = new MaterialEntityGraphBuilder();
-        materialSubgraph = materialBuilder.buildEntityGraph(false);
+        EntityGraph materialSubgraph = materialBuilder.buildEntityGraph(false);
         materialSubgraph.addLinkField("materialid", "materialid");
         materialSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
         materialSubgraph.setJoinType(JoinType.LEFT);
+        materialSubgraph.setGraphName(materialSubGraphName);
         linkDataGraph.addChild(materialSubgraph);
     }
 
     private void addItemSubGraph(EntityGraph linkDataGraph) {
         ItemEntityGraphBuilder materialBuilder = new ItemEntityGraphBuilder();
-        itemSubgraph = materialBuilder.buildEntityGraph(false);
+        EntityGraph itemSubgraph = materialBuilder.buildEntityGraph(false);
         itemSubgraph.addLinkField("itemid", "id");
         itemSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
         itemSubgraph.setJoinType(JoinType.LEFT);
+        itemSubgraph.setGraphName(itemSubGraphName);
         linkDataGraph.addChild(itemSubgraph);
     }
 

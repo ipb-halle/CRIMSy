@@ -131,6 +131,21 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         conditionList.add(getDisjunction(subList));
     }
 
+    private void addMaterialCondition(List<Condition> conditionList, SearchRequest request) {
+        EntityGraph materialSubGraph = entityGraph.selectSubGraph(
+                String.join("/", rootGraphName, ItemEntityGraphBuilder.materialSubGraphName));
+        MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
+                materialSubGraph, ItemEntityGraphBuilder.materialSubGraphName);
+        List<Condition> subList = matBuilder.getMaterialCondition(request, false);
+
+        if (!subList.isEmpty()) {
+            addSubGraphACL(materialSubGraph, 
+                    request.getUser(), 
+                    AttributeType.MATERIAL);
+            conditionList.addAll(subList);
+        }
+    }
+    
     private void addOwnerCondition(List<Condition> conditionList, Set<String> values) {
         if (values.size() != 1) {
             throw new IllegalArgumentException("Addition of multiple owners currently not supported");
@@ -172,22 +187,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... acPermission) {
 
-        List<Condition> itemConditionList = getItemCondition(request, true);
-
-        EntityGraph materialSubGraph = entityGraph.selectSubGraph(
-                String.join("/", rootGraphName, ItemEntityGraphBuilder.materialSubGraphName));
-        MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
-                materialSubGraph, ItemEntityGraphBuilder.materialSubGraphName);
-        List<Condition> subList = matBuilder.getMaterialCondition(request, false);
-
-        if (!subList.isEmpty()) {
-            addSubGraphACL(materialSubGraph, 
-                    request.getUser(), 
-                    AttributeType.MATERIAL);
-            itemConditionList.addAll(subList);
-        }
-
-        return addACL(itemConditionList,
+        return addACL(getItemCondition(request, true),
                 request.getUser(),
                 AttributeType.ITEM,
                 acPermission);
@@ -223,6 +223,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                     break;
             }
         }
+        addMaterialCondition(conditionList, request);        
         return conditionList;
     }
 
