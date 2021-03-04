@@ -52,6 +52,7 @@ import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.DbField;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.OrderDirection;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.SqlCountBuilder;
@@ -126,9 +127,10 @@ public class ItemService {
     public SearchResult loadItems(SearchRequest request) {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
-        SqlBuilder sqlBuilder = new SqlBuilder(graphBuilder.buildEntityGraph(true));
+        EntityGraph itemGraph = graphBuilder.buildEntityGraph(true);
+        SqlBuilder sqlBuilder = new SqlBuilder(itemGraph);
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(
-                graphBuilder);
+                itemGraph, "items");
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(
                 condition,
@@ -150,14 +152,16 @@ public class ItemService {
 
     public int loadItemAmount(SearchRequest request) {
         ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
+        EntityGraph itemGraph = graphBuilder.buildEntityGraph(true);
         SqlCountBuilder countBuilder = new SqlCountBuilder(
-                graphBuilder.buildEntityGraph(true),
+                itemGraph,
                 new Attribute(new AttributeType[]{
             AttributeType.ITEM,
             AttributeType.LABEL
         }));
 
-        ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(graphBuilder);
+
+        ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(itemGraph, "items");
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = countBuilder.query(condition);
         Query q = createQueryWithParams(countBuilder, sql);

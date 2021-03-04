@@ -43,7 +43,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
         List<Condition> conditionList = getExperimentCondition(request, true);
-        return addACL(conditionList, request, AttributeType.EXPERIMENT, perm);
+        return addACL(conditionList, request.getUser(), AttributeType.EXPERIMENT, perm);
     }
 
     public List<Condition> getExperimentCondition(SearchRequest request, boolean toplevel) {

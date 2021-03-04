@@ -36,8 +36,8 @@ import javax.persistence.criteria.JoinType;
  */
 public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
+    public final static String materialSubGraphName = "itemMaterials";
     private EntityGraph nestedContainerGraph;
-    private EntityGraph materialSubgraph;
 
     public ItemEntityGraphBuilder() {
         super(ItemEntity.class);
@@ -62,10 +62,11 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
     private void addMaterial() {
         MaterialEntityGraphBuilder matBuilder = new MaterialEntityGraphBuilder();
-        materialSubgraph = matBuilder.buildEntityGraph(false);
+        EntityGraph materialSubgraph = matBuilder.buildEntityGraph(false);
         materialSubgraph.addLinkField("materialid", "materialid");
         materialSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
         materialSubgraph.setJoinType(JoinType.LEFT);
+        materialSubgraph.setGraphName(materialSubGraphName);
         graph.addChild(materialSubgraph);
     }
 
@@ -87,9 +88,5 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
             graph.addAttributeType(AttributeType.TOPLEVEL);
         }
         return graph;
-    }
-
-    public EntityGraph getMaterialSubgraph() {
-        return this.materialSubgraph;
     }
 }

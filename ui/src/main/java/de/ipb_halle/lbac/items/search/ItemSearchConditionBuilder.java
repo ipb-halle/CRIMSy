@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,13 +44,10 @@ import java.util.regex.Pattern;
 public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     private final static String itemLabelPattern = "[0-9]{8,12}";
-    private ItemEntityGraphBuilder itemEntityGraphBuilder;
 
-    public ItemSearchConditionBuilder(ItemEntityGraphBuilder graphBuilder) {
-        super(null, 0, 0);
-        this.itemEntityGraphBuilder = graphBuilder;
+    public ItemSearchConditionBuilder(EntityGraph entityGraph, String rootName) {
+        super(entityGraph, rootName);
     }
-
 
     @Deprecated
     public ItemSearchConditionBuilder addLabel(String label) {
@@ -176,26 +174,21 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
         List<Condition> itemConditionList = getItemCondition(request, true);
 
-        MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder();
+        EntityGraph materialSubGraph = entityGraph.selectSubGraph(
+                String.join("/", rootGraphName, ItemEntityGraphBuilder.materialSubGraphName));
+        MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
+                materialSubGraph, ItemEntityGraphBuilder.materialSubGraphName);
         List<Condition> subList = matBuilder.getMaterialCondition(request, false);
 
         if (!subList.isEmpty()) {
-            this.itemEntityGraphBuilder
-                    .getMaterialSubgraph()
-                    .setSubSelectCondition(
-                    addACL(
-                        null,
-                        request,
-                        AttributeType.MATERIAL,
-                        ACPermission.permREAD));
-            this.itemEntityGraphBuilder
-                    .getMaterialSubgraph()
-                    .setSubSelectAttribute(AttributeType.DIRECT);
+            addSubGraphACL(materialSubGraph, 
+                    request.getUser(), 
+                    AttributeType.MATERIAL);
             itemConditionList.addAll(subList);
         }
 
         return addACL(itemConditionList,
-                request,
+                request.getUser(),
                 AttributeType.ITEM,
                 acPermission);
     }

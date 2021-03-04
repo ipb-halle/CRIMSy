@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,8 +45,8 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    public MaterialSearchConditionBuilder() {
-        super(null, 0, 0);
+    public MaterialSearchConditionBuilder(EntityGraph entityGraph, String rootName) {
+        super(entityGraph, rootName);
     }
 
     @Deprecated
@@ -172,7 +173,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
         List<Condition> conditionList = getMaterialCondition(request, true);
-        return addACL(conditionList, request, AttributeType.MATERIAL, perm);
+        return addACL(conditionList, request.getUser(), AttributeType.MATERIAL, perm);
     }
 
     private AttributeType[] getIndexAttributes(boolean requireTopLevel) {

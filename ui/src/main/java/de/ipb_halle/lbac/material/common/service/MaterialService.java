@@ -220,7 +220,7 @@ public class MaterialService implements Serializable {
             AttributeType.LABEL
         }));
 
-        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder();
+        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
         Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
 
         String sql = sqlBuilder.query(con);
@@ -238,7 +238,7 @@ public class MaterialService implements Serializable {
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
 
-        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder();
+        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
         Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
 
         String sql = sqlBuilder.query(con,

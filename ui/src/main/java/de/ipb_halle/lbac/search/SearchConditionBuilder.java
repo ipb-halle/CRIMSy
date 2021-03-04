@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Attribute;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.Value;
 import java.util.ArrayList;
@@ -39,6 +40,13 @@ public abstract class SearchConditionBuilder {
     protected int maxResults;
     protected User user;
     protected SearchTarget target;
+    protected EntityGraph entityGraph;
+    protected String rootGraphName;
+
+    protected SearchConditionBuilder(EntityGraph entityGraph, String rootGraphName) {
+        this.entityGraph = entityGraph;
+        this.rootGraphName = rootGraphName;
+    }
 
     @Deprecated
     public SearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
@@ -88,7 +96,7 @@ public abstract class SearchConditionBuilder {
 
         return searchRequest;
     }
-    
+
     /**
      * Create an access control condition and combine it with other conditions.
      *
@@ -98,14 +106,14 @@ public abstract class SearchConditionBuilder {
      * @param acPermission
      * @return the combined condition
      */
-    protected Condition addACL(List<Condition> conditionList, 
-            SearchRequest request, 
-            AttributeType type, 
+    protected Condition addACL(List<Condition> conditionList,
+            User user,
+            AttributeType type,
             ACPermission... acPermission) {
         List<Condition> subCondition = new ArrayList<>();
         for (ACPermission perm : acPermission) {
             subCondition.add(getACLCondition(
-                    request.getUser(),
+                    user,
                     perm,
                     type));
         }
@@ -121,8 +129,15 @@ public abstract class SearchConditionBuilder {
                 conditionList.toArray(new Condition[0]));
     }
 
+    protected void addSubGraphACL(EntityGraph subGraph, User user, AttributeType attribute) {
+        subGraph.setSubSelectCondition(
+            getACLCondition(user,
+                    ACPermission.permREAD, 
+                    attribute));
+        subGraph.setSubSelectAttribute(AttributeType.DIRECT);
+    }
 
-    public abstract Condition convertRequestToCondition(SearchRequest request, ACPermission ...perm);
+    public abstract Condition convertRequestToCondition(SearchRequest request, ACPermission... perm);
 
     /**
      * @param user the user for whom the access control condition is to be built
@@ -183,7 +198,7 @@ public abstract class SearchConditionBuilder {
                         Operator.IS_TRUE));
     }
 
-    protected Condition getBinaryLeafCondition(Operator op, Object value, AttributeType ...attrTypes) {
+    protected Condition getBinaryLeafCondition(Operator op, Object value, AttributeType... attrTypes) {
         return new Condition(
                 new Attribute(attrTypes),
                 op,
@@ -212,7 +227,6 @@ public abstract class SearchConditionBuilder {
         throw new IllegalArgumentException("Could not create Condition");
     }
 
-    
     private Attribute getPermissionAttribute(ACPermission perm) {
         switch (perm) {
             case permREAD:

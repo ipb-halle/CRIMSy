@@ -81,7 +81,7 @@ public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... acPermission) {
         List<Condition> conditionList = getProjectCondition(request, true);
-        return addACL(conditionList, request, AttributeType.PROJECT, acPermission);
+        return addACL(conditionList, request.getUser(), AttributeType.PROJECT, acPermission);
     }
 
     private void addProjectNameCondition(List<Condition> conditionList, Set<String> values) {

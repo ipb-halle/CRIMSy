@@ -153,24 +153,24 @@ public class SearchWebServiceTest extends TestBase {
     @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test004_searchWithItemRequest() throws Exception {
-        project = creationTools.createAndSaveProject("SearchWebServiceTest-Test");
-        int materilid = materialCreator.createStructure(
-                publicUserId,
-                publicAclId,
-                project.getId(),
-                "SearchWebServiceTest-Material");
-        int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item",project.getId());
-
-        SearchWebRequest wr = createEmptyRequest();
-        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(null /* ItemEntityGraphBuilder */);
-
-        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
-        Response response = webService.search(wr);
-        SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
-
-        List<Searchable> items = searchResponse.getAllFoundObjects();
-        Assert.assertEquals(1, items.size());
-        Assert.assertEquals(itemid, ((RemoteItem) items.get(0)).getId(), 0);
+//        project = creationTools.createAndSaveProject("SearchWebServiceTest-Test");
+//        int materilid = materialCreator.createStructure(
+//                publicUserId,
+//                publicAclId,
+//                project.getId(),
+//                "SearchWebServiceTest-Material");
+//        int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item",project.getId());
+//
+//        SearchWebRequest wr = createEmptyRequest();
+//        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(null /* ItemEntityGraphBuilder */);
+//
+//        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
+//        Response response = webService.search(wr);
+//        SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
+//
+//        List<Searchable> items = searchResponse.getAllFoundObjects();
+//        Assert.assertEquals(1, items.size());
+//        Assert.assertEquals(itemid, ((RemoteItem) items.get(0)).getId(), 0);
     }
 
     @Ignore
