@@ -320,21 +320,6 @@ public class SqlBuilder {
 
         if (child.hasChildren()) {
             sb.append(joinChildren(child, context, attr));
-            /*
-            if (attr == null) {
-                sb.append(joinChildren(child, context, attr));
-            } else {
-                if (child.getAlias().equals("sub_a_4_5")) {
-                    int i = 0;
-                }
-                // JOIN siblings which were not included in the sub-select
-                for (EntityGraph sibling : child.getChildren()) {
-                    if (sibling.getActive(context) && (! sibling.hasAttribute(attr))) {
-                        joinChild(sb, child, sibling, context, null);
-                    }
-                }
-            }
-            */
         }
     }
 

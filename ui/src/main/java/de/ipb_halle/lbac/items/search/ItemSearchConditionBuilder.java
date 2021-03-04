@@ -133,9 +133,9 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     private void addMaterialCondition(List<Condition> conditionList, SearchRequest request) {
         EntityGraph materialSubGraph = entityGraph.selectSubGraph(
-                String.join("/", rootGraphName, ItemEntityGraphBuilder.materialSubGraphName));
+                String.join("/", rootGraphName, ItemEntityGraphBuilder.materialSubGraphPath));
         MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
-                materialSubGraph, ItemEntityGraphBuilder.materialSubGraphName);
+                materialSubGraph, ItemEntityGraphBuilder.materialSubGraphPath);
         List<Condition> subList = matBuilder.getMaterialCondition(request, false);
 
         if (!subList.isEmpty()) {

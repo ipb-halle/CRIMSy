@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
@@ -85,9 +84,8 @@ public class ExperimentService implements Serializable {
     private EntityManager em;
 
     private Logger logger;
-    private ExperimentEntityGraphBuilder graphBuilder;
-    private EntityGraph graph;
-    private PermissionConditionBuilder permissionConditionBuilder;
+
+
     private ConditionValueFetcher conValueFetcher;
     private ExpRecordAccessChecker recordAccessChecker;
 
@@ -100,7 +98,6 @@ public class ExperimentService implements Serializable {
         if (em == null) {
             logger.error("Injection failed for EntityManager. @PersistenceContext(name = \"de.ipb_halle.lbac\")");
         }
-        graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
         conValueFetcher = new ConditionValueFetcher();
         recordAccessChecker = new ExpRecordAccessChecker(recordService, aclistService);
     }
@@ -121,9 +118,11 @@ public class ExperimentService implements Serializable {
 
     public SearchResult load(SearchRequest request) {
         SearchResult back = new SearchResultImpl(nodeService.getLocalNode());
-        graph = createEntityGraph();
+          
+        ExperimentEntityGraphBuilder graphBuilder = new ExperimentEntityGraphBuilder();
+        EntityGraph graph = graphBuilder.buildEntityGraph(true);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        ExperimentSearchConditionBuilder conBuilder=new ExperimentSearchConditionBuilder();
+        ExperimentSearchConditionBuilder conBuilder=new ExperimentSearchConditionBuilder(graph,"experiments");
         Condition con=conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         
        
@@ -199,10 +198,5 @@ public class ExperimentService implements Serializable {
                 e.getACList(),
                 e.getOwner(),
                 e.getProject());
-    }
-
-    private EntityGraph createEntityGraph() {
-        graphBuilder = new ExperimentEntityGraphBuilder(aclistService);
-        return graphBuilder.buildEntityGraph(true);
     }
 }

@@ -36,7 +36,9 @@ import javax.persistence.criteria.JoinType;
  */
 public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
-    public final static String materialSubGraphName = "itemMaterials";
+    private final static String materialSubGraphName = "itemMaterials";
+    public final static String materialSubGraphPath = materialSubGraphName;
+    
     private EntityGraph nestedContainerGraph;
 
     public ItemEntityGraphBuilder() {
@@ -45,7 +47,6 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
     private void addOwner() {
         EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "owner_id", "id");
-//        owner.addAttributeType(AttributeType.DIRECT);
         owner.addAttributeTypeInherit(AttributeType.OWNER);
 
     }

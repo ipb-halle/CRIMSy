@@ -270,7 +270,7 @@ public class SearchServiceTest extends TestBase {
         ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setDescription("estitem-001");
         SearchRequest request = builder.build();
-//        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         //search for a material with read access
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
@@ -324,7 +324,7 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
 
     }
-@Ignore
+    @Ignore
     @Test
     public void test008_searchExperiments() {
         createExp1();
@@ -511,7 +511,7 @@ public class SearchServiceTest extends TestBase {
 
         LinkedData assayRecord = new LinkedData(assay,
                 LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
-    //    assayRecord.setItem(itemService.loadItemById(itemid2));     // automatically sets material
+        assayRecord.setItem(itemService.loadItemById(itemid2));     // automatically sets material
         assay.getLinkedData().add(assayRecord);
         expRecordService.save(assay, publicUser);
     }

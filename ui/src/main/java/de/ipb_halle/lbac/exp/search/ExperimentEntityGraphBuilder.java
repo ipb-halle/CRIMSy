@@ -42,15 +42,14 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
     public final static String itemSubGraphName = "expItems";
     public final static String materialSubGraphName = "expMaterials";
+    public final static String itemSubGraphPath = "exp_records/exp_linked_data/" + itemSubGraphName;
+    public final static String materialSubGraphPath = "exp_records/exp_linked_data/" + materialSubGraphName;
     
-    private EntityGraph assayEntityGraph;
     private EntityGraph linkedDataEntityGraph;
     private EntityGraph expRecordGraph;
-    private ACListService aclistService;
 
-    public ExperimentEntityGraphBuilder(ACListService aclistService) {
+    public ExperimentEntityGraphBuilder() {
         super(ExperimentEntity.class);
-        this.aclistService = aclistService;
     }
 
     private void addUser() {
@@ -67,7 +66,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
         // Text
         addJoinToChild(JoinType.LEFT, expRecordGraph, TextEntity.class, "exprecordid", "exprecordid");
         // Assay
-        assayEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, AssayEntity.class, "exprecordid", "exprecordid");
+        addJoinToChild(JoinType.LEFT, expRecordGraph, AssayEntity.class, "exprecordid", "exprecordid");
     }
 
     private void addMaterialSubGraph(EntityGraph linkDataGraph) {

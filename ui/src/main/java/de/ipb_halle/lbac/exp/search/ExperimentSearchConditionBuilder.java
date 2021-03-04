@@ -40,8 +40,8 @@ import java.util.Set;
  */
 public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ExperimentSearchConditionBuilder() {
-        super(null, 0, 0);
+    public ExperimentSearchConditionBuilder(EntityGraph graph,String rootName) {
+        super(graph,rootName);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
     
     private void addItemCondition(List<Condition> conditionList, SearchRequest request) {
         EntityGraph itemSubGraph = entityGraph.selectSubGraph(
-                String.join("/", rootGraphName, ExperimentEntityGraphBuilder.itemSubGraphName));
+                String.join("/", rootGraphName, ExperimentEntityGraphBuilder.itemSubGraphPath));
         ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(
                 itemSubGraph, ExperimentEntityGraphBuilder.itemSubGraphName);
         List<Condition> subList = itemBuilder.getItemCondition(request, false);
@@ -102,9 +102,9 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
     private void addMaterialCondition(List<Condition> conditionList, SearchRequest request) {
         EntityGraph materialSubGraph = entityGraph.selectSubGraph(
-                String.join("/", rootGraphName, ExperimentEntityGraphBuilder.materialSubGraphName));
+                String.join("/", rootGraphName, ExperimentEntityGraphBuilder.materialSubGraphPath));
         MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
-                materialSubGraph, ExperimentEntityGraphBuilder.materialSubGraphName);
+                materialSubGraph, ExperimentEntityGraphBuilder.materialSubGraphPath);
         List<Condition> subList = matBuilder.getMaterialCondition(request, false);
 
         if (!subList.isEmpty()) {
