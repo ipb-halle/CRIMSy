@@ -39,7 +39,7 @@
 #
 LBAC_UI="ui.war"
 
-MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS/releases/download/v0.3.2-alpha
+MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS/releases/download/v0.3.4-alpha
 MOLPAINTJS_JS=molpaint.js
 JBROWSE_REPO=https://github.com/GMOD/jbrowse/releases/download/1.16.9-release
 JBROWSE_RELEASE_ZIP=JBrowse-1.16.9.zip
