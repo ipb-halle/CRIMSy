@@ -54,13 +54,11 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
     public List<Condition> getExperimentCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
-            switch (entry.getKey()) {
-                case NAME:
-                    if (toplevel) {
-                        addIndexCondition(conditionList, entry.getValue(), true);
-                    }
-                    break;
-            }
+//            switch (entry.getKey()) {
+//                case TEXT:
+//                    // take care for ExpText, ExpAssay, ...
+//                    break;
+//            }
         }
 
         addMaterialCondition(conditionList, request);
@@ -68,6 +66,8 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         return conditionList;
     }
 
+//  Items and Material handled by addItemCondition and addMaterialCondition
+    @Deprecated
     private void addIndexCondition(List<Condition> conditionList, Set<String> values, Boolean isName) {
         if (isName != null) {
             Condition typeCondition = getBinaryLeafCondition(
@@ -114,7 +114,8 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         }
     }
 
-    
+    //  Items and Material handled by addItemCondition and addMaterialCondition
+    @Deprecated
     private Condition getIndexCondition(Set<String> values, boolean requireTopLevel) {
         ArrayList<Condition> subConditionList = new ArrayList<>();
         for (String value : values) {
@@ -126,6 +127,8 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         return getDisjunction(subConditionList);
     }
 
+    //  Items and Material handled by addItemCondition and addMaterialCondition
+    @Deprecated
     private AttributeType[] getIndexAttributes(boolean requireTopLevel) {
         if (requireTopLevel) {
             return new AttributeType[]{
