@@ -35,12 +35,24 @@ public class SqlBuilder {
     private List<Value> valueList;
     private Set<DbField> allFields;
     private int argumentCounter;
+    private boolean subSelect;
 
     /**
      * constructor
      */
     public SqlBuilder(EntityGraph graph) {
+        this(graph, false);
+    }
+
+    /**
+     * Constructor
+     * @param graph the EntityGraph to construct a SELECT statement for
+     * @param subSelect true if the statement is a sub-select of an
+     * outer EntityGraph. In this case, the sub-selects will NOT be nested.
+     */
+    public SqlBuilder(EntityGraph graph, boolean subSelect) {
         this.entityGraph = graph;
+        this.subSelect = subSelect;
     }
 
     /**
@@ -286,8 +298,8 @@ public class SqlBuilder {
      * @param attr restrict the sub-select to EntityGraph objects with attribute
      * <code>attr</code>
      */
-    private void joinChild(StringBuilder sb, EntityGraph graph, EntityGraph child, String context, AttributeType attr) {
-        sb.append("\n");
+    private void joinChild(StringBuilder statement, EntityGraph graph, EntityGraph child, String context, AttributeType attr) {
+        StringBuilder sb = new StringBuilder("\n");
         sb.append(getJoinType(child));
         switch (child.getEntityGraphType()) {
             case ENTITYCLASS:
@@ -299,9 +311,13 @@ public class SqlBuilder {
                 sb.append(" ) ");
                 break;
             case SUBSELECT:
+                if (this.subSelect) {
+                    // do not nest sub-selects
+                    return;
+                }
                 sb.append(" ( ");
                 String tmpAlias = child.getAlias();
-                SqlBuilder builder = new SqlBuilder(child);
+                SqlBuilder builder = new SqlBuilder(child, true);
                 sb.append(builder.query(
                         "sub_" + tmpAlias,
                         child.getSubSelectCondition(),
@@ -321,6 +337,7 @@ public class SqlBuilder {
         if (child.hasChildren()) {
             sb.append(joinChildren(child, context, attr));
         }
+        statement.append(sb.toString());
     }
 
     /**

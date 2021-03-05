@@ -94,7 +94,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         if (!subList.isEmpty()) {
             addSubGraphACL(itemSubGraph, 
                     request.getUser(), 
-                    AttributeType.MATERIAL);
+                    AttributeType.ITEM);
             conditionList.addAll(subList);
         }
     }

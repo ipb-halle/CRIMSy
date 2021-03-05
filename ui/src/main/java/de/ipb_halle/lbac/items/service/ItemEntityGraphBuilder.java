@@ -71,11 +71,6 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
         graph.addChild(materialSubgraph);
     }
 
-    protected void addStructure() {
-        EntityGraph subGraph = addJoin(JoinType.LEFT, StructureEntity.class, "materialid", "id");
-        addJoinToChild(JoinType.LEFT, subGraph, MoleculeEntity.class, "moleculeid", "id");
-    }
-
     @Override
     public EntityGraph buildEntityGraph(boolean toplevel) {
         addOwner();
