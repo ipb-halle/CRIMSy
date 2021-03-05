@@ -162,11 +162,8 @@ public class MaterialAgentTest extends TestBase {
 
     }
 
-    @Ignore
     @Test
     public void testLoadMaterials() {
-
-
         holder.setLinkedDataIndex(0);   // select the assay target record
         List<Material> materials = materialAgent.getMaterialList();
 

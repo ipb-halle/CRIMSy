@@ -148,10 +148,10 @@ public class SearchBeanTest extends TestBase {
         Assert.assertEquals("localDoc", bean.getNetObjectPresenter().getName(netObjects.get(0)));
     }
 
-    @Ignore
+    @Ignore("Deactivated until the conditions in documentsearch are implemented")
     @Test
     public void test002_actionTriggerSearch() {
-        SearchBean bean = new SearchBean(searchService, publicUser,nodeService);
+        SearchBean bean = new SearchBean(searchService, publicUser, nodeService);
         bean.getSearchFilter().setSearchTerms("java");
         bean.setOrchestrator(orchestrator);
         bean.actionTriggerSearch();

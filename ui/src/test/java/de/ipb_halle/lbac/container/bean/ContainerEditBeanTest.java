@@ -69,7 +69,7 @@ public class ContainerEditBeanTest extends TestBase {
         Assert.assertEquals(5, bean.getGvoClasses().size());
         bean.getContainerTypesWithRankGreaterZero();
     }
-@Ignore("Ignored until new API is implemented for requests")
+
     @Test
     public void test002_createNewContainer() {
         bean.setCurrentAccount(new LoginEvent(publicUser));
@@ -125,7 +125,7 @@ public class ContainerEditBeanTest extends TestBase {
         Assert.assertTrue(bean.isEditable());
         Assert.assertFalse(bean.isSecurityLevelVisible());
     }
-@Ignore("Ignored until new API is implemented for requests")
+
     @Test
     public void test002_editContainer() {
         bean.setCurrentAccount(new LoginEvent(publicUser));

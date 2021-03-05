@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
@@ -70,10 +71,6 @@ public class SearchFilter {
         } else {
             return createRequestsForSimpleSearch();
         }
-    }
-    
-    public Map<SearchCategory,Set<String>>  xxx(){
-        return null;
     }
 
     private List<SearchRequest> createRequestsForSimpleSearch() {
@@ -153,19 +150,18 @@ public class SearchFilter {
     }
 
     private SearchRequest createItemRequest() {
-/*
-        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder();
+
+        ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(user, 0, maxresults);
         if (searchTerms != null && !searchTerms.isEmpty()) {
-            itemBuilder.addLabel(searchTerms);
+            itemBuilder.setLabel(searchTerms);
         }
         Molecule mol = new Molecule(structureString, maxresults);
         if (!mol.isEmptyMolecule()) {
-            itemBuilder.addSubMolecule(structureString);
+            itemBuilder.setStructure(structureString);
         }
 
-        return itemBuilder.buildSearchRequest();
-*/
-        return null;
+        return itemBuilder.build();
+
     }
 
     private SearchRequest createExperimentRequest() {

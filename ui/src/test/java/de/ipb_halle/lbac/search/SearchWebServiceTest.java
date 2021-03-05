@@ -35,6 +35,7 @@ import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.RemoteItem;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
@@ -151,27 +152,27 @@ public class SearchWebServiceTest extends TestBase {
         Assert.assertEquals(String.format("401:Could note authentificate request from node %s", TEST_NODE_ID), searchResponse.getStatusCode());
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test004_searchWithItemRequest() throws Exception {
-//        project = creationTools.createAndSaveProject("SearchWebServiceTest-Test");
-//        int materilid = materialCreator.createStructure(
-//                publicUserId,
-//                publicAclId,
-//                project.getId(),
-//                "SearchWebServiceTest-Material");
-//        int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item",project.getId());
-//
-//        SearchWebRequest wr = createEmptyRequest();
-//        ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(null /* ItemEntityGraphBuilder */);
-//
-//        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
-//        Response response = webService.search(wr);
-//        SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
-//
-//        List<Searchable> items = searchResponse.getAllFoundObjects();
-//        Assert.assertEquals(1, items.size());
-//        Assert.assertEquals(itemid, ((RemoteItem) items.get(0)).getId(), 0);
+        project = creationTools.createAndSaveProject("SearchWebServiceTest-Test");
+        int materilid = materialCreator.createStructure(
+                publicUserId,
+                publicAclId,
+                project.getId(),
+                "SearchWebServiceTest-Material");
+        int itemid = itemCreator.createItem(publicUserId, publicAclId, materilid, "SearchWebServiceTest-Item",project.getId());
+
+        SearchWebRequest wr = createEmptyRequest();
+        ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(
+                memberService.loadUserById(publicUserId),0,25);
+
+        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.build())));
+        Response response = webService.search(wr);
+        SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
+
+        List<Searchable> items = searchResponse.getAllFoundObjects();
+        Assert.assertEquals(1, items.size());
+        Assert.assertEquals(itemid, ((RemoteItem) items.get(0)).getId(), 0);
     }
 
     @Test

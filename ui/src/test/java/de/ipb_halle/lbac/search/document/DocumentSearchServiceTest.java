@@ -125,7 +125,8 @@ public class DocumentSearchServiceTest extends TestBase {
         List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
         Assert.assertEquals(0, netObjects.size());
     }
-@Ignore
+
+    @Ignore("Until complete implementation of DocumentConditionBuilder")
     @Test
     public void test002_loadDocuments_withOneWordRoot() throws FileNotFoundException, InterruptedException {
 
@@ -150,7 +151,8 @@ public class DocumentSearchServiceTest extends TestBase {
                 result.getDocumentStatistic().getAverageWordLength(),
                 documents);
     }
-@Ignore
+
+    @Ignore
     @Test
     public void test003_loadDocuments_withTwoWordRoot() throws FileNotFoundException, InterruptedException {
 

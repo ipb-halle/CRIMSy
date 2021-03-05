@@ -86,7 +86,7 @@ public class LinkCreationProcessTest extends TestBase {
         super.setUp();
 
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        Project project =new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL())
+        Project project = new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL())
                 .setProjectName("LinkCreationProcessTest_Project")
                 .setType(ProjectType.BIOCHEMICAL_PROJECT)
                 .createAndSaveProject(publicUser);
@@ -99,12 +99,12 @@ public class LinkCreationProcessTest extends TestBase {
         itemId = itemCreator.createItem(
                 publicUser.getId(),
                 GlobalAdmissionContext.getPublicReadACL().getId(),
-                materialId, 
+                materialId,
                 "LinkCreationProcessTest_I1",
                 project.getId());
 
     }
-@Ignore("Ignored until new API is implemented for requests")
+
     @Test
     public void test001_createMaterialLink() {
         prepareLinkCreation();
@@ -119,7 +119,7 @@ public class LinkCreationProcessTest extends TestBase {
 
         cleanUp();
     }
-@Ignore("Ignored until new API is implemented for requests")
+
     @Test
     public void test002_createItemLink() {
         prepareLinkCreation();

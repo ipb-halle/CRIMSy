@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.document;
 
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.file.TermFrequency;
@@ -182,12 +183,12 @@ public class DocumentSearchService {
     public SearchResult loadDocuments(SearchRequest request) {
         List<Searchable> foundDocs = new ArrayList<>();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
-
         if (!hasWordRoots(request)) {
             return result;
         }
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
-        String sql = sqlBuilder.query(request.getCondition());
+        DocumentSearchConditionBuilder conBuilder=new DocumentSearchConditionBuilder(createEntityGraph(),"documents");
+        String sql = sqlBuilder.query(conBuilder.convertRequestToCondition(request, ACPermission.permREAD));
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());

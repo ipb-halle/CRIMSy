@@ -111,10 +111,9 @@ public class SearchWebClientTest extends TestBase {
         Assert.assertEquals("remoteItemUnit", item.getUnit());
 
         RemoteExperiment exp = (RemoteExperiment) result.getAllFoundObjects().get(2).getSearchable();
-        int i = 0;
     }
 
-    @Ignore
+ 
     @Test
     @RunAsClient
     public void test002_serialisation() throws Exception {
@@ -141,7 +140,6 @@ public class SearchWebClientTest extends TestBase {
         
         SearchWebRequest unserialisedRequest = (SearchWebRequest) jaxbUnmarshaller.unmarshal(new FileInputStream(f));
         unserialisedRequest.switchToLocalMode();
-        int i=0;
     }
 
     @Deployment

@@ -37,6 +37,7 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
     private String projectName;
     private String location;
     private String description;
+    private String structure;
 
     public ItemSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -51,6 +52,7 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         addProjectName();
         addLocation();
         addDescription();
+        addStructure();
     }
 
     public void setSearchMaskValues(SearchMaskValues values) {
@@ -86,6 +88,10 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
         this.description = description;
     }
 
+    public void setStructure(String structure) {
+        this.structure = structure;
+    }
+
     private void addMaterialName() {
         if (materialName != null && !materialName.isEmpty()) {
             request.addSearchCategory(SearchCategory.NAME, materialName);
@@ -119,6 +125,12 @@ public class ItemSearchRequestBuilder extends SearchRequestBuilder {
     private void addDescription() {
         if (description != null && !description.isEmpty()) {
             request.addSearchCategory(SearchCategory.TEXT, description);
+        }
+    }
+
+    private void addStructure() {
+        if (structure != null && !structure.isEmpty()) {
+            request.addSearchCategory(SearchCategory.STRUCTURE, structure);
         }
     }
 

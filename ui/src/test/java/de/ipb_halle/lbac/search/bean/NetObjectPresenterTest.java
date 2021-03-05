@@ -121,8 +121,8 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("-", presenter.getLink(netObjects.get(11)));
     }
 
-    @Test
     @Ignore
+    @Test
     public void test004_getToolTip() {
         Assert.assertEquals("local", presenter.getToolTip(netObjects.get(0)));
         Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(1)));
