@@ -48,54 +48,7 @@ public abstract class SearchConditionBuilder {
         this.rootGraphName = rootGraphName;
     }
 
-    @Deprecated
-    public SearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
-        this.user = u;
-        this.firstResultIndex = firstResultIndex;
-        this.maxResults = maxResults;
-    }
-
-    @Deprecated
-    protected void addCondition(Operator op, Object value, AttributeType... types) {
-        leafConditions.add(new Condition(
-                new Attribute(types),
-                op,
-                new de.ipb_halle.lbac.search.lang.Value(value)));
-    }
-
-    @Deprecated
-    protected void addConditionWithCast(Operator op, Object value, String castExpression, AttributeType... types) {
-        de.ipb_halle.lbac.search.lang.Value valueWithCast = new de.ipb_halle.lbac.search.lang.Value(value);
-        valueWithCast.setCastExpression(castExpression);
-        leafConditions.add(new Condition(
-                new Attribute(types),
-                op,
-                valueWithCast));
-    }
-
-    @Deprecated
-    private Condition buildConditions() {
-        switch (this.leafConditions.size()) {
-            case 0:
-                return null;
-            case 1:
-                return this.leafConditions.get(0);
-        }
-        return new Condition(Operator.AND, leafConditions.toArray(new Condition[]{}));
-    }
-
-    @Deprecated
-    public SearchRequest buildSearchRequest() {
-        SearchRequestImpl searchRequest = new SearchRequestImpl(
-                user,
-                buildConditions(),
-                firstResultIndex,
-                maxResults
-        );
-        searchRequest.setSearchTarget(target);
-
-        return searchRequest;
-    }
+   
 
     /**
      * Create an access control condition and combine it with other conditions.

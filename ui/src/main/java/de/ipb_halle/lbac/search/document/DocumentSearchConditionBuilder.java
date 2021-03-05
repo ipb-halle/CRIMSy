@@ -18,14 +18,10 @@
 package de.ipb_halle.lbac.search.document;
 
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchTarget;
-import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
-import de.ipb_halle.lbac.search.lang.Operator;
-import java.util.Set;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 
 /**
  *
@@ -33,24 +29,12 @@ import java.util.Set;
  */
 public class DocumentSearchConditionBuilder extends SearchConditionBuilder {
 
-    public DocumentSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
-        super(u, firstResultIndex, maxResults);
-        this.target = SearchTarget.DOCUMENT;
+    public DocumentSearchConditionBuilder(EntityGraph entityGraph, String rootGraphName) {
+        super(entityGraph,rootGraphName);
+       
     }
 
-    public DocumentSearchConditionBuilder addCollectionID(Integer id) {
-        addCondition(Operator.EQUAL,
-                id,
-                AttributeType.COLLECTION);
-        return this;
-    }
-
-    public DocumentSearchConditionBuilder addWordRoots(Set<String> wordRoots) {
-        addCondition(Operator.IN,
-                wordRoots,
-                AttributeType.WORDROOT);
-        return this;
-    }
+ 
 
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission ...acPermission) {

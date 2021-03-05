@@ -17,17 +17,13 @@
  */
 package de.ipb_halle.lbac.exp.search;
 
-import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
 import de.ipb_halle.lbac.exp.ExperimentEntity;
 import de.ipb_halle.lbac.exp.assay.AssayEntity;
 import de.ipb_halle.lbac.exp.LinkedDataEntity;
 import de.ipb_halle.lbac.exp.text.TextEntity;
-import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
-import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;

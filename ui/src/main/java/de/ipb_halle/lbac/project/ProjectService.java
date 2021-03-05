@@ -156,13 +156,15 @@ public class ProjectService implements Serializable {
     }
 
     public SearchResult loadProjects(SearchRequest request) {
-        ProjectSearchConditionBuilder conbuilder = new ProjectSearchConditionBuilder();
-        Condition con = conbuilder.convertRequestToCondition(
-                request, ACPermission.permREAD);
+
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         ProjectEntityGraphBuilder graphBuilder = new ProjectEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
+        ProjectSearchConditionBuilder conbuilder = new ProjectSearchConditionBuilder(graph, "projects");
+        Condition con = conbuilder.convertRequestToCondition(
+                request, ACPermission.permREAD);
         SqlBuilder builder = new SqlBuilder(graph);
+
         String sql = builder.query(con, createOrderList());
         Query query = this.em.createNativeQuery(sql, ProjectEntity.class);
         for (Value param : builder.getValueList()) {

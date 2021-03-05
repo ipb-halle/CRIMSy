@@ -49,11 +49,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         super(entityGraph, rootName);
     }
 
-    @Deprecated
-    public MaterialSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
-        super(u, firstResultIndex, maxResults);
-        target = SearchTarget.MATERIAL;
-    }
+  
 
     private void addDeactivatedCondition(List<Condition> conditionList, Set<String> values) {
         Boolean deactivated = Boolean.FALSE;

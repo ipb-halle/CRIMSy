@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.exp;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
+import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.util.ArrayList;
@@ -44,9 +45,9 @@ public class ExpProjectController {
         this.projectService = projectService;
         this.currentUser = currentUser;
         if (currentUser != null) {
-            ProjectSearchConditionBuilder builder = new ProjectSearchConditionBuilder(currentUser, 0, Integer.MAX_VALUE);
-            builder.addDeactivated(false);
-            SearchResult result = projectService.loadProjects(builder.buildSearchRequest());
+            ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(currentUser, 0, Integer.MAX_VALUE);
+            builder.setDeactivated(false);
+            SearchResult result = projectService.loadProjects(builder.build());
             choosableProjects = result.getAllFoundObjects(Project.class, result.getNode());
             this.nameMap = new HashMap<>();
             for (Project p : choosableProjects) {

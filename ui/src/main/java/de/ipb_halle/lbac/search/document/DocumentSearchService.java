@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.FileObject;
 import de.ipb_halle.lbac.file.FileObjectEntity;
 import de.ipb_halle.lbac.file.FileSearchRequest;
+import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -182,8 +183,7 @@ public class DocumentSearchService {
         List<Searchable> foundDocs = new ArrayList<>();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
 
-        if (request.getCondition() == null
-                ||  !hasWordRoots(request)) {
+        if (!hasWordRoots(request)) {
             return result;
         }
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
@@ -208,7 +208,7 @@ public class DocumentSearchService {
 
         TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
-                getWordRoots(request.getCondition()));
+                getWordRoots(request));
         calculateWordCountOfDocs(foundDocs, totalTerms);
         result.getDocumentStatistic().setTotalDocsInNode(loadTotalCountOfFiles());
         if (result.getDocumentStatistic().getTotalDocsInNode() > 0) {
@@ -218,35 +218,23 @@ public class DocumentSearchService {
     }
 
     private boolean hasWordRoots(SearchRequest request) {
-        List<Object> words = fetcher.getValuesOfType(request.getCondition(), AttributeType.WORDROOT);
-        if (words.isEmpty()) {
-            return false;
-        }
-        HashSet<String> castedWords = ((HashSet<String>) words.get(0));
-        boolean hasWord = false;
-        for (String s : castedWords) {
-            if (!s.trim().isEmpty()) {
-                hasWord = true;
+        boolean hasRoot = false;
+        for (SearchCategory c : request.getSearchValues().keySet()) {
+            if (c == SearchCategory.WORDROOT) {
+                hasRoot = true;
             }
         }
-        return hasWord;
+        return hasRoot;
+
     }
 
-    private Set<String> getWordRoots(Condition con) {
-        Set<String> wordRoots = new HashSet<>();
-        if (con != null) {
-            if (con.getAttribute() != null && con.getAttribute().getTypes().contains(AttributeType.WORDROOT)) {
-                wordRoots.addAll((Set<String>) con.getValue().getValue());
-            }
-            if (con.getConditions() != null) {
-                for (Condition innerCon : con.getConditions()) {
-                    if (innerCon.getAttribute().getTypes().contains(AttributeType.WORDROOT)) {
-                        wordRoots.addAll((Set<String>) innerCon.getValue().getValue());
-                    }
-                }
+    private Set<String> getWordRoots(SearchRequest request) {
+        for (SearchCategory c : request.getSearchValues().keySet()) {
+            if (c == SearchCategory.WORDROOT) {
+                return request.getSearchValues().get(c);
             }
         }
-        return wordRoots;
+        return new HashSet<>();
     }
 
     private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOcurrence totalTerms) {

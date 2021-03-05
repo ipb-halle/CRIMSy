@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
-import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;

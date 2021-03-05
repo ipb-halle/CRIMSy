@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -173,20 +174,18 @@ public class SearchWebServiceTest extends TestBase {
 //        Assert.assertEquals(itemid, ((RemoteItem) items.get(0)).getId(), 0);
     }
 
-    @Ignore
     @Test
     public void test004_searchWithMaterialRequest() throws Exception {
         project = creationTools.createAndSaveProject("SearchWebServiceTest-Test004");
-        int materilid = materialCreator.createStructure(
+        materialCreator.createStructure(
                 publicUserId,
                 publicAclId,
                 project.getId(),
                 "SearchWebServiceTest-Structure");
 
         SearchWebRequest wr = createEmptyRequest();
-        MaterialSearchConditionBuilder builder = new MaterialSearchConditionBuilder(context.getPublicAccount(), 0, 25);
-        // builder.addTypes(MaterialType.STRUCTURE);
-        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.buildSearchRequest())));
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(context.getPublicAccount(), 0, 25);
+        wr.addRequest(Arrays.asList(((SearchRequestImpl) builder.build())));
         Response response = webService.search(wr);
         SearchWebResponse searchResponse = (SearchWebResponse) response.getEntity();
         Assert.assertEquals(1, searchResponse.getAllFoundObjects().size());

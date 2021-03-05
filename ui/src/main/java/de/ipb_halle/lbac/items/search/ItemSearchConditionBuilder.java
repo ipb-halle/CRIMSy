@@ -18,24 +18,20 @@
 package de.ipb_halle.lbac.items.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -47,45 +43,6 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     public ItemSearchConditionBuilder(EntityGraph entityGraph, String rootName) {
         super(entityGraph, rootName);
-    }
-
-    @Deprecated
-    public ItemSearchConditionBuilder addLabel(String label) {
-        return this;
-    }
-
-    @Deprecated
-    public ItemSearchConditionBuilder addIndexName(String name) {
-        return this;
-    }
-
-    @Deprecated
-    public ItemSearchConditionBuilder addLocation(String location) {
-        addCondition(Operator.ILIKE,
-                "%" + location + "%",
-                AttributeType.CONTAINER,
-                AttributeType.LABEL);
-        return this;
-    }
-
-    @Deprecated
-    public ItemSearchConditionBuilder addProject(String projectName) {
-        return this;
-    }
-
-    @Deprecated
-    public ItemSearchConditionBuilder addUserName(String userName) {
-        return this;
-    }
-
-    @Deprecated
-    public ItemSearchConditionBuilder addDescription(String description) {
-        return this;
-    }
-
-    @Deprecated
-    public ItemSearchConditionBuilder addSubMolecule(String molecule) {
-        return this;
     }
 
     private void addDeactivatedCondition(List<Condition> conditionList, Set<String> values) {
@@ -185,6 +142,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         conditionList.add(getTextCondition(values));
     }
 
+    @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... acPermission) {
 
         return addACL(getItemCondition(request, true),
@@ -223,7 +181,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                     break;
             }
         }
-        addMaterialCondition(conditionList, request);        
+        addMaterialCondition(conditionList, request);
         return conditionList;
     }
 

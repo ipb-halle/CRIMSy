@@ -70,14 +70,6 @@ public abstract class EntityGraphBuilder {
         }
         mainGraph.addChildInherit(aclSubGraph);
     }
-    
-    @Deprecated
-    public void addACListContraint(
-            EntityGraph mainGraph,
-            EntityGraph aclSubGraph,
-           String linkField) {
-        addACListConstraint(mainGraph, aclSubGraph, linkField, false);
-    }
 
     public abstract EntityGraph buildEntityGraph(boolean toplevel);
 

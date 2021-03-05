@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -89,24 +90,23 @@ public class MaterialAgent implements Serializable {
     }
 
     private SearchRequest createSearchRequest() {
-        MaterialSearchConditionBuilder builder = new MaterialSearchConditionBuilder(
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(
                 this.userBean.getCurrentAccount(),
                 0,
                 MAX_MATERIALS_TO_SEARCH);
-        /*
-        builder.addDeactivated(false);
+        //TO DO: set deactivated
+        // builder.s(false);
         if (this.materialSearch != null && !this.materialSearch.trim().isEmpty()) {
-            builder.addIndexName(this.materialSearch);
+            builder.setMaterialName(this.materialSearch);
         }
 
         if (isMoleculeSearch()) {
-            builder.addSubMolecule(this.moleculeSearch);
+            builder.setStructure(this.moleculeSearch);
         }
-        int size = this.materialHolder.getMaterialTypes().size();
-        MaterialType[] types = new MaterialType[size];
-        builder.addTypes(this.materialHolder.getMaterialTypes().toArray(types));
-        */
-        return builder.buildSearchRequest();
+        for (MaterialType t : this.materialHolder.getMaterialTypes()) {
+            builder.addMaterialType(t);
+        }
+        return builder.build();
     }
 
     private boolean shouldSearchBeDone() {

@@ -60,6 +60,7 @@ import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchConditionBuilder;
+import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -324,6 +325,7 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
 
     }
+
     @Ignore
     @Test
     public void test008_searchExperiments() {
@@ -356,26 +358,26 @@ public class SearchServiceTest extends TestBase {
     @Ignore
     @Test
     public void test010_searchWithAugmentedDocumentRequest() {
-        uploadDocuments();
-        materialCreator.createStructure(
-                publicUser.getId(),
-                GlobalAdmissionContext.getPublicReadACL().getId(),
-                project1.getId(),
-                "H", "wasserstoff");
-
-        MaterialSearchConditionBuilder matRequestbuilder = new MaterialSearchConditionBuilder(publicUser, 0, 25);
-        // ToDo: xxxx DOES NOT WORK matRequestbuilder.addIndexName("H");
-        DocumentSearchConditionBuilder docRequestBuilder = new DocumentSearchConditionBuilder(publicUser, 0, 25);
-        Set<String> words = new HashSet<>();
-        words.add("x");
-        docRequestBuilder.addWordRoots(words);
-        SearchResult result = searchService.search(
-                Arrays.asList(docRequestBuilder.buildSearchRequest(),
-                        matRequestbuilder.buildSearchRequest()), localNode);
-
-        Assert.assertEquals(2, result.getAllFoundObjects().size());
-
-        deleteDocuments();
+//        uploadDocuments();
+//        materialCreator.createStructure(
+//                publicUser.getId(),
+//                GlobalAdmissionContext.getPublicReadACL().getId(),
+//                project1.getId(),
+//                "H", "wasserstoff");
+//
+//        MaterialSearchConditionBuilder matRequestbuilder = new MaterialSearchConditionBuilder(publicUser, 0, 25);
+//        // ToDo: xxxx DOES NOT WORK matRequestbuilder.addIndexName("H");
+//        DocumentSearchConditionBuilder docRequestBuilder = new DocumentSearchConditionBuilder(publicUser, 0, 25);
+//        Set<String> words = new HashSet<>();
+//        words.add("x");
+//        docRequestBuilder.addWordRoots(words);
+//        SearchResult result = searchService.search(
+//                Arrays.asList(docRequestBuilder.buildSearchRequest(),
+//                        matRequestbuilder.buildSearchRequest()), localNode);
+//
+//        Assert.assertEquals(2, result.getAllFoundObjects().size());
+//
+//        deleteDocuments();
     }
 
     private void uploadDocuments() {
@@ -397,11 +399,11 @@ public class SearchServiceTest extends TestBase {
         } catch (FileNotFoundException | InterruptedException ex) {
             throw new RuntimeException("Could not upload file");
         }
-        DocumentSearchConditionBuilder requestBuilder = new DocumentSearchConditionBuilder(publicUser, 0, 25);
+        DocumentSearchRequestBuilder requestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
         Set<String> wordRoots = new HashSet<>();
         wordRoots.add("wasserstoff");
-        requestBuilder.addWordRoots(wordRoots);
-        SearchResult result = searchService.search(Arrays.asList(requestBuilder.buildSearchRequest()), localNode);
+        requestBuilder.setWordRoots(wordRoots);
+        SearchResult result = searchService.search(Arrays.asList(requestBuilder.build()), localNode);
         Assert.assertEquals(1, result.getAllFoundObjects().size());
     }
 

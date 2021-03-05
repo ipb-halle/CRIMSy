@@ -31,5 +31,7 @@ public enum SearchCategory {
     TYPE,       // should be MATERIAL_TYPE?
     LOCATION,
     DEACTIVATED,
-    TEXT
+    TEXT,
+    WORDROOT,
+    COLLECTION
 }

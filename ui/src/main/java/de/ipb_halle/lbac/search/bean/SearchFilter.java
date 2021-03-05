@@ -18,17 +18,17 @@
 package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
-import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.document.DocumentSearchConditionBuilder;
+import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,7 +116,7 @@ public class SearchFilter {
     }
 
     private SearchRequest createMaterialSearchRequest() {
-        MaterialSearchConditionBuilder materialRequestBuilder = new MaterialSearchConditionBuilder(user, 0, maxresults);
+        MaterialSearchRequestBuilder materialRequestBuilder = new MaterialSearchRequestBuilder(user, 0, maxresults);
         MaterialSearchMaskValues searchValue = new MaterialSearchMaskValues();
         searchValue.materialName = searchTerms;
         if (advancedSearchActive) {
@@ -130,8 +130,7 @@ public class SearchFilter {
                 searchValue.molecule = structureString;
             }
         }
-//        materialRequestBuilder.setConditionsBySearchValues(searchValue);
-        return materialRequestBuilder.buildSearchRequest();
+        return materialRequestBuilder.build();
     }
 
     public void init() {
@@ -148,9 +147,9 @@ public class SearchFilter {
     private SearchRequest createDocumentRequest() {
         SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
         Set<String> normalizedTerms = searchQueryStemmer.stemmQuery(searchTerms.toLowerCase()).getAllStemmedWords();
-        DocumentSearchConditionBuilder docBuilder = new DocumentSearchConditionBuilder(user, 0, maxresults);
-        docBuilder.addWordRoots(normalizedTerms);
-        return docBuilder.buildSearchRequest();
+        DocumentSearchRequestBuilder docBuilder = new DocumentSearchRequestBuilder(user, 0, maxresults);
+        docBuilder.setWordRoots(normalizedTerms);
+        return docBuilder.build();
     }
 
     private SearchRequest createItemRequest() {

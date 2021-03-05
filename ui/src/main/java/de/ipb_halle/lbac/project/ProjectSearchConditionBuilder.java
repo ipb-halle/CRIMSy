@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,29 +38,10 @@ import java.util.Set;
  */
 public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ProjectSearchConditionBuilder() {
-        super(null, 0, 0);
+    public ProjectSearchConditionBuilder(EntityGraph graph,String wordRoot) {
+        super(graph ,wordRoot);
     }
-
-    public ProjectSearchConditionBuilder(User u, int firstResultIndex, int maxResults) {
-        super(u, firstResultIndex, maxResults);
-        target = SearchTarget.PROJECT;
-    }
-
-    public ProjectSearchConditionBuilder addDeactivated(boolean deactivated) {
-        addCondition(Operator.EQUAL,
-                deactivated,
-                AttributeType.DEACTIVATED);
-        return this;
-    }
-
-    public ProjectSearchConditionBuilder addExactName(String name) {
-        addCondition(Operator.EQUAL,
-                name,
-                AttributeType.PROJECT_NAME);
-        return this;
-    }
-
+    
     public List<Condition> getProjectCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
