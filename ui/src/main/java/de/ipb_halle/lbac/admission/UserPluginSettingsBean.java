@@ -21,15 +21,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.molecularfaces.MolPluginCore.PluginType;
 
@@ -60,7 +59,7 @@ public class UserPluginSettingsBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-    private List<String> availableMolPluginTypes = new ArrayList<>();
+    private List<String> availableMolPluginTypes;
 
     private String defaultMolPluginType = "";
 
@@ -84,29 +83,46 @@ public class UserPluginSettingsBean implements Serializable {
      */
     @PostConstruct
     public void init() {
-        String webXmlString = FacesContext.getCurrentInstance()
-                .getExternalContext()
-                .getInitParameter(WEBXML_AVAILABLE_MOLPLUGINTYPES);
+        List<String> supported = getSupportedMolPluginTypes();
+        List<String> available = getAvailableMolPluginTypesFromWebXml();
 
+        // intersection of both lists
+        available.retainAll(supported);
+
+        this.availableMolPluginTypes = Collections.unmodifiableList(available);
+
+        if (availableMolPluginTypes.size() > 0) {
+            defaultMolPluginType = availableMolPluginTypes.get(0);
+        }
+    }
+
+    /**
+     * Returns a set of chemical structure plugins supported by MolecularFaces.
+     */
+    private List<String> getSupportedMolPluginTypes() {
+        List<String> supported = new ArrayList<>();
+        for (PluginType pt : PluginType.values()) {
+            supported.add(pt.toString());
+        }
+
+        return supported;
+    }
+
+    /**
+     * Returns a set of chemical structure plugins made available in web.xml.
+     */
+    private List<String> getAvailableMolPluginTypesFromWebXml() {
+        List<String> available = new ArrayList<>();
+
+        String webXmlString = WebXml
+                .getContextParam(WEBXML_AVAILABLE_MOLPLUGINTYPES);
         if ((webXmlString != null) && !webXmlString.isEmpty()) {
-            List<String> supported = new ArrayList<>();
-            for (PluginType pt : PluginType.values()) {
-                supported.add(pt.toString());
-            }
-
-            List<String> available = new ArrayList<>();
             for (String pluginType : webXmlString.split(",")) {
-                if (supported.contains(pluginType)) {
-                    available.add(pluginType);
-                }
-            }
-
-            availableMolPluginTypes = Collections.unmodifiableList(available);
-
-            if (available.size() > 0) {
-                defaultMolPluginType = available.get(0);
+                available.add(pluginType);
             }
         }
+
+        return available;
     }
 
     /**
@@ -131,16 +147,18 @@ public class UserPluginSettingsBean implements Serializable {
      * Sets the preferred chemical structure plugin type.
      * 
      * @param pluginType chemical structure plugin type
+     * @return flag indicating that the plugin type was set as preference
      */
-    public void setPreferredMolPluginType(String pluginType) {
+    public boolean setPreferredMolPluginType(String pluginType) {
         if (availableMolPluginTypes.contains(pluginType)) {
             preferenceService.setPreference(userBean.getCurrentAccount(),
                     MOLPLUGINTYPE_PREFERENCE_KEY, pluginType);
+            return true;
         } else {
-            /*
-             * TODO: Can this ever happen??? Should we return success/fail as
-             * boolean to be able to notify the user?
-             */
+            logger.warn("Could not set the plugin type '" + pluginType
+                    + "' as preferred plugin type. The available plugin types are "
+                    + availableMolPluginTypes);
+            return false;
         }
     }
 

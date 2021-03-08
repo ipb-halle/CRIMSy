@@ -109,10 +109,14 @@ public class PluginSettingsDialogControllerBean implements Serializable {
         if (!currentUser.isPublicAccount()) {
             if (currentUser
                     .getSubSystemType() == AdmissionSubSystemType.LOCAL) {
-                userBean.getPluginSettings()
+                boolean result = userBean.getPluginSettings()
                         .setPreferredMolPluginType(molPluginType);
 
-                messagePresenter.info("admission_plugins_updated");
+                if (result) {
+                    messagePresenter.info("admission_plugins_updated");
+                } else {
+                    messagePresenter.error("admission_plugins_not_updated");
+                }
             }
         }
     }
