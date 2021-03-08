@@ -28,7 +28,8 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
  * This JSF backing bean controls the form of the plugin user settings.
@@ -39,15 +40,15 @@ import de.ipb_halle.lbac.i18n.UIMessage;
  */
 @ViewScoped
 @Named
-public class PluginSettingsDialogControlerBean implements Serializable {
+public class PluginSettingsDialogControllerBean implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     @Inject
     private UserBean userBean;
 
     private Logger logger;
+
+    private MessagePresenter messagePresenter;
 
     private String molPluginType;
 
@@ -56,19 +57,25 @@ public class PluginSettingsDialogControlerBean implements Serializable {
     /**
      * default constructor
      */
-    public PluginSettingsDialogControlerBean() {
+    public PluginSettingsDialogControllerBean() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
     /**
-     * Initializes the bean state by settings the plugin types the their
-     * preferred value and the preview chemical structure to benzene.
+     * Initializes the bean state:
+     * <ul>
+     * <li>initialize the message presenter for i18n</li>
+     * <li>set the plugin types to their preferred value</li>
+     * <li>set the preview chemical structure to benzene</li>
+     * </ul>
      */
     @PostConstruct
     public void init() {
-        molPluginType = userBean.getPluginSettings()
+        this.messagePresenter = JsfMessagePresenter.getInstance();
+
+        this.molPluginType = userBean.getPluginSettings()
                 .getPreferredMolPluginType();
-        previewStructure = benzene;
+        this.previewStructure = benzene;
     }
 
     public String getMolPluginType() {
@@ -79,16 +86,17 @@ public class PluginSettingsDialogControlerBean implements Serializable {
         this.molPluginType = molPluginType;
     }
 
+    /**
+     * Returns the list of available chemical structure plugin types.
+     * 
+     * @return an unmodifiable list of chemical structure plugin types.
+     */
     public List<String> getAvailableMolPluginTypes() {
         return userBean.getPluginSettings().getAllMolPluginTypes();
     }
 
     public String getPreviewStructure() {
         return previewStructure;
-    }
-
-    public void setPreviewStructure(String previewStructure) {
-        // do nothing
     }
 
     /**
@@ -104,7 +112,7 @@ public class PluginSettingsDialogControlerBean implements Serializable {
                 userBean.getPluginSettings()
                         .setPreferredMolPluginType(molPluginType);
 
-                UIMessage.info(MESSAGE_BUNDLE, "admission_plugins_updated");
+                messagePresenter.info("admission_plugins_updated");
             }
         }
     }
@@ -114,6 +122,20 @@ public class PluginSettingsDialogControlerBean implements Serializable {
      */
     public void actionLoadBenzene() {
         previewStructure = benzene;
+    }
+
+    /**
+     * Loads a gramicidin S molfile v2000 as preview.
+     */
+    public void actionLoadGramicidinS() {
+        previewStructure = gramicidinS;
+    }
+
+    /**
+     * Loads a chlorophyll a molfile v2000 as preview.
+     */
+    public void actionLoadChlorophyllA() {
+        previewStructure = chlorophyllA;
     }
 
     // Molfile from https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:16716
@@ -129,13 +151,6 @@ public class PluginSettingsDialogControlerBean implements Serializable {
             + "  4  3  2  0  0  0  0\n" + "  5  2  1  0  0  0  0\n"
             + "  6  4  1  0  0  0  0\n" + "  5  6  2  0  0  0  0\n" + "M  END\n"
             + "";
-
-    /**
-     * Loads a chlorophyll a molfile v2000 as preview.
-     */
-    public void actionLoadChlorophyllA() {
-        previewStructure = chlorophyllA;
-    }
 
     // Molfile from http://www.chemspider.com/Chemical-Structure.16736115.html
     private String chlorophyllA = "\n" + "\n" + "\n"
@@ -229,13 +244,6 @@ public class PluginSettingsDialogControlerBean implements Serializable {
             + " 55 58  1  0\n" + " 58 59  1  0\n" + " 58 64  1  1\n"
             + " 59 60  1  0\n" + " 60 61  1  0\n" + " 61 62  1  0\n"
             + " 62 63  1  0\n" + " 62 65  1  0\n" + "M  END\n" + "";
-
-    /**
-     * Loads a gramicidin S molfile v2000 as preview.
-     */
-    public void actionLoadGramicidinS() {
-        previewStructure = gramicidinS;
-    }
 
     // Molfile from https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:5530
     private String gramicidinS = " \n" + "  Marvin  04170713232D          \n"

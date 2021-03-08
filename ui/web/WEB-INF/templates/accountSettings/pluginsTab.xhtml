@@ -34,10 +34,11 @@
                 <b:panel title="#{msgs.admission_plugins_molPlugin_title}" collapsible="false" look="info">
                     <b:panelGrid colSpans="2,5,5">
                         <h:panelGroup>
-                            <b:radiobutton value="#{pluginSettingsDialogControlerBean.molPluginType}"
+                            <b:radiobutton id="molPluginSelection"
+                                           value="#{pluginSettingsDialogControllerBean.molPluginType}"
                                            ajax="true"
                                            update="editorMolPluginPreview viewerMolPluginPreview">
-                                <f:selectItems value="#{pluginSettingsDialogControlerBean.availableMolPluginTypes}" />
+                                <f:selectItems value="#{pluginSettingsDialogControllerBean.availableMolPluginTypes}" />
                             </b:radiobutton>
 
                             <br />
@@ -49,25 +50,25 @@
                                              look="info"
                                              ajax="true"
                                              process="@this"
-                                             action="#{pluginSettingsDialogControlerBean.actionLoadBenzene()}"
+                                             action="#{pluginSettingsDialogControllerBean.actionLoadBenzene()}"
                                              update="editorMolPluginPreview viewerMolPluginPreview" />
                             <br />
 
                             <br />
-                            <b:commandButton value="Chlorophyll a" 
+                            <b:commandButton value="#{msgs.admission_plugins_molPlugin_chlorophyll_a}" 
                                              look="info"
                                              ajax="true"
                                              process="@this"
-                                             action="#{pluginSettingsDialogControlerBean.actionLoadChlorophyllA()}"
+                                             action="#{pluginSettingsDialogControllerBean.actionLoadChlorophyllA()}"
                                              update="editorMolPluginPreview viewerMolPluginPreview" />
                             <br />
 
                             <br />
-                            <b:commandButton value="Gramicidin S"
+                            <b:commandButton value="#{msgs.admission_plugins_molPlugin_gramicidin_S}"
                                              look="info"
                                              ajax="true"
                                              process="@this"
-                                             action="#{pluginSettingsDialogControlerBean.actionLoadGramicidinS()}"
+                                             action="#{pluginSettingsDialogControllerBean.actionLoadGramicidinS()}"
                                              update="editorMolPluginPreview viewerMolPluginPreview" />
                         </h:panelGroup>
 
@@ -77,8 +78,8 @@
                             <br />
 
                             <mol:molecule id="editorMolPluginPreview"
-                                          value="#{pluginSettingsDialogControlerBean.previewStructure}"
-                                          pluginType="#{pluginSettingsDialogControlerBean.molPluginType}"
+                                          value="#{pluginSettingsDialogControllerBean.getPreviewStructure()}"
+                                          pluginType="#{pluginSettingsDialogControllerBean.molPluginType}"
                                           border="true" />
                         </h:panelGroup>
 
@@ -88,16 +89,16 @@
                             <br />
 
                             <mol:molecule id="viewerMolPluginPreview"
-                                          value="#{pluginSettingsDialogControlerBean.previewStructure}"
-                                          pluginType="#{pluginSettingsDialogControlerBean.molPluginType}"
+                                          value="#{pluginSettingsDialogControllerBean.getPreviewStructure()}"
+                                          pluginType="#{pluginSettingsDialogControllerBean.molPluginType}"
                                           readonly="true"
                                           border="true" />
                         </h:panelGroup>
                     </b:panelGrid>
                 </b:panel>
                 <b:column styleClass="text-center">
-                    <b:commandButton ajax="true" process="@form" update="growlMsg"
-                                     action="#{pluginSettingsDialogControlerBean.actionSave()}"
+                    <b:commandButton ajax="true" process="molPluginSelection" update="growlMsg"
+                                     action="#{pluginSettingsDialogControllerBean.actionSave()}"
                                      value="#{msgs.Save}"/>
                 </b:column>
             </b:form>
