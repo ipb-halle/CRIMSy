@@ -24,7 +24,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:nwc="http://ipb-halle.de/nwc">
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
 
     <h:body>
@@ -69,7 +69,6 @@
                                                          style="margin-left: 8px"
                                                          type="submit"
                                                          action="#{searchBean.actionTriggerSearch()}"
-                                                         onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
                                                          ajax="true"
                                                          update="@form  spinningIcon newDocumentsBadge"
                                                          icon="search"
@@ -269,11 +268,12 @@
 
                                         <b:row>
                                             <b:column span="2">
-                                                <nwc:molPlugin
+                                                <mol:molecule
                                                     value="#{searchBean.getSearchFilter().structureString}"
-                                                    pluginType="MolPaintJS" 
-                                                    edit="true">
-                                                </nwc:molPlugin>
+                                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                    border="true"
+                                                    readonly="false">
+                                                </mol:molecule>
                                             </b:column>
                                         </b:row>
                                     </p:tab>

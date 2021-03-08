@@ -135,7 +135,7 @@
                                rendered="#{cc.attrs.assay.edit}"
                                action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
                                update="@(.dlgMaterialEdit)"
-                               oncomplete="PF('dlg_materialEdit').show();"
+                               oncomplete="PF('dlg_materialEdit').show(); dlg_materialEdit_molEditor.then(e => e.init());"
                                disabled="#{!assayRecord.isMaterialEditable()}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>

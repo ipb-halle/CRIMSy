@@ -41,11 +41,10 @@ public class PreferenceService implements Serializable {
     private final static String KEY = "KEY";
 
     private final static String SQL_LOAD = "SELECT DISTINCT "
-        + "p.id, p.user_id, p.key, p.value "
-        + "FROM preferences AS p WHERE "
-        + "     (p.user_id = :USER_ID OR :USER_ID = -1) "
-        + " AND (p.key = :KEY OR :KEY = 'undefined') ";
-
+            + "p.id, p.user_id, p.key, p.value "
+            + "FROM preferences AS p WHERE "
+            + "     (p.user_id = :USER_ID OR :USER_ID = -1) "
+            + " AND (p.key = :KEY OR :KEY = 'undefined') ";
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -63,7 +62,7 @@ public class PreferenceService implements Serializable {
      * Obtain the Preference for a given user and key
      *
      * @param user - the user
-     * @param key - String key
+     * @param key  - String key
      * @param dflt - the default value
      * @return Preference object
      */
@@ -79,7 +78,7 @@ public class PreferenceService implements Serializable {
      * Obtain the preference value for a given user and key
      *
      * @param user - the user
-     * @param key - String key
+     * @param key  - String key
      * @param dflt - the default value
      * @return Preference object
      */
@@ -90,36 +89,55 @@ public class PreferenceService implements Serializable {
     /**
      * load Preferences
      */
+    @SuppressWarnings("unchecked")
     public List<Preference> load(User user, String key) {
         Query q = this.em.createNativeQuery(SQL_LOAD, PreferenceEntity.class);
 
         q.setParameter(USER_ID, (user != null) ? user.getId() : -1);
-        q.setParameter(KEY, (key != null) ?  key : "undefined");
-        // q.setFirstResult();
-        // q.setMaxResults();
+        q.setParameter(KEY, (key != null) ? key : "undefined");
 
         List<Preference> result = new ArrayList<>();
-        for (PreferenceEntity e :  (List<PreferenceEntity>) q.getResultList()) {
-            result.add(new Preference(e, 
-                this.memberService.loadUserById(e.getUserId())));
+
+        for (PreferenceEntity e : (List<PreferenceEntity>) q.getResultList()) {
+            result.add(new Preference(e,
+                    this.memberService.loadUserById(e.getUserId())));
         }
         return result;
     }
 
     /**
      * save a preference
+     * 
      * @param pref - the preference to save
      * @return a persisted preference
      */
     public Preference save(Preference pref) {
-        return new Preference(this.em.merge(pref.createEntity()),
-            pref.getUser());
+        if ((pref.getKey() == null) || pref.getKey().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Key must not be null or empty!");
+        }
+        if (pref.getUser() == null) {
+            throw new IllegalArgumentException("User must not be null!");
+        }
+
+        Preference preference;
+        List<Preference> preferences = load(pref.getUser(), pref.getKey());
+        if (preferences.size() > 0) {
+            preference = preferences.get(0);
+            preference.setValue(pref.getValue());
+        } else {
+            preference = pref;
+        }
+
+        return new Preference(this.em.merge(preference.createEntity()),
+                preference.getUser());
     }
 
     /**
      * simple fire and forget set preference method
-     * @param user the user for whom the preference is saved
-     * @param key the key of the preference
+     * 
+     * @param user  the user for whom the preference is saved
+     * @param key   the key of the preference
      * @param value the preference value
      */
     public void setPreference(User user, String key, String value) {

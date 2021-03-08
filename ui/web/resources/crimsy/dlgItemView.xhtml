@@ -24,9 +24,9 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:composite="http://java.sun.com/jsf/composite"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:nwc="http://ipb-halle.de/nwc"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:b="http://bootsfaces.net/ui">
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
     <composite:interface name="dlgItemView"
                          displayName="Item view dialog"
@@ -74,11 +74,13 @@
                         <b:column
                             span="12"
                             styleClass="dlgMaterialViewStructure">
-                            <nwc:molPlugin id="molViewer"
-                                           rendered="#{cc.attrs.agent.hasStructure}"
-                                           value="#{cc.attrs.agent.material.molecule.structureModel}" 
-                                           plugintype="MolPaintJS"
-                                           edit="false"/>
+                            <mol:molecule id="molViewer"
+                                          rendered="#{cc.attrs.agent.hasStructure}"
+                                          value="#{cc.attrs.agent.material.molecule.structureModel}"
+                                          border="true"
+                                          pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                          readonly="true"
+                                          widgetVar="dlg_ItemView_molViewer"/>
                         </b:column>
                     </b:row>
                     <b:row>

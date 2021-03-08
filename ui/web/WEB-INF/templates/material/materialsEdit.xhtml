@@ -93,7 +93,6 @@
                             <b:commandButton
                                 value="#{materialBean.getCreateButtonText()}"
                                 disabled="#{!materialBean.isCreationAllowed()}"
-                                onclick="$('.hiddenMolEditorInputs').attr('value', molpaintjs.getMDLv2000($('.hiddenMolEditorInputs').attr('id') + '_MolPaintJS'));"
                                 action="#{materialBean.actionSaveMaterial()}"/>
                         </b:column>
                     </b:row>
@@ -133,7 +132,7 @@
             <b:panel
                 rendered="#{materialBean.isValideProjectChoosen()}"
                 styleClass="materialDetailPanel">
-                <p:tabView styleClass="itemEditTabView">
+                <p:tabView styleClass="itemEditTabView" dynamic="true">
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/materialNames.xhtml"/>
                     </ui:insert>

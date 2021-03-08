@@ -24,39 +24,51 @@ import java.io.Serializable;
 /**
  * Simple key - value store
  */
-public class Preference implements Serializable, DTO {
+public class Preference implements Serializable, DTO<PreferenceEntity> {
 
     private final static long serialVersionUID = 1L;
 
     /**
      * setting the key and user is only possible at construction time
      */
+    private Integer id;
     private String key;
     private String value;
     private User user;
 
-    /**
-     * default constructor this constructor is required by Hibernate / JPA
-     */
-    public Preference() {
-    }
+    public Preference(PreferenceEntity entity, User user) {
+        if (user == null) {
+            throw new NullPointerException(
+                    "User must not be null in Preference");
+        }
+        if (entity.getKey() == null) {
+            throw new NullPointerException(
+                    "Key must not be null in Preference");
+        }
 
-    public Preference(PreferenceEntity entity, User u) {
+        this.id = entity.getId();
         this.key = entity.getKey();
         this.value = entity.getValue();
-        this.user = u;
+        this.user = user;
     }
 
     /**
      * Creates an Preference
+     * 
      * @param key
      * @param val
      * @param user
      */
     public Preference(User user, String key, String val) {
-        if ((key == null) || (user == null)) {
-            throw new NullPointerException("Key must not be null in Preference");
+        if (user == null) {
+            throw new NullPointerException(
+                    "User must not be null in Preference");
         }
+        if (key == null) {
+            throw new NullPointerException(
+                    "Key must not be null in Preference");
+        }
+
         this.key = key;
         this.value = val;
         this.user = user;
@@ -65,8 +77,13 @@ public class Preference implements Serializable, DTO {
     @Override
     public PreferenceEntity createEntity() {
         PreferenceEntity entity = new PreferenceEntity();
+        entity.setId(this.id);
         entity.setUserId(this.user.getId());
         return entity.setKey(key).setValue(value);
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getKey() {
@@ -77,7 +94,7 @@ public class Preference implements Serializable, DTO {
         return value;
     }
 
-    public  User getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -111,11 +128,9 @@ public class Preference implements Serializable, DTO {
 
     @Override
     public String toString() {
-        return "Preference{"
-                + "key='" + key + '\''
-                + ", value='" + value + '\''
-                + ", user='" + user.getName() + '\''
-                + '}';
+        return "Preference{" + "id='" + id + '\'' + ", key='" + key + '\''
+                + ", value='" + value + '\'' + ", user='" + user.getName()
+                + '\'' + '}';
     }
 
 }

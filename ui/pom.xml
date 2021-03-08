@@ -588,5 +588,12 @@
             <artifactId>tx</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!-- MolecularFaces -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>molecularfaces</artifactId>
+            <version>0.2.0</version>
+        </dependency>
     </dependencies>
 </project> 
