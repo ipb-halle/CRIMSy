@@ -28,12 +28,12 @@
 
 <h:body>
     <ui:composition>
-        <p:tab title="Nutzerdaten">
+        <p:tab title="#{msgs.admission_userProfile_tabTitle}">
             <b:form id="accountChange">
                 <b:panel contentDisabled="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}" collapsible="false"
                          look="info">
                     <f:facet name="heading">
-                        <h:outputText value="Nutzerdaten verwalten"
+                        <h:outputText value="#{msgs.admission_userProfile_editProfile}"
                                       rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"/>
                         <h:outputText value="Nutzerdaten anzeigen"
                                       rendered="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}"/>
