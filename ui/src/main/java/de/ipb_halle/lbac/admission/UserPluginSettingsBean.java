@@ -51,7 +51,7 @@ public class UserPluginSettingsBean implements Serializable {
      * Name of the web.xml context-param that specifies the available chemical
      * structure plugin types.
      */
-    private static final String WEBXML_AVAILABLE_MOLPLUGINTYPES = "de.ipb_halle.lbac.AvailableMolPluginTypes";
+    protected static final String WEBXML_AVAILABLE_MOLPLUGINTYPES = "de.ipb_halle.lbac.AvailableMolPluginTypes";
 
     @Inject
     private PreferenceService preferenceService;
@@ -169,5 +169,15 @@ public class UserPluginSettingsBean implements Serializable {
      */
     public List<String> getAllMolPluginTypes() {
         return availableMolPluginTypes;
+    }
+
+    /**
+     * Returns the default chemical structure plugin type.
+     * 
+     * @return default chemical structure plugin type or empty string if no
+     *         plugin types are available.
+     */
+    protected String getDefaultMolPluginType() {
+        return defaultMolPluginType;
     }
 }
