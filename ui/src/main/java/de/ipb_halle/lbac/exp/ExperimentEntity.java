@@ -34,7 +34,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "experiments")
-@AttributeTag(type = AttributeType.EXPERIMENT)
 public class ExperimentEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

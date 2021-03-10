@@ -36,7 +36,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "materials")
-@AttributeTag(type = AttributeType.MATERIAL)
 public class MaterialEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

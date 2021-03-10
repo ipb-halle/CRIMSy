@@ -47,8 +47,6 @@ public class ItemEntityGraphBuilder extends EntityGraphBuilder {
 
     private void addOwner() {
         EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "owner_id", "id");
-        owner.addAttributeTypeInherit(AttributeType.OWNER);
-
     }
 
     private void addContainer() {

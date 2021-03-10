@@ -35,6 +35,7 @@ public class Condition {
     private Operator operator;
     private Value value;
 
+    @Deprecated
     public Condition() {
     }
 
@@ -78,6 +79,26 @@ public class Condition {
         this.operator = operator;
     }
 
+    /**
+     * prepend a parent path to all condition attributes of
+     * this Condition tree.
+     * @param path
+     */
+    public void addParentPath(String path) {
+        if (isLeaf()) {
+            this.attribute.addParentPath(path);
+        } else {
+            for (Condition cond : this.conditions) {
+                cond.addParentPath(path);
+            }
+        }
+    }
+
+    /**
+     * Collect the attributes of all leaf conditions in this
+     * Condition tree.
+     * @param attributeList
+     */
     public void getAttributes(List<Attribute> attributeList) {
         if (isLeaf()) {
             attributeList.add(this.attribute);
@@ -140,7 +161,6 @@ public class Condition {
             }
             value.setValue(null);
         }
-
     }
 
     public void switchToLocalMode() {
@@ -156,7 +176,6 @@ public class Condition {
             }
             value.setCastExpression(value.getTransferCastExpression());
         }
-
     }
 
 }

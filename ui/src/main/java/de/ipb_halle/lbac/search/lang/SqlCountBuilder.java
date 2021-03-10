@@ -31,9 +31,9 @@ public class SqlCountBuilder extends SqlBuilder {
     }
 
     @Override
-    protected String select() {
+    protected String select(String context) {
         for (DbField field : entityGraph.getAllFields()) {
-            if (field.matches(attributeToCount)) {
+            if (field.matches(context, attributeToCount)) {
                 return String.format("SELECT COUNT( DISTINCT %s)", field.getAliasedColumnName());
             }
         }

@@ -76,8 +76,8 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     private void addItemSubGraph(EntityGraph linkDataGraph) {
-        ItemEntityGraphBuilder materialBuilder = new ItemEntityGraphBuilder();
-        EntityGraph itemSubgraph = materialBuilder.buildEntityGraph(false);
+        ItemEntityGraphBuilder itemBuilder = new ItemEntityGraphBuilder();
+        EntityGraph itemSubgraph = itemBuilder.buildEntityGraph(false);
         itemSubgraph.addLinkField("itemid", "id");
         itemSubgraph.setSubSelectAttribute(AttributeType.DIRECT);
         itemSubgraph.setJoinType(JoinType.LEFT);

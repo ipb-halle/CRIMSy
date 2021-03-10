@@ -33,7 +33,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "MEMBERSHIPS")
-@AttributeTag(type = AttributeType.MEMBERSHIP)
 public class MembershipEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

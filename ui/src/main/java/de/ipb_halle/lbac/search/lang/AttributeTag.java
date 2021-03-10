@@ -25,13 +25,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for searchable entities and fields 
+ * Annotation for searchable fields 
  *
  * @author fbroda
  */
 @Documented
 @Inherited
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AttributeTag {
 

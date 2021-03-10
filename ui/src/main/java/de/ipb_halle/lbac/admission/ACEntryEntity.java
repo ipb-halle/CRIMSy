@@ -34,7 +34,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ACENTRIES")
-@AttributeTag(type=AttributeType.ACE)
 public class ACEntryEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

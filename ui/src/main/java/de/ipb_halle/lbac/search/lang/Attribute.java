@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Attribute {
 
     private Set<AttributeType> types;
-    private String name;
+    private String graphPath;
 
     public Attribute(Collection<AttributeType> types) {
         this.types = new HashSet<>();
@@ -43,14 +43,32 @@ public class Attribute {
         this.types.addAll(Arrays.asList(types));
     }
 
+    public Attribute(String path, AttributeType[] types) {
+        this();
+        this.types.addAll(Arrays.asList(types));
+        this.graphPath = path;
+    }
+    
     public Attribute(AttributeType type) {
         this();
         this.types.add(type);
     }
 
+    public Attribute(String path, AttributeType type) {
+        this();
+        this.types.add(type);
+        this.graphPath = path;
+    }
+
+    
     private Attribute() {
         this.types = new HashSet<>();
-        this.name = "";
+        this.graphPath = "";
+    }
+
+    public Attribute addParentPath(String path) {
+        this.graphPath = String.join("/", path, this.graphPath);
+        return this;
     }
 
     public Attribute addType(AttributeType type) {
@@ -72,18 +90,16 @@ public class Attribute {
         return this.types;
     }
 
-    public String getName() {
-        return this.name;
+    public String getGraphPath() {
+        return this.graphPath;
     }
 
-    public Attribute setName(String name) {
-        this.name = name;
+    public Attribute setGraphPath(String path) {
+        this.graphPath = path;
         return this;
     }
 
     public void setTypes(Set<AttributeType> types) {
         this.types = types;
     }
-    
-    
 }

@@ -46,9 +46,10 @@ public class SqlBuilder {
 
     /**
      * Constructor
+     *
      * @param graph the EntityGraph to construct a SELECT statement for
-     * @param subSelect true if the statement is a sub-select of an
-     * outer EntityGraph. In this case, the sub-selects will NOT be nested.
+     * @param subSelect true if the statement is a sub-select of an outer
+     * EntityGraph. In this case, the sub-selects will NOT be nested.
      */
     public SqlBuilder(EntityGraph graph, boolean subSelect) {
         this.entityGraph = graph;
@@ -61,10 +62,10 @@ public class SqlBuilder {
      * @param sb the StringBuilder
      * @param condition the condition
      */
-    private void addCondition(StringBuilder sb, Condition condition) {
+    private void addCondition(StringBuilder sb, String context, Condition condition) {
         sb.append("(");
         if (condition.isLeaf()) {
-            addLeafCondition(sb, condition);
+            addLeafCondition(sb, context, condition);
         } else {
 
             Operator operator = condition.getOperator();
@@ -72,7 +73,7 @@ public class SqlBuilder {
                 if (operator.isPrefixOperator()) {
                     sb.append(operator.getSql());
                 }
-                addCondition(sb, condition.getLeftCondition());
+                addCondition(sb, context, condition.getLeftCondition());
                 if (operator.isPostfixOperator()) {
                     sb.append(operator.getSql());
                 }
@@ -82,7 +83,7 @@ public class SqlBuilder {
                     if (i > 0) {
                         sb.append(operator.getSql());
                     }
-                    addCondition(sb, c);
+                    addCondition(sb, context, c);
                     i++;
                 }
             }
@@ -100,16 +101,18 @@ public class SqlBuilder {
      * @throws NoSuchElementException if the condition attributes can not be
      * fulfilled by the current EntityGraph
      */
-    private void addLeafCondition(StringBuilder sb, Condition condition) {
+    private void addLeafCondition(StringBuilder sb, String context, Condition condition) {
         Operator operator = condition.getOperator();
-        Set<DbField> columns = getMatchingColumns(condition.getAttribute());
+        Set<DbField> columns = getMatchingColumns(context, condition.getAttribute());
         if (columns.size() == 0) {
             String s = "";
             for (AttributeType t : condition.getAttribute().getTypes()) {
                 s += t + ":";
             }
 
-            throw new NoSuchElementException("No matching field found in addLeafCondition(): " + s);
+            throw new NoSuchElementException(
+                    "No matching field found in addLeafCondition(): "
+                    + s + condition.getAttribute().getGraphPath());
         }
         if (operator.isUnary()) {
             addUnaryLeafCondition(sb, columns, operator);
@@ -189,7 +192,7 @@ public class SqlBuilder {
             condition.getAttributes(attributes);
         }
         for (Attribute attr : attributes) {
-            for (DbField field : getMatchingColumns(attr)) {
+            for (DbField field : getMatchingColumns(context, attr)) {
                 field.getEntityGraph().activate(context);
             }
         }
@@ -244,15 +247,15 @@ public class SqlBuilder {
      * @param attribute the attribute to filter the fields (columns) against
      * @return a set of matching columns
      */
-    private Set<DbField> getMatchingColumns(Attribute attribute) {
+    private Set<DbField> getMatchingColumns(String context, Attribute attribute) {
         Set<DbField> fields = new HashSet<>();
         for (DbField field : this.allFields) {
-            String s = "";
-            for (AttributeType t : field.getAttributeTypes()) {
-                s += t.name() + ":";
-            }
-            System.out.println(s);
-            if (field.matches(attribute)) {
+//            String s = "";
+//            for (AttributeType t : field.getAttributeTypes()) {
+//                s += t.name() + ":";
+//            }
+//            System.out.println(s);
+            if (field.matches(context, attribute)) {
                 fields.add(field);
             }
         }
@@ -344,7 +347,7 @@ public class SqlBuilder {
      * add joins of dependent (child) entities
      *
      * @param graph the entity graph
-     * @param context 
+     * @param context
      * @param attr
      * @return the SQL JOIN expression
      */
@@ -436,28 +439,31 @@ public class SqlBuilder {
         this.valueList = new ArrayList<>();
         this.entityGraph.reset(alias);
         this.entityGraph.setAlias(alias);
+        this.entityGraph.computeGraphPath(alias, "");
         this.allFields = this.entityGraph.getAllFields();
         filter(condition, alias);
         filter(orderList, alias);
         StringBuilder sb = new StringBuilder();
-        sb.append(select());
+        sb.append(select(alias));
         sb.append(from(alias, attr));
-        sb.append(where(condition));
+        sb.append(where(alias, condition));
         sb.append(order(orderList));
         return sb.toString();
     }
 
     /**
+     * @param context the current context, i.e. the alias of the current select
+     * or sub-select statement.
      * @return 'SELECT ' and the column expressions for a SELECT statement
      */
-    protected String select() {
+    protected String select(String context) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT DISTINCT ");
 
         String sep = "";
         for (DbField field : this.entityGraph.getFieldMap().values()) {
             sb.append(sep);
-            sb.append(this.entityGraph.getAlias());
+            sb.append(context);
             sb.append(".");
             sb.append(field.getColumnName()); // slightly more efficient than computing "alias.columName" in DbField
             sep = ", ";
@@ -466,15 +472,17 @@ public class SqlBuilder {
     }
 
     /**
+     * @param context
+     * @param condition
      * @return the complete WHERE clause of a query
      */
-    protected String where(Condition condition) {
+    protected String where(String context, Condition condition) {
         if (condition == null) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
         sb.append(" \nWHERE ");
-        addCondition(sb, condition);
+        addCondition(sb, context, condition);
         return sb.toString();
     }
 }

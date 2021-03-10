@@ -53,8 +53,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.EQUAL,
                 deactivated,
-                AttributeType.ITEM,
-                AttributeType.DIRECT,
+                rootGraphName,
                 AttributeType.DEACTIVATED);
         conditionList.add(con);
     }
@@ -71,18 +70,29 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                     Operator.IN,
                     idSet,
                     "(%s)",
-                    AttributeType.ITEM,
+                    rootGraphName,
                     AttributeType.LABEL));
         }
     }
 
+    /**
+     * ToDo: possibly replace by call to ContainerSearchConditionBuilder?
+     * @param conditionList
+     * @param values 
+     */
     private void addLocationCondition(List<Condition> conditionList, Set<String> values) {
         List<Condition> subList = new ArrayList<>();
         for (String value : values) {
             subList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
-                    AttributeType.CONTAINER,
+                    rootGraphName + "/containers",
+                    AttributeType.LABEL));
+            
+            subList.add(getBinaryLeafCondition(
+                    Operator.ILIKE,
+                    "%" + value + "%",
+                    rootGraphName + "/nested_containers/containers",
                     AttributeType.LABEL));
         }
         conditionList.add(getDisjunction(subList));
@@ -97,9 +107,13 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
         if (!subList.isEmpty()) {
             addSubGraphACL(materialSubGraph, 
-                    request.getUser(), 
-                    AttributeType.MATERIAL);
-            conditionList.addAll(subList);
+                    ItemEntityGraphBuilder.materialSubGraphPath,
+                    request.getUser());
+
+            for (Condition con : subList) {
+                con.addParentPath(rootGraphName);
+                conditionList.add(con);
+            }
         }
     }
     
@@ -110,9 +124,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                AttributeType.ITEM,
-                //                AttributeType.DIRECT,
-                AttributeType.OWNER,
+                rootGraphName + "/USERSGROUPS",
                 AttributeType.MEMBER_NAME);
         conditionList.add(con);
     }
@@ -124,8 +136,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                AttributeType.ITEM,
-                AttributeType.PROJECT,
+                rootGraphName + "/projects",
                 AttributeType.PROJECT_NAME);
         conditionList.add(con);
     }
@@ -146,8 +157,8 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... acPermission) {
 
         return addACL(getItemCondition(request, true),
+                rootGraphName,
                 request.getUser(),
-                AttributeType.ITEM,
                 acPermission);
     }
 
@@ -191,7 +202,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
             subConditionList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
-                    AttributeType.ITEM,
+                    rootGraphName,
                     AttributeType.TOPLEVEL,
                     AttributeType.TEXT));
         }

@@ -97,7 +97,7 @@ public class SearchServiceTest extends TestBase {
     private MaterialCreator materialCreator;
     private ItemCreator itemCreator;
     private int materialid1, materialid2, notReadableMaterialId;
-    private int itemid1, itemid2, item3;
+    private int itemid1, itemid2, itemid3;
 
     @Inject
     private SearchService searchService;
@@ -457,7 +457,7 @@ public class SearchServiceTest extends TestBase {
                 project2,
                 room);
 
-        item3 = itemCreator.createItem(
+        itemid3 = itemCreator.createItem(
                 publicUser.getId(),
                 publicAclId,
                 notReadableMaterialId,

@@ -27,7 +27,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "files")
-@AttributeTag(type = AttributeType.DOCUMENT)
 public class FileObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

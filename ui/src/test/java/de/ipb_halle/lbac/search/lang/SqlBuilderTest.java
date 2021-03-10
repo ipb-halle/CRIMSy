@@ -59,7 +59,7 @@ public class SqlBuilderTest extends TestBase {
         SqlBuilder builder = new SqlBuilder(graph);
 
         Condition condition = new Condition(
-                new Attribute(AttributeType.INSTITUTION),
+                new Attribute("nodes", AttributeType.INSTITUTION),
                 Operator.ILIKE,
                 new Value("%TEST%"));
 
@@ -79,10 +79,7 @@ public class SqlBuilderTest extends TestBase {
         SqlBuilder builder = new SqlBuilder(graph);
 
         Condition condition = new Condition(
-                new Attribute(new AttributeType[]{
-            AttributeType.MATERIAL,
-            AttributeType.TEXT
-        }),
+                new Attribute("materials/material_indices", AttributeType.TEXT),
                 Operator.EQUAL,
                 new Value("Benzol"));
 
@@ -104,18 +101,12 @@ public class SqlBuilderTest extends TestBase {
         SqlBuilder builder = new SqlBuilder(graph);
 
         Condition condition1 = new Condition(
-                new Attribute(new AttributeType[]{
-            AttributeType.MATERIAL,
-            AttributeType.TEXT
-        }),
+                new Attribute("items/material_indices", AttributeType.TEXT),
                 Operator.EQUAL,
                 new Value("Benzol"));
 
         Condition condition2 = new Condition(
-                new Attribute(new AttributeType[]{
-            AttributeType.ITEM,
-            AttributeType.TEXT
-        }),
+                new Attribute("items", AttributeType.TEXT),
                 Operator.EQUAL,
                 new Value("HPLC Grade"));
 
@@ -136,19 +127,14 @@ public class SqlBuilderTest extends TestBase {
                 .addChild(new EntityGraph(MaterialEntity.class)
                         .addLinkField("materialid", "materialid"));
 
+        graph.addAttributeType(AttributeType.TOPLEVEL);
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 graph,
-                new Attribute(new AttributeType[]{
-            AttributeType.ITEM,
-            AttributeType.LABEL
-
-        }));
+                new Attribute("items", new AttributeType[] {AttributeType.TOPLEVEL, AttributeType.LABEL}));
 
         // needs condition, otherwise JOIN gets removed
         String sql = countBuilder.query(
-            new Condition(new Attribute(new AttributeType[]{
-                    AttributeType.MATERIAL,
-                    AttributeType.LABEL} ),
+            new Condition(new Attribute("items/materials", AttributeType.LABEL),
                 Operator.EQUAL,
                 new Value(Integer.valueOf(1))
             )

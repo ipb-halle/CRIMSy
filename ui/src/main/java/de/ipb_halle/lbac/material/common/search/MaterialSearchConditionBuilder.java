@@ -59,8 +59,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.EQUAL,
                 deactivated,
-                AttributeType.MATERIAL,
-                AttributeType.DIRECT,
+                rootGraphName,
                 AttributeType.DEACTIVATED);
         conditionList.add(con);
     }
@@ -78,7 +77,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
             Condition typeCondition = getBinaryLeafCondition(
                     isName ? Operator.EQUAL : Operator.NOT_EQUAL,
                     IndexTypeEntity.INDEX_TYPE_NAME,
-                    AttributeType.MATERIAL,
+                    rootGraphName + "/material_indices",
                     AttributeType.INDEX_TYPE);
             conditionList.add(new Condition(
                     Operator.AND,
@@ -89,6 +88,11 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         conditionList.add(getIndexCondition(values, true));
     }
 
+    /**
+     * ToDo: distinguish between LABEL and ID AttributeType annotation
+     * @param conditionList
+     * @param values 
+     */
     private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
         Set<Integer> idSet = new HashSet<>();
         for (String value : values) {
@@ -105,7 +109,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
             conditionList.add(getBinaryLeafCondition(
                     Operator.IN,
                     idSet,
-                    AttributeType.MATERIAL,
+                    rootGraphName,
                     AttributeType.LABEL));
         }
     }
@@ -122,7 +126,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
             conditionList.add(getBinaryLeafCondition(
                     Operator.IN,
                     getIdsFromMaterialTypes(types.toArray(new MaterialType[0])),
-                    AttributeType.MATERIAL,
+                    rootGraphName,
                     AttributeType.MATERIAL_TYPE
             ));
         }
@@ -135,9 +139,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                AttributeType.MATERIAL,
-                //                AttributeType.DIRECT,
-                AttributeType.OWNER,
+                rootGraphName + "/USERSGROUPS",
                 AttributeType.MEMBER_NAME);
         conditionList.add(con);
     }
@@ -149,8 +151,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                AttributeType.MATERIAL,
-                AttributeType.PROJECT,
+                rootGraphName + "/projects",
                 AttributeType.PROJECT_NAME);
         conditionList.add(con);
     }
@@ -163,25 +164,24 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                 Operator.SUBSTRUCTURE,
                 values.iterator().next(),
                 " CAST(%s AS MOLECULE) ",
+                rootGraphName + "/structures/molecules",
                 AttributeType.MOLECULE));
     }
 
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
         List<Condition> conditionList = getMaterialCondition(request, true);
-        return addACL(conditionList, request.getUser(), AttributeType.MATERIAL, perm);
+        return addACL(conditionList, rootGraphName, request.getUser(), perm);
     }
 
     private AttributeType[] getIndexAttributes(boolean requireTopLevel) {
         if (requireTopLevel) {
             return new AttributeType[]{
-                AttributeType.MATERIAL,
                 AttributeType.TOPLEVEL,
                 AttributeType.TEXT
             };
         }
         return new AttributeType[]{
-            AttributeType.MATERIAL,
             AttributeType.TEXT};
     }
 
@@ -191,6 +191,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
             subConditionList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
+                    rootGraphName + "/material_indices",
                     getIndexAttributes(requireTopLevel)));
         }
         return getDisjunction(subConditionList);

@@ -39,15 +39,15 @@ import java.util.Set;
  */
 public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ExperimentSearchConditionBuilder(EntityGraph graph,String rootName) {
-        super(graph,rootName);
+    public ExperimentSearchConditionBuilder(EntityGraph graph, String rootName) {
+        super(graph, rootName);
     }
 
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
         return addACL(getExperimentCondition(request, true),
-                request.getUser(), 
-                AttributeType.EXPERIMENT, 
+                rootGraphName,
+                request.getUser(),
                 perm);
     }
 
@@ -73,7 +73,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
             Condition typeCondition = getBinaryLeafCondition(
                     isName ? Operator.EQUAL : Operator.NOT_EQUAL,
                     IndexTypeEntity.INDEX_TYPE_NAME,
-                    AttributeType.MATERIAL,
+                    "DEPRECATED",
                     AttributeType.INDEX_TYPE);
             conditionList.add(new Condition(
                     Operator.AND,
@@ -83,7 +83,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         }
         conditionList.add(getIndexCondition(values, true));
     }
-    
+
     private void addItemCondition(List<Condition> conditionList, SearchRequest request) {
         EntityGraph itemSubGraph = entityGraph.selectSubGraph(
                 String.join("/", rootGraphName, ExperimentEntityGraphBuilder.itemSubGraphPath));
@@ -92,9 +92,9 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         List<Condition> subList = itemBuilder.getItemCondition(request, false);
 
         if (!subList.isEmpty()) {
-            addSubGraphACL(itemSubGraph, 
-                    request.getUser(), 
-                    AttributeType.ITEM);
+            addSubGraphACL(itemSubGraph,
+                    ExperimentEntityGraphBuilder.itemSubGraphPath,
+                    request.getUser());
             conditionList.addAll(subList);
         }
     }
@@ -107,9 +107,9 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         List<Condition> subList = matBuilder.getMaterialCondition(request, false);
 
         if (!subList.isEmpty()) {
-            addSubGraphACL(materialSubGraph, 
-                    request.getUser(), 
-                    AttributeType.MATERIAL);
+            addSubGraphACL(materialSubGraph,
+                    ExperimentEntityGraphBuilder.materialSubGraphPath,
+                    request.getUser());
             conditionList.addAll(subList);
         }
     }
@@ -122,6 +122,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
             subConditionList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
+                    "DEPRECATED",
                     getIndexAttributes(requireTopLevel)));
         }
         return getDisjunction(subConditionList);
@@ -132,13 +133,11 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
     private AttributeType[] getIndexAttributes(boolean requireTopLevel) {
         if (requireTopLevel) {
             return new AttributeType[]{
-                AttributeType.MATERIAL,
                 AttributeType.TOPLEVEL,
                 AttributeType.TEXT
             };
         }
         return new AttributeType[]{
-            AttributeType.MATERIAL,
             AttributeType.TEXT};
     }
 

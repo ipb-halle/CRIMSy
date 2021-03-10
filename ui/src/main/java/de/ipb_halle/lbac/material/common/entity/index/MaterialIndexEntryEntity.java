@@ -33,7 +33,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "material_indices")
-@AttributeTag(type=AttributeType.MATERIAL)
 public class MaterialIndexEntryEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

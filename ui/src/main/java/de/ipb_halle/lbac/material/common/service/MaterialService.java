@@ -58,7 +58,6 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
-import de.ipb_halle.lbac.search.PermissionConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
@@ -100,7 +99,6 @@ public class MaterialService implements Serializable {
 
     private MaterialEntityGraphBuilder graphBuilder;
     protected StructureInformationSaver structureInformationSaver;
-    private PermissionConditionBuilder permissionConditionBuilder;
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
@@ -215,10 +213,8 @@ public class MaterialService implements Serializable {
 
     public int loadMaterialAmount(SearchRequest request) {
         EntityGraph graph = createEntityGraph();
-        SqlBuilder sqlBuilder = new SqlCountBuilder(graph, new Attribute(new AttributeType[]{
-            AttributeType.MATERIAL,
-            AttributeType.LABEL
-        }));
+        SqlBuilder sqlBuilder = new SqlCountBuilder(graph, 
+                new Attribute("materials", AttributeType.LABEL));
 
         MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
         Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);

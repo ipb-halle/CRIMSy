@@ -185,8 +185,9 @@ public class DbField {
      * @return true if this field matches (contains all) the requested
      * attribute types
      */
-    public boolean matches(Attribute attribute) {
-        return this.attributeTypes.containsAll(attribute.getTypes());
+    public boolean matches(String context, Attribute attribute) {
+        return this.attributeTypes.containsAll(attribute.getTypes())
+                && this.entityGraph.getGraphPath(context).equals(attribute.getGraphPath());
     }
 
     /**

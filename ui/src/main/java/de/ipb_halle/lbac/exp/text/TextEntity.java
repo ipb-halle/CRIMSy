@@ -30,7 +30,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "exp_texts")
-@AttributeTag(type = AttributeType.EXP_TEXT_RECORD)
 public class TextEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

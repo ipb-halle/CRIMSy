@@ -54,7 +54,6 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
 
     protected void addOwner() {
         EntityGraph owner = addJoinInherit(JoinType.INNER, MemberEntity.class, "ownerid", "id");
-        owner.addAttributeTypeInherit(AttributeType.OWNER);
     }
 
     protected void addDetailRights() {

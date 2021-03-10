@@ -33,7 +33,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "materialdetailrights")
-@AttributeTag(type = AttributeType.MATERIAL_DETAIL_RIGHT)
 public class MaterialDetailRightEntity implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

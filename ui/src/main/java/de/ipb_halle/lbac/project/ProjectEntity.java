@@ -38,7 +38,6 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "projects")
-@AttributeTag(type = AttributeType.PROJECT)
 public class ProjectEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;

@@ -63,15 +63,14 @@ public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... acPermission) {
         List<Condition> conditionList = getProjectCondition(request, true);
-        return addACL(conditionList, request.getUser(), AttributeType.PROJECT, acPermission);
+        return addACL(conditionList, rootGraphName, request.getUser(), acPermission);
     }
 
     private void addProjectNameCondition(List<Condition> conditionList, Set<String> values) {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                AttributeType.PROJECT,
-                AttributeType.PROJECT_NAME);
+                rootGraphName, AttributeType.PROJECT_NAME);
         conditionList.add(con);
     }
 
@@ -82,8 +81,7 @@ public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                AttributeType.PROJECT,
-                AttributeType.OWNER,
+                rootGraphName + "/USERSGROUPS",
                 AttributeType.MEMBER_NAME);
         conditionList.add(con);
     }
@@ -93,8 +91,7 @@ public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.EQUAL,
                 deactivated,
-                AttributeType.PROJECT,
-                AttributeType.DIRECT,
+                rootGraphName,
                 AttributeType.DEACTIVATED);
         conditionList.add(con);
     }

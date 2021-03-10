@@ -61,6 +61,7 @@ public class EntityGraph {
     private int indexCount;
     private String tableName;
     private String graphName;
+    private Map<String, String> graphPathMap;
 
     /**
      * constructor
@@ -87,6 +88,7 @@ public class EntityGraph {
         this.indexCount = 0;
         this.fieldMap = new HashMap<>();
         this.graphName = "";
+        this.graphPathMap = new HashMap<>();
     }
 
     protected void activate(String context) {
@@ -185,6 +187,27 @@ public class EntityGraph {
     }
 
     /**
+     * Compute the context sensitive graph path for this EntityGraph 
+     * object. Computation can start either from the root element of 
+     * an EntityGraph or from individual sub-graphs (e.g. for 
+     * sub-selects).
+     * @param context
+     * @param path 
+     */
+    public void computeGraphPath(String context, String path) {
+        String gp;
+        if ((path != null) && (path.length() > 0)) {
+            gp = String.join("/", path, this.graphName);
+        } else {
+            gp = this.graphName;
+        }
+        this.graphPathMap.put(context, gp);
+        for (EntityGraph graph : this.children) {
+            graph.computeGraphPath(context, gp);
+        }
+    }
+    
+    /**
      * @param column a column name
      * @return whether this EntityGraph contains the given column
      */
@@ -246,6 +269,15 @@ public class EntityGraph {
      */
     public String getGraphName() {
         return this.graphName;
+    }
+
+    /**
+     * @param context the current context of the method invocation
+     * @return returns the precomputed graph path for an EntityGraph 
+     * object in a certain context.
+     */
+    public String getGraphPath(String context) {
+        return this.graphPathMap.get(context);
     }
 
     /**

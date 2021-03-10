@@ -34,7 +34,6 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "containers")
-@AttributeTag(type=AttributeType.CONTAINER)
 public class ContainerEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

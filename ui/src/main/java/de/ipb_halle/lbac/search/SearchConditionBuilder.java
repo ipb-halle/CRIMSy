@@ -48,27 +48,24 @@ public abstract class SearchConditionBuilder {
         this.rootGraphName = rootGraphName;
     }
 
-   
-
     /**
      * Create an access control condition and combine it with other conditions.
      *
      * @param conditionList
      * @param request
-     * @param type
      * @param acPermission
      * @return the combined condition
      */
     protected Condition addACL(List<Condition> conditionList,
+            String graphPath,
             User user,
-            AttributeType type,
             ACPermission... acPermission) {
         List<Condition> subCondition = new ArrayList<>();
         for (ACPermission perm : acPermission) {
             subCondition.add(getACLCondition(
                     user,
                     perm,
-                    type));
+                    graphPath));
         }
 
         Condition aclCondition = getDisjunction(subCondition);
@@ -82,11 +79,11 @@ public abstract class SearchConditionBuilder {
                 conditionList.toArray(new Condition[0]));
     }
 
-    protected void addSubGraphACL(EntityGraph subGraph, User user, AttributeType attribute) {
+    protected void addSubGraphACL(EntityGraph subGraph, String graphPath, User user) {
         subGraph.setSubSelectCondition(
-            getACLCondition(user,
-                    ACPermission.permREAD, 
-                    attribute));
+                getACLCondition(user,
+                        ACPermission.permREAD,
+                        graphPath));
         subGraph.setSubSelectAttribute(AttributeType.DIRECT);
     }
 
@@ -111,21 +108,22 @@ public abstract class SearchConditionBuilder {
     protected Condition getACLCondition(
             User user,
             ACPermission permission,
+            String graphPath,
             AttributeType... acObjAttrType) {
 
         Condition ownerCondition = new Condition(
                 Operator.AND,
                 new Condition(
-                        new Attribute(acObjAttrType)
-                                .addType(AttributeType.OWNER)
-                                .addType(AttributeType.DIRECT),
+                        new Attribute(graphPath, new AttributeType[] {
+                                AttributeType.OWNER,
+                                AttributeType.DIRECT}),
                         Operator.EQUAL,
                         new Value(user.getId())),
                 new Condition(
-                        new Attribute(acObjAttrType).addTypes(new AttributeType[]{
-                    AttributeType.ACE,
-                    AttributeType.DIRECT,
-                    AttributeType.MEMBER}),
+                        new Attribute(graphPath + "/ACENTRIES", 
+                                new AttributeType[]{
+                            AttributeType.DIRECT,
+                            AttributeType.MEMBER}),
                         Operator.EQUAL,
                         new Value(GlobalAdmissionContext.OWNER_ACCOUNT_ID))
         );
@@ -134,10 +132,10 @@ public abstract class SearchConditionBuilder {
                 Operator.OR,
                 ownerCondition,
                 new Condition(
-                        new Attribute(acObjAttrType).addTypes(new AttributeType[]{
-                    AttributeType.MEMBERSHIP,
-                    AttributeType.DIRECT,
-                    AttributeType.MEMBER}),
+                        new Attribute(graphPath + "/ACENTRIES/MEMBERSHIPS", 
+                                new AttributeType[] {
+                            AttributeType.DIRECT,
+                            AttributeType.MEMBER}),
                         Operator.EQUAL,
                         new Value(user.getId()))
         );
@@ -145,24 +143,25 @@ public abstract class SearchConditionBuilder {
         return new Condition(
                 Operator.AND,
                 memberCondition,
-                new Condition(getPermissionAttribute(permission)
-                        .addTypes(acObjAttrType)
+                new Condition(getPermissionAttribute(graphPath + "/ACENTRIES", permission)
                         .addType(AttributeType.DIRECT),
                         Operator.IS_TRUE));
     }
 
-    protected Condition getBinaryLeafCondition(Operator op, Object value, AttributeType... attrTypes) {
+    protected Condition getBinaryLeafCondition(Operator op,
+            Object value, String path, AttributeType... attrTypes) {
         return new Condition(
-                new Attribute(attrTypes),
+                new Attribute(path, attrTypes),
                 op,
                 new Value(value));
     }
 
-    protected Condition getBinaryLeafConditionWithCast(Operator op, Object value, String castExpression, AttributeType... attrTypes) {
+    protected Condition getBinaryLeafConditionWithCast(Operator op,
+            Object value, String castExpression, String path, AttributeType... attrTypes) {
         Value valueWithCast = new Value(value)
                 .setCastExpression(castExpression);
         return new Condition(
-                new Attribute(attrTypes),
+                new Attribute(path, attrTypes),
                 op,
                 valueWithCast);
     }
@@ -180,22 +179,22 @@ public abstract class SearchConditionBuilder {
         throw new IllegalArgumentException("Could not create Condition");
     }
 
-    private Attribute getPermissionAttribute(ACPermission perm) {
+    private Attribute getPermissionAttribute(String graphPath, ACPermission perm) {
         switch (perm) {
             case permREAD:
-                return new Attribute(AttributeType.PERM_READ);
+                return new Attribute(graphPath, AttributeType.PERM_READ);
             case permEDIT:
-                return new Attribute(AttributeType.PERM_EDIT);
+                return new Attribute(graphPath, AttributeType.PERM_EDIT);
             case permCHOWN:
-                return new Attribute(AttributeType.PERM_CHOWN);
+                return new Attribute(graphPath, AttributeType.PERM_CHOWN);
             case permGRANT:
-                return new Attribute(AttributeType.PERM_GRANT);
+                return new Attribute(graphPath, AttributeType.PERM_GRANT);
             case permSUPER:
-                return new Attribute(AttributeType.PERM_SUPER);
+                return new Attribute(graphPath, AttributeType.PERM_SUPER);
             case permCREATE:
-                return new Attribute(AttributeType.PERM_CREATE);
+                return new Attribute(graphPath, AttributeType.PERM_CREATE);
             case permDELETE:
-                return new Attribute(AttributeType.PERM_DELETE);
+                return new Attribute(graphPath, AttributeType.PERM_DELETE);
         }
         throw new IllegalArgumentException("illegal argument");
     }

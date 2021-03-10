@@ -27,21 +27,11 @@ public enum AttributeType {
     /* */
     TOPLEVEL,
     DIRECT,
-    /* entities */
-    ACE,
-    COLLECTION,
-    CONTAINER,
-    DOCUMENT,
-    EXPERIMENT,
-    ITEM,
-    MATERIAL,
-    MATERIAL_DETAIL_RIGHT,
-    MEMBERSHIP,
-    PROJECT,
-    EXP_TEXT_RECORD,
+
     /* entity properties */
     ASSAY_TARGET,
     ASSAY_RECORD,
+    COLLECTION,
     INSTITUTION,
     INDEX_TYPE,
     MATERIAL_TYPE,
@@ -53,6 +43,7 @@ public enum AttributeType {
     REACTION_PRODUCT,
     TEMPLATE,
     WORDROOT,
+
     /* general attribute types */
     DEACTIVATED,
     PROJECT_DEACTIVATED,
