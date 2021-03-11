@@ -119,6 +119,7 @@ public class ExperimentServiceTest extends TestBase {
     public void finish() {
         entityManagerService.doSqlUpdate("DELETE FROM experiments");
     }
+
     @Test
     public void test001_saveAndLoadExp() {
         Date creationDate = new Date();
@@ -133,12 +134,12 @@ public class ExperimentServiceTest extends TestBase {
         text1.setExperiment(exp);
         text1.setCreationTime(creationDate);
         text1.setText("Test001");
-        text1 = (Text) recordService.save(text1,publicUser);
+        text1 = (Text) recordService.save(text1, publicUser);
 
         Text text2 = new Text();
         text2.setExperiment(exp2);
         text2.setText("Test001-A");
-        text2 = (Text) recordService.save(text2,publicUser);
+        text2 = (Text) recordService.save(text2, publicUser);
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         Experiment loadedExperiment = experimentService.loadById(exp.getExperimentId());
@@ -154,58 +155,59 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(publicUser.getId(), loadedExperiment.getOwner().getId());
         Assert.assertEquals(creationDate, loadedExperiment.getCreationTime());
 
-//        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
-//        builder.addId(exp.getExperimentId());
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setId(String.valueOf(exp.getExperimentId()));
+        loadedExp = experimentService.load(builder.build());
 
-//        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
-//        Experiment exp1 = (Experiment) loadedExp.getAllFoundObjects().get(0).getSearchable();
-//        Map<String, Object> cmap = new HashMap<>();
-//        cmap.put("ID", exp1.getId());
-//        List<ExpRecord> loadedRecords = recordService.load(cmap, publicUser);
-//        Assert.assertEquals("Test001", ((Text) loadedRecords.get(0)).getText());
-//        Assert.assertEquals(exp.getExperimentId(), loadedRecords.get(0).getExperiment().getExperimentId());
-//        Assert.assertEquals(ExpRecordType.TEXT, loadedRecords.get(0).getType());
-//        Assert.assertEquals(creationDate, loadedRecords.get(0).getCreationTime());
-//        Assert.assertTrue(loadedRecords.get(0).getChangeTime().getTime() >= creationDate.getTime());
-//        Assert.assertNull(loadedRecords.get(0).getNext());
-//        Assert.assertEquals(1, loadedRecords.get(0).getRevision());
-//
-//        Text loadedById = (Text) recordService.loadById(text1.getExpRecordId(), publicUser);
-//        Assert.assertEquals("Test001", loadedById.getText());
-//
-//        Text text3 = new Text();
-//        text3.setExperiment(exp);
-//        text3.setCreationTime(creationDate);
-//        text3.setText("Test001-text3");
-//        text3 = (Text) recordService.save(text3,publicUser);
-//
-//        text1.setNext(text3.getExpRecordId());
-//        recordService.saveOnly(text1);
-//        loadedRecords = recordService.load(cmap, publicUser);
-//        loadedRecords = recordService.orderList(loadedRecords);
-//        Assert.assertEquals(3, loadedRecords.size());
-//        Assert.assertEquals(text1.getExpRecordId(), loadedRecords.get(0).getExpRecordId());
-//        Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(1).getExpRecordId());
-//        Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(0).getNext());
-//        Assert.assertNull(loadedRecords.get(1).getNext());
-//
-//        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("x56df");
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
-//
-//        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addUserName("public");
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(2, loadedExp.getAllFoundObjects().size());
-//
-//        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addUserName("invalid-user");
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+        Experiment exp1 = (Experiment) loadedExp.getAllFoundObjects().get(0).getSearchable();
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("ID", exp1.getId());
+        List<ExpRecord> loadedRecords = recordService.load(cmap, publicUser);
+        Assert.assertEquals("Test001", ((Text) loadedRecords.get(0)).getText());
+        Assert.assertEquals(exp.getExperimentId(), loadedRecords.get(0).getExperiment().getExperimentId());
+        Assert.assertEquals(ExpRecordType.TEXT, loadedRecords.get(0).getType());
+        Assert.assertEquals(creationDate, loadedRecords.get(0).getCreationTime());
+        Assert.assertTrue(loadedRecords.get(0).getChangeTime().getTime() >= creationDate.getTime());
+        Assert.assertNull(loadedRecords.get(0).getNext());
+        Assert.assertEquals(1, loadedRecords.get(0).getRevision());
+
+        Text loadedById = (Text) recordService.loadById(text1.getExpRecordId(), publicUser);
+        Assert.assertEquals("Test001", loadedById.getText());
+
+        Text text3 = new Text();
+        text3.setExperiment(exp);
+        text3.setCreationTime(creationDate);
+        text3.setText("Test001-text3");
+        text3 = (Text) recordService.save(text3,publicUser);
+
+        text1.setNext(text3.getExpRecordId());
+        recordService.saveOnly(text1);
+        loadedRecords = recordService.load(cmap, publicUser);
+        loadedRecords = recordService.orderList(loadedRecords);
+        Assert.assertEquals(3, loadedRecords.size());
+        Assert.assertEquals(text1.getExpRecordId(), loadedRecords.get(0).getExpRecordId());
+        Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(1).getExpRecordId());
+        Assert.assertEquals(text3.getExpRecordId(), loadedRecords.get(0).getNext());
+        Assert.assertNull(loadedRecords.get(1).getNext());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setText("x56df");
+        loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setUserName("public");
+        loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(2, loadedExp.getAllFoundObjects().size());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setUserName("invalid-user");
+        loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
-@Ignore("Ignored until new API is implemented for requests")
+
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test002_searchExperimentByDescription() {
 //        Date creationDate = new Date();
@@ -221,7 +223,8 @@ public class ExperimentServiceTest extends TestBase {
 //        loadedExp = experimentService.load(builder.buildSearchRequest());
 //        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
-@Ignore("Ignored until new API is implemented for requests")
+
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test003_searchExperimentByTextRecord() {
 //        Date creationDate = new Date();
@@ -243,7 +246,8 @@ public class ExperimentServiceTest extends TestBase {
 //        loadedExp = experimentService.load(builder.buildSearchRequest());
 //        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
-@Ignore("Ignored until new API is implemented for requests")
+
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test004_searchExperimentByItemAndMaterialNames() {
 //        Date creationDate = new Date();
@@ -270,7 +274,8 @@ public class ExperimentServiceTest extends TestBase {
 //        loadedExp = experimentService.load(req);
 //        Assert.assertEquals("Search for 'Flasche'", 1, loadedExp.getAllFoundObjects().size());
     }
-@Ignore("Ignored until new API is implemented for requests")
+
+    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test005_searchExperimentByUnreadableMaterial() {
 //        Date creationDate = new Date();

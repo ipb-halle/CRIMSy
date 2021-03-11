@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.exp.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
-import de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
@@ -54,34 +53,34 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
     public List<Condition> getExperimentCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
-//            switch (entry.getKey()) {
-//                case TEXT:
-//                    // take care for ExpText, ExpAssay, ...
-//                    break;
-//            }
+            switch (entry.getKey()) {
+                case LABEL:
+                    addLabelCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    break;
+            }
+            switch (entry.getKey()) {
+                case TEXT:
+                    addTextCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    break;
+            }
+            switch (entry.getKey()) {
+                case USER:
+                    addOwnerCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    break;
+            }
         }
-
         addMaterialCondition(conditionList, request);
         addItemCondition(conditionList, request);
         return conditionList;
     }
 
-//  Items and Material handled by addItemCondition and addMaterialCondition
-    @Deprecated
-    private void addIndexCondition(List<Condition> conditionList, Set<String> values, Boolean isName) {
-        if (isName != null) {
-            Condition typeCondition = getBinaryLeafCondition(
-                    isName ? Operator.EQUAL : Operator.NOT_EQUAL,
-                    IndexTypeEntity.INDEX_TYPE_NAME,
-                    "DEPRECATED",
-                    AttributeType.INDEX_TYPE);
-            conditionList.add(new Condition(
-                    Operator.AND,
-                    getIndexCondition(values, false),
-                    typeCondition));
-            return;
-        }
-        conditionList.add(getIndexCondition(values, true));
+    private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
+        conditionList.add(getBinaryLeafConditionWithCast(
+                Operator.IN,
+                values,
+                "(%s)",
+                rootGraphName,
+                AttributeType.LABEL));
     }
 
     private void addItemCondition(List<Condition> conditionList, SearchRequest request) {
@@ -114,31 +113,42 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         }
     }
 
-    //  Items and Material handled by addItemCondition and addMaterialCondition
-    @Deprecated
-    private Condition getIndexCondition(Set<String> values, boolean requireTopLevel) {
+    private void addTextCondition(List<Condition> conditionList, Set<String> values) {
+        conditionList.add(getTextCondition(values));
+    }
+
+    private Condition getTextCondition(Set<String> values) {
         ArrayList<Condition> subConditionList = new ArrayList<>();
         for (String value : values) {
             subConditionList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
-                    "DEPRECATED",
-                    getIndexAttributes(requireTopLevel)));
+                    rootGraphName,
+                    AttributeType.TOPLEVEL,
+                    AttributeType.TEXT));
         }
-        return getDisjunction(subConditionList);
+        if (subConditionList.size() > 1) {
+            return new Condition(
+                    Operator.OR,
+                    subConditionList.toArray(new Condition[0])
+            );
+        }
+        if (subConditionList.size() > 0) {
+            return subConditionList.get(0);
+        }
+        throw new IllegalArgumentException("Could not create Condition");
     }
 
-    //  Items and Material handled by addItemCondition and addMaterialCondition
-    @Deprecated
-    private AttributeType[] getIndexAttributes(boolean requireTopLevel) {
-        if (requireTopLevel) {
-            return new AttributeType[]{
-                AttributeType.TOPLEVEL,
-                AttributeType.TEXT
-            };
+    private void addOwnerCondition(List<Condition> conditionList, Set<String> values) {
+        if (values.size() != 1) {
+            throw new IllegalArgumentException("Addition of multiple owners currently not supported");
         }
-        return new AttributeType[]{
-            AttributeType.TEXT};
+        Condition con = getBinaryLeafCondition(
+                Operator.ILIKE,
+                "%" + values.iterator().next() + "%",
+                rootGraphName + "/USERSGROUPS",
+                AttributeType.MEMBER_NAME);
+        conditionList.add(con);
     }
 
 }

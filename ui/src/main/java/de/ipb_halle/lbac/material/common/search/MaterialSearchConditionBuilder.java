@@ -49,8 +49,6 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         super(entityGraph, rootName);
     }
 
-  
-
     private void addDeactivatedCondition(List<Condition> conditionList, Set<String> values) {
         Boolean deactivated = Boolean.FALSE;
         for (String val : values) {
@@ -90,8 +88,9 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     /**
      * ToDo: distinguish between LABEL and ID AttributeType annotation
+     *
      * @param conditionList
-     * @param values 
+     * @param values
      */
     private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
         Set<Integer> idSet = new HashSet<>();
@@ -232,7 +231,9 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     addMaterialTypeCondition(conditionList, entry.getValue());
                     break;
                 case USER:
-                    addOwnerCondition(conditionList, entry.getValue());
+                    if (toplevel) {
+                        addOwnerCondition(conditionList, entry.getValue());
+                    }
                     break;
             }
         }

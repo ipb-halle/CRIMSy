@@ -77,8 +77,9 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     /**
      * ToDo: possibly replace by call to ContainerSearchConditionBuilder?
+     *
      * @param conditionList
-     * @param values 
+     * @param values
      */
     private void addLocationCondition(List<Condition> conditionList, Set<String> values) {
         List<Condition> subList = new ArrayList<>();
@@ -88,7 +89,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                     "%" + value + "%",
                     rootGraphName + "/containers",
                     AttributeType.LABEL));
-            
+
             subList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
@@ -106,7 +107,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
         List<Condition> subList = matBuilder.getMaterialCondition(request, false);
 
         if (!subList.isEmpty()) {
-            addSubGraphACL(materialSubGraph, 
+            addSubGraphACL(materialSubGraph,
                     ItemEntityGraphBuilder.materialSubGraphPath,
                     request.getUser());
 
@@ -116,7 +117,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
             }
         }
     }
-    
+
     private void addOwnerCondition(List<Condition> conditionList, Set<String> values) {
         if (values.size() != 1) {
             throw new IllegalArgumentException("Addition of multiple owners currently not supported");
@@ -146,8 +147,6 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
      *
      * @param conditionList
      * @param values
-     * @param isName limit search to names (true), indices (false) or not at all
-     * (null)
      */
     private void addTextCondition(List<Condition> conditionList, Set<String> values) {
         conditionList.add(getTextCondition(values));
@@ -188,7 +187,9 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
                     }
                     break;
                 case USER:
-                    addOwnerCondition(conditionList, entry.getValue());
+                    if (toplevel) {
+                        addOwnerCondition(conditionList, entry.getValue());
+                    }
                     break;
             }
         }

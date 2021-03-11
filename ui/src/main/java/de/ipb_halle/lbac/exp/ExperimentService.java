@@ -124,9 +124,6 @@ public class ExperimentService implements Serializable {
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         ExperimentSearchConditionBuilder conBuilder=new ExperimentSearchConditionBuilder(graph,"experiments");
         Condition con=conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
-        
-       
-        
         String sql = sqlBuilder.query(con);
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {

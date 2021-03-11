@@ -299,7 +299,7 @@ public class SearchServiceTest extends TestBase {
         //Search for an user
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName("public");
-        Assert.assertEquals(2, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
+        Assert.assertEquals(3, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
 
         //Item not found, because material not readable
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);

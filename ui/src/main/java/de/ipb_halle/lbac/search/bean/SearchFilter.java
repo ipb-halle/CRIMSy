@@ -166,7 +166,7 @@ public class SearchFilter {
 
     private SearchRequest createExperimentRequest() {
         ExperimentSearchRequestBuilder expBuilder = new ExperimentSearchRequestBuilder(user, 0, maxresults);
-        expBuilder.addText(searchTerms);
+        expBuilder.setText(searchTerms);
         return expBuilder.build();
     }
 
