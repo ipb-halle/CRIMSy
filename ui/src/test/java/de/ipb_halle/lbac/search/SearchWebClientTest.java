@@ -131,7 +131,6 @@ public class SearchWebClientTest extends TestBase {
             impls.add((SearchRequestImpl) r);
         }
         request.addRequest(impls);
-        request.switchToTransferMode();
         File f = new File("target/searchWebRequest.xml");
         jaxbMarshaller.marshal(request, f);
 
@@ -139,7 +138,7 @@ public class SearchWebClientTest extends TestBase {
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         
         SearchWebRequest unserialisedRequest = (SearchWebRequest) jaxbUnmarshaller.unmarshal(new FileInputStream(f));
-        unserialisedRequest.switchToLocalMode();
+      
     }
 
     @Deployment

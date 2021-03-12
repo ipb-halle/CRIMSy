@@ -134,18 +134,6 @@ public class SearchRequestImpl implements SearchRequest {
         }
     }
 
-    public void switchToLocalMode() {
-        if (getCondition() != null) {
-            getCondition().switchToLocalMode();
-            if (getCondition().getConditions() != null) {
-                for (Condition con : getCondition().getConditions()) {
-                    con.switchToLocalMode();
-                }
-            }
-        }
-
-    }
-
     @Override
     public Map<SearchCategory, Set<String>> getSearchValues() {
         return searchValues;

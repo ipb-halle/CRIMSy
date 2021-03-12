@@ -207,66 +207,64 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test002_searchExperimentByDescription() {
-//        Date creationDate = new Date();
-//        Experiment exp = new Experiment(null, "TEST-EXP-001", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
-//        exp = experimentService.save(exp);
-//
-//        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("java");
-//        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
-//
-//        builder.addDescription("c#");
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-001", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
+        exp = experimentService.save(exp);
+
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setText("java");
+        SearchResult loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        builder.setText("c#");
+        loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test003_searchExperimentByTextRecord() {
-//        Date creationDate = new Date();
-//        Experiment exp = new Experiment(null, "TEST-EXP-002", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
-//        exp = experimentService.save(exp);
-//        Text text1 = new Text();
-//        text1.setExperiment(exp);
-//        text1.setCreationTime(creationDate);
-//        text1.setText("C# is also good");
-//        text1 = (Text) recordService.save(text1,publicUser);
-//
-//        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("C#");
-//        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
-//
-//        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("PROLOG");
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-002", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
+        exp = experimentService.save(exp);
+        Text text1 = new Text();
+        text1.setExperiment(exp);
+        text1.setCreationTime(creationDate);
+        text1.setText("C# is also good");
+        text1 = (Text) recordService.save(text1,publicUser);
+
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setText("C#");
+        SearchResult loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setText("PROLOG");
+        loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
+   
     @Test
     public void test004_searchExperimentByItemAndMaterialNames() {
-//        Date creationDate = new Date();
-//        Experiment exp = new Experiment(null, "TEST-EXP-003", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
-//        exp = experimentService.save(exp);
-//        Assay assay = new Assay();
-//        assay.getLinkedData().get(0).setMaterial(material1);
-//        assay.setExperiment(exp);
-//
-//        LinkedData assayRecord = new LinkedData(assay,  
-//                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
-//        assayRecord.setItem(item1);     // automatically sets material
-//        assay.getLinkedData().add(assayRecord);
-//        recordService.save(assay,publicUser);
-//
-//        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("Benzol");
-//        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals("Search for 'Benzol'", 1, loadedExp.getAllFoundObjects().size());
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-003", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
+        exp = experimentService.save(exp);
+        Assay assay = new Assay();
+        assay.getLinkedData().get(0).setMaterial(material1);
+        assay.setExperiment(exp);
+
+        LinkedData assayRecord = new LinkedData(assay,  
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
+        assayRecord.setItem(item1);
+        assay.getLinkedData().add(assayRecord);
+        recordService.save(assay,publicUser);
+
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("Benzol");
+        SearchResult loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals("Search for 'Benzol'", 1, loadedExp.getAllFoundObjects().size());
 //
 //        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
 //        builder.addDescription("Flasche");

@@ -50,16 +50,8 @@ public class SearchWebRequest extends WebRequest {
         return requests;
     }
 
-    public void switchToTransferMode() {
-        for (SearchRequestImpl impl : requests) {
-            impl.switchToTransferMode();
-        }
-    }
+    
 
-    public void switchToLocalMode() {
-        for (SearchRequestImpl impl : requests) {
-            impl.switchToLocalMode();
-        }
-    }
+   
 
 }

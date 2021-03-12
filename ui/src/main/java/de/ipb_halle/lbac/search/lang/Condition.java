@@ -21,23 +21,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author fmauz
  */
-@XmlRootElement
 public class Condition {
 
     private Attribute attribute;
     private Condition[] conditions;
     private Operator operator;
     private Value value;
-
-    @Deprecated
-    public Condition() {
-    }
 
     public Condition(Attribute attribute, Operator operator, Value value) {
         if (value == null) {
@@ -163,18 +157,26 @@ public class Condition {
         }
     }
 
-    public void switchToLocalMode() {
-        if (value != null) {
-            if (value.getSingleValue() != null) {
-                value.setValue(value.getSingleValue());
+   
+    
+    public void debug(String level){
+        if(operator!=null){
+            System.out.println(level+operator);
+        }
+        if(attribute!=null){
+            String s=" ";
+            for(AttributeType at:attribute.getTypes()){
+            s+=at+":";
             }
-            if (value.getValueList() != null) {
-                value.setValue(value.getValueList());
+            if(value!=null){
+                s+="::"+value.getValue();
             }
-            if (value.getValueSet() != null) {
-                value.setValue(value.getValueSet());
+            System.out.println(level+s+"( "+ attribute.getGraphPath()+")");
+        }
+        if(conditions!=null){
+            for(Condition c:conditions){
+                c.debug(level+"-");
             }
-            value.setCastExpression(value.getTransferCastExpression());
         }
     }
 
