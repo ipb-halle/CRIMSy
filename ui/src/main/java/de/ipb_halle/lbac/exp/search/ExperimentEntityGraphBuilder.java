@@ -38,9 +38,10 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
     public final static String itemSubGraphName = "expItems";
     public final static String materialSubGraphName = "expMaterials";
-    public final static String itemSubGraphPath = "exp_records/exp_linked_data/" + itemSubGraphName;
-    public final static String materialSubGraphPath = "exp_records/exp_linked_data/" + materialSubGraphName;
-    
+    public final static String linkedDataGraphPath = "exp_records/exp_linked_data";
+    public final static String itemSubGraphPath = linkedDataGraphPath + "/" + itemSubGraphName;
+    public final static String materialSubGraphPath = linkedDataGraphPath + "/" + materialSubGraphName;
+
     private EntityGraph linkedDataEntityGraph;
     private EntityGraph expRecordGraph;
 
@@ -56,7 +57,6 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
         expRecordGraph = addJoin(JoinType.LEFT, ExpRecordEntity.class, "experimentid", "experimentid");
         // LinkedData
         linkedDataEntityGraph = addJoinToChild(JoinType.LEFT, expRecordGraph, LinkedDataEntity.class, "exprecordid", "exprecordid");
-       // addJoinToChild(JoinType.LEFT, linkedDataEntityGraph, ItemEntity.class, "itemid", "id");
         addMaterialSubGraph(linkedDataEntityGraph);
         addItemSubGraph(linkedDataEntityGraph);
         // Text

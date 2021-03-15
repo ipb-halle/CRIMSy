@@ -54,6 +54,7 @@ public class SqlBuilder {
     public SqlBuilder(EntityGraph graph, boolean subSelect) {
         this.entityGraph = graph;
         this.subSelect = subSelect;
+        this.argumentCounter = 0;
     }
 
     /**
@@ -124,19 +125,6 @@ public class SqlBuilder {
             this.valueList.add(value);
             addBinaryLeafCondition(sb, columns, operator, value);
         }
-    }
-
-    private int getArgumentCounter() {
-        return this.argumentCounter;
-    }
-
-    private DbField getOrderColumn(DbField field) {
-        for (DbField f : this.allFields) {
-            if (f.matchesOrder(field)) {
-                return f;
-            }
-        }
-        throw new NoSuchElementException("No matching field found in getOrderColumn()");
     }
 
     /**
@@ -241,25 +229,8 @@ public class SqlBuilder {
         return sb.toString();
     }
 
-    /**
-     * obtain a set of columns, which matches the given attribute
-     *
-     * @param attribute the attribute to filter the fields (columns) against
-     * @return a set of matching columns
-     */
-    private Set<DbField> getMatchingColumns(String context, Attribute attribute) {
-        Set<DbField> fields = new HashSet<>();
-        for (DbField field : this.allFields) {
-//            String s = "";
-//            for (AttributeType t : field.getAttributeTypes()) {
-//                s += t.name() + ":";
-//            }
-//            System.out.println(s);
-            if (field.matches(context, attribute)) {
-                fields.add(field);
-            }
-        }
-        return fields;
+    private int getArgumentCounter() {
+        return this.argumentCounter;
     }
 
     /**
@@ -281,6 +252,31 @@ public class SqlBuilder {
                 return " RIGHT JOIN ";
         }
         throw new IllegalStateException("Encountered illegal JoinType");
+    }
+
+    /**
+     * obtain a set of columns, which matches the given attribute
+     *
+     * @param attribute the attribute to filter the fields (columns) against
+     * @return a set of matching columns
+     */
+    private Set<DbField> getMatchingColumns(String context, Attribute attribute) {
+        Set<DbField> fields = new HashSet<>();
+        for (DbField field : this.allFields) {
+            if (field.matches(context, attribute)) {
+                fields.add(field);
+            }
+        }
+        return fields;
+    }
+
+    private DbField getOrderColumn(DbField field) {
+        for (DbField f : this.allFields) {
+            if (f.matchesOrder(field)) {
+                return f;
+            }
+        }
+        throw new NoSuchElementException("No matching field found in getOrderColumn()");
     }
 
     /**
@@ -321,11 +317,12 @@ public class SqlBuilder {
                 sb.append(" ( ");
                 String tmpAlias = child.getAlias();
                 SqlBuilder builder = new SqlBuilder(child, true);
+                builder.setArgumentCounter(this.argumentCounter);
                 sb.append(builder.query(
                         "sub_" + tmpAlias,
                         child.getSubSelectCondition(),
                         null, child.getSubSelectAttribute()));
-                this.argumentCounter += builder.getArgumentCounter();
+                this.argumentCounter = builder.getArgumentCounter();
                 sb.append(" ) ");
                 child.setAlias(tmpAlias);
                 this.valueList.addAll(builder.getValueList());
@@ -435,7 +432,6 @@ public class SqlBuilder {
     }
 
     public String query(String alias, Condition condition, List<DbField> orderList, AttributeType attr) {
-        this.argumentCounter = 0;
         this.valueList = new ArrayList<>();
         this.entityGraph.reset(alias);
         this.entityGraph.setAlias(alias);
@@ -469,6 +465,10 @@ public class SqlBuilder {
             sep = ", ";
         }
         return sb.toString();
+    }
+
+    public void setArgumentCounter(int argumentCounter) {
+        this.argumentCounter = argumentCounter;
     }
 
     /**

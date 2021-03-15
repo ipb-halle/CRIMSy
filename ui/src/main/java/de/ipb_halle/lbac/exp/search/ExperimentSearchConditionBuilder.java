@@ -70,8 +70,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
             }
         }
         addMaterialCondition(conditionList, request);
-        //TO DO: match the correct subgraph
-      //  addItemCondition(conditionList, request);
+        addItemCondition(conditionList, request);
         return conditionList;
     }
 
@@ -88,7 +87,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
         EntityGraph itemSubGraph = entityGraph.selectSubGraph(
                 String.join("/", rootGraphName, ExperimentEntityGraphBuilder.itemSubGraphPath));
         ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(
-                itemSubGraph, String.join("/",itemSubGraph.getGraphName()));
+                itemSubGraph, String.join("/", itemSubGraph.getGraphName()));
         List<Condition> subList = itemBuilder.getItemCondition(request, false);
 
         if (!subList.isEmpty()) {
@@ -96,21 +95,28 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
                     itemSubGraph,
                     ExperimentEntityGraphBuilder.itemSubGraphName,
                     request.getUser());
+
+            for (Condition con : subList) {
+                con.addParentPath(String.join("/", rootGraphName, ExperimentEntityGraphBuilder.linkedDataGraphPath));
+            }
+
             conditionList.addAll(subList);
         }
+
     }
 
     private void addMaterialCondition(List<Condition> conditionList, SearchRequest request) {
         EntityGraph materialSubGraph = entityGraph.selectSubGraph(
                 String.join("/", rootGraphName, ExperimentEntityGraphBuilder.materialSubGraphPath));
         MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
-                materialSubGraph, String.join("/",rootGraphName,ExperimentEntityGraphBuilder.materialSubGraphPath));
+                materialSubGraph, String.join("/", rootGraphName, ExperimentEntityGraphBuilder.materialSubGraphPath));
         List<Condition> subList = matBuilder.getMaterialCondition(request, false);
         if (!subList.isEmpty()) {
             addSubGraphACL(
                     materialSubGraph,
                     materialSubGraph.getGraphName(),
                     request.getUser());
+
             conditionList.addAll(subList);
         }
     }
@@ -131,7 +137,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
             subConditionList.add(getBinaryLeafCondition(
                     Operator.ILIKE,
                     "%" + value + "%",
-                    rootGraphName+"/exp_records/exp_texts",
+                    rootGraphName + "/exp_records/exp_texts",
                     AttributeType.TEXT));
         }
         if (subConditionList.size() > 1) {

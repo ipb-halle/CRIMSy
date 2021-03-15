@@ -265,12 +265,6 @@ public class ExperimentServiceTest extends TestBase {
         builder.setMaterialName("Benzol");
         SearchResult loadedExp = experimentService.load(builder.build());
         Assert.assertEquals("Search for 'Benzol'", 1, loadedExp.getAllFoundObjects().size());
-//
-//        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("Flasche");
-//        SearchRequest req = builder.buildSearchRequest();
-//        loadedExp = experimentService.load(req);
-//        Assert.assertEquals("Search for 'Flasche'", 1, loadedExp.getAllFoundObjects().size());
     }
 
     @Ignore("Ignored until new API is implemented for requests")
