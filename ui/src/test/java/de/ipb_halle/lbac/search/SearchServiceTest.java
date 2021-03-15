@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.Node;
+import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExperimentService;
@@ -45,21 +46,18 @@ import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchConditionBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -68,8 +66,10 @@ import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
@@ -326,10 +326,10 @@ public class SearchServiceTest extends TestBase {
 
     }
 
-    @Ignore
     @Test
     public void test008_searchExperiments() {
         createExp1();
+
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("Testmaterial-001");
         SearchRequest request = builder.build();

@@ -33,5 +33,6 @@ public enum SearchCategory {
     DEACTIVATED,
     TEXT,
     WORDROOT,
-    COLLECTION
+    COLLECTION,
+    TEMPLATE
 }

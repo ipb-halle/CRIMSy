@@ -49,7 +49,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     protected void addIndex() {
-        indexGraph = addJoin(JoinType.INNER, MaterialIndexEntryEntity.class, "materialid", "materialid");
+        indexGraph = addJoin(JoinType.LEFT, MaterialIndexEntryEntity.class, "materialid", "materialid");
     }
 
     protected void addOwner() {

@@ -35,6 +35,7 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
     private String userName;
     private String structure;
     private String id;
+    private String template;
 
     public ExperimentSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -53,11 +54,12 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         addStructure();
         addUserName();
         addText();
+        addTemplate();
         addId();
     }
-    
-    public void setMaterialName(String name){
-        this.materialName=name;
+
+    public void setMaterialName(String name) {
+        this.materialName = name;
     }
 
     public void setId(String id) {
@@ -67,8 +69,6 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
     public void setUserName(String userName) {
         this.userName = userName;
     }
-    
-    
 
     private void addMaterialName() {
         if (materialName != null && !materialName.trim().isEmpty()) {
@@ -95,15 +95,26 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         }
     }
 
+    private void addTemplate() {
+        if (template != null && !template.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.TEMPLATE, template);
+        }
+    }
+
     private void addText() {
         if (text != null && !text.trim().isEmpty()) {
             request.addSearchCategory(SearchCategory.TEXT, text);
         }
     }
-    private void addId(){
-        if(id!= null&&!id.isEmpty()){
+
+    private void addId() {
+        if (id != null && !id.isEmpty()) {
             request.addSearchCategory(SearchCategory.LABEL, id);
         }
     }
-    
+
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
 }

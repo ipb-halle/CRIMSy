@@ -52,10 +52,23 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
     public List<Condition> getExperimentCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
+        List<Condition> conditions = createMaterialCondition(request);
+        conditions.addAll(createItemCondition(request));
+        if (!conditions.isEmpty()) {
+            Condition[] conditionArray = new Condition[conditions.size()];
+            conditionArray = conditions.toArray(conditionArray);
+            conditionList.add(new Condition(Operator.OR, conditionArray));
+        }
+
         for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
             switch (entry.getKey()) {
                 case LABEL:
                     addLabelCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    break;
+            }
+            switch (entry.getKey()) {
+                case TEMPLATE:
+                    addTemplateCondition(conditionList, request.getSearchValues().get(entry.getKey()));
                     break;
             }
             switch (entry.getKey()) {
@@ -69,8 +82,6 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
                     break;
             }
         }
-        addMaterialCondition(conditionList, request);
-        addItemCondition(conditionList, request);
         return conditionList;
     }
 
@@ -83,7 +94,7 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
                 AttributeType.LABEL));
     }
 
-    private void addItemCondition(List<Condition> conditionList, SearchRequest request) {
+    private List<Condition> createItemCondition(SearchRequest request) {
         EntityGraph itemSubGraph = entityGraph.selectSubGraph(
                 String.join("/", rootGraphName, ExperimentEntityGraphBuilder.itemSubGraphPath));
         ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(
@@ -100,12 +111,13 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
                 con.addParentPath(String.join("/", rootGraphName, ExperimentEntityGraphBuilder.linkedDataGraphPath));
             }
 
-            conditionList.addAll(subList);
+            return subList;
         }
+        return new ArrayList<>();
 
     }
 
-    private void addMaterialCondition(List<Condition> conditionList, SearchRequest request) {
+    private List<Condition> createMaterialCondition(SearchRequest request) {
         EntityGraph materialSubGraph = entityGraph.selectSubGraph(
                 String.join("/", rootGraphName, ExperimentEntityGraphBuilder.materialSubGraphPath));
         MaterialSearchConditionBuilder matBuilder = new MaterialSearchConditionBuilder(
@@ -117,7 +129,21 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
                     materialSubGraph.getGraphName(),
                     request.getUser());
 
-            conditionList.addAll(subList);
+            return subList;
+        }
+        return new ArrayList<>();
+    }
+
+    private void addTemplateCondition(List<Condition> conditionList, Set<String> values) {
+        if (values.size() == 1) {
+            conditionList.add(getBinaryLeafConditionWithCast(
+                    Operator.EQUAL,
+                    Boolean.valueOf(values.iterator().next()),
+                    "(%s)",
+                    rootGraphName,
+                    AttributeType.TEMPLATE));
+        } else {
+            throw new IllegalArgumentException("Illegal valueSet for template condition");
         }
     }
 

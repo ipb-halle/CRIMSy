@@ -267,50 +267,49 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals("Search for 'Benzol'", 1, loadedExp.getAllFoundObjects().size());
     }
 
-    @Ignore("Ignored until new API is implemented for requests")
     @Test
     public void test005_searchExperimentByUnreadableMaterial() {
-//        Date creationDate = new Date();
-//        Experiment exp = new Experiment(null, "TEST-EXP-003", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
-//        exp = experimentService.save(exp);
-//        Assay assay = new Assay();
-//        assay.getLinkedData().get(0).setMaterial(material1);
-//        assay.setExperiment(exp);
-//
-//        LinkedData assayRecord = new LinkedData(assay,
-//                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
-//        assayRecord.setItem(item1);
-//        assayRecord.setMaterial(material1);
-//        int materialId = materialCreator.createStructure(
-//                publicUser.getId(),
-//                context.getNoAccessACL().getId(),
-//                project1.getId(), "Phenol");
-//
-//        LinkedData assayRecord_unreadable = new LinkedData(assay, 
-//                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 2);
-//        assayRecord_unreadable.setMaterial(materialService.loadMaterialById(materialId));
-//
-//        assay.getLinkedData().add(assayRecord);
-//        assay.getLinkedData().add(assayRecord_unreadable);
-//        recordService.save(assay,publicUser);
-//
-//        //Search by readable Material should be a success
-//        ExperimentSearchConditionBuilder builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("Benzol");
-//        SearchResult loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
-//
-//        //Search by unreadable Material should be a success
-//        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("Phenol");
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
-//
-//        //Search by unreadable Material should be a success
-//        builder = new ExperimentSearchConditionBuilder(publicUser, 0, 25);
-//        builder.addDescription("ol");
-//        loadedExp = experimentService.load(builder.buildSearchRequest());
-//        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+        Date creationDate = new Date();
+        Experiment exp = new Experiment(null, "TEST-EXP-003", "java is a fine language", false, publicReadAcl, publicUser, creationDate);
+        exp = experimentService.save(exp);
+        Assay assay = new Assay();
+        assay.getLinkedData().get(0).setMaterial(material1);
+        assay.setExperiment(exp);
+
+        LinkedData assayRecord = new LinkedData(assay,
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
+        assayRecord.setItem(item1);
+        assayRecord.setMaterial(material1);
+        int materialId = materialCreator.createStructure(
+                publicUser.getId(),
+                context.getNoAccessACL().getId(),
+                project1.getId(), "Phenol");
+
+        LinkedData assayRecord_unreadable = new LinkedData(assay, 
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 2);
+        assayRecord_unreadable.setMaterial(materialService.loadMaterialById(materialId));
+
+        assay.getLinkedData().add(assayRecord);
+        assay.getLinkedData().add(assayRecord_unreadable);
+        recordService.save(assay,publicUser);
+
+        //Search by readable Material should be a success
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("Benzol");
+        SearchResult loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+
+        //Search by unreadable Material should be a success
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("Phenol");
+        loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
+
+        //Search by unreadable Material should be a success, because the item was found.
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("ol");
+        loadedExp = experimentService.load(builder.build());
+        Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
 
     }
 
