@@ -17,52 +17,87 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import javax.faces.context.FacesContext;
-
-import org.junit.Ignore;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import de.ipb_halle.lbac.admission.mock.FacesContextMock;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import de.ipb_halle.lbac.EntityManagerService;
+import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.util.WebXml;
+import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.molecularfaces.MolPluginCore.PluginType;
 
-public class UserPluginSettingsBeanTest {
-    @Ignore("Mockito throws a weird exception because of a transitive dependency"
-            + " conflict with hibernate-core, see"
-            + " https://github.com/mockito/mockito/issues/1606#issuecomment-475281035")
+@RunWith(Arquillian.class)
+public class UserPluginSettingsBeanTest extends TestBase {
+    @Deployment
+    public static WebArchive createDeployment() {
+        return UserBeanDeployment
+                .add(prepareDeployment("UserPluginSettingsBeanTest.war")
+                        .addClass(EntityManagerService.class)
+                        .addClass(PreferenceService.class));
+    }
+
+    @Inject
+    private PreferenceService preferenceService;
+
+    @Inject
+    private EntityManagerService entityManagerService;
+
+    private User user;
+
+    @Before
+    public void beforeTest() {
+        this.user = createUser("ptester", "Preference Tester");
+    }
+
     @Test
     public void testAvailableAndDefaultMolPluginTypes() {
-        // This mocks the FacesContext calls in the WebXml utility class.
-        FacesContext fcMock = mock(FacesContext.class, RETURNS_DEEP_STUBS);
-        FacesContextMock context = new FacesContextMock(fcMock);
-        FacesContextMock.setCurrentInstance(context);
-
         List<String> plugins = new ArrayList<>();
         for (PluginType pt : PluginType.values()) {
             plugins.add(pt.toString());
         }
 
+        WebXml webXml;
         UserPluginSettingsBean bean;
 
         if (plugins.isEmpty()) {
             /*
              * No plugins are available in MolecularFaces, so we expect an empty
-             * plugin list and an empty default plugin type.
+             * plugin list and an empty default plugin type. This is probably
+             * dead code.
              */
 
             // define mock behaviour
-            when(fcMock.getExternalContext().getInitParameter(
-                    UserPluginSettingsBean.WEBXML_AVAILABLE_MOLPLUGINTYPES))
-                            .thenReturn("OpenChemLibJS,MolPaintJS");
+            webXml = new WebXml() {
+                @Override
+                public String getContextParam(String paramName) {
+                    return "OpenChemLibJS,MolPaintJS";
+                }
 
-            bean = new UserPluginSettingsBean();
+                @Override
+                public String getContextParam(String paramName,
+                        FacesContext context) {
+                    return getContextParam(paramName);
+                }
+            };
+
+            bean = new UserPluginSettingsBean(webXml, null, null);
             bean.init();
 
             assertEquals(new ArrayList<String>(), bean.getAllMolPluginTypes());
@@ -71,40 +106,154 @@ public class UserPluginSettingsBeanTest {
             // comma-separated list of plugins
             String allPlugins;
 
-            // plugin list is in order that was defined by
-            // MolPluginCore.PluginType
+            /*
+             * Plugin list is in order that was defined by
+             * MolPluginCore.PluginType.
+             */
             allPlugins = plugins.stream().collect(Collectors.joining(","));
 
             // define mock behaviour
-            when(fcMock.getExternalContext().getInitParameter(
-                    UserPluginSettingsBean.WEBXML_AVAILABLE_MOLPLUGINTYPES))
-                            .thenReturn("SomeWeirdPluginNameThatWillNeverExist,"
-                                    + allPlugins);
+            final String paramValue = "SomeWeirdPluginNameThatWillNeverExist,"
+                    + allPlugins;
+            webXml = new WebXml() {
+                @Override
+                public String getContextParam(String paramName) {
+                    return paramValue;
+                }
 
-            bean = new UserPluginSettingsBean();
+                @Override
+                public String getContextParam(String paramName,
+                        FacesContext context) {
+                    return getContextParam(paramName);
+                }
+            };
+
+            bean = new UserPluginSettingsBean(webXml, null, null);
             bean.init();
 
             assertEquals(plugins, bean.getAllMolPluginTypes());
             assertEquals(plugins.get(0), bean.getDefaultMolPluginType());
 
-            // next test: shuffle the plugin list
-            List<String> shuffled = new ArrayList<>(plugins);
-            Collections.shuffle(shuffled);
+            /*
+             * Next test: reverse the plugin list
+             */
+            List<String> reversed = new ArrayList<>(plugins);
+            Collections.reverse(reversed);
 
-            allPlugins = shuffled.stream().collect(Collectors.joining(","));
+            allPlugins = reversed.stream().collect(Collectors.joining(","));
 
             // define mock behaviour
-            when(fcMock.getExternalContext().getInitParameter(
-                    UserPluginSettingsBean.WEBXML_AVAILABLE_MOLPLUGINTYPES))
-                            .thenReturn(allPlugins
-                                    + ",SomeWeirdPluginNameThatWillNeverExist");
+            final String paramValue2 = allPlugins
+                    + ",SomeWeirdPluginNameThatWillNeverExist";
+            webXml = new WebXml() {
+                @Override
+                public String getContextParam(String paramName) {
+                    return paramValue2;
+                }
 
-            bean = new UserPluginSettingsBean();
+                @Override
+                public String getContextParam(String paramName,
+                        FacesContext context) {
+                    return getContextParam(paramName);
+                }
+            };
+
+            bean = new UserPluginSettingsBean(webXml, null, null);
             bean.init();
 
-            assertEquals(shuffled, bean.getAllMolPluginTypes());
-            assertEquals(shuffled.get(0), bean.getDefaultMolPluginType());
+            assertEquals(reversed, bean.getAllMolPluginTypes());
+            assertEquals(reversed.get(0), bean.getDefaultMolPluginType());
+
+            /*
+             * Next test: empty plugin list
+             */
+            // define mock behaviour
+            webXml = new WebXml() {
+                @Override
+                public String getContextParam(String paramName) {
+                    return "";
+                }
+
+                @Override
+                public String getContextParam(String paramName,
+                        FacesContext context) {
+                    return getContextParam(paramName);
+                }
+            };
+
+            bean = new UserPluginSettingsBean(webXml, null, null);
+            bean.init();
+
+            assertEquals(new ArrayList<>(), bean.getAllMolPluginTypes());
+            assertEquals("", bean.getDefaultMolPluginType());
+        }
+    }
+
+    @Test
+    public void getAndSetPreferencesTest() {
+        UserBeanMock ub = new UserBeanMock();
+        ub.setCurrentAccount(user);
+
+        /*
+         * Define mock behaviour of WebXml: return all possible plugin types.
+         */
+        List<String> plugins = new ArrayList<>();
+        for (PluginType pt : PluginType.values()) {
+            plugins.add(pt.toString());
         }
 
+        final String allPlugins = plugins.stream()
+                .collect(Collectors.joining(","));
+        WebXml webXml = new WebXml() {
+            @Override
+            public String getContextParam(String paramName) {
+                return allPlugins;
+            }
+
+            @Override
+            public String getContextParam(String paramName,
+                    FacesContext context) {
+                return getContextParam(paramName);
+            }
+        };
+
+        UserPluginSettingsBean bean = new UserPluginSettingsBean(webXml,
+                preferenceService, ub);
+        bean.init();
+
+        if (!plugins.isEmpty()) {
+            /*
+             * receive default plugin type if no preference exists
+             */
+            assertEquals(plugins.get(0), bean.getPreferredMolPluginType());
+
+            /*
+             * try to set plugin name that does not exist, so we expect the
+             * default plugin
+             */
+            assertFalse(bean.setPreferredMolPluginType(
+                    "SomeWeirdPluginNameThatWillNeverExist"));
+            assertEquals(plugins.get(0), bean.getPreferredMolPluginType());
+
+            /*
+             * try to set a valid plugin name
+             */
+            assertTrue(bean.setPreferredMolPluginType(plugins.get(0)));
+            assertEquals(plugins.get(0), bean.getPreferredMolPluginType());
+        } else {
+            /*
+             * receive default plugin type if no preference exists
+             */
+            assertEquals("", bean.getPreferredMolPluginType());
+        }
+    }
+
+    @After
+    public void finish() {
+        /*
+         * deletion cascades to preferences table
+         */
+        this.entityManagerService.removeEntity(UserEntity.class,
+                this.user.getId());
     }
 }

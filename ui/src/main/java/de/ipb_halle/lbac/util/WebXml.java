@@ -20,15 +20,11 @@ package de.ipb_halle.lbac.util;
 import javax.faces.context.FacesContext;
 
 /**
- * This utility class offers static methods to obtain information from web.xml.
+ * This interface offers methods to obtain information from web.xml.
  * 
  * @author flange
  */
-public class WebXml {
-    // Suppresses default constructor.
-    private WebXml() {
-    }
-
+public interface WebXml {
     /**
      * Obtains the {@code param-value} for the {@code context-param} given by
      * {@code param-name} via the given {@link FacesContext} instance.
@@ -38,10 +34,7 @@ public class WebXml {
      * @param context   {@link FacesContext} instance
      * @return {@code param-value}
      */
-    public static String getContextParam(String paramName,
-            FacesContext context) {
-        return context.getExternalContext().getInitParameter(paramName);
-    }
+    public String getContextParam(String paramName, FacesContext context);
 
     /**
      * Obtains the {@code param-value} for the {@code context-param} given by
@@ -51,7 +44,5 @@ public class WebXml {
      *                  in web.xml
      * @return {@code param-value}
      */
-    public static String getContextParam(String paramName) {
-        return getContextParam(paramName, FacesContext.getCurrentInstance());
-    }
+    public String getContextParam(String paramName);
 }

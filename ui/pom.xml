@@ -588,13 +588,6 @@
             <artifactId>tx</artifactId>
             <version>1.0</version>
         </dependency>
-        <!-- Mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>3.8.0</version>
-            <scope>test</scope>
-        </dependency>
 
         <!-- MolecularFaces -->
         <dependency>

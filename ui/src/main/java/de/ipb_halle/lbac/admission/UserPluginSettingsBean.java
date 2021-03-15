@@ -29,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.util.WebXml;
+import de.ipb_halle.lbac.util.WebXmlImpl;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.molecularfaces.MolPluginCore.PluginType;
 
@@ -59,17 +60,33 @@ public class UserPluginSettingsBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+    private WebXml webXml = new WebXmlImpl();
+
     private List<String> availableMolPluginTypes;
 
     private String defaultMolPluginType = "";
 
-    private Logger logger;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
      * default constructor
      */
     public UserPluginSettingsBean() {
-        this.logger = LogManager.getLogger(this.getClass().getName());
+    }
+
+    /**
+     * Test constructor with dependency injection.
+     * 
+     * @param webXml            mock implementation of the {@link WebXml}
+     *                          interface
+     * @param preferenceService mock of {@link PreferenceService}
+     * @param userBean          mock of {@link UserBean}
+     */
+    protected UserPluginSettingsBean(WebXml webXml,
+            PreferenceService preferenceService, UserBean userBean) {
+        this.webXml = webXml;
+        this.preferenceService = preferenceService;
+        this.userBean = userBean;
     }
 
     /**
@@ -89,7 +106,7 @@ public class UserPluginSettingsBean implements Serializable {
         // intersection of both lists
         available.retainAll(supported);
 
-        this.availableMolPluginTypes = Collections.unmodifiableList(available);
+        availableMolPluginTypes = Collections.unmodifiableList(available);
 
         if (availableMolPluginTypes.size() > 0) {
             defaultMolPluginType = availableMolPluginTypes.get(0);
@@ -97,7 +114,7 @@ public class UserPluginSettingsBean implements Serializable {
     }
 
     /**
-     * Returns a set of chemical structure plugins supported by MolecularFaces.
+     * Returns a list of chemical structure plugins supported by MolecularFaces.
      */
     private List<String> getSupportedMolPluginTypes() {
         List<String> supported = new ArrayList<>();
@@ -109,12 +126,12 @@ public class UserPluginSettingsBean implements Serializable {
     }
 
     /**
-     * Returns a set of chemical structure plugins made available in web.xml.
+     * Returns a list of chemical structure plugins made available in web.xml.
      */
     private List<String> getAvailableMolPluginTypesFromWebXml() {
         List<String> available = new ArrayList<>();
 
-        String webXmlString = WebXml
+        String webXmlString = webXml
                 .getContextParam(WEBXML_AVAILABLE_MOLPLUGINTYPES);
         if ((webXmlString != null) && !webXmlString.isEmpty()) {
             for (String pluginType : webXmlString.split(",")) {
