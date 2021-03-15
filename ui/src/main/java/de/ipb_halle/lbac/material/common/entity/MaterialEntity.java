@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.entity;
 
+import de.ipb_halle.lbac.admission.ACObjectEntity;
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
@@ -36,7 +37,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "materials")
-public class MaterialEntity implements Serializable {
+public class MaterialEntity extends ACObjectEntity implements Serializable{
 
     private final static long serialVersionUID = 1L;
 
@@ -54,14 +55,7 @@ public class MaterialEntity implements Serializable {
     private Date ctime;
 
     @Column
-    private Integer aclist_id;
-
-    @Column
-    @AttributeTag(type = AttributeType.OWNER)
-    private Integer ownerid;
-
-    @Column
-     @AttributeTag(type = AttributeType.DEACTIVATED)
+    @AttributeTag(type = AttributeType.DEACTIVATED)
     private boolean deactivated;
     @Column
     private Integer projectid;
@@ -88,22 +82,6 @@ public class MaterialEntity implements Serializable {
 
     public void setCtime(Date ctime) {
         this.ctime = ctime;
-    }
-
-    public Integer getAclist_id() {
-        return aclist_id;
-    }
-
-    public void setAclist_id(Integer aclist_id) {
-        this.aclist_id = aclist_id;
-    }
-
-    public Integer getOwnerid() {
-        return ownerid;
-    }
-
-    public void setOwnerid(Integer ownerid) {
-        this.ownerid = ownerid;
     }
 
     public Integer getProjectid() {

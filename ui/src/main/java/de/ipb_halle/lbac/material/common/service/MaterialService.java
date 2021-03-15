@@ -282,8 +282,8 @@ public class MaterialService implements Serializable {
                 tissue
         );
         b.setCreationTime(me.getCtime());
-        b.setACList(aclService.loadById(me.getAclist_id()));
-        b.setOwner(memberService.loadUserById(me.getOwnerid()));
+        b.setACList(aclService.loadById(me.getACList()));
+        b.setOwner(memberService.loadUserById(me.getOwner()));
         return b;
 
     }
@@ -297,7 +297,7 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     public List<String> getSimilarMaterialNames(String name, User user) {
-        return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.aclist_id", "m.ownerid", ACPermission.permREAD))
+        return this.em.createNativeQuery(SqlStringWrapper.aclWrapper(SQL_GET_SIMILAR_NAMES, "m.aclist_id", "m.owner_id", ACPermission.permREAD))
                 .setParameter("name", "%" + name + "%")
                 .setParameter("userid", user.getId())
                 .getResultList();
@@ -364,7 +364,7 @@ public class MaterialService implements Serializable {
                 molecule,
                 moleculeId,
                 moleculeFormat);
-        s.setOwner(memberService.loadUserById(me.getOwnerid()));
+        s.setOwner(memberService.loadUserById(me.getOwner()));
         return s;
     }
 
@@ -434,7 +434,7 @@ public class MaterialService implements Serializable {
         if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.TAXONOMY) {
             material = taxonomyService.loadTaxonomyById(id);
         }
-        material.setACList(aclService.loadById(entity.getAclist_id()));
+        material.setACList(aclService.loadById(entity.getACList()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
         material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
         return material;
@@ -557,9 +557,9 @@ public class MaterialService implements Serializable {
         MaterialEntity mE = new MaterialEntity();
         mE.setCtime(new Date());
         mE.setMaterialtypeid(m.getType().getId());
-        mE.setOwnerid(ownerId);
+        mE.setOwner(ownerId);
         mE.setProjectid(m.getProjectId());
-        mE.setAclist_id(projectAclId);
+        mE.setACList(projectAclId);
         mE.setDeactivated(false);
         em.persist(mE);
         m.setId(mE.getMaterialid());
@@ -660,9 +660,9 @@ public class MaterialService implements Serializable {
         mE.setMaterialid(m.getId());
         mE.setCtime(m.getCreationTime());
         mE.setMaterialtypeid(m.getType().getId());
-        mE.setOwnerid(userId);
+        mE.setOwner(userId);
         mE.setProjectid(m.getProjectId());
-        mE.setAclist_id(projectAclId);
+        mE.setACList(projectAclId);
         em.merge(mE);
     }
 

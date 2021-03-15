@@ -34,7 +34,7 @@ public class SqlStringWrapperTest {
                 "SELECT a.a,a.b FROM columns a %s"
                 + " WHERE %s AND a.id=0",
                 SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);
-        String enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", "m.ownerid", ACPermission.permREAD);
+        String enchantedString = SqlStringWrapper.aclWrapper(originalString, "a.aclistid", "m.owner_id", ACPermission.permREAD);
 
         Assert.assertEquals(
                 "SELECT a.a,a.b "
@@ -42,7 +42,7 @@ public class SqlStringWrapperTest {
                 + "JOIN acentries ace ON ace.aclist_id=a.aclistid "
                 + "JOIN memberships me ON ace.member_id=me.group_id "
                 + "WHERE ace.permread=true "
-                + "AND (:userid=me.member_id OR m.ownerid=:userid) "
+                + "AND (:userid=me.member_id OR m.owner_id=:userid) "
                 + "AND a.id=0", enchantedString);
 
         originalString = String.format("SELECT a.a,a.b FROM columns a %s WHERE %s", SqlStringWrapper.JOIN_KEYWORD, SqlStringWrapper.WHERE_KEYWORD);

@@ -61,7 +61,7 @@ public class TaxonomyService implements Serializable {
             + "ORDER BY level";
 
     private final String SQL_GET_MATERIAL_INFOS
-            = "SELECT ctime,aclist_id,ownerid "
+            = "SELECT ctime,aclist_id,owner_id "
             + "FROM materials "
             + "WHERE materialid=:mid";
 

@@ -223,10 +223,10 @@ public class InhouseDB {
             Double molMass,
             Double exactMass) throws Exception {
         MaterialEntity mat = new MaterialEntity();
-        mat.setAclist_id(getConfigInt(ACLIST_ID));
+        mat.setACList(getConfigInt(ACLIST_ID));
         mat.setCtime(new Date());
         mat.setMaterialtypeid(getConfigInt(MOLECULE_MATERIAL_TYPE_ID));
-        mat.setOwnerid(getConfigInt(OWNER_ID));
+        mat.setOwner(getConfigInt(OWNER_ID));
         mat.setProjectid(getConfigInt(PROJECT_ID));
         
         mat = (MaterialEntity) this.builderMap

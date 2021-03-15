@@ -300,9 +300,9 @@ public class MaterialEditSaver implements Serializable {
         mE.setMaterialid(m.getId());
         mE.setCtime(m.getCreationTime());
         mE.setMaterialtypeid(m.getType().getId());
-        mE.setOwnerid(userId);
+        mE.setOwner(userId);
         mE.setProjectid(m.getProjectId());
-        mE.setAclist_id(projectAclId);
+        mE.setACList(projectAclId);
         materialService.getEm().merge(mE);
     }
 

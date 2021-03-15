@@ -128,7 +128,7 @@ public class MaterialServiceTest extends TestBase {
                 "select materialtypeid,"
                 + "ctime,"
                 + "cast(aclist_id as varchar),"
-                + "cast(ownerid as varchar),"
+                + "cast(owner_id as varchar),"
                 + "projectid"
                 + " from materials");
         Assert.assertEquals(1, materials.size());

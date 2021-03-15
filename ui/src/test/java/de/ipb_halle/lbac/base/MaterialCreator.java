@@ -86,7 +86,7 @@ public class MaterialCreator {
     String SQL_INSERT_MATERIAL = "INSERT INTO MATERIALS("
             + "materialtypeid, "
             + "aclist_id, "
-            + "ownerid, "
+            + "owner_id, "
             + "deactivated,"
             + "projectid) "
             + "VALUES("

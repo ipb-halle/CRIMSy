@@ -137,7 +137,7 @@ CREATE TABLE materials (
         materialTypeId INTEGER NOT NULL REFERENCES materialtypes(id),
         ctime TIMESTAMP  NOT NULL DEFAULT now(),
         aclist_id INTEGER NOT NULL REFERENCES aclists(id),
-        ownerId INTEGER NOT NULL REFERENCES usersgroups(id),
+        owner_id INTEGER NOT NULL REFERENCES usersgroups(id),
         deactivated BOOLEAN NOT NULL DEFAULT false,
         projectId INTEGER REFERENCES projects(id));
 
