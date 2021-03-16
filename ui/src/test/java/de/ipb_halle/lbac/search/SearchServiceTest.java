@@ -350,6 +350,14 @@ public class SearchServiceTest extends TestBase {
         Assert.assertTrue(ids.contains(expid1));
         Assert.assertTrue(ids.contains(expid4));
 
+        //For experiment 4 only the material is readable, the item not
+        List<ExpRecord> records = expRecordService.load(createExperimentCMap(expid4), publicUser);
+        Assert.assertNull(records.get(0).getLinkedData().get(0).getItem());
+        Assert.assertEquals(materialid1, records.get(0).getLinkedData().get(0).getMaterial().getId());
+        Assert.assertEquals(-1, records.get(0).getLinkedData().get(1).getItem().getId(), 0);
+        Assert.assertEquals(-1, records.get(0).getLinkedData().get(1).getMaterial().getId());
+
+        //For experiment 2 only the item is readable, the material not
         builder.setMaterialName("Testmaterial-002");
         request = builder.build();
         results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects(Experiment.class, localNode);
@@ -359,6 +367,11 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
         Assert.assertTrue(ids.contains(expid1));
         Assert.assertTrue(ids.contains(expid2));
+        records = expRecordService.load(createExperimentCMap(expid2), publicUser);
+        Assert.assertNull(records.get(0).getLinkedData().get(0).getItem());
+        Assert.assertEquals(-1, records.get(0).getLinkedData().get(0).getMaterial().getId(),0);
+        Assert.assertEquals(itemid2, records.get(0).getLinkedData().get(1).getItem().getId(), 0);
+        Assert.assertEquals(materialid2, records.get(0).getLinkedData().get(1).getMaterial().getId());
 
     }
 
@@ -610,6 +623,12 @@ public class SearchServiceTest extends TestBase {
         assayRecord.setItem(itemService.loadItemById(itemid4)); // automatically sets material
         assay.getLinkedData().add(assayRecord);
         expRecordService.save(assay, publicUser);
+    }
+
+    private Map<String, Object> createExperimentCMap(int id) {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("EXPERIMENT_ID", String.valueOf(id));
+        return cmap;
     }
 
     @Deployment
