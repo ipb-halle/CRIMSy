@@ -71,6 +71,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
 
@@ -97,7 +98,8 @@ public class SearchServiceTest extends TestBase {
     private MaterialCreator materialCreator;
     private ItemCreator itemCreator;
     private int materialid1, materialid2, notReadableMaterialId;
-    private int itemid1, itemid2, itemid3;
+    private int itemid1, itemid2, itemid3, itemid4;
+    private int expid1, expid2, expid3, expid4;
 
     @Inject
     private SearchService searchService;
@@ -328,16 +330,35 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test008_searchExperiments() {
-        createExp1();
+        //material1:readable | item2->material2: readable
+        createExp1_allReadable();
+        //notReadableMaterialId:not readable | item2->material2: readable
+        createExp2_notReadableMaterial();
+        //notReadableMaterialId:not readable | item4->notReadableMaterialId: not readable
+        createExp3_notReadableMaterialAndItem();
+        //material1:readable | item4->notReadableMaterialId: not readable
+        createExp4_notReadableItem();
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("Testmaterial-001");
         SearchRequest request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        List<Experiment> results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects(Experiment.class, localNode);
+        List<Integer> ids = results.stream()
+                .map(exp -> exp.getId())
+                .collect(Collectors.toList());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertTrue(ids.contains(expid1));
+        Assert.assertTrue(ids.contains(expid4));
 
         builder.setMaterialName("Testmaterial-002");
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects(Experiment.class, localNode);
+        ids = results.stream()
+                .map(exp -> exp.getId())
+                .collect(Collectors.toList());
+        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertTrue(ids.contains(expid1));
+        Assert.assertTrue(ids.contains(expid2));
 
     }
 
@@ -463,6 +484,12 @@ public class SearchServiceTest extends TestBase {
                 notReadableMaterialId,
                 "Testitem-003",
                 project2.getId());
+        itemid4 = itemCreator.createItem(
+                publicUser.getId(),
+                context.getNoAccessACL().getId(),
+                notReadableMaterialId,
+                "Testitem-003",
+                project2.getId());
     }
 
     private void createContainer() {
@@ -496,7 +523,7 @@ public class SearchServiceTest extends TestBase {
         anotherUser = createUser("SearchServiceTest_user", "SearchServiceTest_user");
     }
 
-    private void createExp1() {
+    private void createExp1_allReadable() {
 
         Experiment exp = new Experiment(
                 null,
@@ -507,13 +534,80 @@ public class SearchServiceTest extends TestBase {
                 publicUser,
                 new Date());
         exp = experimentService.save(exp);
+        expid1 = exp.getExperimentId();
         Assay assay = new Assay();
         assay.getLinkedData().get(0).setMaterial(materialService.loadMaterialById(materialid1));
         assay.setExperiment(exp);
 
         LinkedData assayRecord = new LinkedData(assay,
                 LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
-        assayRecord.setItem(itemService.loadItemById(itemid2));     // automatically sets material
+        assayRecord.setItem(itemService.loadItemById(itemid2)); // automatically sets material
+        assay.getLinkedData().add(assayRecord);
+        expRecordService.save(assay, publicUser);
+    }
+
+    private void createExp2_notReadableMaterial() {
+        Experiment exp = new Experiment(
+                null,
+                "SearchServiceTest:exp2",
+                "SearchServiceTest:exp2_descr",
+                false,
+                GlobalAdmissionContext.getPublicReadACL(),
+                publicUser,
+                new Date());
+        exp = experimentService.save(exp);
+        expid2 = exp.getExperimentId();
+        Assay assay = new Assay();
+        assay.getLinkedData().get(0).setMaterial(materialService.loadMaterialById(notReadableMaterialId));
+        assay.setExperiment(exp);
+
+        LinkedData assayRecord = new LinkedData(assay,
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
+        assayRecord.setItem(itemService.loadItemById(itemid2)); // automatically sets material
+        assay.getLinkedData().add(assayRecord);
+        expRecordService.save(assay, publicUser);
+    }
+
+    private void createExp3_notReadableMaterialAndItem() {
+        Experiment exp = new Experiment(
+                null,
+                "SearchServiceTest:exp3",
+                "SearchServiceTest:exp3_descr",
+                false,
+                GlobalAdmissionContext.getPublicReadACL(),
+                publicUser,
+                new Date());
+        exp = experimentService.save(exp);
+        expid3 = exp.getExperimentId();
+        Assay assay = new Assay();
+        assay.getLinkedData().get(0).setMaterial(materialService.loadMaterialById(notReadableMaterialId));
+        assay.setExperiment(exp);
+
+        LinkedData assayRecord = new LinkedData(assay,
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
+        assayRecord.setItem(itemService.loadItemById(itemid4)); // automatically sets material
+        assay.getLinkedData().add(assayRecord);
+        expRecordService.save(assay, publicUser);
+    }
+
+    private void createExp4_notReadableItem() {
+        Experiment exp = new Experiment(
+                null,
+                "SearchServiceTest:exp4",
+                "SearchServiceTest:exp4_descr",
+                false,
+                GlobalAdmissionContext.getPublicReadACL(),
+                publicUser,
+                new Date());
+        exp = experimentService.save(exp);
+        expid4 = exp.getExperimentId();
+        Assay assay = new Assay();
+        assay.getLinkedData().get(0).setMaterial(materialService.loadMaterialById(materialid1));
+        assay.setExperiment(exp);
+
+        LinkedData assayRecord = new LinkedData(assay,
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
+        assayRecord.setItem(itemService.loadItemById(itemid4)); // automatically sets material
         assay.getLinkedData().add(assayRecord);
         expRecordService.save(assay, publicUser);
     }

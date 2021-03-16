@@ -85,7 +85,6 @@ public class ExperimentService implements Serializable {
 
     private Logger logger;
 
-
     private ConditionValueFetcher conValueFetcher;
     private ExpRecordAccessChecker recordAccessChecker;
 
@@ -118,12 +117,12 @@ public class ExperimentService implements Serializable {
 
     public SearchResult load(SearchRequest request) {
         SearchResult back = new SearchResultImpl(nodeService.getLocalNode());
-          
+
         ExperimentEntityGraphBuilder graphBuilder = new ExperimentEntityGraphBuilder();
         EntityGraph graph = graphBuilder.buildEntityGraph(true);
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
-        ExperimentSearchConditionBuilder conBuilder=new ExperimentSearchConditionBuilder(graph,"experiments");
-        Condition con=conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
+        ExperimentSearchConditionBuilder conBuilder = new ExperimentSearchConditionBuilder(graph, "experiments");
+        Condition con = conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(con);
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
@@ -133,20 +132,15 @@ public class ExperimentService implements Serializable {
         q.setMaxResults(request.getMaxResults());
         List<ExperimentEntity> entities = q.getResultList();
 
-        List<Object> searchString = conValueFetcher.getValuesOfType(request.getCondition(), AttributeType.TEXT);
         for (ExperimentEntity e : entities) {
-            boolean shouldExpBeShown = recordAccessChecker.checkExpRecords(e.getExperimentId(), searchString, request.getUser());
-            if (shouldExpBeShown
-                    || recordAccessChecker.textContainsSearchTerm(e.getDescription(), searchString)) {
-
-                Experiment exp = new Experiment(
-                        e,
-                        aclistService.loadById(e.getACList()),
-                        memberService.loadUserById(e.getOwner()),
-                        loadProject(e));
-                back.addResult(exp);
-            }
+            Experiment exp = new Experiment(
+                    e,
+                    aclistService.loadById(e.getACList()),
+                    memberService.loadUserById(e.getOwner()),
+                    loadProject(e));
+            back.addResult(exp);
         }
+
         return back;
     }
 
