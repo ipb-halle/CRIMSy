@@ -126,13 +126,12 @@ public class DocumentSearchServiceTest extends TestBase {
         Assert.assertEquals(0, netObjects.size());
     }
 
-    @Ignore("Until complete implementation of DocumentConditionBuilder")
     @Test
     public void test002_loadDocuments_withOneWordRoot() throws FileNotFoundException, InterruptedException {
 
         RelevanceCalculator calculator = new RelevanceCalculator(Arrays.asList("java"));
 
-        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
         builder.setCollectionId(col.getId());
         builder.setWordRoots(new HashSet<>(Arrays.asList("java")));
         SearchRequest request = builder.build();
@@ -152,16 +151,13 @@ public class DocumentSearchServiceTest extends TestBase {
                 documents);
     }
 
-    @Ignore
     @Test
     public void test003_loadDocuments_withTwoWordRoot() throws FileNotFoundException, InterruptedException {
-
-        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(new User(), 0, 25);
+        DocumentSearchRequestBuilder builder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
         builder.setCollectionId(col.getId());
         builder.setWordRoots(new HashSet<>(Arrays.asList("java", "failure")));
-
         SearchRequest request = builder.build();
-
+        Object o=entityManagerService.doSqlQuery("SELECT id,name,collection_id from files");
         SearchResult result = documentSearchService.loadDocuments(request);
         List<NetObject> netObjects = result.getAllFoundObjects(Document.class);
         Assert.assertEquals(3, netObjects.size());

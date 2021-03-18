@@ -43,7 +43,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.primefaces.event.FlowEvent;
@@ -84,7 +83,7 @@ public class LinkCreationProcessTest extends TestBase {
     @Override
     public void setUp() {
         super.setUp();
-
+        
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         Project project = new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL())
                 .setProjectName("LinkCreationProcessTest_Project")

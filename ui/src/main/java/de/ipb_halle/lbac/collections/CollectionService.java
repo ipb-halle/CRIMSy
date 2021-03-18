@@ -163,9 +163,7 @@ public class CollectionService {
      */
     @SuppressWarnings("unchecked")
     public List<Collection> load(Map<String, Object> cmap) {
-
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
-
         CriteriaQuery<CollectionEntity> criteriaQuery = builder.createQuery(CollectionEntity.class);
         Root<CollectionEntity> collectionRoot = criteriaQuery.from(CollectionEntity.class);
         EntityType<CollectionEntity> collectionType = em.getMetamodel().entity(CollectionEntity.class);

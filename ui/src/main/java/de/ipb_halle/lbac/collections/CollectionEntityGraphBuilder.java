@@ -15,41 +15,26 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search.document;
+package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.collections.CollectionEntity;
-import de.ipb_halle.lbac.file.FileObjectEntity;
-import de.ipb_halle.lbac.file.TermVectorEntity;
 import de.ipb_halle.lbac.search.EntityGraphBuilder;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
-import javax.persistence.criteria.JoinType;
 
 /**
  *
  * @author fmauz
  */
-public class DocumentEntityGraphBuilder extends EntityGraphBuilder {
+public class CollectionEntityGraphBuilder extends EntityGraphBuilder {
 
-    public DocumentEntityGraphBuilder() {
-        super(FileObjectEntity.class);
-    }
-
-    private void addTermVector() {
-        addJoin(JoinType.INNER, TermVectorEntity.class, "id", "file_id");
-    }
-
-    private void addCollections() {
-        EntityGraph collectionGraph = addJoin(JoinType.INNER, CollectionEntity.class, "collection_id", "id");
-        collectionGraph.addAttributeType(AttributeType.DIRECT);
-        collectionGraph.setGraphName("collections");
-        addACListConstraint(collectionGraph, getACESubGraph(), "aclist_id", true);
+    public CollectionEntityGraphBuilder() {
+        super(CollectionEntity.class);
     }
 
     @Override
     public EntityGraph buildEntityGraph(boolean toplevel) {
-        addTermVector();
-        addCollections();
+        graph.addAttributeType(AttributeType.DIRECT);
+        addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
         return graph;
     }
 }

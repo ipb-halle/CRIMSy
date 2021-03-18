@@ -86,12 +86,11 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
     }
 
     private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
-        conditionList.add(getBinaryLeafConditionWithCast(
-                Operator.IN,
+        conditionList.add(getBinaryLeafConditionWithCast(Operator.IN,
                 values,
                 "(%s)",
                 rootGraphName,
-                AttributeType.LABEL));
+                AttributeType.BARCODE));
     }
 
     private List<Condition> createItemCondition(SearchRequest request) {

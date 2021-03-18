@@ -130,11 +130,11 @@ public class SqlBuilderTest extends TestBase {
         graph.addAttributeType(AttributeType.TOPLEVEL);
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 graph,
-                new Attribute("items", new AttributeType[] {AttributeType.TOPLEVEL, AttributeType.LABEL}));
+                new Attribute("items", new AttributeType[] {AttributeType.TOPLEVEL, AttributeType.BARCODE}));
 
         // needs condition, otherwise JOIN gets removed
         String sql = countBuilder.query(
-            new Condition(new Attribute("items/materials", AttributeType.LABEL),
+            new Condition(new Attribute("items/materials", AttributeType.BARCODE),
                 Operator.EQUAL,
                 new Value(Integer.valueOf(1))
             )

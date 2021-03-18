@@ -31,7 +31,7 @@ public class FileObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    @AttributeTag(type = AttributeType.LABEL)
+    @AttributeTag(type = AttributeType.BARCODE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;

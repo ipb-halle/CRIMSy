@@ -90,7 +90,7 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
     private Date expiry_date;
 
     @Column
-    @AttributeTag(type = AttributeType.LABEL)
+    @AttributeTag(type = AttributeType.BARCODE)
     private String label;
 
     public Integer getId() {

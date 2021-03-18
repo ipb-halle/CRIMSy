@@ -47,7 +47,7 @@ public enum AttributeType {
     /* general attribute types */
     DEACTIVATED,
     PROJECT_DEACTIVATED,
-    LABEL,
+    BARCODE,
     STRUCTURE,
     TEXT,
     OWNER,

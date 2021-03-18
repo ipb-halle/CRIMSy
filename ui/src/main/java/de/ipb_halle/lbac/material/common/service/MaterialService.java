@@ -214,7 +214,7 @@ public class MaterialService implements Serializable {
     public int loadMaterialAmount(SearchRequest request) {
         EntityGraph graph = createEntityGraph();
         SqlBuilder sqlBuilder = new SqlCountBuilder(graph, 
-                new Attribute("materials", AttributeType.LABEL));
+                new Attribute("materials", AttributeType.BARCODE));
 
         MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
         Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);

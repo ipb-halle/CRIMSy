@@ -66,12 +66,11 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
             }
         }
         if (idSet.size() > 0) {
-            conditionList.add(getBinaryLeafConditionWithCast(
-                    Operator.IN,
+            conditionList.add(getBinaryLeafConditionWithCast(Operator.IN,
                     idSet,
                     "(%s)",
                     rootGraphName,
-                    AttributeType.LABEL));
+                    AttributeType.BARCODE));
         }
     }
 
@@ -84,17 +83,15 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
     private void addLocationCondition(List<Condition> conditionList, Set<String> values) {
         List<Condition> subList = new ArrayList<>();
         for (String value : values) {
-            subList.add(getBinaryLeafCondition(
-                    Operator.ILIKE,
+            subList.add(getBinaryLeafCondition(Operator.ILIKE,
                     "%" + value + "%",
                     rootGraphName + "/containers",
-                    AttributeType.LABEL));
+                    AttributeType.BARCODE));
 
-            subList.add(getBinaryLeafCondition(
-                    Operator.ILIKE,
+            subList.add(getBinaryLeafCondition(Operator.ILIKE,
                     "%" + value + "%",
                     rootGraphName + "/nested_containers/containers",
-                    AttributeType.LABEL));
+                    AttributeType.BARCODE));
         }
         conditionList.add(getDisjunction(subList));
     }

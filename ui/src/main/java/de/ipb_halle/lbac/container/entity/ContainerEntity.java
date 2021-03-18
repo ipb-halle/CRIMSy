@@ -46,7 +46,7 @@ public class ContainerEntity implements Serializable {
     private Integer parentcontainer;
 
     @Column
-    @AttributeTag(type=AttributeType.LABEL)
+    @AttributeTag(type=AttributeType.BARCODE)
     private String label;
 
     @Column

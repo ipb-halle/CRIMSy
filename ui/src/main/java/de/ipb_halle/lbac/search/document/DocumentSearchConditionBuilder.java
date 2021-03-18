@@ -18,10 +18,18 @@
 package de.ipb_halle.lbac.search.document;
 
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.collections.CollectionSearchConditionBuilder;
+import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.Operator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -30,15 +38,36 @@ import de.ipb_halle.lbac.search.lang.EntityGraph;
 public class DocumentSearchConditionBuilder extends SearchConditionBuilder {
 
     public DocumentSearchConditionBuilder(EntityGraph entityGraph, String rootGraphName) {
-        super(entityGraph,rootGraphName);
-       
+        super(entityGraph, rootGraphName);
     }
 
- 
+    private void addWordRootCondition(List<Condition> conditionList, Set<String> values) {
+        Condition con = getBinaryLeafCondition(
+                Operator.IN,
+                values,
+                String.join("/", rootGraphName, "termvectors"),
+                AttributeType.WORDROOT);
+        conditionList.add(con);
+    }
 
     @Override
-    public Condition convertRequestToCondition(SearchRequest request, ACPermission ...acPermission) {
-        return null;
-    }
+    public Condition convertRequestToCondition(SearchRequest request, ACPermission... acPermission) {
+        EntityGraph collection = entityGraph.selectSubGraph(
+                String.join("/", rootGraphName, "collections"));
 
+        List<Condition> conditionList = new ArrayList<>();
+        for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
+            switch (entry.getKey()) {
+                case WORDROOT:
+                    addWordRootCondition(conditionList, entry.getValue());
+                    break;
+            }
+        }
+        CollectionSearchConditionBuilder collectionBuilder = new CollectionSearchConditionBuilder(
+                collection,
+                String.join("/", rootGraphName, "collections"));
+        conditionList.add(collectionBuilder.convertRequestToCondition(request, acPermission));
+        return new Condition(Operator.AND, conditionList.stream().toArray(Condition[]::new));
+
+    }
 }

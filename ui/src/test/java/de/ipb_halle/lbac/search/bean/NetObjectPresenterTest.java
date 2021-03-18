@@ -121,21 +121,20 @@ public class NetObjectPresenterTest extends TestBase {
         Assert.assertEquals("-", presenter.getLink(netObjects.get(11)));
     }
 
-    @Ignore
     @Test
     public void test004_getToolTip() {
-        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(0)));
-        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(1)));
-        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(2)));
-        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(3)));
-        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(4)));
-        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(5)));
-        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(6)));
-        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(7)));
-        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(8)));
-        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(9)));
-        Assert.assertEquals("local", presenter.getToolTip(netObjects.get(10)));
-        Assert.assertEquals("remote", presenter.getToolTip(netObjects.get(11)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(0)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(1)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(2)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(3)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(4)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(5)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(6)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(7)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(8)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(9)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(10)));
+        Assert.assertNull(presenter.getToolTip(netObjects.get(11)));
     }
 
     @Test

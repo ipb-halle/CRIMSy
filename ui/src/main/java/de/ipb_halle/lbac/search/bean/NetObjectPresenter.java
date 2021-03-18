@@ -69,7 +69,7 @@ public class NetObjectPresenter {
     }
 
     public String getToolTip(NetObject no) {
-        return "This is the tooltip for " + no.toString();
+        return null;
     }
 
     public String getObjectRelevance(NetObject no) {

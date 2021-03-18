@@ -187,7 +187,8 @@ public class DocumentSearchService {
             return result;
         }
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
-        DocumentSearchConditionBuilder conBuilder=new DocumentSearchConditionBuilder(createEntityGraph(),"documents");
+        DocumentSearchConditionBuilder conBuilder = new DocumentSearchConditionBuilder(createEntityGraph(), "files");
+        conBuilder.convertRequestToCondition(request, ACPermission.permREAD).debug("");
         String sql = sqlBuilder.query(conBuilder.convertRequestToCondition(request, ACPermission.permREAD));
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {

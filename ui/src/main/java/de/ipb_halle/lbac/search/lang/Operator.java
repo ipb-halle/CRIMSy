@@ -46,7 +46,7 @@ public enum Operator {
     EQUAL(" = "),
     NOT_EQUAL(" <> "),
     GREATER_EQUAL(" >= "),
-    GREATER(" = "),
+    GREATER(" > "),
     LIKE(" LIKE "),
     ILIKE(" ILIKE "),
     SUBSTRUCTURE(" >= ");

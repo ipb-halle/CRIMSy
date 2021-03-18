@@ -22,6 +22,8 @@ package de.ipb_halle.lbac.collections;
  * collection managment
  */
 import de.ipb_halle.lbac.admission.ACObjectEntity;
+import de.ipb_halle.lbac.search.lang.AttributeTag;
+import de.ipb_halle.lbac.search.lang.AttributeType;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -37,6 +39,7 @@ public class CollectionEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    @AttributeTag(type = AttributeType.COLLECTION)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;

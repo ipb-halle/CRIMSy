@@ -105,11 +105,10 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
             }
         }
         if (idSet.size() > 0) {
-            conditionList.add(getBinaryLeafCondition(
-                    Operator.IN,
+            conditionList.add(getBinaryLeafCondition(Operator.IN,
                     idSet,
                     rootGraphName,
-                    AttributeType.LABEL));
+                    AttributeType.BARCODE));
         }
     }
 

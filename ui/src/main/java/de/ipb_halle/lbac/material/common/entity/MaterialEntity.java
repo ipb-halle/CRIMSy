@@ -43,7 +43,7 @@ public class MaterialEntity extends ACObjectEntity implements Serializable{
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @AttributeTag(type = AttributeType.LABEL)
+    @AttributeTag(type = AttributeType.BARCODE)
     private Integer materialid;
 
     @Column

@@ -369,49 +369,51 @@ public class SearchServiceTest extends TestBase {
         Assert.assertTrue(ids.contains(expid2));
         records = expRecordService.load(createExperimentCMap(expid2), publicUser);
         Assert.assertNull(records.get(0).getLinkedData().get(0).getItem());
-        Assert.assertEquals(-1, records.get(0).getLinkedData().get(0).getMaterial().getId(),0);
+        Assert.assertEquals(-1, records.get(0).getLinkedData().get(0).getMaterial().getId(), 0);
         Assert.assertEquals(itemid2, records.get(0).getLinkedData().get(1).getItem().getId(), 0);
         Assert.assertEquals(materialid2, records.get(0).getLinkedData().get(1).getMaterial().getId());
 
     }
 
-    @Ignore
     @Test
     public void test009_searchForEveryTarget() {
-//        ItemSearchConditionBuilder itemBuilder = new ItemSearchConditionBuilder(null /* ItemEntityGraphBUilder */);
-//        MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(publicUser, 0, 25);
-//        ProjectSearchConditionBuilder projectBuilder = new ProjectSearchConditionBuilder(publicUser, 0, 25);
-//        SearchRequest itemRequest = itemBuilder.buildSearchRequest();
-//        SearchRequest materialRequest = materialBuilder.buildSearchRequest();
-//        SearchRequest projectRequest = projectBuilder.buildSearchRequest();
-//
-//        SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest), localNode);
-//        Assert.assertEquals(6, response.getAllFoundObjects().size());
+        ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(publicUser, 0, 25);
+        MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        ProjectSearchRequestBuilder projectBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
+        
+        SearchRequest itemRequest = itemBuilder.build();
+        SearchRequest materialRequest = materialBuilder.build();
+        SearchRequest projectRequest = projectBuilder.build();
+
+        SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest), localNode);
+        Assert.assertEquals(8, response.getAllFoundObjects().size());
     }
 
-    @Ignore
     @Test
     public void test010_searchWithAugmentedDocumentRequest() {
-//        uploadDocuments();
-//        materialCreator.createStructure(
-//                publicUser.getId(),
-//                GlobalAdmissionContext.getPublicReadACL().getId(),
-//                project1.getId(),
-//                "H", "wasserstoff");
-//
-//        MaterialSearchConditionBuilder matRequestbuilder = new MaterialSearchConditionBuilder(publicUser, 0, 25);
-//        // ToDo: xxxx DOES NOT WORK matRequestbuilder.addIndexName("H");
-//        DocumentSearchConditionBuilder docRequestBuilder = new DocumentSearchConditionBuilder(publicUser, 0, 25);
-//        Set<String> words = new HashSet<>();
-//        words.add("x");
-//        docRequestBuilder.addWordRoots(words);
-//        SearchResult result = searchService.search(
-//                Arrays.asList(docRequestBuilder.buildSearchRequest(),
-//                        matRequestbuilder.buildSearchRequest()), localNode);
-//
-//        Assert.assertEquals(2, result.getAllFoundObjects().size());
-//
-//        deleteDocuments();
+        uploadDocuments();
+        materialCreator.createStructure(
+                publicUser.getId(),
+                GlobalAdmissionContext.getPublicReadACL().getId(),
+                project1.getId(),
+                "H", "wasserstoff");
+
+        MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.setMaterialName("H");
+
+        DocumentSearchRequestBuilder docRequestBuilder = new DocumentSearchRequestBuilder(publicUser, 0, 25);
+        docRequestBuilder.setWordRoot("x");
+        SearchResult result = searchService.search(
+                Arrays.asList(docRequestBuilder.build(),
+                        matRequestbuilder.build()), localNode);
+
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+
+        result = searchService.search(
+                Arrays.asList(docRequestBuilder.build()),
+                localNode);
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
+        deleteDocuments();
     }
 
     private void uploadDocuments() {

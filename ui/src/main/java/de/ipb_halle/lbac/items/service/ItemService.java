@@ -155,7 +155,7 @@ public class ItemService {
         EntityGraph itemGraph = graphBuilder.buildEntityGraph(true);
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 itemGraph,
-                new Attribute("items", AttributeType.LABEL));
+                new Attribute("items", AttributeType.BARCODE));
 
 
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(itemGraph, "items");
