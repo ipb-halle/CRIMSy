@@ -560,14 +560,15 @@ CREATE TABLE exp_records (
  * - additional indexing for payload column (works 
  *   only if payload is of JSON type; see example below)
  */
-CREATE TABLE exp_linked_data (
+CREATE TABLE linked_data (
     recordid        BIGSERIAL NOT NULL PRIMARY KEY,
     exprecordid     BIGINT NOT NULL 
                     REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     materialid      INTEGER 
                     REFERENCES materials(materialid) ON UPDATE CASCADE ON DELETE CASCADE,
-    itemid          INTEGER CHECK (COALESCE(materialid, itemid) IS NOT NULL)
+    itemid          INTEGER CHECK (COALESCE(materialid, itemid,fileid) IS NOT NULL)
                     REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    fileid          INTEGER REFERENCES files(id) ON UPDATE CASCADE ON DELETE CASCADE,
     rank            INTEGER DEFAULT 0,
     type            INTEGER NOT NULL,
     payload         VARCHAR

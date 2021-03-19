@@ -33,7 +33,7 @@
         <!--    <class>de.ipb_halle.lbac.api.ACObject</class> -->
         <class>de.ipb_halle.lbac.exp.ExpRecordEntity</class>
         <class>de.ipb_halle.lbac.exp.ExperimentEntity</class>
-        <class>de.ipb_halle.lbac.exp.LinkedDataEntity</class>
+        <class>de.ipb_halle.lbac.datalink.LinkedDataEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.AssayEntity</class>
         <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
         

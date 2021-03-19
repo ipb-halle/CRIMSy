@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
-import de.ipb_halle.lbac.exp.LinkedDataType;
-import de.ipb_halle.lbac.exp.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataType;
+import de.ipb_halle.lbac.datalink.LinkedData;
 import com.corejsf.util.Messages;
 
 import de.ipb_halle.lbac.entity.DTO;

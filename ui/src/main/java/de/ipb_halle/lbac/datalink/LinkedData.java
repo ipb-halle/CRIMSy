@@ -15,9 +15,11 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp;
+package de.ipb_halle.lbac.datalink;
 
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.exp.ExpRecord;
+import de.ipb_halle.lbac.exp.Payload;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 

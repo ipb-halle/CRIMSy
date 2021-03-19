@@ -26,6 +26,8 @@ package de.ipb_halle.lbac.exp;
  * The current implementation is rather a mock implementation as many important
  * aspects (permissions, history, filtering, ...) are missing.
  */
+import de.ipb_halle.lbac.datalink.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataEntity;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
@@ -124,7 +126,7 @@ public class ExpRecordService implements Serializable {
 
     public void deleteAssayRecord(long recordId) {
         em.createNativeQuery(
-                String.format("DELETE FROM exp_linked_data WHERE recordid = %d", recordId))
+                String.format("DELETE FROM linked_data WHERE recordid = %d", recordId))
                 .executeUpdate();
     }
 

@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.datalink.LinkedDataType;
+import de.ipb_halle.lbac.datalink.LinkText;
 import com.google.gson.Gson;
 import de.ipb_halle.lbac.exp.assay.SinglePointOutcome;
 

@@ -21,8 +21,8 @@ package de.ipb_halle.lbac.exp.assay;
  * AssayService handles the specific demands for storing and retrieving assay
  * data.
  */
-import de.ipb_halle.lbac.exp.LinkedDataEntity;
-import de.ipb_halle.lbac.exp.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataEntity;
+import de.ipb_halle.lbac.datalink.LinkedData;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.Experiment;

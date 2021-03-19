@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp.link;
 
+import de.ipb_halle.lbac.datalink.LinkCreationProcess;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
@@ -113,7 +114,7 @@ public class LinkCreationProcessTest extends TestBase {
         linkCreationProcess.setMaterial(materialService.loadMaterialById(materialId));
         experimentBean.getExpRecordController().actionSaveRecord();
 
-        ArrayList o = (ArrayList) entityManagerService.doSqlQuery("SELECT * from exp_linked_data");
+        ArrayList o = (ArrayList) entityManagerService.doSqlQuery("SELECT * from linked_data");
         Assert.assertEquals(1, o.size());
 
         cleanUp();
@@ -128,7 +129,7 @@ public class LinkCreationProcessTest extends TestBase {
         linkCreationProcess.setItem(itemService.loadItemById(itemId));
         experimentBean.getExpRecordController().actionSaveRecord();
 
-        ArrayList o = (ArrayList) entityManagerService.doSqlQuery("SELECT * from exp_linked_data");
+        ArrayList o = (ArrayList) entityManagerService.doSqlQuery("SELECT * from linked_data");
         Assert.assertEquals(1, o.size());
 
         cleanUp();
@@ -158,7 +159,7 @@ public class LinkCreationProcessTest extends TestBase {
     }
 
     private void cleanUp() {
-        entityManagerService.doSqlUpdate("DELETE FROM exp_linked_data");
+        entityManagerService.doSqlUpdate("DELETE FROM linked_data");
         entityManagerService.doSqlUpdate("DELETE FROM exp_records");
         entityManagerService.doSqlUpdate("DELETE FROM experiments");
     }

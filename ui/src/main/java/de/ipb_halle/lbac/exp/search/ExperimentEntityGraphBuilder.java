@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
 import de.ipb_halle.lbac.exp.ExperimentEntity;
 import de.ipb_halle.lbac.exp.assay.AssayEntity;
-import de.ipb_halle.lbac.exp.LinkedDataEntity;
+import de.ipb_halle.lbac.datalink.LinkedDataEntity;
 import de.ipb_halle.lbac.exp.text.TextEntity;
 import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
@@ -38,7 +38,7 @@ public class ExperimentEntityGraphBuilder extends EntityGraphBuilder {
 
     public final static String itemSubGraphName = "expItems";
     public final static String materialSubGraphName = "expMaterials";
-    public final static String linkedDataGraphPath = "exp_records/exp_linked_data";
+    public final static String linkedDataGraphPath = "exp_records/linked_data";
     public final static String itemSubGraphPath = linkedDataGraphPath + "/" + itemSubGraphName;
     public final static String materialSubGraphPath = linkedDataGraphPath + "/" + materialSubGraphName;
 

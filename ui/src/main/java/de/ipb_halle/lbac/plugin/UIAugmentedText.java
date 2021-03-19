@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.plugin;
 
-import de.ipb_halle.lbac.exp.LinkedData;
-import de.ipb_halle.lbac.exp.LinkedDataAgent;
-import de.ipb_halle.lbac.exp.LinkedDataHolder;
-import de.ipb_halle.lbac.exp.LinkText;
+import de.ipb_halle.lbac.datalink.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataAgent;
+import de.ipb_halle.lbac.datalink.LinkedDataHolder;
+import de.ipb_halle.lbac.datalink.LinkText;
 
 import java.io.IOException;
 import java.util.HashMap;

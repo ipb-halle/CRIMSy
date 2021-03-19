@@ -15,15 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.link;
+package de.ipb_halle.lbac.datalink;
 
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.ItemHolder;
-import de.ipb_halle.lbac.exp.LinkText;
-import de.ipb_halle.lbac.exp.LinkedData;
-import de.ipb_halle.lbac.exp.LinkedDataType;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.exp.MaterialHolder;
 import de.ipb_halle.lbac.items.Item;

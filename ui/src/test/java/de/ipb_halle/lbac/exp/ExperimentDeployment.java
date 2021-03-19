@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.datalink.LinkedDataAgent;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.service.ItemService;

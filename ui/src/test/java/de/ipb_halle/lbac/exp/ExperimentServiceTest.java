@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.datalink.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;

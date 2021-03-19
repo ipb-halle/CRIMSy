@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp;
+package de.ipb_halle.lbac.datalink;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -25,13 +25,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 /**
  * @author fbroda
  */
 @Entity
-@Table(name = "exp_linked_data")
+@Table(name = "linked_data")
 public class LinkedDataEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
@@ -48,6 +46,9 @@ public class LinkedDataEntity implements Serializable {
 
     @Column
     private Integer materialid;
+    
+    @Column
+    private Integer fileid;
 
     @Column
     private int rank;
@@ -62,6 +63,10 @@ public class LinkedDataEntity implements Serializable {
         return this.exprecordid;
     }
 
+    public Integer getFileid() {
+        return fileid;
+    }
+    
     public Integer getItemId() {
         return this.itemid;
     }
@@ -89,6 +94,10 @@ public class LinkedDataEntity implements Serializable {
     public LinkedDataEntity setExpRecordId(Long exprecordid) {
         this.exprecordid = exprecordid;
         return this;
+    }
+
+    public void setFileid(Integer fileid) {
+        this.fileid = fileid;
     }
 
     public LinkedDataEntity setItemId(Integer itemid) {

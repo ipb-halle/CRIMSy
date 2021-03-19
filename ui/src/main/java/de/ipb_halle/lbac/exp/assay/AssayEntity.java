@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
-import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;

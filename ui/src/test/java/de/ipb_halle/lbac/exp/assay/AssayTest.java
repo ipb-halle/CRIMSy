@@ -18,8 +18,8 @@
 package de.ipb_halle.lbac.exp.assay;
 
 import de.ipb_halle.lbac.exp.ExpRecord;
-import de.ipb_halle.lbac.exp.LinkedData;
-import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.datalink.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;

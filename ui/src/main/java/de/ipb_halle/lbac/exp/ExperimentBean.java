@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.datalink.LinkedDataAgent;
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACObjectBean;

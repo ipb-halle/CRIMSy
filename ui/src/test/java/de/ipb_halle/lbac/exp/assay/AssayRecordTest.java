@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
-import de.ipb_halle.lbac.exp.LinkedDataEntity;
-import de.ipb_halle.lbac.exp.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataEntity;
+import de.ipb_halle.lbac.datalink.LinkedData;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;

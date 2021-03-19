@@ -17,11 +17,11 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
-import de.ipb_halle.lbac.exp.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedData;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
-import de.ipb_halle.lbac.exp.LinkedDataType;
+import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.util.UnitsValidator;

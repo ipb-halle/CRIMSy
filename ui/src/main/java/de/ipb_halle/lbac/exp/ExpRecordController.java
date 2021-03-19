@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.datalink.LinkedData;
 import de.ipb_halle.lbac.exp.assay.Assay;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
