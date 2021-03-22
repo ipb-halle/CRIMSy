@@ -28,19 +28,13 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.items.service.ArticleService;
-import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +91,6 @@ public class ContainerServiceTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-       
 
         c0 = new Container();
         c0.setBarCode(null);
@@ -370,7 +363,60 @@ public class ContainerServiceTest extends TestBase {
             {container[1].getId(), container[2].getId()},
             {container[4].getId(), container[5].getId()}};
         test008_testPostcondition(expectation);
+    }
 
+    /**
+     * The test ensures that when the container hierarchy is broken open, the
+     * orphaned nenesting entries are completely removed
+     *
+     */
+    // BEFORE
+    // *          |- c3
+    // * c1 - c2 -
+    // *          |- c4
+    // * AFTER
+    // * c1
+    // *
+    // *    |- c3
+    // * c2 -
+    // *    |- c4
+    // */
+    @Test
+    public void test009_removeParent() {
+        String CHECK_SQL = "SELECT * FROM nested_containers order by sourceid";
+
+        instance.saveContainer(c0);
+        instance.saveContainer(c1);
+        instance.saveContainer(c2);
+        instance.saveContainer(c3);
+
+        ArrayList<Object[]> i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
+        Assert.assertEquals(5, i.size());
+        // Container c1 is in c0
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[0]);
+        Assert.assertEquals(c0.getId(), (int) i.get(0)[1]);
+        // Container c2 is in c1 and indirect c0
+        Assert.assertEquals(c2.getId(), (int) i.get(1)[0]);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1]);
+        Assert.assertEquals(c2.getId(), (int) i.get(2)[0]);
+        Assert.assertEquals(c0.getId(), (int) i.get(2)[1]);
+        // Container c3 is in c1 and indirect in c0
+        Assert.assertEquals(c3.getId(), (int) i.get(3)[0]);
+        Assert.assertEquals(c1.getId(), (int) i.get(3)[1]);
+        Assert.assertEquals(c3.getId(), (int) i.get(4)[0]);
+        Assert.assertEquals(c0.getId(), (int) i.get(4)[1]);
+
+        //remove the link between c0 and c1
+        c1.setParentContainer(null);
+        instance.saveEditedContainer(c1);
+        i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
+        Assert.assertEquals(2, i.size());
+        // Container c2 is in c1 and no more in c0
+        Assert.assertEquals(c2.getId(), (int) i.get(0)[0]);
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[1]);
+        // Container c3 is in c1 and no more in c0
+        Assert.assertEquals(c3.getId(), (int) i.get(1)[0]);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1]);
     }
 
     @Deployment

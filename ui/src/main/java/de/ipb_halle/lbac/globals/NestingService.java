@@ -138,7 +138,7 @@ public class NestingService implements Serializable {
 
     /**
      * Actualizes the nesting path for the edited container and updates all
-     * containers which have the edited container in ist path (direct or
+     * containers which have the edited container in its path (direct or
      * indirect)
      *
      * @param cid id of edited container

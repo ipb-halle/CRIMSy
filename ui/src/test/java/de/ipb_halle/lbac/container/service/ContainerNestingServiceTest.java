@@ -89,6 +89,7 @@ public class ContainerNestingServiceTest extends TestBase {
         Assert.assertEquals(2, nestedIds.size());
         nestedIds.contains(ids[2]);
         nestedIds.contains(ids[4]);
+
     }
 
     @Deployment

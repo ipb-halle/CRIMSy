@@ -64,5 +64,7 @@ public class ItemPositionHistoryList implements ItemDifference {
     public void setPositionRemoves(List<ItemPositionsHistory> positionRemoves) {
         this.positionRemoves = positionRemoves;
     }
+    
+    
 
 }
