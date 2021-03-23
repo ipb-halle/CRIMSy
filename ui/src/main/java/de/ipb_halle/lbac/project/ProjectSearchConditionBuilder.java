@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.project;
 
+import de.ipb_halle.lbac.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchCategory;
@@ -38,22 +39,23 @@ import java.util.Set;
  */
 public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
 
-    public ProjectSearchConditionBuilder(EntityGraph graph,String wordRoot) {
-        super(graph ,wordRoot);
+    public ProjectSearchConditionBuilder(EntityGraph graph, String wordRoot) {
+        super(graph, wordRoot);
     }
-    
+
     public List<Condition> getProjectCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
-        for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
-            switch (entry.getKey()) {
+
+        for (SearchCategory key : request.getSearchValues().keySet()) {
+            switch (key) {
                 case DEACTIVATED:
-                    addDeactivatedCondition(conditionList, entry.getValue());
+                    addDeactivatedCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case PROJECT:
-                    addProjectNameCondition(conditionList, entry.getValue());
+                    addProjectNameCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case USER:
-                    addOwnerCondition(conditionList, entry.getValue());
+                    addOwnerCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
             }
         }
@@ -87,7 +89,7 @@ public class ProjectSearchConditionBuilder extends SearchConditionBuilder {
     }
 
     private void addDeactivatedCondition(List<Condition> conditionList, Set<String> values) {
-        boolean deactivated=Boolean.valueOf(values.iterator().next());
+        boolean deactivated = Boolean.valueOf(values.iterator().next());
         Condition con = getBinaryLeafCondition(
                 Operator.EQUAL,
                 deactivated,

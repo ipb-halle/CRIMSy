@@ -17,11 +17,13 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,7 +37,7 @@ public class SearchRequestImpl implements SearchRequest {
     private SearchTarget searchTarget;
     private Condition condition;
 
-    private Map<SearchCategory, Set<String>> searchValues;
+    private HashMap<SearchCategory, XmlSetWrapper> searchValues;
 
     private int firstResultIndex;
     private int maxResults;
@@ -47,11 +49,13 @@ public class SearchRequestImpl implements SearchRequest {
 
     @Override
     public SearchRequest addSearchCategory(SearchCategory cat, String... values) {
-        Set<String> valueSet = new HashSet<>();
+        HashSet<String> valueSet = new HashSet<>();
         for (String s : values) {
             valueSet.add(s);
         }
-        searchValues.put(cat, valueSet);
+        XmlSetWrapper wrapper = new XmlSetWrapper();
+        wrapper.setValues(valueSet);
+        searchValues.put(cat, wrapper);
         return this;
     }
 
@@ -68,15 +72,6 @@ public class SearchRequestImpl implements SearchRequest {
         this.maxResults = maxResults;
         this.user = u;
         this.searchValues = new HashMap<>();
-    }
-
-    @Deprecated
-    public SearchRequestImpl(User u, Condition condition, int firstResult, int maxResults) {
-        this.firstResultIndex = firstResult;
-        this.maxResults = maxResults;
-        this.condition = condition;
-        this.user = u;
-
     }
 
     @Override
@@ -135,7 +130,15 @@ public class SearchRequestImpl implements SearchRequest {
     }
 
     @Override
-    public Map<SearchCategory, Set<String>> getSearchValues() {
+    public HashMap<SearchCategory, XmlSetWrapper> getSearchValues() {
         return searchValues;
     }
+
+    @Override
+    public void setSearchValues(HashMap<SearchCategory, XmlSetWrapper> values) {
+        this.searchValues = values;
+    }
+    
+  
+
 }

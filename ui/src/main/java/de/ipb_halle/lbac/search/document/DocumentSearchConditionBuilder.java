@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.document;
 
+import de.ipb_halle.lbac.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.collections.CollectionSearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;
@@ -56,13 +57,12 @@ public class DocumentSearchConditionBuilder extends SearchConditionBuilder {
                 String.join("/", rootGraphName, "collections"));
 
         List<Condition> conditionList = new ArrayList<>();
-        for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
-            switch (entry.getKey()) {
-                case WORDROOT:
-                    addWordRootCondition(conditionList, entry.getValue());
-                    break;
-            }
+
+        XmlSetWrapper wrapper = request.getSearchValues().get(SearchCategory.WORDROOT);
+        if (wrapper != null) {
+            addWordRootCondition(conditionList, wrapper.getValues());
         }
+
         CollectionSearchConditionBuilder collectionBuilder = new CollectionSearchConditionBuilder(
                 collection,
                 String.join("/", rootGraphName, "collections"));

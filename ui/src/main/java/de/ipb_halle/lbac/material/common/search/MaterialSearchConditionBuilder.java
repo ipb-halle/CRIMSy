@@ -197,41 +197,41 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
 
     public List<Condition> getMaterialCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
-        for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
-            switch (entry.getKey()) {
+        for (SearchCategory key : request.getSearchValues().keySet()) {
+            switch (key) {
                 case DEACTIVATED:
-                    addDeactivatedCondition(conditionList, entry.getValue());
+                    addDeactivatedCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case INDEX:
-                    addIndexCondition(conditionList, entry.getValue(), Boolean.FALSE);
+                    addIndexCondition(conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE);
                     break;
                 case LABEL:
                     if (toplevel) {
-                        addLabelCondition(conditionList, entry.getValue());
+                        addLabelCondition(conditionList, request.getSearchValues().get(key).getValues());
                     }
                     break;
                 case NAME:
-                    addIndexCondition(conditionList, entry.getValue(), Boolean.TRUE);
+                    addIndexCondition(conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE);
                     break;
                 case PROJECT:
                     if (toplevel) {
-                        addProjectCondition(conditionList, entry.getValue());
+                        addProjectCondition(conditionList, request.getSearchValues().get(key).getValues());
                     }
                     break;
                 case STRUCTURE:
-                    addStructureCondition(conditionList, entry.getValue());
+                    addStructureCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case TEXT:
                     if (toplevel) {
-                        addIndexCondition(conditionList, entry.getValue(), null);
+                        addIndexCondition(conditionList, request.getSearchValues().get(key).getValues(), null);
                     }
                     break;
                 case TYPE:
-                    addMaterialTypeCondition(conditionList, entry.getValue());
+                    addMaterialTypeCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case USER:
                     if (toplevel) {
-                        addOwnerCondition(conditionList, entry.getValue());
+                        addOwnerCondition(conditionList, request.getSearchValues().get(key).getValues());
                     }
                     break;
             }

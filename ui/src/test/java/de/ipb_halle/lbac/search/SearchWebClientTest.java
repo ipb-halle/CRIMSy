@@ -125,6 +125,7 @@ public class SearchWebClientTest extends TestBase {
 
         SearchWebRequest request = new SearchWebRequest();
         filter.setSearchTerms("Phenol");
+
         List<SearchRequest> requests = filter.createRequests();
         List<SearchRequestImpl> impls = new ArrayList<>();
         for (SearchRequest r : requests) {

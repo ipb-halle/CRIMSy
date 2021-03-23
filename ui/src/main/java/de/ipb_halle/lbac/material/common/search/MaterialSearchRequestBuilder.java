@@ -83,7 +83,7 @@ public class MaterialSearchRequestBuilder extends SearchRequestBuilder {
     }
 
     private void addId() {
-        if (id != null) {
+        if (id != null&&!id.equals("null")) {
             request.addSearchCategory(SearchCategory.LABEL, id);
         }
     }

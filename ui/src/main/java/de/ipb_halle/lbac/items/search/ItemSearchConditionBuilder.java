@@ -160,32 +160,32 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
 
     public List<Condition> getItemCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
-        for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
-            switch (entry.getKey()) {
+        for (SearchCategory key : request.getSearchValues().keySet()) {
+            switch (key) {
                 case DEACTIVATED:
-                    addDeactivatedCondition(conditionList, entry.getValue());
+                    addDeactivatedCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case LABEL:
                     if (toplevel) {
-                        addLabelCondition(conditionList, entry.getValue());
+                        addLabelCondition(conditionList, request.getSearchValues().get(key).getValues());
                     }
                     break;
                 case LOCATION:
-                    addLocationCondition(conditionList, entry.getValue());
+                    addLocationCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case PROJECT:
                     if (toplevel) {
-                        addProjectCondition(conditionList, entry.getValue());
+                        addProjectCondition(conditionList, request.getSearchValues().get(key).getValues());
                     }
                     break;
                 case TEXT:
                     if (toplevel) {
-                        addTextCondition(conditionList, entry.getValue());
+                        addTextCondition(conditionList, request.getSearchValues().get(key).getValues());
                     }
                     break;
                 case USER:
                     if (toplevel) {
-                        addOwnerCondition(conditionList, entry.getValue());
+                        addOwnerCondition(conditionList, request.getSearchValues().get(key).getValues());
                     }
                     break;
             }

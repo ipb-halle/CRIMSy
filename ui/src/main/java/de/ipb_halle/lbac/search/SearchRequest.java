@@ -17,9 +17,10 @@
  */
 package de.ipb_halle.lbac.search;
 
+import de.ipb_halle.lbac.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -43,9 +44,11 @@ public interface SearchRequest {
     public void setSearchTarget(SearchTarget searchTarget);
 
     public void setUser(User user);
-    
-    public SearchRequest addSearchCategory(SearchCategory cat,String ... values);
-    
-    public Map<SearchCategory,Set<String>> getSearchValues();
+
+    public SearchRequest addSearchCategory(SearchCategory cat, String... values);
+
+    public HashMap<SearchCategory, XmlSetWrapper> getSearchValues();
+
+    public void setSearchValues(HashMap<SearchCategory, XmlSetWrapper> values);
 
 }

@@ -60,25 +60,19 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
             conditionList.add(new Condition(Operator.OR, conditionArray));
         }
 
-        for (Map.Entry<SearchCategory, Set<String>> entry : request.getSearchValues().entrySet()) {
-            switch (entry.getKey()) {
+        for (SearchCategory key : request.getSearchValues().keySet()) {
+            switch (key) {
                 case LABEL:
-                    addLabelCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    addLabelCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
-            }
-            switch (entry.getKey()) {
                 case TEMPLATE:
-                    addTemplateCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    addTemplateCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
-            }
-            switch (entry.getKey()) {
                 case TEXT:
-                    addTextCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    addTextCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
-            }
-            switch (entry.getKey()) {
                 case USER:
-                    addOwnerCondition(conditionList, request.getSearchValues().get(entry.getKey()));
+                    addOwnerCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
             }
         }

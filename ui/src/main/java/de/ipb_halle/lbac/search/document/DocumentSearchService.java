@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.document;
 
+import de.ipb_halle.lbac.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.collections.Collection;
@@ -32,12 +33,8 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.Searchable;
-import de.ipb_halle.lbac.search.lang.Attribute;
-import de.ipb_halle.lbac.search.lang.AttributeType;
-import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
-import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
@@ -231,10 +228,9 @@ public class DocumentSearchService {
     }
 
     private Set<String> getWordRoots(SearchRequest request) {
-        for (SearchCategory c : request.getSearchValues().keySet()) {
-            if (c == SearchCategory.WORDROOT) {
-                return request.getSearchValues().get(c);
-            }
+        XmlSetWrapper wrapper = request.getSearchValues().get(SearchCategory.WORDROOT);
+        if (wrapper != null) {
+            return wrapper.getValues();
         }
         return new HashSet<>();
     }

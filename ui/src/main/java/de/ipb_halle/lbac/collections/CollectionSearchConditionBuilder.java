@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.lbac.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
@@ -26,6 +27,7 @@ import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,10 +48,11 @@ public class CollectionSearchConditionBuilder extends SearchConditionBuilder {
     }
 
     public List<Condition> getCollectionCondition(SearchRequest request, boolean toplevel) {
+        XmlSetWrapper wrapper = request.getSearchValues().get(SearchCategory.COLLECTION);
         List<Condition> conditionList = new ArrayList<>();
         addCollectionCondition(
                 conditionList,
-                request.getSearchValues().get(SearchCategory.COLLECTION));
+                wrapper == null ? new HashSet() : wrapper.getValues());
         return conditionList;
     }
 

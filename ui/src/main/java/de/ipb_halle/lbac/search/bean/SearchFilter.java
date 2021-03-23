@@ -22,19 +22,15 @@ import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialSearchMaskValues;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.document.DocumentSearchConditionBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchRequestBuilder;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,6 +73,7 @@ public class SearchFilter {
         if (searchTerms.isEmpty()) {
             return new ArrayList<>();
         }
+
         return Arrays.asList(
                 createExperimentRequest(),
                 createMaterialSearchRequest(),
@@ -126,7 +123,12 @@ public class SearchFilter {
             if (!mol.isEmptyMolecule()) {
                 searchValue.molecule = structureString;
             }
+        } else {
+            searchValue.type.add(MaterialType.COMPOSITION);
+            searchValue.type.add(MaterialType.STRUCTURE);
+            searchValue.type.add(MaterialType.BIOMATERIAL);
         }
+        materialRequestBuilder.setSearchValues(searchValue);
         return materialRequestBuilder.build();
     }
 
