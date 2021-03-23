@@ -60,6 +60,12 @@ public class AssayTest {
         Assert.assertTrue(assay.getErrors().isEmpty());
 
     }
+    
+    @Test
+    public void test002_isDiagrammButtonVisible(){
+         Assay assay = new Assay();
+         assay.computeSinglePointBarChart();
+    }
 
     private BioMaterial createBioMaterial(String name) {
         return new BioMaterial(1, Arrays.asList(new MaterialName(name, "en", 0)), 0, new HazardInformation(), new StorageClassInformation(), null, null);

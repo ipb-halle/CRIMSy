@@ -177,7 +177,6 @@ public class Assay extends ExpRecord implements DTO {
         yAxis.setLabel(axisLabel);
         yAxis.setMin(min * 1.1);
         yAxis.setMax(max * 1.1);
-
         model.addSeries(data);
         return model;
     }

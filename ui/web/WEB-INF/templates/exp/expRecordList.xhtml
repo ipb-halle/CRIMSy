@@ -70,10 +70,9 @@
                                        rendered="#{experimentBean.areLinksAddable(rec)}"
                                        action="#{experimentBean.actionEditRecord(rec)}"
                                        onclick="PF('dlg_createLink').show();
-                                                if (typeof dlg_createLink_panelMaterialEdit_molEditor !== 'undefined' &amp;&amp; dlg_createLink_panelMaterialEdit_molEditor != null) {
-                                                  dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());
-                                                }">
-
+                                           if (typeof dlg_createLink_panelMaterialEdit_molEditor !== 'undefined'
+                                                   &amp; &amp; dlg_createLink_panelMaterialEdit_molEditor != null)
+                                           {dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());}">
                             <span class="fa fa-link"> </span>
                         </p:commandLink>
                         <p:commandLink title="#{msgs.Edit}" 
@@ -114,18 +113,32 @@
                                              rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
                             <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
                         </h:panelGroup>
-
-
-                        <ui:fragment rendered="#{rec.edit}">
-                            <p:commandButton value="#{msgs.Cancel}" action="#{experimentBean.expRecordController.actionCancel}" update="@form" process="@this" />
-                            <p:commandButton 
-                                value="#{msgs.Save}" 
-                                action="#{experimentBean.expRecordController.actionSaveRecord}"
-                                update="@form growlMsg @(.assayTargetRow)" />
-                        </ui:fragment>
-                    </b:column>
-                </b:row>
-                <p:panelGrid 
+                <ui:fragment
+                        rendered="#{rec.edit}">
+                    <p:panelGrid styleClass="recordButtonGroup">
+                        <p:row>
+                            <p:column style="width:80%"/>
+                            <p:column style="width:10%">
+                                <p:commandButton 
+                                    styleClass="rightAligned"
+                                    value="#{msgs.Cancel}" 
+                                    action="#{experimentBean.expRecordController.actionCancel}" 
+                                    update="@form" 
+                                    process="@this" />
+                                </p:column>
+                            <p:column style="width:10%">
+                                <p:commandButton 
+                                    styleClass="rightAligned"
+                                    value="#{msgs.Save}" 
+                                    action="#{experimentBean.expRecordController.actionSaveRecord}"
+                                    update="@form growlMsg @(.assayTargetRow)" />
+                                </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </ui:fragment>
+            </b:column>
+        </b:row>
+        <p:panelGrid 
                     styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
                     columns="10">
                     <ui:repeat value="#{rec.getLinkNames()}" var="linkName">
@@ -133,8 +146,8 @@
                             styleClass="linkText"
                             value="#{linkName}" style-class="tag-badge"/>
                     </ui:repeat>
-                </p:panelGrid>
-            </b:container>
-        </ui:repeat>
-    </ui:composition>
+        </p:panelGrid>
+    </b:container>
+</ui:repeat>
+</ui:composition>
 </html>

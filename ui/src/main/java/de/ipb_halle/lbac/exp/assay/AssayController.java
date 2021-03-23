@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  * @author fbroda
  */
 public class AssayController extends ExpRecordController {
-    
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     /**
@@ -58,7 +58,7 @@ public class AssayController extends ExpRecordController {
             Assay rec = (Assay) getExpRecord();
             List<LinkedData> records = rec.getLinkedData();
             int rank = rec.getLinkedDataNextRank();
-            
+
             LinkedData assayRecord = new LinkedData(rec,
                     LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, rank);
             assayRecord.setPayload(
@@ -67,16 +67,16 @@ public class AssayController extends ExpRecordController {
                                     .iterator()
                                     .next()
                                     .toString()));
-            
+
             records.add(assayRecord);
             rec.reIndexLinkedData();
             setLinkedDataIndex(assayRecord.getIndex());
-            
+
         } catch (Exception e) {
             this.logger.info("actionAppendAssayRecord() caught an exception", (Throwable) e);
         }
     }
-    
+
     public Material getMaterialTarget() {
         for (LinkedData data : getExpRecord().getLinkedData()) {
             if (data.getLinkedDataType() == LinkedDataType.ASSAY_TARGET) {
@@ -85,16 +85,16 @@ public class AssayController extends ExpRecordController {
         }
         return null;
     }
-    
+
     public void setMaterialTarget(Material m) {
         for (LinkedData data : getExpRecord().getLinkedData()) {
             if (data.getLinkedDataType() == LinkedDataType.ASSAY_TARGET) {
                 data.setMaterial(m);
             }
         }
-        
+
     }
-    
+
     @Override
     public List<MaterialType> getMaterialTypes() {
         switch (getExpRecord()
@@ -110,12 +110,15 @@ public class AssayController extends ExpRecordController {
                 return super.getMaterialTypes();
         }
     }
-    
+
     @Override
     public boolean isDiagrammButtonVisible(Assay assay) {
-        return !assay.getLinkedData().isEmpty();
+        List<LinkedData> linkedData = assay.getLinkedData();
+        return linkedData.size() > 0 && !(linkedData.size() == 1
+                && linkedData.get(0).getMaterial() == null
+                && linkedData.get(0).getItem() == null);
     }
-    
+
     @Override
     public ExpRecord getNewRecord() {
         ExpRecord rec = new Assay();
@@ -135,20 +138,20 @@ public class AssayController extends ExpRecordController {
         if (index < 0) {
             return;
         }
-        
+
         toogleVisibilityOfMolEditor(getExpRecord()
                 .getLinkedData()
                 .get(index)
                 .getLinkedDataType());
     }
-    
+
     public void triggerAssayRecordEdit(LinkedData assayRecord) {
         assayRecord.setEdit(true);
         assayRecord.getExpRecord().reIndexLinkedData();
         setLinkedDataIndex(assayRecord.getIndex());
         toogleVisibilityOfMolEditor(assayRecord.getLinkedDataType());
     }
-    
+
     private void toogleVisibilityOfMolEditor(LinkedDataType type) {
         switch (type) {
             case ASSAY_TARGET:
@@ -160,11 +163,11 @@ public class AssayController extends ExpRecordController {
                 break;
         }
     }
-    
+
     public void actionDeleteRecord(LinkedData record) {
         Assay rec = (Assay) getExpRecord();
         rec.getLinkedData().remove(record);
         rec.reIndexLinkedData();
     }
-    
+
 }

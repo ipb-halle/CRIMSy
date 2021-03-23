@@ -43,7 +43,8 @@
     </composite:interface>
 
     <composite:implementation >
-        <b:container>
+        <b:container
+            styleClass="assayContainer">
             <b:row>
                 <b:column span="7">
                     <b:column>
@@ -67,7 +68,7 @@
                 </b:column>
                 <b:column 
                     span="4"
-                     styleClass="assayTargetRow">
+                    styleClass="assayTargetRow">
                     <b:container>
                         <b:row>
                             <b:column span="2">
@@ -78,7 +79,7 @@
                                     <crimsy:materialView material="#{cc.attrs.assay.target}" />
                                     <p:commandLink title="Action"
                                                    rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getAssayRecords().size() == 0)}"
-                                                 
+
                                                    oncomplete="PF('dlg_materialEdit').show();"> 
                                         <span class="fa fa-cog"> </span>
                                     </p:commandLink>
@@ -182,7 +183,7 @@
                                disabled="#{assayRecord.edit}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>
-                  <p:commandLink title="Delete"
+                <p:commandLink title="Delete"
                                rendered ="#{cc.attrs.assay.edit}"
                                ajax="true"
                                action="#{cc.attrs.bean.expRecordController.actionDeleteRecord(assayRecord)}"
@@ -192,31 +193,30 @@
                 </p:commandLink>
             </b:dataTableColumn>
         </b:dataTable>
-        <h:outputText
-            rendered="#{cc.attrs.assay.getHasHiddenLinkedData()}"
-            value="#{msgs.HiddenEntriesNoPermission}"/>
         <b:container>
-            <b:row>
-                <b:column span="1">
+            <b:row styleClass="assayButtonRow">
+                <b:column span="1" offset="10">
                     <b:commandButton
+                        styleClass="expPlotButton"
                         ajax="true"
                         update="dlgBarChartForm"
                         rendered="#{cc.attrs.bean.expRecordController.isDiagrammButtonVisible(cc.attrs.assay)}"
                         oncomplete="PF('dlg_barChart').show();"
                         action="#{cc.attrs.bean.setBarChartModel(cc.attrs.assay.index)}"
                         process="@form"
-                        value="Show">
-                    </b:commandButton>
+                        value="#{msgs.expAssay_plot}"/>
                 </b:column>
-                <b:column span="2" offset="9"
-                          rendered ="#{cc.attrs.assay.edit}">
+                <b:column span="1">
                     <b:commandButton
+                        styleClass="expAppendButton"
                         update="@form"
                         ajax="true"
                         process="@form"
                         action="#{cc.attrs.bean.expRecordController.actionAppendAssayRecord()}"
-                        value="Append"/>
+                        value="#{msgs.expAssay_appendNewRecord}"/>
+
                 </b:column>
+
             </b:row>
         </b:container>
     </composite:implementation >

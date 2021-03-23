@@ -195,3 +195,55 @@
 .panelBorderless tbody tr td{
     border-width: 0px !important;
 }
+
+.expPlotButton{
+    height: 25px;
+    width: 100px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-left: -70px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+}
+.expAppendButton{
+    height: 25px;
+    width: 100px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-left: -60px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+}
+
+.assayButtonRow{
+    margin-bottom: 10px;
+}
+
+.rightAligned{
+    margin-left: auto;
+    margin-right: 0px;
+    display: block;
+}
+
+.recordButtonGroup{
+    width:100%;
+}
+
+.recordButtonGroup tbody tr{
+  border-width: 0px;
+}
+.recordButtonGroup tbody tr td{
+  border-width: 0px !important;
+}
+
+.experimentRecordContainer .dataTables_wrapper .row:last-child{
+    height: 0px;
+}
+
+
