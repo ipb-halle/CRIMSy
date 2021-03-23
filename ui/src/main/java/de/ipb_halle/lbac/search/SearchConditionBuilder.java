@@ -28,6 +28,8 @@ import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.Value;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -42,6 +44,7 @@ public abstract class SearchConditionBuilder {
     protected SearchTarget target;
     protected EntityGraph entityGraph;
     protected String rootGraphName;
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     protected SearchConditionBuilder(EntityGraph entityGraph, String rootGraphName) {
         this.entityGraph = entityGraph;
@@ -114,16 +117,16 @@ public abstract class SearchConditionBuilder {
         Condition ownerCondition = new Condition(
                 Operator.AND,
                 new Condition(
-                        new Attribute(graphPath, new AttributeType[] {
-                                AttributeType.OWNER,
-                                AttributeType.DIRECT}),
+                        new Attribute(graphPath, new AttributeType[]{
+                    AttributeType.OWNER,
+                    AttributeType.DIRECT}),
                         Operator.EQUAL,
                         new Value(user.getId())),
                 new Condition(
-                        new Attribute(graphPath + "/ACENTRIES", 
+                        new Attribute(graphPath + "/ACENTRIES",
                                 new AttributeType[]{
-                            AttributeType.DIRECT,
-                            AttributeType.MEMBER}),
+                                    AttributeType.DIRECT,
+                                    AttributeType.MEMBER}),
                         Operator.EQUAL,
                         new Value(GlobalAdmissionContext.OWNER_ACCOUNT_ID))
         );
@@ -132,10 +135,10 @@ public abstract class SearchConditionBuilder {
                 Operator.OR,
                 ownerCondition,
                 new Condition(
-                        new Attribute(graphPath + "/ACENTRIES/MEMBERSHIPS", 
-                                new AttributeType[] {
-                            AttributeType.DIRECT,
-                            AttributeType.MEMBER}),
+                        new Attribute(graphPath + "/ACENTRIES/MEMBERSHIPS",
+                                new AttributeType[]{
+                                    AttributeType.DIRECT,
+                                    AttributeType.MEMBER}),
                         Operator.EQUAL,
                         new Value(user.getId()))
         );

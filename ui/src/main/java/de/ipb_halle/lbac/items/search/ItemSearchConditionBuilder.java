@@ -30,7 +30,6 @@ import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -59,15 +58,10 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
     }
 
     private void addLabelCondition(List<Condition> conditionList, Set<String> values) {
-        Set<String> idSet = new HashSet<>();
-        for (String value : values) {
-            if (value.matches(itemLabelPattern)) {
-                idSet.add(value);
-            }
-        }
-        if (idSet.size() > 0) {
+       
+        if (values.size() > 0) {
             conditionList.add(getBinaryLeafConditionWithCast(Operator.IN,
-                    idSet,
+                    values,
                     "(%s)",
                     rootGraphName,
                     AttributeType.BARCODE));
@@ -161,7 +155,9 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
     public List<Condition> getItemCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
         for (SearchCategory key : request.getSearchValues().keySet()) {
+            logger.info("KEY: " + key);
             switch (key) {
+
                 case DEACTIVATED:
                     addDeactivatedCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
