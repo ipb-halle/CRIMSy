@@ -44,7 +44,7 @@ import de.ipb_halle.lbac.items.Code25LabelGenerator;
 import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.label.LabelService;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.unknown.UnknownMaterial;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
@@ -186,7 +186,7 @@ public class ItemService {
     private Item createItemFromEntity(ItemEntity entity, User user) {
         Material m = materialService.loadMaterialById(entity.getMaterialid());
         if (!aclistService.isPermitted(ACPermission.permREAD, m, user)) {
-            m = UnknownMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
+            m = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
         }
         Item item = new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),

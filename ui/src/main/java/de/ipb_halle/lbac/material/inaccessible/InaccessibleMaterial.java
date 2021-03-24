@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.unknown;
+package de.ipb_halle.lbac.material.inaccessible;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.material.Material;
@@ -32,18 +32,18 @@ import java.util.List;
  *
  * @author fmauz
  */
-public class UnknownMaterial extends Material {
+public class InaccessibleMaterial extends Material {
 
-    public UnknownMaterial(List<MaterialName> nameList, ACList aclist) {
+    public InaccessibleMaterial(List<MaterialName> nameList, ACList aclist) {
         super(-1, nameList, null, new HazardInformation(), new StorageClassInformation());
-        this.setType(MaterialType.UNKNOWN);
+        this.setType(MaterialType.INACCESSIBLE);
         this.setACList(aclist);
     }
 
-    public static UnknownMaterial createNewInstance(ACList aclist) {
+    public static InaccessibleMaterial createNewInstance(ACList aclist) {
         List<MaterialName> nameList = new ArrayList<>();
-        nameList.add(new MaterialName("unknown", "en", 0));
-        return new UnknownMaterial(nameList, aclist);
+        nameList.add(new MaterialName("inaccessible", "en", 0));
+        return new InaccessibleMaterial(nameList, aclist);
 
     }
 
@@ -64,7 +64,7 @@ public class UnknownMaterial extends Material {
 
     @Override
     public Type getTypeToDisplay() {
-        return new Type(SearchTarget.MATERIAL, MaterialType.UNKNOWN);
+        return new Type(SearchTarget.MATERIAL, MaterialType.INACCESSIBLE);
     }
 
 }
