@@ -638,4 +638,12 @@ CREATE TABLE preferences (
     UNIQUE (user_id, key)
 );
 
+CREATE TABLE images (
+    id          SERIAL NOT NULL PRIMARY KEY,
+    preview     VARCHAR,
+    image       VARCHAR,
+    aclist_id   INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    owner_id    INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
+)
+
 COMMIT TRANSACTION;

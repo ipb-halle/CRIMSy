@@ -314,7 +314,7 @@ public class SearchServiceTest extends TestBase {
         List<NetObject> foundItems = searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects();
         Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
         Item item = (Item) foundItems.get(0).getSearchable();
-        Assert.assertEquals(MaterialType.UNKNOWN, item.getMaterial().getType());
+        Assert.assertEquals(MaterialType.INACCESSIBLE, item.getMaterial().getType());
 
         //search for direct location
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
