@@ -96,9 +96,10 @@ public class SearchBean implements Serializable {
 
     /**
      * Constructor for tests
+     *
      * @param searchService
      * @param user
-     * @param nodeService 
+     * @param nodeService
      */
     public SearchBean(
             SearchService searchService,
@@ -258,7 +259,7 @@ public class SearchBean implements Serializable {
     }
 
     public String getAdvancedSearchIcon() {
-        if (searchFilter.isAdvancedSearch()) {
+        if (searchFilter != null && searchFilter.isAdvancedSearch()) {
             return "fa-minus-circle";
         } else {
             return "fa-plus-circle";
