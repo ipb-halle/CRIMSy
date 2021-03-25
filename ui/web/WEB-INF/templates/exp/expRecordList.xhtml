@@ -94,6 +94,9 @@
                             <b:navCommandLink 
                                 value="#{msgs.expAssay}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"/>
+                            <b:navCommandLink 
+                                value="#{msgs.expImage}"
+                                actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"/>
                         </b:dropMenu>
                     </b:column>
                     <br/>
@@ -112,6 +115,7 @@
                                              linkedDataHolder="#{rec}"
                                              rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
                             <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                            <crimsy:image rendered="#{rec.facelet eq 'IMAGE'}" />
                         </h:panelGroup>
                 <ui:fragment
                         rendered="#{rec.edit}">

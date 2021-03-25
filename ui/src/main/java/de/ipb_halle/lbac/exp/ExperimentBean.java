@@ -456,6 +456,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             case "TEXT":
                 this.expRecordController = new TextController(this);
                 break;
+            case "IMAGE":
+                this.expRecordController = new ImageController(this);
+                break;
             default:
                 this.expRecordController = new NullController(this);
         }

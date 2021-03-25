@@ -36,7 +36,8 @@ public enum ExpRecordType {
     ATTACHMENT(2),
     COMPOUND_DATA(3),
     REACTION(4),
-    TEXT(5);
+    TEXT(5),
+    IMAGE(6);
 
     private int typeId;
 
