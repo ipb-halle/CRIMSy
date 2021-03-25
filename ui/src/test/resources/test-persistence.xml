@@ -36,6 +36,7 @@
         <class>de.ipb_halle.lbac.datalink.LinkedDataEntity</class>
         <class>de.ipb_halle.lbac.exp.assay.AssayEntity</class>
         <class>de.ipb_halle.lbac.exp.text.TextEntity</class>
+        <class>de.ipb_halle.lbac.exp.images.ImageEntity</class>
         
         <class>de.ipb_halle.lbac.project.ProjectEntity</class>
         <class>de.ipb_halle.lbac.project.ProjectTemplateEntity</class>

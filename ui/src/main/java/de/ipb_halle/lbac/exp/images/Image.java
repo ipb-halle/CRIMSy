@@ -63,6 +63,14 @@ public class Image implements DTO<ImageEntity> {
         return image;
     }
 
+    public void setPreview(String preview) {
+        this.preview = preview;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public ImageEntity createEntity() {
         ImageEntity entity = new ImageEntity();

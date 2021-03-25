@@ -18,8 +18,6 @@
 package de.ipb_halle.lbac.exp.images;
 
 import de.ipb_halle.lbac.admission.ACObjectEntity;
-import de.ipb_halle.lbac.search.lang.AttributeTag;
-import de.ipb_halle.lbac.search.lang.AttributeType;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
