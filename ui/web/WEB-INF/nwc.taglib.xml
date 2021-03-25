@@ -11,4 +11,12 @@
             <!--<component-class>de.ipb_halle.lbac.plugin.UIAugmentedText</component-class>-->
         </component>
     </tag>
+    <tag>
+        <!-- This component supports the same attributes like OmniFaces' <o:inputFile>,
+             see https://omnifaces.org/docs/vdldoc/3.10/o/inputFile.html -->
+        <tag-name>inputFile</tag-name>
+        <component>
+            <component-type>imageAnnotation.InputFile</component-type>
+        </component>
+    </tag>
 </facelet-taglib>
