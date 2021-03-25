@@ -595,5 +595,12 @@
             <artifactId>molecularfaces</artifactId>
             <version>0.2.0</version>
         </dependency>
+
+        <!-- OWASP JSON sanitizer -->
+        <dependency>
+            <groupId>com.mikesamuel</groupId>
+            <artifactId>json-sanitizer</artifactId>
+            <version>1.2.2</version>
+        </dependency>
     </dependencies>
 </project> 
