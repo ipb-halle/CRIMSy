@@ -53,7 +53,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -309,7 +308,6 @@ public class ExperimentBeanTest extends TestBase {
         text1.setCreationTime(new Date());
         text1.setText(text);
         return text1;
-        //  return (Text) expRecordService.save(text1);
     }
 
     private void setExperimentProperties(String text, boolean template, Project project) {

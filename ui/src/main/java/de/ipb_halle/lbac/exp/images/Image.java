@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.exp.images;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +27,7 @@ import java.util.Set;
  *
  * @author fmauz
  */
-public class Image extends ExpRecord implements DTO {
+public class Image extends ExpRecord {
 
     protected User user;
     protected String preview;

@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.exp.images;
 
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
-import static de.ipb_halle.lbac.entity.MemberEntity_.id;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
 import de.ipb_halle.lbac.exp.Experiment;
 import java.io.Serializable;
@@ -54,10 +53,8 @@ public class ImageService implements Serializable {
         }
     }
     
-   
-
     public Image loadImage(Experiment exp,ExpRecordEntity record) {
-        ImageEntity imageEntity = em.find(ImageEntity.class, record.getExpRecordId());
+        ImageEntity imageEntity = em.find(ImageEntity.class, record.getExpRecordId().intValue());
         if (imageEntity == null) {
             return null;
         }

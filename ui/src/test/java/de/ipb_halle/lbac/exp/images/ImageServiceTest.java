@@ -22,6 +22,10 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.exp.ExpRecordEntity;
+import de.ipb_halle.lbac.exp.ExpRecordType;
+import de.ipb_halle.lbac.exp.Experiment;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -88,4 +92,26 @@ public class ImageServiceTest extends TestBase {
         Assert.assertEquals(publicACL.getId(), o[3]);
         Assert.assertEquals(publicUser.getId(), o[4]);
     }
+
+    @Test
+    public void test002_loadImage() {
+        Image image = new Image("preview", "image", publicUser, publicACL);
+        image = imageService.saveImage(image);
+        Experiment exp = new Experiment(1, "test002_loadImage_exp", "test002_loadImage_desc", true, publicACL, publicUser, new Date());
+        ExpRecordEntity expRecordEntity = new ExpRecordEntity();
+        expRecordEntity.setChangeTime(new Date());
+        expRecordEntity.setCreationTime(new Date());
+        expRecordEntity.setExpRecordId(new Long(image.id));
+        expRecordEntity.setExperimentId(exp.getId());
+        expRecordEntity.setNext(null);
+        expRecordEntity.setRevision(1);
+        expRecordEntity.setType(ExpRecordType.IMAGE);
+        Image loadedImage = imageService.loadImage(exp, expRecordEntity);
+        Assert.assertEquals("preview", loadedImage.getPreview());
+        Assert.assertEquals("image", loadedImage.getImage());
+        Assert.assertEquals(publicACL.getId(), loadedImage.aclist.getId());
+        Assert.assertEquals(publicUser.getId(), loadedImage.user.getId());
+
+    }
+
 }
