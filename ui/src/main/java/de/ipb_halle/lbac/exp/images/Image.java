@@ -20,12 +20,15 @@ package de.ipb_halle.lbac.exp.images;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.exp.ExpRecord;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author fmauz
  */
-public class Image implements DTO<ImageEntity> {
+public class Image extends ExpRecord implements DTO {
 
     protected User user;
     protected String preview;
@@ -80,6 +83,16 @@ public class Image implements DTO<ImageEntity> {
         entity.setOwner(user.getId());
         entity.setPreview(preview);
         return entity;
+    }
+
+    @Override
+    public boolean validate() {
+        return true;
+    }
+
+    @Override
+    public Set<ValidationError> getErrors() {
+        return new HashSet<>();
     }
 
 }

@@ -17,8 +17,14 @@
  */
 package de.ipb_halle.lbac.exp.images;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
+import static de.ipb_halle.lbac.entity.MemberEntity_.id;
+import de.ipb_halle.lbac.exp.ExpRecordEntity;
+import de.ipb_halle.lbac.exp.Experiment;
 import java.io.Serializable;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -32,11 +38,13 @@ public class ImageService implements Serializable {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
-    private static final long serialVersionUID = 1L;
+    @Inject
+    private ACListService aclistService;
 
-    public Image loadImage(int id) {
-        return null;
-    }
+    @Inject
+    private MemberService memberService;
+
+    private static final long serialVersionUID = 1L;
 
     public Image saveImage(Image image) {
         if (image.id == null) {
@@ -44,6 +52,22 @@ public class ImageService implements Serializable {
         } else {
             return saveEditedImage(image);
         }
+    }
+    
+   
+
+    public Image loadImage(Experiment exp,ExpRecordEntity record) {
+        ImageEntity imageEntity = em.find(ImageEntity.class, record.getExpRecordId());
+        if (imageEntity == null) {
+            return null;
+        }
+        Image image = new Image(
+                imageEntity,
+                aclistService.loadById(imageEntity.getACList()),
+                memberService.loadUserById(imageEntity.getOwner()));
+        image.setExpRecordEntity(record);
+        image.setExperiment(exp);
+        return image;
     }
 
     private Image saveNewImage(Image image) {

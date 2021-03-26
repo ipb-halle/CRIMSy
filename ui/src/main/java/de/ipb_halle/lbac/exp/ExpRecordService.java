@@ -33,6 +33,8 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.AssayService;
+import de.ipb_halle.lbac.exp.images.Image;
+import de.ipb_halle.lbac.exp.images.ImageService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.InaccessibleItemFactory;
@@ -87,6 +89,9 @@ public class ExpRecordService implements Serializable {
 
     @Inject
     private AssayService assayService;
+
+    @Inject
+    private ImageService imageService;
 
     @Inject
     private ItemService itemService;
@@ -157,6 +162,9 @@ public class ExpRecordService implements Serializable {
                 case TEXT:
                     record = this.textService.loadTextById(experiment, e);
                     break;
+                case IMAGE:
+                    record = this.imageService.loadImage(experiment, e);
+                    break;
                 default:
                     throw new UnsupportedOperationException("load(): invalid ExpRecord.type");
             }
@@ -219,10 +227,10 @@ public class ExpRecordService implements Serializable {
             Item item = null;
 
             if (e.getItemId() != null) {
-                  item = this.itemService.loadItemById(e.getItemId());
+                item = this.itemService.loadItemById(e.getItemId());
                 if (!aclistService.isPermitted(ACPermission.permREAD, item, user)) {
                     item = InaccessibleItemFactory.getInstance(user, GlobalAdmissionContext.getPublicReadACL());
-                } 
+                }
                 material = item.getMaterial();
             } else {
                 if (e.getMaterialId() != null) {
@@ -305,6 +313,8 @@ public class ExpRecordService implements Serializable {
                 return this.assayService.saveAssay(record);
             case TEXT:
                 return this.textService.saveText(record);
+            case IMAGE:
+                return this.imageService.saveImage((Image) record);
         }
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }
