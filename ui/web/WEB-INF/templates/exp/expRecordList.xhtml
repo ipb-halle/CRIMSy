@@ -114,8 +114,11 @@
                                              agent="#{experimentBean.linkedDataAgent}"
                                              linkedDataHolder="#{rec}"
                                              rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
-                            <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
-                            <crimsy:image rendered="#{rec.facelet eq 'IMAGE'}" />
+                            <crimsy:textEdit text="#{rec.text}"
+                                             rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                            <crimsy:image image="#{rec}"
+                                          controller="#{experimentBean.expRecordController}"
+                                          rendered="#{rec.facelet eq 'IMAGE'}" />
                         </h:panelGroup>
                 <ui:fragment
                         rendered="#{rec.edit}">
@@ -131,9 +134,11 @@
                                     process="@this" />
                                 </p:column>
                             <p:column style="width:10%">
-                                <p:commandButton 
+                                <b:commandButton
+                                    ajax="true"
                                     styleClass="rightAligned"
-                                    value="#{msgs.Save}" 
+                                    value="#{msgs.Save}"
+                                    onclick="#{experimentBean.onClick}"
                                     action="#{experimentBean.expRecordController.actionSaveRecord}"
                                     update="@form growlMsg @(.assayTargetRow)" />
                                 </p:column>

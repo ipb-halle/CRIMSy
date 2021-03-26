@@ -23,7 +23,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:body>
         <!-- plugin modules -->
         <crimsy:dlgMaterialEdit
@@ -115,7 +116,7 @@
                         </b:column> 
                     </h:form>
 
-                    <h:form id="expRecordsForm" >
+                    <h:form id="expRecordsForm" enctype="multipart/form-data" pt:autocomplete="off">
                         <b:column span="9">
                             <b:panel collapsible="false" title="#{msgs.expExperimentRecords}">
                                 <ui:insert name="expRecords">

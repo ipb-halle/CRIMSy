@@ -170,4 +170,7 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         }
     }
 
+    public String getOnClick() {
+        return "";
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ package de.ipb_halle.lbac.exp.images;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.ExpRecord;
+import de.ipb_halle.lbac.exp.ExpRecordType;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +46,8 @@ public class Image extends ExpRecord {
         this.preview = entity.getPreview();
         this.image = entity.getImage();
         this.id = entity.getId();
+
+        setType(ExpRecordType.IMAGE);
     }
 
     public Image(
@@ -55,6 +59,8 @@ public class Image extends ExpRecord {
         this.image = image;
         this.aclist = aclist;
         this.user = user;
+
+        setType(ExpRecordType.IMAGE);
     }
 
     public String getPreview() {

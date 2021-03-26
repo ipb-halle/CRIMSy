@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.exp.images;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.exp.ExpRecordType;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +45,8 @@ public class ImageTest {
     @Test
     public void test001_createDBEntity() {
         Image image = new Image("preview", "image", user, aclist);
+        Assert.assertEquals(ExpRecordType.IMAGE, image.getType());
+
         ImageEntity entity = image.createEntity();
         Assert.assertEquals("preview", entity.getPreview());
         Assert.assertEquals("image", entity.getImage());
@@ -51,7 +55,7 @@ public class ImageTest {
 
         entity.setId(1);
         Image imageFromEntity = new Image(entity, aclist, user);
-        
+        Assert.assertEquals(ExpRecordType.IMAGE, image.getType());        
         Assert.assertEquals("preview", imageFromEntity.getPreview());
         Assert.assertEquals("image", imageFromEntity.getImage());
         Assert.assertEquals(user, imageFromEntity.user);

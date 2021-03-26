@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
 import de.ipb_halle.lbac.exp.assay.AssayController;
+import de.ipb_halle.lbac.exp.images.ImageController;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
@@ -456,9 +457,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             case "TEXT":
                 this.expRecordController = new TextController(this);
                 break;
-//            case "IMAGE":
-//                this.expRecordController = new ImageController(this);
-//                break;
+            case "IMAGE":
+                this.expRecordController = new ImageController(this);
+                break;
             default:
                 this.expRecordController = new NullController(this);
         }
@@ -739,5 +740,15 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
         return "no state set";
     }
-    
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public String getOnClick() {
+        return expRecordController.getOnClick() + "ajax:experimentBean.noAction();javascript:return false;";
+    }
+
+    public void noAction() {
+    }
 }
