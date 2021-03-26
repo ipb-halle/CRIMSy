@@ -146,7 +146,7 @@ public class LinkCreationProcessTest extends TestBase {
                 .addClass(TextService.class)
                 .addClass(MaterialService.class)
                 .addClass(ProjectService.class);
-        return UserBeanDeployment.add(ItemDeployment.add(deployment));
+        return ExperimentDeployment.add(UserBeanDeployment.add(ItemDeployment.add(deployment)));
     }
 
     private void prepareLinkCreation() {

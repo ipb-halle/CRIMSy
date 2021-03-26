@@ -51,6 +51,7 @@ public class ImageTest {
 
         entity.setId(1);
         Image imageFromEntity = new Image(entity, aclist, user);
+        
         Assert.assertEquals("preview", imageFromEntity.getPreview());
         Assert.assertEquals("image", imageFromEntity.getImage());
         Assert.assertEquals(user, imageFromEntity.user);

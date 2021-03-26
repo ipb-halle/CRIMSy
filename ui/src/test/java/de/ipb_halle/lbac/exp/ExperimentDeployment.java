@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.datalink.LinkedDataAgent;
 import de.ipb_halle.lbac.exp.assay.AssayService;
+import de.ipb_halle.lbac.exp.images.ImageService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
@@ -39,6 +40,7 @@ public class ExperimentDeployment {
                 .addClass(LinkedDataAgent.class)
                 .addClass(ExperimentBean.class)
                 .addClass(ExperimentService.class)
+                .addClass(ImageService.class)
                 .addClass(ItemAgent.class)
                 .addClass(MaterialAgent.class);
         return MaterialDeployment.add(d);

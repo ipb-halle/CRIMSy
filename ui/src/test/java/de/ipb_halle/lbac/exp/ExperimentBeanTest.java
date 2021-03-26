@@ -153,7 +153,6 @@ public class ExperimentBeanTest extends TestBase {
         Experiment exp1 = createAndSaveExperiment("EXP-1", "EXP-1-DESC", publicReadAcl, publicUser, false);
         Experiment exp2 = createAndSaveExperiment("EXP-2", "EXP-2-DESC", publicReadAcl, publicUser, false);
         Experiment exp3 = createAndSaveExperiment("EXP-3", "EXP-3-DESC", publicReadAcl, publicUser, true);
-       
 
         // whe have 4 records in experiment exp1
         experimentBean.saveExpRecord(createTextrecord(exp1, "Overview"));
@@ -162,7 +161,7 @@ public class ExperimentBeanTest extends TestBase {
         experimentBean.saveExpRecord(createTextrecord(exp1, "Ending"));
 
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
-       
+
         experimentBean.setExperiment(exp1);
         experimentBean.setTemplateMode(false);
         Assert.assertFalse(experimentBean.getTemplateMode());
@@ -247,15 +246,15 @@ public class ExperimentBeanTest extends TestBase {
         setExperimentProperties("test005_actionNewExperiment()", false, projects.get(0));
 
         experimentBean.actionSaveExperiment();
-        int expId=experimentBean.getExperiment().getId();
+        int expId = experimentBean.getExperiment().getId();
         experimentBean.actionToggleExperiment(experimentBean.getExperiment());
         experimentBean.getExperiment();
 
         Assert.assertNull(experimentBean.getExperiment().getId());
-        
+
         experimentBean.actionToggleExperiment(experimentService.loadById(expId));
-        
-        Assert.assertEquals(expId,experimentBean.getExperiment().getId(),0);
+
+        Assert.assertEquals(expId, experimentBean.getExperiment().getId(), 0);
     }
 
     @Test
@@ -268,8 +267,8 @@ public class ExperimentBeanTest extends TestBase {
         setExperimentProperties("test006_actionCopyTemplate()", true, projects.get(0));
         experimentBean.actionSaveExperiment();
         experimentBean.actionCopyTemplate();
-        
-        Assert.assertEquals( 2,entityManagerService.doSqlQuery("SELECT experimentid FROM experiments").size());
+
+        Assert.assertEquals(2, entityManagerService.doSqlQuery("SELECT experimentid FROM experiments").size());
     }
 
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {
@@ -293,7 +292,7 @@ public class ExperimentBeanTest extends TestBase {
                 .addClass(TextService.class)
                 .addClass(MaterialService.class)
                 .addClass(ProjectService.class);
-        return UserBeanDeployment.add(ItemDeployment.add(deployment));
+        return ExperimentDeployment.add(UserBeanDeployment.add(ItemDeployment.add(deployment)));
     }
 
     private Experiment createAndSaveExperiment(String name, String desc, ACList acl, User user, boolean template) {
