@@ -25,8 +25,8 @@ import static de.ipb_halle.lbac.base.TestBase.TEST_NODE_ID;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExpRecordService;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -34,11 +34,8 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.RemoteItem;
-import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -58,7 +55,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -214,13 +210,9 @@ public class SearchWebServiceTest extends TestBase {
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
                 .addClass(FileEntityService.class)
-                .addClass(ExperimentService.class)
                 .addClass(SearchWebService.class)
-                .addClass(WebRequestAuthenticator.class)
-                .addClass(ExpRecordService.class)
-                .addClass(AssayService.class)
-                .addClass(TextService.class);
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+                .addClass(WebRequestAuthenticator.class);
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
 
 }

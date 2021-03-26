@@ -26,6 +26,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.exp.ExpRecordService;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.RemoteExperiment;
 import de.ipb_halle.lbac.exp.assay.AssayService;
@@ -54,7 +55,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -158,6 +158,6 @@ public class SearchWebClientTest extends TestBase {
                 .addClass(SearchWebClient.class)
                 .addClass(SearchWebServiceMock.class)
                 .addClass(TextService.class);
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
 }
