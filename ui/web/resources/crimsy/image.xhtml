@@ -41,13 +41,7 @@
         <h:panelGroup rendered="#{cc.attrs.image.edit}">
             <h:outputScript library="js" name="imageEditor.js" target="head" />
             <iframe id="miniPaint" style="width: 100%; height: 80vh; border: 0;"
-                src="/plugins/miniPaint/index.html" />
-            <script>
-              $(window).on("load", function() {
-                  crimsyImageEditor.openJson('miniPaint',
-                      $('.inputJsonImagePseudoClass').attr('id'));
-                  });
-            </script>
+                src="/plugins/miniPaint/index.html" onload="crimsyImageEditor.openJson('miniPaint', $('.inputJsonImagePseudoClass').attr('id'));" />
 
             <nwc:inputFile id="inputJsonFileId"
                            value="#{cc.attrs.controller.jsonFile}"
