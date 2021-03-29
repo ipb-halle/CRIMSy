@@ -160,7 +160,7 @@ CREATE TABLE molecules (
         format VARCHAR NOT NULL,
         molecule TEXT);
 
-CREATE INDEX i_molecules_mol_idx ON molecules USING bingo_idx (mol bingo.molecule);
+CREATE INDEX i_molecules_mol_idx ON molecules USING bingo_idx (molecule bingo.molecule);
 
 CREATE TABLE structures (
         id INTEGER PRIMARY KEY REFERENCES materials(materialid),
