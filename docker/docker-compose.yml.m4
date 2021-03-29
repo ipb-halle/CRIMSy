@@ -57,6 +57,4 @@ LBAC_TOMEE_PORT_ENABLE     - "8080:8080"
       - "80:80"
       - "443:443"
       - "8443:8443"
-    volumes:
-      - LBAC_DATASTORE/dist/proxy/htdocs:/usr/local/apache2/htdocs
 
