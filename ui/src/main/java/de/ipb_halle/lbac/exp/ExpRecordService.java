@@ -195,6 +195,9 @@ public class ExpRecordService implements Serializable {
             case TEXT:
                 record = this.textService.loadTextById(experiment, e);
                 break;
+            case IMAGE:
+                record = this.imageService.loadImage(experiment, e);
+                break;
             default:
                 throw new UnsupportedOperationException("loadById(): invalid ExpRecord.type");
         }

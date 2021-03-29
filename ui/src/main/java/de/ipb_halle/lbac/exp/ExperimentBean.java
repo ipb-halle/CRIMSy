@@ -746,9 +746,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public String getOnClick() {
-        return expRecordController.getOnClick() + "ajax:experimentBean.noAction();javascript:return false;";
+        return expRecordController.getOnClick() + "ajax:experimentBean.actionDoNothing();javascript:return false;";
     }
 
-    public void noAction() {
+    public void actionDoNothing() {
     }
 }

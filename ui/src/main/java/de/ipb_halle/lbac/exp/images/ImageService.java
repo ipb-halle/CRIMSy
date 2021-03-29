@@ -53,7 +53,7 @@ public class ImageService implements Serializable {
         }
     }
     
-    public Image loadImage(Experiment exp,ExpRecordEntity record) {
+    public Image loadImage(Experiment exp, ExpRecordEntity record) {
         ImageEntity imageEntity = em.find(ImageEntity.class, record.getExpRecordId().intValue());
         if (imageEntity == null) {
             return null;
@@ -78,5 +78,4 @@ public class ImageService implements Serializable {
         em.merge(image.createEntity());
         return image;
     }
-
 }

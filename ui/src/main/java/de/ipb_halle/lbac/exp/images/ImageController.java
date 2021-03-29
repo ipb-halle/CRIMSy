@@ -20,7 +20,15 @@ package de.ipb_halle.lbac.exp.images;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.ExperimentBean;
+import de.ipb_halle.lbac.plugin.imageAnnotation.DataURIImage;
 
+/**
+ * This class is the experimental record controller for the image editor/viewer.
+ * It controls the view components in the composite component <crimsy:image>,
+ * which is implemented in image.xhtml.
+ * 
+ * @author flange
+ */
 public class ImageController extends ExpRecordController {
     public ImageController(ExperimentBean bean) {
         super(bean);
@@ -42,39 +50,83 @@ public class ImageController extends ExpRecordController {
 
     @Override
     public void actionSaveRecord() {
+        jsonImage = jsonFile;
+//        ((Image) getExpRecord()).setPreview(previewImage);
         ((Image) getExpRecord()).setImage(jsonFile);
-        
+
         super.actionSaveRecord();
     }
 
-    public String getPreviewImage() {
-        return ((Image) getExpRecord()).getPreview();
-    }
+//    @DataURIImage
+//    private String previewImage = ((Image) getExpRecord()).getPreview();
+//
+//    /**
+//     * Returns the preview image encoded as DataURI. This image is rendered by
+//     * <h:graphicImage id="previewImage" ... />.
+//     * 
+//     * @return DataURI-encoded image
+//     */
+//    public String getPreviewImage() {
+//        return previewImage;
+//    }
+//
+//    /**
+//     * Sets the preview image as DataURI. This data comes from <nwc:inputFile
+//     * id="inputPreviewFileId" ... />.
+//     * 
+//     * @param previewImage preview image
+//     */
+//    public void setPreviewImage(String previewImage) {
+//        this.previewImage = previewImage;
+//    }
 
-    public void setPreviewImage(String preview) {
-        ((Image) getExpRecord()).setPreview(preview);
-    }
+    private String jsonImage;
 
+    /**
+     * Returns the image in JSON format. This data is rendered by <h:inputHidden
+     * id="inputJsonImage" ... />.
+     * 
+     * @return image in JSON format
+     */
     public String getJsonImage() {
         return ((Image) getExpRecord()).getImage();
     }
 
+    /**
+     * This setter does nothing, because {@code jsonImage} is filled from
+     * {@code jsonFile} after the file upload. This process is executed by
+     * {@link #actionSaveRecord()}.
+     * 
+     * @param jsonImage
+     */
     public void setJsonImage(String jsonImage) {
-        /*
-         * Nothing done here, because jsonImage should be filled via the file upload.
-         */
     }
 
     /*
-     * This additional property is needed because jsonImage is already used by
-     * the inputHidden component. actionSaveRecord() copies it around.
+     * This additional property is used for the file upload. It is needed
+     * because jsonImage is already used by the <h:inputHidden
+     * id="inputJsonImage" ... /> component. actionSaveRecord() copies it
+     * around.
      */
     private String jsonFile;
 
+    /**
+     * Returns the image in JSON format. This data is used by the <nwc:inputFile
+     * id="inputJsonFileId" ... /> component.
+     * 
+     * @return image in JSON format
+     */
     public String getJsonFile() {
+        // TODO: we can also return "" here
         return jsonFile;
     }
 
+    /**
+     * This setter receives the image in JSON format from the file upload. This
+     * data comes from <nwc:inputFile id="inputJsonFileId" ... />.
+     * 
+     * @param jsonFile
+     */
     public void setJsonFile(String jsonFile) {
         this.jsonFile = jsonFile;
     }

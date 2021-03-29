@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
+import de.ipb_halle.lbac.plugin.imageAnnotation.DataURIImage;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,6 +33,7 @@ import java.util.Set;
 public class Image extends ExpRecord {
 
     protected User user;
+    @DataURIImage
     protected String preview;
     protected String image;
     protected ACList aclist;
@@ -46,6 +48,7 @@ public class Image extends ExpRecord {
         this.preview = entity.getPreview();
         this.image = entity.getImage();
         this.id = entity.getId();
+        this.setExpRecordId(Long.valueOf(this.id));
 
         setType(ExpRecordType.IMAGE);
     }
@@ -77,6 +80,10 @@ public class Image extends ExpRecord {
 
     public void setImage(String image) {
         this.image = image;
+    }
+    
+    public Long getId() {
+        return Long.valueOf(id);
     }
 
     @Override
