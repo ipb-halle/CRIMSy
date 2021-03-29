@@ -158,7 +158,9 @@ CREATE TABLE materialdetailrights (
 CREATE TABLE molecules (
         id SERIAL NOT NULL PRIMARY KEY,
         format VARCHAR NOT NULL,
-        molecule molecule);
+        molecule TEXT);
+
+CREATE INDEX i_molecules_mol_idx ON molecules USING bingo_idx (mol bingo.molecule);
 
 CREATE TABLE structures (
         id INTEGER PRIMARY KEY REFERENCES materials(materialid),

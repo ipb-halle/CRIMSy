@@ -39,13 +39,6 @@
 #
 LBAC_UI="ui.war"
 
-MOLPAINTJS_REPO=https://github.com/ipb-halle/MolPaintJS/releases/download/v0.3.4-alpha
-MOLPAINTJS_JS=molpaint.js
-JBROWSE_REPO=https://github.com/GMOD/jbrowse/releases/download/1.16.9-release
-JBROWSE_RELEASE_ZIP=JBrowse-1.16.9.zip
-JBROWSE_RELEASE_DIR=JBrowse-1.16.9
-OPENCHEMLIBJS_REPO=https://github.com/cheminfo/openchemlib-js/releases/download/v7.2.3
-OPENCHEMLIBJS_FULL_JS=openchemlib-full.js
 #
 #==========================================================
 #
@@ -215,15 +208,6 @@ function copyFiles {
         cp util/bin/updateCloud.sh target/dist/bin
 }
 
-function copyPlugins {
-        pushd target >/dev/null
-        mkdir -p dist/proxy/htdocs/plugins
-        cp -r jbrowse/$JBROWSE_RELEASE_DIR dist/proxy/htdocs/plugins/JBrowse
-        cp -r molpaintjs dist/proxy/htdocs/plugins/molpaintjs
-        cp -r openchemlib-js dist/proxy/htdocs/plugins/openchemlib-js
-        popd > /dev/null
-}
-
 function error {
 	echo $1
 	cleanTmp
@@ -234,52 +218,12 @@ function genPackage {
     cleanUp
     copyDocker
     copyFiles
-    copyPlugins
     masterConfig
     makeTomcatUsers
     makeCert
     copyCert
     package
     cleanTmp
-}
-
-function getJBrowse {
-        mkdir -p jbrowse
-        pushd jbrowse >/dev/null
-        if [ ! -f $JBROWSE_RELEASE_ZIP ] ; then
-            curl -L --silent --output $JBROWSE_RELEASE_ZIP $JBROWSE_REPO/$JBROWSE_RELEASE_ZIP
-        fi
-        if [ ! -d $JBROWSE_RELEASE_DIR ] ; then
-            unzip $JBROWSE_RELEASE_ZIP
-        fi
-        popd >/dev/null
-}
-
-function getMolPaintJS {
-        mkdir -p molpaintjs
-        pushd molpaintjs >/dev/null
-        if [ ! -f $MOLPAINTJS_JS ] ; then
-            curl -L --silent --output $MOLPAINTJS_JS $MOLPAINTJS_REPO/$MOLPAINTJS_JS
-        fi
-        popd >/dev/null
-}
-
-function getOpenChemLibJS {
-        mkdir -p openchemlib-js
-        pushd openchemlib-js >/dev/null
-        if [ ! -f $OPENCHEMLIBJS_FULL_JS ] ; then
-            curl -L --silent --output $OPENCHEMLIBJS_FULL_JS $OPENCHEMLIBJS_REPO/$OPENCHEMLIBJS_FULL_JS
-        fi
-        popd >/dev/null
-}
-
-function getResources {
-    mkdir -p target
-    pushd target >/dev/null
-    getMolPaintJS
-    getOpenChemLibJS
-    getJBrowse
-    popd >/dev/null
 }
 
 function makeTomcatUsers {
@@ -359,7 +303,6 @@ export LBAC_CA_DIR="$LBAC_REPO/config/$LBAC_CLOUD/CA"
 
 pushd $LBAC_REPO > /dev/null
 cleanTmp
-getResources
 
 #  . config/CA/lbac_ca.cfg
 #  mkdir -p $LBAC_REPO/config/$LBAC_CLOUD

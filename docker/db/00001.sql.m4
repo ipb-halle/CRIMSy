@@ -64,6 +64,12 @@ CREATE DATABASE :LBAC_DATABASE WITH ENCODING 'UTF8' OWNER :LBAC_USER;
 
 \connect :LBAC_DATABASE
 
+-- Bingo database extension (chemistry) --
+\i /opt/bingo/bingo_install.sql
+GRANT USAGE ON SCHEMA bingo TO :LBAC_USER;
+GRANT SELECT ON bingo.bingo_config TO :LBAC_USER;
+GRANT SELECT ON bingo.bingo_tau_config TO :LBAC_USER;
+
 -- schema --
 CREATE SCHEMA AUTHORIZATION :LBAC_USER;
 
@@ -79,7 +85,6 @@ REVOKE ALL ON ALL TABLES IN SCHEMA :LBAC_SCHEMA FROM public;
 
 -- check for usefull extensions and install it --
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgchem_tigress";
 
 \connect - :LBAC_USER
 
