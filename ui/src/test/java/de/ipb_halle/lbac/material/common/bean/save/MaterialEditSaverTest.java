@@ -37,7 +37,6 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -213,7 +212,6 @@ public class MaterialEditSaverTest extends TestBase {
                 .addClass(EntityManagerService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(MoleculeService.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(Updater.class)

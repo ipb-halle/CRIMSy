@@ -21,7 +21,6 @@ SET @TESTNODE = '986ad1be-9a3b-4a70-8600-c489c2a00da4';
 SET @SCHEMA_VERSION = '00001';
 
 
-CREATE DOMAIN IF NOT EXISTS molecule AS VARCHAR;
 CREATE DOMAIN IF NOT EXISTS jsonb AS other;
 CREATE DOMAIN IF NOT EXISTS RawJsonb AS other;
 
@@ -326,7 +325,6 @@ CREATE TABLE materialdetailrights (
 
 CREATE TABLE molecules (
         id SERIAL NOT NULL PRIMARY KEY,
-        format VARCHAR NOT NULL,
         molecule VARCHAR);
 
 CREATE TABLE structures (

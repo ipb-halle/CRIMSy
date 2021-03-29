@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.structure.V2000;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.structure.Molecule;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,7 +149,8 @@ public class MaterialSearchMaskController implements Serializable {
             values.type.add(MaterialType.TISSUE);
         }
         try {
-            if (!new V2000().isEmptyMolecule(molecule)) {
+            Molecule mol = new Molecule(molecule, -1);
+            if (!mol.isEmptyMolecule()) {
                 values.molecule = molecule;
             }
         } catch (Exception e) {

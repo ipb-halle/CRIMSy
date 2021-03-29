@@ -17,54 +17,26 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionOrchestrator;
-import de.ipb_halle.lbac.collections.CollectionWebClient;
-import de.ipb_halle.lbac.container.service.ContainerNestingService;
-import de.ipb_halle.lbac.container.service.ContainerPositionService;
-import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.items.bean.ItemBean;
-import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
-import de.ipb_halle.lbac.items.service.ArticleService;
-import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.mocks.MaterialOverviewBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.project.ProjectEditBean;
 import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.webservice.Updater;
 import java.util.HashMap;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -150,8 +122,7 @@ public class MaterialOverviewBeanTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialOverviewBeanTest.war")
-                .addClass(IndexService.class)
-;
+                .addClass(IndexService.class);
         deployment = UserBeanDeployment.add(deployment);
         deployment = ItemDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);

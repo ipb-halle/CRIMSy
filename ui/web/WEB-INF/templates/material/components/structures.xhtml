@@ -67,7 +67,7 @@
                                         <b:column span="6">
                                             <b:selectBooleanCheckbox 
                                                 disabled="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                                value="#{materialBean.calculateFormulaAndMassesByDb}"
+                                                value="#{materialBean.autoCalcFormularAndMasses}"
                                                 caption="Formel und Masse automatisch berechnen"
                                                 ajax="true"
                                                 update="@(.autocalculatable)"/>
@@ -96,7 +96,7 @@
                                                   styleClass="autocalculatable">
                                             <b:inputText
                                                 disabled="#{!materialBean.permission.isFormulaAndMassesInputsEnabled()}"
-                                                value="#{materialBean.structureInfos.molarMass}">
+                                                value="#{materialBean.structureInfos.averageMolarMass}">
                                                 <f:converter converterId="InputConverter" />
                                             </b:inputText>
                                         </b:column>

@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.project.Project;
@@ -128,7 +127,6 @@ public class LabelServiceTest extends TestBase {
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)
                 .addClass(ContainerService.class)
-                .addClass(MoleculeService.class)
                 .addClass(ArticleService.class)
                 .addClass(TaxonomyService.class)
                 .addClass(LabelService.class)

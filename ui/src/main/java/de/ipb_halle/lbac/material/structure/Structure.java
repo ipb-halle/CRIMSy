@@ -42,7 +42,7 @@ public class Structure extends Material {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     protected String sumFormula;
     protected Molecule molecule;
-    private Double molarMass;
+    private Double averageMolarMass;
     private Double exactMolarMass;
 
     public Structure(
@@ -57,7 +57,7 @@ public class Structure extends Material {
             Molecule molecule) {
         super(id, names, projectId, hazards, storageInfos);
         this.sumFormula = sumFormula;
-        this.molarMass = molarMass;
+        this.averageMolarMass = molarMass;
         this.exactMolarMass = exactMolarMass;
         this.molecule = molecule;
         this.type = MaterialType.STRUCTURE;
@@ -115,12 +115,12 @@ public class Structure extends Material {
         this.molecule = molecule;
     }
 
-    public Double getMolarMass() {
-        return molarMass;
+    public Double getAverageMolarMass() {
+        return averageMolarMass;
     }
 
-    public void setMolarMass(Double molarMass) {
-        this.molarMass = molarMass;
+    public void setAverageMolarMass(Double molarMass) {
+        this.averageMolarMass = molarMass;
     }
 
     public Double getExactMolarMass() {
@@ -178,14 +178,14 @@ public class Structure extends Material {
     public Material copyMaterial() {
         Structure copy = new Structure(
                 sumFormula,
-                molarMass,
+                averageMolarMass,
                 exactMolarMass,
                 id,
                 getCopiedNames(),
                 projectId,
                 hazards.copy(),
                 storageInformation.copy(),
-                new Molecule(molecule.getStructureModel(), molecule.getId(), molecule.getModelType().toString()));
+                new Molecule(molecule.getStructureModel(), molecule.getId()));
 
         copy.setIndices(getCopiedIndices());
         copy.setNames(getCopiedNames());
@@ -203,7 +203,7 @@ public class Structure extends Material {
         StructureEntity sE = new StructureEntity();
         sE.setSumformula(sumFormula);
         sE.setExactmolarmass(exactMolarMass);
-        sE.setMolarmass(molarMass);
+        sE.setMolarmass(averageMolarMass);
         sE.setId(getId());
         if (molecule != null
                 && molecule.getStructureModel() != null

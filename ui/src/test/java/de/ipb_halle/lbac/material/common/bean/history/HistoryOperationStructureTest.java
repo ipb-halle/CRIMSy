@@ -69,11 +69,10 @@ public class HistoryOperationStructureTest {
         sdiff = new MaterialStructureDifference();
         sdiff.setModificationTime(currentDate);
         Molecule m = new Molecule("H20", 1);
-        m.setModelType(Molecule.MoleculeFormat.V2000);
 
-        strucInfo.setMolarMass(12d);
+        strucInfo.setAverageMolarMass(12d);
 
-        strucInfo.setMolarMass(12d);
+        strucInfo.setAverageMolarMass(12d);
         strucInfo.setExactMolarMass(11d);
         strucInfo.setSumFormula("H2O");
         strucInfo.setStructureModel("xxx-xxx");

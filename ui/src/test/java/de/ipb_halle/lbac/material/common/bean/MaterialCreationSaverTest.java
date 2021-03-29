@@ -17,52 +17,20 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionOrchestrator;
-import de.ipb_halle.lbac.collections.CollectionWebClient;
-import de.ipb_halle.lbac.container.service.ContainerNestingService;
-import de.ipb_halle.lbac.container.service.ContainerPositionService;
-import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.items.bean.ItemBean;
-import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
-import de.ipb_halle.lbac.items.service.ArticleService;
-import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
-import de.ipb_halle.lbac.material.structure.MoleculeStructureModel;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
-import de.ipb_halle.lbac.material.structure.V2000;
-import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
-import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.project.ProjectEditBean;
-import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.webservice.Updater;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -88,9 +56,6 @@ public class MaterialCreationSaverTest extends TestBase {
     @Inject
     private MaterialService materialService;
 
-    @Inject
-    private MoleculeService moleculeService;
-
     private CreationTools creationTools;
     @Inject
     private ProjectService projectService;
@@ -107,17 +72,17 @@ public class MaterialCreationSaverTest extends TestBase {
     public void test001_saveNewStructure() {
 
         MaterialNameBean nameBean = new MaterialNameBean();
-        MaterialCreationSaver saver = new MaterialCreationSaver(moleculeService, nameBean, materialService);
+        MaterialCreationSaver saver = new MaterialCreationSaver(nameBean, materialService);
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         materialService.setUserBean(userBean);
         Project p = creationTools.createProject();
-        MoleculeStructureModel moleculeModel = new V2000();
+
         StructureInformation structureInfos = new StructureInformation();
         StorageClassInformation sci = new StorageClassInformation();
         sci.setRemarks("test-remark");
         //sci.setStorageClass(storageClass);
-        saver.saveNewStructure(true, moleculeModel, structureInfos, p, new HazardInformation(), sci, new ArrayList<>());
+        saver.saveNewStructure(true, structureInfos, p, new HazardInformation(), sci, new ArrayList<>());
 
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());

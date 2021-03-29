@@ -237,11 +237,11 @@ public class MaterialComparatorTest {
         //Testcase 1 : remove information fro structure
         oldStruc.setMolecule(new Molecule("xx-xx", 0));
         oldStruc.setSumFormula("h2o");
-        oldStruc.setMolarMass(12d);
+        oldStruc.setAverageMolarMass(12d);
         oldStruc.setExactMolarMass(11d);
         newStruc.setMolecule(null);
         newStruc.setSumFormula(null);
-        newStruc.setMolarMass(0d);
+        newStruc.setAverageMolarMass(0d);
         newStruc.setExactMolarMass(0d);
 
         List<MaterialDifference> diffs = instance.compareMaterial(

@@ -29,10 +29,8 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -176,7 +174,6 @@ public class BiomaterialServiceTest extends TestBase {
         WebArchive deployment = prepareDeployment("BiomaterialServiceTest.war")
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)
-                .addClass(MoleculeService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(BiomaterialService.class)
                 .addClass(TissueService.class)

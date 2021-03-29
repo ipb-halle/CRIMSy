@@ -27,7 +27,7 @@ import java.io.Serializable;
 public class StructureInformation implements Serializable {
 
     protected Double exactMolarMass;
-    protected Double molarMass;
+    protected Double averageMolarMass;
     protected String sumFormula;
     protected String structureModel = "";
 
@@ -46,12 +46,12 @@ public class StructureInformation implements Serializable {
         this.exactMolarMass = exactMolarMass;
     }
 
-    public Double getMolarMass() {
-        return molarMass;
+    public Double getAverageMolarMass() {
+        return averageMolarMass;
     }
 
-    public void setMolarMass(Double molarMass) {
-        this.molarMass = molarMass;
+    public void setAverageMolarMass(Double molarMass) {
+        this.averageMolarMass = molarMass;
     }
 
     public String getSumFormula() {

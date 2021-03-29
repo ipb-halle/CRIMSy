@@ -161,7 +161,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         conditionList.add(getBinaryLeafConditionWithCast(
                 Operator.SUBSTRUCTURE,
                 values.iterator().next(),
-                " CAST(%s AS MOLECULE) ",
+                " (%s, '')::bingo.sub ",
                 rootGraphName + "/structures/molecules",
                 AttributeType.MOLECULE));
     }

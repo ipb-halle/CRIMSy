@@ -19,16 +19,14 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
-import de.ipb_halle.lbac.project.ProjectService;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -136,13 +134,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("TaxonomyHistoryControllerTest.war")
-                .addClass(ProjectService.class)
-                .addClass(MaterialService.class)
-                .addClass(MoleculeService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(TissueService.class)
-                .addClass(TaxonomyService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("TaxonomyHistoryControllerTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

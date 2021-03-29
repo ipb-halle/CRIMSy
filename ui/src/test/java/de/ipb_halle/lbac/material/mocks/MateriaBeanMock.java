@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -47,10 +46,6 @@ public class MateriaBeanMock extends MaterialBean {
 
     public void setProjectService(ProjectService projectService) {
         this.projectService = projectService;
-    }
-
-    public void setMoleculeService(MoleculeService moleculeService) {
-        this.moleculeService = moleculeService;
     }
 
     public void setProjectBean(ProjectBean projectBean) {

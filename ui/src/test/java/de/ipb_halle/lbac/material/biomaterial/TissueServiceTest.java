@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.ArrayList;
@@ -124,7 +123,6 @@ public class TissueServiceTest extends TestBase {
         WebArchive deployment = prepareDeployment("TissueServiceTest.war")
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)
-                .addClass(MoleculeService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);

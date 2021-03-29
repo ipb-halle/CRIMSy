@@ -52,6 +52,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Query;
@@ -64,7 +65,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialEditSaver implements Serializable {
 
-    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule,format) VALUES(CAST ((:molecule) AS molecule),:format) RETURNING id";
     protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_storages WHERE materialid=:mid";
     protected String SQL_DELETE_EFFECTIVE_TAXONOMY = "DELETE FROM effective_taxonomy WHERE taxoid=:taxoid";
     protected String SQL_INSERT_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(:taxoid,:parentid)";
@@ -229,11 +229,8 @@ public class MaterialEditSaver implements Serializable {
             Molecule oldMol = strucDiff.getMoleculeId_old();
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
-                    Query q = materialService.getEm().createNativeQuery(SQL_INSERT_MOLECULE)
-                            .setParameter("molecule", newMol.getStructureModel())
-                            .setParameter("format", newMol.getModelType().toString());
-                    int molId = (int) q.getSingleResult();
-                    newMol.setId(molId);
+                    StructureInformationSaver saver=new StructureInformationSaver(materialService.getEm());
+                    newMol.setId(saver.saveMolecule(newMol.getStructureModel()));
                 }
             }
             saveMaterialStrcutureDifferences(strucDiff);

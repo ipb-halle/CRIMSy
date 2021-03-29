@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.material.common.service;
 
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
@@ -73,7 +72,6 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -105,7 +103,7 @@ public class MaterialService implements Serializable {
     private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM hazards_materials WHERE materialid=:mid";
     private final String SQL_GET_INDICES = "SELECT id,materialid,typeid,value,language,rank FROM material_indices WHERE materialid=:mid order by rank";
     private final String SQL_GET_STRUCTURE_INFOS = "SELECT id,sumformula,molarmass,exactmolarmass,moleculeid FROM structures WHERE id=:mid";
-    private final String SQL_GET_MOLECULE = "SELECT id,format,CAST(molecule AS VARCHAR) FROM molecules WHERE id=:mid";
+    private final String SQL_GET_MOLECULE = "SELECT id,molecule FROM molecules WHERE id=:mid";
     private final String SQL_DEACTIVATE_MATERIAL = "UPDATE materials SET deactivated=true WHERE materialid=:mid";
     private final String SQL_GET_SIMILAR_NAMES
             = "SELECT DISTINCT(mi.value) "
@@ -131,9 +129,6 @@ public class MaterialService implements Serializable {
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
-
-    @Inject
-    protected MoleculeService moleculeService;
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -350,8 +345,7 @@ public class MaterialService implements Serializable {
             q6.setParameter("mid", sE.getMoleculeid());
             Object[] result = (Object[]) q6.getSingleResult();
             moleculeId = (int) result[0];
-            moleculeFormat = (String) result[1];
-            molecule = (String) result[2];
+            molecule = (String) result[1];
 
         }
 

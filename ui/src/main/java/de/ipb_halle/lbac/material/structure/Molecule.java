@@ -29,13 +29,9 @@ public class Molecule  implements Serializable{
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    public enum MoleculeFormat {
-        V2000,
-        V3000
-    }
     protected String structureModel;
     private int id;
-    private MoleculeFormat modelType;
+  
 
     public Molecule() {
     }
@@ -43,13 +39,7 @@ public class Molecule  implements Serializable{
     public Molecule(String structureModel, int id) {
         this.structureModel = structureModel;
         this.id = id;
-        this.modelType = MoleculeFormat.V2000;
-    }
-
-    public Molecule(String structureModel, int id, String format) {
-        this.structureModel = structureModel;
-        this.id = id;
-        modelType = MoleculeFormat.valueOf(format);
+       
     }
 
     public String getStructureModel() {
@@ -68,27 +58,9 @@ public class Molecule  implements Serializable{
         this.id = id;
     }
 
-    public MoleculeFormat getModelType() {
-        return modelType;
-    }
-
-    public void setModelType(MoleculeFormat modelType) {
-        this.modelType = modelType;
-    }
-
+    //ToDo: implement method
     public boolean isEmptyMolecule() {
-        try {
-            MoleculeStructureModel model;
-            if (modelType == MoleculeFormat.V2000) {
-                model = new V2000();
-                return model.isEmptyMolecule(structureModel);
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            logger.error("Could not valuate if molecule is empty", e);
-            return false;
-        }
+       return structureModel==null || structureModel.isEmpty();
     }
 
 }

@@ -34,7 +34,6 @@ import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.bean.SearchState;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
@@ -115,7 +114,6 @@ public class SearchOrchestratorTest extends TestBase {
         WebArchive deployment = prepareDeployment("SearchService.war")
                 .addClass(SearchService.class)
                 .addClass(ProjectService.class)
-                .addClass(MoleculeService.class)
                 .addClass(ArticleService.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)

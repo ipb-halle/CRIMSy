@@ -29,9 +29,6 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
-import de.ipb_halle.lbac.material.structure.MoleculeStructureModel;
-import de.ipb_halle.lbac.material.structure.V2000;
 import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -51,6 +48,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,9 +72,6 @@ public class MaterialBean implements Serializable {
 
     @Inject
     protected ProjectService projectService;
-
-    @Inject
-    protected MoleculeService moleculeService;
 
     @Inject
     protected MaterialService materialService;
@@ -114,7 +109,6 @@ public class MaterialBean implements Serializable {
 
     protected List<Project> possibleProjects = new ArrayList<>();
     protected Mode mode;
-    protected MoleculeStructureModel strcutureModel;
     protected HazardInformation hazards;
     protected StorageClassInformation storageClassInformation;
 
@@ -122,7 +116,7 @@ public class MaterialBean implements Serializable {
 
     protected List<String> errorMessages = new ArrayList<>();
 
-    private boolean calculateFormulaAndMassesByDb = true;
+    private boolean autoCalcFormularAndMasses = true;
 
     private MaterialEditState materialEditState = new MaterialEditState();
     private HistoryOperation historyOperation;
@@ -141,7 +135,6 @@ public class MaterialBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        strcutureModel = new V2000();
         permission = new MaterialEditPermission(this);
         tissueController = new TissueController(this);
 
@@ -151,7 +144,6 @@ public class MaterialBean implements Serializable {
 
     }
 
-    
     public void startMaterialCreation() {
         try {
             initState();
@@ -189,9 +181,8 @@ public class MaterialBean implements Serializable {
                 Structure struc = (Structure) m;
                 structureInfos = new StructureInformation(m);
                 structureInfos.setExactMolarMass(struc.getExactMolarMass());
-                structureInfos.setMolarMass(struc.getMolarMass());
+                structureInfos.setAverageMolarMass(struc.getAverageMolarMass());
                 structureInfos.setSumFormula(struc.getSumFormula());
-                structureInfos.setStructureModel(struc.getMolecule().getStructureModel());
             }
             if (m.getType() == MaterialType.BIOMATERIAL) {
                 BioMaterial bm = (BioMaterial) m;
@@ -220,7 +211,6 @@ public class MaterialBean implements Serializable {
         materialIndexBean.init();
         currentMaterialType = MaterialType.CONSUMABLE;
         creationSaver = new MaterialCreationSaver(
-                moleculeService,
                 materialNameBean,
                 materialService);
     }
@@ -293,9 +283,7 @@ public class MaterialBean implements Serializable {
     public void saveNewMaterial() {
         if (checkInputValidity()) {
             if (currentMaterialType == MaterialType.STRUCTURE) {
-                creationSaver.saveNewStructure(
-                        calculateFormulaAndMassesByDb,
-                        strcutureModel,
+                creationSaver.saveNewStructure(autoCalcFormularAndMasses,
                         structureInfos,
                         materialEditState.getCurrentProject(),
                         hazards,
@@ -345,21 +333,20 @@ public class MaterialBean implements Serializable {
         Molecule m = new Molecule(structureInfos.getStructureModel(), 0);
         if (m.isEmptyMolecule()) {
             s.setMolecule(null);
-            if (calculateFormulaAndMassesByDb) {
+            if (autoCalcFormularAndMasses) {
                 structureInfos.setExactMolarMass(null);
-                structureInfos.setMolarMass(null);
+                structureInfos.setAverageMolarMass(null);
                 structureInfos.setSumFormula(null);
             }
         } else {
             s.setMolecule(m);
-            if (calculateFormulaAndMassesByDb) {
-                structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));
-                structureInfos.setExactMolarMass(moleculeService.getExactMolarMassOfMolecule(structureInfos.getStructureModel()));
-                structureInfos.setMolarMass(moleculeService.getMolarMassOfMolecule(structureInfos.getStructureModel()));
+            if (autoCalcFormularAndMasses) {
+                Calculator calc = new Calculator();
+                structureInfos = calc.calculate(structureInfos);
             }
         }
         s.setExactMolarMass(structureInfos.getExactMolarMass());
-        s.setMolarMass(structureInfos.getMolarMass());
+        s.setAverageMolarMass(structureInfos.getAverageMolarMass());
         s.setSumFormula(structureInfos.getSumFormula());
     }
 
@@ -445,12 +432,12 @@ public class MaterialBean implements Serializable {
         return String.join(" ", errorMessages);
     }
 
-    public boolean isCalculateFormulaAndMassesByDb() {
-        return calculateFormulaAndMassesByDb;
+    public boolean isAutoCalcFormularAndMasses() {
+        return autoCalcFormularAndMasses;
     }
 
-    public void setCalculateFormulaAndMassesByDb(boolean calculateFormulaAndMassesByDb) {
-        this.calculateFormulaAndMassesByDb = calculateFormulaAndMassesByDb;
+    public void setAutoCalcFormularAndMasses(boolean autoCalc) {
+        this.autoCalcFormularAndMasses = autoCalc;
     }
 
     public boolean isTypeChoiseDisabled() {

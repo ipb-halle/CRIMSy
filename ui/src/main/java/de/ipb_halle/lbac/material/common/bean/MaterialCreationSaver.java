@@ -18,10 +18,8 @@
 package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.material.structure.MoleculeStructureModel;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
@@ -31,6 +29,7 @@ import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -42,16 +41,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialCreationSaver implements Serializable {
 
-    protected MoleculeService moleculeService;
     protected MaterialNameBean materialNameBean;
     protected MaterialService materialService;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public MaterialCreationSaver(
-            MoleculeService moleculeService,
             MaterialNameBean materialNameBean,
             MaterialService materialService) {
-        this.moleculeService = moleculeService;
         this.materialNameBean = materialNameBean;
         this.materialService = materialService;
     }
@@ -79,8 +75,7 @@ public class MaterialCreationSaver implements Serializable {
     }
 
     public void saveNewStructure(
-            boolean calculateFormulaAndMassesByDb,
-            MoleculeStructureModel moleculeModel,
+            boolean autoCalc,
             StructureInformation structureInfos,
             Project project,
             HazardInformation hazards,
@@ -88,22 +83,23 @@ public class MaterialCreationSaver implements Serializable {
             List<IndexEntry> indices
     ) {
         try {
-            if (calculateFormulaAndMassesByDb && !moleculeModel.isEmptyMolecule(structureInfos.getStructureModel())) {
-                structureInfos.setSumFormula(moleculeService.getMolFormulaOfMolecule(structureInfos.getStructureModel()));
-                structureInfos.setExactMolarMass(moleculeService.getExactMolarMassOfMolecule(structureInfos.getStructureModel()));
-                structureInfos.setMolarMass(moleculeService.getMolarMassOfMolecule(structureInfos.getStructureModel()));
+            Molecule mol = new Molecule(structureInfos.getStructureModel(), -1);
+            if (mol.isEmptyMolecule()) {
+                structureInfos.setStructureModel(null);
+            } else {
+                if (autoCalc) {
+                    Calculator calc = new Calculator();
+                    structureInfos = calc.calculate(structureInfos);
+                }
             }
 
-            if (moleculeModel.isEmptyMolecule(structureInfos.getStructureModel())) {
-                structureInfos.setStructureModel(null);
-            }
         } catch (Exception e) {
             logger.error("Molecule model is not valide: " + structureInfos.getStructureModel(), e);
             structureInfos.setStructureModel(null);
         }
         Structure struc = new Structure(
                 structureInfos.getSumFormula(),
-                structureInfos.getMolarMass(),
+                structureInfos.getAverageMolarMass(),
                 structureInfos.getExactMolarMass(),
                 -1,
                 materialNameBean.getNames(),

@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.material.common;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialHistoryService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.EntityManagerService;
@@ -77,7 +76,6 @@ public class MaterialHistoryServiceTest extends TestBase {
                 .addClass(EntityManagerService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(DocumentSearchService.class)
-                .addClass(MoleculeService.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(Updater.class)

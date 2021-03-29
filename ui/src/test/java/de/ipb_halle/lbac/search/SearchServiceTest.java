@@ -47,10 +47,8 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
-import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -81,7 +79,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -245,10 +242,10 @@ public class SearchServiceTest extends TestBase {
         request = builder.build();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
-        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
-        builder.setStructure("XXX");
-        request = builder.build();
-        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+//        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+//        builder.setStructure("XXX");
+//        request = builder.build();
+//        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName(publicUser.getName());
@@ -638,7 +635,6 @@ public class SearchServiceTest extends TestBase {
         WebArchive deployment = prepareDeployment("SearchService.war")
                 .addClass(SearchService.class)
                 .addClass(ProjectService.class)
-                .addClass(MoleculeService.class)
                 .addClass(ArticleService.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)

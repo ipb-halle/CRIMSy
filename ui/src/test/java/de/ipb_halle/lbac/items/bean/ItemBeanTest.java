@@ -35,8 +35,9 @@ import de.ipb_halle.lbac.items.mocks.NavigatorMock;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
+import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
@@ -48,7 +49,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -74,6 +74,9 @@ public class ItemBeanTest extends TestBase {
     private ContainerPositionService containerPositionService;
 
     @Inject
+    private TaxonomyNestingService taxoNestingService;
+
+    @Inject
     protected MaterialService materialService;
     protected Project project;
     protected Material structure;
@@ -91,7 +94,7 @@ public class ItemBeanTest extends TestBase {
         structure.setACList(project.getACList());
         user = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
-        materialService.setEditedMaterialSaver(new MaterialEditSaverMock(materialService));
+        materialService.setEditedMaterialSaver(new MaterialEditSaver(materialService, taxoNestingService));
         materialService.saveMaterialToDB(structure, project.getUserGroups().getId(), new HashMap<>(), user.getId());
 
         userBean = new UserBeanMock();
@@ -121,7 +124,6 @@ public class ItemBeanTest extends TestBase {
 
     }
 
-   
     @Test
     public void test001_createNewItem() {
         itemBean.actionStartItemCreation(structure);

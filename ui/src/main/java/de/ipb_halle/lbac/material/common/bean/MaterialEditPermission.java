@@ -65,7 +65,7 @@ public class MaterialEditPermission implements Serializable{
     }
 
     public boolean isFormulaAndMassesInputsEnabled() {
-        return !bean.isCalculateFormulaAndMassesByDb() && bean.getMode() != MaterialBean.Mode.HISTORY;
+        return !bean.isAutoCalcFormularAndMasses() && bean.getMode() != MaterialBean.Mode.HISTORY;
     }
 
     private boolean isOwnerOrPermitted(MaterialDetailType type, ACPermission permission) {

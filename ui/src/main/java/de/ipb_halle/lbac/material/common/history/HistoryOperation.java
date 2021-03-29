@@ -261,7 +261,7 @@ public class HistoryOperation implements Serializable {
                 }
             }
             if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
-                structureInfos.setMolarMass(structureDiff.getMolarMass_old());
+                structureInfos.setAverageMolarMass(structureDiff.getMolarMass_old());
             }
             if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
                 structureInfos.setExactMolarMass(structureDiff.getExactMolarMass_old());
@@ -283,7 +283,7 @@ public class HistoryOperation implements Serializable {
                 }
             }
             if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
-                structureInfos.setMolarMass(structureDiff.getMolarMass_new());
+                structureInfos.setAverageMolarMass(structureDiff.getMolarMass_new());
             }
             if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
                 structureInfos.setExactMolarMass(structureDiff.getExactMolarMass_new());

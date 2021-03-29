@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Molecule;
@@ -40,7 +39,6 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
@@ -55,6 +53,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.FileService;
@@ -93,6 +92,9 @@ public class MaterialServiceTest extends TestBase {
     @Inject
     private TaxonomyService taxoService;
 
+    @Inject
+    private TaxonomyNestingService taxonomyNestingService;
+
     private CreationTools creationTools;
 
     String hazardStatement = "HazardStatement - Text";
@@ -105,7 +107,7 @@ public class MaterialServiceTest extends TestBase {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
         instance.setStructureInformationSaver(new StructureInformationSaverMock(instance.getEm()));
-        instance.setEditedMaterialSaver(new MaterialEditSaverMock(instance));
+        instance.setEditedMaterialSaver(new MaterialEditSaver(instance, taxonomyNestingService));
     }
 
     @Test
@@ -209,6 +211,8 @@ public class MaterialServiceTest extends TestBase {
 
     }
 
+    //Mocking the strcutureSaver to get the id
+    @Ignore
     @Test
     public void test02_updateStructure() throws Exception {
 
@@ -234,7 +238,7 @@ public class MaterialServiceTest extends TestBase {
         structure.getHazards().setHighlyFlammable(true);
         //set initial structure information
         structure.setSumFormula("H2O");
-        structure.setMolarMass(10d);
+        structure.setAverageMolarMass(10d);
         structure.setExactMolarMass(9d);
         structure.setMolecule(new Molecule("molecule-model", 0));
 
@@ -257,7 +261,7 @@ public class MaterialServiceTest extends TestBase {
         editedMaterial.getHazards().setHighlyFlammable(false);
         //Change  structure information
         editedMaterial.setSumFormula("H3O");
-        editedMaterial.setMolarMass(11d);
+        editedMaterial.setAverageMolarMass(11d);
         editedMaterial.setExactMolarMass(10d);
         editedMaterial.setMolecule(new Molecule("molecule-model after edit", 1));
 
@@ -506,7 +510,7 @@ public class MaterialServiceTest extends TestBase {
         requestBuilder.setProjectName("xyz");
         result = instance.getReadableMaterials(requestBuilder.build());
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
-        
+
         Assert.assertEquals(0, instance.loadMaterialAmount(requestBuilder.build()));
         Assert.assertEquals(0, structures.size());
 
@@ -615,7 +619,6 @@ public class MaterialServiceTest extends TestBase {
                 .addClass(TermVectorEntityService.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(ACListService.class)
-                .addClass(MoleculeService.class)
                 .addClass(ProjectService.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(Updater.class)

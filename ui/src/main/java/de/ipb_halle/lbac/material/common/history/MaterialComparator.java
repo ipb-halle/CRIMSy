@@ -405,11 +405,11 @@ public class MaterialComparator implements Serializable {
                 diff.setExactMolarMass_old(originalStruc.getExactMolarMass());
             }
         }
-        if (!checkIfBothAreNull(originalStruc.getMolarMass(), editedStruc.getMolarMass())) {
-            if (checkIfOneIsNull(originalStruc.getMolarMass(), editedStruc.getMolarMass())
-                    || Math.abs(originalStruc.getMolarMass() - editedStruc.getMolarMass()) > Double.MIN_NORMAL) {
-                diff.setMolarMass_new(editedStruc.getMolarMass());
-                diff.setMolarMass_old(originalStruc.getMolarMass());
+        if (!checkIfBothAreNull(originalStruc.getAverageMolarMass(), editedStruc.getAverageMolarMass())) {
+            if (checkIfOneIsNull(originalStruc.getAverageMolarMass(), editedStruc.getAverageMolarMass())
+                    || Math.abs(originalStruc.getAverageMolarMass() - editedStruc.getAverageMolarMass()) > Double.MIN_NORMAL) {
+                diff.setMolarMass_new(editedStruc.getAverageMolarMass());
+                diff.setMolarMass_old(originalStruc.getAverageMolarMass());
             }
         }
         Molecule origMol = originalStruc.getMolecule();
@@ -418,8 +418,7 @@ public class MaterialComparator implements Serializable {
         boolean newMoleculeRemoved = origMol != null && newMol == null;
         boolean modelEdited = newMol != null
                 && origMol != null
-                && !newMol.getStructureModel().equals(origMol.getStructureModel())
-                && newMol.getModelType() == origMol.getModelType();
+                && !newMol.getStructureModel().equals(origMol.getStructureModel());
 
         if (newMoleculeSet || newMoleculeRemoved || modelEdited) {
             diff.setMoleculeId_new(editedStruc.getMolecule());

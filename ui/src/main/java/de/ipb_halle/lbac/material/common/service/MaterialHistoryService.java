@@ -125,8 +125,7 @@ public class MaterialHistoryService implements Serializable {
             + "WHERE taxonomyid=:taxoid";
     private final String SQL_GET_MOLECULE = "SELECT "
             + "id,"
-            + "format,"
-            + "CAST(molecule AS VARCHAR)"
+            + "molecule "
             + " FROM molecules "
             + " WHERE id=:mid";
 
@@ -355,9 +354,8 @@ public class MaterialHistoryService implements Serializable {
         q6.setParameter("mid", moleculeId);
         Object[] result = (Object[]) q6.getSingleResult();
 
-        String moleculeFormat = (String) result[1];
         String molecule = (String) result[2];
-        return new Molecule(molecule, moleculeId, moleculeFormat);
+        return new Molecule(molecule, moleculeId);
 
     }
 

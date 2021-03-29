@@ -24,10 +24,10 @@ import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.material.mocks.MaterialEditSaverMock;
+import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectService;
 import java.util.HashMap;
@@ -38,7 +38,6 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +58,8 @@ public class TaxonomyBeanTest extends TestBase {
     private TaxonomyService taxonomyService;
 
     @Inject
+    private TaxonomyNestingService taxoNestingService;
+    @Inject
     private MaterialService materialService;
 
     protected TaxonomyBeanMock bean;
@@ -76,7 +77,7 @@ public class TaxonomyBeanTest extends TestBase {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         materialService.setUserBean(userBean);
-        materialService.setEditedMaterialSaver(new MaterialEditSaverMock(materialService));
+        materialService.setEditedMaterialSaver(new MaterialEditSaver(materialService, taxoNestingService));
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
         bean.setMaterialService(materialService);
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -204,8 +205,6 @@ public class TaxonomyBeanTest extends TestBase {
         Assert.assertEquals(22, taxos.size());
         Assert.assertEquals(TaxonomyBean.Mode.SHOW, bean.getMode());
     }
-    
-    
 
     private void assertNotSelectable(String nameOfTaxo) {
         selectTaxonomyFromTree(nameOfTaxo, bean.getTreeController().getTaxonomyTree());
@@ -282,15 +281,7 @@ public class TaxonomyBeanTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("TaxonomyBeanTest.war")
-                .addClass(TaxonomyService.class)
-                .addClass(TaxonomyBean.class)
-                .addClass(MoleculeService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(ProjectService.class)
-                .addClass(TissueService.class)
-                .addClass(MaterialService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("TaxonomyBeanTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

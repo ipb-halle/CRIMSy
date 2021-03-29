@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.project.ProjectService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -34,7 +33,6 @@ public class MaterialDeployment {
     
     public static WebArchive add(WebArchive deployment) {
         return deployment
-                .addClass(MoleculeService.class)
                 .addClass(ProjectService.class)
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)

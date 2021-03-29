@@ -28,7 +28,7 @@ import javax.persistence.Query;
  */
 public class StructureInformationSaverMock extends StructureInformationSaver {
 
-    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule,format) VALUES(?,?,'V2000')";
+    protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule) VALUES(?,?)";
 
     public StructureInformationSaverMock(EntityManager em) {
         super(em);

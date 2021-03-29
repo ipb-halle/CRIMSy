@@ -33,7 +33,6 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
-import de.ipb_halle.lbac.material.structure.MoleculeService;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectEditBean;
@@ -217,7 +216,6 @@ public class TaxonomyRenderControllerTest extends TestBase {
         WebArchive deployment = prepareDeployment("TaxonomyRenderControllerTest.war")
                 .addClass(ProjectService.class)
                 .addClass(MaterialService.class)
-                .addClass(MoleculeService.class)
                 .addClass(TaxonomyNestingService.class)
                 .addClass(TissueService.class)
                 .addClass(ProjectEditBean.class)
