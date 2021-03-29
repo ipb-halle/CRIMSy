@@ -20,11 +20,18 @@ package de.ipb_halle.lbac.exp.images;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
+import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.exp.Experiment;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
+import de.ipb_halle.lbac.exp.ExperimentService;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
@@ -48,6 +55,12 @@ public class ImageServiceTest extends TestBase {
     @Inject
     private ImageService imageService;
 
+    @Inject
+    private ExperimentService expService;
+
+    @Inject
+    private ExpRecordService recordService;
+
     private User publicUser;
     private ACList publicACL;
     private ACList noAccessACL;
@@ -55,7 +68,8 @@ public class ImageServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ImageServiceTest.war").addClass(ImageService.class);
-        return deployment;
+        return ExperimentDeployment
+                .add(UserBeanDeployment.add(ItemDeployment.add(deployment)));
     }
 
     @Before
@@ -67,11 +81,15 @@ public class ImageServiceTest extends TestBase {
 
     @Test
     public void test001_saveImage() {
-        Image image = new Image("preview", "image", publicUser, publicACL);
-        image = imageService.saveImage(image);
+        Experiment exp = new Experiment(null, "test001_test001_saveImage", "test001_test001_saveImage", true, publicACL, publicUser, new Date());
+        exp = expService.save(exp);
 
-        Assert.assertNotNull(image.id);
-        int imageId = image.id;
+        Image image = new Image("preview", "image", publicUser, publicACL);
+        image.setExperiment(exp);
+        recordService.save(image, publicUser);
+
+        Assert.assertNotNull(image.getExpRecordId());
+
         List<Object> images = (List) entityManagerService.doSqlQuery(SQL_LOAD_IMAGES);
         Assert.assertEquals(1, images.size());
         Object[] o = (Object[]) images.get(0);
@@ -82,11 +100,11 @@ public class ImageServiceTest extends TestBase {
 
         image.setImage("image-edited");
         image.setPreview("preview-edited");
-        imageService.saveImage(image);
+        imageService.saveEditedImage(image);
         images = (List) entityManagerService.doSqlQuery(SQL_LOAD_IMAGES);
         Assert.assertEquals(1, images.size());
         o = (Object[]) images.get(0);
-        Assert.assertEquals(imageId, o[0]);
+        Assert.assertEquals(image.getExpRecordId(), ((BigInteger) o[0]).longValue(), 0);
         Assert.assertEquals("preview-edited", o[1]);
         Assert.assertEquals("image-edited", o[2]);
         Assert.assertEquals(publicACL.getId(), o[3]);
@@ -95,18 +113,13 @@ public class ImageServiceTest extends TestBase {
 
     @Test
     public void test002_loadImage() {
+        Experiment exp = new Experiment(null, "test002_loadImage_exp", "test002_loadImage_desc", true, publicACL, publicUser, new Date());
+        exp = expService.save(exp);
         Image image = new Image("preview", "image", publicUser, publicACL);
-        image = imageService.saveImage(image);
-        Experiment exp = new Experiment(1, "test002_loadImage_exp", "test002_loadImage_desc", true, publicACL, publicUser, new Date());
-        ExpRecordEntity expRecordEntity = new ExpRecordEntity();
-        expRecordEntity.setChangeTime(new Date());
-        expRecordEntity.setCreationTime(new Date());
-        expRecordEntity.setExpRecordId(new Long(image.id));
-        expRecordEntity.setExperimentId(exp.getId());
-        expRecordEntity.setNext(null);
-        expRecordEntity.setRevision(1);
-        expRecordEntity.setType(ExpRecordType.IMAGE);
-        Image loadedImage = imageService.loadImage(exp, expRecordEntity);
+        image.setExperiment(exp);
+        ExpRecord record = recordService.save(image, publicUser);
+
+        Image loadedImage = imageService.loadImage(exp, record.createExpRecordEntity());
         Assert.assertEquals("preview", loadedImage.getPreview());
         Assert.assertEquals("image", loadedImage.getImage());
         Assert.assertEquals(publicACL.getId(), loadedImage.aclist.getId());

@@ -800,11 +800,11 @@ CREATE TABLE preferences (
 );
 
 CREATE TABLE images (
-    id          SERIAL NOT NULL PRIMARY KEY,
+    id          BIGINT NOT NULL PRIMARY KEY REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
     preview     VARCHAR,
     image       VARCHAR,
     aclist_id   INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,
     owner_id    INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
-)
+);
 
 

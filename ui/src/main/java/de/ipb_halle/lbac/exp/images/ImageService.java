@@ -45,16 +45,8 @@ public class ImageService implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Image saveImage(Image image) {
-        if (image.id == null) {
-            return saveNewImage(image);
-        } else {
-            return saveEditedImage(image);
-        }
-    }
-    
     public Image loadImage(Experiment exp, ExpRecordEntity record) {
-        ImageEntity imageEntity = em.find(ImageEntity.class, record.getExpRecordId().intValue());
+        ImageEntity imageEntity = em.find(ImageEntity.class, record.getExpRecordId());
         if (imageEntity == null) {
             return null;
         }
@@ -67,14 +59,13 @@ public class ImageService implements Serializable {
         return image;
     }
 
-    private Image saveNewImage(Image image) {
+    public Image saveNewImage(Image image) {
         ImageEntity entity = image.createEntity();
         em.persist(entity);
-        image.id = entity.getId();
         return image;
     }
 
-    private Image saveEditedImage(Image image) {
+    public Image saveEditedImage(Image image) {
         em.merge(image.createEntity());
         return image;
     }

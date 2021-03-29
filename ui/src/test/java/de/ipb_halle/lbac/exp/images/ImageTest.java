@@ -53,14 +53,14 @@ public class ImageTest {
         Assert.assertEquals(user.getId(), entity.getOwner());
         Assert.assertEquals(aclist.getId(), entity.getACList());
 
-        entity.setId(1);
+        entity.setId(1L);
         Image imageFromEntity = new Image(entity, aclist, user);
         Assert.assertEquals(ExpRecordType.IMAGE, image.getType());        
         Assert.assertEquals("preview", imageFromEntity.getPreview());
         Assert.assertEquals("image", imageFromEntity.getImage());
         Assert.assertEquals(user, imageFromEntity.user);
         Assert.assertEquals(aclist, imageFromEntity.aclist);
-        Assert.assertEquals(1, imageFromEntity.id, 0);
+        Assert.assertEquals(1, imageFromEntity.getExpRecordId(), 0);
 
     }
 }

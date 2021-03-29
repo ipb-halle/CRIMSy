@@ -21,8 +21,6 @@ import de.ipb_halle.lbac.admission.ACObjectEntity;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -36,9 +34,8 @@ public class ImageEntity extends ACObjectEntity implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer id;
+    private Long id;
 
     @Column
     private String preview;
@@ -46,11 +43,11 @@ public class ImageEntity extends ACObjectEntity implements Serializable {
     @Column
     private String image;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

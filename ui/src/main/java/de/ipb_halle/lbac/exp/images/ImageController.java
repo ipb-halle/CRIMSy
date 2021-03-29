@@ -21,15 +21,17 @@ import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.plugin.imageAnnotation.DataURIImage;
+import java.io.Serializable;
 
 /**
  * This class is the experimental record controller for the image editor/viewer.
  * It controls the view components in the composite component <crimsy:image>,
  * which is implemented in image.xhtml.
- * 
+ *
  * @author flange
  */
-public class ImageController extends ExpRecordController {
+public class ImageController extends ExpRecordController implements Serializable {
+
     public ImageController(ExperimentBean bean) {
         super(bean);
     }
@@ -79,13 +81,12 @@ public class ImageController extends ExpRecordController {
 //    public void setPreviewImage(String previewImage) {
 //        this.previewImage = previewImage;
 //    }
-
     private String jsonImage;
 
     /**
      * Returns the image in JSON format. This data is rendered by <h:inputHidden
      * id="inputJsonImage" ... />.
-     * 
+     *
      * @return image in JSON format
      */
     public String getJsonImage() {
@@ -96,7 +97,7 @@ public class ImageController extends ExpRecordController {
      * This setter does nothing, because {@code jsonImage} is filled from
      * {@code jsonFile} after the file upload. This process is executed by
      * {@link #actionSaveRecord()}.
-     * 
+     *
      * @param jsonImage
      */
     public void setJsonImage(String jsonImage) {
@@ -113,7 +114,7 @@ public class ImageController extends ExpRecordController {
     /**
      * Returns the image in JSON format. This data is used by the <nwc:inputFile
      * id="inputJsonFileId" ... /> component.
-     * 
+     *
      * @return image in JSON format
      */
     public String getJsonFile() {
@@ -124,7 +125,7 @@ public class ImageController extends ExpRecordController {
     /**
      * This setter receives the image in JSON format from the file upload. This
      * data comes from <nwc:inputFile id="inputJsonFileId" ... />.
-     * 
+     *
      * @param jsonFile
      */
     public void setJsonFile(String jsonFile) {

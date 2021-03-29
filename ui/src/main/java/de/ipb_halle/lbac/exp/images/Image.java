@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.plugin.imageAnnotation.DataURIImage;
-
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,14 +30,13 @@ import java.util.Set;
  *
  * @author fmauz
  */
-public class Image extends ExpRecord {
+public class Image extends ExpRecord implements Serializable {
 
     protected User user;
     @DataURIImage
     protected String preview;
     protected String image;
     protected ACList aclist;
-    protected Integer id;
 
     public Image(
             ImageEntity entity,
@@ -47,8 +46,7 @@ public class Image extends ExpRecord {
         this.aclist = aclist;
         this.preview = entity.getPreview();
         this.image = entity.getImage();
-        this.id = entity.getId();
-        this.setExpRecordId(Long.valueOf(this.id));
+        this.setExpRecordId(entity.getId());
 
         setType(ExpRecordType.IMAGE);
     }
@@ -83,14 +81,14 @@ public class Image extends ExpRecord {
     }
     
     public Long getId() {
-        return Long.valueOf(id);
+        return getExpRecordId();
     }
 
     @Override
     public ImageEntity createEntity() {
         ImageEntity entity = new ImageEntity();
         entity.setACList(aclist.getId());
-        entity.setId(id);
+        entity.setId(getExpRecordId());
         entity.setImage(image);
         entity.setOwner(user.getId());
         entity.setPreview(preview);
