@@ -20,7 +20,9 @@ package de.ipb_halle.lbac.exp.images;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.ExperimentBean;
-import de.ipb_halle.lbac.plugin.imageAnnotation.DataURIImage;
+import de.ipb_halle.lbac.util.WebXml;
+import de.ipb_halle.lbac.util.WebXmlImpl;
+
 import java.io.Serializable;
 
 /**
@@ -30,7 +32,15 @@ import java.io.Serializable;
  *
  * @author flange
  */
-public class ImageController extends ExpRecordController implements Serializable {
+public class ImageController extends ExpRecordController
+        implements Serializable {
+    /**
+     * Name of the web.xml context-param that specifies the maximum image upload
+     * file size.
+     */
+    protected static final String WEBXML_MAXUPLOADFILESIZE = "de.ipb_halle.lbac.exp.images.MaxUploadFileSize";
+
+    private WebXml webXml = new WebXmlImpl();
 
     public ImageController(ExperimentBean bean) {
         super(bean);
@@ -52,36 +62,14 @@ public class ImageController extends ExpRecordController implements Serializable
 
     @Override
     public void actionSaveRecord() {
-        jsonImage = jsonFile;
-//        ((Image) getExpRecord()).setPreview(previewImage);
         ((Image) getExpRecord()).setImage(jsonFile);
 
         super.actionSaveRecord();
     }
 
-//    @DataURIImage
-//    private String previewImage = ((Image) getExpRecord()).getPreview();
-//
-//    /**
-//     * Returns the preview image encoded as DataURI. This image is rendered by
-//     * <h:graphicImage id="previewImage" ... />.
-//     * 
-//     * @return DataURI-encoded image
-//     */
-//    public String getPreviewImage() {
-//        return previewImage;
-//    }
-//
-//    /**
-//     * Sets the preview image as DataURI. This data comes from <nwc:inputFile
-//     * id="inputPreviewFileId" ... />.
-//     * 
-//     * @param previewImage preview image
-//     */
-//    public void setPreviewImage(String previewImage) {
-//        this.previewImage = previewImage;
-//    }
-    private String jsonImage;
+    public long getMaxUploadFileSize() {
+        return Long.parseLong(webXml.getContextParam(WEBXML_MAXUPLOADFILESIZE));
+    }
 
     /**
      * Returns the image in JSON format. This data is rendered by <h:inputHidden
@@ -103,7 +91,7 @@ public class ImageController extends ExpRecordController implements Serializable
     public void setJsonImage(String jsonImage) {
     }
 
-    /*
+    /**
      * This additional property is used for the file upload. It is needed
      * because jsonImage is already used by the <h:inputHidden
      * id="inputJsonImage" ... /> component. actionSaveRecord() copies it

@@ -48,8 +48,11 @@
                            label="JSON image"
                            style="display:none"
                            styleClass="inputJsonFilePseudoClass"
-                           maxsize="#{1 * 1024 * 1024}"
+                           maxsize="#{cc.attrs.controller.maxUploadFileSize}"
+                           maxsizeMessage="#{msgs.expImage_maxsizeMessage}"
                            converter="jsonSanitizingConverter" />
+            <!-- Beware: These ids have a purpose! See https://showcase.omnifaces.org/components/inputFile,
+                 from which <nwc:inputFile> inherits. -->
             <b:message id="messageInputJsonFileId" for="inputJsonFileId" />
 
             <nwc:inputFile id="inputPreviewFileId"
@@ -57,7 +60,8 @@
                            label="Preview image"
                            style="display:none"
                            styleClass="inputPreviewFilePseudoClass"
-                           maxsize="#{1 * 1024 * 1024}" />
+                           maxsize="#{cc.attrs.controller.maxUploadFileSize}" 
+                           maxsizeMessage="#{msgs.expImage_maxsizeMessage}" />
             <b:message id="messageInputPreviewFileId" for="inputPreviewFileId" />
 
             <h:inputHidden id="inputJsonImage"

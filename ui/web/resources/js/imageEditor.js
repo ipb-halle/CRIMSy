@@ -60,7 +60,7 @@ crimsyImageEditor.savePreview = function(frameId, inputFileId) {
 
 /**
  * Loads an image in miniPaint's JSON format from a <input> element's value
- * into a miniPaint editor instance, then rescales the editor (zoom level 'fit')
+ * into a miniPaint editor instance, rescales the editor (zoom level 'fit')
  * and clears the image data in the <input> element.
  */
 crimsyImageEditor.openJson = function(frameId, inputJsonId) {
