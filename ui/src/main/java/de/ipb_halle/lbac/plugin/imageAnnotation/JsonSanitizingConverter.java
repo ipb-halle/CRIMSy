@@ -46,7 +46,7 @@ public class JsonSanitizingConverter implements Converter {
 
     /**
      * @return the sanitized JSON as String or empty String if {@code value} is
-     *         {@code null} or empty
+     *         {@code null} or empty or not a String
      */
     @Override
     public String getAsString(FacesContext context, UIComponent component,

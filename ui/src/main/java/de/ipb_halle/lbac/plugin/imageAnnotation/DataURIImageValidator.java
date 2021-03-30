@@ -39,8 +39,9 @@ public class DataURIImageValidator
 
     /**
      * Validates that {@code value} is a valid DataURI-encoded image. This is
-     * achieved (a) by checking if the string starts with "data:" and (b) by
-     * reading the Base64-encoded image via the {@link ImageIO} class.
+     * achieved (a) by checking if the string starts with "data:", (b) by
+     * reading the Base64-encoded image via the {@link ImageIO} class and (c) by
+     * checking the image's height and width.
      */
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
