@@ -132,8 +132,13 @@
                                     action="#{experimentBean.expRecordController.actionCancel}" 
                                     update="@form" 
                                     process="@this" />
-                                </p:column>
+                            </p:column>
                             <p:column style="width:10%">
+                                <!-- This button cannot be a PrimeFaces p:commandButton, because it does
+                                     not support sending forms with enctype "multipart/form-data".
+                                     Note: The AJAX call is executed explicitly via the onclick event.
+                                     This is specified in the bean property and should follow the rules
+                                     of BootsFaces. -->
                                 <b:commandButton
                                     ajax="true"
                                     styleClass="rightAligned"
@@ -141,7 +146,7 @@
                                     onclick="#{experimentBean.onClick}"
                                     action="#{experimentBean.expRecordController.actionSaveRecord}"
                                     update="@form growlMsg @(.assayTargetRow)" />
-                                </p:column>
+                            </p:column>
                         </p:row>
                     </p:panelGrid>
                 </ui:fragment>

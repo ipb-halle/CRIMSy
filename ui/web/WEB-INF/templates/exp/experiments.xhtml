@@ -116,6 +116,10 @@
                         </b:column> 
                     </h:form>
 
+                    <!-- This form has "multipart/form-data" as enctype because the image editor
+                         component needs to use file uploads. The autocomplete="off" is needed
+                         because Firefox caches hidden input fields (also related to the image
+                         editor), see https://stackoverflow.com/questions/9787135/firefox-caches-hidden-inputs -->
                     <h:form id="expRecordsForm" enctype="multipart/form-data" pt:autocomplete="off">
                         <b:column span="9">
                             <b:panel collapsible="false" title="#{msgs.expExperimentRecords}">

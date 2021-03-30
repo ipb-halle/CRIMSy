@@ -745,10 +745,27 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         return currentUser;
     }
 
+    /**
+     * Returns JavaScript code to be executed in the onclick event of the
+     * experiment record "save" commandButton of this experiment record before
+     * executing its AJAX call. This includes the onclick code specified via the
+     * specific experiment record controller's
+     * {@link ExpRecordController#getOnClick()} method plus an AJAX call to
+     * {@link #actionDoNothing()} using the <a href=
+     * "https://showcase.bootsfaces.net/forms/ajax.jsf#basic_usage">BootsFaces-specific
+     * prefixes</a>.
+     * 
+     * @return JavaScript code to be executed
+     */
     public String getOnClick() {
-        return expRecordController.getOnClick() + "ajax:experimentBean.actionDoNothing();javascript:return false;";
+        return expRecordController.getOnClick()
+                + "ajax:experimentBean.actionDoNothing();javascript:return false;";
     }
 
+    /**
+     * This method is used as fake action for the experiment record "save"
+     * commandButton's AJAX call. It does nothing.
+     */
     public void actionDoNothing() {
     }
 }
