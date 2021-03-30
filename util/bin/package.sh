@@ -303,9 +303,8 @@ export LBAC_CA_DIR="$LBAC_REPO/config/$LBAC_CLOUD/CA"
 
 pushd $LBAC_REPO > /dev/null
 cleanTmp
+mkdir -p target
 
-#  . config/CA/lbac_ca.cfg
-#  mkdir -p $LBAC_REPO/config/$LBAC_CLOUD
 . config/$LBAC_CLOUD/CA/cloud.cfg
 
 case $2 in

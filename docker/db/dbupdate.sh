@@ -30,7 +30,7 @@
 #
 #
 CURRENT_SCHEMA_VERSION=00005
-CURRENT_PG_VERSION=11
+CURRENT_PG_VERSION=12
  cd /docker-entrypoint-initdb.d/
 
 function getSchemaVersion {
