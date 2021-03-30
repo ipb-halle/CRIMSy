@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.search;
 
-import de.ipb_halle.lbac.XmlSetWrapper;
+import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.lang.Condition;
 import java.util.HashMap;

@@ -72,6 +72,8 @@ public class MaterialEditSaver implements Serializable {
     protected String SQL_DELETE_INDICES = "DELETE FROM material_indices WHERE materialid=:mid";
     protected String SQL_DELETE_HAZARDS = "DELETE FROM hazards_materials WHERE materialid=:mid";
 
+    private StructureInformationSaver structureSaver;
+
     protected MaterialService materialService;
     protected TaxonomyNestingService taxonomyNestingService;
 
@@ -103,6 +105,7 @@ public class MaterialEditSaver implements Serializable {
             TaxonomyNestingService taxonomyNestingService) {
         this.materialService = materialService;
         this.taxonomyNestingService = taxonomyNestingService;
+        this.structureSaver = new StructureInformationSaver(materialService.getEm());
     }
 
     /**
@@ -142,6 +145,10 @@ public class MaterialEditSaver implements Serializable {
             materialService.getEm().persist(the);
 
         }
+    }
+
+    public void setStructureSaver(StructureInformationSaver structureSaver) {
+        this.structureSaver = structureSaver;
     }
 
     protected void updateStorageConditions(MaterialStorageDifference diff) {
@@ -229,8 +236,7 @@ public class MaterialEditSaver implements Serializable {
             Molecule oldMol = strucDiff.getMoleculeId_old();
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
-                    StructureInformationSaver saver=new StructureInformationSaver(materialService.getEm());
-                    newMol.setId(saver.saveMolecule(newMol.getStructureModel()));
+                    newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel()));
                 }
             }
             saveMaterialStrcutureDifferences(strucDiff);

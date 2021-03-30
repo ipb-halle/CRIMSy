@@ -38,7 +38,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;

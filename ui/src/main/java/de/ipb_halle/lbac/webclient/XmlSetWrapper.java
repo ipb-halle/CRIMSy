@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac;
+package de.ipb_halle.lbac.webclient;
 
 import java.util.HashSet;
 

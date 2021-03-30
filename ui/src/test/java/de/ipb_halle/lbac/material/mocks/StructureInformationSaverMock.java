@@ -15,10 +15,12 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.structure;
+package de.ipb_halle.lbac.material.mocks;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -53,5 +55,15 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
         } else {
             em.persist(s.createEntity());
         }
+    }
+
+    @Override
+    public int saveMolecule(String moleculeString) {
+        int molId = (int) (Math.random() * 100000);
+        Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
+                .setParameter(1, molId)
+                .setParameter(2, moleculeString);
+        q.executeUpdate();
+        return molId;
     }
 }

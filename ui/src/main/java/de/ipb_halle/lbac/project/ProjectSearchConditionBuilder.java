@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.project;
 
-import de.ipb_halle.lbac.XmlSetWrapper;
+import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.SearchCategory;

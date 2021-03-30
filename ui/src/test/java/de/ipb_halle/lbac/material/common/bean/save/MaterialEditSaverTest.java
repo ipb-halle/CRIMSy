@@ -37,7 +37,7 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.structure.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.navigation.Navigator;
