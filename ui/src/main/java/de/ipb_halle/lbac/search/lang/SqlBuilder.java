@@ -143,6 +143,7 @@ public class SqlBuilder {
                 sb.append(operator.getSql());
                 sb.append("(");
                 sb.append(field.getAliasedColumnName());
+                sb.append(",");
                 sb.append(value.getCastArgument());
                 sb.append(")");
             } else {

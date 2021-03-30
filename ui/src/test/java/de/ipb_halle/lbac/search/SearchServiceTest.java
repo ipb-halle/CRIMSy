@@ -243,7 +243,7 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
 //        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
-//        builder.setStructure("XXX");
+//        builder.setStructure("CCOCC");
 //        request = builder.build();
 //        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 

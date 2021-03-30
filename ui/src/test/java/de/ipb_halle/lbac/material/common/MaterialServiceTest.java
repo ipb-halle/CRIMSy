@@ -58,6 +58,7 @@ import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.FileService;
+import de.ipb_halle.lbac.util.chemistry.Calculator;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.ArrayList;
 import java.util.Date;
@@ -97,6 +98,7 @@ public class MaterialServiceTest extends TestBase {
     private TaxonomyNestingService taxonomyNestingService;
     
     private CreationTools creationTools;
+    private User publicUser;
     
     String hazardStatement = "HazardStatement - Text";
     String precautionaryStatement = "PrecautionaryStatement - Text";
@@ -108,6 +110,7 @@ public class MaterialServiceTest extends TestBase {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
         instance.setStructureInformationSaver(new StructureInformationSaverMock(instance.getEm()));
+        publicUser=memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         
        // instance.setEditedMaterialSaver(new MaterialEditSaver(instance, taxonomyNestingService));
     }
@@ -122,6 +125,9 @@ public class MaterialServiceTest extends TestBase {
         //Preparing project and material
         Project p = creationTools.createProject();
         Structure m = creationTools.createStructure(p);
+        m.setMolecule(new Molecule("CCOCC", 0));
+        Calculator calc = new Calculator();
+        m = calc.calculate(m);
         Integer idOfMatGeneralRights = p.getUserGroups().getId();
         
         instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates());
@@ -148,10 +154,9 @@ public class MaterialServiceTest extends TestBase {
         List structures = entityManagerService.doSqlQuery("select sumformula,molarmass,exactmolarmass,moleculeid from structures");
         Assert.assertEquals(1, structures.size());
         Object[] structure = (Object[]) structures.get(0);
-        Assert.assertEquals("Sumformula not correct", "", (String) structure[0]);
-        Assert.assertEquals(10d, (double) structure[1], 0.001);
-        Assert.assertEquals(20d, (double) structure[2], 0.001);
-        Assert.assertNotNull("Molecule must be not null", structure[3]);
+        Assert.assertEquals("expected C4H10O", "C4H10O", (String) structure[0]);
+        Assert.assertEquals("expected roughly 74", 74.0, (double) structure[1], 0.2);
+        Assert.assertEquals("expected roughly 74", 74.0, (double) structure[2], 0.2);
 
         //Checking the hazard information
         List hazards = entityManagerService.doSqlQuery("select typeid,remarks from hazards_materials where materialid=" + m.getId() + " order by typeid asc");
@@ -207,6 +212,13 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(MaterialDetailType.STORAGE_CLASSES, MaterialDetailType.getTypeById((int) dr5[1]));
         Assert.assertEquals(p.getUserGroups().getId().toString(), dr5[0]);
         
+        
+        MaterialSearchRequestBuilder requestBuilder=new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        requestBuilder.addMaterialType(MaterialType.STRUCTURE);
+        requestBuilder.setStructure("COC");
+        SearchResult result=instance.getReadableMaterials(requestBuilder.build());
+        
+        
         cleanMaterialsFromDB();
         cleanProjectFromDB(p, false);
         
@@ -221,7 +233,7 @@ public class MaterialServiceTest extends TestBase {
         Project p2 = creationTools.createProject();
         
         UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        userBean.setCurrentAccount(publicUser);
         instance.setUserBean(userBean);
         
         Structure structure = creationTools.createStructure(p);

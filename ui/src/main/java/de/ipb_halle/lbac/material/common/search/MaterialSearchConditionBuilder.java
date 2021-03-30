@@ -158,10 +158,9 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         if (values.size() != 1) {
             throw new IllegalArgumentException("Addition of multiple structures currently not supported");
         }
-        conditionList.add(getBinaryLeafConditionWithCast(
+        conditionList.add(getBinaryLeafCondition(
                 Operator.SUBSTRUCTURE,
                 values.iterator().next(),
-                " (%s, '')::bingo.sub ",
                 rootGraphName + "/structures/molecules",
                 AttributeType.MOLECULE));
     }

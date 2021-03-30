@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.h2;
 
+import de.ipb_halle.lbac.util.chemistry.ChemistryParser;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -42,16 +43,12 @@ import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 public class MockSubstructureMatch {
 
     public static boolean substructure(String structure, String substructure) {
-
+        ChemistryParser parser = new ChemistryParser();
         try {
-            ReaderFactory factory = new ReaderFactory();
-            ISimpleChemObjectReader reader = factory.createReader(
-                    new StringReader(structure));
-            IAtomContainer cdkMolecule = reader.read(new AtomContainer());
+            IAtomContainer cdkMolecule = parser.parseMolecule(structure);
             AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMolecule);
 
-            reader = factory.createReader(new StringReader(substructure));
-            IAtomContainer cdkSub = reader.read(new AtomContainer());
+            IAtomContainer cdkSub = parser.parseMolecule(substructure);
             AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkSub);
 
             Pattern pattern = Pattern.findSubstructure(cdkSub);

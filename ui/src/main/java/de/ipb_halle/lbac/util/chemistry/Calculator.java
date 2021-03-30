@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.util.chemistry;
 
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
-import java.io.IOException;
 import java.io.StringReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +30,7 @@ import org.openscience.cdk.interfaces.IChemObjectBuilder;
 import org.openscience.cdk.interfaces.IMolecularFormula;
 import org.openscience.cdk.io.ISimpleChemObjectReader;
 import org.openscience.cdk.io.ReaderFactory;
+import org.openscience.cdk.io.iterator.IteratingSMILESReader;
 import org.openscience.cdk.tools.CDKHydrogenAdder;
 import org.openscience.cdk.tools.manipulator.AtomContainerManipulator;
 import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
@@ -44,13 +44,10 @@ public class Calculator {
     private Logger logger = LogManager.getLogger(this.getClass());
 
     public StructureInformation calculate(StructureInformation structure) {
-        try {
+        ChemistryParser parser = new ChemistryParser();
 
-            ReaderFactory factory = new ReaderFactory();
-            ISimpleChemObjectReader reader = factory.createReader(
-                    new StringReader(
-                            structure.getStructureModel()));
-            IAtomContainer cdkMolecule = reader.read(new AtomContainer());
+        try {
+            IAtomContainer cdkMolecule = parser.parseMolecule(structure.getStructureModel());
 
             IChemObjectBuilder builder = DefaultChemObjectBuilder.getInstance();
             IMolecularFormula cdkFormula = MolecularFormulaManipulator.getMolecularFormula(cdkMolecule);
@@ -72,4 +69,13 @@ public class Calculator {
         return structure;
     }
 
+    public Structure calculate(Structure structure) {
+        StructureInformation info = new StructureInformation();
+        info.setStructureModel(structure.getMolecule().getStructureModel());
+        calculate(info);
+        structure.setAverageMolarMass(info.getAverageMolarMass());
+        structure.setExactMolarMass(info.getExactMolarMass());
+        structure.setSumFormula(info.getSumFormula());
+        return structure;
+    }
 }
