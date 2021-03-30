@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.plugin.imageAnnotation;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
@@ -38,7 +39,7 @@ public class DataURIImageValidator
 
     /**
      * Validates that {@code value} is a valid DataURI-encoded image. This is
-     * achived (a) by checking if the string starts with "data:" and (b) by
+     * achieved (a) by checking if the string starts with "data:" and (b) by
      * reading the Base64-encoded image via the {@link ImageIO} class.
      */
     @Override
@@ -52,11 +53,38 @@ public class DataURIImageValidator
         }
 
         int dataStartIndex = value.indexOf(",") + 1;
-        String data = value.substring(dataStartIndex);
-        byte[] decoded = Base64.getDecoder().decode(data);
+        if (dataStartIndex <= 0) {
+            return false;
+        }
+
+        String data;
         try {
-            ImageIO.read(new ByteArrayInputStream(decoded));
+            data = value.substring(dataStartIndex);
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+
+        byte[] decoded;
+        try {
+            decoded = Base64.getDecoder().decode(data);
+        } catch (IllegalArgumentException e) {
+            // no valid Base64
+            return false;
+        }
+
+        BufferedImage image;
+        try {
+            image = ImageIO.read(new ByteArrayInputStream(decoded));
         } catch (IOException e) {
+            // no valid image
+            return false;
+        }
+
+        if (image == null) {
+            return false;
+        }
+
+        if ((image.getHeight() <= 0) || (image.getWidth() <= 0)) {
             return false;
         }
 

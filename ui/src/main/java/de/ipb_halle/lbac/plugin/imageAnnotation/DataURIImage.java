@@ -27,7 +27,7 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 /**
- * Validate that the annotated String is a valid DataURI-encoded image.
+ * Validate that the annotated String is a valid DataURI- and Base64-encoded image.
  * 
  * @author flange
  */
