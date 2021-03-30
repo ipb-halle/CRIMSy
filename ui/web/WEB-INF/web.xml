@@ -206,7 +206,7 @@
     <!-- MolecularFaces plugin settings -->
     <context-param>
         <param-name>de.ipb_halle.molecularfaces.OPENCHEMLIBJS_URL</param-name>
-        <param-value>/plugins/openchemlib-js/openchemlib-full.js</param-value>
+        <param-value>/plugins/openchemlibjs/openchemlib-full.js</param-value>
     </context-param>
     <context-param>
         <param-name>de.ipb_halle.molecularfaces.MOLPAINTJS_URL</param-name>
