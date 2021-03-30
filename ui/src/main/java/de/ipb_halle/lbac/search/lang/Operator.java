@@ -49,7 +49,7 @@ public enum Operator {
     GREATER(" > "),
     LIKE(" LIKE "),
     ILIKE(" ILIKE "),
-    SUBSTRUCTURE(" @ ");
+    SUBSTRUCTURE("SUBSTRUCTURE", true, false, true);    // BIFUNCTION
 
     private boolean leafOperator;
     private boolean prefixOperator;

@@ -161,6 +161,20 @@ CREATE TABLE molecules (
 
 CREATE INDEX i_molecules_mol_idx ON molecules USING bingo_idx (molecule bingo.molecule);
 
+CREATE FUNCTION substructure (VARCHAR, VARCHAR) RETURNS BOOLEAN
+        AS $$
+        --
+        -- return true if the second structure is a substructure of the first. 
+        --
+                DECLARE
+                        molecule        ALIAS FOR $1;
+                        substruct       ALIAS FOR $2;
+                BEGIN
+                        RETURN molecule @ ( substruct, '')::bingo.sub;
+                END;
+        $$ LANGUAGE plpgsql;
+
+
 CREATE TABLE structures (
         id INTEGER PRIMARY KEY REFERENCES materials(materialid),
         sumformula VARCHAR,

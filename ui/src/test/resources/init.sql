@@ -24,7 +24,7 @@ SET @SCHEMA_VERSION = '00001';
 CREATE DOMAIN IF NOT EXISTS jsonb AS other;
 CREATE DOMAIN IF NOT EXISTS RawJsonb AS other;
 
-
+CREATE ALIAS SUBSTRUCTURE FOR "de.ipb_halle.h2.MockSubstructureMatch.substructure";
 
 /*
  * Cloud

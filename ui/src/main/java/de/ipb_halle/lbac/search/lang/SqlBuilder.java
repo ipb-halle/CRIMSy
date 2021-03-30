@@ -139,9 +139,17 @@ public class SqlBuilder {
         String sep = "";
         for (DbField field : columns) {
             sb.append(sep);
-            sb.append(field.getAliasedColumnName());
-            sb.append(operator.getSql());
-            sb.append(value.getCastArgument());
+            if (operator.isPrefixOperator()) {
+                sb.append(operator.getSql());
+                sb.append("(");
+                sb.append(field.getAliasedColumnName());
+                sb.append(value.getCastArgument());
+                sb.append(")");
+            } else {
+                sb.append(field.getAliasedColumnName());
+                sb.append(operator.getSql());
+                sb.append(value.getCastArgument());
+            }
             sep = " OR ";
         }
     }
