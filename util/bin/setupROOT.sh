@@ -236,7 +236,6 @@ function setInstallDir {
 #
 function setPermissions {
     chown 5432 "$LBAC_DATASTORE/data/db"
-    chown 80 "$LBAC_DATASTORE/data/htdocs"
     chown 8080 "$LBAC_DATASTORE/data/ui"
 }
 

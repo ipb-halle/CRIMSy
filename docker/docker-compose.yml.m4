@@ -19,7 +19,7 @@ services:
       context: .
       dockerfile: ./db/Dockerfile
     environment:
-      - PGDATA=/data/db/pgsql_11
+      - PGDATA=/data/db/pgsql_12
       - POSTGRES_PASSWORD=LBAC_DB_PASSWD
     labels:
       de.ipb-halle.lbac.docker-container: "db"

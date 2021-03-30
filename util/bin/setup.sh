@@ -186,7 +186,6 @@ function keySetup {
 #
 function makeDataDir {
 	mkdir -p "$LBAC_DATASTORE/data/db"
-	mkdir -p "$LBAC_DATASTORE/data/htdocs"
 	mkdir -p "$LBAC_DATASTORE/data/ui"
 }
 
