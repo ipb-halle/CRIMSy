@@ -42,7 +42,6 @@ public class MoleculeEntity {
 
     @Column
     @AttributeTag(type = AttributeType.MOLECULE)
-    @CustomCast(expression="CAST(? AS MOLECULE)")
     private String molecule;
 
 

@@ -64,7 +64,7 @@ import org.apache.logging.log4j.LogManager;
 @Stateless
 public class DocumentSearchService {
 
-    private final Logger LOGGER = LogManager.getLogger(DocumentSearchService.class);
+    private final Logger logger = LogManager.getLogger(DocumentSearchService.class);
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
@@ -187,9 +187,11 @@ public class DocumentSearchService {
         DocumentSearchConditionBuilder conBuilder = new DocumentSearchConditionBuilder(createEntityGraph(), "files");
         conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(conBuilder.convertRequestToCondition(request, ACPermission.permREAD));
+        logger.info(sql);
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
+            logger.info(param.getArgumentKey() + " : " + param.getValue());
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
@@ -217,13 +219,8 @@ public class DocumentSearchService {
     }
 
     private boolean hasWordRoots(SearchRequest request) {
-        boolean hasRoot = false;
-        for (SearchCategory c : request.getSearchValues().keySet()) {
-            if (c == SearchCategory.WORDROOT) {
-                hasRoot = true;
-            }
-        }
-        return hasRoot;
+        return request.getSearchValues().get(SearchCategory.WORDROOT) != null
+                && !request.getSearchValues().get(SearchCategory.WORDROOT).getValues().isEmpty();
 
     }
 
