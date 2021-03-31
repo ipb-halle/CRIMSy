@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -43,6 +45,7 @@ public class FileAnalyser {
     protected ParseTool parseTool = new ParseTool();
     protected InputStream filterDefinition;
     protected Integer fileId;
+    private Logger logger = LogManager.getLogger(this.getClass());
 
     public FileAnalyser(InputStream filterDefinition) {
         this.filterDefinition = filterDefinition;
@@ -52,7 +55,7 @@ public class FileAnalyser {
         SortedSet<Language> languages = (SortedSet) this.parseTool
                 .getFilterData()
                 .getValue(LanguageDetectorFilter.LANGUAGE_PROP);
-        Map<String, Integer> countMap = new HashMap<> ();
+        Map<String, Integer> countMap = new HashMap<>();
         int maxCount = 0;
         String maxLang = null;
         for (Language lang : languages) {

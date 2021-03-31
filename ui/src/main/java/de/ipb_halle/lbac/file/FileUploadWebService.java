@@ -65,9 +65,7 @@ public class FileUploadWebService extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         final AsyncContext asyncContext = req.startAsync();
         try {
-
             //*** set timeout to 30 minutes
-            File f = new File(this.getClass().getResource(FILTER_DEFINITION).toString().split(":")[1]);
             asyncContext.setTimeout(UPLOAD_TIMEOUT);
             
             asyncContext.start(new UploadToCol(

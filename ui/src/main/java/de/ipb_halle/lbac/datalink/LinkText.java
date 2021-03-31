@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.datalink;
 
-import de.ipb_halle.lbac.datalink.LinkedDataType;
-import de.ipb_halle.lbac.exp.Payload;
 import de.ipb_halle.lbac.exp.Payload;
 
 /**

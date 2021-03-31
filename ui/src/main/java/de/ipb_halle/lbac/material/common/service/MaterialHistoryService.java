@@ -354,7 +354,7 @@ public class MaterialHistoryService implements Serializable {
         q6.setParameter("mid", moleculeId);
         Object[] result = (Object[]) q6.getSingleResult();
 
-        String molecule = (String) result[2];
+        String molecule = (String) result[1];
         return new Molecule(molecule, moleculeId);
 
     }

@@ -122,7 +122,6 @@ public class UploadToCol implements Runnable {
                         getAttachmentTarget(),
                         getFileNameFromRequest(),
                         request.getPart(HTTP_PART_FILENAME).getInputStream());
-
                 fileAnalyser.analyseFile(fileSaver.getFileLocation().toString(), fileId);
                 saveTermVector(fileAnalyser.getTermVector());
                 saveOriginalWords(fileAnalyser.getWordOrigins());
