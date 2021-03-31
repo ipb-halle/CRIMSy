@@ -77,10 +77,18 @@ import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
  *  INPUT_STRUCTURE_NAMES: "/dataPOOL/fblocal/inhouse/tblCompoundSynonym_20140325.txt",
  *  INPUT_STRUCTURES:      "/dataPOOL/fblocal/inhouse/Structure_20140325.SDF",
  *
+ *  ... lots of other config ...
+ * 
  *  MOLECULE_MATERIAL_TYPE_ID: 1,
  *  OWNER_ID:       1,
  *  PROJECT_ID:     1
  * }
+ * </pre>
+ * 
+ * After mvn test-compile, this tool will be usually run from the REPO/ui direcory using the following command:
+ * 
+ * <pre>
+ * java -cp "target/classes:target/test-classes:target/ui-1.3.0/WEB-INF/lib/*" de.ipb_halle.migration.InhouseDB
  * </pre>
  *
  * @author fbroda
@@ -89,12 +97,8 @@ public class InhouseDB {
     
     public final static String ACLIST_ID = "ACLIST_ID";
     public final static String DATABASE_URL = "DATABASE_URL";
-
     public final static String INITIAL_SQL = "INITIAL_SQL";
-    public final static String INPUT_STRUCTURE_NAMES = "INPUT_STRUCTURE_NAMES";
-    public final static String INPUT_STRUCTURES = "INPUT_STRUCTURES";
-
-    public final static String MOLECULE_MATERIAL_TYPE_ID = "MOLECULE_MATERIAL_TYPE_ID";
+    public final static String MATERIAL_INDEX_NAME = "name";
     public final static String OWNER_ID = "OWNER_ID";
     public final static String PROJECT_ID = "PROJECT_ID";
 
@@ -102,7 +106,7 @@ public class InhouseDB {
 
     private final Connection connection;
     private final Map<String, SqlInsertBuilder> builderMap;
-    private final Map<String, Integer> materialIndices;
+    private final Map<String, Integer> materialIndexTypes;
 
     private JsonObject jsonConfig;
 
@@ -111,57 +115,32 @@ public class InhouseDB {
         this.connection = DriverManager.getConnection(getConfigString(DATABASE_URL));
         runInitial();
         this.builderMap = new HashMap<> ();
-        this.materialIndices = new HashMap<> ();
-        addInsertBuilders();
-        addMaterialIndices();
+        this.materialIndexTypes = new HashMap<> ();
+        addMaterialIndexTypes();
     }
     
-    private void addInsertBuilders() {
-        this.builderMap.put(MaterialEntity.class.getName(),
-                new SqlInsertBuilder(new EntityGraph(MaterialEntity.class)));
-        this.builderMap.put(StructureEntity.class.getName(),
-                new SqlInsertBuilder(new EntityGraph(StructureEntity.class)));
-        this.builderMap.put(MoleculeEntity.class.getName(),
-                new SqlInsertBuilder(new EntityGraph(MoleculeEntity.class)));
-        this.builderMap.put(MaterialIndexEntryEntity.class.getName(),
-                new SqlInsertBuilder(new EntityGraph(MaterialIndexEntryEntity.class)));
+    public void addInsertBuilder(String name, SqlInsertBuilder builder) {
+            this.builderMap.put(name, builder);
     }
 
-    private void addMaterialIndices() throws Exception {
+    private void addMaterialIndexTypes() throws Exception {
         PreparedStatement stmnt = this.connection.prepareStatement("SELECT id, name FROM indextypes");
         ResultSet result = stmnt.executeQuery();
         while(result.next()) {
-            this.materialIndices.put(result.getString(2), result.getInt(1));
+            this.materialIndexTypes.put(result.getString(2), result.getInt(1));
         }
-        this.materialIndices.put("CAS-RN", this.materialIndices.get("CAS/RN"));
-    }
-    
-    /**
-     *
-     * @param cdkMolecule
-     * @return
-     */
-    private boolean cleanMolecule(IAtomContainer cdkMolecule) throws CDKException {
-        List<IAtom> atomsToRemove = new ArrayList<> ();
-        int nAtoms = 0;
-        for (IAtom atom : cdkMolecule.atoms()) {
-            nAtoms++;
-            if (atom.getAtomicNumber().equals(0)) {
-                atomsToRemove.add(atom);
-            }
-        }
-        for(IAtom atom : atomsToRemove) {
-            cdkMolecule.removeAtom(atom);
-            nAtoms--;
-        }
-        return (nAtoms > 0);
+        this.materialIndexTypes.put("CAS-RN", this.materialIndexTypes.get("CAS/RN"));
     }
 
     private void close() throws SQLException {
         this.connection.close();
     }
 
-    private Integer getConfigInt(String key) {
+    public SqlInsertBuilder getBuilder(String name) {
+        return this.builderMap.get(name);
+    }
+
+    public Integer getConfigInt(String key) {
         JsonPrimitive value = this.jsonConfig.getAsJsonPrimitive(key);
         if (value != null) {
             return Integer.valueOf(value.getAsInt());
@@ -169,7 +148,7 @@ public class InhouseDB {
         throw new NullPointerException("getConfigInt(" + key + ") returned null");
     }
 
-    private String getConfigString(String key) {
+    public String getConfigString(String key) {
         JsonPrimitive value = this.jsonConfig.getAsJsonPrimitive(key);
         if (value != null) {
             return value.getAsString();
@@ -177,82 +156,37 @@ public class InhouseDB {
         throw new NullPointerException("getConfigInt(" + key + ") returned null");
     }
 
-//    private void importExperiments() throws Exception {
-//        throw new Exception("Hallo");
-//    }
-            
-
-    private void importCompounds(String fileName) throws Exception {
-
-        IChemObjectBuilder builder = DefaultChemObjectBuilder.getInstance();
-
-        IteratingSDFReader sdfReader = new IteratingSDFReader(
-                new FileInputStream(fileName), builder);
-
-        while (sdfReader.hasNext()) {
-            IAtomContainer cdkMolecule = sdfReader.next();
-
-            IMolecularFormula cdkFormula = MolecularFormulaManipulator.getMolecularFormula(cdkMolecule);
-
-            AtomContainerManipulator.percieveAtomTypesAndConfigureAtoms(cdkMolecule);
-            CDKHydrogenAdder.getInstance(builder).addImplicitHydrogens(cdkMolecule);
-            Kekulization.kekulize(cdkMolecule);
-
-            String molFormula = MolecularFormulaManipulator.getString(cdkFormula);
-            double molMass = MolecularFormulaManipulator.getMass(cdkFormula,
-                    MolecularFormulaManipulator.MolWeight);
-            double exactMass = MolecularFormulaManipulator.getMass(cdkFormula,
-                    MolecularFormulaManipulator.MonoIsotopic);
-            importSingleCompound(cdkMolecule, molFormula, molMass, exactMass);
-        }
+    public Connection getConnection() {
+        return this.connection;
     }
 
-    private void importCompoundNames(String fileName) throws Exception {
-        RTF rtf = new RTF(this.connection, this.builderMap, this.materialIndices);
-        rtf.readCompoundSynonym(fileName);
+    public Integer getMaterialIndexType(String name) {
+        return this.materialIndexTypes.get(name);
+    }
 
+    public Map<String, Integer> getMaterialIndexTypes() {
+        return this.materialIndexTypes;
     }
 
     private void importData() throws Exception {
-        // importCompounds(getConfigString(INPUT_STRUCTURES));
-        importCompoundNames(getConfigString(INPUT_STRUCTURE_NAMES));
+        Compounds compounds = new Compounds(this);
+        Taxonomy taxonomy = new Taxonomy(this);
+//      compounds.importData();
+        taxonomy.importData();
     }
 
-    private void importSingleCompound(IAtomContainer cdkMolecule,
-            String molFormula,
-            Double molMass,
-            Double exactMass) throws Exception {
-        MaterialEntity mat = new MaterialEntity();
-        mat.setACList(getConfigInt(ACLIST_ID));
-        mat.setCtime(new Date());
-        mat.setMaterialtypeid(getConfigInt(MOLECULE_MATERIAL_TYPE_ID));
-        mat.setOwner(getConfigInt(OWNER_ID));
-        mat.setProjectid(getConfigInt(PROJECT_ID));
-        
-        mat = (MaterialEntity) this.builderMap
-                .get(mat.getClass().getName())
-                .insert(connection, mat);
-
-        if (cleanMolecule(cdkMolecule)) {
-            MoleculeEntity mol = new MoleculeEntity();
-            saveMolString(mol, cdkMolecule);
-            mol = (MoleculeEntity) this.builderMap
-                    .get(mol.getClass().getName())
-                    .insert(connection, mol);
-
-            StructureEntity struc = new StructureEntity();
-            struc.setId(mat.getMaterialid());
-            struc.setMolarmass(molMass);
-            struc.setExactmolarmass(exactMass);
-            struc.setSumformula(molFormula);
-            struc.setMoleculeid(mol.getId());
-            this.builderMap
-                    .get(struc.getClass().getName())
-                    .insert(connection, struc);
+    public int loadRefId(String sql, int id, String refKey) throws Exception {
+        PreparedStatement stmnt = this.connection.prepareStatement(sql);
+        stmnt.setInt(1, id);
+        stmnt.setString(2, refKey);
+        ResultSet result = stmnt.executeQuery();
+        if (result.next()) {
+            return result.getInt(1);
         }
-        saveMolProperties(cdkMolecule, mat.getMaterialid());
+        System.out.printf("No reference found: %s-%d\n", refKey, id);
+        return 0;
     }
-    
+
     private void readConfig(String fileName) throws Exception {
         JsonElement element = JsonParser.parseReader(
             new FileReader(fileName));
@@ -273,38 +207,7 @@ public class InhouseDB {
         }
     }
 
-    private void saveMolProperties(IAtomContainer cdkMolecule, Integer id)
-            throws Exception {
-        String sql = "INSERT INTO material_indices (materialid, typeid, value) VALUES (?,?,?)";
-        String sql2 = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
-        for( Map.Entry<String, Integer> entry : this.materialIndices.entrySet()) {
-            String key = entry.getKey();
-            String propValue = cdkMolecule.getProperty(key);
-            if (propValue != null) {
-                saveTriple(sql, id, entry.getValue(), propValue);
-                if (key.equals("Mol_ID")) {
-                    saveTriple(sql2, Integer.valueOf(propValue), id, TMP_MatId_MolId);
-                }
-            }
-        }
-    }
-
-    private void saveMolString(MoleculeEntity mol, IAtomContainer cdkMolecule) throws CDKException, IOException {
-        ByteArrayOutputStream molStream = new ByteArrayOutputStream();
-        IChemObjectWriter cdkWriter;
-        if (cdkMolecule.getAtomCount() > 900) {
-            mol.setFormat("V3000");
-            cdkWriter = new MDLV3000Writer(molStream);
-        } else {
-            mol.setFormat("V2000");
-            cdkWriter = new MDLV2000Writer(molStream);
-        }
-        cdkWriter.write(cdkMolecule);
-        cdkWriter.close();
-        mol.setMolecule(molStream.toString());
-    }
-
-    private void saveTriple(String sql, Integer id, Integer other, String value) throws SQLException {
+    public void saveTriple(String sql, Integer id, Integer other, String value) throws SQLException {
         PreparedStatement statement = this.connection.prepareStatement(sql);
         statement.setInt(1, id);
         statement.setInt(2, other);

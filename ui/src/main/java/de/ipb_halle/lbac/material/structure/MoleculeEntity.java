@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.search.lang.AttributeTag;
 import de.ipb_halle.lbac.search.lang.AttributeType;
-import de.ipb_halle.lbac.search.lang.CustomCast;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,17 +36,10 @@ public class MoleculeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-       @Column
-    private String format;
-
     @Column
     @AttributeTag(type = AttributeType.MOLECULE)
     private String molecule;
 
-
-    public String getFormat() {
-        return format;
-    }
 
     public Integer getId() {
         return id;
@@ -55,10 +47,6 @@ public class MoleculeEntity {
 
     public String getMolecule() {
         return molecule;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
     }
 
     public void setId(Integer id) {

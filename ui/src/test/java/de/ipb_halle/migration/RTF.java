@@ -54,17 +54,14 @@ import java.util.Map;
  */
 public class RTF extends RtfListenerAdaptor {
 
-    private final static String MATERIAL_INDEX_NAME = "name";
     private final static String MATERIAL_NAME_DEFAULT_LANG = "en";
 
     public enum MODE { FONTDEF, IGNORE, TEXTOUT };
     public enum LANG { NORMAL, GREEK };
 
-    private final Connection        connection;
     private final Map<Character, String>   greekmap;
-    private final Map<String, SqlInsertBuilder> builderMap;
-    private final Map<String, Integer> materialIndices;
 
+    private InhouseDB               inhouseDB;
     private String                  currentFont;
     private int                     depth;
     private Map<String, LANG>       fontmap;
@@ -73,12 +70,11 @@ public class RTF extends RtfListenerAdaptor {
     private String                  nosupersub;
     private StringBuilder           outString;
 
-    public RTF(Connection connection,
-            Map<String, SqlInsertBuilder> builderMap,
-            Map<String, Integer> materialIndices) {
-        this.connection = connection;
-        this.builderMap = builderMap;
-        this.materialIndices = materialIndices;
+    private int                     recordCounter;
+
+    public RTF(InhouseDB inhouseDB) {
+        this.recordCounter = 0;
+        this.inhouseDB = inhouseDB;
         this.greekmap = new HashMap<> ();
         init();
     }
@@ -117,6 +113,7 @@ public class RTF extends RtfListenerAdaptor {
     }
 
     public void readCompoundSynonym(String fileName) throws Exception {
+        System.out.println("Importing compound names");
 /*
         SqlQuery.execute("DROP TABLE IF EXISTS tmp_names", null);
         SqlQuery.execute("CREATE TABLE tmp_names (rowid SERIAL, name_id INTEGER, legacy_molid INTEGER, "
@@ -171,6 +168,13 @@ public class RTF extends RtfListenerAdaptor {
         reader.close();
     }
 
+    private void showProgress() {
+        this.recordCounter++;
+        if ((this.recordCounter % 500) == 0) {
+            System.out.printf("imported %d compound names\n", this.recordCounter);
+        }
+    }
+
     /**
      *
      * @param name_id name record primary key in the inhouse database (ignored)
@@ -180,7 +184,8 @@ public class RTF extends RtfListenerAdaptor {
      * @throws Exception
      */
     private void update(int name_id, int mol_id, String name, boolean prioFlag) throws Exception {
-        PreparedStatement statement = this.connection.prepareStatement(
+        showProgress();
+        PreparedStatement statement = this.inhouseDB.getConnection().prepareStatement(
                 "SELECT new_id FROM tmp_import WHERE old_id=? AND type=?");
         statement.setInt(1, mol_id);
         statement.setString(2, InhouseDB.TMP_MatId_MolId);
@@ -193,17 +198,17 @@ public class RTF extends RtfListenerAdaptor {
         MaterialIndexEntryEntity entity = new MaterialIndexEntryEntity();
         entity.setLanguage(MATERIAL_NAME_DEFAULT_LANG);
         entity.setRank(prioFlag ? 0 : 1);
-        entity.setTypeid(this.materialIndices.get(MATERIAL_INDEX_NAME));
+        entity.setTypeid(this.inhouseDB.getMaterialIndexType(InhouseDB.MATERIAL_INDEX_NAME));
         entity.setValue(name.replaceAll("^'(.*)'$", "$1"));
         entity.setMaterialid(id);
-        this.builderMap.get(entity.getClass().getName())
-                .insert(this.connection, entity);
+        this.inhouseDB.getBuilder(entity.getClass().getName())
+                .insert(this.inhouseDB.getConnection(), entity);
         /*
         String sql = "INSERT INTO material_indices (materialid, typeid, value, language, rank) "
                 + "SELECT new_id AS materialid, ? AS typeid, ? AS value, ? AS language, ? AS rank) "
                 + "FROM tmp_import WHERE CAST? = old_id";
-        PreparedStatement statement = this.connection.prepareStatement(sql);
-        statement.setInt(1, this.materialIndices.get(MATERIAL_INDEX_NAME));
+        PreparedStatement statement = this.inhouseDB.getConnection().prepareStatement(sql);
+        statement.setInt(1, this.inhouseDB.getMaterialIndexType(InhouseDB.MATERIAL_INDEX_NAME));
         statement.setString(2, name.replaceAll("^'(.*)'$", "$1"));
         statement.setString(3, MATERIAL_NAME_DEFAULT_LANG);
         statement.setInt(4, prioFlag ? 0 : 1);
