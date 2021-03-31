@@ -180,6 +180,9 @@ public class MaterialBean implements Serializable {
             if (m.getType() == MaterialType.STRUCTURE) {
                 Structure struc = (Structure) m;
                 structureInfos = new StructureInformation(m);
+                if (struc.getMolecule() != null) {
+                    structureInfos.setStructureModel(struc.getMolecule().getStructureModel());
+                }
                 structureInfos.setExactMolarMass(struc.getExactMolarMass());
                 structureInfos.setAverageMolarMass(struc.getAverageMolarMass());
                 structureInfos.setSumFormula(struc.getSumFormula());
