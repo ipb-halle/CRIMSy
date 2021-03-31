@@ -801,6 +801,7 @@ CREATE TABLE preferences (
 
 CREATE TABLE images (
     id          BIGINT NOT NULL PRIMARY KEY REFERENCES exp_records(exprecordid) ON UPDATE CASCADE ON DELETE CASCADE,
+    title       VARCHAR,
     preview     VARCHAR,
     image       VARCHAR,
     aclist_id   INTEGER REFERENCES aclists(id) ON UPDATE CASCADE ON DELETE CASCADE,

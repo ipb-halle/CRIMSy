@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.WebXmlImpl;
-
 import java.io.Serializable;
 
 /**
@@ -46,9 +45,21 @@ public class ImageController extends ExpRecordController
         super(bean);
     }
 
+    /**
+     * Test constructor with dependency injection.
+     * 
+     * @param bean   mock of {@link ExperimentBean}
+     * @param webXml mock implementation of the {@link WebXml} interface
+     */
+    protected ImageController(ExperimentBean bean, WebXml webXml) {
+        super(bean);
+        this.webXml = webXml;
+    }
+
     @Override
     public ExpRecord getNewRecord() {
-        ExpRecord rec = new Image("", "", getExperimentBean().getCurrentUser(),
+        ExpRecord rec = new Image("", "", "",
+                getExperimentBean().getCurrentUser(),
                 getExperimentBean().getExperiment().getACList());
         rec.setEdit(true);
         return rec;
@@ -67,8 +78,15 @@ public class ImageController extends ExpRecordController
         super.actionSaveRecord();
     }
 
+    /**
+     * Returns the maximum image upload size defined in web.xml.
+     * 
+     * @return maximum image upload size in bytes or 0 if nothing was defined in
+     *         web.xml.
+     */
     public long getMaxUploadFileSize() {
-        return Long.parseLong(webXml.getContextParam(WEBXML_MAXUPLOADFILESIZE));
+        return Long.parseLong(
+                webXml.getContextParam(WEBXML_MAXUPLOADFILESIZE, "0"));
     }
 
     /**
@@ -94,20 +112,19 @@ public class ImageController extends ExpRecordController
     /**
      * This additional property is used for the file upload. It is needed
      * because jsonImage is already used by the <h:inputHidden
-     * id="inputJsonImage" ... /> component. actionSaveRecord() copies it
-     * around.
+     * id="inputJsonImage" ... /> component. {@link #actionSaveRecord()} copies
+     * it around.
      */
     private String jsonFile;
 
     /**
-     * Returns the image in JSON format. This data is used by the <nwc:inputFile
-     * id="inputJsonFileId" ... /> component.
+     * Returns an empty string. This getter is used in the <nwc:inputFile
+     * id="inputJsonFileId" ... /> component, but this component has no outputs.
      *
-     * @return image in JSON format
+     * @return empty string
      */
     public String getJsonFile() {
-        // TODO: we can also return "" here
-        return jsonFile;
+        return "";
     }
 
     /**

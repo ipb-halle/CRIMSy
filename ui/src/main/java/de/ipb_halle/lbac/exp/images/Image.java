@@ -31,19 +31,21 @@ import java.util.Set;
  * @author fmauz
  */
 public class Image extends ExpRecord implements Serializable {
+    private User user;
 
-    protected User user;
+    private String title;
+
     @DataURIImage
-    protected String preview;
-    protected String image;
-    protected ACList aclist;
+    private String preview;
 
-    public Image(
-            ImageEntity entity,
-            ACList aclist,
-            User user) {
+    private String image;
+
+    private ACList aclist;
+
+    public Image(ImageEntity entity, ACList aclist, User user) {
         this.user = user;
         this.aclist = aclist;
+        this.title = entity.getTitle();
         this.preview = entity.getPreview();
         this.image = entity.getImage();
         this.setExpRecordId(entity.getId());
@@ -51,11 +53,9 @@ public class Image extends ExpRecord implements Serializable {
         setType(ExpRecordType.IMAGE);
     }
 
-    public Image(
-            String preview,
-            String image,
-            User user,
+    public Image(String title, String preview, String image, User user,
             ACList aclist) {
+        this.title = title;
         this.preview = preview;
         this.image = image;
         this.aclist = aclist;
@@ -64,33 +64,50 @@ public class Image extends ExpRecord implements Serializable {
         setType(ExpRecordType.IMAGE);
     }
 
-    public String getPreview() {
-        return preview;
+    public String getTitle() {
+        return title;
     }
 
-    public String getImage() {
-        return image;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPreview() {
+        return preview;
     }
 
     public void setPreview(String preview) {
         this.preview = preview;
     }
 
+    public String getImage() {
+        return image;
+    }
+
     public void setImage(String image) {
         this.image = image;
     }
-    
+
     public Long getId() {
         return getExpRecordId();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public ACList getAclist() {
+        return aclist;
     }
 
     @Override
     public ImageEntity createEntity() {
         ImageEntity entity = new ImageEntity();
         entity.setACList(aclist.getId());
-        entity.setId(getExpRecordId());
-        entity.setImage(image);
         entity.setOwner(user.getId());
+        entity.setId(getExpRecordId());
+        entity.setTitle(title);
+        entity.setImage(image);
         entity.setPreview(preview);
         return entity;
     }
@@ -104,5 +121,4 @@ public class Image extends ExpRecord implements Serializable {
     public Set<ValidationError> getErrors() {
         return new HashSet<>();
     }
-
 }

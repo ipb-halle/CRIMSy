@@ -46,6 +46,10 @@ import org.omnifaces.util.Messages;
  * invoked, which is not done in JSF's
  * {@link javax.faces.component.html.HtmlInputFile} component (at least in the
  * MyFaces implementation).
+ * <p>
+ * Most of this class' code is adoped from <a href=
+ * "https://github.com/omnifaces/omnifaces/blob/d7455e6a306edb36a5759bdef14678c561ecc957/src/main/java/org/omnifaces/component/input/InputFile.java">OmniFaces'
+ * InputFile component</a>, which is licensed under Apache License, Version 2.0.
  * 
  * @author flange
  */

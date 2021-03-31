@@ -26,12 +26,8 @@ import javax.faces.context.FacesContext;
  */
 public class WebXmlImpl implements WebXml {
     @Override
-    public String getContextParam(String paramName, FacesContext context) {
-        return context.getExternalContext().getInitParameter(paramName);
-    }
-
-    @Override
-    public String getContextParam(String paramName) {
-        return getContextParam(paramName, FacesContext.getCurrentInstance());
+    public String getContextParam(String paramName, FacesContext context, String defaultValue) {
+        String result = context.getExternalContext().getInitParameter(paramName);
+        return result != null ? result : defaultValue;
     }
 }

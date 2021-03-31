@@ -456,7 +456,9 @@ public class TestBase implements Serializable {
 
     protected void cleanAcListFromDB(ACList acl) {
         entityManagerService.removeEntity(ACListEntity.class, acl.getId());
-
     }
 
+    protected void cleanExperimentsFromDB() {
+        entityManagerService.doSqlUpdate("delete from experiments");
+    }
 }

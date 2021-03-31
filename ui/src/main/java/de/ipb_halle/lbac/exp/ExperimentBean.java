@@ -108,7 +108,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ExpProjectController projectController;
-    protected MessagePresenter messagePresenter;
+    protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
     private List<Experiment> experiments = new ArrayList<>();
     private List<Experiment> templates = new ArrayList<>();
     private CreationState creationState = CreationState.CREATE;
@@ -149,7 +149,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     @PostConstruct
     public void init() {
         experimentBeanInit();
-        this.messagePresenter = JsfMessagePresenter.getInstance();
     }
     
     protected void experimentBeanInit() {

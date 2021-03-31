@@ -38,6 +38,9 @@ public class ImageEntity extends ACObjectEntity implements Serializable {
     private Long id;
 
     @Column
+    private String title;
+
+    @Column
     private String preview;
 
     @Column
@@ -49,6 +52,14 @@ public class ImageEntity extends ACObjectEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getPreview() {

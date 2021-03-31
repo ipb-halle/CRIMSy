@@ -128,12 +128,12 @@ public class ExpRecordServiceTest extends TestBase {
     @Test
     public void test002_saveLoadImageRecord() {
         Experiment experiment = new Experiment(null,
-                "ExpRecordServiceTest:test02_saveLoadImageRecord()",
-                "ExpRecordServiceTest:test02_saveLoadImageRecord()", false,
+                "ExpRecordServiceTest:test002_saveLoadImageRecord()",
+                "ExpRecordServiceTest:test002_saveLoadImageRecord()", false,
                 publicReadAcl, publicUser, new Date());
         experiment = experimentService.save(experiment);
         
-        Image image = new Image("abc", "def", publicUser, publicReadAcl);
+        Image image = new Image("abc", "def", "ghi", publicUser, publicReadAcl);
         image.setExperiment(experiment);
         image = (Image) recordService.save(image, publicUser);
                 
@@ -145,12 +145,14 @@ public class ExpRecordServiceTest extends TestBase {
         List<ExpRecord> records = recordService.load(cmap, publicUser);
         assertEquals(1, records.size());
         Image loadedImage1 = (Image) records.get(0);
-        assertEquals("abc", loadedImage1.getPreview());
-        assertEquals("def", loadedImage1.getImage());
+        assertEquals("abc", loadedImage1.getTitle());
+        assertEquals("def", loadedImage1.getPreview());
+        assertEquals("ghi", loadedImage1.getImage());
         
         Image loadedImage2 = (Image) recordService.loadById(image.getId(), publicUser);
-        assertEquals("abc", loadedImage2.getPreview());
-        assertEquals("def", loadedImage2.getImage());
+        assertEquals("abc", loadedImage1.getTitle());
+        assertEquals("def", loadedImage2.getPreview());
+        assertEquals("ghi", loadedImage2.getImage());
     }
     
     // TODO: Test for saving/loading of Assay and Text records
