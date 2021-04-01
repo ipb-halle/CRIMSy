@@ -65,12 +65,20 @@ public class ImageController extends ExpRecordController
         return rec;
     }
 
+    /**
+     * The returned JavaScript code executes the transfer of the JSON-serialized
+     * image and the DataURI-encoded preview image from the miniPaint editor to
+     * the respective JSF inputFile components.
+     */
     @Override
     public String getOnClick() {
         return "crimsyImageEditor.saveJson('miniPaint', $('.inputJsonFilePseudoClass').attr('id'));"
                 + "crimsyImageEditor.savePreview('miniPaint', $('.inputPreviewFilePseudoClass').attr('id'));";
     }
 
+    /**
+     * Saves the image record in the database.
+     */
     @Override
     public void actionSaveRecord() {
         ((Image) getExpRecord()).setImage(jsonFile);

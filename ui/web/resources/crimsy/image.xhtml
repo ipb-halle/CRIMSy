@@ -38,41 +38,54 @@
 
     <composite:implementation>
 
-        <h:panelGroup rendered="#{cc.attrs.image.edit}">
-            <h:outputScript library="js" name="imageEditor.js" target="head" />
-            <iframe id="miniPaint" style="width: 100%; height: 80vh; border: 0;"
-                src="/plugins/miniPaint/index.html" onload="crimsyImageEditor.openJson('miniPaint', $('.inputJsonImagePseudoClass').attr('id'));" />
+        <b:container>
+            <b:inputTextarea value="#{cc.attrs.image.title}"
+                             label="#{msgs.expImage_title}"
+                             rows="2"
+                             style="resize:none"
+                             readonly="#{! cc.attrs.image.edit}" />
 
-            <nwc:inputFile id="inputJsonFileId"
-                           value="#{cc.attrs.controller.jsonFile}"
-                           label="JSON image"
-                           style="display:none"
-                           styleClass="inputJsonFilePseudoClass"
-                           maxsize="#{cc.attrs.controller.maxUploadFileSize}"
-                           maxsizeMessage="#{msgs.expImage_maxsizeMessage}"
-                           converter="jsonSanitizingConverter" />
-            <!-- Beware: These ids have a purpose! See https://showcase.omnifaces.org/components/inputFile,
-                 from which <nwc:inputFile> inherits. -->
-            <b:message id="messageInputJsonFileId" for="inputJsonFileId" />
+            <h:panelGroup rendered="#{cc.attrs.image.edit}">
+        
+                <h:outputScript library="js" name="imageEditor.js" target="head" />
+                <iframe id="miniPaint"
+                        style="width: 100%; height: 80vh; border: 0;"
+                        src="/plugins/miniPaint/index.html"
+                        onload="crimsyImageEditor.openJson('miniPaint', $('.inputJsonImagePseudoClass').attr('id'));" />
 
-            <nwc:inputFile id="inputPreviewFileId"
-                           value="#{cc.attrs.image.preview}"
-                           label="Preview image"
-                           style="display:none"
-                           styleClass="inputPreviewFilePseudoClass"
-                           maxsize="#{cc.attrs.controller.maxUploadFileSize}" 
-                           maxsizeMessage="#{msgs.expImage_maxsizeMessage}" />
-            <b:message id="messageInputPreviewFileId" for="inputPreviewFileId" />
+                <nwc:inputFile id="inputJsonFileId"
+                               value="#{cc.attrs.controller.jsonFile}"
+                               style="display:none"
+                               styleClass="inputJsonFilePseudoClass"
+                               maxsize="#{cc.attrs.controller.maxUploadFileSize}"
+                               maxsizeMessage="#{msgs.expImage_maxsizeMessageImage}"
+                               converter="jsonSanitizingConverter" />
+                <!-- Beware: These IDs have a purpose! See https://showcase.omnifaces.org/components/inputFile,
+                     from which <nwc:inputFile> inherits. -->
+                <b:message id="messageInputJsonFileId" for="inputJsonFileId" />
 
-            <h:inputHidden id="inputJsonImage"
-                           value="#{cc.attrs.controller.jsonImage}"
-                           pt:class="inputJsonImagePseudoClass"
-                           converter="jsonSanitizingConverter" />
-        </h:panelGroup>
+                <nwc:inputFile id="inputPreviewFileId"
+                               value="#{cc.attrs.image.preview}"
+                               style="display:none"
+                               styleClass="inputPreviewFilePseudoClass"
+                               maxsize="#{cc.attrs.controller.maxUploadFileSize}" 
+                               maxsizeMessage="#{msgs.expImage_maxsizeMessagePreview}" />
+                <b:message id="messageInputPreviewFileId" for="inputPreviewFileId" />
 
-        <h:graphicImage id="previewImage"
-                        value="#{cc.attrs.image.preview}"
-                        alt="Preview" rendered="#{! cc.attrs.image.edit}" />
+                <h:inputHidden id="inputJsonImage"
+                               value="#{cc.attrs.controller.jsonImage}"
+                               pt:class="inputJsonImagePseudoClass"
+                               converter="jsonSanitizingConverter" />
+            
+            </h:panelGroup>
+                
+            <h:graphicImage id="previewImage"
+                            value="#{cc.attrs.image.preview}"
+                            alt="#{msgs.expImage_preview}"
+                            styleClass="img-responsive center-block"
+                            rendered="#{! cc.attrs.image.edit}" />
+        
+        </b:container>
 
     </composite:implementation>
 </html>
