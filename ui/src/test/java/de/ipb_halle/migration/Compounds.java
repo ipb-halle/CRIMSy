@@ -141,6 +141,7 @@ public class Compounds {
                 }
             } catch(Exception e) {
                 System.out.printf("WARN: Import failed for structure %d\n", counter);
+                e.printStackTrace();
                 counter++;
             }
         }

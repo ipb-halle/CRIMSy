@@ -252,6 +252,10 @@ function runTests {
     (docker inspect dist_proxy_1 2>/dev/null | grep -q running ) \
         || error "Service seems unavailable ..."
 
+    # initialize database with test data
+    docker cp $LBAC_REPO/util/test/etc/initial_data.sql dist_db_1:/tmp/
+    docker exec -ti dist_db_1 su - postgres /bin/sh -c "psql -Ulbac lbac -f /tmp/initial_data.sql"
+
     # build test containers and set up environment
     echo "checking / building test environment"
     pushd $LBAC_REPO/util/test >/dev/null
