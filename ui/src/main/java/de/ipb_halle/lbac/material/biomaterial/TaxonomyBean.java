@@ -78,9 +78,9 @@ public class TaxonomyBean implements Serializable {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(this.taxonomyService.loadTaxonomyLevel());
-        validityController = new TaxonomyValidityController(this,JsfMessagePresenter.getInstance());
+        validityController = new TaxonomyValidityController(this, JsfMessagePresenter.getInstance());
         historyController = new TaxonomyHistoryController(this, nameController, taxonomyService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService,JsfMessagePresenter.getInstance());
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, JsfMessagePresenter.getInstance());
         treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomyService, levelController);
     }
 
@@ -135,8 +135,9 @@ public class TaxonomyBean implements Serializable {
             }
             if (mode == Mode.CREATE) {
                 if (validityController.checkInputValidity()) {
-                    saveNewTaxonomy();
-                    treeController.reloadTreeNode();
+                    Taxonomy savedTaxo = saveNewTaxonomy();
+                    treeController.shownTaxonomies.add(savedTaxo);
+                    treeController.reorganizeTaxonomyTree();
                     mode = Mode.SHOW;
                 }
             }
@@ -288,6 +289,9 @@ public class TaxonomyBean implements Serializable {
             treeController.setSelectedTaxonomy(event.getTreeNode());
         }
         event.getTreeNode().setExpanded(true);
+        treeController.addTaxonomy((Taxonomy) event.getTreeNode().getData());
+        treeController.reorganizeTaxonomyTree();
+
     }
 
     /**
@@ -312,7 +316,7 @@ public class TaxonomyBean implements Serializable {
     /**
      * Saves the new taxonomy entry with the public readable acl
      */
-    private void saveNewTaxonomy() {
+    private Taxonomy saveNewTaxonomy() {
         taxonomyToCreate.setLevel(levelController.getSelectedLevel());
         if (selectedTaxonomy != null) {
             Taxonomy parent = (Taxonomy) selectedTaxonomy.getData();
@@ -320,6 +324,7 @@ public class TaxonomyBean implements Serializable {
             taxonomyToCreate.getTaxHierachy().addAll(parent.getTaxHierachy());
         }
         materialService.saveMaterialToDB(taxonomyToCreate, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>());
+        return taxonomyToCreate;
 
     }
 

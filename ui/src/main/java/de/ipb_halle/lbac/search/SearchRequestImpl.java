@@ -19,12 +19,8 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.lang.Condition;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,7 +31,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SearchRequestImpl implements SearchRequest {
 
     private SearchTarget searchTarget;
-    private Condition condition;
 
     private HashMap<SearchCategory, XmlSetWrapper> searchValues;
 
@@ -75,11 +70,6 @@ public class SearchRequestImpl implements SearchRequest {
     }
 
     @Override
-    public Condition getCondition() {
-        return condition;
-    }
-
-    @Override
     public int getFirstResult() {
         return firstResultIndex;
     }
@@ -104,11 +94,6 @@ public class SearchRequestImpl implements SearchRequest {
         this.searchTarget = searchTarget;
     }
 
-    @Override
-    public void setCondition(Condition condition) {
-        this.condition = condition;
-    }
-
     public void setMaxResults(int maxResults) {
         this.maxResults = maxResults;
     }
@@ -116,17 +101,6 @@ public class SearchRequestImpl implements SearchRequest {
     @Override
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public void switchToTransferMode() {
-        if (getCondition() != null) {
-            getCondition().switchToTransferMode();
-            if (getCondition().getConditions() != null) {
-                for (Condition con : getCondition().getConditions()) {
-                    con.switchToTransferMode();
-                }
-            }
-        }
     }
 
     @Override
@@ -138,7 +112,5 @@ public class SearchRequestImpl implements SearchRequest {
     public void setSearchValues(HashMap<SearchCategory, XmlSetWrapper> values) {
         this.searchValues = values;
     }
-    
-  
 
 }

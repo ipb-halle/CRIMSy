@@ -45,7 +45,7 @@ public class TaxonomyTreeController implements Serializable {
     protected TaxonomyLevelController levelController;
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
     protected TaxonomyService taxonomyService;
-    private List<Taxonomy> shownTaxonomies = new ArrayList<>();
+    protected List<Taxonomy> shownTaxonomies = new ArrayList<>();
     protected TreeNode selectedTaxonomy;
     private TreeNode taxonomyTree;
 
@@ -63,6 +63,16 @@ public class TaxonomyTreeController implements Serializable {
         this.taxonomyService = taxonomyService;
         this.levelController = levelController;
         reloadTreeNode();
+    }
+
+    public void addTaxonomy(Taxonomy taxo) {
+        List<Taxonomy> children = taxonomyService.loadDirectChildrenOf(taxo.getId());
+        List<Taxonomy> grandChildren = new ArrayList<>();
+        for (Taxonomy child : children) {
+            grandChildren.addAll(taxonomyService.loadDirectChildrenOf(child.getId()));
+        }
+        addAbsentTaxos(grandChildren);
+
     }
 
     /**
@@ -179,29 +189,66 @@ public class TaxonomyTreeController implements Serializable {
      */
     public final void reloadTreeNode() {
         try {
-            saveExpandedAndSelectedTreeNodes();
-            Map<String, Object> cmap = new HashMap<>();
-            shownTaxonomies = taxonomyService.loadTaxonomy(cmap, true);
-            Taxonomy rootTaxo = createNewTaxonomy();
-            rootTaxo.setLevel(levelController.getRootLevel());
-            taxonomyTree = new DefaultTreeNode(rootTaxo, null);
-            for (Taxonomy t : shownTaxonomies) {
-                TreeNode newNode = null;
-                if (!t.getTaxHierachy().isEmpty()) {
-                    TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
-                    newNode = new DefaultTreeNode(t, parent);
-                } else {
-                    newNode = new DefaultTreeNode(t, taxonomyTree);
-                }
-                if (idOfSelectedTaxonomy != null && t.getId() == idOfSelectedTaxonomy) {
-                    selectedTaxonomy = newNode;
-                }
-            }
-            expandTree();
+            shownTaxonomies = loadShownTaxos();
+            reorganizeTaxonomyTree();
+
         } catch (Exception e) {
             logger.error(e);
         }
+    }
 
+    public void reorganizeTaxonomyTree() {
+        saveExpandedAndSelectedTreeNodes();
+        Taxonomy rootTaxo = createNewTaxonomy();
+        rootTaxo.setLevel(levelController.getRootLevel());
+        taxonomyTree = new DefaultTreeNode(rootTaxo, null);
+        for (Taxonomy t : shownTaxonomies) {
+            TreeNode newNode = null;
+            if (!t.getTaxHierachy().isEmpty()) {
+                TreeNode parent = getTreeNodeWithTaxonomy(t.getTaxHierachy().get(0).getId());
+                newNode = new DefaultTreeNode(t, parent);
+            } else {
+                newNode = new DefaultTreeNode(t, taxonomyTree);
+            }
+            if (idOfSelectedTaxonomy != null && t.getId() == idOfSelectedTaxonomy) {
+                selectedTaxonomy = newNode;
+            }
+        }
+        expandTree();
+    }
+
+    private List<Taxonomy> loadShownTaxos() {
+        if (selectedTaxonomy == null) {
+            shownTaxonomies = new ArrayList<>();
+            shownTaxonomies.add(taxonomyService.loadRootTaxonomy());
+        }
+        List<Taxonomy> children = taxonomyService.loadDirectChildrenOf(shownTaxonomies.get(0).getId());
+        List<Taxonomy> grandChildren = new ArrayList<>();
+        for (Taxonomy child : children) {
+            grandChildren.addAll(taxonomyService.loadDirectChildrenOf(child.getId()));
+        }
+        addAbsentTaxos(children);
+        addAbsentTaxos(grandChildren);
+        return shownTaxonomies;
+    }
+
+    protected void addAbsentTaxos(List<Taxonomy> taxos) {
+        for (Taxonomy t : taxos) {
+            addAbsentTaxo(t);
+        }
+    }
+
+    protected void addAbsentTaxo(Taxonomy taxo) {
+        boolean isIn = false;
+        for (Taxonomy t : shownTaxonomies) {
+            if (t.getId() == taxo.getId()) {
+                isIn = true;
+            }
+        }
+        logger.info("Try to Add " + taxo.getId() + " (" + taxo.getFirstName() + "): " + isIn);
+        if (!isIn) {
+            shownTaxonomies.add(taxo);
+        }
     }
 
     private void saveExpandedAndSelectedTreeNodes() {
@@ -224,7 +271,7 @@ public class TaxonomyTreeController implements Serializable {
             if (ta.getId() == t.getId()) {
                 n.setSelected(true);
                 selectedTaxonomy = n;
-                idOfSelectedTaxonomy=ta.getId();
+                idOfSelectedTaxonomy = ta.getId();
                 expandTree();
             } else {
                 n.setSelected(false);
@@ -269,18 +316,17 @@ public class TaxonomyTreeController implements Serializable {
     public TaxonomyService getTaxonomyService() {
         return taxonomyService;
     }
-    
-    public void deactivateTree(){
-         for (TreeNode tn : getAllChildren(taxonomyTree)) {
-             tn.setSelectable(false);
-         }
+
+    public void deactivateTree() {
+        for (TreeNode tn : getAllChildren(taxonomyTree)) {
+            tn.setSelectable(false);
+        }
     }
-    public void activateTree(){
-         for (TreeNode tn : getAllChildren(taxonomyTree)) {
-             tn.setSelectable(true);
-         }
+
+    public void activateTree() {
+        for (TreeNode tn : getAllChildren(taxonomyTree)) {
+            tn.setSelectable(true);
+        }
     }
-    
-   
 
 }

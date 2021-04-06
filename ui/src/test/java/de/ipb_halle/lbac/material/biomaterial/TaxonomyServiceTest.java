@@ -55,9 +55,6 @@ public class TaxonomyServiceTest extends TestBase {
     Integer ownerid;
 
     @Inject
-    private TaxonomyNestingService nestingService;
-
-    @Inject
     private TaxonomyService service;
 
     @Inject
@@ -238,6 +235,24 @@ public class TaxonomyServiceTest extends TestBase {
         Assert.assertEquals(2, (int) t6.getTaxHierachy().get(1).getId());
         Assert.assertEquals(0, (int) t6.getTaxHierachy().get(2).getId());
         Assert.assertEquals(18, t6.getLevel().getId());
+    }
+
+    @Test
+    public void test005_getDirectChildrenOfTaxo() {
+        project = creationTools.createProject();
+        userGroups = project.getUserGroups().getId();
+        createTaxonomyTreeInDB(userGroups, owner.getId());
+        List<Taxonomy> taxonomies = service.loadTaxonomy(new HashMap<>(), true);
+        List<Taxonomy> directChildren = service.loadDirectChildrenOf(taxonomies.get(0).getId());
+        Assert.assertEquals(3, directChildren.size());
+    }
+
+    @Test
+    public void test006_loadRootTaxonomy() {
+        project = creationTools.createProject();
+        userGroups = project.getUserGroups().getId();
+        createTaxonomyTreeInDB(userGroups, owner.getId());
+        Assert.assertNotNull(service.loadRootTaxonomy());
     }
 
     private Set<Integer> getParentsOfTaxo(int id) {

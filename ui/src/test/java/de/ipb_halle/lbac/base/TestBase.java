@@ -331,7 +331,7 @@ public class TestBase implements Serializable {
         createTaxanomy(12, "Hörnlinge ", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(13, "Gallerttränen", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(14, "Bakterien", 2, userGroups, ownerId, 1);
-        createTaxanomy(15, "Escherichia", 7, userGroups, ownerId, 1);
+        createTaxanomy(15, "Escherichia", 7, userGroups, ownerId, 1,14);
         createTaxanomy(16, "Pflanzen", 2, userGroups, ownerId, 1);
         createTaxanomy(17, "Seerosenartige", 5, userGroups, ownerId, 1, 16);
         createTaxanomy(18, "Seerosengewächse", 6, userGroups, ownerId, 1, 16, 17);

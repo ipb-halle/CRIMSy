@@ -19,9 +19,7 @@ package de.ipb_halle.lbac.search;
 
 import de.ipb_halle.lbac.webclient.XmlSetWrapper;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.search.lang.Condition;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  *
@@ -29,15 +27,11 @@ import java.util.Set;
  */
 public interface SearchRequest {
 
-    public Condition getCondition();
-
     public int getFirstResult();
 
     public int getMaxResults();
 
     public User getUser();
-
-    public void setCondition(Condition c);
 
     public SearchTarget getSearchTarget();
 

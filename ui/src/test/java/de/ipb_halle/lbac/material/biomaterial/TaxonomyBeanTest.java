@@ -69,7 +69,9 @@ public class TaxonomyBeanTest extends TestBase {
 
     @Before
     public void init() {
-
+        Integer userGroups = GlobalAdmissionContext.getPublicReadACL().getId();
+        owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        createTaxonomyTreeInDB(userGroups, owner.getId());
         bean = new TaxonomyBeanMock();
         bean.setTaxonomyService(taxonomyService);
         bean.init(memberService, taxonomyService);
@@ -80,9 +82,6 @@ public class TaxonomyBeanTest extends TestBase {
         materialService.setEditedMaterialSaver(new MaterialEditSaver(materialService, taxoNestingService));
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
         bean.setMaterialService(materialService);
-        owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        Integer userGroups = GlobalAdmissionContext.getPublicReadACL().getId();
-        createTaxonomyTreeInDB(userGroups, owner.getId());
 
     }
 
@@ -91,12 +90,12 @@ public class TaxonomyBeanTest extends TestBase {
         LoginEvent event = new LoginEvent(owner);
         bean.setCurrentAccount(event);
         bean.getTreeController().reloadTreeNode();
-        assertNotExpanded("Champignonartige_de");
-        NodeExpandEvent expandEvent = createExpandEvent("Champignonartige_de");
+        assertNotExpanded("Pilze_de");
+        NodeExpandEvent expandEvent = createExpandEvent("Pilze_de");
         bean.onTaxonomyExpand(expandEvent);
-        assertExpanded("Champignonartige_de");
-        assertNotExpanded("Seerosenartige_de");
-        bean.onTaxonomyCollapse(createCollapseEvent("Champignonartige_de"));
+        assertExpanded("Pilze_de");
+        assertNotExpanded("Champignonartige_de");
+        bean.onTaxonomyCollapse(createCollapseEvent("Pilze_de"));
         assertNotExpanded("Champignonartige_de");
     }
 
@@ -106,7 +105,8 @@ public class TaxonomyBeanTest extends TestBase {
         bean.setCurrentAccount(event);
         bean.getTreeController().reloadTreeNode();
         Assert.assertTrue(bean.getRenderController().isFirstButtonDisabled());
-
+        bean.onTaxonomyExpand(createExpandEvent("Pilze_de"));
+        bean.onTaxonomyExpand(createExpandEvent("Agaricomycetes_de"));
         bean.onTaxonomySelect(createSelectEvent("Champignonartige_de"));
 
         Assert.assertFalse(bean.getRenderController().isFirstButtonDisabled());
@@ -117,7 +117,6 @@ public class TaxonomyBeanTest extends TestBase {
         Assert.assertFalse(bean.getRenderController().isFirstButtonDisabled());
         Assert.assertFalse(bean.getRenderController().isHistoryVisible());
         assertNotSelectable("Champignonartige_de");
-        assertNotSelectable("Wulstlingsverwandte_de");
         assertNotSelectable("Wulstlingsverwandte_de");
         assertNotSelectable("Wulstlinge_de");
         assertNotSelectable("Schleimschirmlinge_de");
@@ -157,7 +156,7 @@ public class TaxonomyBeanTest extends TestBase {
         bean.getNameController().swapPosition(bean.getNameController().getNames().get(1), "HIGHER");
 
         bean.actionClickSecondButton();
-        bean.onTaxonomySelect(createSelectEvent("Champignonartige_de_edited"));
+        //bean.onTaxonomySelect(createSelectEvent("Champignonartige_de_edited"));
 
     }
 
@@ -168,7 +167,8 @@ public class TaxonomyBeanTest extends TestBase {
         bean.getTreeController().reloadTreeNode();
 
         bean.actionClickSecondButton();
-
+        bean.onTaxonomyExpand(createExpandEvent("Pilze_de"));
+        bean.onTaxonomyExpand(createExpandEvent("Agaricomycetes_de"));
         bean.onTaxonomySelect(createSelectEvent("Champignonartige_de"));
 
         Assert.assertEquals("Champignonartige_de", bean.getRenderController().getParentFirstName());

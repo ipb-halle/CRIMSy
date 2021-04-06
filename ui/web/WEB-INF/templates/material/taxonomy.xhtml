@@ -180,16 +180,19 @@
                 <b:row>
                 </b:row>
                 <b:row>
-                    <b:column span="4">
+                    <b:column 
+                        span="4"
+                        styleClass="taxonomyTreeColumn">
                         <p:tree
                             value="#{taxonomyBean.treeController.taxonomyTree}"
                             var ="node"
                             selectionMode="single"
                             styleClass="taxonomyTree"
+                            dynamic="true"
                             selection="#{taxonomyBean.selectedTaxonomy}">
                             <p:ajax event="select" update="@(.taxonomyInfos)" listener="#{taxonomyBean.onTaxonomySelect}" />
-                            <p:ajax event="expand" update="@(.taxonomyInfos)" listener="#{taxonomyBean.onTaxonomyExpand}" />
-                            <p:ajax event="collapse" update="@(.taxonomyInfos)" listener="#{taxonomyBean.onTaxonomyCollapse}" />
+                            <p:ajax event="expand" listener="#{taxonomyBean.onTaxonomyExpand}" />
+                            <p:ajax event="collapse" update="@(.taxonomyTreeColumn)" listener="#{taxonomyBean.onTaxonomyCollapse}" />
                             <p:treeNode >
                                 <h:outputText value="#{node.getFirstName()}"/>
                             </p:treeNode>

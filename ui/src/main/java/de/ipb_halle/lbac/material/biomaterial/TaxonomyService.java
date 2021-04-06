@@ -70,6 +70,18 @@ public class TaxonomyService implements Serializable {
             + "FROM taxonomy "
             + "WHERE level=1";
 
+    private final String SQL_GET_DIRECT_CHILDREN
+            = "SELECT taxoid "
+            + "FROM effective_taxonomy ef "
+            + "WHERE ef.parentid=:taxoid "
+            + "AND NOT EXISTS( "
+            + "SELECT ef2.taxoid "
+            + "FROM effective_taxonomy ef2 "
+            + "JOIN taxonomy  t on t.id=ef2.parentid "
+            + "JOIN taxonomy  t2 on t2.id=:taxoid "
+            + "WHERE ef2.taxoid=ef.taxoid "
+            + "AND t2.level < t.level);";
+
     private final String SQL_GET_NESTED_TAXONOMIES = "SELECT parentid FROM effective_taxonomy WHERE taxoid=:id";
     protected MaterialComparator comparator;
 
@@ -154,6 +166,17 @@ public class TaxonomyService implements Serializable {
         return results.get(0).intValue();
     }
 
+    public List<Taxonomy> loadDirectChildrenOf(int taxonomyId) {
+        List<Taxonomy> results = new ArrayList<>();
+        Query q = this.em.createNativeQuery(SQL_GET_DIRECT_CHILDREN);
+        q.setParameter("taxoid", taxonomyId);
+        List<Integer> a = (List) q.getResultList();
+        for (Integer tid : a) {
+            results.add(loadTaxonomyById(tid));
+        }
+        return results;
+    }
+
     public Taxonomy loadTaxonomyById(Integer id) {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", id);
@@ -163,6 +186,12 @@ public class TaxonomyService implements Serializable {
         } else {
             return null;
         }
+    }
+
+    public Taxonomy loadRootTaxonomy() {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("level", loadTaxonomyLevel().get(0).getId());
+        return loadTaxonomy(cmap, false).get(0);
     }
 
 }
