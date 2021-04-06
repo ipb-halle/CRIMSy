@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.images;
+package de.ipb_halle.lbac.exp.image;
 
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordController;
@@ -68,12 +68,15 @@ public class ImageController extends ExpRecordController
     /**
      * The returned JavaScript code executes the transfer of the JSON-serialized
      * image and the DataURI-encoded preview image from the miniPaint editor to
-     * the respective JSF inputFile components.
+     * the respective JSF inputFile components. It also saves the image in a
+     * temporary JavaScript variable that might be needed to reconstruct the
+     * editor state after a validation error.
      */
     @Override
-    public String getOnClick() {
+    public String getSaveButtonOnClick() {
         return "crimsyImageEditor.saveJson('miniPaint', $('.inputJsonFilePseudoClass').attr('id'));"
-                + "crimsyImageEditor.savePreview('miniPaint', $('.inputPreviewFilePseudoClass').attr('id'));";
+                + "crimsyImageEditor.savePreview('miniPaint', $('.inputPreviewFilePseudoClass').attr('id'));"
+                + "crimsyImageEditor.saveInstanceData('miniPaint');";
     }
 
     /**

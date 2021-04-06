@@ -26,6 +26,8 @@ import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import static org.junit.Assert.assertEquals;
+
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.mocks.ExperimentBeanMock;
@@ -269,6 +271,35 @@ public class ExperimentBeanTest extends TestBase {
         experimentBean.actionCopyTemplate();
 
         Assert.assertEquals(2, entityManagerService.doSqlQuery("SELECT experimentid FROM experiments").size());
+    }
+
+    @Test
+    public void test007_getSaveButtonOnClick() {
+        experimentBean.setExpRecordController(new ExpRecordController(experimentBean) {
+            @Override
+            public ExpRecord getNewRecord() {
+                return null;
+            }
+
+            @Override
+            public String getSaveButtonOnClick() {
+                return "abc";
+            }
+        });
+        assertEquals("abc;ajax:experimentBean.actionDoNothing();javascript:return false;", experimentBean.getSaveButtonOnClick());
+
+        experimentBean.setExpRecordController(new ExpRecordController(experimentBean) {
+            @Override
+            public ExpRecord getNewRecord() {
+                return null;
+            }
+
+            @Override
+            public String getSaveButtonOnClick() {
+                return "abc;";
+            }
+        });
+        assertEquals("abc;ajax:experimentBean.actionDoNothing();javascript:return false;", experimentBean.getSaveButtonOnClick());
     }
 
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {

@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.images;
+package de.ipb_halle.lbac.exp.image;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
@@ -30,6 +30,8 @@ import de.ipb_halle.lbac.exp.ExpRecordType;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
+import de.ipb_halle.lbac.exp.image.Image;
+import de.ipb_halle.lbac.exp.image.ImageService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import java.math.BigInteger;
 import java.util.Date;

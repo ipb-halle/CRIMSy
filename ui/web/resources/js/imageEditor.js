@@ -25,15 +25,38 @@
 var crimsyImageEditor = crimsyImageEditor || {};
 
 /**
+ * Returns an image in miniPaint's JSON format from the image editor in the
+ * specified frame.
+ */
+crimsyImageEditor.getJsonFromEditor = function(frameId) {
+	let miniPaint = document.getElementById(frameId).contentWindow;
+	let miniPaintFileSave = miniPaint.FileSave;
+
+	return miniPaintFileSave.export_as_json();
+}
+
+/**
+ * Load an image in miniPaint's JSON format to the image editor in the specified
+ * frame and rescale the editor (zoom level 'fit').
+ */
+crimsyImageEditor.loadJsonToEditor = function(frameId, json) {
+	let miniPaint = document.getElementById(frameId).contentWindow;
+	let miniPaintFileOpen = miniPaint.FileOpen;
+
+	if (json !== null && json !== '') {
+		miniPaintFileOpen.load_json(json).then(() => miniPaint.Layers.Base_gui.GUI_preview.zoom_auto(0));
+	}
+}
+
+/**
  * Exports an image in miniPaint's JSON format and attaches it as blob to an
  * <input type="file"> element for file upload.
  */
 crimsyImageEditor.saveJson = function(frameId, inputFileId) {
-	let miniPaint = document.getElementById(frameId).contentWindow;
-	let miniPaintFileSave = miniPaint.FileSave;
+	let json = crimsyImageEditor.getJsonFromEditor(frameId);
 
-	// export JSON from miniPaint + minify it further
-	let dataJson = JSON.stringify(JSON.parse(miniPaintFileSave.export_as_json()));
+	// minify the JSON object further
+	let dataJson = JSON.stringify(JSON.parse(json));
 
 	// attach the data to the inputFile component
 	crimsyImageEditor.attachBlob(inputFileId, dataJson, "image.json", "application/json");
@@ -63,18 +86,12 @@ crimsyImageEditor.savePreview = function(frameId, inputFileId) {
  * into a miniPaint editor instance, rescales the editor (zoom level 'fit')
  * and clears the image data in the <input> element.
  */
-crimsyImageEditor.openJson = function(frameId, inputJsonId) {
-	let miniPaint = document.getElementById(frameId).contentWindow;
-	let miniPaintFileOpen = miniPaint.FileOpen;
+crimsyImageEditor.loadJson = function(frameId, inputJsonId) {
+	let json = document.getElementById(inputJsonId).value;
+	crimsyImageEditor.loadJsonToEditor(frameId, json);
 
-	let data = document.getElementById(inputJsonId).value;
-
-	if (data !== null && data !== '') {
-		miniPaintFileOpen.load_json(data).then(() => miniPaint.Layers.Base_gui.GUI_preview.zoom_auto(0));
-
-		// clear <input> where got the data from, so it is not resent
-		document.getElementById(inputJsonId).value = "";
-	}
+	// clear <input> where got the data from, so it is not resent
+	document.getElementById(inputJsonId).value = "";
 }
 
 /**
@@ -88,4 +105,28 @@ crimsyImageEditor.attachBlob = function(inputFileId, data, filename, dataType) {
 	let container = new DataTransfer();
 	container.items.add(file);
 	fileInputElement.files = container.files;
+}
+
+crimsyImageEditor.savedInstaceData = null;
+
+/**
+ * Save the image in miniPaint's JSON format from the image editor in the
+ * specified frame to the variable 'crimsyImageEditor.savedInstaceData'.
+ */
+crimsyImageEditor.saveInstanceData = function(frameId) {
+	crimsyImageEditor.savedInstaceData = crimsyImageEditor.getJsonFromEditor(frameId);
+}
+
+/**
+ * Load the image in miniPaint's JSON format from the variable
+ * 'crimsyImageEditor.savedInstaceData' to the image editor in the specified frame.
+ */
+crimsyImageEditor.loadInstanceData = function(frameId) {
+	let data = crimsyImageEditor.savedInstaceData;
+
+	if (data != null) {
+		crimsyImageEditor.loadJsonToEditor(frameId, data);
+	}
+
+	crimsyImageEditor.savedInstaceData = null;
 }

@@ -15,11 +15,13 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.images;
+package de.ipb_halle.lbac.exp.image;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.ExpRecordType;
+import de.ipb_halle.lbac.exp.image.Image;
+import de.ipb_halle.lbac.exp.image.ImageEntity;
 
 import org.junit.Assert;
 import org.junit.Before;

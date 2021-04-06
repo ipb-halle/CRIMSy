@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.images;
+package de.ipb_halle.lbac.exp.image;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.exp.image.ImageEntity;
 
 /**
  * 
@@ -44,21 +45,21 @@ public class ImageEntityTest {
     @Test
     public void test001_gettersAndSetters() {
         ImageEntity entity = new ImageEntity();
-        
+
         assertEquals(null, entity.getId());
         assertEquals(null, entity.getTitle());
         assertEquals(null, entity.getPreview());
         assertEquals(null, entity.getImage());
         assertEquals(null, entity.getOwner());
         assertEquals(null, entity.getACList());
-        
+
         entity.setId(42L);
         entity.setTitle("title");
         entity.setPreview("preview");
         entity.setImage("image");
         entity.setOwner(user.getId());
         entity.setACList(aclist.getId());
-        
+
         assertEquals(Long.valueOf(42L), entity.getId());
         assertEquals("title", entity.getTitle());
         assertEquals("preview", entity.getPreview());

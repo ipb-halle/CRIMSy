@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
 import de.ipb_halle.lbac.exp.assay.AssayController;
-import de.ipb_halle.lbac.exp.images.ImageController;
+import de.ipb_halle.lbac.exp.image.ImageController;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
@@ -95,7 +95,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     
     private List<ExpRecord> expRecords;
     
-    private ExpRecordController expRecordController;
+    protected ExpRecordController expRecordController;
     
     private String newRecordType;
     
@@ -746,19 +746,30 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     /**
      * Returns JavaScript code to be executed in the onclick event of the
-     * experiment record "save" commandButton of this experiment record before
-     * executing its AJAX call. This includes the onclick code specified via the
-     * specific experiment record controller's
-     * {@link ExpRecordController#getOnClick()} method plus an AJAX call to
-     * {@link #actionDoNothing()} using the <a href=
+     * experiment record "save" commandButton before executing its AJAX call.
+     * This includes the onclick code specified via the specific experiment
+     * record controller's {@link ExpRecordController#getSaveButtonOnClick()}
+     * method plus an AJAX call to {@link #actionDoNothing()} using the <a href=
      * "https://showcase.bootsfaces.net/forms/ajax.jsf#basic_usage">BootsFaces-specific
-     * prefixes</a>.
+     * prefixes</a>. The default onclick action of &lt;b:commandButton&gt; (AJAX
+     * call) is suppressed by a terminating JavaScript 'return false'. The
+     * actionListener and action of the commandButton are called afterwards.
      * 
      * @return JavaScript code to be executed
      */
-    public String getOnClick() {
-        return expRecordController.getOnClick()
-                + "ajax:experimentBean.actionDoNothing();javascript:return false;";
+    public String getSaveButtonOnClick() {
+        String onClickFromController = expRecordController.getSaveButtonOnClick();
+        StringBuilder sb = new StringBuilder(onClickFromController.length() + 64);
+
+        if (!onClickFromController.isEmpty()) {
+            sb.append(onClickFromController);
+            if (!onClickFromController.endsWith(";")) {
+                sb.append(";");
+            }
+        }
+        sb.append("ajax:experimentBean.actionDoNothing();javascript:return false;");
+
+        return sb.toString();
     }
 
     /**

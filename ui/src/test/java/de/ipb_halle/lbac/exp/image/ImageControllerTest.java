@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.exp.images;
+package de.ipb_halle.lbac.exp.image;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -40,6 +40,8 @@ import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.MaterialAgent;
+import de.ipb_halle.lbac.exp.image.Image;
+import de.ipb_halle.lbac.exp.image.ImageController;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.util.WebXml;
@@ -75,7 +77,7 @@ public class ImageControllerTest extends TestBase {
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
         publicACL = GlobalAdmissionContext.getPublicReadACL();
     }
-    
+
     @After
     public void clean() {
         cleanExperimentsFromDB();
@@ -96,11 +98,12 @@ public class ImageControllerTest extends TestBase {
 
     /**
      * Check contract of the parent method
-     * {@link ExpRecordController#getOnClick}
+     * {@link ExpRecordController#getSaveButtonOnClick}
      */
     @Test
-    public void test002_getOnClick() {
-        String onclick = new ImageController(experimentBean).getOnClick();
+    public void test002_getSaveButtonOnClick() {
+        String onclick = new ImageController(experimentBean)
+                .getSaveButtonOnClick();
         Assert.assertFalse(onclick.contains("ajax:"));
         Assert.assertFalse(onclick.contains("javascript:"));
     }
@@ -109,18 +112,20 @@ public class ImageControllerTest extends TestBase {
     public void test003_getMaxUploadFileSize() {
         WebXml webXml = new WebXml() {
             @Override
-            public String getContextParam(String paramName, String defaultValue) {
+            public String getContextParam(String paramName,
+                    String defaultValue) {
                 return "123";
             }
-            
+
             @Override
-            public String getContextParam(String paramName, FacesContext context,
-                    String defaultValue) {
+            public String getContextParam(String paramName,
+                    FacesContext context, String defaultValue) {
                 return getContextParam(paramName, defaultValue);
             }
         };
-        
-        ImageController controller = new ImageController(experimentBean, webXml);
+
+        ImageController controller = new ImageController(experimentBean,
+                webXml);
         Assert.assertEquals(123L, controller.getMaxUploadFileSize());
     }
 
@@ -131,14 +136,14 @@ public class ImageControllerTest extends TestBase {
         ImageController controller = (ImageController) experimentBean
                 .getExpRecordController();
         Image image = (Image) controller.getExpRecord();
-        
+
         Assert.assertEquals("", controller.getJsonImage());
         controller.setJsonImage("abc");
         Assert.assertEquals("", controller.getJsonImage());
-        
+
         image.setImage("image");
         Assert.assertEquals("image", controller.getJsonImage());
-        
+
         Assert.assertEquals("", controller.getJsonFile());
         controller.setJsonFile("def");
         Assert.assertEquals("", controller.getJsonFile());
@@ -176,7 +181,7 @@ public class ImageControllerTest extends TestBase {
         Assert.assertEquals(publicUser, image.getUser());
         Assert.assertEquals(publicACL, image.getAclist());
         Assert.assertTrue(image.getEdit());
-        
+
         // change image and save again
         image = (Image) controller.getExpRecord();
         image.setTitle("title2");
