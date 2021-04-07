@@ -22,11 +22,13 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -202,6 +204,7 @@ public class TaxonomyTreeController implements Serializable {
         Taxonomy rootTaxo = createNewTaxonomy();
         rootTaxo.setLevel(levelController.getRootLevel());
         taxonomyTree = new DefaultTreeNode(rootTaxo, null);
+        reorderTaxonomies();
         for (Taxonomy t : shownTaxonomies) {
             TreeNode newNode = null;
             if (!t.getTaxHierachy().isEmpty()) {
@@ -215,6 +218,15 @@ public class TaxonomyTreeController implements Serializable {
             }
         }
         expandTree();
+    }
+
+    /**
+     * Reorders taxonomies by first its level and second by its names
+     */
+    protected void reorderTaxonomies() {
+        Comparator rankCom=Comparator.comparing((Taxonomy t) -> t.getLevel().getRank());
+        Comparator nameCom=Comparator.comparing((Taxonomy t) -> t.getFirstName());
+        shownTaxonomies.sort(rankCom.thenComparing(nameCom));
     }
 
     private List<Taxonomy> loadShownTaxos() {

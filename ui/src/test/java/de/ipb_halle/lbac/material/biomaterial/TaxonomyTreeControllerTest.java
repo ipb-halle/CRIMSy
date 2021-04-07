@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -33,20 +34,45 @@ import org.junit.Test;
  */
 public class TaxonomyTreeControllerTest {
 
-    @Test
-    public void test001_addTaxonomy() {
-        Taxonomy t1 = createTaxonomy(0);
-        Taxonomy t2 = createTaxonomy(1);
-        Taxonomy t3 = createTaxonomy(2);
-        TaxonomyTreeController controller = new TaxonomyTreeController(null, null, null);
-        controller.addAbsentTaxos(Arrays.asList(t1));
-        Assert.assertEquals(1, controller.shownTaxonomies.size());
-        controller.addAbsentTaxos(Arrays.asList(t1));
-        Assert.assertEquals(1, controller.shownTaxonomies.size());
+    TaxonomyTreeController controller;
+
+    @Before
+    public void init() {
+        controller = new TaxonomyTreeController(null, null, null);
     }
 
-    private Taxonomy createTaxonomy(int id) {
+    @Test
+    public void test001_addTaxonomy() {
+        Taxonomy t1 = createTaxonomy("Taxo1", 0, 1);
+        Taxonomy t2 = createTaxonomy("Taxo2", 1, 2);
+        Taxonomy t3 = createTaxonomy("Taxo3", 2, 3);
+        controller.addAbsentTaxos(Arrays.asList(t1));
+        Assert.assertEquals(1, controller.shownTaxonomies.size());
+        controller.addAbsentTaxos(Arrays.asList(t1,t2,t3));
+        Assert.assertEquals(3, controller.shownTaxonomies.size());
+    }
 
-        return new Taxonomy(id, Arrays.asList(new MaterialName(String.valueOf("TAXO " + id), "de", 0)), new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), null, new Date());
+    @Test
+    public void test002_orderTaxonomies() {
+        controller.addAbsentTaxo(createTaxonomy("BB", 1, 2)); // #3
+        controller.addAbsentTaxo(createTaxonomy("AA", 2, 2)); // #2
+        controller.addAbsentTaxo(createTaxonomy("AA", 4, 3)); // #4
+        controller.addAbsentTaxo(createTaxonomy("CC", 3, 3)); // #5
+        controller.addAbsentTaxo(createTaxonomy("ZZ", 0, 1)); // #1
+
+        controller.reorderTaxonomies();
+
+        Assert.assertEquals(5, controller.shownTaxonomies.size());
+        Assert.assertEquals("ZZ",controller.shownTaxonomies.get(0).getFirstName());
+        Assert.assertEquals("AA",controller.shownTaxonomies.get(1).getFirstName());
+        Assert.assertEquals("BB",controller.shownTaxonomies.get(2).getFirstName());
+        Assert.assertEquals("AA",controller.shownTaxonomies.get(3).getFirstName());
+        Assert.assertEquals("CC",controller.shownTaxonomies.get(4).getFirstName());
+    }
+
+    private Taxonomy createTaxonomy(String name, int id, int rank) {
+        Taxonomy t = new Taxonomy(id, Arrays.asList(new MaterialName(name, "de", 0)), new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), null, new Date());
+        t.setLevel(new TaxonomyLevel(rank, "Level " + rank, rank));
+        return t;
     }
 }
