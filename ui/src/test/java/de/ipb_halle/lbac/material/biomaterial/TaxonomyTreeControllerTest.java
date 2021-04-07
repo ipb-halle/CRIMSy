@@ -48,7 +48,7 @@ public class TaxonomyTreeControllerTest {
         Taxonomy t3 = createTaxonomy("Taxo3", 2, 3);
         controller.addAbsentTaxos(Arrays.asList(t1));
         Assert.assertEquals(1, controller.shownTaxonomies.size());
-        controller.addAbsentTaxos(Arrays.asList(t1,t2,t3));
+        controller.addAbsentTaxos(Arrays.asList(t1, t2, t3));
         Assert.assertEquals(3, controller.shownTaxonomies.size());
     }
 
@@ -63,11 +63,22 @@ public class TaxonomyTreeControllerTest {
         controller.reorderTaxonomies();
 
         Assert.assertEquals(5, controller.shownTaxonomies.size());
-        Assert.assertEquals("ZZ",controller.shownTaxonomies.get(0).getFirstName());
-        Assert.assertEquals("AA",controller.shownTaxonomies.get(1).getFirstName());
-        Assert.assertEquals("BB",controller.shownTaxonomies.get(2).getFirstName());
-        Assert.assertEquals("AA",controller.shownTaxonomies.get(3).getFirstName());
-        Assert.assertEquals("CC",controller.shownTaxonomies.get(4).getFirstName());
+        Assert.assertEquals("ZZ", controller.shownTaxonomies.get(0).getFirstName());
+        Assert.assertEquals("AA", controller.shownTaxonomies.get(1).getFirstName());
+        Assert.assertEquals("BB", controller.shownTaxonomies.get(2).getFirstName());
+        Assert.assertEquals("AA", controller.shownTaxonomies.get(3).getFirstName());
+        Assert.assertEquals("CC", controller.shownTaxonomies.get(4).getFirstName());
+    }
+
+    @Test
+    public void test003_replaceExistingTaxo() {
+        controller.addAbsentTaxo(createTaxonomy("BB", 1, 2));
+
+        controller.replaceTaxonomy(createTaxonomy("BB-edited", 1, 2));
+
+        Assert.assertEquals(1, controller.shownTaxonomies.size());
+        Assert.assertEquals("BB-edited", controller.shownTaxonomies.get(0).getFirstName());
+
     }
 
     private Taxonomy createTaxonomy(String name, int id, int rank) {

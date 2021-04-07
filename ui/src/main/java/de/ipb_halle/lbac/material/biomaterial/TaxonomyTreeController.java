@@ -224,8 +224,8 @@ public class TaxonomyTreeController implements Serializable {
      * Reorders taxonomies by first its level and second by its names
      */
     protected void reorderTaxonomies() {
-        Comparator rankCom=Comparator.comparing((Taxonomy t) -> t.getLevel().getRank());
-        Comparator nameCom=Comparator.comparing((Taxonomy t) -> t.getFirstName());
+        Comparator rankCom = Comparator.comparing((Taxonomy t) -> t.getLevel().getRank());
+        Comparator nameCom = Comparator.comparing((Taxonomy t) -> t.getFirstName());
         shownTaxonomies.sort(rankCom.thenComparing(nameCom));
     }
 
@@ -247,6 +247,14 @@ public class TaxonomyTreeController implements Serializable {
     protected void addAbsentTaxos(List<Taxonomy> taxos) {
         for (Taxonomy t : taxos) {
             addAbsentTaxo(t);
+        }
+    }
+
+    public void replaceTaxonomy(Taxonomy taxo) {
+        for (int i = 0; i < shownTaxonomies.size(); i++) {
+            if (shownTaxonomies.get(i).getId() == taxo.getId()) {
+                shownTaxonomies.set(i, taxo);
+            }
         }
     }
 

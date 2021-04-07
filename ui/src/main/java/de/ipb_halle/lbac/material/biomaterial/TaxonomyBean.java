@@ -107,7 +107,7 @@ public class TaxonomyBean implements Serializable {
     public void actionClickFirstButton() {
         if (mode == Mode.CREATE || mode == Mode.EDIT) {
             mode = Mode.SHOW;
-            treeController.reloadTreeNode();
+            treeController.reorganizeTaxonomyTree();
 
         } else if (mode == Mode.SHOW) {
             try {
@@ -144,7 +144,8 @@ public class TaxonomyBean implements Serializable {
             if (mode == Mode.EDIT) {
                 taxonomyToEdit.setLevel(levelController.getSelectedLevel());
                 materialService.saveEditedMaterial(taxonomyToEdit, taxonomyBeforeEdit, null, currentUser.getId());
-                treeController.reloadTreeNode();
+                treeController.replaceTaxonomy(taxonomyToEdit);
+                treeController.reorganizeTaxonomyTree();
                 levelController.setSelectedLevel(taxonomyToEdit.getLevel());
                 selectedTaxonomy = treeController.selectedTaxonomy;
                 taxonomyBeforeEdit = null;
@@ -160,98 +161,50 @@ public class TaxonomyBean implements Serializable {
         initHistoryDate();
     }
 
-    /**
-     *
-     * @return
-     */
     public TaxonomyHistoryController getHistoryController() {
         return historyController;
     }
 
-    /**
-     *
-     * @return
-     */
     public TaxonomyLevelController getLevelController() {
         return levelController;
     }
 
-    /**
-     *
-     * @return
-     */
     public Mode getMode() {
         return mode;
     }
 
-    /**
-     *
-     * @return
-     */
     public TaxonomyNameController getNameController() {
         return nameController;
     }
 
-    /**
-     *
-     * @return
-     */
     public Taxonomy getParentOfNewTaxo() {
         return parentOfNewTaxo;
     }
 
-    /**
-     *
-     * @return
-     */
     public TaxonomyRenderController getRenderController() {
         return renderController;
     }
 
-    /**
-     *
-     * @return
-     */
     public TreeNode getSelectedTaxonomy() {
         return selectedTaxonomy;
     }
 
-    /**
-     *
-     * @return
-     */
     public Taxonomy getTaxonomyBeforeEdit() {
         return taxonomyBeforeEdit;
     }
 
-    /**
-     *
-     * @return
-     */
     public Taxonomy getTaxonomyToCreate() {
         return taxonomyToCreate;
     }
 
-    /**
-     *
-     * @return
-     */
     public Taxonomy getTaxonomyToEdit() {
         return taxonomyToEdit;
     }
 
-    /**
-     *
-     * @return
-     */
     public TaxonomyTreeController getTreeController() {
         return treeController;
     }
 
-    /**
-     *
-     * @return
-     */
     public TaxonomyValidityController getValidityController() {
         return validityController;
     }
@@ -265,14 +218,12 @@ public class TaxonomyBean implements Serializable {
             historyController.setDateOfShownHistory(null);
         } else {
             historyController.setDateOfShownHistory(
-                    t
-                            .getHistory()
-                            .getChanges()
-                            .lastKey());
+                    t.getHistory().getChanges().lastKey());
         }
     }
 
     /**
+     * Keeps the loaded taxonomies of the children in memory
      *
      * @param event
      */
@@ -281,6 +232,7 @@ public class TaxonomyBean implements Serializable {
     }
 
     /**
+     * loads the children of the now shown taxonomy from the database
      *
      * @param event
      */
@@ -291,7 +243,6 @@ public class TaxonomyBean implements Serializable {
         event.getTreeNode().setExpanded(true);
         treeController.addTaxonomy((Taxonomy) event.getTreeNode().getData());
         treeController.reorganizeTaxonomyTree();
-
     }
 
     /**
@@ -325,7 +276,6 @@ public class TaxonomyBean implements Serializable {
         }
         materialService.saveMaterialToDB(taxonomyToCreate, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>());
         return taxonomyToCreate;
-
     }
 
     /**
@@ -336,74 +286,38 @@ public class TaxonomyBean implements Serializable {
         this.historyController = historyController;
     }
 
-    /**
-     *
-     * @param levelController
-     */
     public void setLevelController(TaxonomyLevelController levelController) {
         this.levelController = levelController;
     }
 
-    /**
-     *
-     * @param materialService
-     */
     public void setMaterialService(MaterialService materialService) {
         this.materialService = materialService;
     }
 
-    /**
-     *
-     * @param mode
-     */
     public void setMode(Mode mode) {
         this.mode = mode;
     }
 
-    /**
-     *
-     * @param nameController
-     */
     public void setNameController(TaxonomyNameController nameController) {
         this.nameController = nameController;
     }
 
-    /**
-     *
-     * @param renderController
-     */
     public void setRenderController(TaxonomyRenderController renderController) {
         this.renderController = renderController;
     }
 
-    /**
-     *
-     * @param selectedTaxonomy
-     */
     public void setSelectedTaxonomy(TreeNode selectedTaxonomy) {
         this.selectedTaxonomy = selectedTaxonomy;
     }
 
-    /**
-     *
-     * @param taxonomyBeforeEdit
-     */
     public void setTaxonomyBeforeEdit(Taxonomy taxonomyBeforeEdit) {
         this.taxonomyBeforeEdit = taxonomyBeforeEdit;
     }
 
-    /**
-     *
-     * @param taxonomyService
-     */
     public void setTaxonomyService(TaxonomyService taxonomyService) {
         this.taxonomyService = taxonomyService;
     }
 
-    /**
-     *
-     * @param taxonomyToCreate
-     */
     public void setTaxonomyToCreate(Taxonomy taxonomyToCreate) {
         this.taxonomyToCreate = taxonomyToCreate;
     }
@@ -412,18 +326,10 @@ public class TaxonomyBean implements Serializable {
         this.taxonomyToEdit = taxonomyToEdit;
     }
 
-    /**
-     *
-     * @param treeController
-     */
     public void setTreeController(TaxonomyTreeController treeController) {
         this.treeController = treeController;
     }
 
-    /**
-     *
-     * @param validityController
-     */
     public void setValidityController(TaxonomyValidityController validityController) {
         this.validityController = validityController;
     }
