@@ -33,13 +33,15 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.assay.AssayService;
+import de.ipb_halle.lbac.exp.image.Image;
+import de.ipb_halle.lbac.exp.image.ImageService;
 import de.ipb_halle.lbac.exp.text.TextService;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.items.UnknownItemFactory;
+import de.ipb_halle.lbac.items.InaccessibleItemFactory;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.unknown.UnknownMaterial;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -87,6 +89,9 @@ public class ExpRecordService implements Serializable {
 
     @Inject
     private AssayService assayService;
+
+    @Inject
+    private ImageService imageService;
 
     @Inject
     private ItemService itemService;
@@ -157,6 +162,9 @@ public class ExpRecordService implements Serializable {
                 case TEXT:
                     record = this.textService.loadTextById(experiment, e);
                     break;
+                case IMAGE:
+                    record = this.imageService.loadImage(experiment, e);
+                    break;
                 default:
                     throw new UnsupportedOperationException("load(): invalid ExpRecord.type");
             }
@@ -186,6 +194,9 @@ public class ExpRecordService implements Serializable {
                 break;
             case TEXT:
                 record = this.textService.loadTextById(experiment, e);
+                break;
+            case IMAGE:
+                record = this.imageService.loadImage(experiment, e);
                 break;
             default:
                 throw new UnsupportedOperationException("loadById(): invalid ExpRecord.type");
@@ -219,16 +230,16 @@ public class ExpRecordService implements Serializable {
             Item item = null;
 
             if (e.getItemId() != null) {
-                  item = this.itemService.loadItemById(e.getItemId());
+                item = this.itemService.loadItemById(e.getItemId());
                 if (!aclistService.isPermitted(ACPermission.permREAD, item, user)) {
-                    item = UnknownItemFactory.getInstance(user, GlobalAdmissionContext.getPublicReadACL());
-                } 
+                    item = InaccessibleItemFactory.getInstance(user, GlobalAdmissionContext.getPublicReadACL());
+                }
                 material = item.getMaterial();
             } else {
                 if (e.getMaterialId() != null) {
                     material = this.materialService.loadMaterialById(e.getMaterialId());
                     if (!aclistService.isPermitted(ACPermission.permREAD, material, user)) {
-                        material = UnknownMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
+                        material = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
 
                     }
                 }
@@ -305,6 +316,8 @@ public class ExpRecordService implements Serializable {
                 return this.assayService.saveAssay(record);
             case TEXT:
                 return this.textService.saveText(record);
+            case IMAGE:
+                return this.imageService.saveEditedImage((Image) record);
         }
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }

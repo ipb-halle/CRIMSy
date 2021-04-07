@@ -86,14 +86,14 @@ public class UserPluginSettingsBeanTest extends TestBase {
             // define mock behaviour
             webXml = new WebXml() {
                 @Override
-                public String getContextParam(String paramName) {
+                public String getContextParam(String paramName, String defaultValue) {
                     return "OpenChemLibJS,MolPaintJS";
                 }
 
                 @Override
                 public String getContextParam(String paramName,
-                        FacesContext context) {
-                    return getContextParam(paramName);
+                        FacesContext context, String defaultValue) {
+                    return getContextParam(paramName, defaultValue);
                 }
             };
 
@@ -117,14 +117,14 @@ public class UserPluginSettingsBeanTest extends TestBase {
                     + allPlugins;
             webXml = new WebXml() {
                 @Override
-                public String getContextParam(String paramName) {
+                public String getContextParam(String paramName, String defaultValue) {
                     return paramValue;
                 }
 
                 @Override
                 public String getContextParam(String paramName,
-                        FacesContext context) {
-                    return getContextParam(paramName);
+                        FacesContext context, String defaultValue) {
+                    return getContextParam(paramName, defaultValue);
                 }
             };
 
@@ -147,14 +147,14 @@ public class UserPluginSettingsBeanTest extends TestBase {
                     + ",SomeWeirdPluginNameThatWillNeverExist";
             webXml = new WebXml() {
                 @Override
-                public String getContextParam(String paramName) {
+                public String getContextParam(String paramName, String defaultValue) {
                     return paramValue2;
                 }
 
                 @Override
                 public String getContextParam(String paramName,
-                        FacesContext context) {
-                    return getContextParam(paramName);
+                        FacesContext context, String defaultValue) {
+                    return getContextParam(paramName, defaultValue);
                 }
             };
 
@@ -170,14 +170,14 @@ public class UserPluginSettingsBeanTest extends TestBase {
             // define mock behaviour
             webXml = new WebXml() {
                 @Override
-                public String getContextParam(String paramName) {
+                public String getContextParam(String paramName, String defaultValue) {
                     return "";
                 }
 
                 @Override
                 public String getContextParam(String paramName,
-                        FacesContext context) {
-                    return getContextParam(paramName);
+                        FacesContext context, String defaultValue) {
+                    return getContextParam(paramName, defaultValue);
                 }
             };
 
@@ -206,14 +206,14 @@ public class UserPluginSettingsBeanTest extends TestBase {
                 .collect(Collectors.joining(","));
         WebXml webXml = new WebXml() {
             @Override
-            public String getContextParam(String paramName) {
+            public String getContextParam(String paramName, String defaultValue) {
                 return allPlugins;
             }
 
             @Override
             public String getContextParam(String paramName,
-                    FacesContext context) {
-                return getContextParam(paramName);
+                    FacesContext context, String defaultValue) {
+                return getContextParam(paramName, defaultValue);
             }
         };
 

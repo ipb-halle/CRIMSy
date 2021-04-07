@@ -29,6 +29,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.exp.ExpRecordService;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -181,7 +182,7 @@ public class SearchBeanTest extends TestBase {
                 .addClass(AssayService.class)
                 .addClass(TextService.class)
                 .addClass(TaxonomyNestingService.class);
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
 
 }

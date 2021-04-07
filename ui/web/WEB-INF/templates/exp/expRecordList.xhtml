@@ -94,6 +94,9 @@
                             <b:navCommandLink 
                                 value="#{msgs.expAssay}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"/>
+                            <b:navCommandLink 
+                                value="#{msgs.expImage}"
+                                actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"/>
                         </b:dropMenu>
                     </b:column>
                     <br/>
@@ -111,7 +114,11 @@
                                              agent="#{experimentBean.linkedDataAgent}"
                                              linkedDataHolder="#{rec}"
                                              rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
-                            <crimsy:textEdit text="#{rec.text}" rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                            <crimsy:textEdit text="#{rec.text}"
+                                             rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                            <crimsy:image image="#{rec}"
+                                          controller="#{experimentBean.expRecordController}"
+                                          rendered="#{rec.facelet eq 'IMAGE'}" />
                         </h:panelGroup>
                 <ui:fragment
                         rendered="#{rec.edit}">
@@ -125,14 +132,21 @@
                                     action="#{experimentBean.expRecordController.actionCancel}" 
                                     update="@form" 
                                     process="@this" />
-                                </p:column>
+                            </p:column>
                             <p:column style="width:10%">
-                                <p:commandButton 
+                                <!-- This button cannot be a PrimeFaces p:commandButton, because it does
+                                     not support sending forms with enctype "multipart/form-data".
+                                     Note: The AJAX call is executed explicitly via the onclick event.
+                                     This is specified in the bean property and should follow the rules
+                                     of BootsFaces. -->
+                                <b:commandButton
+                                    ajax="true"
                                     styleClass="rightAligned"
-                                    value="#{msgs.Save}" 
+                                    value="#{msgs.Save}"
+                                    onclick="#{experimentBean.saveButtonOnClick}"
                                     action="#{experimentBean.expRecordController.actionSaveRecord}"
                                     update="@form growlMsg @(.assayTargetRow)" />
-                                </p:column>
+                            </p:column>
                         </p:row>
                     </p:panelGrid>
                 </ui:fragment>

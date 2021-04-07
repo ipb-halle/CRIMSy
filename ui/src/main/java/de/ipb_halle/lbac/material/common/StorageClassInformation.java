@@ -50,6 +50,7 @@ public class StorageClassInformation implements Serializable {
 
     public StorageClassInformation(List<StorageClass> possibleClasses) {
         possibleStorageClasses = possibleClasses;
+        storageClass = possibleStorageClasses.get(0);
     }
 
     public StorageClassInformation(Material m, List<StorageClass> possibleClasses) {

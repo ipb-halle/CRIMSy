@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.exp.mocks;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.exp.ExpRecordController;
 import de.ipb_halle.lbac.exp.ExpRecordService;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExperimentService;
@@ -73,4 +74,7 @@ public class ExperimentBeanMock extends ExperimentBean {
         return this;
     }
 
+    public void setExpRecordController(ExpRecordController expRecordController) {
+        this.expRecordController = expRecordController;
+    }
 }

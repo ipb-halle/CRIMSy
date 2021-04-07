@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.exp.ExpRecordService;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -201,7 +202,7 @@ public class NetObjectPresenterTest extends TestBase {
                 .addClass(TextService.class)
                 .addClass(ExperimentService.class)
                 .addClass(TaxonomyNestingService.class);
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
 
 }

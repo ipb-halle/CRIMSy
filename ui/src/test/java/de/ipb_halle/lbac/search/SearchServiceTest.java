@@ -39,6 +39,7 @@ import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.datalink.LinkedData;
 import de.ipb_halle.lbac.datalink.LinkedDataType;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.assay.Assay;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
@@ -311,7 +312,7 @@ public class SearchServiceTest extends TestBase {
         List<NetObject> foundItems = searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects();
         Assert.assertEquals(1, searchService.search(Arrays.asList(builder.build()), localNode).getAllFoundObjects().size());
         Item item = (Item) foundItems.get(0).getSearchable();
-        Assert.assertEquals(MaterialType.UNKNOWN, item.getMaterial().getType());
+        Assert.assertEquals(MaterialType.INACCESSIBLE, item.getMaterial().getType());
 
         //search for direct location
         builder = new ItemSearchRequestBuilder(publicUser, 0, 25);
@@ -377,7 +378,7 @@ public class SearchServiceTest extends TestBase {
         ItemSearchRequestBuilder itemBuilder = new ItemSearchRequestBuilder(publicUser, 0, 25);
         MaterialSearchRequestBuilder materialBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         ProjectSearchRequestBuilder projectBuilder = new ProjectSearchRequestBuilder(publicUser, 0, 25);
-        
+
         SearchRequest itemRequest = itemBuilder.build();
         SearchRequest materialRequest = materialBuilder.build();
         SearchRequest projectRequest = projectBuilder.build();
@@ -648,6 +649,6 @@ public class SearchServiceTest extends TestBase {
                 .addClass(ItemService.class)
                 .addClass(TextService.class)
                 .addClass(TaxonomyNestingService.class);
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
 }

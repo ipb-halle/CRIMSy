@@ -231,6 +231,12 @@
         <param-value>OpenChemLibJS,MolPaintJS</param-value>
     </context-param>
 
+    <!-- maximum upload file size for images in experimental records -->
+    <context-param>
+    	<param-name>de.ipb_halle.lbac.exp.images.MaxUploadFileSize</param-name>
+    	<param-value>10485760</param-value><!-- 10 MiB -->
+    </context-param>
+
     <!-- Document Servlet -->
     <servlet>
         <servlet-name>DocumentServlet</servlet-name>

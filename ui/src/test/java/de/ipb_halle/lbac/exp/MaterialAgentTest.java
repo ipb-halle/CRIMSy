@@ -135,15 +135,12 @@ public class MaterialAgentTest extends TestBase {
         experimentBean.experimentBeanInit();
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
 
-
-
-
         Experiment experiment = new Experiment(null,
                 "code",
-                "desc", 
+                "desc",
                 false,
                 this.context.getPublicReadACL(), // aclist
-                this.context.getPublicAccount(),  
+                this.context.getPublicAccount(),
                 new Date());
         Assay assay = new Assay();
         assay.setExperiment(experiment);
@@ -152,7 +149,6 @@ public class MaterialAgentTest extends TestBase {
         experimentBean.setExpRecordIndex(0);
         experimentBean.getExpRecords().add(assay);
         experimentBean.createExpRecordController("ASSAY");
-
 
         holder = experimentBean.getExpRecordController();
 
@@ -202,7 +198,7 @@ public class MaterialAgentTest extends TestBase {
                 .addClass(TextService.class)
                 .addClass(MaterialService.class)
                 .addClass(ProjectService.class);
-        return UserBeanDeployment.add(ItemDeployment.add(deployment));
+        return ExperimentDeployment.add(UserBeanDeployment.add(ItemDeployment.add(deployment)));
     }
 
     private BioMaterial createBiomaterial(Taxonomy taxo, Project project, String... names) {
@@ -214,7 +210,7 @@ public class MaterialAgentTest extends TestBase {
         MaterialDetailRight detailRight = new MaterialDetailRight();
         detailRight.setType(MaterialDetailType.INDEX);
         detailRight.setAcList(acListReadable);
-        Map<MaterialDetailType,ACList> rights=new HashMap<>();
+        Map<MaterialDetailType, ACList> rights = new HashMap<>();
         rights.put(MaterialDetailType.INDEX, publicReadAcl);
         biomaterial.getDetailRights().add(detailRight);
         materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), rights);

@@ -26,7 +26,7 @@ include(dist/etc/config_m4.inc)dnl
 	</IfModule>
 
         <IfModule headers_module>
-                Header always set X-Frame-Options "deny"
+                Header always set X-Frame-Options "sameorigin"
 LBAC_HSTS_ENABLE               Header always set Strict-Transport-Security "max-age=3600"
         </IfModule>
 

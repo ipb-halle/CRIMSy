@@ -21,21 +21,14 @@ package de.ipb_halle.lbac.exp.assay;
  * AssayService handles the specific demands for storing and retrieving assay
  * data.
  */
-import de.ipb_halle.lbac.datalink.LinkedDataEntity;
-import de.ipb_halle.lbac.datalink.LinkedData;
-import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExpRecord;
 import de.ipb_halle.lbac.exp.ExpRecordEntity;
-import de.ipb_halle.lbac.items.service.ItemService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 

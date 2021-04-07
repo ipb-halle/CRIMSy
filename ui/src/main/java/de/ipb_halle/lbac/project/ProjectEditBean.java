@@ -309,6 +309,7 @@ public class ProjectEditBean implements Serializable {
             projectToEdit.setDescription(projectDescription);
             projectToEdit.setOwner(projectOwner);
             projectToEdit.setACList(projectACL);
+            projectToEdit.setProjectType(currentProjectType);
             projectToEdit.setDetailTemplates(detailTemplates);
             projectService.saveEditedProjectToDb(projectToEdit);
     }

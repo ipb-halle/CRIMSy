@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
 import de.ipb_halle.lbac.exp.assay.AssayController;
+import de.ipb_halle.lbac.exp.image.ImageController;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.TextController;
 import de.ipb_halle.lbac.exp.virtual.NullController;
@@ -94,7 +95,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     
     private List<ExpRecord> expRecords;
     
-    private ExpRecordController expRecordController;
+    protected ExpRecordController expRecordController;
     
     private String newRecordType;
     
@@ -107,7 +108,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ExpProjectController projectController;
-    protected MessagePresenter messagePresenter;
+    protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
     private List<Experiment> experiments = new ArrayList<>();
     private List<Experiment> templates = new ArrayList<>();
     private CreationState creationState = CreationState.CREATE;
@@ -148,7 +149,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     @PostConstruct
     public void init() {
         experimentBeanInit();
-        this.messagePresenter = JsfMessagePresenter.getInstance();
     }
     
     protected void experimentBeanInit() {
@@ -456,6 +456,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             case "TEXT":
                 this.expRecordController = new TextController(this);
                 break;
+            case "IMAGE":
+                this.expRecordController = new ImageController(this);
+                break;
             default:
                 this.expRecordController = new NullController(this);
         }
@@ -736,5 +739,43 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
         return "no state set";
     }
-    
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    /**
+     * Returns JavaScript code to be executed in the onclick event of the
+     * experiment record "save" commandButton before executing its AJAX call.
+     * This includes the onclick code specified via the specific experiment
+     * record controller's {@link ExpRecordController#getSaveButtonOnClick()}
+     * method plus an AJAX call to {@link #actionDoNothing()} using the <a href=
+     * "https://showcase.bootsfaces.net/forms/ajax.jsf#basic_usage">BootsFaces-specific
+     * prefixes</a>. The default onclick action of &lt;b:commandButton&gt; (AJAX
+     * call) is suppressed by a terminating JavaScript 'return false'. The
+     * actionListener and action of the commandButton are called afterwards.
+     * 
+     * @return JavaScript code to be executed
+     */
+    public String getSaveButtonOnClick() {
+        String onClickFromController = expRecordController.getSaveButtonOnClick();
+        StringBuilder sb = new StringBuilder(onClickFromController.length() + 64);
+
+        if (!onClickFromController.isEmpty()) {
+            sb.append(onClickFromController);
+            if (!onClickFromController.endsWith(";")) {
+                sb.append(";");
+            }
+        }
+        sb.append("ajax:experimentBean.actionDoNothing();javascript:return false;");
+
+        return sb.toString();
+    }
+
+    /**
+     * This method is used as fake action for the experiment record "save"
+     * commandButton's AJAX call. It does nothing.
+     */
+    public void actionDoNothing() {
+    }
 }

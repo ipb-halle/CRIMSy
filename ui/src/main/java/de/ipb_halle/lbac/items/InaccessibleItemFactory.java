@@ -19,18 +19,18 @@ package de.ipb_halle.lbac.items;
 
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.material.unknown.UnknownMaterial;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import java.util.TreeMap;
 
 /**
  *
  * @author fmauz
  */
-public class UnknownItemFactory {
+public class InaccessibleItemFactory {
 
     public static Item getInstance(User user, ACList publicAcList) {
         Item item = new Item();
-        item.setMaterial(UnknownMaterial.createNewInstance(publicAcList));
+        item.setMaterial(InaccessibleMaterial.createNewInstance(publicAcList));
         item.setOwner(user);
         item.setHistory(new TreeMap<>());
         item.setLabel("no label");

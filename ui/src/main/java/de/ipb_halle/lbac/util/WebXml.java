@@ -29,20 +29,29 @@ public interface WebXml {
      * Obtains the {@code param-value} for the {@code context-param} given by
      * {@code param-name} via the given {@link FacesContext} instance.
      * 
-     * @param paramName {@code param-name} of the {@code context-param} element
-     *                  in web.xml
-     * @param context   {@link FacesContext} instance
-     * @return {@code param-value}
+     * @param paramName    {@code param-name} of the {@code context-param}
+     *                     element in web.xml
+     * @param context      {@link FacesContext} instance
+     * @param defaultValue default value to return if the {@code context-param}
+     *                     does not exist
+     * @return {@code param-value} or {@code defaultValue}
      */
-    public String getContextParam(String paramName, FacesContext context);
+    public String getContextParam(String paramName, FacesContext context,
+            String defaultValue);
 
     /**
      * Obtains the {@code param-value} for the {@code context-param} given by
      * {@code param-name} via the current {@link FacesContext} instance.
      * 
-     * @param paramName {@code param-name} of the {@code context-param} element
-     *                  in web.xml
-     * @return {@code param-value}
+     * @param paramName    {@code param-name} of the {@code context-param}
+     *                     element in web.xml
+     * @param defaultValue default value to return if the {@code context-param}
+     *                     does not exist
+     * @return {@code param-value} or {@code defaultValue}
      */
-    public String getContextParam(String paramName);
+    default public String getContextParam(String paramName,
+            String defaultValue) {
+        return getContextParam(paramName, FacesContext.getCurrentInstance(),
+                defaultValue);
+    }
 }

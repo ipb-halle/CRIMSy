@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.exp.ExpRecordService;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.text.TextService;
@@ -128,7 +129,7 @@ public class SearchOrchestratorTest extends TestBase {
                 .addClass(AssayService.class)
                 .addClass(TextService.class)
                 .addClass(TaxonomyNestingService.class);
-        return ItemDeployment.add(UserBeanDeployment.add(deployment));
+        return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
 
     private Node createRemoteNode(String institute) {

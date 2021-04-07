@@ -132,8 +132,8 @@ public class UserPluginSettingsBean implements Serializable {
         List<String> available = new ArrayList<>();
 
         String webXmlString = webXml
-                .getContextParam(WEBXML_AVAILABLE_MOLPLUGINTYPES);
-        if ((webXmlString != null) && !webXmlString.isEmpty()) {
+                .getContextParam(WEBXML_AVAILABLE_MOLPLUGINTYPES, "");
+        if (!webXmlString.isEmpty()) {
             for (String pluginType : webXmlString.split(",")) {
                 available.add(pluginType);
             }
