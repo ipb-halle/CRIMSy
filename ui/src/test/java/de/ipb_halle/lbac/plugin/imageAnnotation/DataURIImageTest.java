@@ -90,7 +90,7 @@ public class DataURIImageTest {
                 "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==");
 
         // let's try to do some XSS stuff ...
-        invalidImages.add("http://evil.com");
+        invalidImages.add("http://somewhere.invalid");
 
         // from https://security.stackexchange.com/a/135518
         invalidImages.add("a onerror=alert('XSS')");

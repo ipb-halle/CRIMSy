@@ -317,7 +317,7 @@ public class ExpRecordService implements Serializable {
             case TEXT:
                 return this.textService.saveText(record);
             case IMAGE:
-                return this.imageService.saveEditedImage((Image) record);
+                return this.imageService.saveImage((Image) record);
         }
         throw new UnsupportedOperationException("save(): invalid ExpRecord.type");
     }

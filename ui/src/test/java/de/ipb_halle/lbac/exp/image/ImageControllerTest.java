@@ -78,11 +78,6 @@ public class ImageControllerTest extends TestBase {
         publicACL = GlobalAdmissionContext.getPublicReadACL();
     }
 
-    @After
-    public void clean() {
-        cleanExperimentsFromDB();
-    }
-
     @Test
     public void test001_getNewRecord() {
         ImageController controller = new ImageController(experimentBean);

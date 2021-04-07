@@ -59,13 +59,7 @@ public class ImageService implements Serializable {
         return image;
     }
 
-    public Image saveNewImage(Image image) {
-        ImageEntity entity = image.createEntity();
-        em.persist(entity);
-        return image;
-    }
-
-    public Image saveEditedImage(Image image) {
+    public Image saveImage(Image image) {
         em.merge(image.createEntity());
         return image;
     }

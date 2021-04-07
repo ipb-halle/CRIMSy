@@ -82,11 +82,6 @@ public class ImageServiceTest extends TestBase {
         noAccessACL = context.getNoAccessACL();
     }
 
-    @After
-    public void clean() {
-        cleanExperimentsFromDB();
-    }
-
     @Test
     public void test001_saveImage() {
         Experiment exp = new Experiment(null, "test001_saveImage_exp", "test001_saveImage_desc", true, publicACL, publicUser, new Date());
@@ -110,7 +105,7 @@ public class ImageServiceTest extends TestBase {
         image.setTitle("title-edited");
         image.setImage("image-edited");
         image.setPreview("preview-edited");
-        imageService.saveEditedImage(image);
+        imageService.saveImage(image);
         images = (List<Object>) entityManagerService.doSqlQuery(SQL_LOAD_IMAGES);
         Assert.assertEquals(1, images.size());
         o = (Object[]) images.get(0);
