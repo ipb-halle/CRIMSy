@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.event.NodeCollapseEvent;
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
 
@@ -58,6 +60,28 @@ public class TaxonomySelectionController implements Serializable {
 
     public void onTaxonomySelect(NodeSelectEvent event) {
         selectedTaxonomy = event.getTreeNode();
+    }
+    /**
+     * Keeps the loaded taxonomies of the children in memory
+     *
+     * @param event
+     */
+    public void onTaxonomyCollapse(NodeCollapseEvent event) {
+        event.getTreeNode().setExpanded(false);
+    }
+
+    /**
+     * loads the children of the now shown taxonomy from the database
+     *
+     * @param event
+     */
+    public void onTaxonomyExpand(NodeExpandEvent event) {
+        if (selectedTaxonomy == null) {
+            treeController.setSelectedTaxonomy(event.getTreeNode());
+        }
+        event.getTreeNode().setExpanded(true);
+        treeController.addTaxonomy((Taxonomy) event.getTreeNode().getData());
+        treeController.reorganizeTaxonomyTree();
     }
 
     public TreeNode getSelectedTaxonomy() {

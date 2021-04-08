@@ -184,6 +184,7 @@
                         span="4"
                         styleClass="taxonomyTreeColumn">
                         <p:tree
+                            style="width: 100%;height: 300px;overflow: auto"
                             value="#{taxonomyBean.treeController.taxonomyTree}"
                             var ="node"
                             selectionMode="single"
@@ -191,8 +192,8 @@
                             dynamic="true"
                             selection="#{taxonomyBean.selectedTaxonomy}">
                             <p:ajax event="select" update="@(.taxonomyInfos)" listener="#{taxonomyBean.onTaxonomySelect}" />
-                            <p:ajax event="expand" listener="#{taxonomyBean.onTaxonomyExpand}" />
-                            <p:ajax event="collapse" update="@(.taxonomyTreeColumn)" listener="#{taxonomyBean.onTaxonomyCollapse}" />
+                            <p:ajax event="expand"  listener="#{taxonomyBean.onTaxonomyExpand}" />
+                            <p:ajax event="collapse" listener="#{taxonomyBean.onTaxonomyCollapse}" />
                             <p:treeNode >
                                 <h:outputText value="#{node.getFirstName()}"/>
                             </p:treeNode>

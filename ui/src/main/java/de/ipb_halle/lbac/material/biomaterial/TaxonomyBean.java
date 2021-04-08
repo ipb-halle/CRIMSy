@@ -108,7 +108,6 @@ public class TaxonomyBean implements Serializable {
         if (mode == Mode.CREATE || mode == Mode.EDIT) {
             mode = Mode.SHOW;
             treeController.reorganizeTaxonomyTree();
-
         } else if (mode == Mode.SHOW) {
             try {
                 mode = Mode.EDIT;
