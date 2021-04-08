@@ -89,12 +89,18 @@
                                     iconAlign="left">
                             <b:navLink header="Please select recordtype"/>
                             <b:navCommandLink 
+                                ajax="true"
+                                update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expText}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"/>
                             <b:navCommandLink 
+                                ajax="true"
+                                update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expAssay}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"/>
                             <b:navCommandLink 
+                                ajax="true"
+                                update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expImage}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"/>
                         </b:dropMenu>
