@@ -92,13 +92,20 @@ public class SearchFilter {
         if (typeFilter.isItems() && (!searchTerms.trim().isEmpty() || shouldMaterialsBeSearched())) {
             requests.add(createItemRequest());
         }
-        if (typeFilter.isExperiments() && !searchTerms.trim().isEmpty()) {
+        if (shouldExpBeSearched()) {
             requests.add(createExperimentRequest());
         }
         if (typeFilter.isProjects()) {
 
         }
         return requests;
+    }
+
+    private boolean shouldExpBeSearched() {
+        Molecule m = new Molecule(structureString, 0);
+        return typeFilter.isExperiments()
+                && (!searchTerms.trim().isEmpty()
+                || !m.isEmptyMolecule());
     }
 
     private boolean shouldMaterialsBeSearched() {
