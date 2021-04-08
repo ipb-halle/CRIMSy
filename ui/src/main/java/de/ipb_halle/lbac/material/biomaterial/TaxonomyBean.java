@@ -92,9 +92,9 @@ public class TaxonomyBean implements Serializable {
     public void setCurrentAccount(@Observes LoginEvent evt) {
         mode = Mode.SHOW;
         currentUser = evt.getCurrentAccount();
-        treeController.reloadTreeNode();
         levelController.setLevels(taxonomyService.loadTaxonomyLevel());
         levelController.setSelectedLevel(levelController.getRootLevel());
+        
         treeController.initialise();
         selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
         initHistoryDate();

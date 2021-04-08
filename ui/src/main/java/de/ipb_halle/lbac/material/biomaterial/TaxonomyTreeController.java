@@ -166,6 +166,11 @@ public class TaxonomyTreeController implements Serializable {
      * sets the selected taxonomy to the first entry
      */
     public void initialise() {
+        expandedTreeNodes.clear();
+        idOfSelectedTaxonomy=null;
+        selectedTaxonomy = null;
+        taxonomyTree=null;
+        reloadTreeNode();
         setSelectedTaxonomy(taxonomyTree.getChildren().get(0));
     }
 
