@@ -161,7 +161,8 @@ public class Project extends ACObject implements DTO, Serializable, Searchable {
 
     @Override
     public String toString() {
-        return id + " - " + getName();
+        // used to return "id - name", which is harder to test
+        return getName();
     }
 
     @Override

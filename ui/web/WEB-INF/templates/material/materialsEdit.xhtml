@@ -39,6 +39,7 @@
                         <b:column span="3">
                             <b:selectOneMenu
                                 value="#{materialBean.materialEditState.currentProject}"
+                                styleClass="tstProjectMenu"
                                 ajax="true"
                                 process="@this"
                                 disabled="#{!materialBean.isProjectEditEnabled()}"
@@ -89,8 +90,9 @@
                                 value="#{msgs.materialCreation_cancel}"/>
                         </b:column>
                         <b:column span="1">
-                            <!-- The serversite bean got only access to the hidden input fields, so they must be updated before submitting ther value to the server -->
+                            <!-- The server side bean gets only access to the hidden input fields, so they must be updated before submitting their value to the server -->
                             <b:commandButton
+                                styleClass="tstMaterialCreate"
                                 value="#{materialBean.getCreateButtonText()}"
                                 disabled="#{!materialBean.isCreationAllowed()}"
                                 action="#{materialBean.actionSaveMaterial()}"/>
@@ -108,6 +110,7 @@
                                   styleClass="materialTypeMenuClass">
                             <b:selectOneMenu
                                 value="#{materialBean.currentMaterialType}"
+                                styleClass="tstMaterialTypeMenu"
                                 ajax="true"
                                 process="@this"
                                 disabled="#{materialBean.isTypeChoiseDisabled()}"

@@ -253,7 +253,11 @@ function runTests {
         || error "Service seems unavailable ..."
 
     # initialize database with test data
+    HOST=`head -1 $HOSTLIST | cut -d' ' -f2`
     docker cp $LBAC_REPO/util/test/etc/initial_data.sql dist_db_1:/tmp/
+    wget -o /dev/null -O /dev/null --no-check-certificate https://$HOST/ui/index.xhtml
+    echo "waiting 3 sec. for webapp to initialize database ..."
+    sleep 3
     docker exec -ti dist_db_1 su - postgres /bin/sh -c "psql -Ulbac lbac -f /tmp/initial_data.sql"
 
     # build test containers and set up environment
@@ -268,7 +272,7 @@ function runTests {
 dnl
 dnl Cypress test fixtures configuration
 dnl
-define(\`TESTBASE_HOSTNAME',\``head -1 $HOSTLIST | cut -d' ' -f2`')dnl
+define(\`TESTBASE_HOSTNAME',\`$HOST')dnl
 EOF
     find $LBAC_REPO/target/cypress -type f -name "*.m4" -exec /bin/bash -c preprocess {} \;
 
