@@ -45,6 +45,7 @@
                             label="#{msgs.materialCreation_panelNames_tableHeader_name}"
                             styleClass="materialNameText">
                             <b:inputText
+                                styleClass="tstMaterialNameInput"
                                 disabled="#{!materialBean.permission.isDetailInformationEditable('COMMON_INFORMATION')}"
                                 value="#{mName.value}"
                                 placeholder="#{msgs.materialCreation_panelNames_placeHolder}"
