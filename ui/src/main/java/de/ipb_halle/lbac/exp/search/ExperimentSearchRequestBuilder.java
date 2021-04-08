@@ -117,4 +117,8 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         this.template = template;
     }
 
+    public void setStructure(String structure) {
+        this.structure = structure;
+    }
+
 }
