@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.search.lang;
 
+import de.ipb_halle.lbac.exp.ExpRecordType;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -197,6 +199,9 @@ public class SqlInsertBuilder {
 //            case "java.util.UUID" :
 //                statement.setString(index, obj.toString());
 //                break;
+            case "de.ipb_halle.lbac.exp.ExpRecordType" :
+                statement.setInt(index, (Integer) ((ExpRecordType) obj).getTypeId());
+                break;
             default :
                 throw new IllegalArgumentException("Unrecognized type: "
                     + obj.getClass().getName());           

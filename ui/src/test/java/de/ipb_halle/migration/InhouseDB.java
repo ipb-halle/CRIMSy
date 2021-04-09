@@ -171,8 +171,10 @@ public class InhouseDB {
     private void importData() throws Exception {
         Compounds compounds = new Compounds(this);
         Taxonomy taxonomy = new Taxonomy(this);
+        Experiments experiments = new Experiments(this);
 //      compounds.importData();
-        taxonomy.importData();
+//      taxonomy.importData();
+        experiments.importData();
     }
 
     public int loadRefId(String sql, int id, String refKey) throws Exception {

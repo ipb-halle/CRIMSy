@@ -333,7 +333,7 @@ public class MaterialService implements Serializable {
     protected Structure getStructure(MaterialEntity me) {
 
         StorageClassInformation storageInfos = loadStorageClassInformation(me.getMaterialid());
-        HazardInformation hazardIfos = loadHazardInformation(me.getMaterialid());
+        HazardInformation hazardInfos = loadHazardInformation(me.getMaterialid());
 
         Query q4 = em.createNativeQuery(SQL_GET_INDICES, MaterialIndexEntryEntity.class);
         q4.setParameter("mid", me.getMaterialid());
@@ -356,7 +356,7 @@ public class MaterialService implements Serializable {
 
         Structure s = Structure.createInstanceFromDB(
                 me,
-                hazardIfos,
+                hazardInfos,
                 storageInfos,
                 q4.getResultList(),
                 sE,
