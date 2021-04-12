@@ -231,7 +231,12 @@ public class UserBean implements Serializable {
     public void actionModify() {
         if (!this.currentAccount.isPublicAccount()) {
             if (this.currentAccount.getSubSystemType() == AdmissionSubSystemType.LOCAL) {
-                this.currentAccount = this.memberService.save(this.currentAccount);
+                try {
+                    logger.info(" SHORTCUT " + currentAccount.getShortcut());
+                    this.currentAccount = this.memberService.save(this.currentAccount);
+                } catch (Exception e) {
+                    logger.error(e);
+                }
                 UIMessage.info(MESSAGE_BUNDLE, "admission_account_updated");
             }
         }
@@ -352,6 +357,11 @@ public class UserBean implements Serializable {
             this.logger.warn(String.format("getPermission(%s, %s) caught an exception", resource, permission), (Throwable) e);
         }
         return false;
+    }
+
+    public boolean isAdminAccount() {
+        return currentAccount != null
+                && currentAccount.getId() == globalAdmissionContext.getAdminAccount().getId();
     }
 
     /**

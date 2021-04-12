@@ -59,6 +59,17 @@
                             <b:icon name="star"/>
                         </f:facet>
                     </b:inputText>
+                     <b:inputText 
+                         id="shortcut"
+                         value="#{userBean.currentAccount.shortcut}"
+                         label="#{msgs.userMgr_shortcut}"
+                         renderLabel="true"
+                         placeholder="#{msgs.userMgr_shortcut_placeholder}"
+                         disabled="true">
+                        <f:facet name="prepend">
+                            <b:icon name="star"/>
+                        </f:facet>
+                    </b:inputText>
                     <b:message for="@previous"/>
                     <b:inputText id="email" value="#{userBean.currentAccount.email}" label="#{msgs.Email}" renderLabel="true"
                                  type="email" required="false">
