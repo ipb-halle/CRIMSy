@@ -42,11 +42,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolationException;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.hibernate.validator.internal.util.Contracts;
 
 @Stateless
 public class MemberService implements Serializable {
@@ -366,8 +364,8 @@ public class MemberService implements Serializable {
             if (ue != null) {
                 return new User(ue, u.getNode());
             }
-        } catch (PersistenceException e) {
-            if (e.getCause() instanceof ConstraintViolationException) {
+        } catch (Exception e) {
+            if (e.getMessage().contains("ConstraintViolationException")) {
                 throw new DuplicateShortcutException(
                         String.format("shortcut '%s' already in use", u.getShortcut()),
                         e);
