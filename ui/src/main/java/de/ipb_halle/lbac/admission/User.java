@@ -37,6 +37,8 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     private String login;
 
     private String password;
+    
+    private String shortcut;
 
     /* default constructor */
     public User() {
@@ -52,6 +54,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         this.phone = ue.getPhone();
         this.login = ue.getLogin();
         this.password = ue.getPassword();
+        this.shortcut=ue.getShortCut();
     }
 
     @Override
@@ -62,6 +65,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         u.setPhone(this.phone);
         u.setLogin(this.login);
         u.setPassword(this.password);
+        u.setShortCut(shortcut);
         return u;
     }
 
@@ -117,6 +121,10 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         this.phone = p;
     }
 
+    public void setShortcut(String shortcut) {
+        this.shortcut = shortcut;
+    }
+
     @Override
     public String toString() {
         return "User{id=" + getId() + ", login="
@@ -129,6 +137,10 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     @Override
     public String getNameToDisplay() {
         return getName();
+    }
+
+    public String getShortcut() {
+        return shortcut;
     }
 
     @Override

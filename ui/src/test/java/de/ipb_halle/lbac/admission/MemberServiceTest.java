@@ -31,10 +31,12 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.Updater;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.ejb.EJBException;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -105,7 +107,6 @@ public class MemberServiceTest extends TestBase {
     @Test
     public void testMembershipService() {
         User u = createUser("joe", "Joe");
-
         this.membershipService.addMembership(u, u);
 
         Group g = createGroup("MyTestGroup1", nodeService.getLocalNode(), memberService, membershipService);
@@ -240,19 +241,62 @@ public class MemberServiceTest extends TestBase {
         Group adminGroup = loadGroupByName("Admin Group");
         memberService.deactivateGroup(adminGroup);
         Assert.assertEquals(groupsBeforeDeacitivation, memberService.loadGroups(new HashMap<>()).size());
-        
+
         //Public group is not allowed to be deactivated
         Group publicGroup = loadGroupByName("Public Group");
         memberService.deactivateGroup(publicGroup);
         Assert.assertEquals(groupsBeforeDeacitivation, memberService.loadGroups(new HashMap<>()).size());
 
-        //This group can be deactivated      
+        //This group can be deactivated
         memberService.deactivateGroup(g);
         Assert.assertEquals(groupsBeforeDeacitivation - 1, memberService.loadGroups(new HashMap<>()).size());
-        
+
         //Clean up the created and deactivated group
         entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + g.getId());
+    }
 
+    /**
+     * Saves a new USer and afterwards try to save a user with the same shortcut
+     * which results in an exception
+     */
+    @Test
+    public void test008_saveUser() {
+        String email = "test008fake@mail.de";
+        String logIn = "test008_login";
+        String name = "test008_name";
+        String pw = "test008_pw";
+        String phone = "test008_phone";
+        String shortCut = "test008_shortcut";
+        User user = new User();
+        user.setEmail(email);
+        user.setLogin(logIn);
+        user.setModified(new Date());
+        user.setName(name);
+        user.setNode(nodeService.getLocalNode());
+        user.setPassword(pw);
+        user.setPhone(phone);
+        user.setShortcut(shortCut);
+        user.setSubSystemType(AdmissionSubSystemType.LOCAL);
+
+        user = memberService.save(user);
+
+        User loadedUser = memberService.loadUserById(user.getId());
+        Assert.assertEquals(logIn, loadedUser.getLogin());
+        Assert.assertEquals(email, loadedUser.getEmail());
+        Assert.assertEquals(name, loadedUser.getName());
+        Assert.assertEquals(pw, loadedUser.getPassword());
+        Assert.assertEquals(phone, loadedUser.getPhone());
+        Assert.assertEquals(shortCut, loadedUser.getShortcut());
+
+        loadedUser.setId(null);
+        Assert.assertThrows(
+                EJBException.class,
+                () -> {
+                    memberService.save(loadedUser);
+                }
+        );
+
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user.getId());
     }
 
     private Group loadGroupByName(String name) {

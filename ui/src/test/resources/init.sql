@@ -85,7 +85,8 @@ CREATE TABLE usersGroups (
     name                VARCHAR,
     email               VARCHAR,
     password            VARCHAR,
-    phone               VARCHAR
+    phone               VARCHAR,
+    shortcut            VARCHAR UNIQUE
 );
 
 
