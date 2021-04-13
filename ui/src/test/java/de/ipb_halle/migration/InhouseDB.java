@@ -113,7 +113,6 @@ public class InhouseDB {
     private InhouseDB(String configFileName) throws Exception {
         readConfig(configFileName);
         this.connection = DriverManager.getConnection(getConfigString(DATABASE_URL));
-        runInitial();
         this.builderMap = new HashMap<> ();
         this.materialIndexTypes = new HashMap<> ();
         addMaterialIndexTypes();
@@ -172,9 +171,13 @@ public class InhouseDB {
         Compounds compounds = new Compounds(this);
         Taxonomy taxonomy = new Taxonomy(this);
         Experiments experiments = new Experiments(this);
-//      compounds.importData();
-//      taxonomy.importData();
+        Correlation correlation = new Correlation(this);
+
+        runInitial();
+        compounds.importData();
+        taxonomy.importData();
         experiments.importData();
+        correlation.importData();
     }
 
     public int loadRefId(String sql, int id, String refKey) throws Exception {

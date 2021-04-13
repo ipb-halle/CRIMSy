@@ -206,7 +206,7 @@ public class RTF extends RtfListenerAdaptor {
         /*
         String sql = "INSERT INTO material_indices (materialid, typeid, value, language, rank) "
                 + "SELECT new_id AS materialid, ? AS typeid, ? AS value, ? AS language, ? AS rank) "
-                + "FROM tmp_import WHERE CAST? = old_id";
+                + "FROM tmp_import WHERE ? = old_id";
         PreparedStatement statement = this.inhouseDB.getConnection().prepareStatement(sql);
         statement.setInt(1, this.inhouseDB.getMaterialIndexType(InhouseDB.MATERIAL_INDEX_NAME));
         statement.setString(2, name.replaceAll("^'(.*)'$", "$1"));

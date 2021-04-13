@@ -61,7 +61,7 @@ public class Taxonomy {
     public final static String INPUT_TAXONOMY_SPECIES = "INPUT_TAXONOMY_SPECIES";
     public final static String INPUT_TAXONOMY_SPECIES_SYNONYMS = "INPUT_TAXONOMY_SPECIES_SYNONYMS";
     public final static String INPUT_TAXONOMY_STRAINS = "INPUT_TAXONOMY_STRAINS";
-
+    public final static String INPUT_ORGANISM_ID = "INPUT_ORGANISM_ID";
 
     public final static String INPUT_TAXONOMY_CLASS_LEVEL = "INPUT_TAXONOMY_CLASS_LEVEL";
     public final static String INPUT_TAXONOMY_FAMILY_LEVEL = "INPUT_TAXONOMY_FAMILY_LEVEL";
@@ -72,6 +72,7 @@ public class Taxonomy {
     public final static String TAXONOMY_MATERIAL_TYPE_ID = "TAXONOMY_MATERIAL_TYPE_ID";
 
     /* reference key in tmp_import */
+    public final static String ORGANISM_ID_REF = "organismId";
     public final static String TAXONOMY_CLASS_REF = "class";
     public final static String TAXONOMY_FAMILY_REF = "family";
     public final static String TAXONOMY_SPECIES_REF = "species";
@@ -99,6 +100,26 @@ public class Taxonomy {
         importTaxonomySpecies(this.inhouseDB.getConfigString(INPUT_TAXONOMY_SPECIES),
             importTaxonomySpeciesSynonyms(this.inhouseDB.getConfigString(INPUT_TAXONOMY_SPECIES_SYNONYMS)));
         importTaxonomyStrains(this.inhouseDB.getConfigString(INPUT_TAXONOMY_STRAINS));
+        importOrganismIds(this.inhouseDB.getConfigString(INPUT_ORGANISM_ID));
+    }
+
+    private void importOrganismIds(String fileName) throws Exception {
+        System.out.println("Importing organism Ids");
+        String pattern = "^(\\d+);(\\d+);(\\d*);(.*)$";
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        reader.readLine(); // discard header
+        reader.readLine(); // discard 2nd line too
+        while(reader.ready()) {
+                String st = reader.readLine();
+                int orgId = Integer.parseInt(st.replaceAll(pattern, "$1"));
+                int speciesId = Integer.parseInt(st.replaceAll(pattern, "$2"));
+                String strain = st.replaceAll(pattern, "$3");
+                int strainId = strain.isEmpty() ? 0 : Integer.parseInt(strain);
+                String remarks = st.replaceAll(pattern, "$4");
+
+                saveOrganism(orgId,  speciesId, strainId, remarks);
+        }
+        reader.close();
     }
 
     private void importTaxonomyClasses(String fileName) throws Exception {
@@ -279,6 +300,15 @@ public class Taxonomy {
         statement.setInt(1, id);
         statement.setInt(2, parentId);
         statement.execute();
+    }
+
+    private void saveOrganism(int orgId, int speciesId, int strainId, String remarks) throws Exception {
+        String sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id, 'organismId' AS type FROM tmp_import WHERE old_id=? AND type=?";
+        if (strainId > 0) {
+            this.inhouseDB.saveTriple(sql, orgId, strainId, TAXONOMY_STRAIN_REF);
+        } else {
+            this.inhouseDB.saveTriple(sql, orgId, speciesId, TAXONOMY_SPECIES_REF);
+        }
     }
 
     private void saveName(String name, int id, int rank) throws Exception {

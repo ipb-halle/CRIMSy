@@ -53,6 +53,7 @@ public class Experiments {
     
     public final static String INPUT_EXPERIMENTS = "INPUT_EXPERIMENTS";
     public final static String EXPERIMENT_FOLDER_ID = "EXPERIMENT_FOLDER_ID";
+    public final static String TMP_Procedure = "Procedure";
 
 
     private InhouseDB inhouseDB;
@@ -178,7 +179,10 @@ public class Experiments {
         sb.append("<br/>");
         sb.append("<b>Remarks:</b> ");
         sb.append(remarks);
-        sb.append("<br/></p>");
+        sb.append("<b>Linked compounds:</b> ##LINKED_COMPOUNDS##<br/>");
+        sb.append("<b>Linked samples:</b> ##LINKED_SAMPLES##<br/>");
+        sb.append("<b>Linked organisms:</b> ##LINKED_ORGANISMS##<br/>");
+        sb.append("</p>");
 
         TextEntity text = new TextEntity();
         text.setExpRecordId(rec.getExpRecordId());
@@ -190,6 +194,6 @@ public class Experiments {
 
         // save reference
         String sql = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
-        this.inhouseDB.saveTriple(sql, procId, rec.getExpRecordId().intValue(), "Procedure");
+        this.inhouseDB.saveTriple(sql, procId, rec.getExpRecordId().intValue(), TMP_Procedure);
     }
 }
