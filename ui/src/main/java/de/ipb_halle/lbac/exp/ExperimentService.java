@@ -130,6 +130,7 @@ public class ExperimentService implements Serializable {
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
+      
         List<ExperimentEntity> entities = q.getResultList();
 
         for (ExperimentEntity e : entities) {
@@ -140,7 +141,6 @@ public class ExperimentService implements Serializable {
                     loadProject(e));
             back.addResult(exp);
         }
-
         return back;
     }
 

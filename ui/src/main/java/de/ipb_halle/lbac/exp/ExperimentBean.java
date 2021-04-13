@@ -63,64 +63,66 @@ import org.primefaces.model.chart.BarChartModel;
 @SessionScoped
 @Named
 public class ExperimentBean implements Serializable, ACObjectBean {
-    
+
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     protected ACObjectController acoController;
     /* access set to 'protected' to facilitate mocking during unit tests */
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
-    
+
     @Inject
     protected ExperimentService experimentService;
-    
+
     @Inject
     protected ExpRecordService expRecordService;
-    
+
     @Inject
     protected ItemAgent itemAgent;
-    
+
     @Inject
     protected LinkedDataAgent linkedDataAgent;
-    
+
     @Inject
     protected MaterialAgent materialAgent;
-    
+
     @Inject
     protected MemberService memberService;
-    
+
     @Inject
     protected ProjectService projectService;
-    
+
     private Experiment experiment;
-    
+
     private List<ExpRecord> expRecords;
-    
+
     protected ExpRecordController expRecordController;
-    
+
     private String newRecordType;
-    
+
     private boolean templateMode = false;
-    
+
     private BarChartModel barChart;
-    
+
     private int expRecordIndex;
     private User currentUser;
-    
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private ExpProjectController projectController;
     protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
     private List<Experiment> experiments = new ArrayList<>();
     private List<Experiment> templates = new ArrayList<>();
     private CreationState creationState = CreationState.CREATE;
-    
+    private String searchTerm;
+    private final Integer MAX_EXPERIMENTS_TO_LOAD = 50;
+
     public enum CreationState {
         CREATE,
         EDIT,
     }
-    
+
     public ExperimentBean() {
     }
-    
+
     public ExperimentBean(
             ItemAgent itemAgent,
             MaterialAgent materialAgent,
@@ -137,7 +139,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.messagePresenter = messagePresenter;
         this.expRecordService = expRecordService;
     }
-    
+
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         templates = loadExperiments(true);
@@ -145,12 +147,12 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         cleanup();
         initEmptyExperiment();
     }
-    
+
     @PostConstruct
     public void init() {
         experimentBeanInit();
     }
-    
+
     protected void experimentBeanInit() {
         projectController = new ExpProjectController(projectService, currentUser);
         /*
@@ -160,7 +162,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         initEmptyExperiment();
         this.expRecords = new ArrayList<>();
     }
-    
+
     private void initEmptyExperiment() {
         this.experiment = new Experiment(
                 null, // experiment id
@@ -181,22 +183,22 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * @param index insert position - 1 (i.e. index of the preceding record)
      */
     public void actionAppendRecord(int index) {
-        
+
         if ((this.experiment == null) || (this.experiment.getExperimentId() == null)) {
             this.logger.info("actionAppendRecord(): experiment not set");
             return;
         }
-        
+
         createExpRecordController(this.newRecordType);
         if (this.expRecordController != null) {
             ExpRecord record = this.expRecordController.getNewRecord();
             record.setExperiment(this.experiment);
-            
+
             if ((index < 0) || (index > this.expRecords.size())) {
                 this.logger.info("actionAppendRecord() out of range");
                 return;
             }
-            
+
             switch (this.expRecords.size() - index) {
                 case 0:
                     // NullRecord at end of ExpRecord list
@@ -280,11 +282,11 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             createExpRecordController(record.getType().toString());
         }
     }
-    
+
     public void actionLog() {
         this.logger.info("actionLog()");
     }
-    
+
     public void actionStartEditExperiment(Experiment exp) {
         creationState = CreationState.EDIT;
         this.experiment = exp;
@@ -301,7 +303,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             initEmptyExperiment();
         }
     }
-    
+
     public void actionNewExperimentRecord(String type, int index) {
         newRecordType = type;
         actionAppendRecord(index);
@@ -321,10 +323,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 && (this.expRecordIndex < size)
                 && (newPosition > -1)
                 && (newPosition < size)) {
-            
+
             ExpRecord record = this.expRecords.remove(this.expRecordIndex);
             List<ExpRecord> saveList = new ArrayList<>();
-            
+
             if ((this.expRecordIndex == (size - 1))
                     && (size > 1)) {
                 // set next field to null for new last record 
@@ -357,12 +359,12 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             }
             record = this.expRecordService.save(record, currentUser);
             this.expRecords.add(newPosition, record);
-            
+
             reIndex();
             cleanup();
         }
     }
-    
+
     public void actionSaveExperiment() {
         this.experiment.setProject(projectController.getChoosenProject());
         Experiment savedExp = this.experimentService.save(this.experiment);
@@ -371,7 +373,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         } else {
             messagePresenter.info("exp_save_edit");
         }
-        
+
         if (templateMode) {
             putExpInList(savedExp, templates);
         } else {
@@ -379,7 +381,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
         this.experiment = savedExp;
     }
-    
+
     private void putExpInList(Experiment exp, List<Experiment> list) {
         boolean alreadyIn = false;
         for (Experiment e : list) {
@@ -406,15 +408,15 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             }
         }
     }
-    
+
     private boolean isSavedInDb(Experiment exp) {
         return (exp != null) && (exp.getExperimentId() != null);
     }
-    
+
     private boolean isExpSelected(Experiment exp) {
         return exp.getExperimentId().equals(this.experiment.getExperimentId());
     }
-    
+
     private void selectExperiment(Experiment exp) {
         this.experiment = exp;
         try {
@@ -447,7 +449,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.barChart = null;
         this.expRecordIndex = -1;
     }
-    
+
     public void createExpRecordController(String recordType) {
         switch (recordType) {
             case "ASSAY":
@@ -463,7 +465,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 this.expRecordController = new NullController(this);
         }
     }
-    
+
     public BarChartModel getBarChart() {
         return this.barChart;
     }
@@ -476,11 +478,11 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 && (this.experiment.getExperimentId() != null)
                 && creationState == CREATE;
     }
-    
+
     public void closeDialog() {
         creationState = CREATE;
     }
-    
+
     public Experiment getExperiment() {
         return this.experiment;
     }
@@ -499,7 +501,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             return Messages.getString(MESSAGE_BUNDLE, "expNewExperiment", null);
         }
     }
-    
+
     public List<Experiment> getExperiments() {
         if (templateMode) {
             return templates;
@@ -507,11 +509,11 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             return experiments;
         }
     }
-    
+
     public String getStyleClassOfLink(Experiment expToStyle) {
         return Objects.equals(expToStyle.getExperimentId(), experiment.getExperimentId()) ? "expSelectedEntry" : "expNormalEntry";
     }
-    
+
     public ExpRecordController getExpRecordController() {
         return this.expRecordController;
     }
@@ -545,7 +547,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         // should be an empty list
         return this.expRecords;
     }
-    
+
     public String getExpRecordStyle(boolean edit, boolean even) {
         if (edit) {
             return "expRecordEdit";
@@ -555,23 +557,23 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
         return "expRecordOdd";
     }
-    
+
     public ItemAgent getItemAgent() {
         return this.itemAgent;
     }
-    
+
     public LinkedDataAgent getLinkedDataAgent() {
         return this.linkedDataAgent;
     }
-    
+
     public MaterialAgent getMaterialAgent() {
         return this.materialAgent;
     }
-    
+
     public String getNewRecordType() {
         return "";
     }
-    
+
     public String getRowStyle(boolean isLast) {
         if (!isLast) {
             return "experimentRecordBottomRow";
@@ -579,23 +581,42 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             return "";
         }
     }
-    
+
     public boolean getTemplateMode() {
         return this.templateMode;
     }
-    
+
     public boolean isRecordEditable(ExpRecord record) {
         return record.getEdit();
     }
-    
+
     public List<Experiment> loadExperiments(boolean template) {
-        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(currentUser, 0, Integer.MAX_VALUE);
+        if (isSearchTermEmpty()) {
+            return new ArrayList<>();
+        }
+        ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(currentUser, 0, MAX_EXPERIMENTS_TO_LOAD);
         builder.setTemplate(String.valueOf(template));
+        builder.setCode(searchTerm);
         SearchResult result = experimentService.load(builder.build());
         if (!result.getAllFoundObjects().isEmpty()) {
+
             return result.getAllFoundObjects(Experiment.class, result.getNode());
         } else {
             return new ArrayList<>();
+        }
+    }
+
+    private boolean isSearchTermEmpty() {
+        return searchTerm == null || searchTerm.trim().isEmpty();
+    }
+
+    public void actualizeExperimentsList() {
+        if (!isSearchTermEmpty()) {
+            if (templateMode) {
+                templates = loadExperiments(templateMode);
+            } else {
+                experiments = loadExperiments(templateMode);
+            }
         }
     }
 
@@ -621,7 +642,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.expRecords = this.expRecordService.orderList(
                 this.expRecordService.load(cmap, currentUser));
         reIndex();
-        
+
     }
 
     /**
@@ -660,36 +681,36 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public void setBarChartModel(int index) {
         this.barChart = this.expRecords.get(index).getBarChart();
     }
-    
+
     public void setExperiment(Experiment experiment) {
         this.experiment = experiment;
     }
-    
+
     public void setExpRecordIndex(int index) {
         this.logger.info("setExpRecordIndex() index = {}", index);
         this.expRecordIndex = index;
     }
-    
+
     public void setNewRecordType(String newRecordType) {
         this.newRecordType = newRecordType;
     }
-    
+
     public void setTemplateMode(boolean templateMode) {
         this.templateMode = templateMode;
     }
-    
+
     @Override
     public void applyAclChanges() {
         experimentService.updateExperimentAcl(
                 experiment.getId(),
                 experiment.getACList());
     }
-    
+
     @Override
     public void cancelAclChanges() {
-        
+
     }
-    
+
     @Override
     public void actionStartAclChange(ACObject aco) {
         experiment = (Experiment) aco;
@@ -698,40 +719,40 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 memberService.loadGroups(new HashMap<>()),
                 this,
                 ((Experiment) aco).getCode());
-        
+
     }
-    
+
     @Override
     public ACObjectController getAcObjectController() {
         return acoController;
     }
-    
+
     public ExpProjectController getProjectController() {
         return projectController;
     }
-    
+
     public boolean areLinksAddable(ExpRecord record) {
         return record.getType() != ExpRecordType.NULL;
     }
-    
+
     public MessagePresenter getMessagePresenter() {
         return messagePresenter;
     }
-    
+
     public ExpRecordService getExpRecordService() {
         return expRecordService;
     }
-    
+
     public String getExperimentDialogHeader() {
         if (!templateMode && creationState == CREATE) {
             return messagePresenter.presentMessage("expAddNew_dialogHeader_new");
-            
+
         } else if (templateMode && experiment.getId() != null && creationState == CREATE) {
             return messagePresenter.presentMessage("expAddNew_dialogHeader_clone");
-            
+
         } else if (templateMode && experiment.getId() != null && creationState == EDIT) {
             return "Template anpassen";
-            
+
         } else if (experiment.getId() != null && creationState == EDIT) {
             return messagePresenter.presentMessage("expAddNew_dialogHeader_edit");
         } else if (experiment.getId() == null && templateMode && creationState == CREATE) {
@@ -754,7 +775,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * prefixes</a>. The default onclick action of &lt;b:commandButton&gt; (AJAX
      * call) is suppressed by a terminating JavaScript 'return false'. The
      * actionListener and action of the commandButton are called afterwards.
-     * 
+     *
      * @return JavaScript code to be executed
      */
     public String getSaveButtonOnClick() {
@@ -770,6 +791,14 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         sb.append("ajax:experimentBean.actionDoNothing();javascript:return false;");
 
         return sb.toString();
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
+    public String getSearchTerm() {
+        return searchTerm;
     }
 
     /**

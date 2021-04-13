@@ -32,6 +32,7 @@ public enum AttributeType {
     ASSAY_TARGET,
     ASSAY_RECORD,
     COLLECTION,
+    EXP_CODE,
     INSTITUTION,
     INDEX_TYPE,
     MATERIAL_TYPE,

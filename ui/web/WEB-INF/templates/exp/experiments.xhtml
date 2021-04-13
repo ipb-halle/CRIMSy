@@ -66,14 +66,12 @@
         <b:panel
             id="experiments"
             title="#{msgs.expExperiments}"
+            
             styleClass="shownExperiments">
             <p:outputPanel deferred="false">
-
                 <b:row>
-
                     <h:form id="experimentForm">
                         <b:column id="experimentColumn" span="3">
-
                             <p:tabMenu activeIndex="#{experimentBean.templateMode ? 0 : 1}">
                                 <p:menuitem value="#{msgs.expTemplates}" 
                                             action="#{experimentBean.actionCancel()}" 
@@ -88,19 +86,34 @@
                                     <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="False" />
                                 </p:menuitem>
                             </p:tabMenu>
-                            <b:panel collapsible="false" 
-                                     title="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
+                        <b:row>
+                            <b:column span="8">
+                                <b:inputText
+                                    value="#{experimentBean.searchTerm}"/>
+                            </b:column>
+                            <b:column span="4">
+                                <b:commandButton
+                                    action="#{experimentBean.actualizeExperimentsList()}"
+                                    ajax="true"
+                                    value="search"
+                                    update="experimentForm"/>
+                            </b:column>
+                        </b:row>
+                           
+                           
                                 <ui:insert name="experimentList">
                                     <ui:include src="experimentList.xhtml"/>
                                 </ui:insert>
-                            </b:panel>
+                           
                             <p:panelGrid styleClass="borderlessButtonTable">
                                 <p:row>
+                                <!--
                                     <p:column styleClass="searchExperimentButton">
                                         <ui:insert name="expSearch">
                                             <ui:include src="expSearch.xhtml" />
                                         </ui:insert>
                                     </p:column>
+                                -->
                                     <p:column
                                         styleClass="addEditExperimentButton">
                                         <p:commandButton 
