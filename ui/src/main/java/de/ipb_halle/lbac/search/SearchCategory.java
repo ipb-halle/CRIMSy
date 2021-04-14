@@ -34,5 +34,6 @@ public enum SearchCategory {
     TEXT,
     WORDROOT,
     COLLECTION,
-    TEMPLATE
+    TEMPLATE,
+    EXP_CODE
 }

@@ -15,49 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.search.lang;
+package de.ipb_halle.lbac.admission;
 
 /**
- * Attribute types for selection of search fields
  *
- * @author fbroda
+ * @author fmauz
  */
-public enum AttributeType {
-
-    /* */
-    TOPLEVEL,
-    DIRECT,
-
-    /* entity properties */
-    ASSAY_TARGET,
-    ASSAY_RECORD,
-    COLLECTION,
-    EXP_CODE,
-    INSTITUTION,
-    INDEX_TYPE,
-    MATERIAL_TYPE,
-    MEMBER,
-    MEMBER_NAME,
-    MOLECULE,
-    PROJECT_NAME,
-    REACTION_EDUCT,
-    REACTION_PRODUCT,
-    TEMPLATE,
-    WORDROOT,
-
-    /* general attribute types */
-    DEACTIVATED,
-    PROJECT_DEACTIVATED,
-    BARCODE,
-    STRUCTURE,
-    TEXT,
-    OWNER,
-    PERM_READ,
-    PERM_EDIT,
-    PERM_CHOWN,
-    PERM_GRANT,
-    PERM_SUPER,
-    PERM_CREATE,
-    PERM_DELETE
-
+public class DuplicateShortcutException extends RuntimeException {
+    public DuplicateShortcutException(String message,Throwable e){
+        super(message, e);
+    }
 }

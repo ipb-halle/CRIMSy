@@ -23,6 +23,7 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
 
 
@@ -74,7 +75,7 @@
                         <b:inputText id="login"
                                      value="#{userMgrBean.user.login}"
                                      styleClass="tstUserMgrLogin"
-                                     label="#{msgs.Login}"
+                                     label="#{msgs.userMgr_Login}"
                                      disabled="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"
                                      renderLabel="true"
                                      placeholder="#{msgs.userMgr_LoginPlaceholder}" required="true">
@@ -83,6 +84,19 @@
                                 <b:icon name="star"/>
                             </f:facet>
                         </b:inputText>
+                        <b:inputText id="shortcut"
+                                     value="#{userMgrBean.user.shortcut}"
+                                     styleClass="tstUserMgrLogin"
+                                     label="#{msgs.userMgr_shortcut}"
+                                     disabled="#{!userBean.isAdminAccount()}"
+                                     renderLabel="true"
+                                     placeholder="#{msgs.userMgr_shortcut_placeholder}">
+                            <f:validator validatorId="AccountValidator" /> 
+                            <f:facet name="prepend">
+                                <b:icon name="star"/>
+                            </f:facet>
+                        </b:inputText>
+                        
                         <b:message for="@previous"/>
                         <b:inputText id="email"
                                      value="#{userMgrBean.user.email}"
@@ -143,33 +157,30 @@
                         <b:fetchBeanInfos/>
 
                         <b:column styleClass="text-center"> 
-                            <b:commandButton value="#{msgs.Save}"
+                            <p:commandButton value="#{msgs.Save}"
                                              styleClass="tstUserMgrCreate"
                                              rendered="#{userMgrBean.mode == 'CREATE'}"
-                                             type="submit"
                                              ajax="true"
-                                             update="@form frmUserList:userList"
-                                             onclick="ajax:userMgrBean.actionCreate();"
-                                             oncomplete="javascript:if(!validationFailed){$('.modalUserDialog').modal('hide')};return false;"
-                                             look="primary"/>
-                            <b:commandButton value="#{msgs.Edit}"
+                                             update="@form frmUserList:userList growlMsg"
+                                             action="#{userMgrBean.actionCreate()}"
+                                             oncomplete="javascript:if(!validationFailed&amp;&amp;args.success){$('.modalUserDialog').modal('hide')};return false;"
+                                             />
+                            <p:commandButton value="#{msgs.Edit}"
                                              styleClass="tstUserMgrEdit"
                                              rendered="#{userMgrBean.mode == 'UPDATE'}"
-                                             type="submit"
                                              ajax="true"
-                                             update="@form frmUserList:userList"
-                                             onclick="ajax:userMgrBean.actionUpdate();"
-                                             oncomplete="if(!validationFailed){$('.modalUserDialog').modal('hide')};return false;"
-                                             look="primary"/>
-                            <b:commandButton value="#{msgs.Delete}"
+                                             update="@form frmUserList:userList growlMsg"
+                                             action="#{userMgrBean.actionUpdate()}"
+                                             oncomplete="if(!validationFailed&amp;&amp;args.success){$('.modalUserDialog').modal('hide')};return false;"
+                                             />
+                            <p:commandButton value="#{msgs.Delete}"
                                              styleClass="tstUserMgrDelete"
                                              rendered="#{userMgrBean.mode == 'DELETE'}"
                                              update="frmUserList:userList"
-                                             type="submit"
                                              ajax="true"
-                                             onclick="ajax:userMgrBean.actionDeactivateUser();"
+                                             action="#{userMgrBean.actionDeactivateUser()}"
                                              oncomplete="$('.modalUserDialog').modal('hide');"
-                                             look="primary"/>
+                                             />
 
                         </b:column>
                     </b:panel>
@@ -368,6 +379,7 @@
                     <tr>
                         <th>#{msgs.Name}</th>
                         <th>#{msgs.Login}</th>
+                        <th>#{msgs.userMgr_shortcut}</th>
                         <th>#{msgs.Email}</th>
                         <th>#{msgs.Phone}</th>
                         <th>#{msgs.Type}</th>
@@ -377,6 +389,7 @@
                 </f:facet>
                 <b:dataTableColumn value="#{user.name}" order="asc"/>
                 <b:dataTableColumn value="#{user.login}"/>
+                <b:dataTableColumn value="#{user.shortcut}"/>
                 <b:dataTableColumn value="#{user.email}"/>
                 <b:dataTableColumn value="#{user.phone}"/>
                 <b:dataTableColumn value="#{user.getSubSystemType().toString()}"/>

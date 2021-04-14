@@ -44,6 +44,7 @@ public class ExperimentEntity extends ACObjectEntity implements Serializable {
     private Integer experimentid;
 
     @Column
+    @AttributeTag(type = AttributeType.EXP_CODE)
     private String code;
 
     @Column

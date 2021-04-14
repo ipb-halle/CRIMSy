@@ -36,6 +36,7 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
     private String structure;
     private String id;
     private String template;
+    private String code;
 
     public ExperimentSearchRequestBuilder(User u, int firstResult, int maxResults) {
         super(u, firstResult, maxResults);
@@ -56,6 +57,7 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
         addText();
         addTemplate();
         addId();
+        addCode();
     }
 
     public void setMaterialName(String name) {
@@ -94,6 +96,11 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
             request.addSearchCategory(SearchCategory.USER, userName);
         }
     }
+        private void addCode() {
+        if (code != null && !code.trim().isEmpty()) {
+            request.addSearchCategory(SearchCategory.EXP_CODE, code);
+        }
+    }
 
     private void addTemplate() {
         if (template != null && !template.trim().isEmpty()) {
@@ -119,6 +126,10 @@ public class ExperimentSearchRequestBuilder extends SearchRequestBuilder {
 
     public void setStructure(String structure) {
         this.structure = structure;
+    }
+    
+    public void setCode(String code){
+        this.code=code;
     }
 
 }

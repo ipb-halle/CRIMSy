@@ -82,6 +82,10 @@ public class PasswordValidator implements Validator, Serializable {
      */
     /**
      * Perform password validation according to the password rules
+     *
+     * @param context
+     * @param component
+     * @param value
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
@@ -103,8 +107,10 @@ public class PasswordValidator implements Validator, Serializable {
              * upon the second call to the userManagement.xhtml, when validation 
              * uses the binding attribute for the password repeat input element:
              */
+
             Map<String, String> map = context.getExternalContext().getRequestParameterMap();
-            if (map.get("frmModalUserDialog") != null) {
+            if (isInUserDialogModal(map)) {
+
                 repeat = map.get("input_frmModalUserDialog:tempPasswordRepeat");
             } else {
                 repeat = map.get("input_frmModalPassword:tempPasswordRepeat");
@@ -117,5 +123,14 @@ public class PasswordValidator implements Validator, Serializable {
             throw new ValidatorException(
                     UIMessage.getErrorMessage(MESSAGE_BUNDLE, "PASSWORD_ERROR__MISMATCH", null));
         }
+    }
+
+    private boolean isInUserDialogModal(Map<String, String> map) {
+        for (String s : map.keySet()) {
+            if (s.startsWith("frmModalUserDialog")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

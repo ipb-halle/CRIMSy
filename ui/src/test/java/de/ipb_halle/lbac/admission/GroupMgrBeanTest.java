@@ -68,10 +68,10 @@ public class GroupMgrBeanTest extends TestBase {
         groupMgrBean.actionCreate();
         Assert.assertEquals("groupMgr_no_valide_name", presenterMock.getLastErrorMessage());
         Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap()).size());
-
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + g.getId());
-
     }
+    
+   
 
     private Group loadGroupByName(String groupName) {
         Map<String, Object> cmap = new HashMap<>();

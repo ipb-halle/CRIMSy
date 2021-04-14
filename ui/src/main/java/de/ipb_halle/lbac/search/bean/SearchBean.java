@@ -230,7 +230,10 @@ public class SearchBean implements Serializable {
             itemBean.actionStartItemEdit((Item) no.getSearchable());
         }
         if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
-            experimentBean.setExperiment((Experiment) no.getSearchable());
+            Experiment experiment=(Experiment) no.getSearchable();
+            experimentBean.setExperiment(experiment);
+            experimentBean.setSearchTerm(experiment.getCode());
+            experimentBean.actualizeExperimentsList();
             experimentBean.loadExpRecords();
             navigator.navigate("exp/experiments");
         }

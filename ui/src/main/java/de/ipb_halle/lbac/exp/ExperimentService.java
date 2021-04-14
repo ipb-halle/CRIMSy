@@ -27,17 +27,16 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.exp.search.ExpRecordAccessChecker;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
-import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
-import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -45,7 +44,6 @@ import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -57,7 +55,6 @@ import javax.persistence.Query;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-// import javax.persistence.Persistence;
 @Stateless
 public class ExperimentService implements Serializable {
 
@@ -75,18 +72,12 @@ public class ExperimentService implements Serializable {
     private MemberService memberService;
 
     @Inject
-    private ExpRecordService recordService;
-
-    @Inject
     private ProjectService projectService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
     private Logger logger;
-
-    private ConditionValueFetcher conValueFetcher;
-    private ExpRecordAccessChecker recordAccessChecker;
 
     public ExperimentService() {
         this.logger = LogManager.getLogger(this.getClass().getName());
@@ -97,22 +88,6 @@ public class ExperimentService implements Serializable {
         if (em == null) {
             logger.error("Injection failed for EntityManager. @PersistenceContext(name = \"de.ipb_halle.lbac\")");
         }
-        conValueFetcher = new ConditionValueFetcher();
-        recordAccessChecker = new ExpRecordAccessChecker(recordService, aclistService);
-    }
-
-    /**
-     * build
-     */
-    public Query createExperimentQuery(String rawSql, Map<String, Object> cmap, Class targetClass) {
-        Query q;
-        if (targetClass == null) {
-            q = this.em.createNativeQuery(rawSql);
-        } else {
-            q = this.em.createNativeQuery(rawSql, targetClass);
-        }
-
-        return q.setParameter(TEMPLATE_FLAG, cmap.getOrDefault(TEMPLATE_FLAG, null));
     }
 
     public SearchResult load(SearchRequest request) {
@@ -130,6 +105,7 @@ public class ExperimentService implements Serializable {
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
+
         List<ExperimentEntity> entities = q.getResultList();
 
         for (ExperimentEntity e : entities) {
@@ -140,7 +116,6 @@ public class ExperimentService implements Serializable {
                     loadProject(e));
             back.addResult(exp);
         }
-
         return back;
     }
 
@@ -189,5 +164,13 @@ public class ExperimentService implements Serializable {
                 e.getACList(),
                 e.getOwner(),
                 e.getProject());
+    }
+
+    public Integer getNextExperimentNumber(User user) {
+        ExperimentSearchRequestBuilder builder =
+                new ExperimentSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        builder.setCode(user.getShortcut());
+        SearchResult result = load(builder.build());
+        return result.getAllFoundObjects().size() + 1;
     }
 }

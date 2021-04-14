@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.DTO; 
+import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -38,6 +38,8 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
 
     private String password;
 
+    private String shortcut;
+
     /* default constructor */
     public User() {
         super();
@@ -52,6 +54,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         this.phone = ue.getPhone();
         this.login = ue.getLogin();
         this.password = ue.getPassword();
+        this.shortcut = ue.getShortCut();
     }
 
     @Override
@@ -62,6 +65,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         u.setPhone(this.phone);
         u.setLogin(this.login);
         u.setPassword(this.password);
+        u.setShortCut(shortcut);
         return u;
     }
 
@@ -79,6 +83,16 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
 
     public String getPhone() {
         return this.phone;
+    }
+
+    /**
+     * A valid shortcut must not be empty
+     *
+     * @return
+     */
+    public boolean hasShortCut() {
+        return getShortcut() != null
+                && !getShortcut().trim().isEmpty();
     }
 
     @Override
@@ -117,6 +131,10 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         this.phone = p;
     }
 
+    public void setShortcut(String shortcut) {
+        this.shortcut = shortcut;
+    }
+
     @Override
     public String toString() {
         return "User{id=" + getId() + ", login="
@@ -129,6 +147,10 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     @Override
     public String getNameToDisplay() {
         return getName();
+    }
+
+    public String getShortcut() {
+        return shortcut;
     }
 
     @Override
@@ -144,5 +166,4 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     public Type getTypeToDisplay() {
         return new Type(SearchTarget.USER);
     }
-
 }

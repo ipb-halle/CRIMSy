@@ -25,9 +25,13 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-        <ui:repeat 
-            value="#{experimentBean.experiments}"
-            var="experiment">
+    <b:dataTable
+        value="#{experimentBean.experiments}"
+        var="experiment"
+        styleClass="experimentsDataTable"
+        searching="false">
+    <b:dataTableColumn
+        label="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
             <p:outputPanel  styleClass="expListEntry #{experimentBean.getStyleClassOfLink(experiment)}">
                 <div title="#{experiment.description}">
                     <p:commandLink
@@ -63,6 +67,7 @@
                                      disabled="false"/>
                 </div>
             </p:outputPanel>
-        </ui:repeat>
+    </b:dataTableColumn>
+       </b:dataTable>
     </ui:composition>
 </html>

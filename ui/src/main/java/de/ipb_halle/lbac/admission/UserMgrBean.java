@@ -18,6 +18,9 @@
 package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.container.bean.CallBackController;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 
 import de.ipb_halle.lbac.service.NodeService;
 
@@ -82,6 +85,8 @@ public class UserMgrBean implements Serializable {
     private MODE mode;
 
     private String tempPassword;
+    private MessagePresenter messagePresenter;
+    protected CallBackController callBackController = new CallBackController();
 
     /**
      * default constructor
@@ -95,11 +100,36 @@ public class UserMgrBean implements Serializable {
     }
 
     /**
+     * Injection of services and message presenter for test purposes
+     *
+     * @param nodeService
+     * @param memberService
+     * @param membershipService
+     * @param messagePresenter
+     * @param controllerMock
+     */
+    public UserMgrBean(
+            NodeService nodeService,
+            MemberService memberService,
+            MembershipService membershipService,
+            MessagePresenter messagePresenter,
+            CallBackController controllerMock) {
+        this();
+        this.nodeService = nodeService;
+        this.memberService = memberService;
+        this.membershipService = membershipService;
+        this.messagePresenter = messagePresenter;
+        this.callBackController = controllerMock;
+        initUser();
+    }
+
+    /**
      * Initialization depending on injected resources
      */
     @PostConstruct
     private void initUserMgrBean() {
         // uses nodeService, which is not available in constructor!
+        messagePresenter = JsfMessagePresenter.getInstance();
         initUser();
     }
 
@@ -118,7 +148,10 @@ public class UserMgrBean implements Serializable {
     public void actionCreate() {
         this.logger.info("actionCreate(): creating Account");
         this.user.setPassword(this.credentialHandler.computeDigest(this.tempPassword));
-        this.user = this.memberService.save(this.user);
+        boolean userSaved = saveUser();
+        if (!userSaved) {
+            return;
+        }
         this.tempPassword = "";
         Group publicGroup = memberService.loadGroupById(
                 GlobalAdmissionContext.PUBLIC_GROUP_ID);
@@ -127,6 +160,33 @@ public class UserMgrBean implements Serializable {
         initUser();
         this.mode = MODE.READ;
         this.logger.info("actionCreate() finished.");
+    }
+
+    private boolean saveUser() {
+        try {
+            this.user = this.memberService.save(this.user);
+        } catch (Exception e) {
+            if ((e.getCause() != null && e.getCause() instanceof DuplicateShortcutException)
+                    || hasConstraintError(e)) {
+                messagePresenter.error("userMgr_error_duplicateShortcut");
+            } else {
+                messagePresenter.error("userMgr_error_unknown");
+            }
+            callBackController.addCallBackParameter("success", false);
+            return false;
+        }
+        callBackController.addCallBackParameter("success", true);
+        return true;
+    }
+
+    private boolean hasConstraintError(Throwable t) {
+        while (t.getCause() != null) {
+            if (t.getMessage().contains("ConstraintViolationException")) {
+                return true;
+            }
+            t = t.getCause();
+        }
+        return false;
     }
 
     /**
@@ -180,7 +240,10 @@ public class UserMgrBean implements Serializable {
     }
 
     public void actionUpdate() {
-        this.memberService.save(this.user);
+        boolean userSaved = saveUser();
+        if (!userSaved) {
+            return;
+        }
         this.tempPassword = "";
         initUser();
         this.mode = MODE.READ;
@@ -271,7 +334,7 @@ public class UserMgrBean implements Serializable {
     public List<User> getUserList() {
         Map<String, Object> cmap = new HashMap<>();
         cmap.put(MemberService.PARAM_NODE_ID, this.nodeService.getLocalNode().getId());
-        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, 
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
                 new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
         List<User> users = this.memberService.loadUsers(cmap);
         for (int i = users.size() - 1; i >= 0; i--) {

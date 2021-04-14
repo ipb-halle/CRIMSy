@@ -37,6 +37,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -264,7 +265,7 @@ public class MemberService implements Serializable {
     }
 
     public User mapRemoteUserToLocalUser(User u, Node n) {
-        if(u.getId().equals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)){
+        if (u.getId().equals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)) {
             return u;
         }
         Map<String, Object> cmap = new HashMap<>();
@@ -357,12 +358,21 @@ public class MemberService implements Serializable {
      * @return
      */
     public User save(User u) {
-        UserEntity ue = u.createEntity();
-        ue = em.merge(ue);
-        if (ue != null) {
-            return new User(ue, u.getNode());
+        try {
+            UserEntity ue = u.createEntity();
+            ue = em.merge(ue);
+            if (ue != null) {
+                return new User(ue, u.getNode());
+            }
+        } catch (Exception e) {
+            if (e.getMessage().contains("ConstraintViolationException")) {
+                throw new DuplicateShortcutException(
+                        String.format("shortcut '%s' already in use", u.getShortcut()),
+                        e);
+            } else {
+                throw e;
+            }
         }
         return null;
     }
-
 }

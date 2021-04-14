@@ -42,6 +42,9 @@ public class UserEntity extends MemberEntity implements Serializable {
 
     @Column
     private String password;
+    
+    @Column
+    private String shortCut;
 
     public String getEmail() {
         return this.email;
@@ -59,6 +62,11 @@ public class UserEntity extends MemberEntity implements Serializable {
         return this.phone;
     }
 
+    public String getShortCut() {
+        return shortCut;
+    }
+
+    
     @Override
     public boolean isGroup() {
         return false;
@@ -83,6 +91,10 @@ public class UserEntity extends MemberEntity implements Serializable {
 
     public void setPhone(String p) {
         this.phone = p;
+    }
+
+    public void setShortCut(String shortCut) {
+        this.shortCut = shortCut;
     }
 
     @Override

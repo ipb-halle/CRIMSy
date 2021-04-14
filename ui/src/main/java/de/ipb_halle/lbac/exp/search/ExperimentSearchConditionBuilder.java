@@ -71,6 +71,9 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
                 case TEXT:
                     addTextCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
+                case EXP_CODE:
+                    addCodeCondition(conditionList, request.getSearchValues().get(key).getValues());
+                    break;
                 case USER:
                     addOwnerCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;
@@ -142,6 +145,15 @@ public class ExperimentSearchConditionBuilder extends SearchConditionBuilder {
 
     private void addTextCondition(List<Condition> conditionList, Set<String> values) {
         conditionList.add(getTextCondition(values));
+    }
+
+    private void addCodeCondition(List<Condition> conditionList, Set<String> values) {
+        Condition con = getBinaryLeafCondition(
+                Operator.ILIKE,
+                values.iterator().next() + "%",
+                rootGraphName,
+                AttributeType.EXP_CODE);
+        conditionList.add(con);
     }
 
     private Condition getTextCondition(Set<String> values) {
