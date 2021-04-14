@@ -44,44 +44,50 @@
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
 
                     </b:column>
-                    <b:column span="2" offset="6">
+                    <b:column span="2" offset="6" style="text-align: right;">
+                        <!-- Move-up button is disabled in the first or last (= NullRecord) list entry or when
+                             any record is edited. -->
                         <p:commandLink title="#{msgs.MoveUp}"
-                                       rendered="#{!recStatus.last}"
-                                       update="@all"
+                                       process="@this"
+                                       update="@form"
                                        styleClass="experimentRecordOrderButton experimentRecordButton"
-                                       disabled="#{rec.moveUpDisabled}"
+                                       rendered="#{!recStatus.last}"
+                                       disabled="#{recStatus.first or recStatus.last or experimentBean.expRecordButtonsDisabled}"
                                        action="#{experimentBean.actionRearrangeRecord(-1)}">
                             <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
-                            <span class="fa fa-angle-up"> </span>
+                            <h:outputText styleClass="fa fa-angle-up" />
                         </p:commandLink>
+                        <!-- Move-down button disabled in the last (= NullRecord) or next-to-last list entry or when
+                             any record is edited. -->
                         <p:commandLink title="#{msgs.MoveDown}"
-                                       update="@all"
-                                       rendered="#{!recStatus.last}"
-                                       disabled="#{rec.moveDownDisabled}"
+                                       process="@this"
+                                       update="@form"
                                        styleClass="experimentRecordOrderButton experimentRecordButton"
+                                       rendered="#{!recStatus.last}"
+                                       disabled="#{recStatus.last or (recStatus.end - recStatus.index == 2) or experimentBean.expRecordButtonsDisabled}"
                                        action="#{experimentBean.actionRearrangeRecord(1)}">
                             <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
-                            <span class="fa fa-angle-down"> </span>
+                            <h:outputText styleClass="fa fa-angle-down" />
                         </p:commandLink>
                         <p:commandLink title="Link erstellen" 
                                        styleClass="experimentRecordButton"
                                        update="@(.experimentRecordContainer)"
-                                       disabled="false"
+                                       disabled="#{experimentBean.expRecordButtonsDisabled}"
                                        rendered="#{experimentBean.areLinksAddable(rec)}"
                                        action="#{experimentBean.actionEditRecord(rec)}"
                                        onclick="PF('dlg_createLink').show();
                                            if (typeof dlg_createLink_panelMaterialEdit_molEditor !== 'undefined'
                                                    &amp;&amp; dlg_createLink_panelMaterialEdit_molEditor != null)
                                            {dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());}">
-                            <span class="fa fa-link"> </span>
+                            <h:outputText styleClass="fa fa-link" />
                         </p:commandLink>
                         <p:commandLink title="#{msgs.Edit}" 
                                        update="@all"
                                        styleClass="experimentRecordButton"
-                                       rendered="#{experimentBean.expRecordController.edit and (rec.facelet != 'NULL')}"
+                                       rendered="#{rec.facelet != 'NULL'}"
+                                       disabled="#{experimentBean.expRecordButtonsDisabled}"
                                        action="#{experimentBean.actionEditRecord(rec)}">
-
-                            <span class="fa fa-pencil"> </span>
+                            <h:outputText styleClass="fa fa-pencil" />
                         </p:commandLink>
                         <b:dropMenu value="New" 
                                     styleClass="experimentRecordButton experimentRecordButtonAdd"
@@ -92,16 +98,19 @@
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expText}"
+                                disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"/>
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expAssay}"
+                                disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"/>
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expImage}"
+                                disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"/>
                         </b:dropMenu>
                     </b:column>

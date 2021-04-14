@@ -632,13 +632,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         for (ExpRecord rec : this.expRecords) {
             rec.setEdit(false);
             rec.setIndex(i);
-            if (i == 0) {
-                rec.setFirst(true);
-            }
             i++;
-        }
-        if (i > 0) {
-            this.expRecords.get(i - 1).setLast(true);
         }
     }
 
@@ -777,5 +771,13 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * commandButton's AJAX call. It does nothing.
      */
     public void actionDoNothing() {
+    }
+
+    /**
+     * Whether to disable the manipulation buttons shown for each experiment record
+     * in the record list. This is the case as soon as a record is edited.
+     */
+    public boolean isExpRecordButtonsDisabled() {
+        return (expRecordIndex != -1);
     }
 }

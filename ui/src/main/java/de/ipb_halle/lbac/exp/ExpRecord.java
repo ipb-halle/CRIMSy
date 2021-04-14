@@ -60,8 +60,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     private int revision;
     private SimpleDateFormat dateFormatter;
     private transient boolean isEdit = false;
-    private transient boolean isFirst = false;
-    private transient boolean isLast = false;
     private transient int index;
     private transient int linkedDataMaxRank;
 
@@ -173,10 +171,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         return this.type.toString();
     }
 
-    public boolean getFirst() {
-        return this.isFirst;
-    }
-
     public boolean getHasHiddenLinkedData() {
         return this.hasHiddenLinkedData;
     }
@@ -186,10 +180,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
      */
     public int getIndex() {
         return this.index;
-    }
-
-    public boolean getLast() {
-        return this.isLast;
     }
 
     public List<LinkedData> getLinkedData() {
@@ -207,20 +197,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
 
     public int getRevision() {
         return this.revision;
-    }
-
-    /**
-     * whether to disable the MoveDown button (move record to higher index)
-     */
-    public boolean getMoveDownDisabled() {
-        return (!this.isEdit) || this.isLast;
-    }
-
-    /**
-     * whether to disable the MoveUp button (move record to lower index)
-     */
-    public boolean getMoveUpDisabled() {
-        return (!this.isEdit) || this.isFirst;
     }
 
     /**
@@ -290,10 +266,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         return this;
     }
 
-    public void setFirst(boolean isFirst) {
-        this.isFirst = isFirst;
-    }
-
     public void setHasHiddenLinkedData() {
         this.hasHiddenLinkedData = true;
     }
@@ -301,10 +273,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     public ExpRecord setIndex(int index) {
         this.index = index;
         return this;
-    }
-
-    public void setLast(boolean isLast) {
-        this.isLast = isLast;
     }
 
     public void setLinkedData(List<LinkedData> data) {

@@ -302,6 +302,28 @@ public class ExperimentBeanTest extends TestBase {
         assertEquals("abc;ajax:experimentBean.actionDoNothing();javascript:return false;", experimentBean.getSaveButtonOnClick());
     }
 
+    @Test
+    public void test008_isExpRecordButtonsDisabled() {
+        experimentBean.experimentBeanInit();
+        Experiment exp = createAndSaveExperiment("EXP-1", "EXP-1-DESC", publicReadAcl, publicUser, false);
+        experimentBean.setExperiment(exp);
+
+        // no records present and none in edit mode 
+        Assert.assertFalse(experimentBean.isExpRecordButtonsDisabled());
+
+        Text text1 = createTextrecord(exp, "Text 1");
+        experimentBean.saveExpRecord(text1);
+        experimentBean.saveExpRecord(createTextrecord(exp, "Text 2"));
+        experimentBean.actionEditRecord(text1);
+
+        // records present and one is in edit mode 
+        Assert.assertTrue(experimentBean.isExpRecordButtonsDisabled());
+
+        // cancel editing
+        experimentBean.getExpRecordController().actionCancel();
+        Assert.assertFalse(experimentBean.isExpRecordButtonsDisabled());
+    }
+
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {
         for (ACEntry ace : aces) {
             if (ace.getMember().getName().equals(name)) {
