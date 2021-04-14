@@ -28,6 +28,7 @@
     <b:dataTable
         value="#{experimentBean.experiments}"
         var="experiment"
+        styleClass="experimentsDataTable"
         searching="false">
     <b:dataTableColumn
         label="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">

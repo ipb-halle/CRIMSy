@@ -66,7 +66,6 @@
         <b:panel
             id="experiments"
             title="#{msgs.expExperiments}"
-            
             styleClass="shownExperiments">
             <p:outputPanel deferred="false">
                 <b:row>
@@ -87,11 +86,11 @@
                                 </p:menuitem>
                             </p:tabMenu>
                         <b:row>
-                            <b:column span="8">
+                            <b:column span="9">
                                 <b:inputText
                                     value="#{experimentBean.searchTerm}"/>
                             </b:column>
-                            <b:column span="4">
+                            <b:column span="3">
                                 <b:commandButton
                                     action="#{experimentBean.actualizeExperimentsList()}"
                                     ajax="true"
@@ -99,21 +98,11 @@
                                     update="experimentForm"/>
                             </b:column>
                         </b:row>
-                           
-                           
                                 <ui:insert name="experimentList">
                                     <ui:include src="experimentList.xhtml"/>
                                 </ui:insert>
-                           
                             <p:panelGrid styleClass="borderlessButtonTable">
                                 <p:row>
-                                <!--
-                                    <p:column styleClass="searchExperimentButton">
-                                        <ui:insert name="expSearch">
-                                            <ui:include src="expSearch.xhtml" />
-                                        </ui:insert>
-                                    </p:column>
-                                -->
                                     <p:column
                                         styleClass="addEditExperimentButton">
                                         <p:commandButton 

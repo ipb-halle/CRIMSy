@@ -617,6 +617,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
             } else {
                 experiments = loadExperiments(templateMode);
             }
+        } else {
+            templates = new ArrayList<>();
+            experiments = new ArrayList<>();
         }
     }
 
