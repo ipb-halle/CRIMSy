@@ -124,6 +124,7 @@ public class ExperimentServiceTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadExp() {
+        
         Date creationDate = new Date();
         Experiment exp = new Experiment(null, "TEST-EXP-001", "Testexperiment x56df", false, publicReadAcl, publicUser, creationDate);
         exp = experimentService.save(exp);
@@ -181,7 +182,7 @@ public class ExperimentServiceTest extends TestBase {
         text3.setExperiment(exp);
         text3.setCreationTime(creationDate);
         text3.setText("Test001-text3");
-        text3 = (Text) recordService.save(text3,publicUser);
+        text3 = (Text) recordService.save(text3, publicUser);
 
         text1.setNext(text3.getExpRecordId());
         recordService.saveOnly(text1);
@@ -234,7 +235,7 @@ public class ExperimentServiceTest extends TestBase {
         text1.setExperiment(exp);
         text1.setCreationTime(creationDate);
         text1.setText("C# is also good");
-        text1 = (Text) recordService.save(text1,publicUser);
+        text1 = (Text) recordService.save(text1, publicUser);
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.setText("C#");
@@ -247,7 +248,6 @@ public class ExperimentServiceTest extends TestBase {
         Assert.assertEquals(0, loadedExp.getAllFoundObjects().size());
     }
 
-   
     @Test
     public void test004_searchExperimentByItemAndMaterialNames() {
         Date creationDate = new Date();
@@ -257,11 +257,11 @@ public class ExperimentServiceTest extends TestBase {
         assay.getLinkedData().get(0).setMaterial(material1);
         assay.setExperiment(exp);
 
-        LinkedData assayRecord = new LinkedData(assay,  
+        LinkedData assayRecord = new LinkedData(assay,
                 LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 1);
         assayRecord.setItem(item1);
         assay.getLinkedData().add(assayRecord);
-        recordService.save(assay,publicUser);
+        recordService.save(assay, publicUser);
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
         builder.setMaterialName("Benzol");
@@ -287,13 +287,13 @@ public class ExperimentServiceTest extends TestBase {
                 context.getNoAccessACL().getId(),
                 project1.getId(), "Phenol");
 
-        LinkedData assayRecord_unreadable = new LinkedData(assay, 
+        LinkedData assayRecord_unreadable = new LinkedData(assay,
                 LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME, 2);
         assayRecord_unreadable.setMaterial(materialService.loadMaterialById(materialId));
 
         assay.getLinkedData().add(assayRecord);
         assay.getLinkedData().add(assayRecord_unreadable);
-        recordService.save(assay,publicUser);
+        recordService.save(assay, publicUser);
 
         //Search by readable Material should be a success
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
@@ -312,7 +312,27 @@ public class ExperimentServiceTest extends TestBase {
         builder.setMaterialName("ol");
         loadedExp = experimentService.load(builder.build());
         Assert.assertEquals(1, loadedExp.getAllFoundObjects().size());
+    }
 
+    @Test
+    public void test006_getNextExperimentNumber() {
+        User user = createUser("test006_user", "test006_user");
+        user.setShortcut("TES");
+        membershipService.addMembership(context.getPublicGroup(), user);
+        memberService.save(user);
+
+        Integer nextNumber = experimentService.getNextExperimentNumber(user);
+        Assert.assertEquals(1, nextNumber, 0);
+
+        Experiment exp = new Experiment(null, "TES001", "Testexperiment x56df", false, publicReadAcl, user, new Date());
+        exp = experimentService.save(exp);
+        nextNumber = experimentService.getNextExperimentNumber(user);
+        Assert.assertEquals(2, nextNumber, 0);
+
+        Experiment exp2 = new Experiment(null, "XXS001", "Testexperiment x56df", false, publicReadAcl, user, new Date());
+        exp2 = experimentService.save(exp2);
+        nextNumber = experimentService.getNextExperimentNumber(user);
+        Assert.assertEquals(2, nextNumber, 0);
     }
 
     @Deployment

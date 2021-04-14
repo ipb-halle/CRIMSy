@@ -151,7 +151,7 @@ public class ExperimentBeanTest extends TestBase {
     @Test
     public void test003_loadExperimentsAndRecords() {
         experimentBean.experimentBeanInit();
-
+        experimentBean.setSearchTerm("EXP");
         Experiment exp1 = createAndSaveExperiment("EXP-1", "EXP-1-DESC", publicReadAcl, publicUser, false);
         Experiment exp2 = createAndSaveExperiment("EXP-2", "EXP-2-DESC", publicReadAcl, publicUser, false);
         Experiment exp3 = createAndSaveExperiment("EXP-3", "EXP-3-DESC", publicReadAcl, publicUser, true);
@@ -166,9 +166,11 @@ public class ExperimentBeanTest extends TestBase {
 
         experimentBean.setExperiment(exp1);
         experimentBean.setTemplateMode(false);
+        experimentBean.loadExperiments(false);
         Assert.assertFalse(experimentBean.getTemplateMode());
         Assert.assertEquals(2, experimentBean.getExperiments().size());
         experimentBean.setTemplateMode(true);
+        experimentBean.loadExperiments(true);
         Assert.assertTrue(experimentBean.getTemplateMode());
         Assert.assertEquals(1, experimentBean.getExperiments().size());
         experimentBean.loadExpRecords();

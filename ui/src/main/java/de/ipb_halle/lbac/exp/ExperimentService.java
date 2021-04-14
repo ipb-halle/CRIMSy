@@ -27,8 +27,10 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.exp.search.ExperimentEntityGraphBuilder;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
+import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -52,7 +54,6 @@ import javax.persistence.Query;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-
 
 @Stateless
 public class ExperimentService implements Serializable {
@@ -104,7 +105,7 @@ public class ExperimentService implements Serializable {
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
-      
+
         List<ExperimentEntity> entities = q.getResultList();
 
         for (ExperimentEntity e : entities) {
@@ -163,5 +164,13 @@ public class ExperimentService implements Serializable {
                 e.getACList(),
                 e.getOwner(),
                 e.getProject());
+    }
+
+    public Integer getNextExperimentNumber(User user) {
+        ExperimentSearchRequestBuilder builder =
+                new ExperimentSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        builder.setCode(user.getShortcut());
+        SearchResult result = load(builder.build());
+        return result.getAllFoundObjects().size() + 1;
     }
 }

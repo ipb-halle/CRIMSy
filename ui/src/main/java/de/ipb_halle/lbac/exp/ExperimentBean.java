@@ -367,10 +367,17 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public void actionSaveExperiment() {
         this.experiment.setProject(projectController.getChoosenProject());
-        Experiment savedExp = this.experimentService.save(this.experiment);
+        Experiment savedExp;
         if (this.experiment.getExperimentId() == null) {
+            this.experiment.updateCode(
+                    currentUser.getShortcut(),
+                    String.format(
+                            "%04d", 
+                            experimentService.getNextExperimentNumber(currentUser)));
+            savedExp = this.experimentService.save(this.experiment);
             messagePresenter.info("exp_save_new");
         } else {
+            savedExp = this.experimentService.save(this.experiment);
             messagePresenter.info("exp_save_edit");
         }
 
