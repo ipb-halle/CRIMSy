@@ -99,19 +99,22 @@
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expText}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"/>
+                                actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"
+                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expAssay}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"/>
+                                actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"
+                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expImage}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"/>
+                                actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"
+                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
                         </b:dropMenu>
                     </b:column>
                     <br/>
