@@ -55,7 +55,6 @@ public class Correlation {
     public final static String ORGPROC_UPDATE = "ORGPROC_UPDATE";
 
     private InhouseDB inhouseDB;
-    private int folderId;
 
     public Correlation(InhouseDB inhouseDB) throws Exception {
         this.inhouseDB = inhouseDB;

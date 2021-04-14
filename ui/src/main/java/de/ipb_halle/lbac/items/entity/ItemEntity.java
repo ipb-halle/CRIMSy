@@ -39,9 +39,6 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /*
-     * ToDo: add label property (for barcoding)
-     */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
