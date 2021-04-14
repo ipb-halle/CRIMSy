@@ -104,14 +104,21 @@
                             <p:panelGrid styleClass="borderlessButtonTable">
                                 <p:row>
                                     <p:column
-                                        styleClass="addEditExperimentButton">
+                                        styleClass="addEditExperimentButton"
+                                         id="newExpButtonColumn">
                                         <p:commandButton 
                                             ajax="true"
                                             styleClass="experimentActionButton"
                                             value="#{experimentBean.getCreateNewExperimentButtonLabel()}" 
                                             action="#{experimentBean.actionNewExperiment()}"
                                             update="@(.expDataClass)"
+                                            disabled="#{experimentBean.isNewExpButtonDisabled()}"
                                             oncomplete="PF('dlg_experimentData').show();"/>
+                                        <p:tooltip
+                                            position="top"
+                                            for="newExpButtonColumn"
+                                            value="#{experimentBean.getNewExpToolTip()}">
+                                        </p:tooltip>
                                     </p:column>
                                 </p:row>
                             </p:panelGrid>

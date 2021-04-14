@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.DTO; 
+import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -37,7 +37,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     private String login;
 
     private String password;
-    
+
     private String shortcut;
 
     /* default constructor */
@@ -54,7 +54,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         this.phone = ue.getPhone();
         this.login = ue.getLogin();
         this.password = ue.getPassword();
-        this.shortcut=ue.getShortCut();
+        this.shortcut = ue.getShortCut();
     }
 
     @Override
@@ -83,6 +83,16 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
 
     public String getPhone() {
         return this.phone;
+    }
+
+    /**
+     * A valid shortcut must not be empty
+     *
+     * @return
+     */
+    public boolean hasShortCut() {
+        return getShortcut() != null
+                && !getShortcut().trim().isEmpty();
     }
 
     @Override
@@ -156,5 +166,4 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     public Type getTypeToDisplay() {
         return new Type(SearchTarget.USER);
     }
-
 }

@@ -417,6 +417,23 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         return exp.getExperimentId().equals(this.experiment.getExperimentId());
     }
 
+    public boolean isNewExpButtonDisabled() {
+        logger.info(currentUser.getShortcut());
+        return !currentUser.hasShortCut();
+    }
+
+    public String getNewExpToolTip() {
+        if (!isNewExpButtonDisabled()) {
+            return messagePresenter.presentMessage("exp_save_button_tooltip_valide");
+        } else {
+            if (currentUser.hasShortCut()) {
+                return messagePresenter.presentMessage("exp_save_button_tooltip_noAccessRight");
+            } else {
+                return messagePresenter.presentMessage("exp_save_button_tooltip_noShortcut");
+            }
+        }
+    }
+
     private void selectExperiment(Experiment exp) {
         this.experiment = exp;
         try {
