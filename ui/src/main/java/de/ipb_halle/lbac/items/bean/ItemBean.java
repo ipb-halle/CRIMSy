@@ -165,7 +165,11 @@ public class ItemBean implements Serializable {
             if (mode == Mode.CREATE) {
                 saveNewItem();
             } else {
-                itemService.saveEditedItem(state.getEditedItem(), state.getOriginalItem(), userBean.getCurrentAccount(), containerController.resolveItemPositions());
+                itemService.saveEditedItem(
+                        state.getEditedItem(),
+                        state.getOriginalItem(),
+                        userBean.getCurrentAccount(),
+                        containerController.resolveItemPositions());
             }
             this.printBean.setLabelDataObject(state.getEditedItem());
             itemOverviewBean.reloadItems();
@@ -182,6 +186,10 @@ public class ItemBean implements Serializable {
             state.getEditedItem().setLabel(customLabelValue);
         }
         state.setEditedItem(itemService.saveItem(state.getEditedItem()));
+        if(containerController.getContainer()!=null&&containerController.getItemPositions()!=null){
+            int [] positions=containerController.resolveItemPositions().iterator().next();
+            containerPositionService.saveItemInContainer(state.getEditedItem().getId(), containerController.getContainer().getId(), positions[0], positions[1]);
+        }
     }
 
     public boolean isCustomLabelDisabled() {
