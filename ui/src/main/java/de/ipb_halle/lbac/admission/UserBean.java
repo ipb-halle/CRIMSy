@@ -44,6 +44,7 @@ import javax.validation.constraints.Size;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.bouncycastle.util.Objects;
 
 @SessionScoped
 @Named("userBean")
@@ -232,7 +233,6 @@ public class UserBean implements Serializable {
         if (!this.currentAccount.isPublicAccount()) {
             if (this.currentAccount.getSubSystemType() == AdmissionSubSystemType.LOCAL) {
                 try {
-                    logger.info(" SHORTCUT " + currentAccount.getShortcut());
                     this.currentAccount = this.memberService.save(this.currentAccount);
                 } catch (Exception e) {
                     logger.error(e);
@@ -361,7 +361,7 @@ public class UserBean implements Serializable {
 
     public boolean isAdminAccount() {
         return currentAccount != null
-                && currentAccount.getId() == globalAdmissionContext.getAdminAccount().getId();
+                && currentAccount.getId().equals(globalAdmissionContext.getAdminAccount().getId());
     }
 
     /**

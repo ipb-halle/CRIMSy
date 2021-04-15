@@ -233,7 +233,7 @@ public class SearchBean implements Serializable {
             Experiment experiment=(Experiment) no.getSearchable();
             experimentBean.setExperiment(experiment);
             experimentBean.setSearchTerm(experiment.getCode());
-            experimentBean.actualizeExperimentsList();
+            experimentBean.actionActualizeExperimentsList();
             experimentBean.loadExpRecords();
             navigator.navigate("exp/experiments");
         }
