@@ -157,7 +157,6 @@ public class ItemService {
                 itemGraph,
                 new Attribute("items", AttributeType.BARCODE));
 
-
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(itemGraph, "items");
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = countBuilder.query(condition);
@@ -235,7 +234,22 @@ public class ItemService {
      * @return
      */
     public Solvent loadSolventById(int id) {
-        throw new UnsupportedOperationException("not yet implemented");
+        Query q = em.createNativeQuery("SELECT name FROM solvents WHERE id=:sid");
+        q.setParameter("sid", id);
+        String solventName = (String) q.getSingleResult();
+        return new Solvent(id, solventName, solventName);
+    }
+    
+    public List<Solvent> loadSolvents(){
+        List<Solvent> solvents=new ArrayList<>();
+        Query q = em.createNativeQuery("SELECT id,name FROM solvents");
+        for(Object[] o:(List<Object[]>)q.getResultList()){
+            int id=(int)o[0];
+            String name=(String)o[1];
+            solvents.add(new Solvent(id, name, name));
+        }
+        
+        return solvents;
     }
 
     /**
