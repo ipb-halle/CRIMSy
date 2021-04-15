@@ -213,7 +213,7 @@ public class ItemBean implements Serializable {
         containerTypes = containerService.loadContainerTypes();
         filterAndLocalizeContainerTypes();
         units = loadUnits();
-        solvents = loadSolvents();
+        solvents = loadAndI18nSolvents();
         purities = loadPurities();
         this.printBean.setLabelDataObject(state.getEditedItem());
         this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
@@ -349,11 +349,9 @@ public class ItemBean implements Serializable {
         return purities;
     }
 
-    private List<Solvent> loadSolvents() {
-        List<Solvent> solvents = new ArrayList<>();
-        solvents.add(new Solvent(1, "solvent 1", "Wasser"));
-        solvents.add(new Solvent(2, "solvent 2", "Alkohol"));
-        solvents.add(new Solvent(3, "solvent 3", "Benzin"));
+    private List<Solvent> loadAndI18nSolvents() {
+        List<Solvent> solvents =itemService.loadSolvents();
+        // TO TO: i18n solvents
         return solvents;
     }
 

@@ -365,28 +365,45 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
     }
 
+    /**
+     * Saves a new or edited experiment and puts it in the corresponding list to
+     * show it
+     */
     public void actionSaveExperiment() {
         this.experiment.setProject(projectController.getChoosenProject());
         Experiment savedExp;
         if (this.experiment.getExperimentId() == null) {
-            this.experiment.updateCode(
-                    currentUser.getShortcut(),
-                    String.format(
-                            "%04d", 
-                            experimentService.getNextExperimentNumber(currentUser)));
-            savedExp = this.experimentService.save(this.experiment);
-            messagePresenter.info("exp_save_new");
+            savedExp = saveNewExperiment();
         } else {
-            savedExp = this.experimentService.save(this.experiment);
-            messagePresenter.info("exp_save_edit");
+            savedExp = saveEditedExperiment();
         }
-
-        if (templateMode) {
-            putExpInList(savedExp, templates);
-        } else {
-            putExpInList(savedExp, experiments);
-        }
+        putExpInList(savedExp, getShownExperimentList());
         this.experiment = savedExp;
+    }
+    
+    private Experiment saveNewExperiment() {
+        this.experiment.updateCode(
+                currentUser.getShortcut(),
+                String.format(
+                        "%04d",
+                        experimentService.getNextExperimentNumber(currentUser)));
+        Experiment savedExp = this.experimentService.save(this.experiment);
+        messagePresenter.info("exp_save_new");
+        return savedExp;
+    }
+
+    private Experiment saveEditedExperiment() {
+        Experiment savedExp = this.experimentService.save(this.experiment);
+        messagePresenter.info("exp_save_edit");
+        return savedExp;
+    }
+
+    private List<Experiment> getShownExperimentList() {
+        if (templateMode) {
+            return templates;
+        } else {
+            return experiments;
+        }
     }
 
     private void putExpInList(Experiment exp, List<Experiment> list) {
@@ -425,7 +442,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public boolean isNewExpButtonDisabled() {
-        logger.info(currentUser.getShortcut());
         return !currentUser.hasShortCut();
     }
 
@@ -634,7 +650,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         return searchTerm == null || searchTerm.trim().isEmpty();
     }
 
-    public void actualizeExperimentsList() {
+    public void actionActualizeExperimentsList() {
         if (!isSearchTermEmpty()) {
             if (templateMode) {
                 templates = loadExperiments(templateMode);

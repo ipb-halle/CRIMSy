@@ -92,9 +92,9 @@
                             </b:column>
                             <b:column span="3">
                                 <b:commandButton
-                                    action="#{experimentBean.actualizeExperimentsList()}"
+                                    action="#{experimentBean.actionActualizeExperimentsList()}"
                                     ajax="true"
-                                    value="search"
+                                    value="#{msgs.expSearchBtn}" 
                                     update="experimentForm"/>
                             </b:column>
                         </b:row>
