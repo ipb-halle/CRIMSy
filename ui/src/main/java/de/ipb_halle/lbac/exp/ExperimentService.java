@@ -37,12 +37,15 @@ import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
 import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.lang.DbField;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.OrderDirection;
 import de.ipb_halle.lbac.search.lang.SqlBuilder;
 import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -98,7 +101,7 @@ public class ExperimentService implements Serializable {
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         ExperimentSearchConditionBuilder conBuilder = new ExperimentSearchConditionBuilder(graph, "experiments");
         Condition con = conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
-        String sql = sqlBuilder.query(con);
+        String sql = sqlBuilder.query(con,createOrderList());
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -124,6 +127,17 @@ public class ExperimentService implements Serializable {
             return projectService.loadProjectById(e.getProjectid());
         }
         return null;
+    }
+    
+    private List<DbField> createOrderList() {
+        DbField labelField = new DbField()
+                .setColumnName("experimentid")
+                .setTableName("experiments")
+                .setOrderDirection(OrderDirection.ASC);
+
+        List<DbField> orderList = new ArrayList<>();
+        orderList.add(labelField);
+        return orderList;
     }
 
     /**

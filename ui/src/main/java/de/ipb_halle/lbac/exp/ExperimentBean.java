@@ -290,6 +290,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     public void actionStartEditExperiment(Experiment exp) {
         creationState = CreationState.EDIT;
         this.experiment = exp;
+        projectController = new ExpProjectController(projectService, currentUser);
     }
 
     /**
