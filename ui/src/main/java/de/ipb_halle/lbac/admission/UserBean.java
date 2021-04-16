@@ -44,7 +44,6 @@ import javax.validation.constraints.Size;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import org.bouncycastle.util.Objects;
 
 @SessionScoped
 @Named("userBean")
@@ -92,6 +91,9 @@ public class UserBean implements Serializable {
 
     @Inject
     private UserPluginSettingsBean pluginSettings;
+
+    @Inject
+    private UserTimeZoneSettingsBean timeZoneSettings;
 
     private Navigator navigator;
 
@@ -306,6 +308,10 @@ public class UserBean implements Serializable {
 
     public UserPluginSettingsBean getPluginSettings() {
         return pluginSettings;
+    }
+
+    public UserTimeZoneSettingsBean getTimeZoneSettings() {
+        return timeZoneSettings;
     }
 
     public String getNewPassword() {
