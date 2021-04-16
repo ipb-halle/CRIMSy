@@ -40,17 +40,22 @@
                     <div class="ui-g-3">
                         #{msgs.expAddNew_dialog_code}
                     </div>
-                    <div class="ui-g-9">
+                 <div class="ui-g-2 experimentFixedCodePart">
                         <p:inputText 
-                            label="#{msgs.expAddNew_dialog_code}" 
-                            value="#{experimentBean.getExperiment().code}" />
+                            disabled="true"
+                            value="#{experimentBean.getExperimentCodePrefix()}"/>
+                    </div>
+                    <div class="experimentVariableCodePart">
+                        <p:inputText 
+                            required="true"
+                            value="#{experimentBean.experimentCodeSuffix}" />
                     </div>
                 </div>
                 <div class="ui-g">
                     <div class="ui-g-3">
                         #{msgs.expAddNew_dialog_description}
                     </div>
-                    <div class="ui-g-9">
+                    <div class="expDescription">
                         <p:inputText
                             label="#{msgs.expAddNew_dialog_description}"
                             value="#{experimentBean.getExperiment().description}"/>
@@ -60,6 +65,7 @@
                     <div class="ui-g-3">#{msgs.expAddNew_dialog_project}</div>
                     <div class="ui-g-9">
                         <p:selectOneMenu 
+                            styleClass="expProjectCB"
                             label="#{msgs.expAddNew_dialog_project}"
                             value="#{experimentBean.getProjectController().choosenProject}"
                             converter="ExpProjectConverter">
@@ -75,14 +81,18 @@
                     <div class="ui-g-3">
                         <p:commandButton value="#{msgs.expAddNew_dialog_save}" 
                                          action="#{experimentBean.actionSaveExperiment}" 
-                                         update="@all"
+                                         update="expRecordsForm
+                                                @(.expListEntry)
+                                                @(.experimentActionButton)"
                                          onclick="PF('dlg_experimentData').hide();" />
                     </div>
                     <div class="ui-g-3">
                         <p:commandButton value="#{msgs.expAddNew_dialog_clone}"
                                          rendered="#{experimentBean.copyEnabled}"
                                          action="#{experimentBean.actionCopyTemplate}" 
-                                         update="@all"
+                                         update="expRecordsForm
+                                                @(.expListEntry)
+                                                @(.experimentActionButton)"
                                          onclick="PF('dlg_experimentData').hide();" />
                     </div>
                     <div class="ui-g-6"> </div>

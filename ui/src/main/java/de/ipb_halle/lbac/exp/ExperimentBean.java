@@ -114,6 +114,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private CreationState creationState = CreationState.CREATE;
     private String searchTerm;
     private final Integer MAX_EXPERIMENTS_TO_LOAD = 50;
+    private ExperimentCode experimentCode;
 
     public enum CreationState {
         CREATE,
@@ -173,6 +174,11 @@ public class ExperimentBean implements Serializable, ACObjectBean {
                 this.globalAdmissionContext.getPublicAccount(), // owner
                 new Date() // creation time
         );
+        if (currentUser == null) {
+            experimentCode = ExperimentCode.createNewInstance("");
+        } else {
+            experimentCode = ExperimentCode.createNewInstance(currentUser.getShortcut());
+        }
         this.expRecords = new ArrayList<>();
         creationState = CREATE;
     }
@@ -291,6 +297,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         creationState = CreationState.EDIT;
         this.experiment = exp;
         projectController = new ExpProjectController(projectService, currentUser);
+        experimentCode = ExperimentCode.createInstanceOfExistingExp(exp.getCode());
     }
 
     /**
@@ -381,19 +388,19 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         putExpInList(savedExp, getShownExperimentList());
         this.experiment = savedExp;
     }
-    
+
     private Experiment saveNewExperiment() {
-        this.experiment.updateCode(
-                currentUser.getShortcut(),
-                String.format(
-                        "%04d",
-                        experimentService.getNextExperimentNumber(currentUser)));
+        this.experiment.setCode(
+                experimentCode.generateNewExperimentCode(
+                        experimentService.getNextExperimentNumber(currentUser))
+                );
         Experiment savedExp = this.experimentService.save(this.experiment);
         messagePresenter.info("exp_save_new");
         return savedExp;
     }
 
     private Experiment saveEditedExperiment() {
+        this.experiment.setCode(experimentCode.generateExistingExperimentCode());
         Experiment savedExp = this.experimentService.save(this.experiment);
         messagePresenter.info("exp_save_edit");
         return savedExp;
@@ -847,10 +854,23 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     /**
-     * Whether to disable the manipulation buttons shown for each experiment record
-     * in the record list. This is the case as soon as a record is edited.
+     * Whether to disable the manipulation buttons shown for each experiment
+     * record in the record list. This is the case as soon as a record is
+     * edited.
      */
     public boolean isExpRecordButtonsDisabled() {
         return (expRecordIndex != -1);
+    }
+
+    public String getExperimentCodePrefix() {
+        return experimentCode.getPrefix();
+    }
+
+    public String getExperimentCodeSuffix() {
+        return experimentCode.getSuffix();
+    }
+
+    public void setExperimentCodeSuffix(String suffix) {
+        experimentCode.setSuffix(suffix);
     }
 }

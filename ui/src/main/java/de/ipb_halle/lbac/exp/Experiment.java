@@ -236,9 +236,4 @@ public class Experiment extends ACObject implements DTO, Searchable {
     public void setProject(Project project) {
         this.project = project;
     }
-    
-    public void updateCode(String shortcut,String number){
-        code=shortcut+number+"_"+code;
-    }
-    
 }

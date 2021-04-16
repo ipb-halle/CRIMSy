@@ -236,10 +236,10 @@
 }
 
 .recordButtonGroup tbody tr{
-  border-width: 0px;
+    border-width: 0px;
 }
 .recordButtonGroup tbody tr td{
-  border-width: 0px !important;
+    border-width: 0px !important;
 }
 
 .experimentRecordContainer .dataTables_wrapper .row:last-child{
@@ -255,6 +255,33 @@
 
 .shownExperiments .dataTables_wrapper div:first-of-type .dataTables_length {
     height: 1px;
+}
+
+.experimentFixedCodePart{
+    width: 80px;
+    padding-right: 0px;
+}
+.experimentFixedCodePart input{
+    width: 100%;
+    padding-right: 0px;
+}
+.experimentVariableCodePart{
+    padding-left: 0px;
+    padding-top:7px;
+}
+
+.experimentVariableCodePart input{
+    width:307px;
+}
+.expDescription{
+    padding-left: 7px;
+}
+.expDescription input{
+    width:380px;
+}
+
+.expProjectCB{
+    width:380px;
 }
 
 
