@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.ipb_halle.lbac.timezone.TimeZonesBean;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
+import de.ipb_halle.lbac.util.pref.PreferenceType;
 
 /**
  * This bean manages the user preferences for the time zone.
@@ -41,7 +42,7 @@ public class UserTimeZoneSettingsBean implements Serializable {
     /**
      * Key in the preferences table for the time zone.
      */
-    private static final String TIMEZONE_PREFERENCE_KEY = "TimeZone";
+    private static final String TIMEZONE_PREFERENCE_KEY = PreferenceType.TimeZone.toString();
 
     @Inject
     private TimeZonesBean timeZoneBean;

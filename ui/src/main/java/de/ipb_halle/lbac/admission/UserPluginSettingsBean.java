@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.WebXmlImpl;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
+import de.ipb_halle.lbac.util.pref.PreferenceType;
 import de.ipb_halle.molecularfaces.MolPluginCore.PluginType;
 
 /**
@@ -46,7 +47,7 @@ public class UserPluginSettingsBean implements Serializable {
     /**
      * Key in the preferences table for the chemical structure plugin type.
      */
-    private static final String MOLPLUGINTYPE_PREFERENCE_KEY = "MolPluginType";
+    private static final String MOLPLUGINTYPE_PREFERENCE_KEY = PreferenceType.MolPluginType.toString();
 
     /**
      * Name of the web.xml context-param that specifies the available chemical
