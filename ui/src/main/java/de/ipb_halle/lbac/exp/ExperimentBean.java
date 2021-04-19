@@ -301,6 +301,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.experiment = exp;
         projectController = new ExpProjectController(projectService, currentUser);
         experimentCode = ExperimentCode.createInstanceOfExistingExp(exp.getCode());
+        loadExpRecords();
     }
 
     /**
