@@ -44,11 +44,11 @@
     <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
 </factory>
     <!--  managed beans  -->
-    <managed-bean>
+    <!--<managed-bean>
         <managed-bean-name>Navigator</managed-bean-name>
         <managed-bean-class>de.ipb_halle.lbac.navigation.Navigator</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
+    </managed-bean>-->
 
     <!--  navigation rules  -->
 
