@@ -44,9 +44,9 @@ import org.apache.logging.log4j.Logger;
  * @author fbroda
  */
 public class Experiment extends ACObject implements DTO, Searchable {
-    
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    
+
     private Integer experimentid;
 
     /**
@@ -66,7 +66,7 @@ public class Experiment extends ACObject implements DTO, Searchable {
      * (copied) to save users from repetitions
      */
     private boolean template;
-    
+
     protected int projectId;
     protected ACList acList;
     protected User owner;
@@ -122,7 +122,7 @@ public class Experiment extends ACObject implements DTO, Searchable {
         this.creationTime = e.getCtime();
         this.project = project;
     }
-    
+
     @Override
     public ExperimentEntity createEntity() {
         ExperimentEntity entity = new ExperimentEntity()
@@ -139,82 +139,82 @@ public class Experiment extends ACObject implements DTO, Searchable {
         entity.setOwner(this.owner.getId());
         return entity;
     }
-    
+
     @Override
     public ACList getACList() {
         return acList;
     }
-    
+
     public String getCode() {
         return this.code;
     }
-    
+
     public Date getCreationTime() {
         return creationTime;
     }
-    
+
     public String getDescription() {
         return this.description;
     }
-    
+
     public boolean getTemplate() {
         return this.template;
     }
-    
+
     public int getProjectId() {
         return projectId;
     }
-    
+
     public Integer getExperimentId() {
         return this.experimentid;
     }
-    
+
     @Override
     public User getOwner() {
         return owner;
     }
-    
+
     @Override
     public ACObject setACList(ACList acList) {
         this.acList = acList;
         return this;
     }
-    
+
     public void setCode(String code) {
         this.code = code;
     }
-    
+
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
     }
-    
+
     public void setExperimentId(Integer experimentid) {
         this.experimentid = experimentid;
     }
-    
+
     @Override
     public ACObject setOwner(User owner) {
         this.owner = owner;
         return this;
     }
-    
+
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public void setTemplate(boolean template) {
         this.template = template;
     }
-    
+
     public Integer getId() {
         return experimentid;
     }
-    
+
     @Override
     public String getNameToDisplay() {
         return code;
     }
-    
+
     @Override
     public boolean isEqualTo(Object other) {
         if (!(other instanceof Experiment)) {
@@ -223,17 +223,29 @@ public class Experiment extends ACObject implements DTO, Searchable {
         Experiment otherUser = (Experiment) other;
         return Objects.equals(otherUser.getId(), this.getId());
     }
-    
+
     @Override
     public Type getTypeToDisplay() {
         return new Type(SearchTarget.EXPERIMENT);
     }
-    
+
     public Project getProject() {
         return project;
     }
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public Experiment createExpFromTemplate(String newCode) {
+        Experiment copy = new Experiment(
+                null,
+                newCode,
+                description,
+                false,
+                acList,
+                owner,
+                new Date());
+        return copy;
     }
 }

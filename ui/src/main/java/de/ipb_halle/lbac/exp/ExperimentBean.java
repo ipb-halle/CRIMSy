@@ -250,16 +250,18 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * make an experiment from the current template
      */
     public void actionCopyTemplate() {
-        Date copyDate = new Date();
+
         // load the template records
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Object> cmap = new HashMap<>();
         cmap.put(ExpRecordService.EXPERIMENT_ID, this.experiment.getExperimentId());
         List<ExpRecord> records = this.expRecordService.load(cmap, currentUser);
 
         // copy the experiment
-        this.experiment.setExperimentId(null);
-        this.experiment.setTemplate(false);
-        this.experiment.setCreationTime(copyDate);
+        this.experiment = experiment.createExpFromTemplate(
+                experimentCode.generateNewExperimentCode(
+                        experimentService.getNextExperimentNumber(currentUser)
+                ));
+
         /* ToDo: xxxx set Owner 
         this.experiment.setOwner(...);
          */
@@ -267,7 +269,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
         // copy all experiment records
         for (ExpRecord rec : records) {
-            rec.setCreationTime(copyDate);
+            rec.setCreationTime(experiment.getCreationTime());
             rec.setExperiment(this.experiment);
             rec.setExpRecordId(null);
             rec.copy();
@@ -277,7 +279,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         // activate the copied experiment 
         this.templateMode = false;
         loadExpRecords();
-        this.experiments.add(experiment);
+        this.experiments.add(0,experiment);
     }
 
     /**
@@ -417,8 +419,10 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     private List<Experiment> getShownExperimentList() {
         if (templateMode) {
+            logger.info("Put experiment in Templates");
             return templates;
         } else {
+            logger.info("Put experiment in experiments");
             return experiments;
         }
     }

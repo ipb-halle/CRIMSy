@@ -72,7 +72,10 @@
                 <b:row>
                     <h:form id="experimentForm">
                         <b:column id="experimentColumn" span="3">
-                            <p:tabMenu activeIndex="#{experimentBean.templateMode ? 0 : 1}">
+                            <p:tabMenu 
+                                id="experimentTabId"
+                                styleClass="ExpTabMenu"
+                                activeIndex="#{experimentBean.templateMode ? 0 : 1}">
                                 <p:menuitem value="#{msgs.expTemplates}" 
                                             action="#{experimentBean.actionCancel()}" 
                                             update="experimentForm expRecordsForm" 

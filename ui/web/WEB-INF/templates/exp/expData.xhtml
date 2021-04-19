@@ -81,8 +81,10 @@
                     <div class="ui-g-3">
                         <p:commandButton value="#{msgs.expAddNew_dialog_save}" 
                                          action="#{experimentBean.actionSaveExperiment}" 
+                                         rendered="#{!experimentBean.copyEnabled}"
                                          update="expRecordsForm
-                                                @(.expListEntry)
+                                                @(.experimentsDataTable)
+                                                @(.ExpTabMenu)
                                                 @(.experimentActionButton)"
                                          onclick="PF('dlg_experimentData').hide();" />
                     </div>
@@ -91,7 +93,8 @@
                                          rendered="#{experimentBean.copyEnabled}"
                                          action="#{experimentBean.actionCopyTemplate}" 
                                          update="expRecordsForm
-                                                @(.expListEntry)
+                                                @(.experimentsDataTable)
+                                                @(.ExpTabMenu)
                                                 @(.experimentActionButton)"
                                          onclick="PF('dlg_experimentData').hide();" />
                     </div>
