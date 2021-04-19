@@ -23,15 +23,15 @@ import de.ipb_halle.lbac.globals.NavigationConstants;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Named("navigator")
 @SessionScoped
-@DependsOn({"userBean","systemSettings"})
 public class Navigator implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,11 +44,14 @@ public class Navigator implements Serializable {
     @Inject
     private SystemSettings systemSettings;
 
+    private transient Logger logger;
+
     /**
      * Initialize the Navigator for the session. 
      */
     @PostConstruct
     private void initNavigator() {
+        this.logger = LogManager.getLogger(this.getClass().getName());
         initStartPage();
     }
 

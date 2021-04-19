@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.timezone.TimeZonesBean;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 
@@ -35,6 +36,7 @@ public class UserBeanDeployment {
                 .addClass(LdapProperties.class)
                 .addClass(MembershipOrchestrator.class)
                 .addClass(SystemSettings.class)
+                .addClass(Navigator.class)
                 .addClass(PreferenceService.class)
                 .addClass(UserPluginSettingsBean.class)
                 .addClass(TimeZonesBean.class)
