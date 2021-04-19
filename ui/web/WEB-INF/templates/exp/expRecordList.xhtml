@@ -71,14 +71,16 @@
                         </p:commandLink>
                         <p:commandLink title="Link erstellen" 
                                        styleClass="experimentRecordButton"
-                                       update="@(.experimentRecordContainer)"
+                                       process="@this"
+                                       update="ccDlgLinkCreation:dlgLinkCreationForm @(.experimentRecordContainer)"
                                        disabled="#{experimentBean.expRecordButtonsDisabled}"
                                        rendered="#{experimentBean.areLinksAddable(rec)}"
-                                       action="#{experimentBean.actionEditRecord(rec)}"
-                                       onclick="PF('dlg_createLink').show();
+                                       action="#{experimentBean.actionStartLinkCreation(rec)}"
+                                       oncomplete="PF('dlg_createLink').show();
                                            if (typeof dlg_createLink_panelMaterialEdit_molEditor !== 'undefined'
                                                    &amp;&amp; dlg_createLink_panelMaterialEdit_molEditor != null)
-                                           {dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());}">
+                                           {dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());}"
+                        >
                             <h:outputText styleClass="fa fa-link" />
                         </p:commandLink>
                         <p:commandLink title="#{msgs.Edit}" 

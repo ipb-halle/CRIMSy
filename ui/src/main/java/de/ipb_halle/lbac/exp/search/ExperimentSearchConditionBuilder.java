@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**

@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.datalink.LinkCreationProcess;
 import static de.ipb_halle.lbac.exp.ExperimentBean.CreationState.*;
 import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.image.ImageController;
@@ -81,6 +82,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     @Inject
     protected LinkedDataAgent linkedDataAgent;
+
+    @Inject
+    protected LinkCreationProcess linkCreationProcess;
 
     @Inject
     protected MaterialAgent materialAgent;
@@ -283,7 +287,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         setExpRecordIndex(recordIn.getIndex());
         if ((this.expRecordIndex > -1) && (this.expRecordIndex < this.expRecords.size())) {
             ExpRecord record = recordIn;//this.expRecords.get(this.expRecordIndex);
-            this.logger.info("actionEditRecord(): ExpRecordId = {}", record.getExpRecordId());
             record.setEdit(true);
             createExpRecordController(record.getType().toString());
         }
@@ -389,11 +392,16 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         this.experiment = savedExp;
     }
 
+    public void actionStartLinkCreation(ExpRecord record) {
+        linkCreationProcess.startLinkCreation();
+        actionEditRecord(record);
+    }
+
     private Experiment saveNewExperiment() {
         this.experiment.setCode(
                 experimentCode.generateNewExperimentCode(
                         experimentService.getNextExperimentNumber(currentUser))
-                );
+        );
         Experiment savedExp = this.experimentService.save(this.experiment);
         messagePresenter.info("exp_save_new");
         return savedExp;

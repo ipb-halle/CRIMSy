@@ -77,6 +77,12 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     }
 
+    /**
+     * Constructor for test purposes to inject the dependencies
+     * @param materialAgent
+     * @param itemAgent
+     * @param experimentBean 
+     */
     public LinkCreationProcess(
             MaterialAgent materialAgent,
             ItemAgent itemAgent,
@@ -98,7 +104,8 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
     public void startLinkCreation() {
         errorMessage = "";
         material = null;
-        linkText = null;
+        item=null;
+        linkText = "";
         type = LinkType.MATERIAL;
     }
 

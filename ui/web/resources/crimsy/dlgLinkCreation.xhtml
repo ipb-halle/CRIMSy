@@ -34,7 +34,7 @@
     </composite:interface>
 
     <composite:implementation >
-        <h:form id="dlgLinkCreationForm">
+        
             <p:dialog id="dlgCreateLink"
                       header="#{msgs.linkCreation_dialogHeader}"
                       styleClass="dlgMaterialEdit"
@@ -42,6 +42,10 @@
                       modal="true" 
                       width="1200"
                       height="600">
+             <p:ajax event="close" 
+                     oncomplete="PF('wiz').loadStep('step1');"/>
+            <h:form 
+            id="dlgLinkCreationForm">
                 <p:panel
                     styleClass="linkWizardPanel">
                     <p:wizard 
@@ -51,7 +55,6 @@
                             id="step1"
                             title="#{msgs.linkCreation_step1_header}">
                             <p:panelGrid
-                                
                                 styleClass="panelBorderless linkCreation_panelStep1">
                                 <p:row>
                                     <p:column colspan="1">
@@ -111,8 +114,9 @@
                         </p:tab>
                     </p:wizard>
                 </p:panel>
+              </h:form>
             </p:dialog>
-        </h:form>
+      
     </composite:implementation>
 </html>
 

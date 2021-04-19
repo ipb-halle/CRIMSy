@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.exp;
 
+import de.ipb_halle.lbac.datalink.LinkCreationProcess;
 import de.ipb_halle.lbac.datalink.LinkedDataAgent;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.image.ImageService;
@@ -39,6 +40,7 @@ public class ExperimentDeployment {
                 .addClass(ItemService.class)
                 .addClass(LinkedDataAgent.class)
                 .addClass(ExperimentBean.class)
+                .addClass(LinkCreationProcess.class)
                 .addClass(ExperimentService.class)
                 .addClass(ImageService.class)
                 .addClass(ItemAgent.class)

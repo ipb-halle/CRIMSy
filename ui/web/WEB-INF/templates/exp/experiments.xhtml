@@ -41,10 +41,11 @@
         <crimsy:dlgItemEdit
             id="ccDlgItemEdit"
             agent="#{experimentBean.itemAgent}" />
-
-        <crimsy:dlgLinkCreation
-            id="ccDlgLinkCreation"/>
-
+        <h:panelGroup
+            styleClass="linkCreationPanelGroup">
+            <crimsy:dlgLinkCreation
+                id="ccDlgLinkCreation"/>
+        </h:panelGroup>
         <crimsy:acobjectModal
             acobjectController="#{experimentBean.acObjectController}"
             groupsAgent="#{groupAgent}"

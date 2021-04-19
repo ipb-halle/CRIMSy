@@ -155,9 +155,7 @@ public class ItemSearchConditionBuilder extends SearchConditionBuilder {
     public List<Condition> getItemCondition(SearchRequest request, boolean toplevel) {
         List<Condition> conditionList = new ArrayList<>();
         for (SearchCategory key : request.getSearchValues().keySet()) {
-            logger.info("KEY: " + key);
             switch (key) {
-
                 case DEACTIVATED:
                     addDeactivatedCondition(conditionList, request.getSearchValues().get(key).getValues());
                     break;

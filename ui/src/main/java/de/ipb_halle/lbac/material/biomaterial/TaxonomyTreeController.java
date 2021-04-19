@@ -23,12 +23,9 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -270,7 +267,6 @@ public class TaxonomyTreeController implements Serializable {
                 isIn = true;
             }
         }
-        logger.info("Try to Add " + taxo.getId() + " (" + taxo.getFirstName() + "): " + isIn);
         if (!isIn) {
             shownTaxonomies.add(taxo);
         }
