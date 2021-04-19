@@ -49,7 +49,6 @@ public class Navigator implements Serializable {
      */
     @PostConstruct
     private void initNavigator() {
-        this.userBean.setNavigator(this);
         initStartPage();
     }
 

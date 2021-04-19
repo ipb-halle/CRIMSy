@@ -95,6 +95,7 @@ public class UserBean implements Serializable {
     @Inject
     private UserTimeZoneSettingsBean timeZoneSettings;
 
+    @Inject
     private Navigator navigator;
 
     private String login = "";
@@ -392,10 +393,6 @@ public class UserBean implements Serializable {
 
     public void setLogin(String l) {
         this.login = l;
-    }
-
-    public void setNavigator(Navigator n) {
-        this.navigator = n;
     }
 
     public void setNewPassword(String n) {
