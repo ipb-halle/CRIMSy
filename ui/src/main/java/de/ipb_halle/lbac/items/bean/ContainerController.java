@@ -90,8 +90,30 @@ public class ContainerController {
         return result;
     }
 
-    public String getLetterByIndex(int index) {
-        return Character.toString((char) (65 + index));
+    /**
+     * Compute the row and column label for containers. Honour swapping of axes and
+     * whether counting starts from '1' or '0'. Containers will be drawn with position
+     * 'A0' / 'A1' in the upper left corner.
+     * @param dimension <code>0 == x-axis, 1 == y-axis</code>
+     * @param index the index value on the axis
+     * @return the row or column label
+     */
+    public String getDimensionLabel(int dimension, int index) {
+
+        if (((container.getSwapDimensions() && (dimension == 0))
+            || ((! container.getSwapDimensions()) && (dimension == 1)))) {
+            int i = index + 1;
+            StringBuilder sb = new StringBuilder();
+            do {
+                int r = (i + 25) % 26;
+                sb.append(Character.toString((char) (65 + r)));
+                i -= r;
+                i = i / 26;
+            } while (i > 0);
+            return sb.reverse().toString();
+        }
+
+        return Integer.toString(index + (container.getZeroBased() ? 0 : 1));
     }
 
     public boolean[][] getItemPositions() {

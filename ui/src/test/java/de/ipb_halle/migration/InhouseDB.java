@@ -172,12 +172,16 @@ public class InhouseDB {
         Taxonomy taxonomy = new Taxonomy(this);
         Experiments experiments = new Experiments(this);
         Correlation correlation = new Correlation(this);
+        Samples samples = new Samples(this);
 
+/*
         runInitial();
         compounds.importData();
         taxonomy.importData();
         experiments.importData();
         correlation.importData();
+*/
+        samples.importData();
     }
 
     public int loadRefId(String sql, int id, String refKey) throws Exception {

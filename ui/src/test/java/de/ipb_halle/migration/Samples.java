@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.migration;
 
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
@@ -50,6 +51,7 @@ public class Samples {
     
     public final static String INPUT_SAMPLES = "INPUT_SAMPLES";
     public final static String INPUT_EXTRACTS = "INPUT_EXTRACTS";
+    public final static String UNKNOWN_CONTAINER = "UNKNOWN_CONTAINER";
 
     private InhouseDB inhouseDB;
     private Map<String, ContainerEntity> containers;
@@ -65,6 +67,17 @@ public class Samples {
                 new SqlInsertBuilder(new EntityGraph(ItemEntity.class)));
         this.inhouseDB.addInsertBuilder(ContainerEntity.class.getName(),
                 new SqlInsertBuilder(new EntityGraph(ContainerEntity.class)));
+    }
+
+    private ContainerEntity createContainer() {
+        return null;
+    }
+
+    public ContainerEntity getContainer(String place) {
+        if ((place == null) || place.isEmpty()) {
+            return containers.get(UNKNOWN_CONTAINER);
+        }
+        return null;
     }
 
     public void importData() throws Exception {
@@ -166,14 +179,14 @@ public class Samples {
 
 /*
         ContainerEntity container = getContainer(place);
-        Integer materialId = getMaterialId(molProcId);
+        Material material= getMaterial(molProcId);
 
         Item item = new Item();
         item.setAmount(amount);
         item.setUnit("mg");
         item.setConcentration(...purity...);
         item.setDescription(...);
-        item.setMaterialid(materialId);
+        item.setMaterialid(material.getMaterialid());
         item.setProjectId(this.inhouseDB.getConfigInt(InhouseDB.PROJECT_ID));
         item.setPurity(...purity...);
         item.setSolventid(...);

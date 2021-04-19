@@ -30,7 +30,7 @@ limitations under the License.
             modal="true" 
             styleClass="containerEditModal"
             header="#{containerEditBean.getDialogTitle()}"
-            width="400px">
+            width="600px">
             <center>
                 <b:form 
                     id="editForm"
@@ -41,14 +41,14 @@ limitations under the License.
 
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2" styleClass="containerEditLabel">
+                            <b:column span="4" styleClass="containerEditLabel">
                                 <h:outputText value="#{msgs.container_edit_label_type}"/>
                             </b:column>
                         </b:row>
 
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
+                            <b:column span="4">
                                 <b:selectOneMenu 
                                     value="#{containerEditBean.containerType}" 
                                     ajax="true"
@@ -67,7 +67,7 @@ limitations under the License.
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
-                                span="2"
+                                span="4"
                                 styleClass="containerEditLabel">
                                 <h:outputText
                                     value="#{msgs.container_edit_label_label}"/>
@@ -75,7 +75,7 @@ limitations under the License.
                         </b:row>
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
+                            <b:column span="4">
                                 <b:inputText
                                     ajax="true"
                                     id="editNameInputField"
@@ -88,7 +88,7 @@ limitations under the License.
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
-                                span="2"
+                                span="4"
                                 styleClass="containerEditLabel">
                                 <h:outputText
                                     value="#{msgs.container_edit_label_project}"/>
@@ -97,7 +97,7 @@ limitations under the License.
 
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
+                            <b:column span="4">
                                 <p:autoComplete value="#{containerEditBean.preferredProjectName}"
                                                 maxResults="10"
                                                 completeMethod="#{containerSearchMaskBean.getSimilarProjectNames}"
@@ -108,7 +108,7 @@ limitations under the License.
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
-                                span="2"
+                                span="4"
                                 styleClass="containerEditLabel">
                                 <h:outputText 
                                     value="#{msgs.container_edit_label_location}"
@@ -117,7 +117,7 @@ limitations under the License.
                         </b:row>
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2">
+                            <b:column span="4">
                                 <p:autoComplete value="#{containerEditBean.containerLocation}"
                                                 maxResults="10"
                                                 converter="containerConverter"
@@ -137,7 +137,7 @@ limitations under the License.
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
-                                span="2"
+                                span="4"
                                 styleClass="containerEditLabel">
                                 <h:outputText 
                                     rendered="#{containerEditBean.isDimensionVisible()}"
@@ -162,7 +162,7 @@ limitations under the License.
                             </b:column>
                             <b:column
                                 id="heightcolId"
-                                offset="2"
+                                offset="1"
                                 span="1"
                                 >
                                 <b:inputText
@@ -175,34 +175,68 @@ limitations under the License.
                                     <f:converter converterId="InputConverter" />
                                 </b:inputText>
                             </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column span="2"
-                                      rendered="#{containerEditBean.isSecurityLevelVisible()}"
-                                      styleClass="containerEditLabel">
-                                <h:outputText 
-                                    value="#{msgs.container_edit_label_savetylevel}"/>
+                            <b:column
+                                id="zerocolId"
+                                offset="2"
+                                span="1"
+                                >
+                                <b:switch
+                                    disabled="#{!containerEditBean.isEditable()}"
+                                    rendered="#{containerEditBean.isDimensionVisible()}"
+                                    id="zero"
+                                    value="#{containerEditBean.containerZeroBased}"
+                                    onText="0"
+                                    offText="1"
+                                    tooltip="#{msgs.container_edit_zero_tooltip}"
+                                    styleClass="containerEditDimesionField"
+                                    label="#{msgs.container_edit_label_zero}">
+                                </b:switch>
+                            </b:column>
+                            <b:column
+                                id="swapcolId"
+                                offset="3"
+                                span="1"
+                                >
+                                <b:switch 
+                                    disabled="#{!containerEditBean.isEditable()}"
+                                    rendered="#{containerEditBean.isDimensionVisible()}"
+                                    id="swap"
+                                    value="#{containerEditBean.containerSwapDimensions}"
+                                    onText="#{msgs.container_edit_swap_cols}"
+                                    offText="#{msgs.container_edit_swap_rows}"
+                                    tooltip="#{msgs.container_edit_swap_tooltip}"
+                                    styleClass="containerEditDimesionField"
+                                    label="#{msgs.container_edit_label_swap}">
+                                </b:switch>
                             </b:column>
                         </b:row>
                         <b:row
                             styleClass="containerFilterRow">
-                            <b:column span="2"
+                            <b:column span="4"
+                                      rendered="#{containerEditBean.isGmoSafetyLevelVisible()}"
+                                      styleClass="containerEditLabel">
+                                <h:outputText 
+                                    value="#{msgs.container_edit_label_gmosafetylevel}"/>
+                            </b:column>
+                        </b:row>
+                        <b:row
+                            styleClass="containerFilterRow">
+                            <b:column span="4"
                                       >
                                 <b:selectOneMenu 
-                                    value="#{containerEditBean.securityLevel}" 
+                                    value="#{containerEditBean.gmoSafetyLevel}" 
                                     styleClass="containerEditInputfield"
-                                    rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                                    rendered="#{containerEditBean.isGmoSafetyLevelVisible()}">
                                     <f:selectItems
-                                        value="#{containerEditBean.getGvoClasses()}"/>
+                                        value="#{containerEditBean.getGmoSafetyLevels()}"/>
                                 </b:selectOneMenu>
                             </b:column>
                         </b:row>
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
-                                span="2" 
-                                rendered="#{containerEditBean.isSecurityLevelVisible()}"
+                                span="4" 
+                                rendered="#{containerEditBean.isGmoSafetyLevelVisible()}"
                                 styleClass="containerEditLabel">
                                 <h:outputText 
                                     value="#{msgs.container_edit_label_firearea}"/>
@@ -212,10 +246,10 @@ limitations under the License.
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column 
-                                span="2"
-                                rendered="#{containerEditBean.isSecurityLevelVisible()}">
+                                span="4"
+                                rendered="#{containerEditBean.isGmoSafetyLevelVisible()}">
                                 <b:inputText
-                                    value="#{containerEditBean.fireSection}"
+                                    value="#{containerEditBean.fireArea}"
                                     styleClass="containerEditInputfield">
                                     <f:converter converterId="InputConverter" />
                                 </b:inputText>

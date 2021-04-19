@@ -93,7 +93,8 @@ public class ContainerControllerTest {
 
     @Test
     public void test005_resolveItemPositions() {
-        Assert.assertEquals("A", controller.getLetterByIndex(0));
+        // default: not swapped --> dimension 1 is labeled with letters 
+        Assert.assertEquals("A", controller.getDimensionLabel(1, 0));
     }
 
     @Test

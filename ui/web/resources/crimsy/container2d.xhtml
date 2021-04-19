@@ -45,7 +45,7 @@
                         value="#{itemBean.containerController.getTotalSlots(0)}"
                         var="x">
                         <p:column>
-                            #{x+1}
+                            #{itemBean.containerController.getDimensionLabel(0, x)}
                         </p:column>
                     </p:repeat>
 
@@ -57,7 +57,7 @@
                 var="y">
                 <p:row>
                     <p:column>
-                        #{itemBean.containerController.getLetterByIndex(y)}
+                        #{itemBean.containerController.getDimensionLabel(1, y)}
                     </p:column>
                     <p:repeat 
                         value="#{itemBean.containerController.getTotalSlots(0)}"

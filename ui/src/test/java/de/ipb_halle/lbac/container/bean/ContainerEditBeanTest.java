@@ -66,7 +66,7 @@ public class ContainerEditBeanTest extends TestBase {
     @Test
     public void test001_logIn() {
         bean.setCurrentAccount(new LoginEvent(publicUser));
-        Assert.assertEquals(5, bean.getGvoClasses().size());
+        Assert.assertEquals(5, bean.getGmoSafetyLevels().size());
         bean.getContainerTypesWithRankGreaterZero();
     }
 
@@ -80,10 +80,10 @@ public class ContainerEditBeanTest extends TestBase {
         checkCleanState();
         bean.setContainerName("container-1-room");
         bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(0));
-        bean.setSecurityLevel("Section-1");
-        bean.setGvoClass(bean.getGvoClasses().get(0));
+        bean.setFireArea("Section-1");
+        bean.setGmoSafetyLevel(bean.getGmoSafetyLevels().get(0));
 
-        Assert.assertTrue(bean.isSecurityLevelVisible());
+        Assert.assertTrue(bean.isGmoSafetyLevelVisible());
 
         overviewBean.saveNewContainer();
 
@@ -96,7 +96,7 @@ public class ContainerEditBeanTest extends TestBase {
         bean.setContainerType(bean.getContainerTypesWithRankGreaterZero().get(1));
         bean.setContainerHeight(10);
         bean.setContainerWidth(20);
-        bean.setFireSection("FireSection A");
+        bean.setFireArea("FireArea A");
         bean.setContainerLocation(loadedContainer);
 
         overviewBean.saveNewContainer();
@@ -123,11 +123,11 @@ public class ContainerEditBeanTest extends TestBase {
         Assert.assertEquals(2, loadedContainer.getContainerHierarchy().size());
         Assert.assertNotNull(loadedContainer.getProject());
         Assert.assertTrue(bean.isEditable());
-        Assert.assertFalse(bean.isSecurityLevelVisible());
+        Assert.assertFalse(bean.isGmoSafetyLevelVisible());
     }
 
     @Test
-    public void test002_editContainer() {
+    public void test003_editContainer() {
         bean.setCurrentAccount(new LoginEvent(publicUser));
 
         bean.startNewContainerCreation();
@@ -211,8 +211,8 @@ public class ContainerEditBeanTest extends TestBase {
         bean.startNewContainerCreation();
         bean.setContainerName(values.label);
         bean.setContainerType(values.type);
-        bean.setSecurityLevel(values.fireSection);
-        bean.setGvoClass(values.gvoClass);
+        bean.setFireArea(values.fireArea);
+        bean.setGmoSafetyLevel(values.gmoSafetyLevel);
         bean.setPreferredProjectName(values.projectName);
         bean.setContainerLocation(values.parent);
         overviewBean.saveNewContainer();
@@ -250,24 +250,23 @@ public class ContainerEditBeanTest extends TestBase {
     }
 
     private void checkCleanState() {
-        Assert.assertEquals(4, bean.getContainerTypesWithRankGreaterZero().size());
+        Assert.assertEquals(5, bean.getContainerTypesWithRankGreaterZero().size());
         Assert.assertNull(bean.getContainerName());
         Assert.assertNull(bean.getContainerHeight());
         Assert.assertNull(bean.getContainerWidth());
         Assert.assertNull(bean.getContainerLocation());
         Assert.assertEquals(100, bean.getContainerType().getRank());
-        Assert.assertNull(bean.getFireSection());
-        Assert.assertNull(bean.getGvoClass());
+        Assert.assertNull(bean.getFireArea());
+        Assert.assertNull(bean.getGmoSafetyLevel());
         Assert.assertNull(bean.getPreferredProjectName());
-        Assert.assertNull(bean.getSecurityLevel());
     }
 
     class ContainerValues {
 
         public String label;
         public ContainerType type;
-        public String fireSection;
-        public String gvoClass;
+        public String fireArea;
+        public String gmoSafetyLevel;
         public Container parent;
         public String projectName;
     }

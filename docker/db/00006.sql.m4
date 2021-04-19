@@ -343,6 +343,10 @@ CREATE TABLE  storagesconditions_storages_hist (
     conditionId_old INTEGER,
     conditionId_new INTEGER);
 
+/*
+ * transportable: container can change place (ie change the parent in the hierarchy)
+ * uniq_name: multiple containers can share the same name if they have different parents
+ */
 CREATE TABLE containertypes(
     name varchar NOT NULL PRIMARY KEY,
     description varchar,
@@ -357,9 +361,11 @@ CREATE TABLE containers(
     projectid INTEGER REFERENCES projects(id),
     dimension VARCHAR,
     type VARCHAR NOT NULL REFERENCES containertypes(name),
-    firesection VARCHAR,
-    gmosafety VARCHAR,
+    firearea VARCHAR,
+    gmosafetylevel VARCHAR,
     barcode VARCHAR,
+    swapdimensions BOOLEAN NOT NULL DEFAULT FALSE,
+    zerobased BOOLEAN NOT NULL DEFAULT FALSE,
     deactivated BOOLEAN NOT NULL DEFAULT false);
 
 CREATE TABLE nested_containers(
@@ -438,7 +444,8 @@ CREATE TABLE item_positions_history(
 
 insert into containertypes(name,description,rank,transportable,unique_name)values('ROOM',null,100,false,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('CUPBOARD',null,90,false,false);
-insert into containertypes(name,description,rank,transportable,unique_name)values('FREEZER',null,90,false,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('FREEZER',null,90,false,false);
+insert into containertypes(name,description,rank,transportable,unique_name)values('TRAY',null,60,true,false);
 insert into containertypes(name,description,rank,transportable,unique_name)values('WELLPLATE',null,50,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_FLASK',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_FLASK',null,0,true,true);

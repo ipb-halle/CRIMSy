@@ -59,8 +59,8 @@ public class InputValidatorTest extends TestBase {
         c = new Container();
         c.setBarCode(null);
         c.setDimension("3;3;1");
-        c.setFireSection("F1");
-        c.setGmosavety("S0");
+        c.setFireArea("F1");
+        c.setGmoSafetyLevel("S0");
         c.setLabel("R302");
         c.setType(new ContainerType("ROOM", 100,false,true));
        

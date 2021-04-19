@@ -59,16 +59,22 @@ public class ContainerEntity implements Serializable {
     private String type;
 
     @Column
-    private String firesection;
+    private String firearea;
 
     @Column
-    private String gmosafety;
+    private String gmosafetylevel;
 
     @Column
     private String barcode;
 
     @Column
     private boolean deactivated;
+
+    @Column
+    private boolean swapdimensions;
+
+    @Column
+    private boolean zerobased;
 
     public Integer getId() {
         return id;
@@ -118,20 +124,20 @@ public class ContainerEntity implements Serializable {
         this.type = type;
     }
 
-    public String getFiresection() {
-        return firesection;
+    public String getFireArea() {
+        return firearea;
     }
 
-    public void setFiresection(String firesection) {
-        this.firesection = firesection;
+    public void setFireArea(String firearea) {
+        this.firearea = firearea;
     }
 
-    public String getGmosavety() {
-        return gmosafety;
+    public String getGmoSafetyLevel() {
+        return gmosafetylevel;
     }
 
-    public void setGmosavety(String gmoSavety) {
-        this.gmosafety = gmoSavety;
+    public void setGmoSafetyLevel(String level) {
+        this.gmosafetylevel = level;
     }
 
     public String getBarcode() {
@@ -150,4 +156,19 @@ public class ContainerEntity implements Serializable {
         this.deactivated = deactivated;
     }
 
+    public boolean isSwapDimensions() {
+        return swapdimensions;
+    }
+
+    public void setSwapDimensions(boolean sd) {
+        this.swapdimensions = sd;
+    }
+
+    public boolean isZeroBased() {
+        return zerobased;
+    }
+
+    public void setZeroBased(boolean zb) {
+        this.zerobased = zb;
+    }
 }

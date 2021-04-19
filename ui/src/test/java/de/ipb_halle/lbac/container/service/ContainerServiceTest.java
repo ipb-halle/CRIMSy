@@ -95,16 +95,16 @@ public class ContainerServiceTest extends TestBase {
         c0 = new Container();
         c0.setBarCode(null);
         c0.setDimension("3;3;1");
-        c0.setFireSection("F1");
-        c0.setGmosavety("S0");
+        c0.setFireArea("F1");
+        c0.setGmoSafetyLevel("S0");
         c0.setLabel("R302");
         c0.setType(new ContainerType("ROOM", 90, false, true));
 
         c1 = new Container();
         c1.setBarCode("9845893457");
         c1.setDimension("2;2;1");
-        c1.setFireSection(c0.getFireSection());
-        c1.setGmosavety(c0.getGmosavety());
+        c1.setFireArea(c0.getFireArea());
+        c1.setGmoSafetyLevel(c0.getGmoSafetyLevel());
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90, true, false));
@@ -112,8 +112,8 @@ public class ContainerServiceTest extends TestBase {
         c2 = new Container();
         c2.setBarCode("43753456");
         c2.setDimension(null);
-        c2.setFireSection(c1.getFireSection());
-        c2.setGmosavety(c1.getGmosavety());
+        c2.setFireArea(c1.getFireArea());
+        c2.setGmoSafetyLevel(c1.getGmoSafetyLevel());
         c2.setLabel("Karton3");
         c2.setParentContainer(c1);
         c2.setType(new ContainerType("CARTON", 90, true, false));
@@ -121,8 +121,8 @@ public class ContainerServiceTest extends TestBase {
         c3 = new Container();
         c3.setBarCode("43753456");
         c3.setDimension(null);
-        c3.setFireSection(c1.getFireSection());
-        c3.setGmosavety(c1.getGmosavety());
+        c3.setFireArea(c1.getFireArea());
+        c3.setGmoSafetyLevel(c1.getGmoSafetyLevel());
         c3.setLabel("Karton5");
         c3.setParentContainer(c1);
         c3.setType(new ContainerType("CARTON", 90, true, false));
@@ -182,8 +182,8 @@ public class ContainerServiceTest extends TestBase {
         Container c4 = new Container();
         c4.setBarCode("3840955");
         c4.setDimension(null);
-        c4.setFireSection(c1.getFireSection());
-        c4.setGmosavety(c1.getGmosavety());
+        c4.setFireArea(c1.getFireArea());
+        c4.setGmoSafetyLevel(c1.getGmoSafetyLevel());
         c4.setLabel("Karton3");
         c4.setProject(p);
         c4.setParentContainer(null);

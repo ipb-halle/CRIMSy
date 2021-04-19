@@ -54,17 +54,24 @@ public class Container implements DTO, Serializable, Searchable {
     private Project project;
     private String dimension;
     private ContainerType type;
-    private String fireSection;
-    private String gmosavety;
+    private String fireArea;
+    private String gmoSafetyLevel;
     private String barCode;
     private Item[][][] items;
     List<Container> containerHierarchy = new ArrayList<>();
     private boolean deactivated;
+    private boolean swapDimensions;
+    private boolean zeroBased;
 
     private String autoCompleteString;
 
+    /**
+     * default constructor
+     */
     public Container() {
         deactivated = false;
+        swapDimensions = false;
+        zeroBased = false;
         type = new ContainerType("xxx", 100, deactivated, deactivated);
     }
 
@@ -77,10 +84,12 @@ public class Container implements DTO, Serializable, Searchable {
         this.containerHierarchy.add(parentContainer);
         this.project = p;
         this.dimension = dbentity.getDimension();
-        this.fireSection = dbentity.getFiresection();
-        this.gmosavety = dbentity.getGmosavety();
+        this.fireArea = dbentity.getFireArea();
+        this.gmoSafetyLevel = dbentity.getGmoSafetyLevel();
         this.barCode = dbentity.getBarcode();
         this.deactivated = dbentity.isDeactivated();
+        this.swapDimensions = dbentity.isSwapDimensions();
+        this.zeroBased = dbentity.isZeroBased();
         if (dimension != null) {
             String[] size = dimension.split(";");
             if (size.length > 2) {
@@ -114,11 +123,12 @@ public class Container implements DTO, Serializable, Searchable {
         this.id = dbentity.getId();
         this.label = dbentity.getLabel();
         this.dimension = dbentity.getDimension();
-        this.fireSection = dbentity.getFiresection();
-        this.gmosavety = dbentity.getGmosavety();
+        this.fireArea = dbentity.getFireArea();
+        this.gmoSafetyLevel = dbentity.getGmoSafetyLevel();
         this.barCode = dbentity.getBarcode();
         this.deactivated = dbentity.isDeactivated();
-
+        this.swapDimensions = dbentity.isSwapDimensions();
+        this.zeroBased = dbentity.isZeroBased();
     }
 
     public int getId() {
@@ -185,12 +195,12 @@ public class Container implements DTO, Serializable, Searchable {
         this.type = type;
     }
 
-    public String getFireSection() {
-        return fireSection;
+    public String getFireArea() {
+        return fireArea;
     }
 
-    public void setFireSection(String fireSection) {
-        this.fireSection = fireSection;
+    public void setFireArea(String fireArea) {
+        this.fireArea = fireArea;
     }
 
     public String getBarCode() {
@@ -251,12 +261,12 @@ public class Container implements DTO, Serializable, Searchable {
         return containerHierarchy;
     }
 
-    public String getGmosavety() {
-        return gmosavety;
+    public String getGmoSafetyLevel() {
+        return gmoSafetyLevel;
     }
 
-    public void setGmosavety(String securitylevel) {
-        this.gmosavety = securitylevel;
+    public void setGmoSafetyLevel(String level) {
+        this.gmoSafetyLevel = level;
     }
 
     public boolean isDeactivated() {
@@ -276,16 +286,18 @@ public class Container implements DTO, Serializable, Searchable {
         if (this.getParentContainer() != null) {
             dbe.setParentcontainer(this.getParentContainer().getId());
         }
-        dbe.setLabel(this.getLabel());
-        if (this.getProject() != null) {
-            dbe.setProjectid(this.getProject().getId());
+        if (this.project != null) {
+            dbe.setProjectid(this.project.getId());
         }
-        dbe.setDimension(this.getDimension());
         dbe.setType(this.getType().getName());
-        dbe.setFiresection(this.getFireSection());
-        dbe.setGmosavety(this.getGmosavety());
-        dbe.setBarcode(this.getBarCode());
-        dbe.setDeactivated(this.isDeactivated());
+        dbe.setBarcode(this.barCode);
+        dbe.setDimension(this.dimension);
+        dbe.setFireArea(this.fireArea);
+        dbe.setGmoSafetyLevel(this.gmoSafetyLevel);
+        dbe.setLabel(this.label);
+        dbe.setDeactivated(this.deactivated);
+        dbe.setSwapDimensions(this.swapDimensions);
+        dbe.setZeroBased(this.zeroBased);
         return dbe;
     }
 
@@ -294,13 +306,15 @@ public class Container implements DTO, Serializable, Searchable {
         c.setBarCode(barCode);
         c.setDeactivated(deactivated);
         c.setDimension(dimension);
-        c.setFireSection(fireSection);
-        c.setGmosavety(gmosavety);
+        c.setFireArea(fireArea);
+        c.setGmoSafetyLevel(gmoSafetyLevel);
         c.setId(id);
         c.setItems(items);
         c.setLabel(label);
         c.setProject(project);
         c.setType(type);
+        c.setSwapDimensions(this.swapDimensions);
+        c.setZeroBased(this.zeroBased);
         c.getContainerHierarchy().addAll(containerHierarchy);
         return c;
     }
@@ -346,4 +360,19 @@ public class Container implements DTO, Serializable, Searchable {
         return new Type(SearchTarget.CONTAINER);
     }
 
+    public boolean getSwapDimensions() {
+        return swapDimensions;
+    }
+
+    public void setSwapDimensions(boolean sd) { 
+        this.swapDimensions = sd;
+    }
+
+    public boolean getZeroBased() {
+        return zeroBased;
+    }
+
+    public void setZeroBased(boolean zb) {
+        this.zeroBased = zb;
+    }
 }

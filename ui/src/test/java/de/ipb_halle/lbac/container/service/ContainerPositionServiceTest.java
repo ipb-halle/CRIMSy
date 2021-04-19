@@ -100,16 +100,16 @@ public class ContainerPositionServiceTest extends TestBase {
         c0 = new Container();
         c0.setBarCode(null);
         c0.setDimension("3;3;1");
-        c0.setFireSection("F1");
-        c0.setGmosavety("S0");
+        c0.setFireArea("F1");
+        c0.setGmoSafetyLevel("S0");
         c0.setLabel("R302");
         c0.setType(new ContainerType("ROOM", 90, false, true));
 
         c1 = new Container();
         c1.setBarCode("9845893457");
         c1.setDimension("2;2;1");
-        c1.setFireSection(c0.getFireSection());
-        c1.setGmosavety(c0.getGmosavety());
+        c1.setFireArea(c0.getFireArea());
+        c1.setGmoSafetyLevel(c0.getGmoSafetyLevel());
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90, true, false));

@@ -53,22 +53,21 @@ public class ContainerEditBean implements Serializable {
     private Integer containerHeight;
     private Container containerLocation;
     private Container containerToCreate = new Container();
-    ;
+
     private List<ContainerType> containerTypes = new ArrayList<>();
     private Integer containerWidth;
     private User currentUser;
-    private String gvoClass;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Mode mode = Mode.CREATE;
     private Container originalContainer;
-    protected final List<String> possibleSecuritylevel = new ArrayList<>();
+    protected final List<String> gmoSafetyLevels = new ArrayList<>();
     private String preferredProjectName;
     protected ContainerLocalizer localizer = new ContainerLocalizer();
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         clearEditBean();
-        initSecurityLevels();
+        initGmoSafetyLevels();
     }
 
     /**
@@ -81,7 +80,6 @@ public class ContainerEditBean implements Serializable {
         containerLocation = null;
         containerWidth = null;
         containerHeight = null;
-        gvoClass = null;
     }
 
     public Integer getContainerHeight() {
@@ -94,6 +92,10 @@ public class ContainerEditBean implements Serializable {
 
     public Container getContainerLocation() {
         return containerLocation;
+    }
+
+    public boolean getContainerSwapDimensions() {
+        return containerToCreate.getSwapDimensions();
     }
 
     public Container getContainerToCreate() {
@@ -119,6 +121,10 @@ public class ContainerEditBean implements Serializable {
         return containerWidth;
     }
 
+    public boolean getContainerZeroBased() {
+        return containerToCreate.getZeroBased();
+    }
+
     public String getDialogTitle() {
         if (mode == Mode.CREATE) {
             return localizer.localizeString("container_edit_titel_create");
@@ -129,46 +135,40 @@ public class ContainerEditBean implements Serializable {
         }
     }
 
-    public String getFireSection() {
-        return containerToCreate.getFireSection();
+    public String getFireArea() {
+        return containerToCreate.getFireArea();
     }
 
-    public String getGvoClass() {
-        return gvoClass;
-    }
-
-    public List<String> getGvoClasses() {
-        return possibleSecuritylevel;
+    public List<String> getGmoSafetyLevels() {
+        return gmoSafetyLevels;
     }
 
     public String getPreferredProjectName() {
         return preferredProjectName;
     }
 
-    public String getSecurityLevel() {
-        return containerToCreate.getGmosavety();
+    public String getGmoSafetyLevel() {
+        return containerToCreate.getGmoSafetyLevel();
     }
 
-    public void initSecurityLevels() {
-        possibleSecuritylevel.clear();
-        possibleSecuritylevel.add(localizer.localizeString("container_securitylevel_none"));
-        possibleSecuritylevel.add("S1");
-        possibleSecuritylevel.add("S2");
-        possibleSecuritylevel.add("S3");
-        possibleSecuritylevel.add("S4");
-
+    private void initGmoSafetyLevels() {
+        gmoSafetyLevels.clear();
+        gmoSafetyLevels.add(localizer.localizeString("container_gmosafetylevel_none"));
+        gmoSafetyLevels.add("S1");
+        gmoSafetyLevels.add("S2");
+        gmoSafetyLevels.add("S3");
+        gmoSafetyLevels.add("S4");
     }
 
     public boolean isDimensionVisible() {
         return containerToCreate.getType().getRank() != ContainerType.HIGHEST_RANK;
-
     }
 
     public boolean isEditable() {
         return mode == Mode.CREATE;
     }
 
-    public boolean isSecurityLevelVisible() {
+    public boolean isGmoSafetyLevelVisible() {
         return containerToCreate.getType().getRank() == ContainerType.HIGHEST_RANK;
     }
 
@@ -184,8 +184,11 @@ public class ContainerEditBean implements Serializable {
         containerToCreate.setLabel(containerName);
     }
 
-    public void setContainerType(ContainerType t) {
+    public void setContainerSwapDimensions(boolean s) {
+        containerToCreate.setSwapDimensions(s);
+    }
 
+    public void setContainerType(ContainerType t) {
         containerToCreate.setType(t);
     }
 
@@ -193,20 +196,20 @@ public class ContainerEditBean implements Serializable {
         this.containerWidth = containerWidth;
     }
 
-    public void setFireSection(String fireSection) {
-        containerToCreate.setFireSection(fireSection);
+    public void setContainerZeroBased(boolean z) {
+        containerToCreate.setZeroBased(z);
     }
 
-    public void setGvoClass(String gvoClass) {
-        this.gvoClass = gvoClass;
+    public void setFireArea(String fireArea) {
+        containerToCreate.setFireArea(fireArea);
+    }
+
+    public void setGmoSafetyLevel(String level) {
+        containerToCreate.setGmoSafetyLevel(level);
     }
 
     public void setPreferredProjectName(String preferredProjectName) {
         this.preferredProjectName = preferredProjectName;
-    }
-
-    public void setSecurityLevel(String securityLevel) {
-        containerToCreate.setGmosavety(securityLevel);
     }
 
     public void startContainerEdit(Container c) {
