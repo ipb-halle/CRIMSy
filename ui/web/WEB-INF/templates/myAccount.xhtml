@@ -28,6 +28,12 @@
 
 <h:body>
     <ui:composition>
+        <!-- Note (1): This tabView needs to be dynamic (= lazy loading via AJAX) because
+                       the selector component in timeZoneTab.xhtml and some molecular
+                       structure plugins in pluginsTab.xhtml do not load properly when
+                       they are in hidden tabs.
+             Note (2): Adding the id solves a bug where the commandButtons' first AJAX call
+                       did not end up in the backing bean. -->
         <p:tabView id="myAccountTabView" dynamic="true">
             <ui:insert>
                 <ui:include src="/WEB-INF/templates/accountSettings/userDataTab.xhtml"/>
