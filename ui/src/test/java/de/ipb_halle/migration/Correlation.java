@@ -54,6 +54,11 @@ public class Correlation {
     public final static String ORGPROC_QUERY = "ORGPROC_QUERY";
     public final static String ORGPROC_UPDATE = "ORGPROC_UPDATE";
 
+    public final static String CORRELATION_MOLPROCMAT = "MolProcMat";
+    public final static String CORRELATION_MOLPROCEXP = "MolProcExp";
+    public final static String CORRELATION_ORGPROCMAT = "OrgProcMat";
+    public final static String CORRELATION_ORGPROCEXP = "OrgProcExp";
+
     private InhouseDB inhouseDB;
 
     public Correlation(InhouseDB inhouseDB) throws Exception {
@@ -139,20 +144,27 @@ public class Correlation {
 
     private void saveMolProc(int correlationId, int molId, int experimentId) throws Exception {
 
-        String sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, 'MolProcMat' FROM tmp_import WHERE old_id=? AND type=?";
+        String sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, '"
+            + CORRELATION_MOLPROCMAT
+            + "' FROM tmp_import WHERE old_id=? AND type=?";
         this.inhouseDB.saveTriple(sql, correlationId, molId, Compounds.TMP_MatId_MolId);
 
-        sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, 'MolProcExp' FROM tmp_import WHERE old_id=? AND type=?";
+        sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, '"
+            + CORRELATION_MOLPROCEXP 
+            + "' FROM tmp_import WHERE old_id=? AND type=?";
         this.inhouseDB.saveTriple(sql, correlationId, experimentId, Experiments.TMP_Procedure);
     }
 
     private void saveOrgProc(int correlationId, int organismId, int experimentId) throws Exception {
 
-        String sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, 'OrgProcMat' FROM tmp_import WHERE old_id=? AND type=?";
+        String sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, '"
+            + CORRELATION_ORGPROCMAT
+            + "' FROM tmp_import WHERE old_id=? AND type=?";
         this.inhouseDB.saveTriple(sql, correlationId, organismId, Taxonomy.ORGANISM_ID_REF);
 
-        sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, 'OrgProcExp' FROM tmp_import WHERE old_id=? AND type=?";
+        sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id AS new_id, '"
+            + CORRELATION_ORGPROCEXP
+            + "' FROM tmp_import WHERE old_id=? AND type=?";
         this.inhouseDB.saveTriple(sql, correlationId, experimentId, Experiments.TMP_Procedure);
     }
-
 }

@@ -51,6 +51,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     private String unit;
     private Article article;
     private Double concentration;
+    private String concentrationUnit;
     private Container container;
     private Double containerSize;
     private ContainerType containerType;
@@ -83,6 +84,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.unit = entity.getUnit();
         this.article = art;
         this.concentration = entity.getConcentration();
+        this.concentrationUnit = entity.getConcentrationUnit();
         this.container = con;
         this.containerSize = entity.getContainersize();
         this.expiry_date = entity.getExpiry_date();
@@ -111,6 +113,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
             entity.setArticleid(article.getId());
         }
         entity.setConcentration(concentration);
+        entity.setConcentrationUnit(concentrationUnit);
         if (container != null) {
             entity.setContainerid(container.getId());
         }
@@ -198,6 +201,10 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         return concentration;
     }
 
+    public String getConcentrationUnit() {
+        return concentrationUnit;
+    }
+
     @Override
     public String getNameToDisplay() {
         return String.format("%d (%s)", id, material.getFirstName());
@@ -205,6 +212,10 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
 
     public void setConcentration(Double concentration) {
         this.concentration = concentration;
+    }
+
+    public void setConcentrationUnit(String unit) {
+        this.concentrationUnit = unit;
     }
 
     public Container getContainer() {
@@ -316,6 +327,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         copiedItem.setAmount(getAmount());
         copiedItem.setArticle(getArticle());
         copiedItem.setConcentration(getConcentration());
+        copiedItem.setConcentrationUnit(getConcentrationUnit());
         copiedItem.setContainer(getContainer());
         copiedItem.setContainerSize(getContainerSize());
         copiedItem.setContainerType(getContainerType());

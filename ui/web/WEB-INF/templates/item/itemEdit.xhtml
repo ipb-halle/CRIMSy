@@ -111,6 +111,17 @@
                                             />
                                     </b:selectOneMenu>
                                 </b:column> 
+                                <b:column span="2">
+                                    <b:selectOneMenu
+                                        disabled="#{!itemBean.isUnitEditable()}"
+                                        label="#{msgs.itemEdit_itemPanel_amount_purity}"
+                                        value="#{itemBean.state.editedItem.purity}">
+                                        <f:selectItems
+                                            value="#{itemBean.getPurities()}"
+                                            />
+                                    </b:selectOneMenu>
+                                </b:column>
+
                             </b:row>
 
                             <b:row>
@@ -174,9 +185,9 @@
                                     rendered="#{itemBean.isSolventRowVisisble()}">
                                     <b:selectOneMenu
                                         label="#{msgs.itemEdit_itemPanel_concentration_unit}"
-                                        value="#{itemBean.state.editedItem.purity}">
+                                        value="#{itemBean.state.editedItem.concentrationUnit}">
                                         <f:selectItems 
-                                            value="#{itemBean.getPurityUnits()}"/>
+                                            value="#{itemBean.getConcentrationUnits()}"/>
                                     </b:selectOneMenu>
                                 </b:column> 
                                 <b:column

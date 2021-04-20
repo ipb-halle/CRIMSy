@@ -386,6 +386,7 @@ CREATE TABLE items(
     articleid INTEGER,
     projectid INTEGER REFERENCES projects(id),
     concentration FLOAT,
+    concentrationunit VARCHAR,
     unit VARCHAR,
     purity VARCHAR,
     solventid INTEGER REFERENCES solvents(id),

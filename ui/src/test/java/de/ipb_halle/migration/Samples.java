@@ -17,9 +17,10 @@
  */
 package de.ipb_halle.migration;
 
-import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.items.entity.ItemEntity;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
+import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
+import de.ipb_halle.lbac.container.entity.ContainerNestingId;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
 import de.ipb_halle.lbac.search.lang.SqlInsertBuilder;
 
@@ -49,17 +50,25 @@ import java.util.Map;
  */
 public class Samples {
     
+    public final static String CONTAINER_DIMENSIONS = "CONTAINER_DIMENSIONS";
+    public final static String CONTAINERTYPE_OTHER = "CUPBOARD";
+    public final static String CONTAINERTYPE_TRAY = "TRAY";
+    public final static String CONTAINERTYPE_VIAL = "GLASS_VIAL";
     public final static String INPUT_SAMPLES = "INPUT_SAMPLES";
     public final static String INPUT_EXTRACTS = "INPUT_EXTRACTS";
+    public final static String PARENT_CONTAINER_ID = "PARENT_CONTAINER_ID";
     public final static String UNKNOWN_CONTAINER = "UNKNOWN_CONTAINER";
 
     private InhouseDB inhouseDB;
+    private int parentContainerId;
+    private int projectId;
     private Map<String, ContainerEntity> containers;
+    private Map<String, String> dimensions;
 
     public Samples(InhouseDB inhouseDB) throws Exception {
         this.inhouseDB = inhouseDB;
         addInsertBuilders();
-        this.containers = new HashMap<> ();
+        init();
     }
     
     private void addInsertBuilders() {
@@ -69,15 +78,59 @@ public class Samples {
                 new SqlInsertBuilder(new EntityGraph(ContainerEntity.class)));
     }
 
-    private ContainerEntity createContainer() {
-        return null;
+    private ContainerEntity createContainer(String name) throws Exception {
+        ContainerEntity container = new ContainerEntity();
+        container.setLabel(name);
+        container.setProjectid(projectId);
+        String dimension = getDimension(name);
+        if (dimension != null) {
+            container.setDimension(dimension);
+            container.setType(CONTAINERTYPE_TRAY);
+            container.setZeroBased(true);
+        } else {
+            container.setType(CONTAINERTYPE_OTHER);
+        }
+
+        container = (ContainerEntity) this.inhouseDB.getBuilder(container.getClass().getName())
+                .insert(this.inhouseDB.getConnection(), container);
+        this.containers.put(name, container);
+
+        ContainerNestingEntity nesting = new ContainerNestingEntity();
+        nesting.setId(new ContainerNestingId(this.parentContainerId, container.getId()));
+        this.inhouseDB.getBuilder(nesting.getClass().getName())
+                .insert(this.inhouseDB.getConnection(), nesting);
+
+        return container;
     }
 
-    public ContainerEntity getContainer(String place) {
+    public ContainerEntity getContainer(String place) throws Exception {
         if ((place == null) || place.isEmpty()) {
-            return containers.get(UNKNOWN_CONTAINER);
+            return getContainer(UNKNOWN_CONTAINER);
         }
-        return null;
+        ContainerEntity container = this.containers.get(place);
+        if (container == null) {
+            container = createContainer(place);
+        }
+        return container;
+    }
+
+    public Integer getMaterialId(int molid) throws Exception {
+        String sql = "SELECT old_id FROM tmp_import WHERE new_id=? AND type=?";
+        return this.inhouseDB.loadRefId(sql, molid, Compounds.TMP_MatId_MolId);
+    }
+
+    public Integer getMolId(int id) throws Exception {
+        String sql = "SELECT old_id FROM tmp_import WHERE new_id=? AND type=?";
+        return this.inhouseDB.loadRefId(sql, id, Correlation.CORRELATION_MOLPROCMAT);
+    }
+
+    /**
+     * return a dimensions string for a given container name
+     */
+    private String getDimension(String name) {
+        String pattern = "^([A-Za-z]+).*$";
+        String prefix = name.replaceAll(pattern, "$1");
+        return this.dimensions.get(prefix);
     }
 
     public void importData() throws Exception {
@@ -161,6 +214,27 @@ public class Samples {
         reader.close();
     }
 
+
+    private void init() {
+        this.containers = new HashMap<> ();
+        this.dimensions = new HashMap<> ();
+        this.projectId = inhouseDB.getConfigInt(InhouseDB.PROJECT_ID);
+        this.parentContainerId = inhouseDB.getConfigInt(PARENT_CONTAINER_ID);
+
+        /* 
+         * Intialize container dimensions. Dimensions are specified as 
+         * "prefix.dimensionString[/prefix.dimensionString]*", e.g. "TS.10;25;1/TM.8;15;1/TL...."
+         * 
+         * The pattern given below should capture container prefixes 
+         * like TS, TM, TL, TH, MTP, ...
+         */
+        String pattern = "^([A-Za-z]+)\\.([0-9;]+)$";
+        String[] dim = inhouseDB.getConfigString(CONTAINER_DIMENSIONS).split("/");
+        for (String d : dim) {
+            this.dimensions.put(d.replaceAll(pattern, "$1"), d.replaceAll(pattern, "$2"));
+        }
+    }
+
     /**
      * numbers are given in German locale (',' as decimal separator)
      * @param a string representation of a number
@@ -177,26 +251,39 @@ public class Samples {
                 double amount, double tara, String purity, String appearance, 
                 String remarks) throws Exception {
 
-/*
         ContainerEntity container = getContainer(place);
-        Material material= getMaterial(molProcId);
+        Integer molId = getMolId(molProcId);
+        Integer materialId = getMaterialId(molId);
 
-        Item item = new Item();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Samplecode: ");
+        sb.append(sampleCode);
+        sb.append(String.format("; MolId: %d", molId));
+        sb.append(String.format("; Tara: %.3f mg; Appearance: ", tara));
+        sb.append(appearance);
+        sb.append("; Remarks: ");
+        sb.append(remarks);
+
+        ItemEntity item = new ItemEntity();
         item.setAmount(amount);
         item.setUnit("mg");
-        item.setConcentration(...purity...);
-        item.setDescription(...);
-        item.setMaterialid(material.getMaterialid());
-        item.setProjectId(this.inhouseDB.getConfigInt(InhouseDB.PROJECT_ID));
-        item.setPurity(...purity...);
-        item.setSolventid(...);
-        item.setLabel();
-        item.setContainertype(... glass / plastic vial ...);
+        item.setConcentration(Double.valueOf(purity));
+        item.setConcentrationUnit("%");
+        item.setDescription(sb.toString());
+        item.setMaterialid(materialId);
+        item.setProjectid(this.inhouseDB.getConfigInt(InhouseDB.PROJECT_ID));
+        item.setPurity(purity);                                                  // free text might not be appropriate!
+//      item.setLabel();
+        item.setContainertype(CONTAINERTYPE_VIAL);
         item.setContainerid(container.getId());
 
-*/
+        item = (ItemEntity) this.inhouseDB.getBuilder(item.getClass().getName())
+                .insert(this.inhouseDB.getConnection(), item);
 
 
+        /* item position */
+
+        /* tmp reference */
 
     }
 }

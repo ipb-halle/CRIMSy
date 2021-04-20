@@ -155,7 +155,7 @@ public class ItemBean implements Serializable {
         return this.printBean;
     }
 
-    public List<String> getPurityUnits() {
+    public List<String> getConcentrationUnits() {
         return Arrays.asList("%", "M", "mM", "µM", "ppm");
     }
 
@@ -352,8 +352,12 @@ public class ItemBean implements Serializable {
     private List<String> loadPurities() {
         List<String> purities = new ArrayList<>();
         purities.add("unbekannt");
-        purities.add("sehr rein");
-        purities.add("unrein");
+        purities.add("> 80 %");
+        purities.add("> 90 %");
+        purities.add("> 95 %");
+        purities.add("> 98 %");
+        purities.add("> 99 %");
+        purities.add("> 99.9 %");
         return purities;
     }
 

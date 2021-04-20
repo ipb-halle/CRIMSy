@@ -59,6 +59,9 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
     private Double concentration;
 
     @Column
+    private String concentrationunit;
+
+    @Column
     private String unit;
 
     @Column
@@ -136,6 +139,14 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
 
     public void setConcentration(Double concentration) {
         this.concentration = concentration;
+    }
+
+    public String getConcentrationUnit() {
+        return concentrationunit;
+    }
+
+    public void setConcentrationUnit(String unit) {
+        this.concentrationunit = unit;
     }
 
     public String getPurity() {
