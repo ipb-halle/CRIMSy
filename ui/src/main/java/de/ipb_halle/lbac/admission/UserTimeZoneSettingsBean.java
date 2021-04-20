@@ -20,6 +20,8 @@ package de.ipb_halle.lbac.admission;
 import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.ZoneId;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -42,10 +44,11 @@ public class UserTimeZoneSettingsBean implements Serializable {
     /**
      * Key in the preferences table for the time zone.
      */
-    private static final String TIMEZONE_PREFERENCE_KEY = PreferenceType.TimeZone.toString();
+    protected static final String TIMEZONE_PREFERENCE_KEY = PreferenceType.TimeZone
+            .toString();
 
     @Inject
-    private TimeZonesBean timeZoneBean;
+    private TimeZonesBean timeZonesBean;
 
     @Inject
     private PreferenceService preferenceService;
@@ -62,6 +65,13 @@ public class UserTimeZoneSettingsBean implements Serializable {
     }
 
     /**
+     * Initializes the state of this bean: does nothing.
+     */
+    @PostConstruct
+    public void init() {
+    }
+
+    /**
      * Test constructor with dependency injection.
      * 
      * @param preferenceService mock of {@link PreferenceService}
@@ -72,7 +82,7 @@ public class UserTimeZoneSettingsBean implements Serializable {
             UserBean userBean, TimeZonesBean timeZonesBean) {
         this.preferenceService = preferenceService;
         this.userBean = userBean;
-        this.timeZoneBean = timeZonesBean;
+        this.timeZonesBean = timeZonesBean;
     }
 
     /**
@@ -84,13 +94,13 @@ public class UserTimeZoneSettingsBean implements Serializable {
     public String getPreferredTimeZone() {
         String prefFromDB = preferenceService.getPreferenceValue(
                 userBean.getCurrentAccount(), TIMEZONE_PREFERENCE_KEY,
-                timeZoneBean.getDefaultTimeZone());
+                timeZonesBean.getDefaultTimeZone());
 
         // Check if the zone is valid and do transformations if necessary.
         try {
             return ZoneId.of(prefFromDB).getId();
         } catch (DateTimeException e) {
-            return timeZoneBean.getDefaultTimeZone();
+            return timeZonesBean.getDefaultTimeZone();
         }
     }
 

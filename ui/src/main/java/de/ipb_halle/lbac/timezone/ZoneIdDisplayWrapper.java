@@ -33,7 +33,16 @@ import java.util.Locale;
 public class ZoneIdDisplayWrapper {
     private final ZoneId zoneId;
 
+    /**
+     * Wrapper constructor.
+     * 
+     * @param zoneId time-zone ID
+     * @throws NullPointerException if {@code zoneId} is {@code null}
+     */
     public ZoneIdDisplayWrapper(ZoneId zoneId) {
+        if (zoneId == null) {
+            throw new NullPointerException();
+        }
         this.zoneId = zoneId;
     }
 
