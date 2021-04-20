@@ -106,6 +106,17 @@
         <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
         <param-value>true</param-value>
     </context-param>
+
+    <!-- This solves a nasty bug, where MyFaces' FacesConfigurator.purgeConfiguration() 
+         fails due to an IllegalArgumentException. This setting simply stops
+         the frequent refresh of the configuration files in WEB-INF. It does
+         not interfere with our typical deployment mechanism that overwrites
+         ui.war. -->
+    <context-param>
+        <param-name>org.apache.myfaces.CONFIG_REFRESH_PERIOD</param-name>
+        <param-value>0</param-value>
+    </context-param>
+
     <!-- file upload servlet incl. filter -->
     <servlet>
         <display-name>FileUpload Service</display-name>
