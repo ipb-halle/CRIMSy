@@ -107,6 +107,9 @@ public class InhouseDB {
     private final Connection connection;
     private final Map<String, SqlInsertBuilder> builderMap;
     private final Map<String, Integer> materialIndexTypes;
+    private int aclist;
+    private int owner;
+    private int project;
 
     private JsonObject jsonConfig;
 
@@ -133,6 +136,10 @@ public class InhouseDB {
 
     private void close() throws SQLException {
         this.connection.close();
+    }
+
+    public int getACList() {
+        return aclist;
     }
 
     public SqlInsertBuilder getBuilder(String name) {
@@ -167,7 +174,16 @@ public class InhouseDB {
         return this.materialIndexTypes;
     }
 
+    public int getOwner() {
+        return this.owner;
+    }
+
+    public int getProject() {
+        return this.project;
+    }
+
     private void importData() throws Exception {
+        init();
         Compounds compounds = new Compounds(this);
         Taxonomy taxonomy = new Taxonomy(this);
         Experiments experiments = new Experiments(this);
@@ -182,6 +198,12 @@ public class InhouseDB {
         correlation.importData();
 */
         samples.importData();
+    }
+
+    private void init() {
+        this.aclist = getConfigInt(InhouseDB.ACLIST_ID);
+        this.owner = getConfigInt(InhouseDB.OWNER_ID);
+        this.project = getConfigInt(InhouseDB.PROJECT_ID);
     }
 
     public int loadRefId(String sql, int id, String refKey) throws Exception {

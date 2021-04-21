@@ -163,11 +163,11 @@ public class Compounds {
             Double molMass,
             Double exactMass) throws Exception {
         MaterialEntity mat = new MaterialEntity();
-        mat.setACList(inhouseDB.getConfigInt(InhouseDB.ACLIST_ID));
+        mat.setACList(inhouseDB.getACList());
         mat.setCtime(new Date());
         mat.setMaterialtypeid(inhouseDB.getConfigInt(MOLECULE_MATERIAL_TYPE_ID));
-        mat.setOwner(inhouseDB.getConfigInt(InhouseDB.OWNER_ID));
-        mat.setProjectid(inhouseDB.getConfigInt(InhouseDB.PROJECT_ID));
+        mat.setOwner(inhouseDB.getOwner());
+        mat.setProjectid(inhouseDB.getProject()); 
         
         mat = (MaterialEntity) this.inhouseDB.getBuilder(mat.getClass().getName())
                 .insert(this.inhouseDB.getConnection(), mat);

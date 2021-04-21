@@ -267,11 +267,11 @@ public class Taxonomy {
     private int save(String name, int level, int parentId, int origId, String refKey) throws Exception {
 
         MaterialEntity mat = new MaterialEntity();
-        mat.setACList(this.inhouseDB.getConfigInt(InhouseDB.ACLIST_ID));
+        mat.setACList(this.inhouseDB.getACList()); 
         mat.setCtime(new Date());
         mat.setMaterialtypeid(this.inhouseDB.getConfigInt(TAXONOMY_MATERIAL_TYPE_ID));
-        mat.setOwner(this.inhouseDB.getConfigInt(InhouseDB.OWNER_ID));
-        mat.setProjectid(this.inhouseDB.getConfigInt(InhouseDB.PROJECT_ID));
+        mat.setOwner(this.inhouseDB.getOwner()); 
+        mat.setProjectid(this.inhouseDB.getProject()); 
 
         mat = (MaterialEntity) this.inhouseDB.getBuilder(mat.getClass().getName())
                 .insert(this.inhouseDB.getConnection(), mat);
