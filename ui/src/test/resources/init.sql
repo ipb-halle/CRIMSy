@@ -511,7 +511,8 @@ CREATE TABLE containers(
     parentcontainer INTEGER REFERENCES containers(id) ON UPDATE CASCADE ON DELETE SET NULL,
     label VARCHAR NOT NULL,
     projectid INTEGER REFERENCES projects(id),
-    dimension VARCHAR,
+    rows INTEGER,
+    columns INTEGER,
     type VARCHAR NOT NULL REFERENCES containertypes(name),
     firearea VARCHAR,
     gmosafetylevel VARCHAR,
@@ -554,11 +555,13 @@ CREATE TABLE items(
 
 CREATE TABLE item_positions(
     id SERIAL NOT NULL PRIMARY KEY,
-    itemid INTEGER REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    itemid INTEGER NOT NULL REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,
     containerid INTEGER NOT NULL REFERENCES containers(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    itemrow INTEGER ,
-    itemcol INTEGER );
-
+    itemrow INTEGER,
+    itemcol INTEGER,
+    UNIQUE(itemid),
+    UNIQUE(containerid, itemrow, itemcol)
+);
 
 CREATE TABLE items_history(
     itemid INTEGER NOT NULL REFERENCES items(id) ON UPDATE CASCADE ON DELETE CASCADE,

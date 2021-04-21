@@ -94,7 +94,8 @@ public class ContainerServiceTest extends TestBase {
 
         c0 = new Container();
         c0.setBarCode(null);
-        c0.setDimension("3;3;1");
+        c0.setColumns(3);
+        c0.setRows(3);
         c0.setFireArea("F1");
         c0.setGmoSafetyLevel("S0");
         c0.setLabel("R302");
@@ -102,7 +103,8 @@ public class ContainerServiceTest extends TestBase {
 
         c1 = new Container();
         c1.setBarCode("9845893457");
-        c1.setDimension("2;2;1");
+        c1.setColumns(2);
+        c1.setRows(2);
         c1.setFireArea(c0.getFireArea());
         c1.setGmoSafetyLevel(c0.getGmoSafetyLevel());
         c1.setLabel("Schrank1");
@@ -111,7 +113,6 @@ public class ContainerServiceTest extends TestBase {
 
         c2 = new Container();
         c2.setBarCode("43753456");
-        c2.setDimension(null);
         c2.setFireArea(c1.getFireArea());
         c2.setGmoSafetyLevel(c1.getGmoSafetyLevel());
         c2.setLabel("Karton3");
@@ -120,7 +121,6 @@ public class ContainerServiceTest extends TestBase {
 
         c3 = new Container();
         c3.setBarCode("43753456");
-        c3.setDimension(null);
         c3.setFireArea(c1.getFireArea());
         c3.setGmoSafetyLevel(c1.getGmoSafetyLevel());
         c3.setLabel("Karton5");
@@ -181,7 +181,6 @@ public class ContainerServiceTest extends TestBase {
         // READ right in the project
         Container c4 = new Container();
         c4.setBarCode("3840955");
-        c4.setDimension(null);
         c4.setFireArea(c1.getFireArea());
         c4.setGmoSafetyLevel(c1.getGmoSafetyLevel());
         c4.setLabel("Karton3");
@@ -234,15 +233,15 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertEquals("Three items must be in container one and two", 3, o.size());
 
         //Check container one
-        Item[][][] loadedItems = instance.loadItemsOfContainer(c0);
+        Item[][] loadedItems = instance.loadItemsOfContainer(c0);
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
                 if (x == 0 && (y == 0)) {
-                    checkItem1(loadedItems[x][y][0], "Container 1-Item-1: ");
+                    checkItem1(loadedItems[x][y], "Container 1-Item-1: ");
                 } else if (x == 1 && (y == 2)) {
-                    checkItem2(loadedItems[x][y][0], "Container 1-Item-2: ");
+                    checkItem2(loadedItems[x][y], "Container 1-Item-2: ");
                 } else {
-                    Assert.assertNull(loadedItems[x][y][0]);
+                    Assert.assertNull(loadedItems[x][y]);
                 }
             }
         }
@@ -251,9 +250,9 @@ public class ContainerServiceTest extends TestBase {
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 2; x++) {
                 if (x == 0 && (y == 1)) {
-                    checkItem3(loadedItems[x][y][0], "Container 2-Item-3: ");
+                    checkItem3(loadedItems[x][y], "Container 2-Item-3: ");
                 } else {
-                    Assert.assertNull(loadedItems[x][y][0]);
+                    Assert.assertNull(loadedItems[x][y]);
                 }
             }
         }

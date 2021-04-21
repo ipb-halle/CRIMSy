@@ -42,7 +42,7 @@
             <p:row>
                 <p:column>
                     <p:repeat 
-                        value="#{itemBean.containerController.getTotalSlots(0)}"
+                        value="#{itemBean.containerController.columns}"
                         var="x">
                         <p:column>
                             #{itemBean.containerController.getDimensionLabel(0, x)}
@@ -53,14 +53,14 @@
             </p:row>
 
             <p:repeat 
-                value="#{itemBean.containerController.getTotalSlots(1)}"
+                value="#{itemBean.containerController.rows}"
                 var="y">
                 <p:row>
                     <p:column>
                         #{itemBean.containerController.getDimensionLabel(1, y)}
                     </p:column>
                     <p:repeat 
-                        value="#{itemBean.containerController.getTotalSlots(0)}"
+                        value="#{itemBean.containerController.columns}"
                         var="x">
                         <p:column
                             styleClass="#{itemBean.containerController.getStyleOfContainerPlace(x,y)}">
@@ -68,8 +68,8 @@
                                 styleClass="checkbox-round"
                                 value="#{itemBean.containerController.itemPositions[x][y]}"
                                 disabled="#{itemBean.containerController.isContainerPlaceDisabled(x, y)}"
-                                title="#{itemBean.containerController.getToolTipForContainerPlace(x,y)}">
-                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.clickCheckBox(x,y)}" />
+                                title="#{itemBean.containerController.getToolTipForContainerPlace(x, y)}">
+                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.clickCheckBox(x, y)}" />
                             </p:selectBooleanCheckbox>
                         </p:column>
                     </p:repeat>

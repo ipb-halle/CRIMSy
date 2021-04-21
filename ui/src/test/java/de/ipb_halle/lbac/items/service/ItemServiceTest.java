@@ -113,26 +113,27 @@ public class ItemServiceTest extends TestBase {
 
         c0 = new Container();
         c0.setBarCode(null);
-        c0.setDimension("3;3;1");
+        c0.setRows(3);
+        c0.setColumns(3);
         c0.setFireArea("F1");
         c0.setGmoSafetyLevel("S0");
         c0.setLabel("R302");
         c0.setType(new ContainerType("ROOM", 90, false, true));
-        c0.setItems(new Item[3][3][1]);
+        c0.setItems(new Item[3][3]);
 
         c1 = new Container();
         c1.setBarCode("9845893457");
-        c1.setDimension("2;2;1");
+        c0.setRows(2);
+        c0.setColumns(2);
         c1.setFireArea(c0.getFireArea());
         c1.setGmoSafetyLevel(c0.getGmoSafetyLevel());
         c1.setLabel("Schrank1");
         c1.setParentContainer(c0);
         c1.setType(new ContainerType("CUPBOARD", 90, true, false));
-        c1.setItems(new Item[2][2][1]);
+        c1.setItems(new Item[2][2]);
 
         c2 = new Container();
         c2.setBarCode("43753456");
-        c2.setDimension(null);
         c2.setFireArea(c1.getFireArea());
         c2.setGmoSafetyLevel(c1.getGmoSafetyLevel());
         c2.setLabel("Karton3");
@@ -196,7 +197,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
-        
+
     }
 
     @Test
@@ -300,13 +301,15 @@ public class ItemServiceTest extends TestBase {
         item2 = instance.saveItem(item2);
         //Create two wellplates with different dimensions
         Container wellPlate_1 = new Container();
-        wellPlate_1.setDimension("5;2;1");
+        wellPlate_1.setRows(5);
+        wellPlate_1.setColumns(2);
         wellPlate_1.setLabel("Wellplate-1");
         wellPlate_1.setParentContainer(c0);
         wellPlate_1.setType(new ContainerType("WELLPLATE", 50, false, true));
         wellPlate_1 = containerService.saveContainer(wellPlate_1);
         Container wellPlate_2 = new Container();
-        wellPlate_2.setDimension("1;1;1");
+        wellPlate_2.setRows(1);
+        wellPlate_2.setColumns(1);
         wellPlate_2.setLabel("Wellplate-2");
         wellPlate_2.setParentContainer(c0);
         wellPlate_2.setType(new ContainerType("WELLPLATE", 50, false, true));
@@ -319,12 +322,11 @@ public class ItemServiceTest extends TestBase {
         //Move item 1 to wellplate 1
         Set<int[]> places = new HashSet<>();
         places.add(new int[]{0, 0});
-        places.add(new int[]{1, 0});
         positionService.moveItemToNewPosition(item, wellPlate_1, places, owner, new Date());
         //Check if movement was correct
         Container loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
-        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
-        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(1, 0, 0).getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0).getId());
+ 
         //Move item 2 to wellplate 1
         places = new HashSet<>();
         places.add(new int[]{1, 1});
@@ -332,20 +334,18 @@ public class ItemServiceTest extends TestBase {
 
         //Check if movement was correct
         loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
-        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
-        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(1, 0, 0).getId());
-        Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(1, 1, 0).getId());
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0).getId());
+        Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(1, 1).getId());
         // Check if item is now in new wellplate
         places = new HashSet<>();
         places.add(new int[]{0, 0});
         positionService.moveItemToNewPosition(item2, wellPlate_2, places, owner, new Date());
         loadedWellPlate = containerService.loadContainerById(wellPlate_2.getId());
-        Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
+        Assert.assertEquals(item2.getId(), loadedWellPlate.getItemAtPos(0, 0).getId());
         // check if item is removed from old wellplate
         loadedWellPlate = containerService.loadContainerById(wellPlate_1.getId());
-        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0, 0).getId());
-        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(1, 0, 0).getId());
-        Assert.assertNull(loadedWellPlate.getItemAtPos(1, 1, 0));
+        Assert.assertEquals(item.getId(), loadedWellPlate.getItemAtPos(0, 0).getId());
+        Assert.assertNull(loadedWellPlate.getItemAtPos(1, 1));
 
         //Item should not be able to move to wellPlate_2 because item 2 is blocking the slot
         Assert.assertFalse(positionService.moveItemToNewPosition(item, wellPlate_2, places, owner, new Date()));
@@ -355,18 +355,18 @@ public class ItemServiceTest extends TestBase {
     public void test005_saveAndLoadEditedItem() {
         Item original = createItem();
         original.setContainer(c0);
-        c0.getItems()[2][1][0] = original;
-        c0.getItems()[1][1][0] = original;
+        c0.getItems()[2][1] = original;
+       
 
         original.setAmount(1.5);
         instance.saveItem(original);
         positionService.saveItemInContainer(original.getId(), c0.getId(), 2, 1);
-        positionService.saveItemInContainer(original.getId(), c0.getId(), 1, 1);
+    
         Set<int[]> foundPositions = c0.getPositionsOfItem(original.getId());
         for (int[] pos : foundPositions) {
             Assert.assertTrue(pos[0] == 2 && pos[1] == 1 || pos[0] == 1 && pos[1] == 1);
         }
-        Assert.assertEquals(2, foundPositions.size());
+        Assert.assertEquals(1, foundPositions.size());
         Item edited = original.copy();
 
         // change to new container with new positions
@@ -391,7 +391,7 @@ public class ItemServiceTest extends TestBase {
                 Assert.assertEquals(1.25, history.getAmountNew(), 0.001);
             } else {
                 ItemPositionHistoryList history = (ItemPositionHistoryList) d;
-                Assert.assertEquals(3, history.getPositionAdds().size() + history.getPositionRemoves().size());
+                Assert.assertEquals(2, history.getPositionAdds().size() + history.getPositionRemoves().size());
                 for (ItemPositionsHistory h : history.getPositionRemoves()) {
                     boolean x = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 1) && Objects.equals(h.getRowOld(), 1);
                     boolean y = Objects.equals(h.getColNew(), null) && Objects.equals(h.getRowNew(), null) && Objects.equals(h.getColOld(), 2) && Objects.equals(h.getRowOld(), 1);
@@ -414,7 +414,7 @@ public class ItemServiceTest extends TestBase {
         Container loadedContainer = containerService.loadContainerById(c2.getId());
         Assert.assertNull(loadedContainer.getItems());
         diffs = loadedItem.getHistory().get(loadedItem.getHistory().lastKey());
-        Assert.assertEquals(2, diffs.size());
+        Assert.assertEquals(1, diffs.size());
         for (ItemDifference d : diffs) {
             if (d instanceof ItemHistory) {
                 ItemHistory history = (ItemHistory) d;
@@ -461,14 +461,14 @@ public class ItemServiceTest extends TestBase {
         instance.saveEditedItem(edited, original, owner);
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c1.getId(), loadedItem.getContainer().getId());
-        Assert.assertTrue(loadedItem.getHistory().size()>0);
+        Assert.assertTrue(loadedItem.getHistory().size() > 0);
         //change container to a new one with positions
         original = edited;
         edited = original.copy();
         edited.setContainer(c0);
         positions.clear();
         positions.add(new int[]{0, 0});
-        positions.add(new int[]{1, 0});
+       
         instance.saveEditedItem(edited, original, owner, positions);
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c0.getId(), loadedItem.getContainer().getId());
@@ -485,7 +485,7 @@ public class ItemServiceTest extends TestBase {
                 Assert.assertEquals(c1.getId(), history.getParentContainerOld().getId());
             } else {
                 ItemPositionHistoryList l = (ItemPositionHistoryList) d;
-                Assert.assertEquals(2, l.getPositionAdds().size());
+                Assert.assertEquals(1, l.getPositionAdds().size());
                 for (ItemPositionsHistory h : l.getPositionAdds()) {
                     boolean x = Objects.equals(h.getColNew(), 0) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
                     boolean y = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
@@ -505,7 +505,6 @@ public class ItemServiceTest extends TestBase {
         edited.setContainer(c0);
         positions.clear();
         positions.add(new int[]{0, 0});
-        positions.add(new int[]{1, 0});
         instance.saveEditedItem(edited, original, owner, positions);
         loadedItem = instance.loadItemById(original.getId());
         Assert.assertEquals(c0.getId(), loadedItem.getContainer().getId());
@@ -522,7 +521,7 @@ public class ItemServiceTest extends TestBase {
                 Assert.assertNull(history.getParentContainerOld());
             } else {
                 ItemPositionHistoryList l = (ItemPositionHistoryList) d;
-                Assert.assertEquals(2, l.getPositionAdds().size());
+                Assert.assertEquals(1, l.getPositionAdds().size());
                 for (ItemPositionsHistory h : l.getPositionAdds()) {
                     boolean x = Objects.equals(h.getColNew(), 0) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);
                     boolean y = Objects.equals(h.getColNew(), 1) && Objects.equals(h.getRowNew(), 0) && Objects.equals(h.getColOld(), null) && Objects.equals(h.getRowOld(), null);

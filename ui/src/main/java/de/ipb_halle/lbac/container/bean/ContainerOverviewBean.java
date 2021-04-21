@@ -23,7 +23,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -228,9 +227,10 @@ public class ContainerOverviewBean implements Serializable {
 
     private void setDimensionIfPossible() {
         if (editBean.isDimensionVisible()) {
-            Integer height = Math.max(1, editBean.getContainerHeight() == null ? 0 : editBean.getContainerHeight());
-            Integer width = Math.max(1, editBean.getContainerWidth() == null ? 0 : editBean.getContainerWidth());
-            editBean.getContainerToCreate().setDimension(String.format("%d;%d;1", width, height));
+            Integer height = editBean.getContainerHeight() == null ? null : Math.max(1, editBean.getContainerHeight());
+            Integer width = editBean.getContainerWidth() == null ? null : Math.max(1, editBean.getContainerWidth());
+            editBean.getContainerToCreate().setRows(height);
+            editBean.getContainerToCreate().setColumns(width);
         }
     }
 

@@ -159,9 +159,9 @@ public class ContainerPositionService {
     }
 
     /**
-     * Checks if an item is at the place where the new item should be placed
-     * into and saves it to there if none item is blocking it.
-     *
+     * Saves an item on the specified position if that position 
+     * is not blocked by another item
+     * 
      * @param itemid
      * @param containerid
      * @param posX
