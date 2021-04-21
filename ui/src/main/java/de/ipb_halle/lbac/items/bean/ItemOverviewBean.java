@@ -60,8 +60,7 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class ItemOverviewBean implements Serializable, ACObjectBean {
 
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
     private final int PAGE_SIZE = 10;
 
     @Inject
@@ -91,7 +90,7 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     private SearchMaskValues searchMaskValues = new SearchMaskValues();
 
     public void actionApplySearchFilter() {
-        reloadItems();
+        actionFirstItems();
     }
 
     public void actionClearSearchFilter() {
@@ -179,7 +178,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
     }
 
     public String getItemId(Item i) {
-        logger.info("Try to get Item ID " + i.getId());
         return String.format("ID: %d", i.getId());
     }
 

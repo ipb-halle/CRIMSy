@@ -118,7 +118,9 @@ public class MaterialSearchMaskController implements Serializable {
     }
 
     public void actionStartMaterialSearch() {
+       
         tableController.reloadShownMaterial(overviewBean.getCurrentUser(), getValues());
+         tableController.getTableController().actionFirstResult();
     }
 
     private MaterialSearchMaskValues getValues() {
