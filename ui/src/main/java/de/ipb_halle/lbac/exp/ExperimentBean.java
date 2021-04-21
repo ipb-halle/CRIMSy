@@ -19,8 +19,10 @@ package de.ipb_halle.lbac.exp;
 
 import de.ipb_halle.lbac.datalink.LinkedDataAgent;
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.ACObjectBean;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.MemberService;
@@ -91,6 +93,9 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     @Inject
     protected MemberService memberService;
+
+    @Inject
+    protected ACListService aclistService;
 
     @Inject
     protected ProjectService projectService;
@@ -279,7 +284,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         // activate the copied experiment 
         this.templateMode = false;
         loadExpRecords();
-        this.experiments.add(0,experiment);
+        this.experiments.add(0, experiment);
     }
 
     /**
@@ -649,6 +654,15 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     public boolean isRecordEditable(ExpRecord record) {
         return record.getEdit();
+    }
+
+    public boolean isExperimentEditable(Experiment e) {
+        return aclistService.isPermitted(
+                ACPermission.permEDIT,
+                e,
+                currentUser
+        );
+
     }
 
     public List<Experiment> loadExperiments(boolean template) {

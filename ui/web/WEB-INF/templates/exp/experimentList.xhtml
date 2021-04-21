@@ -51,20 +51,20 @@
                                      tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
                                      update="@(.acoEditModal)"
                                      type="button"
+                                     disabled="#{!experimentBean.isExperimentEditable(experiment)}"
                                      onclick="ajax:experimentBean.actionStartAclChange(experiment)"
-                                     oncomplete="PF('dlgAcl').show();"
-                                     disabled="false"/>
+                                     oncomplete="PF('dlgAcl').show();"/>
                     <b:commandButton style="padding: 0 4px;"
                                      icon="pencil"
                                      look="link"
                                      ajax="true"
                                      process="@this"
+                                     disabled="#{!experimentBean.isExperimentEditable(experiment)}"
                                      tooltip="#{msgs.expEdit_iconTooltip}"
                                      update="@(.expDataClass)"
                                      type="button"
                                      action ="#{experimentBean.actionStartEditExperiment(experiment)}"
-                                     oncomplete="PF('dlg_experimentData').show()"
-                                     disabled="false"/>
+                                     oncomplete="PF('dlg_experimentData').show()"/>
                 </div>
             </p:outputPanel>
     </b:dataTableColumn>
