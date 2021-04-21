@@ -71,12 +71,11 @@ public class ContainerNestingService implements Serializable {
     /**
      * Updates the nesting path of the container
      *
-     * @param taxonomyid
+     * @param idOfEditedContainer
      * @param newparentId
      */
-    public void updateContainerNesting(int taxonomyid, Integer newparentId) {
-
-        nestingService.updateNestedObjectFor(taxonomyid, newparentId);
+    public void updateContainerNesting(int idOfEditedContainer, Integer newparentId) {
+        nestingService.updateNestedObjectFor(idOfEditedContainer, newparentId);
     }
 
     public NestingService getNestingService() {

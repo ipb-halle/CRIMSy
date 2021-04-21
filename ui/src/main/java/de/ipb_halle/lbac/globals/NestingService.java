@@ -50,7 +50,7 @@ public class NestingService implements Serializable {
                 this.em.createNativeQuery(SQL_BUILD_PATH)
                         .setParameter("sourceid", cid)
                         .setParameter("targetid", pe)
-                        .setParameter("nested", Objects.equals(parentid, pe))
+                        .setParameter("nested", !Objects.equals(parentid, pe))
                         .executeUpdate();
             } else {
                 this.em.createNativeQuery(SQL_BUILD_PATH)
