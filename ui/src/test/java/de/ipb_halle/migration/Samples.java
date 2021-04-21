@@ -18,6 +18,7 @@
 package de.ipb_halle.migration;
 
 import de.ipb_halle.lbac.items.entity.ItemEntity;
+import de.ipb_halle.lbac.items.entity.ItemPositionEntity;
 import de.ipb_halle.lbac.container.entity.ContainerEntity;
 import de.ipb_halle.lbac.container.entity.ContainerNestingEntity;
 import de.ipb_halle.lbac.container.entity.ContainerNestingId;
@@ -57,11 +58,11 @@ public class Samples {
     public final static String INPUT_SAMPLES = "INPUT_SAMPLES";
     public final static String INPUT_EXTRACTS = "INPUT_EXTRACTS";
     public final static String PARENT_CONTAINER_ID = "PARENT_CONTAINER_ID";
+    public final static String SAMPLE_ITEM_ID = "SampleId_ItemId";
     public final static String UNKNOWN_CONTAINER = "UNKNOWN_CONTAINER";
 
     private InhouseDB inhouseDB;
     private int parentContainerId;
-    private int projectId;
     private Map<String, ContainerEntity> containers;
     private Map<String, String> dimensions;
 
@@ -74,14 +75,18 @@ public class Samples {
     private void addInsertBuilders() {
         this.inhouseDB.addInsertBuilder(ItemEntity.class.getName(),
                 new SqlInsertBuilder(new EntityGraph(ItemEntity.class)));
+        this.inhouseDB.addInsertBuilder(ItemPositionEntity.class.getName(),
+                new SqlInsertBuilder(new EntityGraph(ItemPositionEntity.class)));
         this.inhouseDB.addInsertBuilder(ContainerEntity.class.getName(),
                 new SqlInsertBuilder(new EntityGraph(ContainerEntity.class)));
+        this.inhouseDB.addInsertBuilder(ContainerNestingEntity.class.getName(),
+                new SqlInsertBuilder(new EntityGraph(ContainerNestingEntity.class)));
     }
 
     private ContainerEntity createContainer(String name) throws Exception {
         ContainerEntity container = new ContainerEntity();
         container.setLabel(name);
-        container.setProjectid(projectId);
+        container.setProjectid(inhouseDB.getProject());
         String dimension = getDimension(name);
         if (dimension != null) {
             container.setDimension(dimension);
@@ -96,7 +101,7 @@ public class Samples {
         this.containers.put(name, container);
 
         ContainerNestingEntity nesting = new ContainerNestingEntity();
-        nesting.setId(new ContainerNestingId(this.parentContainerId, container.getId()));
+        nesting.setId(new ContainerNestingId(container.getId(), this.parentContainerId));
         this.inhouseDB.getBuilder(nesting.getClass().getName())
                 .insert(this.inhouseDB.getConnection(), nesting);
 
@@ -218,7 +223,6 @@ public class Samples {
     private void init() {
         this.containers = new HashMap<> ();
         this.dimensions = new HashMap<> ();
-        this.projectId = inhouseDB.getConfigInt(InhouseDB.PROJECT_ID);
         this.parentContainerId = inhouseDB.getConfigInt(PARENT_CONTAINER_ID);
 
         /* 
@@ -251,9 +255,34 @@ public class Samples {
                 double amount, double tara, String purity, String appearance, 
                 String remarks) throws Exception {
 
-        ContainerEntity container = getContainer(place);
+        String pattern = "^([A-Z]{2,3}[0-9]{3})\\.([A-Z])([0-9])$";
+        Date importDate = new Date();
+        ContainerEntity container = getContainer(UNKNOWN_CONTAINER);
+        int column = -1;
+        int row = -1;
+
+        if (place.matches(pattern)) {
+            String containerName = place.replaceAll(pattern, "$1");
+            container = getContainer(containerName);
+            row = place.replaceAll(pattern, "$2").charAt(0) - 65;
+            column = Integer.parseInt(place.replaceAll(pattern, "$3"));
+
+            // need to check container dimensions!
+
+        } 
+
         Integer molId = getMolId(molProcId);
+        if ((molId == null) || (molId == 0)) {
+//          System.out.printf("No material found for sampleId %d\n", sampleId);
+            return;
+        }
+
         Integer materialId = getMaterialId(molId);
+
+        if ((materialId == null) || (materialId == 0)) {
+//              System.out.printf("No material found for sampleId %d\n", sampleId);
+                return;
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append("Samplecode: ");
@@ -265,25 +294,43 @@ public class Samples {
         sb.append(remarks);
 
         ItemEntity item = new ItemEntity();
+        item.setACList(inhouseDB.getACList());
+        item.setOwner(inhouseDB.getOwner());
+        item.setProjectid(inhouseDB.getProject()); 
         item.setAmount(amount);
         item.setUnit("mg");
-        item.setConcentration(Double.valueOf(purity));
+        if (! purity.isEmpty()) {
+            item.setConcentration(Double.valueOf(purity));
+        } else {
+            item.setConcentration(100.0);
+        }
         item.setConcentrationUnit("%");
         item.setDescription(sb.toString());
         item.setMaterialid(materialId);
-        item.setProjectid(this.inhouseDB.getConfigInt(InhouseDB.PROJECT_ID));
         item.setPurity(purity);                                                  // free text might not be appropriate!
 //      item.setLabel();
         item.setContainertype(CONTAINERTYPE_VIAL);
         item.setContainerid(container.getId());
+        item.setCtime(importDate);
 
         item = (ItemEntity) this.inhouseDB.getBuilder(item.getClass().getName())
                 .insert(this.inhouseDB.getConnection(), item);
 
 
         /* item position */
+        if (row >= 0) {
+            ItemPositionEntity pos = new ItemPositionEntity();
+            pos.setItemId(item.getId());
+            pos.setContainerId(container.getId());
+            pos.setItemRow(row);
+            pos.setItemCol(column);
+            this.inhouseDB.getBuilder(pos.getClass().getName())
+                    .insert(this.inhouseDB.getConnection(), pos);
+        }
 
         /* tmp reference */
+        String sql = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
+        this.inhouseDB.saveTriple(sql, sampleId, item.getId(), SAMPLE_ITEM_ID);
 
     }
 }

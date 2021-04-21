@@ -148,9 +148,9 @@ public class Experiments {
         exp.setCtime(date);
         exp.setDescription("Imported from NWC InhouseDB (IPB Halle)");
         exp.setFolderId(this.folderId);
-        exp.setProjectid(this.inhouseDB.getConfigInt(InhouseDB.PROJECT_ID));
-        exp.setOwner(this.inhouseDB.getConfigInt(InhouseDB.OWNER_ID)); 
-        exp.setACList(this.inhouseDB.getConfigInt(InhouseDB.ACLIST_ID));
+        exp.setProjectid(this.inhouseDB.getProject()); 
+        exp.setOwner(this.inhouseDB.getOwner()); 
+        exp.setACList(this.inhouseDB.getACList()); 
 
         // save exp
         exp = (ExperimentEntity) this.inhouseDB.getBuilder(exp.getClass().getName())
