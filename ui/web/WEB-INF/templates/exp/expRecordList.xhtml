@@ -25,26 +25,41 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
 
     <ui:composition>
         <ui:repeat value="#{experimentBean.expRecordsWithNullRecord}" var="rec" varStatus="recStatus">
             <b:container class="experimentRecordContainer">
                 <b:row
                     styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}">
-                    <b:column span="4">
-                        <h:outputText 
-                            rendered="#{!recStatus.last}"
-                            value=" #{rec.expRecordInfo}"
-                            title="#{rec.expRecordDetails}">
-
-                        </h:outputText>
+                    <b:column span="10">
+                        <!-- Not rendered if this is the last record (= NullRecord) or this is a new record. -->
+                    	<h:panelGroup rendered="#{!recStatus.last and !rec.newRecord}">
+                            <h:outputText value="#{msgs.expRecord_name} " />
+                            <h:outputFormat value="#{msgs.expRecord_lastChanged}"
+                                            title="#{of:formatDateWithTimezone(rec.changeTime,
+                                                                               'yyyy-MM-dd HH:mm:ss z',
+                                                                               userBean.timeZoneSettings.preferredTimeZone)}">
+                                <o:param value="#{rec.changeTime}"
+                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                            </h:outputFormat>
+                            <h:outputText value=", " />
+                            <h:outputFormat value="#{msgs.expRecord_created}"
+                                            title="#{of:formatDateWithTimezone(rec.creationTime,
+                                                                               'yyyy-MM-dd HH:mm:ss z',
+                                                                               userBean.timeZoneSettings.preferredTimeZone)}">
+                                <o:param value="#{rec.creationTime}"
+                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                            </h:outputFormat>
+                        </h:panelGroup>
                         <!--
             <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
 
                     </b:column>
-                    <b:column span="2" offset="6" style="text-align: right;">
+                    <b:column span="2" style="text-align: right;">
                         <!-- Move-up button is disabled in the first or last (= NullRecord) list entry or when
                              any record is edited. -->
                         <p:commandLink title="#{msgs.MoveUp}"

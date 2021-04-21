@@ -47,17 +47,6 @@ public class NullRecord extends ExpRecord implements DTO {
     }
 
     @Override
-    public String getExpRecordDetails() {
-        // Messages.getString(MESSAGE_BUNDLE, "expBean_xxxxx", null);
-        return "";
-    }
-
-    @Override
-    public String getExpRecordInfo() {
-        return " # -- # ";
-    }
-
-    @Override
     public boolean validate() {
         return true;
     }

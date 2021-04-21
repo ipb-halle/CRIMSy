@@ -23,7 +23,6 @@ import de.ipb_halle.lbac.datalink.LinkedData;
 import de.ipb_halle.lbac.datalink.LinkText;
 import de.ipb_halle.lbac.entity.DTO;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +45,6 @@ import org.primefaces.model.chart.BarChartModel;
  */
 public abstract class ExpRecord implements DTO, LinkedDataHolder {
 
-    private final static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private Long exprecordid;
@@ -58,7 +56,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     private Date changetime;
     private Long next;
     private int revision;
-    private SimpleDateFormat dateFormatter;
     private transient boolean isEdit = false;
     private transient int index;
     private transient int linkedDataMaxRank;
@@ -72,7 +69,6 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         this.creationtime = new Date();
         this.changetime = new Date();
         this.revision = 0;
-        this.dateFormatter = new SimpleDateFormat(DATE_FORMAT);
         this.hasHiddenLinkedData = false;
         this.linkedData = new ArrayList<LinkedData>(2);
         this.linkedDataMaxRank = -1;
@@ -127,6 +123,13 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
     }
 
     /**
+     * @return true if the record is new, i.e. has not been persisted yet.
+     */
+    public boolean isNewRecord() {
+        return this.exprecordid == null;
+    }
+
+    /**
      * @return true if the record is in edit mode and not part of an experiment
      * template
      */
@@ -146,22 +149,8 @@ public abstract class ExpRecord implements DTO, LinkedDataHolder {
         return this.experiment;
     }
 
-    public String getExpRecordDetails() {
-        // Messages.getString(MESSAGE_BUNDLE, "expBean_ChangeTime", null);
-        return "Changed: " + this.dateFormatter.format(this.changetime);
-    }
-
     public Long getExpRecordId() {
         return this.exprecordid;
-    }
-
-    public String getExpRecordInfo() {
-        StringBuilder sb = new StringBuilder();
-        // Messages.getString(MESSAGE_BUNDLE, "expBean_New", null);
-        sb.append((this.exprecordid == null) ? "#" : this.exprecordid.toString());
-        sb.append(" -- ");
-        sb.append(this.dateFormatter.format(this.creationtime));
-        return sb.toString();
     }
 
     /**

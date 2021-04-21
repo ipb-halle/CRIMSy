@@ -602,5 +602,13 @@
             <artifactId>json-sanitizer</artifactId>
             <version>1.2.2</version>
         </dependency>
+
+        <!-- PrettyTime is used in conversion of date and time.
+             This offers the JSF converter 'prettyTimeConverter'. -->
+        <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime-integration-jsf</artifactId>
+            <version>5.0.0.Final</version>
+        </dependency>
     </dependencies>
 </project> 
