@@ -157,19 +157,10 @@ public class HistoryOperation implements Serializable {
     }
 
     /**
-     * Returns detailinformation about the current timepoint and its edit
-     * actions.
-     *
-     * @return
+     * @return true if the currently shown material state is the original version
      */
-    public String getVersionComments() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        if (materialEditState.getCurrentVersiondate() != null) {
-            return sdf.format(materialEditState.getCurrentVersiondate());
-        } else {
-            return "original material";
-        }
+    public boolean isOriginalMaterial() {
+        return materialEditState.getCurrentVersiondate() == null;
     }
 
     protected void applyPositiveHazards() {

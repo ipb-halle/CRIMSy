@@ -25,7 +25,9 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions">
     <h:body>
         <b:form 
             id="materialEditForm">
@@ -65,11 +67,28 @@
                                 icon-awesome="backward"
                                 />
                         </b:column>
-                        <b:column span="2"
+                        <b:column span="3"
                                   rendered="#{materialBean.areRevisionElementsVisible()}">
-                            <h:outputText
+                            <h:outputFormat
+                                value="#{msgs.materialCreation_changed}"
                                 styleClass="revisionChangeClass"
-                                value="#{materialBean.historyOperation.getVersionComments()}"/>
+                                rendered="#{!materialBean.historyOperation.originalMaterial}">
+                                <o:param value="#{materialBean.materialEditState.currentVersiondate}"
+                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param value="#{of:formatDateWithTimezone(materialBean.materialEditState.currentVersiondate,
+                                                                            'yyyy-MM-dd HH:mm:ss z',
+                                                                            userBean.timeZoneSettings.preferredTimeZone)}" />
+                            </h:outputFormat>
+                            <h:outputFormat
+                                value="#{msgs.materialCreation_created}"
+                                styleClass="revisionChangeClass"
+                                rendered="#{materialBean.historyOperation.originalMaterial}">
+                                <o:param value="#{materialBean.materialEditState.materialBeforeEdit.creationTime}"
+                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                                <o:param value="#{of:formatDateWithTimezone(materialBean.materialEditState.materialBeforeEdit.creationTime,
+                                                                            'yyyy-MM-dd HH:mm:ss z',
+                                                                            userBean.timeZoneSettings.preferredTimeZone)}" />
+                            </h:outputFormat>
                         </b:column>
                         <b:column span="1"
                                   rendered="#{materialBean.areRevisionElementsVisible()}">
@@ -123,7 +142,7 @@
                             <h:outputText
                                 value="#{materialBean.getMode()}"/>
                         </b:column>
-                        <b:column span="4" offset="3">
+                        <b:column span="4" offset="2">
                             <h:outputText
                                 value="#{materialBean.getErrorMessages()}"/>
                         </b:column>
