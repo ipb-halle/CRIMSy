@@ -89,7 +89,7 @@ public class ContainerControllerTest {
     public void test004_resolveItemPositions() {
         controller.setItemAtPosition(0, 0);
         Set<int[]> positions = controller.resolveItemPositions();
-        Assert.assertEquals(3, positions.size());
+        Assert.assertEquals(2, positions.size());
     }
 
     @Test

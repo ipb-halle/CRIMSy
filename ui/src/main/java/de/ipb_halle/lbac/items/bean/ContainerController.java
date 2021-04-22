@@ -49,7 +49,10 @@ public class ContainerController {
 
             for (int i = 0; i < items.length; i++) {
                 for (int j = 0; j < items[i].length; j++) {
-                    int currentItemId=itemBean.getState().getOriginalItem().getId();
+                    Integer currentItemId=null;
+                    if(itemBean.getState().getOriginalItem()!=null){
+                        currentItemId=itemBean.getState().getOriginalItem().getId();
+                    }
                     itemPositions[i][j] = (items[i][j] != null&&items[i][j].getId().equals(currentItemId));
                 }
             }
