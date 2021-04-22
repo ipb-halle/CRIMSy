@@ -4,6 +4,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
     <namespace>http://ipb-halle.de/nwc</namespace>
+
+    <!-- Components -->
     <tag>
         <tag-name>augmentedText</tag-name>
         <component>
@@ -19,4 +21,11 @@
             <component-type>imageAnnotation.InputFile</component-type>
         </component>
     </tag>
+
+    <!-- EL functions -->
+    <function>
+        <function-name>formatDateWithTimezone</function-name>
+        <function-class>de.ipb_halle.lbac.util.jsf.DateFunctions</function-class>
+        <function-signature>java.lang.String formatDateWithTimezone(java.util.Date)</function-signature>
+    </function>
 </facelet-taglib>
