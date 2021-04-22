@@ -49,7 +49,8 @@ public class ContainerController {
 
             for (int i = 0; i < items.length; i++) {
                 for (int j = 0; j < items[i].length; j++) {
-                    itemPositions[i][j] = (items[i][j] != null);
+                    int currentItemId=itemBean.getState().getOriginalItem().getId();
+                    itemPositions[i][j] = (items[i][j] != null&&items[i][j].getId().equals(currentItemId));
                 }
             }
 
@@ -80,15 +81,24 @@ public class ContainerController {
         return false;
     }
     
-    public int getColumns(){
+    public List<Integer> getColumns(){
+        List<Integer> columnsList=new ArrayList<>();
         if (container.getColumns() == null) {
-            return 1;
+            columnsList.add(1);
         }
-        return container.getColumns();
+        //container.getZeroBased()
+        for(int i=0;i<container.getColumns();i++){
+            columnsList.add(i);
+        }
+        return columnsList;
     }
 
-    public int getRows() {
-        return container.getRows();
+    public List<Integer>  getRows() {
+         List<Integer> rowsList=new ArrayList<>();
+         for(int i=0;i<container.getRows();i++){
+            rowsList.add(i);
+        }
+         return rowsList;
     }
     
     /**
@@ -167,7 +177,6 @@ public class ContainerController {
     }
 
     public String getStyleOfContainerPlace(int x, int y) {
-
         try {
             if (container.getItemAtPos(x, y) == null) {
                 return "possible-place";
