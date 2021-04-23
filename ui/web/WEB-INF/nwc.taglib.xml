@@ -28,4 +28,14 @@
         <function-class>de.ipb_halle.lbac.util.jsf.DateFunctions</function-class>
         <function-signature>java.lang.String formatDateWithTimezone(java.util.Date)</function-signature>
     </function>
+    <function>
+        <function-name>formatNumberInEnglish</function-name>
+        <function-class>de.ipb_halle.lbac.util.jsf.NumberFunctions</function-class>
+        <function-signature>java.lang.String formatNumberInEnglish(java.lang.Number, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>min</function-name>
+        <function-class>java.lang.Math</function-class>
+        <function-signature>int min(int, int)</function-signature>
+    </function>
 </facelet-taglib>

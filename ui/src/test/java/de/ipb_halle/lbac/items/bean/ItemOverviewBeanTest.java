@@ -193,7 +193,7 @@ public class ItemOverviewBeanTest extends TestBase {
 
         itemOverviewBean.getSearchMaskValues().setDescription("X");
         itemOverviewBean.actionApplySearchFilter();
-        Assert.assertEquals("no items with active filters found", itemOverviewBean.getItemNavigationInfo());
+        Assert.assertEquals(0, itemOverviewBean.getItemAmount());
     }
 
  
@@ -216,7 +216,9 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
         Assert.assertTrue(itemOverviewBean.isBackDeactivated());
         Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals("1 - 10 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+        Assert.assertEquals(1, itemOverviewBean.getLeftBorder());
+        Assert.assertEquals(10, itemOverviewBean.getRightBorder());
+        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go one step forward
         itemOverviewBean.actionNextItems();
@@ -224,7 +226,9 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertEquals("TestItem 10", itemOverviewBean.getItems().get(0).getDescription());
         Assert.assertFalse(itemOverviewBean.isBackDeactivated());
         Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals("11 - 20 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+        Assert.assertEquals(11, itemOverviewBean.getLeftBorder());
+        Assert.assertEquals(20, itemOverviewBean.getRightBorder());
+        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go to the end of the list
         itemOverviewBean.actionEndItems();
@@ -232,7 +236,9 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertEquals("TestItem 96", itemOverviewBean.getItems().get(0).getDescription());
         Assert.assertFalse(itemOverviewBean.isBackDeactivated());
         Assert.assertTrue(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals("97 - 106 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+        Assert.assertEquals(97, itemOverviewBean.getLeftBorder());
+        Assert.assertEquals(106, itemOverviewBean.getRightBorder());
+        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go one step back
         itemOverviewBean.actionLastItems();
@@ -240,7 +246,9 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertEquals("TestItem 86", itemOverviewBean.getItems().get(0).getDescription());
         Assert.assertFalse(itemOverviewBean.isBackDeactivated());
         Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals("87 - 96 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+        Assert.assertEquals(87, itemOverviewBean.getLeftBorder());
+        Assert.assertEquals(96, itemOverviewBean.getRightBorder());
+        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
 
         //go to first item
         itemOverviewBean.actionFirstItems();
@@ -248,7 +256,9 @@ public class ItemOverviewBeanTest extends TestBase {
         Assert.assertEquals("TestItem 0", itemOverviewBean.getItems().get(0).getDescription());
         Assert.assertTrue(itemOverviewBean.isBackDeactivated());
         Assert.assertFalse(itemOverviewBean.isForwardDeactivated());
-        Assert.assertEquals("1 - 10 of 106 items shown", itemOverviewBean.getItemNavigationInfo());
+        Assert.assertEquals(1, itemOverviewBean.getLeftBorder());
+        Assert.assertEquals(10, itemOverviewBean.getRightBorder());
+        Assert.assertEquals(106, itemOverviewBean.getItemAmount());
     }
 
    
@@ -281,24 +291,7 @@ public class ItemOverviewBeanTest extends TestBase {
     }
 
     @Test
-    public void test005_testItemLocalisation() {
-        materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser", "water");
-        itemid_containerAndProject = createItemWithProjectAndContainer();
-        itemid_1 = itemCreator.createItem(user.getId(), aclist.getId(), materialid_1, "TestItem1",project.getId());
-        Item item = itemService.loadItemById(itemid_1);
-        Item item2 = itemService.loadItemById(itemid_containerAndProject);
-        item.setUnit("g");
-        Assert.assertEquals("0.0 g", itemOverviewBean.getAmountString(item));
-        Assert.assertEquals("Wasser<br/>water<br/>", itemOverviewBean.getMaterialName(item));
-        Assert.assertEquals("biochemical-test-project/Public Account", itemOverviewBean.getOwnerString(item2)); // mit und ohne Project
-        Assert.assertEquals("ItemOverviewBeanTest/Public Account", itemOverviewBean.getOwnerString(item)); // mit und ohne Project
-        Assert.assertEquals("", itemOverviewBean.getLocationOfItem(item)); // mit nested containern
-        Assert.assertEquals("ROOM.BOX", itemOverviewBean.getLocationOfItem(item2));
-        itemOverviewBean.getDatesOfItem(item); // mit historie 
-    }
-
-    @Test
-    public void test006_getSimilarNames() {
+    public void test005_getSimilarNames() {
 
         materialid_1 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasser", "water");
         materialid_2 = this.materialCreator.createStructure(user.getId(), aclist.getId(), null, "Wasserstoff");

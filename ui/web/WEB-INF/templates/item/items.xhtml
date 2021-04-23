@@ -176,56 +176,76 @@
                                             <h:outputText
                                                 id="itemLabel"
                                                 escape="false"
-                                                value="#{item.getLabel()}">
-                                            </h:outputText>
-                                            <p:tooltip for="itemLabel"  position="right">
-                                                <h:outputText 
-                                                    escape="false"
-                                                    value="#{itemOverviewBean. getItemId(item)}" >
-                                                    <f:converter converterId="RichTextConverter" />
-                                                </h:outputText>
-                                            </p:tooltip>
+                                                value="#{item.label}"
+                                                title="ID: #{item.id}" />
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_material}">
-                                            <h:outputText
-                                                id="materialNames"
-                                                escape="false"
-                                                value="#{itemOverviewBean. getWrappedNames(item, 3)}">
-                                                <f:converter converterId="RichTextConverter" />
-                                            </h:outputText>
-                                            <p:tooltip for="materialNames"  position="right">
-                                                <h:outputText 
-                                                    escape="false"
-                                                    value="#{itemOverviewBean. getWrappedNames(item, 20)}" >
-                                                    <f:converter converterId="RichTextConverter" />
-                                                </h:outputText>
-
+                                            <h:panelGroup id="materialNames">
+                                                <ui:repeat value="#{item.material.names}"
+                                                           size="#{nwc:min(item.material.names.size(), 3)}"
+                                                           var="name"
+                                                           varStatus="namesStatus">
+                                                    <h:outputText value="#{name.value}" />
+                                                    <ui:fragment rendered="#{!namesStatus.last}">
+                                                        <br />
+                                                    </ui:fragment>
+                                                </ui:repeat>
+                                            </h:panelGroup>
+                                            <p:tooltip for="materialNames" position="right">
+                                                <ui:repeat value="#{item.material.names}"
+                                                           size="#{nwc:min(item.material.names.size(), 10)}"
+                                                           var="name"
+                                                           varStatus="namesStatus">
+                                                    <h:outputText value="#{name.value}" />
+                                                    <ui:fragment rendered="#{!namesStatus.last}">
+                                                        <br />
+                                                    </ui:fragment>
+                                                </ui:repeat>
+                                                <ui:fragment rendered="#{item.material.names.size() gt 10}">
+                                                    ...
+                                                </ui:fragment>
                                             </p:tooltip>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_projectOwner}"
-                                            value="#{itemOverviewBean.getOwnerString(item)}">
+                                            label="#{msgs.itemOverview_tableheader_projectOwner}">
+                                            <h:outputFormat value="{0}/{1}">
+                                                <f:param value="#{item.project}" />
+                                                <f:param value="#{item.owner.name}" />
+                                            </h:outputFormat>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
-                                            label="#{msgs.itemOverview_tableheader_amount}"
-                                            value="#{itemOverviewBean.getAmountString(item)}">
+                                            label="#{msgs.itemOverview_tableheader_amount}">
+                                            <!-- Number format "#.0##": 10000      -> 10000.0
+                                                                        10000.1    -> 10000.1 
+                                                                        10000.01   -> 10000.01
+                                                                        10000.001  -> 10000.001
+                                                                        10000.0001 -> 10000.0 -->
+                                            <h:outputFormat value="{0} {1}">
+                                                <f:param value="#{nwc:formatNumberInEnglish(item.amount, '#.0##')}" />
+                                                <f:param value="#{item.unit}" />
+                                            </h:outputFormat>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_location}"
-                                            value="#{itemOverviewBean.getLocationOfItem(item)}">
+                                            value="#{item.nestedLocation}">
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_remarks}"
-                                            value="#{item.getDescription()}">
+                                            value="#{item.description}">
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.itemOverview_tableheader_dates}">
-                                            <h:outputText
-                                                escape="false"
-                                                value="#{itemOverviewBean.getDatesOfItem(item)}">
-                                                <f:converter converterId="RichTextConverter" />
-                                            </h:outputText>
+                                            <h:panelGrid columns="3">
+                                                <h:outputText value="#{msgs.itemOverview_created}" />
+                                                <h:outputText value="&#160;" />
+                                                <h:outputText value="#{nwc:formatDateWithTimezone(item.cTime)}" />
+                                                <h:outputText value="#{msgs.itemOverview_modified}"
+                                                              rendered="#{!item.history.isEmpty()}" />
+                                                <h:outputText value="&#160;" />
+                                                <h:outputText value="#{nwc:formatDateWithTimezone(item.history.lastKey())}"
+                                                              rendered="#{!item.history.isEmpty()}" />
+                                            </h:panelGrid>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn
                                             label="#{msgs.materialOverview_tableheader_actions}">
@@ -292,7 +312,16 @@
                                         />
                                 </b:column> 
                                 <b:column span="2" offset="1"> 
-                                    <h:outputText value="#{itemOverviewBean.getItemNavigationInfo()}"/>
+                                    <h:outputFormat
+                                        value="#{msgs.itemOverview_itemsShownFormat}"
+                                        rendered="#{itemOverviewBean.itemAmount gt 0}">
+                                        <f:param value="#{itemOverviewBean.leftBorder}" />
+                                        <f:param value="#{itemOverviewBean.rightBorder}" />
+                                        <f:param value="#{itemOverviewBean.itemAmount}" />
+                                    </h:outputFormat>
+                                    <h:outputText
+                                        value="#{msgs.itemOverview_noItemsFound}"
+                                        rendered="#{itemOverviewBean.itemAmount le 0}" />
                                 </b:column> 
                             </b:row>
                         </b:container>

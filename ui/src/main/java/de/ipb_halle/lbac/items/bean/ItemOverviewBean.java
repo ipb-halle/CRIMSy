@@ -148,66 +148,6 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         reloadItems();
     }
 
-    public String getAmountString(Item i) {
-        String unitString = "";
-        if (i.getUnit() != null) {
-            unitString = i.getUnit();
-        }
-        return i.getAmount() + " " + unitString;
-    }
-
-    public String getMaterialName(Item i) {
-        String back = "";
-        for (MaterialName mn : i.getMaterial().getNames()) {
-            back += mn.getValue() + "<br/>";
-        }
-        return back;
-    }
-
-    public String getOwnerString(Item i) {
-        String back = "";
-        if (i.getProject() != null) {
-            back = i.getProject().getName();
-        }
-        back += "/" + i.getOwner().getName();
-        return back;
-    }
-
-    public String getLocationOfItem(Item i) {
-        return i.getNestedLocation();
-    }
-
-    public String getItemId(Item i) {
-        return String.format("ID: %d", i.getId());
-    }
-
-    public String getWrappedNames(Item item, int maxNamesShown) {
-        String back = "";
-        for (int i = 0; i < Math.min(item.getMaterial().getNames().size(), maxNamesShown); i++) {
-            back += item.getMaterial().getNames().get(i).getValue() + "<br>";
-        }
-        if (item.getMaterial().getNames().size() > maxNamesShown) {
-            back += "...";
-        }
-
-        if (back.endsWith("<br>")) {
-            back = back.substring(0, back.length() - "<br>".length());
-        }
-        return back;
-    }
-
-    public String getDatesOfItem(Item i) {
-        String back = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        if (i.getcTime() != null) {
-            back = "created     : " + sdf.format(i.getcTime()) + "<br/>";
-        }
-        if (!i.getHistory().isEmpty()) {
-            back += "modified: - " + sdf.format(i.getHistory().firstKey());
-        }
-        return back;
-    }
-
     public int getItemAmount() {
         return itemAmount;
     }
@@ -220,19 +160,16 @@ public class ItemOverviewBean implements Serializable, ACObjectBean {
         return (itemAmount - firstResult) <= PAGE_SIZE;
     }
 
-    public String getItemNavigationInfo() {
-        int leftBorder = firstResult + 1;
-        int rightBorder = (int) Math.min(PAGE_SIZE + firstResult, itemAmount);
-        if (itemAmount > 0) {
-            return String.format("%d - %d of %d items shown", leftBorder, rightBorder, itemAmount);
-        } else {
-            return "no items with active filters found";
-        }
+    public int getLeftBorder() {
+        return firstResult + 1;
+    }
+
+    public int getRightBorder() {
+        return Math.min(PAGE_SIZE + firstResult, itemAmount);
     }
 
     public List<String> getSimilarMaterialNames(String input) {
-        List<String> names = materialService.getSimilarMaterialNames(input, currentUser);
-        return names;
+        return materialService.getSimilarMaterialNames(input, currentUser);
     }
 
     public List<String> getSimilarProjectNames(String input) {
