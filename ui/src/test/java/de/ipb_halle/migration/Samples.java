@@ -271,7 +271,9 @@ public class Samples {
             container = getContainer(containerName);
             row = place.replaceAll(pattern, "$2").charAt(0) - 65;
             column = Integer.parseInt(place.replaceAll(pattern, "$3"));
-            if ((row >= container.getRows()) || (column >= container.getColumns())) {
+            int containerRows = container.getRows() == null ? -2 : container.getRows();
+            int containerColumns = container.getColumns() == null ? -2 :container.getColumns();
+            if ((row >= containerRows) || (column >= containerColumns)) {
                 System.out.printf("Out of range for sampleId %d in container %s\n", sampleId, containerName);
                 container = getContainer(UNKNOWN_CONTAINER);
                 row = -1;

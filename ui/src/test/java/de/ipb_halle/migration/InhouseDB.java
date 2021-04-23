@@ -67,6 +67,8 @@ import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
  * Migration tool for the InhouseDB
  * This is work in progress.
  *
+ * DO NOT FORGET TO DEFINE INDEX TYPES Mol_ID and IPBCode!
+ * 
  * Example config file:
  * <pre>
  *  {
@@ -195,7 +197,6 @@ public class InhouseDB {
         Experiments experiments = new Experiments(this);
         Correlation correlation = new Correlation(this);
         Samples samples = new Samples(this);
-
 /*
         runInitial();
         compounds.importData();
