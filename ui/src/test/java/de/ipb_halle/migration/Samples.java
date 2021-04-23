@@ -271,22 +271,26 @@ public class Samples {
             container = getContainer(containerName);
             row = place.replaceAll(pattern, "$2").charAt(0) - 65;
             column = Integer.parseInt(place.replaceAll(pattern, "$3"));
-
-            // need to check container dimensions!
-
+            if ((row >= container.getRows()) || (column >= container.getColumns())) {
+                System.out.printf("Out of range for sampleId %d in container %s\n", sampleId, containerName);
+                container = getContainer(UNKNOWN_CONTAINER);
+                row = -1;
+                column = -1;
+            }
         } 
 
+        Integer materialId = null;
         Integer molId = getMolId(molProcId);
+
         if ((molId == null) || (molId == 0)) {
-//          System.out.printf("No material found for sampleId %d\n", sampleId);
-            return;
-        }
-
-        Integer materialId = getMaterialId(molId);
-
-        if ((materialId == null) || (materialId == 0)) {
+//          System.out.printf("No molId found for sampleId %d\n", sampleId);
+            materialId = inhouseDB.getUnknownCompoundId();
+        } else { 
+            materialId = getMaterialId(molId);
+            if ((materialId == null) || (materialId == 0)) {
 //              System.out.printf("No material found for sampleId %d\n", sampleId);
-                return;
+                materialId = inhouseDB.getUnknownCompoundId();
+            }
         }
 
         StringBuilder sb = new StringBuilder();

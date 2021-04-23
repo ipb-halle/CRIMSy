@@ -78,7 +78,7 @@ public class Taxonomy {
     public final static String TAXONOMY_SPECIES_REF = "species";
     public final static String TAXONOMY_STRAIN_REF = "strain";
 
-    public final static String TAXONOMY_UNKNOWN_PARENT_ID = "TAXONOMY_UNKNOWN_PARENT_ID";
+    public final static String UNKNOWN_TAXONOMY_PARENT_ID = "UNKNOWN_TAXONOMY_PARENT_ID";
 
     private InhouseDB inhouseDB;
     private int unknownParentId;       // link to this id, if no reference is given
@@ -86,7 +86,7 @@ public class Taxonomy {
     public Taxonomy(InhouseDB inhouseDB) {
         this.inhouseDB = inhouseDB;
         addInsertBuilders();
-        this.unknownParentId = inhouseDB.getConfigInt(TAXONOMY_UNKNOWN_PARENT_ID);
+        this.unknownParentId = inhouseDB.getConfigInt(UNKNOWN_TAXONOMY_PARENT_ID);
     }
     
     private void addInsertBuilders() {
