@@ -270,4 +270,8 @@ public class ContainerController {
         return container;
     }
 
+    public void setMessagePresenter(MessagePresenter messagePresenter) {
+        this.messagePresenter = messagePresenter;
+    }
+
 }
