@@ -63,7 +63,7 @@ public class ContainerController {
         itemPositions = new boolean[items.length][items[0].length];
         for (int i = 0; i < items.length; i++) {
             for (int j = 0; j < items[i].length; j++) {
-                itemPositions[i][j] = isCurrentItemAtPosition(items, j, j);
+                itemPositions[i][j] = isCurrentItemAtPosition(items, i, j);
             }
         }
     }
