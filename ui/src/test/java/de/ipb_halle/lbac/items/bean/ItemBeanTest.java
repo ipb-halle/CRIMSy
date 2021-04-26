@@ -42,6 +42,7 @@ import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.HashMap;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -128,7 +129,7 @@ public class ItemBeanTest extends TestBase {
     public void test001_createNewItem() {
         itemBean.actionStartItemCreation(structure);
         itemBean.getState().getEditedItem().setAmount(20d);
-        itemBean.getState().getEditedItem().setUnit("g");
+        itemBean.getState().getEditedItem().setUnit(Unit.getUnit("g"));
         itemBean.getState().getEditedItem().setContainerType(new ContainerType("GLAS_FLASK", 0, false, false));
         itemBean.getState().getEditedItem().setConcentration(.5d);
         itemBean.getState().getEditedItem().setContainerSize(40d);
@@ -141,7 +142,7 @@ public class ItemBeanTest extends TestBase {
         Item item = itemService.loadItemById(itemBean.getState().getEditedItem().getId());
         Assert.assertEquals(structure.getId(), item.getMaterial().getId());
         Assert.assertEquals(20d, item.getAmount(), 0);
-        Assert.assertEquals("g", item.getUnit());
+        Assert.assertEquals("g", item.getUnit().getUnit());
         Assert.assertEquals("GLAS_FLASK", item.getContainerType().getName());
         Assert.assertEquals(40d, item.getContainerSize(), 0);
         Assert.assertEquals(.5d, item.getConcentration(), 0);

@@ -39,7 +39,7 @@ public class RemoteItemTransformer implements RemoteTransformer {
         if (item.getProject() != null) {
             remoteItem.setProjectName(item.getProject().getDescription());
         }
-        remoteItem.setUnit(item.getUnit());
+        remoteItem.setUnit(item.getUnit().getUnit());
     }
 
     @Override

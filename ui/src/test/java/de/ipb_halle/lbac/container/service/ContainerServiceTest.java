@@ -431,7 +431,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
         Assert.assertNull(testDesc + "Project must be null", i.getProject());
         Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be kg", "kg", i.getUnit());
+        Assert.assertEquals(testDesc + "Unit must be kg", "kg", i.getUnit().getUnit());
         Assert.assertEquals(testDesc + "Purity must be 'unknown'", "unknown", i.getPurity());
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
         Assert.assertEquals(testDesc + "Description must be item 1", "item 1", i.getDescription());
@@ -449,7 +449,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
         Assert.assertNull(testDesc + "Project must be null", i.getProject());
         Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be g", "g", i.getUnit());
+        Assert.assertEquals(testDesc + "Unit must be g", "g", i.getUnit().getUnit());
         Assert.assertEquals(testDesc + "Purity must be 'pure'", "pure", i.getPurity());
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
         Assert.assertEquals(testDesc + "Description must be item 2", "item 2", i.getDescription());
@@ -467,7 +467,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
         Assert.assertNull(testDesc + "Project must be null", i.getProject());
         Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be mg", "mg", i.getUnit());
+        Assert.assertEquals(testDesc + "Unit must be mg", "mg", i.getUnit().getUnit());
         Assert.assertEquals(testDesc + "Purity must be 'xxx'", "xxx", i.getPurity());
         Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
         Assert.assertEquals(testDesc + "Description must be item 3", "item 3", i.getDescription());

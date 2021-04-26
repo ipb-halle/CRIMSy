@@ -41,6 +41,8 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.Quality;
+import de.ipb_halle.lbac.util.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +100,7 @@ public class ItemBean implements Serializable {
     private List<Container> containers = new ArrayList<>();
     private List<Solvent> solvents = new ArrayList<>();
     private List<String> purities = new ArrayList<>();
-    private List<String> units = new ArrayList<>();
+    private List<Unit> units = new ArrayList<>();
     private List<ContainerType> containerTypes = new ArrayList<>();
 
     private boolean commercialMaterial;
@@ -186,8 +188,8 @@ public class ItemBean implements Serializable {
             state.getEditedItem().setLabel(customLabelValue);
         }
         state.setEditedItem(itemService.saveItem(state.getEditedItem()));
-        if(containerController.getContainer()!=null&&containerController.getItemPositions()!=null){
-            int [] positions=containerController.resolveItemPositions().iterator().next();
+        if (containerController.getContainer() != null && containerController.getItemPositions() != null) {
+            int[] positions = containerController.resolveItemPositions().iterator().next();
             containerPositionService.saveItemInContainer(state.getEditedItem().getId(), containerController.getContainer().getId(), positions[0], positions[1]);
         }
     }
@@ -325,7 +327,7 @@ public class ItemBean implements Serializable {
         this.containerName = containerName;
     }
 
-    public List<String> getUnits() {
+    public List<Unit> getUnits() {
         return units;
     }
 
@@ -362,19 +364,16 @@ public class ItemBean implements Serializable {
     }
 
     private List<Solvent> loadAndI18nSolvents() {
-        List<Solvent> solvents =itemService.loadSolvents();
+        List<Solvent> solvents = itemService.loadSolvents();
         // TO TO: i18n solvents
         return solvents;
     }
 
-    private List<String> loadUnits() {
-        List<String> units = new ArrayList<>();
-        units.add("l");
-        units.add("ml");
-        units.add("g");
-        units.add("kg");
-        units.add("einheit");
-        return units;
+    private List<Unit> loadUnits() {
+        return Unit.getUnitsOfQuality(
+                Quality.MASS,
+                Quality.VOLUME,
+                Quality.PIECES);
     }
 
     /**

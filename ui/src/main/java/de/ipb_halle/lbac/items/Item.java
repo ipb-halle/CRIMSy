@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;
+import de.ipb_halle.lbac.util.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +49,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
 
     private Integer id;
     private Double amount;
-    private String unit;
+    private Unit unit;
     private Article article;
     private Double concentration;
     private String concentrationUnit;
@@ -81,7 +82,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
             ACList aclist) {
         this.id = entity.getId();
         this.amount = entity.getAmount();
-        this.unit = entity.getUnit();
+        this.unit = Unit.getUnit(entity.getUnit());
         this.article = art;
         this.concentration = entity.getConcentration();
         this.concentrationUnit = entity.getConcentrationUnit();
@@ -108,7 +109,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         ItemEntity entity = new ItemEntity();
         entity.setId(id);
         entity.setAmount(amount);
-        entity.setUnit(unit);
+        entity.setUnit(unit.getUnit());
         if (article != null) {
             entity.setArticleid(article.getId());
         }
@@ -234,11 +235,11 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.containerSize = containerSize;
     }
 
-    public String getUnit() {
+    public Unit getUnit() {
         return unit;
     }
 
-    public void setUnit(String unit) {
+    public void setUnit(Unit unit) {
         this.unit = unit;
     }
 

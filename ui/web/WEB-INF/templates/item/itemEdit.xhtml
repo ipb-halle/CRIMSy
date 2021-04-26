@@ -105,6 +105,7 @@
                                     <b:selectOneMenu
                                         disabled="#{!itemBean.isUnitEditable()}"
                                         label="#{msgs.itemEdit_itemPanel_container_unit}"
+                                        converter="unitConverter"
                                         value="#{itemBean.state.editedItem.unit}">
                                         <f:selectItems 
                                             value="#{itemBean.getUnits()}"

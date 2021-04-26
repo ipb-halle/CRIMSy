@@ -223,7 +223,7 @@
                                                                         10000.0001 -> 10000.0 -->
                                             <h:outputFormat value="{0} {1}">
                                                 <f:param value="#{nwc:formatNumberInEnglish(item.amount, '#.0##')}" />
-                                                <f:param value="#{item.unit}" />
+                                                <f:param value="#{item.unit.unit}" />
                                             </h:outputFormat>
                                         </b:dataTableColumn>
                                         <b:dataTableColumn

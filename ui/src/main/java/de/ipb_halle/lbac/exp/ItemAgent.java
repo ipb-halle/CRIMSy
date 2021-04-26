@@ -128,7 +128,7 @@ public class ItemAgent implements Serializable {
         if (item.getUnit() == null) {
             return String.format("%f", item.getAmount());
         } else {
-            return String.format("%f  %s", item.getAmount(), item.getUnit());
+            return String.format("%f  %s", item.getAmount(), item.getUnit().getUnit());
         }
     }
 

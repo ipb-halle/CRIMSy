@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -98,7 +99,7 @@ public class ItemStateTest {
         Assert.assertEquals(item.getProject().getId(), state.getEditedItem().getProject().getId());
         Assert.assertEquals(item.getPurity(), state.getEditedItem().getPurity());
         Assert.assertEquals(item.getSolvent(), state.getEditedItem().getSolvent());
-        Assert.assertEquals(item.getUnit(), state.getEditedItem().getUnit());
+        Assert.assertEquals(item.getUnit().getUnit(), state.getEditedItem().getUnit().getUnit());
         Assert.assertEquals(item.getcTime(), state.getEditedItem().getcTime());
 
     }
@@ -126,7 +127,7 @@ public class ItemStateTest {
         Item item = new Item();
         item.setAmount(23d);
         item.setACList(acl);
-        item.setUnit("kg");
+        item.setUnit(Unit.getUnit("kg"));
         item.setArticle(null);
         item.setConcentration(32d);
         item.setContainer(c);

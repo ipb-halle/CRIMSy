@@ -157,7 +157,7 @@ public class LinkedDataAgent implements Serializable {
 
         double amount = linkedData.getItem().getAmount();
 
-        String unit = linkedData.getItem().getUnit() == null ? "" : linkedData.getItem().getUnit();
+        String unit = linkedData.getItem().getUnit() == null ? "" : linkedData.getItem().getUnit().getUnit();
 
         if (linkedData.getItem().getContainerSize() == null) {
 

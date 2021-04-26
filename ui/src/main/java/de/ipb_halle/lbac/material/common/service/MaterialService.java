@@ -243,9 +243,10 @@ public class MaterialService implements Serializable {
             }
             List<MaterialEntity> entities = q.getResultList();
             for (MaterialEntity me : entities) {
+                logger.info("Search for material "+me.getMaterialid());
                 Material material = loadMaterialById(me.getMaterialid());
                 result.addResult(material);
-
+logger.info("Found");
             }
             return result;
         } catch (Exception e) {

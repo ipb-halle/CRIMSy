@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.inject.Inject;
@@ -133,7 +134,7 @@ public class ContainerPositionServiceTest extends TestBase {
         Item item = new Item();
         item.setAmount(23d);
         item.setACList(globalContext.getAdminOnlyACL());
-        item.setUnit("kg");
+        item.setUnit(Unit.getUnit("kg"));
         item.setArticle(null);
         item.setConcentration(32d);
         item.setContainerSize(100d);

@@ -43,6 +43,7 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -573,7 +574,7 @@ public class ItemServiceTest extends TestBase {
         item.setAmount(23d);
 
         item.setACList(GlobalAdmissionContext.getPublicReadACL());
-        item.setUnit("kg");
+        item.setUnit(Unit.getUnit("kg"));
         item.setArticle(null);
         item.setConcentration(32d);
         item.setContainer(c2);
@@ -620,7 +621,7 @@ public class ItemServiceTest extends TestBase {
 
     private void checkItem(Item loadedItem) {
         Assert.assertEquals("Testcase 001: Amount must be 23", 23d, (double) loadedItem.getAmount(), 0);
-        Assert.assertEquals("Testcase 001: Unit must be kg", "kg", loadedItem.getUnit());
+        Assert.assertEquals("Testcase 001: Unit must be kg", "kg", loadedItem.getUnit().getUnit());
         Assert.assertNull("Testcase 001: Article must be null", loadedItem.getArticle());
         Assert.assertEquals("Testcase 001: Concentration must be 32", 32d, (double) loadedItem.getConcentration(), 0);
         Assert.assertNotNull("Testcase 001: Parent container must be not null", loadedItem.getContainer());
