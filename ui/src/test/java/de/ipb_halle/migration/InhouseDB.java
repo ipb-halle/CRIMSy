@@ -67,6 +67,8 @@ import org.openscience.cdk.tools.manipulator.MolecularFormulaManipulator;
  * Migration tool for the InhouseDB
  * This is work in progress.
  *
+ * DO NOT FORGET TO DEFINE INDEX TYPES Mol_ID and IPBCode!
+ * 
  * Example config file:
  * <pre>
  *  {
@@ -102,7 +104,8 @@ public class InhouseDB {
     public final static String OWNER_ID = "OWNER_ID";
     public final static String PROJECT_ID = "PROJECT_ID";
 
-    public final static String TMP_MatId_MolId = "TMP_MatId_MolId";
+    public final static String UNKNOWN_COMPOUND_ID = "UNKNOWN_COMPOUND_ID";
+
 
     private final Connection connection;
     private final Map<String, SqlInsertBuilder> builderMap;
@@ -110,6 +113,7 @@ public class InhouseDB {
     private int aclist;
     private int owner;
     private int project;
+    private int unknownCompoundId;
 
     private JsonObject jsonConfig;
 
@@ -182,6 +186,10 @@ public class InhouseDB {
         return this.project;
     }
 
+    public int getUnknownCompoundId() {
+        return this.unknownCompoundId;
+    }
+
     private void importData() throws Exception {
         init();
         Compounds compounds = new Compounds(this);
@@ -189,7 +197,6 @@ public class InhouseDB {
         Experiments experiments = new Experiments(this);
         Correlation correlation = new Correlation(this);
         Samples samples = new Samples(this);
-
 /*
         runInitial();
         compounds.importData();
@@ -201,9 +208,10 @@ public class InhouseDB {
     }
 
     private void init() {
-        this.aclist = getConfigInt(InhouseDB.ACLIST_ID);
-        this.owner = getConfigInt(InhouseDB.OWNER_ID);
-        this.project = getConfigInt(InhouseDB.PROJECT_ID);
+        this.aclist = getConfigInt(ACLIST_ID);
+        this.owner = getConfigInt(OWNER_ID);
+        this.project = getConfigInt(PROJECT_ID);
+        this.unknownCompoundId = getConfigInt(UNKNOWN_COMPOUND_ID);
     }
 
     public int loadRefId(String sql, int id, String refKey) throws Exception {

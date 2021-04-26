@@ -42,7 +42,7 @@
             <p:row>
                 <p:column>
                     <p:repeat 
-                        value="#{itemBean.containerController.getTotalSlots(0)}"
+                        value="#{itemBean.containerController.columns}"
                         var="x">
                         <p:column>
                             #{itemBean.containerController.getDimensionLabel(0, x)}
@@ -53,28 +53,34 @@
             </p:row>
 
             <p:repeat 
-                value="#{itemBean.containerController.getTotalSlots(1)}"
+                value="#{itemBean.containerController.rows}"
                 var="y">
                 <p:row>
                     <p:column>
                         #{itemBean.containerController.getDimensionLabel(1, y)}
                     </p:column>
+                
                     <p:repeat 
-                        value="#{itemBean.containerController.getTotalSlots(0)}"
+                        value="#{itemBean.containerController.columns}"
                         var="x">
                         <p:column
-                            styleClass="#{itemBean.containerController.getStyleOfContainerPlace(x,y)}">
+                             styleClass="#{itemBean.containerController.getStyleOfContainerPlace(y,x)}"
+                            >
                             <p:selectBooleanCheckbox
+                                title="#{itemBean.containerController.getToolTipForContainerPlace(y, x)}"
                                 styleClass="checkbox-round"
-                                value="#{itemBean.containerController.itemPositions[x][y]}"
-                                disabled="#{itemBean.containerController.isContainerPlaceDisabled(x, y)}"
-                                title="#{itemBean.containerController.getToolTipForContainerPlace(x,y)}">
-                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.clickCheckBox(x,y)}" />
+                                value="#{itemBean.containerController.itemPositions[y][x]}"
+                                 disabled="#{itemBean.containerController.isContainerPlaceDisabled(y, x)}"
+                               >
+                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.clickCheckBox(y, x)}" />
                             </p:selectBooleanCheckbox>
                         </p:column>
                     </p:repeat>
+                
                 </p:row>
             </p:repeat>
+
         </p:panelGrid>
+
     </composite:implementation >
 </html>

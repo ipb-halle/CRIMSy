@@ -67,17 +67,9 @@ public class ContainerModalBean implements Serializable {
     }
 
     public String getDimensionString(Container c) {
-        if (c.getDimension() == null) {
-            return "-";
-        } else {
-            String[] d = c.getDimension().split(";");
-
-            if (d[2].equals("1")) {
-                return d[0] + " x " + d[1];
-            } else {
-                return d[0] + " x " + d[1] + " x " + d[2];
-            }
+        if (c.getItems() != null) {
+            return String.format("%d x %d", c.getItems().length, c.getItems()[0].length);
         }
-
+        return "-";
     }
 }

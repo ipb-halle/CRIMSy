@@ -85,11 +85,9 @@ public class ContainerPositionServiceTest extends TestBase {
         containerService.saveContainer(c0);
         containerService.saveContainer(c1);
         createAndSaveMaterial();
-        Item item=createItem();
+        Item item = createItem();
         itemService.saveItem(item);
     }
-    
-  
 
     @Before
     @Override
@@ -99,7 +97,8 @@ public class ContainerPositionServiceTest extends TestBase {
         project = creationTools.createProject();
         c0 = new Container();
         c0.setBarCode(null);
-        c0.setDimension("3;3;1");
+        c0.setColumns(3);
+        c0.setRows(3);
         c0.setFireArea("F1");
         c0.setGmoSafetyLevel("S0");
         c0.setLabel("R302");
@@ -107,7 +106,8 @@ public class ContainerPositionServiceTest extends TestBase {
 
         c1 = new Container();
         c1.setBarCode("9845893457");
-        c1.setDimension("2;2;1");
+        c1.setColumns(2);
+        c1.setRows(2);
         c1.setFireArea(c0.getFireArea());
         c1.setGmoSafetyLevel(c0.getGmoSafetyLevel());
         c1.setLabel("Schrank1");

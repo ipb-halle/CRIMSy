@@ -188,7 +188,7 @@ public class RTF extends RtfListenerAdaptor {
         PreparedStatement statement = this.inhouseDB.getConnection().prepareStatement(
                 "SELECT new_id FROM tmp_import WHERE old_id=? AND type=?");
         statement.setInt(1, mol_id);
-        statement.setString(2, InhouseDB.TMP_MatId_MolId);
+        statement.setString(2, Compounds.TMP_MatId_MolId);
         ResultSet result = statement.executeQuery();
         if (! result.next()) {
             return;

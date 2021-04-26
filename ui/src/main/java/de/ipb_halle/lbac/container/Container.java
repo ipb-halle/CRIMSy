@@ -26,8 +26,10 @@ import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -49,15 +51,16 @@ public class Container implements DTO, Serializable, Searchable {
     }
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    private int id;
+    private Integer id;
     private String label;
     private Project project;
-    private String dimension;
+    private Integer rows;
+    private Integer columns;
     private ContainerType type;
     private String fireArea;
     private String gmoSafetyLevel;
     private String barCode;
-    private Item[][][] items;
+    private Item[][] items;
     List<Container> containerHierarchy = new ArrayList<>();
     private boolean deactivated;
     private boolean swapDimensions;
@@ -83,38 +86,35 @@ public class Container implements DTO, Serializable, Searchable {
         this.label = dbentity.getLabel();
         this.containerHierarchy.add(parentContainer);
         this.project = p;
-        this.dimension = dbentity.getDimension();
+        this.rows = dbentity.getRows();
+        this.columns = dbentity.getColumns();
         this.fireArea = dbentity.getFireArea();
         this.gmoSafetyLevel = dbentity.getGmoSafetyLevel();
         this.barCode = dbentity.getBarcode();
         this.deactivated = dbentity.isDeactivated();
         this.swapDimensions = dbentity.isSwapDimensions();
         this.zeroBased = dbentity.isZeroBased();
-        if (dimension != null) {
-            String[] size = dimension.split(";");
-            if (size.length > 2) {
-                items = new Item[Integer.valueOf(size[0])][Integer.valueOf(size[1])][Integer.valueOf(size[2])];
-            } else if (size.length == 2) {
-                items = new Item[Integer.valueOf(size[0])][Integer.valueOf(size[1])][1];
-            } else if (size.length == 1) {
-                items = new Item[Integer.valueOf(size[0])][1][1];
+        this.items = createEmptyItemArray();
+
+    }
+
+    public DimensionType getDimensionType() {
+        if (rows == null) {
+            return DimensionType.NONE;
+        } else {
+            if (columns == null) {
+                return DimensionType.ONE_DIMENSION;
+            } else {
+                return DimensionType.TWO_DIMENSION;
             }
         }
     }
 
-    public DimensionType getDimensionType() {
-        if (dimension == null) {
-            return DimensionType.NONE;
-        } else {
-            return DimensionType.TWO_DIMENSION;
-        }
-    }
-
-    public Item[][][] getItems() {
+    public Item[][] getItems() {
         return items;
     }
 
-    public void setItems(Item[][][] items) {
+    public void setItems(Item[][] items) {
         this.items = items;
     }
 
@@ -122,24 +122,29 @@ public class Container implements DTO, Serializable, Searchable {
             ContainerEntity dbentity) {
         this.id = dbentity.getId();
         this.label = dbentity.getLabel();
-        this.dimension = dbentity.getDimension();
+        this.rows = dbentity.getRows();
+        this.columns = dbentity.getColumns();
         this.fireArea = dbentity.getFireArea();
         this.gmoSafetyLevel = dbentity.getGmoSafetyLevel();
         this.barCode = dbentity.getBarcode();
         this.deactivated = dbentity.isDeactivated();
         this.swapDimensions = dbentity.isSwapDimensions();
         this.zeroBased = dbentity.isZeroBased();
+        items = createEmptyItemArray();
     }
 
     public int getId() {
         return id;
     }
 
-    public Item getItemAtPos(int x, int y, int z) {
-        if (dimension == null) {
+    public Item getItemAtPos(Integer rowIndex, Integer colIndex) {
+        if (rows == null) {
             return null;
         }
-        return items[x][y][z];
+        if (columns == null) {
+            return items[0][rowIndex];
+        }
+        return items[rowIndex][colIndex];
     }
 
     public void setId(int id) {
@@ -177,14 +182,6 @@ public class Container implements DTO, Serializable, Searchable {
 
     public void setProject(Project project) {
         this.project = project;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
     }
 
     public ContainerType getType() {
@@ -237,22 +234,9 @@ public class Container implements DTO, Serializable, Searchable {
 
     }
 
-    public int[] getDimensionIndex() {
-        if (dimension != null) {
-            String[] size = dimension.split(";");
-            if (size.length > 2) {
-                int x = Integer.valueOf(size[0]);
-                int y = Integer.valueOf(size[1]);
-                int z = Integer.valueOf(size[2]);
-                return new int[]{x, y, z};
-            } else if (size.length == 2) {
-                int x = Integer.valueOf(size[0]);
-                int y = Integer.valueOf(size[1]);
-                return new int[]{x, y, 1};
-            } else if (size.length == 1) {
-                int x = Integer.valueOf(size[0]);
-                return new int[]{x, 1, 1};
-            }
+    public Item[][] createEmptyItemArray() {
+        if ((rows != null) || (columns != null)) {
+            return new Item[columns == null ? 1 : rows][columns == null ? rows : columns];
         }
         return null;
     }
@@ -280,9 +264,7 @@ public class Container implements DTO, Serializable, Searchable {
     @Override
     public ContainerEntity createEntity() {
         ContainerEntity dbe = new ContainerEntity();
-        if (id > 0) {
-            dbe.setId(id);
-        }
+        dbe.setId(id);
         if (this.getParentContainer() != null) {
             dbe.setParentcontainer(this.getParentContainer().getId());
         }
@@ -291,7 +273,8 @@ public class Container implements DTO, Serializable, Searchable {
         }
         dbe.setType(this.getType().getName());
         dbe.setBarcode(this.barCode);
-        dbe.setDimension(this.dimension);
+        dbe.setRows(rows);
+        dbe.setColumns(columns);
         dbe.setFireArea(this.fireArea);
         dbe.setGmoSafetyLevel(this.gmoSafetyLevel);
         dbe.setLabel(this.label);
@@ -305,7 +288,8 @@ public class Container implements DTO, Serializable, Searchable {
         Container c = new Container();
         c.setBarCode(barCode);
         c.setDeactivated(deactivated);
-        c.setDimension(dimension);
+        c.setRows(rows);
+        c.setColumns(columns);
         c.setFireArea(fireArea);
         c.setGmoSafetyLevel(gmoSafetyLevel);
         c.setId(id);
@@ -334,13 +318,13 @@ public class Container implements DTO, Serializable, Searchable {
         }
         for (int x = 0; x < items.length; x++) {
             for (int y = 0; y < items[x].length; y++) {
-                for (int z = 0; z < items[x][y].length; z++) {
-                    if (items[x][y][z] != null) {
-                        if (items[x][y][z].getId() == itemId) {
-                            places.add(new int[]{x, y});
-                        }
+
+                if (items[x][y] != null) {
+                    if (items[x][y].getId() == itemId) {
+                        places.add(new int[]{x, y});
                     }
                 }
+
             }
         }
         return places;
@@ -364,7 +348,7 @@ public class Container implements DTO, Serializable, Searchable {
         return swapDimensions;
     }
 
-    public void setSwapDimensions(boolean sd) { 
+    public void setSwapDimensions(boolean sd) {
         this.swapDimensions = sd;
     }
 
@@ -375,4 +359,21 @@ public class Container implements DTO, Serializable, Searchable {
     public void setZeroBased(boolean zb) {
         this.zeroBased = zb;
     }
+
+    public Integer getRows() {
+        return rows;
+    }
+
+    public Integer getColumns() {
+        return columns;
+    }
+
+    public void setRows(Integer rows) {
+        this.rows = rows;
+    }
+
+    public void setColumns(Integer columns) {
+        this.columns = columns;
+    }
+
 }

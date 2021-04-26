@@ -115,7 +115,8 @@ public class ContainerEditBeanTest extends TestBase {
 
         overviewBean.saveNewContainer();
         loadedContainer = containerService.loadContainerById(bean.getContainerToCreate().getId());
-        Assert.assertEquals("20;10;1", loadedContainer.getDimension());
+        Assert.assertEquals(Integer.valueOf(10), loadedContainer.getRows());
+        Assert.assertEquals(Integer.valueOf(20), loadedContainer.getColumns());
         Assert.assertEquals("container-3-FREEZER", loadedContainer.getLabel());
         Assert.assertEquals(
                 bean.getContainerTypesWithRankGreaterZero().get(2).getName(),

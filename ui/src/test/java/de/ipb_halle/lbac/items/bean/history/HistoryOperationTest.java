@@ -52,8 +52,9 @@ public class HistoryOperationTest {
         actor.setName("actor");
         item = new Item();
         Container c = createContainer(10, "ContainerWithDimension");
-        c.setDimension("4;4;1");
-        c.setItems(new Item[4][4][1]);
+        c.setRows(4);
+        c.setColumns(4);
+        c.setItems(new Item[4][4]);
         state = new ItemState(item);
         bean = new ItemBean();
         bean.setState(state);
