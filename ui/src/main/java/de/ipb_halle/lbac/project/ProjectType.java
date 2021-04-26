@@ -31,29 +31,29 @@ import java.util.List;
 public enum ProjectType implements Serializable{
     DUMMY_PROJECT(0),
     CHEMICAL_PROJECT(1,
-            MaterialType.STRUCTURE,
-            MaterialType.CONSUMABLE,
-            MaterialType.SEQUENCE,
-            MaterialType.COMPOSITION
+            MaterialType.STRUCTURE
+//            MaterialType.CONSUMABLE,
+//            MaterialType.SEQUENCE,
+//            MaterialType.COMPOSITION
     ),
-    IT_PROJECT(2,
-            MaterialType.CONSUMABLE
+    IT_PROJECT(2
+//            MaterialType.CONSUMABLE
     ),
-    FINANCE_PROJECT(3,
-            MaterialType.CONSUMABLE
+    FINANCE_PROJECT(3
+//            MaterialType.CONSUMABLE
     ),
     BIOLOGICAL_PROJECT(4,
-            MaterialType.BIOMATERIAL,
-            MaterialType.CONSUMABLE,
-            MaterialType.SEQUENCE,
-            MaterialType.COMPOSITION
+            MaterialType.BIOMATERIAL
+//            MaterialType.CONSUMABLE,
+//            MaterialType.SEQUENCE,
+//            MaterialType.COMPOSITION
     ),
     BIOCHEMICAL_PROJECT(5,
             MaterialType.STRUCTURE,
-            MaterialType.BIOMATERIAL,
-            MaterialType.CONSUMABLE,
-            MaterialType.SEQUENCE,
-            MaterialType.COMPOSITION
+            MaterialType.BIOMATERIAL
+//            MaterialType.CONSUMABLE,
+//            MaterialType.SEQUENCE,
+//            MaterialType.COMPOSITION
     );
 
     private final int id;
