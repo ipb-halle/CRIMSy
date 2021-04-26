@@ -20,6 +20,8 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.Container.DimensionType;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Handles the rendering and the actions for manipulating the container of an
+ * item and its position in it
  *
  * @author fmauz
  */
@@ -36,32 +40,45 @@ public class ContainerController {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private boolean[][] itemPositions;
-
     private ItemBean itemBean;
     private Container container;
+    private List<Integer> columnsList = new ArrayList<>();
+    private List<Integer> rowsList = new ArrayList<>();
+    private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
 
+    /**
+     * Sets the container and creates the boolean position matrix (for the
+     * checkBoxes), and the index lists for rows and cols(for ui:repeat) .
+     *
+     * @param itemBean
+     * @param container
+     */
     public ContainerController(ItemBean itemBean, Container container) {
         this.itemBean = itemBean;
-        this.container = container;
-        if (container != null && container.getItems() != null) {
-            Item[][] items = container.getItems();
-            itemPositions = new boolean[items.length][items[0].length];
+        setNewContainer(container);
+    }
 
-            for (int i = 0; i < items.length; i++) {
-                for (int j = 0; j < items[i].length; j++) {
-                    Integer currentItemId=null;
-                    if(itemBean.getState().getOriginalItem()!=null){
-                        currentItemId=itemBean.getState().getOriginalItem().getId();
-                    }
-                    itemPositions[i][j] = (items[i][j] != null&&items[i][j].getId().equals(currentItemId));
-                }
+    private void createInitialPositionMatrix() {
+        Item[][] items = container.getItems();
+        itemPositions = new boolean[items.length][items[0].length];
+        for (int i = 0; i < items.length; i++) {
+            for (int j = 0; j < items[i].length; j++) {
+                itemPositions[i][j] = isCurrentItemAtPosition(items, j, j);
             }
-
         }
     }
 
+    private boolean isCurrentItemAtPosition(Item[][] items, int x, int y) {
+        Integer currentItemId = null;
+        if (itemBean.getState().getOriginalItem() != null) {
+            currentItemId = itemBean.getState().getOriginalItem().getId();
+        }
+        return (items[x][y] != null && items[x][y].getId().equals(currentItemId));
+    }
+
     /**
-     * Creates a new container with empty itemPositions (default false)
+     * Creates a new container with empty itemPositions (default false) and
+     * creates the index lists for rows and cols(for ui:repeat) .
      *
      * @param c
      */
@@ -70,7 +87,57 @@ public class ContainerController {
         if (container != null && container.getItems() != null) {
             Item[][] items = container.getItems();
             itemPositions = new boolean[items.length][items[0].length];
+            createInitialPositionMatrix();
+            createColumnList();
+            createRowList();
+        } else {
+            itemPositions = null;
+            rowsList.clear();
+            columnsList.clear();
         }
+    }
+
+    /**
+     * checks if item is in at least one slot of the container
+     *
+     * @return
+     */
+    public boolean isItemPositionValide() {
+        if (container != null
+                && (container.getDimensionType() == DimensionType.ONE_DIMENSION
+                || container.getDimensionType() == DimensionType.TWO_DIMENSION)) {
+            return resolveItemPositions().size() > 0;
+        }
+        return true;
+    }
+
+    /**
+     * Creates a list of column indices which is used in the ui:repeat element
+     *
+     * @return
+     */
+    private void createColumnList() {
+        columnsList.clear();
+        if (container.getColumns() == null) {
+            columnsList.add(1);
+        } else {
+            for (int i = 0; i < container.getColumns(); i++) {
+                columnsList.add(i);
+            }
+        }
+    }
+
+    /**
+     * Creates a list of row indices which is used in the ui:repeat element
+     *
+     * @return
+     */
+    private void createRowList() {
+        rowsList.clear();
+        for (int i = 0; i < container.getRows(); i++) {
+            rowsList.add(i);
+        }
+
     }
 
     public boolean isContainerSubComponentRendered(String typename) {
@@ -83,27 +150,15 @@ public class ContainerController {
         }
         return false;
     }
-    
-    public List<Integer> getColumns(){
-        List<Integer> columnsList=new ArrayList<>();
-        if (container.getColumns() == null) {
-            columnsList.add(1);
-        }
-        //container.getZeroBased()
-        for(int i=0;i<container.getColumns();i++){
-            columnsList.add(i);
-        }
+
+    public List<Integer> getColumns() {
         return columnsList;
     }
 
-    public List<Integer>  getRows() {
-         List<Integer> rowsList=new ArrayList<>();
-         for(int i=0;i<container.getRows();i++){
-            rowsList.add(i);
-        }
-         return rowsList;
+    public List<Integer> getRows() {
+        return rowsList;
     }
-    
+
     /**
      * Compute the row and column label for containers. Honour swapping of axes
      * and whether counting starts from '1' or '0'. Containers will be drawn
@@ -114,7 +169,6 @@ public class ContainerController {
      * @return the row or column label
      */
     public String getDimensionLabel(int dimension, int index) {
-
         if (((container.getSwapDimensions() && (dimension == 0))
                 || ((!container.getSwapDimensions()) && (dimension == 1)))) {
             int i = index + 1;
@@ -127,7 +181,6 @@ public class ContainerController {
             } while (i > 0);
             return sb.reverse().toString();
         }
-
         return Integer.toString(index + (container.getZeroBased() ? 0 : 1));
     }
 
@@ -139,6 +192,11 @@ public class ContainerController {
         this.itemPositions = itemPositions;
     }
 
+    /**
+     * Get the item of the saved current item
+     *
+     * @return
+     */
     public Set<int[]> resolveItemPositions() {
         if (itemPositions == null) {
             return new HashSet<>();
@@ -154,6 +212,13 @@ public class ContainerController {
         return positions;
     }
 
+    /**
+     * Checks if another item is present at place x/y.
+     *
+     * @param x
+     * @param y
+     * @return true if another item blocks the slot
+     */
     public boolean isContainerPlaceDisabled(int x, int y) {
         if (container.getItemAtPos(x, y) == null) {
             return false;
@@ -165,7 +230,7 @@ public class ContainerController {
         }
     }
 
-    public void clickCheckBox(int x, int y) {
+    public void actionClickCheckBox(int x, int y) {
         if (itemPositions[x][y]) {
             itemPositions = new boolean[itemPositions.length][itemPositions[0].length];
             itemPositions[x][y] = true;
@@ -176,7 +241,7 @@ public class ContainerController {
         if (container.getItemAtPos(x, y) != null) {
             return "ID: " + container.getItemAtPos(x, y).getId();
         }
-        return "free place";
+        return messagePresenter.presentMessage("container_slot_free_place");
     }
 
     public String getStyleOfContainerPlace(int x, int y) {

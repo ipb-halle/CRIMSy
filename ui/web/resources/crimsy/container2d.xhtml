@@ -72,7 +72,7 @@
                                 value="#{itemBean.containerController.itemPositions[y][x]}"
                                  disabled="#{itemBean.containerController.isContainerPlaceDisabled(y, x)}"
                                >
-                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.clickCheckBox(y, x)}" />
+                                <p:ajax update="@(.containerCheckBoxes)" listener="#{itemBean.containerController.actionClickCheckBox(y, x)}" />
                             </p:selectBooleanCheckbox>
                         </p:column>
                     </p:repeat>

@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.container.ContainerType;
+import static de.ipb_halle.lbac.container.Container.DimensionType.NONE;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.mocks.ItemBeanContainerControllerMock;
 import java.util.Set;
@@ -43,8 +43,8 @@ public class ContainerControllerTest {
         item.setId(1);
         anotherItem.setId(2);
         bean = new ItemBeanContainerControllerMock(item);
-       container.setRows(4);
-       container.setColumns(3);
+        container.setRows(4);
+        container.setColumns(3);
         Item[][] items = new Item[4][3];
         items[1][0] = item;
         items[0][1] = anotherItem;
@@ -69,10 +69,10 @@ public class ContainerControllerTest {
 
     @Test
     public void test003_clickCheckBox() {
-        controller.clickCheckBox(0, 0);
+        controller.actionClickCheckBox(0, 0);
         Assert.assertFalse(controller.getItemPositions()[0][0]);
         controller.setItemAtPosition(0, 0);
-        controller.clickCheckBox(0, 0);
+        controller.actionClickCheckBox(0, 0);
         Assert.assertTrue(controller.getItemPositions()[0][0]);
         controller.removeItemFromPosition(0, 0);
         Assert.assertFalse(controller.getItemPositions()[0][0]);
@@ -89,7 +89,7 @@ public class ContainerControllerTest {
     public void test004_resolveItemPositions() {
         controller.setItemAtPosition(0, 0);
         Set<int[]> positions = controller.resolveItemPositions();
-        Assert.assertEquals(2, positions.size());
+        Assert.assertEquals(1, positions.size());
     }
 
     @Test
@@ -98,7 +98,27 @@ public class ContainerControllerTest {
         Assert.assertEquals("A", controller.getDimensionLabel(1, 0));
     }
 
-   
+    @Test
+    public void test006_checkRowAndColLists() {
+        Assert.assertEquals(4, controller.getRows().size());
+        Assert.assertEquals(3, controller.getColumns().size());
+
+        container.setRows(null);
+        container.setColumns(null);
+        container.setItems(null);
+        controller = new ContainerController(bean, container);
+
+        Assert.assertEquals(0, controller.getRows().size());
+        Assert.assertEquals(0, controller.getColumns().size());
+
+        container.setRows(10);
+        container.setColumns(null);
+        container.setItems(new Item[10][1]);
+        controller = new ContainerController(bean, container);
+
+        Assert.assertEquals(10, controller.getRows().size());
+        Assert.assertEquals(1, controller.getColumns().size());
+    }
 
     @Test
     public void test007_isContainerSubComponentRendered() {
@@ -109,7 +129,11 @@ public class ContainerControllerTest {
 
     @Test
     public void test008_isContainerSubComponentRendered() {
-        controller.setNewContainer(container);
+        Assert.assertFalse(controller.isContainerSubComponentRendered(null));
+        Assert.assertFalse(controller.isContainerSubComponentRendered("NONE"));
+        Assert.assertFalse(controller.isContainerSubComponentRendered("ZERO_DIMENSION"));
+        Assert.assertFalse(controller.isContainerSubComponentRendered("ONE_DIMENSION"));
+        Assert.assertTrue(controller.isContainerSubComponentRendered("TWO_DIMENSION"));
     }
 
 }
