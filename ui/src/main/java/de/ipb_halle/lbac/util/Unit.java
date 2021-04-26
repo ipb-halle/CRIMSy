@@ -32,7 +32,7 @@ public class Unit {
 
     /* unit string - e.g. mM */
     private String unit;
-    
+
     /* factor for conversion to base unit */
     private double factor;
 
@@ -40,12 +40,11 @@ public class Unit {
     private static Map<String, Unit> unitsByUnit;
 
     /**
-     * static constructor
-     * base units are added first!
+     * static constructor base units are added first!
      */
     static {
-        unitsByQuality = new HashMap<Quality, List<Unit>> ();
-        unitsByUnit = new HashMap<String, Unit> ();
+        unitsByQuality = new HashMap<Quality, List<Unit>>();
+        unitsByUnit = new HashMap<String, Unit>();
 
         addUnit(new Unit(Quality.PIECES, "ea", 1.0));
 
@@ -91,7 +90,6 @@ public class Unit {
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "%", 1.0e-2));
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "ppm", 1.0e-6));
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "ppb", 1.0e-9));
-
     }
 
     /*
@@ -109,7 +107,7 @@ public class Unit {
     private static void addUnit(Unit unit) {
         List<Unit> list = unitsByQuality.get(unit.getQuality());
         if (list == null) {
-            list = new ArrayList<Unit> ();
+            list = new ArrayList<Unit>();
             unitsByQuality.put(unit.getQuality(), list);
         }
         list.add(unit);
@@ -145,13 +143,21 @@ public class Unit {
         return u;
     }
 
+    public static List<Unit> getUnitsOfQuality(Quality... qualities) {
+        List<Unit> units = new ArrayList<>();
+        for (Quality q : qualities) {
+            units.addAll(unitsByQuality.get(q));
+        }
+        return units;
+    }
+
     public int hashCode() {
         return this.unit.hashCode();
     }
 
     /**
-     * return the proportionality factor to convert this unit 
-     * into the target unit (both units must be of the same quality).
+     * return the proportionality factor to convert this unit into the target
+     * unit (both units must be of the same quality).
      */
     public double transform(Unit target) {
         if (target.getQuality() != this.quality) {
@@ -161,14 +167,16 @@ public class Unit {
     }
 
     /**
-     * return the proportionality factor to convert this unit 
-     * into the target unit using a second physical quantity 
-     * (e.g. transform masses into volumes using density as 
-     * factor of proportionality)
+     * return the proportionality factor to convert this unit into the target
+     * unit using a second physical quantity (e.g. transform masses into volumes
+     * using density as factor of proportionality)
+     *
      * @param target target unit (e.g. cubic centimeters)
-     * @param propFactor the quantity (e.g. 7.87 for iron density at room temperature)
+     * @param propFactor the quantity (e.g. 7.87 for iron density at room
+     * temperature)
      * @param propUnit the unit (e.g. g / cm^3 for density)
-     * @return the factor of proportionality for conversion (e.g. approx. 0.127 for conversion from grams in this example)
+     * @return the factor of proportionality for conversion (e.g. approx. 0.127
+     * for conversion from grams in this example)
      */
     public double transform(Unit target, double propFactor, Unit propUnit) {
         throw new UnsupportedOperationException("transform() between different qualities is not yet implemented");

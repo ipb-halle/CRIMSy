@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.util;
 
+import java.util.List;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +33,7 @@ public class UnitTest {
      * basic tests
      */
     @Test
-    public void testUnit() {
+    public void test001_testUnit() {
 
         Unit cm = Unit.getUnit("cm");
         Unit mm = Unit.getUnit("mm");
@@ -41,6 +43,15 @@ public class UnitTest {
 
         assertEquals("cm.transform(mm): conversion error ",
                 10.0, cm.transform(mm), 0.0001);
+    }
+    
+    @Test
+    public void test002_getUnitsByQuality(){
+        List<Unit> units=Unit.getUnitsOfQuality(Quality.MASS);
+        Assert.assertEquals(4,units.size());
+        
+        units=Unit.getUnitsOfQuality(Quality.MASS,Quality.VOLUME,Quality.PIECES);
+        Assert.assertEquals(12,units.size());
     }
 
 }
