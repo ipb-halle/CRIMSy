@@ -43,10 +43,11 @@ public class ContainerControllerTest {
         item.setId(1);
         anotherItem.setId(2);
         bean = new ItemBeanContainerControllerMock(item);
-        container.setDimension("4;3;1");
-        Item[][][] items = new Item[4][3][1];
-        items[1][0][0] = item;
-        items[0][1][0] = anotherItem;
+       container.setRows(4);
+       container.setColumns(3);
+        Item[][] items = new Item[4][3];
+        items[1][0] = item;
+        items[0][1] = anotherItem;
         container.setItems(items);
         controller = new ContainerController(bean, container);
         bean.setContainerController(controller);
@@ -97,11 +98,7 @@ public class ContainerControllerTest {
         Assert.assertEquals("A", controller.getDimensionLabel(1, 0));
     }
 
-    @Test
-    public void test006_resolveItemPositions() {
-        Assert.assertEquals(4, controller.getTotalSlots(0).size());
-        Assert.assertEquals(3, controller.getTotalSlots(1).size());
-    }
+   
 
     @Test
     public void test007_isContainerSubComponentRendered() {

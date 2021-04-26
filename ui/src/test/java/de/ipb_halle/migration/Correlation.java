@@ -107,7 +107,7 @@ public class Correlation {
     }
 
     private void importOrgProc(String fileName) throws Exception {
-        System.out.println("Importing correlation table compound / experiment");
+        System.out.println("Importing correlation table organism / experiment");
 
         String pattern = "^(\\d+);(\\d+);(\\d+)$";
 

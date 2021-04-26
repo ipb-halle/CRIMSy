@@ -64,7 +64,7 @@ public class Samples {
     private InhouseDB inhouseDB;
     private int parentContainerId;
     private Map<String, ContainerEntity> containers;
-    private Map<String, String> dimensions;
+    private Map<String, int[]> dimensions;
 
     public Samples(InhouseDB inhouseDB) throws Exception {
         this.inhouseDB = inhouseDB;
@@ -87,9 +87,10 @@ public class Samples {
         ContainerEntity container = new ContainerEntity();
         container.setLabel(name);
         container.setProjectid(inhouseDB.getProject());
-        String dimension = getDimension(name);
+        int[] dimension = getDimension(name);
         if (dimension != null) {
-            container.setDimension(dimension);
+            container.setRows(dimension[0]);
+            container.setColumns(dimension[1]);
             container.setType(CONTAINERTYPE_TRAY);
             container.setZeroBased(true);
         } else {
@@ -132,7 +133,7 @@ public class Samples {
     /**
      * return a dimensions string for a given container name
      */
-    private String getDimension(String name) {
+    private int[] getDimension(String name) {
         String pattern = "^([A-Za-z]+).*$";
         String prefix = name.replaceAll(pattern, "$1");
         return this.dimensions.get(prefix);
@@ -227,15 +228,19 @@ public class Samples {
 
         /* 
          * Intialize container dimensions. Dimensions are specified as 
-         * "prefix.dimensionString[/prefix.dimensionString]*", e.g. "TS.10;25;1/TM.8;15;1/TL...."
+         * "prefix.dimensionString[/prefix.rows.columns]*", e.g. "TS.25;10/TM.15;6/TL...."
          * 
          * The pattern given below should capture container prefixes 
          * like TS, TM, TL, TH, MTP, ...
          */
-        String pattern = "^([A-Za-z]+)\\.([0-9;]+)$";
-        String[] dim = inhouseDB.getConfigString(CONTAINER_DIMENSIONS).split("/");
-        for (String d : dim) {
-            this.dimensions.put(d.replaceAll(pattern, "$1"), d.replaceAll(pattern, "$2"));
+        String pattern = "^([A-Za-z]+)\\.([0-9]+);([0-9]+)$";
+        String[] format = inhouseDB.getConfigString(CONTAINER_DIMENSIONS).split("/");
+        for (String f : format) {
+            int[] dim = new int[2];
+            dim[0] = Integer.parseInt(f.replaceAll(pattern, "$2"));
+            dim[1] = Integer.parseInt(f.replaceAll(pattern, "$3"));
+
+            this.dimensions.put(f.replaceAll(pattern, "$1"), dim);
         }
     }
 
@@ -266,22 +271,28 @@ public class Samples {
             container = getContainer(containerName);
             row = place.replaceAll(pattern, "$2").charAt(0) - 65;
             column = Integer.parseInt(place.replaceAll(pattern, "$3"));
-
-            // need to check container dimensions!
-
+            int containerRows = container.getRows() == null ? -2 : container.getRows();
+            int containerColumns = container.getColumns() == null ? -2 :container.getColumns();
+            if ((row >= containerRows) || (column >= containerColumns)) {
+                System.out.printf("Out of range for sampleId %d in container %s\n", sampleId, containerName);
+                container = getContainer(UNKNOWN_CONTAINER);
+                row = -1;
+                column = -1;
+            }
         } 
 
+        Integer materialId = null;
         Integer molId = getMolId(molProcId);
+
         if ((molId == null) || (molId == 0)) {
-//          System.out.printf("No material found for sampleId %d\n", sampleId);
-            return;
-        }
-
-        Integer materialId = getMaterialId(molId);
-
-        if ((materialId == null) || (materialId == 0)) {
+//          System.out.printf("No molId found for sampleId %d\n", sampleId);
+            materialId = inhouseDB.getUnknownCompoundId();
+        } else { 
+            materialId = getMaterialId(molId);
+            if ((materialId == null) || (materialId == 0)) {
 //              System.out.printf("No material found for sampleId %d\n", sampleId);
-                return;
+                materialId = inhouseDB.getUnknownCompoundId();
+            }
         }
 
         StringBuilder sb = new StringBuilder();

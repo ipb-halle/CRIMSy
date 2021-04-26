@@ -228,13 +228,9 @@ public class ContainerEditBean implements Serializable {
         } else {
             containerLocation = null;
         }
-        if (c.getDimensionIndex() != null) {
-            containerWidth = c.getDimensionIndex()[0];
-            containerHeight = c.getDimensionIndex()[1];
-        } else {
-            containerWidth = null;
-            containerHeight = null;
-        }
+
+        containerWidth = c.getColumns();
+        containerHeight = c.getRows();
     }
 
     public void startNewContainerCreation() {

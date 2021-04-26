@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.Container.DimensionType;
+import de.ipb_halle.lbac.items.Item;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,29 +43,33 @@ public class ContainerController {
     public ContainerController(ItemBean itemBean, Container container) {
         this.itemBean = itemBean;
         this.container = container;
-        if (container != null && container.getDimensionIndex() != null) {
-            itemPositions = new boolean[container.getDimensionIndex()[0]][container.getDimensionIndex()[1]];
-            if (itemBean.getState().getOriginalItem() != null) {
-                for (int x = 0; x < container.getDimensionIndex()[0]; x++) {
-                    for (int y = 0; y < container.getDimensionIndex()[1]; y++) {
-                        if (container.getItemAtPos(x, y, 0) != null && container.getItemAtPos(x, y, 0).getId() == itemBean.getState().getOriginalItem().getId()) {
-                            itemPositions[x][y] = true;
-                        }
+        if (container != null && container.getItems() != null) {
+            Item[][] items = container.getItems();
+            itemPositions = new boolean[items.length][items[0].length];
+
+            for (int i = 0; i < items.length; i++) {
+                for (int j = 0; j < items[i].length; j++) {
+                    Integer currentItemId=null;
+                    if(itemBean.getState().getOriginalItem()!=null){
+                        currentItemId=itemBean.getState().getOriginalItem().getId();
                     }
+                    itemPositions[i][j] = (items[i][j] != null&&items[i][j].getId().equals(currentItemId));
                 }
             }
+
         }
     }
 
+    /**
+     * Creates a new container with empty itemPositions (default false)
+     *
+     * @param c
+     */
     public void setNewContainer(Container c) {
         this.container = c;
-        if (container != null && container.getDimensionIndex() != null) {
-            itemPositions = new boolean[container.getDimensionIndex()[0]][container.getDimensionIndex()[1]];
-            for (int x = 0; x < container.getDimensionIndex()[0]; x++) {
-                for (int y = 0; y < container.getDimensionIndex()[1]; y++) {
-                    itemPositions[x][y] = false;
-                }
-            }
+        if (container != null && container.getItems() != null) {
+            Item[][] items = container.getItems();
+            itemPositions = new boolean[items.length][items[0].length];
         }
     }
 
@@ -78,22 +83,32 @@ public class ContainerController {
         }
         return false;
     }
-
-    public List<Integer> getTotalSlots(int dimension) {
-        if (itemBean.getContainer() == null) {
-            return new ArrayList<>();
+    
+    public List<Integer> getColumns(){
+        List<Integer> columnsList=new ArrayList<>();
+        if (container.getColumns() == null) {
+            columnsList.add(1);
         }
-        List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < itemBean.getContainer().getDimensionIndex()[dimension]; i++) {
-            result.add(i);
+        //container.getZeroBased()
+        for(int i=0;i<container.getColumns();i++){
+            columnsList.add(i);
         }
-        return result;
+        return columnsList;
     }
 
+    public List<Integer>  getRows() {
+         List<Integer> rowsList=new ArrayList<>();
+         for(int i=0;i<container.getRows();i++){
+            rowsList.add(i);
+        }
+         return rowsList;
+    }
+    
     /**
-     * Compute the row and column label for containers. Honour swapping of axes and
-     * whether counting starts from '1' or '0'. Containers will be drawn with position
-     * 'A0' / 'A1' in the upper left corner.
+     * Compute the row and column label for containers. Honour swapping of axes
+     * and whether counting starts from '1' or '0'. Containers will be drawn
+     * with position 'A0' / 'A1' in the upper left corner.
+     *
      * @param dimension <code>0 == x-axis, 1 == y-axis</code>
      * @param index the index value on the axis
      * @return the row or column label
@@ -101,7 +116,7 @@ public class ContainerController {
     public String getDimensionLabel(int dimension, int index) {
 
         if (((container.getSwapDimensions() && (dimension == 0))
-            || ((! container.getSwapDimensions()) && (dimension == 1)))) {
+                || ((!container.getSwapDimensions()) && (dimension == 1)))) {
             int i = index + 1;
             StringBuilder sb = new StringBuilder();
             do {
@@ -140,36 +155,35 @@ public class ContainerController {
     }
 
     public boolean isContainerPlaceDisabled(int x, int y) {
-        if (container.getItemAtPos(x, y, 0) == null) {
+        if (container.getItemAtPos(x, y) == null) {
             return false;
         } else if (itemBean.getState().getOriginalItem() == null) {
             return false;
 
         } else {
-            return !Objects.equals(container.getItemAtPos(x, y, 0).getId(), itemBean.getState().getOriginalItem().getId());
+            return !Objects.equals(container.getItemAtPos(x, y).getId(), itemBean.getState().getOriginalItem().getId());
         }
     }
 
     public void clickCheckBox(int x, int y) {
         if (itemPositions[x][y]) {
-            itemPositions = new boolean[container.getDimensionIndex()[0]][container.getDimensionIndex()[1]];
+            itemPositions = new boolean[itemPositions.length][itemPositions[0].length];
             itemPositions[x][y] = true;
         }
     }
 
     public String getToolTipForContainerPlace(int x, int y) {
-        if (container.getItemAtPos(x, y, 0) != null) {
-            return "ID: " + container.getItemAtPos(x, y, 0).getId();
+        if (container.getItemAtPos(x, y) != null) {
+            return "ID: " + container.getItemAtPos(x, y).getId();
         }
         return "free place";
     }
 
     public String getStyleOfContainerPlace(int x, int y) {
-
         try {
-            if (container.getItemAtPos(x, y, 0) == null) {
+            if (container.getItemAtPos(x, y) == null) {
                 return "possible-place";
-            } else if (itemBean.getState().getOriginalItem() != null && Objects.equals(container.getItemAtPos(x, y, 0).getId(), itemBean.getState().getOriginalItem().getId())) {
+            } else if (itemBean.getState().getOriginalItem() != null && Objects.equals(container.getItemAtPos(x, y).getId(), itemBean.getState().getOriginalItem().getId())) {
                 return "own-place";
             } else {
                 return "occupied-place";

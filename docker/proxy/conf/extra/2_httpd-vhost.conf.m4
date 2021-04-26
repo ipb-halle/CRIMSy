@@ -3,12 +3,17 @@ include(dist/etc/config_m4.inc)dnl
 ## SSL Virtual Host Context
 ##
 
+<Directory "/usr/local/apache2/extern">
+    AllowOverride None
+    Require all granted
+</Directory>
+
 <VirtualHost _default_:8443>
 
 	#   General setup for the virtual host
 	ServerName LBAC_INTERNET_FQHN:8443
 	ServerAdmin LBAC_MANAGER_EMAIL
-	DocumentRoot "/usr/local/apache2/htdocs"
+	DocumentRoot "/usr/local/apache2/extern"
 
 	SSLEngine on
 
