@@ -40,7 +40,7 @@ public final class NumberFunctions {
      * 
      * @param number  number to be formatted
      * @param pattern format pattern, see the documentation of the
-     *                {@link DecimalFormat}
+     *                {@link DecimalFormat} class
      * @return the formatted number
      */
     public static String formatNumberInEnglish(Number number, String pattern) {

@@ -164,7 +164,8 @@ public class ItemBean implements Serializable {
     public void actionSave() {
         state.getEditedItem().setContainer(containerController.getContainer());
         if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
-            if (mode == Mode.CREATE) {
+            // TODO: what should apply if we are in history mode?
+            if (isCreateMode()) {
                 saveNewItem();
             } else {
                 itemService.saveEditedItem(
@@ -194,12 +195,24 @@ public class ItemBean implements Serializable {
         }
     }
 
-    public boolean isCustomLabelDisabled() {
+    public boolean isCreateMode() {
+        return mode == Mode.CREATE;
+    }
+
+    public boolean isEditMode() {
         return mode == Mode.EDIT;
     }
 
+    public boolean isHistoryMode() {
+        return mode == Mode.HISTORY;
+    }
+
+    public boolean isCustomLabelDisabled() {
+        return isEditMode();
+    }
+
     public boolean isLabelVisible() {
-        return customLabel || mode == Mode.EDIT;
+        return customLabel || isEditMode();
     }
 
     public boolean isSolventRowVisisble() {
@@ -395,7 +408,7 @@ public class ItemBean implements Serializable {
     }
 
     public boolean isUnitEditable() {
-        return mode == Mode.CREATE;
+        return isCreateMode();
     }
 
     public boolean isDirectContainer() {
@@ -404,14 +417,6 @@ public class ItemBean implements Serializable {
 
     public void setDirectContainer(boolean directContainer) {
         this.directContainer = directContainer;
-    }
-
-    public String getSaveButtonText() {
-        if (mode == Mode.CREATE) {
-            return Messages.getString(MESSAGE_BUNDLE, "itemEdit_materialPanel_save", null);
-        } else {
-            return Messages.getString(MESSAGE_BUNDLE, "itemEdit_materialPanel_saveEdited", null);
-        }
     }
 
     public boolean isPreviousVersionButtonDisabled() {

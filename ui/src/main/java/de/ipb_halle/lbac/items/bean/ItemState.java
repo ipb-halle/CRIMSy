@@ -119,4 +119,8 @@ public class ItemState {
         return dates.get(index + 1);
     }
 
+    // TODO: does not work this way
+    public boolean isStartingHistoryItem() {
+        return getPreviousKey(currentHistoryDate) == null;
+    }
 }
