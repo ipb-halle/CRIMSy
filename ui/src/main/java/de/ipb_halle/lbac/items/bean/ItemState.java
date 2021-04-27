@@ -119,8 +119,25 @@ public class ItemState {
         return dates.get(index + 1);
     }
 
-    // TODO: does not work this way
+    /**
+     * @return true if the currently selected item version is the latest revision.
+     */
+    public boolean isLastHistoryItem() {
+        return currentHistoryDate == null;
+    }
+
+    /**
+     * @return true if the currently selected item version is the first revision.
+     */
     public boolean isStartingHistoryItem() {
+        // TODO: does not work this way
         return getPreviousKey(currentHistoryDate) == null;
+    }
+
+    /**
+     * @return date when this revision was done
+     */
+    public Date getChangeDate() {
+        return getPreviousKey(currentHistoryDate);
     }
 }
