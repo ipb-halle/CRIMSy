@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,42 +43,105 @@ public class ItemStateTest {
 
     @Test
     public void test001_getPreviousAndFollowingKeyTest() {
-        Calendar cal = Calendar.getInstance();
         ItemState state = new ItemState();
         Item item = new Item();
-        item.getHistory().put(createHistory(2020).get(0).getMdate(), createHistory(2020));
-        item.getHistory().put(createHistory(2021).get(0).getMdate(), createHistory(2021));
-        item.getHistory().put(createHistory(2022).get(0).getMdate(), createHistory(2022));
-        item.getHistory().put(createHistory(2023).get(0).getMdate(), createHistory(2023));
         state.setEditedItem(item);
 
-        Assert.assertNull(state.getCurrentHistoryDate());
-        cal.setTime(state.getPreviousKey(null));
-        Assert.assertEquals(2023, cal.get(1));
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        cal.add(Calendar.YEAR, -1);
+        Date oneYearAgo = cal.getTime();
+        cal.add(Calendar.YEAR, -1);
+        Date twoYearsAgo = cal.getTime();
 
-        cal.setTime(state.getPreviousKey(cal.getTime()));
-        Assert.assertEquals(2022, cal.get(1));
+        /* 
+         * History is empty, i.e. nothing can precede or follow.
+         */
+        Assert.assertEquals(null, state.getPreviousKey(null));
+        Assert.assertEquals(null, state.getPreviousKey(now));
+        Assert.assertEquals(null, state.getFollowingKey(null));
+        Assert.assertEquals(null, state.getFollowingKey(now));
 
-        cal.setTime(state.getPreviousKey(cal.getTime()));
-        Assert.assertEquals(2021, cal.get(1));
+        // will become starting item in history
+        item.getHistory().put(twoYearsAgo, createHistory(twoYearsAgo));
+        // will become last item in history
+        item.getHistory().put(now, createHistory(now));
+        item.getHistory().put(oneYearAgo, createHistory(oneYearAgo));
 
-        cal.setTime(state.getPreviousKey(cal.getTime()));
-        Assert.assertEquals(2020, cal.get(1));
+        // back in time
+        Assert.assertEquals(now, state.getPreviousKey(null));
+        Assert.assertEquals(oneYearAgo, state.getPreviousKey(now));
+        Assert.assertEquals(twoYearsAgo, state.getPreviousKey(oneYearAgo));
+        Assert.assertEquals(null, state.getPreviousKey(twoYearsAgo));
 
-        cal.setTime(state.getFollowingKey(cal.getTime()));
-        Assert.assertEquals(2021, cal.get(1));
-
-        cal.setTime(state.getFollowingKey(cal.getTime()));
-        Assert.assertEquals(2022, cal.get(1));
-
-        cal.setTime(state.getFollowingKey(cal.getTime()));
-        Assert.assertEquals(2023, cal.get(1));
-
-        Assert.assertNull(state.getFollowingKey(cal.getTime()));
+        // forward in time
+        Assert.assertEquals(null, state.getFollowingKey(null));
+        Assert.assertEquals(null, state.getFollowingKey(now));
+        Assert.assertEquals(now, state.getFollowingKey(oneYearAgo));
+        Assert.assertEquals(oneYearAgo, state.getFollowingKey(twoYearsAgo));
     }
 
     @Test
-    public void test002_copyItemTest() {
+    public void test002_historyState() {
+        ItemState state = new ItemState();
+        Item item = new Item();
+        state.setEditedItem(item);
+
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        cal.add(Calendar.YEAR, -1);
+        Date oneYearAgo = cal.getTime();
+        cal.add(Calendar.YEAR, -1);
+        Date twoYearsAgo = cal.getTime();
+
+        // will become starting item in history
+        item.getHistory().put(twoYearsAgo, createHistory(twoYearsAgo));
+        // will become last item in history
+        item.getHistory().put(now, createHistory(now));
+        item.getHistory().put(oneYearAgo, createHistory(oneYearAgo));
+
+        // latest revision
+        Assert.assertNull(state.getCurrentHistoryDate());
+        Assert.assertTrue(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+        Assert.assertEquals(now, state.getChangeDate());
+
+        // jump to revision one year ago
+        state.setCurrentHistoryDate(state.getPreviousKey(state.getCurrentHistoryDate()));
+        Assert.assertEquals(now, state.getCurrentHistoryDate());
+        Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+        Assert.assertEquals(oneYearAgo, state.getChangeDate());
+
+        // jump to revision two years ago
+        state.setCurrentHistoryDate(state.getPreviousKey(state.getCurrentHistoryDate()));
+        Assert.assertEquals(oneYearAgo, state.getCurrentHistoryDate());
+        Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+        Assert.assertEquals(twoYearsAgo, state.getChangeDate());
+
+        // jump to original item
+        state.setCurrentHistoryDate(state.getPreviousKey(state.getCurrentHistoryDate()));
+        Assert.assertEquals(twoYearsAgo, state.getCurrentHistoryDate());
+        Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertTrue(state.isStartingHistoryItem());
+        Assert.assertEquals(null, state.getChangeDate());
+
+        /*
+         * What happens when we go further back in time?
+         * We end up at the latest revision again ... *Wait a minute, Doc!*
+         */
+        state.setCurrentHistoryDate(state.getPreviousKey(state.getCurrentHistoryDate()));
+        Assert.assertEquals(null, state.getCurrentHistoryDate());
+        Assert.assertTrue(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+        Assert.assertEquals(now, state.getChangeDate());
+    }
+
+    @Test
+    public void test003_copyItemTest() {
         Item item = createItem();
         ItemState state = new ItemState(item);
 
@@ -104,12 +166,10 @@ public class ItemStateTest {
 
     }
 
-    private List<ItemDifference> createHistory(int year) {
+    private List<ItemDifference> createHistory(Date date) {
         List<ItemDifference> hist = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
         ItemHistory history = new ItemHistory();
-        cal.set(year, 4, 0);
-        history.setMdate(cal.getTime());
+        history.setMdate(date);
         hist.add(history);
         return hist;
     }

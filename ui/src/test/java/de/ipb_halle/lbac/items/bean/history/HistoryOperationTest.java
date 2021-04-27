@@ -235,9 +235,9 @@ public class HistoryOperationTest {
         Date twoYearsAgo = cal.getTime();
 
         createEmptyHistory(oneYearAgo);
-        // last item in history
+        // will become last item in history
         createEmptyHistory(now);
-        // starting item in history
+        // will become starting item in history
         createEmptyHistory(twoYearsAgo);
 
         // We start with now.
