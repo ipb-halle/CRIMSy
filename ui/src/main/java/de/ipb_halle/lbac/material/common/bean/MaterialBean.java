@@ -161,6 +161,7 @@ public class MaterialBean implements Serializable {
     public void startMaterialEdit(Material m) {
         try {
             initState();
+            mode = Mode.EDIT;
             materialNameBean.setNames(new ArrayList<>());
             Date currentVersionDate = null;
             if (!m.getHistory().getChanges().isEmpty()) {
@@ -199,7 +200,7 @@ public class MaterialBean implements Serializable {
                     structureInfos,
                     storageClassInformation,
                     taxonomyController);
-            mode = Mode.EDIT;
+            
         } catch (Exception e) {
             logger.info("Error in Line " + e.getStackTrace()[0].getLineNumber());
             logger.error(e);
@@ -283,7 +284,7 @@ public class MaterialBean implements Serializable {
         this.storageClassInformation = storageClassInformation;
     }
 
-    public void saveNewMaterial() {
+    public void saveNewMaterial() throws Exception {
         if (checkInputValidity()) {
             if (currentMaterialType == MaterialType.STRUCTURE) {
                 creationSaver.saveNewStructure(autoCalcFormularAndMasses,
@@ -293,7 +294,7 @@ public class MaterialBean implements Serializable {
                         storageClassInformation,
                         materialIndexBean.getIndices());
             }
-            if (currentMaterialType == MaterialType.BIOMATERIAL) {
+            else if (currentMaterialType == MaterialType.BIOMATERIAL) {
                 Taxonomy t = (Taxonomy) taxonomyController.getSelectedTaxonomy().getData();
                 creationSaver.saveNewBioMaterial(
                         materialEditState.getCurrentProject(),
@@ -302,7 +303,11 @@ public class MaterialBean implements Serializable {
                         taxonomyController.getSelectedTissue(),
                         hazards,
                         storageClassInformation);
+            }else if (currentMaterialType == MaterialType.CONSUMABLE) {
+                  creationSaver.saveConsumable( materialEditState.getCurrentProject(), hazards, storageClassInformation,  materialIndexBean.getIndices());
             }
+        }else{
+            throw new Exception("Material not valide");
         }
     }
 
@@ -455,6 +460,7 @@ public class MaterialBean implements Serializable {
      * @return true if user is project edit is possible
      */
     public boolean isProjectEditEnabled() {
+        logger.info("Mode "+mode);
         switch (mode) {
             case CREATE:
                 return true;
