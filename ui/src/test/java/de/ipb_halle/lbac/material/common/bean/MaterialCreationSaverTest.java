@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,7 +69,11 @@ public class MaterialCreationSaverTest extends TestBase {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-
+    }
+    @After
+    public void after(){
+        cleanItemsFromDb();
+        cleanMaterialsFromDB();        
     }
 
     @Test
