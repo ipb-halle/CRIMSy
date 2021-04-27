@@ -268,11 +268,17 @@ public class HistoryOperationTest {
         operation.applyNextNegativeDifference();
         Assert.assertEquals(twoYearsAgo, state.getChangeDate());
         Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+
+        // Go to original item.
+        operation.applyNextNegativeDifference();
+        Assert.assertEquals(null, state.getChangeDate());
+        Assert.assertFalse(state.isLastHistoryItem());
         Assert.assertTrue(state.isStartingHistoryItem());
 
         // Can we go further back in time? Nope.
         operation.applyNextNegativeDifference();
-        Assert.assertEquals(twoYearsAgo, state.getChangeDate());
+        Assert.assertEquals(null, state.getChangeDate());
         Assert.assertFalse(state.isLastHistoryItem());
         Assert.assertTrue(state.isStartingHistoryItem());
     }
