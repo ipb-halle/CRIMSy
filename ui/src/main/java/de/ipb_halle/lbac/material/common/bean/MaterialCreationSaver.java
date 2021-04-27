@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -28,9 +29,11 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -115,6 +118,33 @@ public class MaterialCreationSaver implements Serializable {
                 project.getUserGroups().getId(),
                 project.getDetailTemplates()
         );
+    }
+    public void saveMaterialOverview(Material m,Project p){
+       
+         if (m.getStorageInformation() == null) {
+            m.setStorageInformation(new StorageClassInformation());
+        }
+        if (m.getStorageInformation().getStorageClass() == null) {
+            m.getStorageInformation().setStorageClass(m.getStorageInformation().getPossibleStorageClasses().get(0));
+        }
+      
+        if (m.getHazards() == null) {
+            m.setHazards(new HazardInformation());
+            
+        }
+         materialService.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates());
+    }
+    
+    public void saveConsumable(
+            Project project,
+            HazardInformation hazards,
+            StorageClassInformation storageClassInformation,
+            List<IndexEntry> indices){
+        Consumable consumable=new Consumable(0,  materialNameBean.getNames(), project.getId(), hazards, storageClassInformation);
+        consumable.getIndices().addAll(indices);
+        saveMaterialOverview(consumable,project);
+        
+        
     }
 
 }

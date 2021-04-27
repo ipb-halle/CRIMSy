@@ -31,6 +31,9 @@ import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -91,6 +94,27 @@ public class MaterialCreationSaverTest extends TestBase {
 
         o = entityManagerService.doSqlQuery("SELECT * FROM storages");
         Assert.assertEquals(1, o.size());
+    }
+
+    @Test
+    public void test002_saveConsumable() {
+        MaterialNameBean nameBean = new MaterialNameBean();
+        MaterialCreationSaver saver = new MaterialCreationSaver(nameBean, materialService);
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        materialService.setUserBean(userBean);
+        Project p = creationTools.createProject();
+       
+        StorageClassInformation sci = new StorageClassInformation();
+        
+        saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList());
+        List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
+        Assert.assertEquals(1, o.size());
+        
+        MaterialSearchRequestBuilder b=new MaterialSearchRequestBuilder(userBean.getCurrentAccount(),0,25);
+        b.addMaterialType(MaterialType.CONSUMABLE);
+        List<Consumable> c=materialService.getReadableMaterials(b.build()).getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
+        c.get(0);
     }
 
     @Deployment

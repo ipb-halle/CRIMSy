@@ -22,9 +22,9 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -51,7 +51,16 @@ public class Consumable extends Material {
 
     @Override
     public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Consumable c= new Consumable(id, names, projectId, hazards, storageInformation);
+        List<MaterialName> copiedNames=new ArrayList<>();
+        for(MaterialName n:names){
+            copiedNames.add(new MaterialName((n.getValue()), n.getLanguage(), n.getRank()));
+        }
+        c.setCreationTime(creationTime);
+        c.setNames(copiedNames);
+        c.setACList(getACList());
+        c.setOwner(getOwner());
+        return c;
     }
 
     @Override

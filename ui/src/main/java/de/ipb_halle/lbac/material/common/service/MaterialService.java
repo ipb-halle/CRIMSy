@@ -57,6 +57,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.search.SearchResultImpl;
@@ -432,10 +433,25 @@ public class MaterialService implements Serializable {
         if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.TAXONOMY) {
             material = taxonomyService.loadTaxonomyById(id);
         }
+        if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.CONSUMABLE) {
+            material = loadConsumable(entity);
+        }
         material.setACList(aclService.loadById(entity.getACList()));
+        material.setOwner(memberService.loadUserById(entity.getOwner()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
         material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
         return material;
+    }
+
+    private Consumable loadConsumable(MaterialEntity me) {
+        Consumable c= new Consumable(
+                me.getMaterialid(),
+                loadMaterialNamesById(me.getMaterialid()),
+                me.getProjectid(),
+                loadHazardInformation(me.getMaterialid()),
+                loadStorageClassInformation(me.getMaterialid()));
+        c.setCreationTime(me.getCtime());
+        return c;
     }
 
     /**
@@ -472,9 +488,7 @@ public class MaterialService implements Serializable {
             Integer projectAcl,
             Integer actorId) throws Exception {
         Date modDate = new Date();
-
         List<MaterialDifference> diffs = comparator.compareMaterial(oldMaterial, newMaterial);
-
         for (MaterialDifference md : diffs) {
             md.initialise(newMaterial.getId(), actorId, modDate);
         }
@@ -482,11 +496,14 @@ public class MaterialService implements Serializable {
                 projectAcl, actorId);
         editedMaterialSaver.saveEditedMaterialOverview();
         editedMaterialSaver.saveEditedMaterialIndices();
-        editedMaterialSaver.saveEditedMaterialStructure();
+        if(newMaterial.getType()==MaterialType.STRUCTURE){
+            editedMaterialSaver.saveEditedMaterialStructure();
+        }
         editedMaterialSaver.saveEditedMaterialHazards();
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
+       
     }
 
     /**
@@ -501,11 +518,15 @@ public class MaterialService implements Serializable {
             Integer projectAclId,
             Map<MaterialDetailType, ACList> detailTemplates,
             Integer onwerId) {
-
+        logger.info("Try to save material");
         saveMaterialOverview(m, projectAclId, onwerId);
+        logger.info("Overview saved");
         saveMaterialNames(m);
+        logger.info("Names saved");
         saveMaterialHazards(m);
+        logger.info("Hazards saved");
         saveStorageConditions(m);
+        logger.info("Storage saved");
         saveDetailRightsFromTemplate(m, detailTemplates);
 
         if (m.getType() == MaterialType.STRUCTURE) {
@@ -520,6 +541,7 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.BIOMATERIAL) {
             saveBioMaterial((BioMaterial) m);
         }
+        logger.info("Save finished");
     }
 
     /**

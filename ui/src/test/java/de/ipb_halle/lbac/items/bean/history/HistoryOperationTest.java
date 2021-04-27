@@ -71,6 +71,7 @@ public class HistoryOperationTest {
         diff2.setAmountNew(8d);
         diff2.setAmountOld(6d);
 
+        bean.getState().getCurrentHistoryDate();
         operation.applyNextNegativeDifference();
         Assert.assertEquals(8, state.getEditedItem().getAmount(), 0);
         operation.applyNextNegativeDifference();
