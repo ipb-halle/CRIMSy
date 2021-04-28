@@ -18,29 +18,40 @@
 package de.ipb_halle.lbac.material.common.entity;
 
 import java.io.Serializable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.Embeddable;
 
 /**
  *
  * @author fmauz
  */
-@Entity
-@Table(name = "material_compositions")
-public class MaterialCompositionEntity implements Serializable {
+@Embeddable
+public class MaterialCompositionId implements Serializable {
 
-    private final static long serialVersionUID = 1L;
+    private int materialid;
+    private int componentid;
 
-    @EmbeddedId
-    private MaterialCompositionId id;
-
-    public MaterialCompositionId getId() {
-        return id;
+    public MaterialCompositionId() {
     }
 
-    public MaterialCompositionEntity setId(MaterialCompositionId id) {
-        this.id = id;
-        return this;
+    public MaterialCompositionId(int materialid, int componentid) {
+        this.materialid = materialid;
+        this.componentid = componentid;
     }
+
+    public int getMaterialid() {
+        return materialid;
+    }
+
+    public void setMaterialid(int materialid) {
+        this.materialid = materialid;
+    }
+
+    public int getComponentid() {
+        return componentid;
+    }
+
+    public void setComponentid(int componentid) {
+        this.componentid = componentid;
+    }
+
 }

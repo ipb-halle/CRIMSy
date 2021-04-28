@@ -22,10 +22,11 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.biomaterial.Tissue;
+import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
+import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,7 +36,7 @@ import java.util.Objects;
  */
 public class MaterialComposition extends Material {
 
-    protected HashMap<Integer, Material> rankedComponents = new HashMap<>();
+    protected List<Material> components = new ArrayList<>();
 
     public MaterialComposition(
             int id,
@@ -47,8 +48,8 @@ public class MaterialComposition extends Material {
         type = MaterialType.COMPOSITION;
     }
 
-    public MaterialComposition addComponent(Material comp, int rank) {
-        rankedComponents.put(rank, comp);
+    public MaterialComposition addComponent(Material comp) {
+        components.add(comp);
         return this;
     }
 
@@ -63,8 +64,18 @@ public class MaterialComposition extends Material {
     }
 
     @Override
-    public Object createEntity() {
+    public MaterialCompositionEntity[] createEntity() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<MaterialCompositionEntity> createCompositionEntities() {
+        List<MaterialCompositionEntity> entities = new ArrayList<>();
+        for (Material m : components) {
+            entities.add(new MaterialCompositionEntity()
+                    .setId(new MaterialCompositionId(id, id)));
+        }
+        return entities;
     }
 
     @Override

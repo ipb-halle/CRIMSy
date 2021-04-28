@@ -56,6 +56,7 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -123,6 +124,9 @@ public class MaterialService implements Serializable {
             + "SET aclist_id =:aclid "
             + "WHERE materialid=:mid";
 
+    private final String SQL_DELETE_COMPONENTS
+            = "DELETE FROM material_compositions "
+            + "WHERE materialid=:mid";
     protected MaterialHistoryService materialHistoryService;
 
     @Inject
@@ -444,7 +448,7 @@ public class MaterialService implements Serializable {
     }
 
     private Consumable loadConsumable(MaterialEntity me) {
-        Consumable c= new Consumable(
+        Consumable c = new Consumable(
                 me.getMaterialid(),
                 loadMaterialNamesById(me.getMaterialid()),
                 me.getProjectid(),
@@ -496,14 +500,23 @@ public class MaterialService implements Serializable {
                 projectAcl, actorId);
         editedMaterialSaver.saveEditedMaterialOverview();
         editedMaterialSaver.saveEditedMaterialIndices();
-        if(newMaterial.getType()==MaterialType.STRUCTURE){
+        if (newMaterial.getType() == MaterialType.STRUCTURE) {
             editedMaterialSaver.saveEditedMaterialStructure();
         }
         editedMaterialSaver.saveEditedMaterialHazards();
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
-       
+
+        deleteExistingComponents(newMaterial);
+        saveComponents(newMaterial);
+
+    }
+
+    private void deleteExistingComponents(Material m) {
+        Query q = em.createNativeQuery(SQL_DELETE_COMPONENTS);
+        q.setParameter("mid", m.getId());
+        q.executeUpdate();
     }
 
     /**
@@ -518,16 +531,12 @@ public class MaterialService implements Serializable {
             Integer projectAclId,
             Map<MaterialDetailType, ACList> detailTemplates,
             Integer onwerId) {
-        logger.info("Try to save material");
         saveMaterialOverview(m, projectAclId, onwerId);
-        logger.info("Overview saved");
         saveMaterialNames(m);
-        logger.info("Names saved");
         saveMaterialHazards(m);
-        logger.info("Hazards saved");
         saveStorageConditions(m);
-        logger.info("Storage saved");
         saveDetailRightsFromTemplate(m, detailTemplates);
+        saveComponents(m);
 
         if (m.getType() == MaterialType.STRUCTURE) {
             structureInformationSaver.saveStructureInformation(m);
@@ -541,7 +550,12 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.BIOMATERIAL) {
             saveBioMaterial((BioMaterial) m);
         }
-        logger.info("Save finished");
+    }
+
+    private void saveComponents(Material m) {
+        for (MaterialCompositionEntity mce : m.createCompositionEntities()) {
+            em.merge(mce);
+        }
     }
 
     /**

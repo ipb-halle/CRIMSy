@@ -19,9 +19,8 @@ include(dist/etc/config_m4.inc)dnl
  */
 
 CREATE TABLE material_compositions(
-    id SERIAL NOT NULL PRIMARY KEY,
     materialid  INTEGER NOT NULL REFERENCES materials (materialid),
     componentid INTEGER NOT NULL REFERENCES materials (materialid),
-    UNIQUE (materialid, componentid)
+    PRIMARY KEY (materialid, componentid)
 );
 
