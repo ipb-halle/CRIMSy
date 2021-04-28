@@ -134,9 +134,9 @@
                                     </b:column>
                                 </b:row>
                                 <b:row>
-                                    <b:column span="2" styleClass="rightLabeledCbx">
+                                    <b:column span="2" styleClass="boldSelectBooleanCheckboxCaption">
                                         <b:selectBooleanCheckbox
-                                            label="#{msgs.itemEdit_itemPanel_directContainer}"
+                                            caption="#{msgs.itemEdit_itemPanel_directContainer}"
                                             ajax="true"
                                             update="@(.directContainerClass)"
                                             value="#{itemBean.directContainer}"/>
@@ -168,9 +168,9 @@
                                 <b:row styleClass="solventClass">
                                     <b:column 
                                         span="2"
-                                        styleClass="rightLabeledCbx">
+                                        styleClass="boldSelectBooleanCheckboxCaption">
                                         <b:selectBooleanCheckbox
-                                            label="#{msgs.itemEdit_itemPanel_solvent}"
+                                            caption="#{msgs.itemEdit_itemPanel_solvent}"
                                             ajax="true"
                                             update="@(.solventClass)"
                                             value="#{itemBean.solved}"/>
@@ -210,10 +210,10 @@
                                 </b:row>
                                 <b:row>
                                     <b:column span="2"
-                                              styleClass="rightLabeledCbx">
+                                              styleClass="boldSelectBooleanCheckboxCaption">
                                         <b:selectBooleanCheckbox
                                             ajax="true"
-                                            label="#{msgs.itemEdit_itemPanel_label_customLabel}"
+                                            caption="#{msgs.itemEdit_itemPanel_label_customLabel}"
                                             disabled="#{itemBean.isCustomLabelDisabled()}"
                                             value="#{itemBean.customLabel}"
                                             update="@(.customLabelText)" />
