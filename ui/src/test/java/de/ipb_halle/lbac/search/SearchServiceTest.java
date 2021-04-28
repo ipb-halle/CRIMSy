@@ -243,10 +243,15 @@ public class SearchServiceTest extends TestBase {
         request = builder.build();
         Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
-//        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
-//        builder.setStructure("CCOCC");
-//        request = builder.build();
-//        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setStructure("CCOCC");
+        request = builder.build();
+        Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setStructure("CCC");
+        request = builder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName(publicUser.getName());
@@ -456,6 +461,7 @@ public class SearchServiceTest extends TestBase {
         materialid1 = materialCreator.createStructure(
                 publicUser.getId(),
                 publicAclId,
+                "CCCCCCCCC",
                 project1.getId(),
                 "Testmaterial-001");
         materialCreator.addIndexToMaterial(materialid1, 2, "Index of material 1");

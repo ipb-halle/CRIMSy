@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class MaterialComposition extends Material {
 
     protected List<Material> components = new ArrayList<>();
 
+
+    
+    
     public MaterialComposition(
             int id,
             List<MaterialName> names,
@@ -73,8 +77,9 @@ public class MaterialComposition extends Material {
         List<MaterialCompositionEntity> entities = new ArrayList<>();
         for (Material m : components) {
             entities.add(new MaterialCompositionEntity()
-                    .setId(new MaterialCompositionId(id, id)));
+                    .setId(new MaterialCompositionId(id, m.getId())));
         }
+        entities.addAll(super.createCompositionEntities());
         return entities;
     }
 

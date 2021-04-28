@@ -469,7 +469,7 @@ public class MaterialService implements Serializable {
             composition.addComponent(loadMaterialById(mce.getId().getComponentid()));
         }
         composition.setCreationTime(entity.getCtime());
-        // loadMaterialIndices etc.
+        //TO DO: loadMaterialIndices
         return composition;
     }
 
