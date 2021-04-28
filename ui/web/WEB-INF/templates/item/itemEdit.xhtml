@@ -40,9 +40,7 @@
                     <ui:include src="/WEB-INF/templates/item/containerModal.xhtml"/>
                 </ui:insert>
 
-                <b:panel 
-                    styleClass="itemEditPanel"
-                    collapsible="false">
+                <b:panel>
                     <b:container>
                         <b:row>
                             <b:column span="5"
@@ -55,34 +53,42 @@
                             <b:column span="1">
                                 <b:commandButton
                                     icon-awesome="fa-backward"
-                                    disabled="#{itemBean.isPreviousVersionButtonDisabled()}"
-                                    action="#{itemBean.applyNextNegativeDiff()}">
+                                    disabled="#{itemBean.state.startingHistoryItem}"
+                                    ajax="true"
+                                    process="@this"
+                                    update="@form"
+                                    action="#{itemBean.actionApplyNextNegativeDifference()}">
                                 </b:commandButton>
                             </b:column>
-                            <b:column span="2">
-                                <h:outputFormat
-                                    value="#{msgs.itemEdit_itemEditPanel_changed}"
-                                    rendered="#{!itemBean.state.startingHistoryItem}">
-                                <o:param value="#{itemBean.state.currentHistoryDate}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
-                                <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.currentHistoryDate)}" />
-                            </h:outputFormat>
-                            <h:outputFormat
-                                    value="#{msgs.itemEdit_itemEditPanel_created}"
-                                    rendered="#{itemBean.state.startingHistoryItem}">
-                                <o:param value="#{itemBean.state.originalItem.cTime}"
-                                         converter="org.ocpsoft.PrettyTimeConverter" />
-                                <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.originalItem.cTime)}" />
-                            </h:outputFormat>
+                            <b:column span="3">
+                                <ui:fragment rendered="#{!itemBean.createMode}">
+                                    <h:outputFormat
+                                        value="#{msgs.itemEdit_itemEditPanel_changed}"
+                                        rendered="#{!itemBean.state.startingHistoryItem}">
+                                        <o:param value="#{itemBean.state.changeDate}"
+                                                 converter="org.ocpsoft.PrettyTimeConverter" />
+                                        <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.changeDate)}" />
+                                    </h:outputFormat>
+                                    <h:outputFormat
+                                        value="#{msgs.itemEdit_itemEditPanel_created}"
+                                        rendered="#{itemBean.state.startingHistoryItem}">
+                                        <o:param value="#{itemBean.state.originalItem.cTime}"
+                                                 converter="org.ocpsoft.PrettyTimeConverter" />
+                                        <o:param value="#{nwc:formatDateWithTimezone(itemBean.state.originalItem.cTime)}" />
+                                    </h:outputFormat>
+                                </ui:fragment>
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
                                     icon-awesome="fa-forward"
-                                    disabled="#{itemBean.isNextVersionButtonDisabled()}"
-                                    action="#{itemBean.applyNextPositiveDiff()}">
+                                    disabled="#{itemBean.state.lastHistoryItem}"
+                                    ajax="true"
+                                    process="@this"
+                                    update="@form"
+                                    action="#{itemBean.actionApplyNextPositiveDifference()}">
                                 </b:commandButton>
                             </b:column>
-                            <b:column  span="1" offset="1">
+                            <b:column  span="1">
                                 <b:commandButton
                                     immediate="true"
                                     action="#{navigator.navigate('item/items')}"
@@ -91,7 +97,7 @@
                             <b:column span="1">
                                 <b:commandButton
                                     value="#{msgs.itemEdit_itemEditPanel_save}"
-                                    disabled="#{itemBean.isHistoryMode}"
+                                    disabled="#{itemBean.historyMode}"
                                     action="#{itemBean.actionSave()}" />
                             </b:column>
                         </b:row>
@@ -113,7 +119,6 @@
                                     </b:column>
                                     <b:column span="3">
                                         <b:selectOneMenu
-                                            disabled="#{!itemBean.isUnitEditable()}"
                                             label="#{msgs.itemEdit_itemPanel_container_unit}"
                                             converter="unitConverter"
                                             value="#{itemBean.state.editedItem.unit}">
@@ -122,7 +127,6 @@
                                     </b:column> 
                                     <b:column span="2">
                                         <b:selectOneMenu
-                                            disabled="#{!itemBean.isUnitEditable()}"
                                             label="#{msgs.itemEdit_itemPanel_amount_purity}"
                                             value="#{itemBean.state.editedItem.purity}">
                                             <f:selectItems value="#{itemBean.getPurities()}" />
@@ -130,7 +134,7 @@
                                     </b:column>
                                 </b:row>
                                 <b:row>
-                                    <b:column span="2" styleClass="rightLabeledCbxBound">
+                                    <b:column span="2" styleClass="rightLabeledCbx">
                                         <b:selectBooleanCheckbox
                                             label="#{msgs.itemEdit_itemPanel_directContainer}"
                                             ajax="true"
@@ -164,7 +168,7 @@
                                 <b:row styleClass="solventClass">
                                     <b:column 
                                         span="2"
-                                        styleClass="rightLabeledCbxSolvent">
+                                        styleClass="rightLabeledCbx">
                                         <b:selectBooleanCheckbox
                                             label="#{msgs.itemEdit_itemPanel_solvent}"
                                             ajax="true"
@@ -206,17 +210,18 @@
                                 </b:row>
                                 <b:row>
                                     <b:column span="2"
-                                              styleClass="rightLabeledCbxCustomLabel">
+                                              styleClass="rightLabeledCbx">
                                         <b:selectBooleanCheckbox
                                             ajax="true"
-                                            label="eigenes Label"
+                                            label="#{msgs.itemEdit_itemPanel_label_customLabel}"
                                             disabled="#{itemBean.isCustomLabelDisabled()}"
                                             value="#{itemBean.customLabel}"
                                             update="@(.customLabelText)" />
                                     </b:column>
                                     <b:column span="2" 
                                               styleClass="customLabelText">
-                                        <b:inputText 
+                                        <b:inputText
+                                            label="Label"
                                             disabled="#{itemBean.isCustomLabelDisabled()}"
                                             rendered="#{itemBean.isLabelVisible()}"
                                             value="#{itemBean.customLabelValue}">

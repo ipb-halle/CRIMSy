@@ -37,46 +37,6 @@
 
 }
 
-.rightLabeledCbxBound{
-    margin-top: 5px;
-}
-
-.rightLabeledCbxBound > .form-group > .control-label{
-    font-size:1.15em;
-    margin-top: 22px;
-    margin-left: 20px;
-}
-.rightLabeledCbxBound > .form-group > .checkbox{
-    margin-top: -26px;
-}
-
-.customLabelText{
-    margin-top: 20px;
-}
-.rightLabeledCbxCustomLabel{
-    margin-top: 5px;
-}
-.rightLabeledCbxCustomLabel > .form-group > .control-label{
-    font-size:1.15em;
-    margin-top: 22px;
-    margin-left: 20px;
-}
-.rightLabeledCbxCustomLabel > .form-group > .checkbox{
-    margin-top: -26px;
-}
-
-.rightLabeledCbxSolvent{
-    margin-top: 5px;
-}
-.rightLabeledCbxSolvent > .form-group > .control-label{
-    font-size:1.15em;
-    margin-top: 22px;
-    margin-left: 20px;
-}
-.rightLabeledCbxSolvent > .form-group > .checkbox{
-    margin-top: -26px;
-
-}
 .rightLabeledCbxVendor > .form-group > .control-label{
     margin-top: 22px;
     margin-left: 20px;
@@ -105,11 +65,6 @@
     padding-bottom:  5px;
     padding-left: 5px;
     padding-right: 5px;
-}
-
-.itemEditPanel{
-    margin: auto !important;
-    width:1140px;
 }
 
 .checkbox-round >.ui-chkbox-box {

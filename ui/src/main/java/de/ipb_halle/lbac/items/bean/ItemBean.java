@@ -128,8 +128,25 @@ public class ItemBean implements Serializable {
 
     }
 
-    public void applyNextPositiveDiff() {
+    public void actionApplyNextPositiveDifference() {
+        /*
+         * This is double-safety: The commandButton is disabled in the UI when
+         * creating an item.
+         */
+        if (mode == Mode.CREATE) {
+            return;
+        }
+
         historyOperation.applyNextPositiveDifference();
+
+        /*
+         * We jump from a historic view to the edit view of the item, thus the
+         * input components should be enabled. This check is done in the view
+         * via the 'mode' field.
+         */
+        if ((mode == Mode.HISTORY) && state.isLastHistoryItem()) {
+            mode = Mode.EDIT;
+        }
     }
 
     public ContainerController getContainerController() {
@@ -140,8 +157,25 @@ public class ItemBean implements Serializable {
         this.containerController = containerController;
     }
 
-    public void applyNextNegativeDiff() {
+    public void actionApplyNextNegativeDifference() {
+        /*
+         * This is double-safety: The commandButton is disabled in the UI when
+         * creating an item.
+         */
+        if (mode == Mode.CREATE) {
+            return;
+        }
+
         historyOperation.applyNextNegativeDifference();
+
+        /*
+         * We jump from the edit view to a historic view of the item, thus all
+         * input components should be disabled. This check is done in the view
+         * via the 'mode' field.
+         */
+        if (mode == Mode.EDIT) {
+            mode = Mode.HISTORY;
+        }
     }
 
     /**
@@ -208,7 +242,7 @@ public class ItemBean implements Serializable {
     }
 
     public boolean isCustomLabelDisabled() {
-        return isEditMode();
+        return !isCreateMode();
     }
 
     public boolean isLabelVisible() {
@@ -417,18 +451,6 @@ public class ItemBean implements Serializable {
 
     public void setDirectContainer(boolean directContainer) {
         this.directContainer = directContainer;
-    }
-
-    public boolean isPreviousVersionButtonDisabled() {
-        if (state.getEditedItem().getHistory().isEmpty()) {
-            return true;
-        }
-        return state.getEditedItem().getHistory().firstKey().equals(state.getCurrentHistoryDate());
-    }
-
-    public boolean isNextVersionButtonDisabled() {
-        return state.getEditedItem().getHistory().isEmpty() || state.getCurrentHistoryDate() == null;
-
     }
 
     public boolean isCustomLabel() {
