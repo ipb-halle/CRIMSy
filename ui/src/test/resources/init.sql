@@ -814,4 +814,11 @@ CREATE TABLE images (
     owner_id    INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE material_compositions(
+    id SERIAL NOT NULL PRIMARY KEY,
+    materialid  INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    componentid INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    UNIQUE (materialid, componentid)
+);
+
 
