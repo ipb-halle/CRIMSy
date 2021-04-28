@@ -27,8 +27,11 @@ import de.ipb_halle.lbac.items.bean.ContainerController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemState;
 import de.ipb_halle.lbac.project.Project;
+
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -222,6 +225,65 @@ public class HistoryOperationTest {
 
     }
 
+    @Test
+    public void test009_navigateInHistory() {
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        cal.add(Calendar.YEAR, -1);
+        Date oneYearAgo = cal.getTime();
+        cal.add(Calendar.YEAR, -1);
+        Date twoYearsAgo = cal.getTime();
+
+        createEmptyHistory(oneYearAgo);
+        // will become last item in history
+        createEmptyHistory(now);
+        // will become starting item in history
+        createEmptyHistory(twoYearsAgo);
+
+        // We start with now.
+        Assert.assertEquals(now, state.getChangeDate());
+        Assert.assertTrue(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+
+        // Can we go further into future? Nope.
+        operation.applyNextPositiveDifference();
+        Assert.assertEquals(now, state.getChangeDate());
+        Assert.assertTrue(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+
+        // Go to oneYearAgo.
+        operation.applyNextNegativeDifference();
+        Assert.assertEquals(oneYearAgo, state.getChangeDate());
+        Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+
+        // Back to now.
+        operation.applyNextPositiveDifference();
+        Assert.assertEquals(now, state.getChangeDate());
+        Assert.assertTrue(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+
+        // Go to twoYearsAgo.
+        operation.applyNextNegativeDifference();
+        operation.applyNextNegativeDifference();
+        Assert.assertEquals(twoYearsAgo, state.getChangeDate());
+        Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertFalse(state.isStartingHistoryItem());
+
+        // Go to original item.
+        operation.applyNextNegativeDifference();
+        Assert.assertEquals(null, state.getChangeDate());
+        Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertTrue(state.isStartingHistoryItem());
+
+        // Can we go further back in time? Nope.
+        operation.applyNextNegativeDifference();
+        Assert.assertEquals(null, state.getChangeDate());
+        Assert.assertFalse(state.isLastHistoryItem());
+        Assert.assertTrue(state.isStartingHistoryItem());
+    }
+
     private void checkForPositions(boolean[][] positions, int[] expected) {
         for (int i = 0; i < positions.length; i++) {
             for (int j = 0; j < positions.length; j++) {
@@ -240,15 +302,20 @@ public class HistoryOperationTest {
     }
 
     private ItemHistory createEmptyHistory(int day, int month, int year) {
-        ItemHistory diff1 = new ItemHistory();
-        diff1.setActor(actor);
-        diff1.setItem(item);
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day);
-        diff1.setMdate(cal.getTime());
 
-        item.getHistory().put(cal.getTime(), Arrays.asList(diff1));
-        return diff1;
+        return createEmptyHistory(cal.getTime());
+    }
+
+    private ItemHistory createEmptyHistory(Date date) {
+        ItemHistory diff = new ItemHistory();
+        diff.setActor(actor);
+        diff.setItem(item);
+        diff.setMdate(date);
+
+        item.getHistory().put(date, Arrays.asList(diff));
+        return diff;
     }
 
     private User createUser(int id, String name) {

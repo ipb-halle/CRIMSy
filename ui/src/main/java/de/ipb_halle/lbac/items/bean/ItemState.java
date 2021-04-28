@@ -64,7 +64,7 @@ public class ItemState {
         copiedItem.setHistory(original.getHistory());
         copiedItem.setACList(original.getACList());
         copiedItem.setOwner(original.getOwner());
-                
+
         return copiedItem;
     }
 
@@ -90,37 +90,62 @@ public class ItemState {
 
     public Date getPreviousKey(Date d) {
         if (d == null) {
-            if(editedItem.getHistory().isEmpty() ){
+            if (editedItem.getHistory().isEmpty()) {
                 return null;
-            }else{
-                return editedItem.getHistory().lastKey();    
+            } else {
+                return editedItem.getHistory().lastKey();
             }
-            
+
         }
-        if (editedItem.getHistory().isEmpty() || !editedItem.getHistory().containsKey(d)) {
+        if (editedItem.getHistory().isEmpty()
+                || !editedItem.getHistory().containsKey(d)) {
             return null;
         }
         if (editedItem.getHistory().firstKey().equals(d)) {
             return null;
         }
-        ArrayList<Date> dates = new ArrayList<>(editedItem.getHistory().keySet());
+        ArrayList<Date> dates = new ArrayList<>(
+                editedItem.getHistory().keySet());
 
         int index = dates.indexOf(d);
 
         return dates.get(index - 1);
     }
-    
-      public Date getFollowingKey(Date d) {
-        if (d == null||editedItem.getHistory().isEmpty()||d.getTime()==editedItem.getHistory().lastKey().getTime()) {
+
+    public Date getFollowingKey(Date d) {
+        if (d == null || editedItem.getHistory().isEmpty()
+                || d.getTime() == editedItem.getHistory().lastKey().getTime()) {
             return null;
         }
-        ArrayList<Date> dates = new ArrayList<>(editedItem.getHistory().keySet());
+        ArrayList<Date> dates = new ArrayList<>(
+                editedItem.getHistory().keySet());
         int index = dates.indexOf(d);
         return dates.get(index + 1);
     }
 
-    // TODO: does not work this way
+    /**
+     * @return true if the currently selected item version is the latest
+     *         revision.
+     */
+    public boolean isLastHistoryItem() {
+        return editedItem.getHistory().isEmpty() || currentHistoryDate == null;
+    }
+
+    /**
+     * @return true if the currently selected item version is the original item.
+     */
     public boolean isStartingHistoryItem() {
-        return getPreviousKey(currentHistoryDate) == null;
+        if (editedItem.getHistory().isEmpty()) {
+            return true;
+        }
+        return editedItem.getHistory().firstKey().equals(currentHistoryDate);
+    }
+
+    /**
+     * @return date when this revision was done, null if this revision is the
+     *         original item
+     */
+    public Date getChangeDate() {
+        return getPreviousKey(currentHistoryDate);
     }
 }

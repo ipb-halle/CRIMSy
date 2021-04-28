@@ -46,28 +46,32 @@ public class HistoryOperation {
     }
 
     public void applyNextNegativeDifference() {
-        itemState.setCurrentHistoryDate(itemState.getPreviousKey(itemState.getCurrentHistoryDate()));
+        if (!itemState.isStartingHistoryItem()) {
+            itemState.setCurrentHistoryDate(itemState.getPreviousKey(itemState.getCurrentHistoryDate()));
 
-        for (ItemDifference diff : orderDifferences(itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()))) {
-            if (diff instanceof ItemHistory) {
-                applyNegativeItemHistory((ItemHistory) diff);
-            }
-            if (diff instanceof ItemPositionHistoryList) {
-                applyNegativePositionDiff((ItemPositionHistoryList) diff);
+            for (ItemDifference diff : orderDifferences(itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()))) {
+                if (diff instanceof ItemHistory) {
+                    applyNegativeItemHistory((ItemHistory) diff);
+                }
+                if (diff instanceof ItemPositionHistoryList) {
+                    applyNegativePositionDiff((ItemPositionHistoryList) diff);
+                }
             }
         }
     }
 
     public void applyNextPositiveDifference() {
-        for (ItemDifference diff : orderDifferences(itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()))) {
-            if (diff instanceof ItemHistory) {
-                applyPositiveItemHistory((ItemHistory) diff);
+        if (!itemState.isLastHistoryItem()) {
+            for (ItemDifference diff : orderDifferences(itemState.getEditedItem().getHistory().get(itemState.getCurrentHistoryDate()))) {
+                if (diff instanceof ItemHistory) {
+                    applyPositiveItemHistory((ItemHistory) diff);
+                }
+                if (diff instanceof ItemPositionHistoryList) {
+                    applyPositivePositionDiff((ItemPositionHistoryList) diff);
+                }
             }
-            if (diff instanceof ItemPositionHistoryList) {
-                applyPositivePositionDiff((ItemPositionHistoryList) diff);
-            }
+            itemState.setCurrentHistoryDate(itemState.getFollowingKey(itemState.getCurrentHistoryDate()));
         }
-        itemState.setCurrentHistoryDate(itemState.getFollowingKey(itemState.getCurrentHistoryDate()));
     }
 
     private void applyPositivePositionDiff(ItemPositionHistoryList diffs) {
