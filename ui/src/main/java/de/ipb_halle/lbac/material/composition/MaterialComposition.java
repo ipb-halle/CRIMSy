@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
-import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
@@ -39,9 +38,6 @@ public class MaterialComposition extends Material {
 
     protected List<Material> components = new ArrayList<>();
 
-
-    
-    
     public MaterialComposition(
             int id,
             List<MaterialName> names,
@@ -63,12 +59,24 @@ public class MaterialComposition extends Material {
     }
 
     @Override
-    public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public MaterialComposition copyMaterial() {
+        MaterialComposition copy = new MaterialComposition(
+                id, getCopiedNames(),
+                projectId,
+                hazards.copy(),
+                storageInformation.copy());
+        return copy;
     }
 
+    /**
+     * There is no need for an specific entity of the material composition (
+     * like structures, taxonomies, ...) because there is no further information
+     * then in the material itself
+     *
+     * @return always throws a "Not supported yet." exception
+     */
     @Override
-    public MaterialCompositionEntity[] createEntity() {
+    public MaterialCompositionEntity createEntity() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
