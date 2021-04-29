@@ -80,14 +80,6 @@ public class Structure extends Material {
                 new HazardInformation(),
                 new StorageClassInformation(),
                 null);
-
-    }
-
-    @Override
-    public String getNumber() {
-        String back = "";
-
-        return back;
     }
 
     public String getSumFormula() {
