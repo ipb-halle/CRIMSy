@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.ContainerCreator;
 import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.base.ItemCreator;
@@ -52,8 +53,12 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -63,6 +68,7 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -140,6 +146,10 @@ public class SearchServiceTest extends TestBase {
         createProjects();
         createMaterials();
         createItems();
+
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(publicUser);
+        materialService.setUserBean(userBean);
 
     }
 
@@ -265,6 +275,21 @@ public class SearchServiceTest extends TestBase {
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 1);
         builder.setUserName(publicUser.getName());
+        request = builder.build();
+        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+
+        MaterialComposition composition = new MaterialComposition(
+                0,
+                Arrays.asList(new MaterialName("composition-1", "de", 0)),
+                project1.getId(),
+                new HazardInformation(),
+                new StorageClassInformation());
+        composition.addComponent(materialService.loadMaterialById(materialid1));
+        composition.addComponent(materialService.loadMaterialById(materialid2));
+        materialService.saveMaterialToDB(composition, project1.getId(), new HashMap());
+
+        builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        builder.setStructure("CC");
         request = builder.build();
         Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 

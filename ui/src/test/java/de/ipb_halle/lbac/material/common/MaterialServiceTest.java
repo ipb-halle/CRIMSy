@@ -73,7 +73,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -113,8 +112,6 @@ public class MaterialServiceTest extends TestBase {
         cleanMaterialsFromDB();
         instance.setStructureInformationSaver(new StructureInformationSaverMock(instance.getEm()));
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-
-        // instance.setEditedMaterialSaver(new MaterialEditSaver(instance, taxonomyNestingService));
     }
 
     @Test
