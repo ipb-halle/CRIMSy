@@ -55,12 +55,14 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -612,6 +614,48 @@ public class MaterialServiceTest extends TestBase {
     public void test008_loadStorageClasses() {
         List<StorageClass> classes = instance.loadStorageClasses();
         Assert.assertEquals(23, classes.size());
+    }
+
+    @Test
+    public void test009_saveLoadMaterialComposition() {
+        UserBeanMock userBean = new UserBeanMock();
+
+        userBean.setCurrentAccount(publicUser);
+        instance.setUserBean(userBean);
+        Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
+        Structure struture1 = creationTools.createStructure(project1);
+        Structure struture2 = creationTools.createStructure(project1);
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
+        instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
+
+        MaterialComposition composition = new MaterialComposition(
+                0,
+                Arrays.asList(new MaterialName("composition-1", "de", 0)),
+                project1.getId(),
+                new HazardInformation(),
+                new StorageClassInformation());
+        composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
+        composition.addComponent(struture1);
+        composition.addComponent(struture2);
+        instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("composition");
+        SearchResult result = instance.getReadableMaterials(requestBuilder.build());
+        MaterialComposition loadedComposition = (MaterialComposition) result.getAllFoundObjects(MaterialComposition.class, result.getNode()).get(0);
+
+        Assert.assertEquals(composition.getId(), loadedComposition.getId());
+        Assert.assertEquals(1, loadedComposition.getNames().size());
+        Assert.assertEquals("composition-1", loadedComposition.getFirstName());
+        Assert.assertEquals(2, loadedComposition.getComponents().size());
+
+        Structure loadedStruc1 = (Structure) loadedComposition.getComponents().get(0);
+        Assert.assertEquals(struture1.getId(), loadedStruc1.getId());
+        Structure loadedStruc2 = (Structure) loadedComposition.getComponents().get(1);
+        Assert.assertEquals(loadedStruc2.getId(), loadedStruc2.getId());
+
+        Assert.assertEquals(1, loadedComposition.getIndices().size());
+        composition.getId();
+
     }
 
     @Deployment

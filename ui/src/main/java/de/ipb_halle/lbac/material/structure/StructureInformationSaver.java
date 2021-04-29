@@ -44,9 +44,6 @@ public class StructureInformationSaver implements Serializable {
      */
     public void saveStructureInformation(Material m) {
         Structure s = (Structure) m;
-        for (IndexEntry ie : s.getIndices()) {
-            em.persist(ie.toDbEntity(m.getId(), 0));
-        }
         if (s.getMolecule().getStructureModel() != null 
                 && !s.getMolecule().getStructureModel().isEmpty()) {
             s.getMolecule().setId(saveMolecule(s.getMolecule().getStructureModel()));

@@ -53,6 +53,10 @@ public class MaterialComposition extends Material {
         return this;
     }
 
+    public List<Material> getComponents() {
+        return components;
+    }
+
     @Override
     public MaterialComposition copyMaterial() {
         MaterialComposition copy = new MaterialComposition(
