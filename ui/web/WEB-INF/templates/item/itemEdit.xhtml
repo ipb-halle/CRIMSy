@@ -119,9 +119,11 @@
                                     <b:column span="3">
                                         <b:selectOneMenu
                                             label="#{msgs.itemEdit_itemPanel_container_unit}"
-                                            converter="unitConverter"
                                             value="#{itemBean.state.editedItem.unit}">
-                                            <f:selectItems value="#{itemBean.availableAmountUnits}" />
+                                            <f:selectItems
+                                                value="#{itemBean.availableAmountUnits}"
+                                                var="unit"
+                                                itemLabel="#{unit.unit}" />
                                         </b:selectOneMenu>
                                     </b:column> 
                                     <b:column span="2">

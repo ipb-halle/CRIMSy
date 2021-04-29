@@ -102,6 +102,14 @@ public class Unit {
     }
 
     /**
+     * This default constructor is needed because JSF fails in state restoration
+     * after a validation error in ItemState.xhtml.
+     */
+    public Unit() {
+        unit = "";
+    }
+
+    /**
      * add the units to the static maps
      */
     private static void addUnit(Unit unit) {

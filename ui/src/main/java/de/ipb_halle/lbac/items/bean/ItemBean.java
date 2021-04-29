@@ -285,7 +285,7 @@ public class ItemBean implements Serializable {
         containerController = new ContainerController(this, i.getContainer());
         historyOperation = new HistoryOperation(state, containerController);
         customLabelValue = i.getLabel();
-        customLabel = customLabelValue != null;
+        customLabel = false;
         initData();
     }
 
@@ -295,7 +295,6 @@ public class ItemBean implements Serializable {
         this.printBean.setLabelDataObject(state.getEditedItem());
         this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
         this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer());
-
     }
 
     public void setContainerInfoPresenter(ContainerInfoPresenter containerInfoPresenter) {
