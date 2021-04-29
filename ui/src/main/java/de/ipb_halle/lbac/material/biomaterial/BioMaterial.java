@@ -54,11 +54,6 @@ public class BioMaterial extends Material {
     }
 
     @Override
-    public String getNumber() {
-        return "";
-    }
-
-    @Override
     public BioMaterial copyMaterial() {
         BioMaterial b = new BioMaterial(
                 id,
