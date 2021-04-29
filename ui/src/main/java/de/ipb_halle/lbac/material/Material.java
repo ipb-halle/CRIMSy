@@ -101,10 +101,6 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
         this.names = names;
     }
 
-    public String getNumber() {
-        return "";
-    }
-
     public int getId() {
         return id;
     }

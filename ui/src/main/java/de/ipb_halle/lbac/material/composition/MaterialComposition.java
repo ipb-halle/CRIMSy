@@ -54,11 +54,6 @@ public class MaterialComposition extends Material {
     }
 
     @Override
-    public String getNumber() {
-        return "";
-    }
-
-    @Override
     public MaterialComposition copyMaterial() {
         MaterialComposition copy = new MaterialComposition(
                 id, getCopiedNames(),

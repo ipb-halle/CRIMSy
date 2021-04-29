@@ -45,11 +45,6 @@ public class Consumable extends Material {
     }
 
     @Override
-    public String getNumber() {
-        return "";
-    }
-
-    @Override
     public Material copyMaterial() {
         Consumable c= new Consumable(id, names, projectId, hazards, storageInformation);
         List<MaterialName> copiedNames=new ArrayList<>();
