@@ -178,6 +178,9 @@ public class MaterialService implements Serializable {
     }
 
     /**
+     * Deactivates a material by setting a flag 'deactivated=true'. The material
+     * will still remain in the database and can be reactivated. The operation
+     * will be saved in the history
      *
      * @param materialID
      * @param actor
@@ -195,39 +198,19 @@ public class MaterialService implements Serializable {
     }
 
     /**
+     * loads the amount of found readable materials for the given search
+     * request.
      *
+     * @param request
      * @return
      */
-    public ACListService getAcListService() {
-        return aclService;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public MaterialEditSaver getEditedMaterialSaver() {
-        return editedMaterialSaver;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public EntityManager getEm() {
-        return em;
-    }
-
     public int loadMaterialAmount(SearchRequest request) {
         EntityGraph graph = createEntityGraph();
         SqlBuilder sqlBuilder = new SqlCountBuilder(graph,
                 new Attribute("materials", AttributeType.BARCODE));
-
         MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
         Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
-
         String sql = sqlBuilder.query(con);
-
         Query q = em.createNativeQuery(sql);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -236,7 +219,14 @@ public class MaterialService implements Serializable {
         return bi.intValue();
     }
 
-    public SearchResult getReadableMaterials(SearchRequest request) {
+    /**
+     * Loads the materials which are readable and matches the criteria of the
+     * request. It is advised to limit the result to prevent heavy load.
+     *
+     * @param request
+     * @return
+     */
+    public SearchResult loadReadableMaterials(SearchRequest request) {
         try {
             EntityGraph graph = createEntityGraph();
             SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
@@ -276,7 +266,13 @@ public class MaterialService implements Serializable {
         return orderList;
     }
 
-    public BioMaterial getBioMaterial(MaterialEntity me) {
+    /**
+     * Loads a biomaterial from the database
+     *
+     * @param me
+     * @return
+     */
+    private BioMaterial getBioMaterial(MaterialEntity me) {
         BioMaterialEntity entity = this.em.find(BioMaterialEntity.class, me.getMaterialid());
 
         Tissue tissue = null;
@@ -285,22 +281,19 @@ public class MaterialService implements Serializable {
         }
         BioMaterial b = new BioMaterial(
                 me.getMaterialid(),
-                loadMaterialNamesById(me.getMaterialid()),
+                new ArrayList(),
                 me.getProjectid(),
                 loadHazardInformation(me.getMaterialid()),
                 loadStorageClassInformation(me.getMaterialid()),
                 taxonomyService.loadTaxonomyById(entity.getTaxoid()),
                 tissue
         );
-        b.setCreationTime(me.getCtime());
-        b.setACList(aclService.loadById(me.getACList()));
-        b.setOwner(memberService.loadUserById(me.getOwner()));
         return b;
-
     }
 
     /**
-     * Gets all materialnames which matches the pattern %name%
+     * Gets all materialnames which matches the pattern %name% and are readable
+     * by the user
      *
      * @param name name for searching
      * @param user
@@ -336,16 +329,13 @@ public class MaterialService implements Serializable {
     }
 
     /**
+     * loads the structure information and if possible the molecule information
      *
      * @param me
      * @return
      */
     @SuppressWarnings("unchecked")
     protected Structure getStructure(MaterialEntity me) {
-
-        StorageClassInformation storageInfos = loadStorageClassInformation(me.getMaterialid());
-        HazardInformation hazardInfos = loadHazardInformation(me.getMaterialid());
-
         Query q5 = em.createNativeQuery(SQL_GET_STRUCTURE_INFOS, StructureEntity.class);
         q5.setParameter("mid", me.getMaterialid());
 
@@ -359,26 +349,18 @@ public class MaterialService implements Serializable {
             Object[] result = (Object[]) q6.getSingleResult();
             moleculeId = (int) result[0];
             molecule = (String) result[1];
-
         }
 
         Structure s = Structure.createInstanceFromDB(
-                me,
-                hazardInfos,
-                storageInfos,
-                new ArrayList(),
-                sE,
-                molecule,
-                moleculeId,
-                moleculeFormat);
-        s.setOwner(memberService.loadUserById(me.getOwner()));
+                me, sE, molecule, moleculeId, moleculeFormat);
         return s;
     }
 
     /**
      * Loads all indices of a material (indextype == 1)
+     *
      * @param materialid
-     * @return 
+     * @return
      */
     @SuppressWarnings("unchecked")
     public List<MaterialName> loadMaterialNamesById(int materialid) {
@@ -475,6 +457,9 @@ public class MaterialService implements Serializable {
         material.setNames(loadMaterialNamesById(material.getId()));
         material.setIndices(loadMaterialIndicesById(material.getId()));
         material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
+        material.setCreationTime(entity.getCtime());
+        material.setStorageInformation(loadStorageClassInformation(entity.getMaterialid()));
+        material.setHazards(loadHazardInformation(entity.getMaterialid()));
         return material;
     }
 
@@ -494,8 +479,6 @@ public class MaterialService implements Serializable {
                 composition.addComponent(loadMaterialById(mce.getId().getComponentid()));
             }
         }
-        composition.setCreationTime(entity.getCtime());
-        //TO DO: loadMaterialIndices
         return composition;
     }
 
@@ -713,7 +696,7 @@ public class MaterialService implements Serializable {
         }
     }
 
-    public Taxonomy saveTaxonomy(Taxonomy t) {
+    private Taxonomy saveTaxonomy(Taxonomy t) {
         this.em.persist(t.createEntity());
         for (Taxonomy th : t.getTaxHierachy()) {
             em.createNativeQuery(SQL_SAVE_EFFECTIVE_TAXONOMY)
@@ -725,15 +708,11 @@ public class MaterialService implements Serializable {
         return t;
     }
 
-    public Tissue saveTissue(Tissue t) {
+    private Tissue saveTissue(Tissue t) {
         TissueEntity entity = t.createEntity();
         this.em.persist(entity);
         t.setId(entity.getId());
         return t;
-    }
-
-    public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {
-        this.editedMaterialSaver = editedMaterialSaver;
     }
 
     /**
@@ -783,5 +762,20 @@ public class MaterialService implements Serializable {
     private EntityGraph createEntityGraph() {
         graphBuilder = new MaterialEntityGraphBuilder();
         return graphBuilder.buildEntityGraph(true);
+    }
+
+    public ACListService getAcListService() {
+        return aclService;
+    }
+
+    public MaterialEditSaver getEditedMaterialSaver() {
+        return editedMaterialSaver;
+    }
+
+    public EntityManager getEm() {
+        return em;
+    }
+     public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {
+        this.editedMaterialSaver = editedMaterialSaver;
     }
 }
