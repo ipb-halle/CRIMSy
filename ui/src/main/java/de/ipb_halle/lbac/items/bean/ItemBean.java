@@ -35,11 +35,8 @@ import de.ipb_halle.lbac.material.Material;
 
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectSearchConditionBuilder;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchRequestBuilder;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.Quality;
 import de.ipb_halle.lbac.util.Unit;
@@ -179,6 +176,22 @@ public class ItemBean implements Serializable {
     }
 
     /**
+     * This action is called when clicking the 'cancel' button in itemEdit.xhtml.
+     * It navigates the user depending on the {@code mode} state.
+     */
+    public void actionCancel() {
+        /*
+         * We tried to create a new item via the materials table, so we go back
+         * there.
+         */
+        if (mode == Mode.CREATE) {
+            navigator.navigate("material/materials");
+        } else {
+            navigator.navigate("item/items");
+        }
+    }
+
+    /**
      * Printing an item label makes sense only for persisted items.
      *
      * @return true if item id is not null
@@ -196,9 +209,16 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
+        /*
+         * This is double-safety: The commandButton is disabled in the UI when
+         * viewing the history.
+         */
+        if (mode == Mode.HISTORY) {
+            return;
+        }
+
         state.getEditedItem().setContainer(containerController.getContainer());
         if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
-            // TODO: what should apply if we are in history mode?
             if (isCreateMode()) {
                 saveNewItem();
             } else {
