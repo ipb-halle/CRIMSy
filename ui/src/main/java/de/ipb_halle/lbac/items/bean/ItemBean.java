@@ -95,7 +95,7 @@ public class ItemBean implements Serializable {
 
     private List<Project> projects = new ArrayList<>();
     private List<Container> containers = new ArrayList<>();
-    private List<Solvent> solvents = new ArrayList<>();
+    private List<Solvent> availableSolvents = new ArrayList<>();
     private List<String> purities = new ArrayList<>();
     private List<Unit> units = new ArrayList<>();
     private List<ContainerType> containerTypes = new ArrayList<>();
@@ -281,6 +281,7 @@ public class ItemBean implements Serializable {
         containerController = new ContainerController(this, i.getContainer());
         historyOperation = new HistoryOperation(state, containerController);
         customLabelValue = i.getLabel();
+        customLabel = customLabelValue != null;
         initData();
     }
 
@@ -290,7 +291,7 @@ public class ItemBean implements Serializable {
         containerTypes = containerService.loadContainerTypes();
         filterAndLocalizeContainerTypes();
         units = loadUnits();
-        solvents = loadAndI18nSolvents();
+        availableSolvents = loadAndI18nSolvents();
         purities = loadPurities();
         this.printBean.setLabelDataObject(state.getEditedItem());
         this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
@@ -313,6 +314,7 @@ public class ItemBean implements Serializable {
         directContainer = true;
         solved = false;
         containerController = new ContainerController(this, null);
+        customLabel = false;
         customLabelValue = "";
         initData();
     }
@@ -398,8 +400,8 @@ public class ItemBean implements Serializable {
         return units;
     }
 
-    public List<Solvent> getSolvents() {
-        return solvents;
+    public List<Solvent> getAvailableSolvents() {
+        return availableSolvents;
     }
 
     public List<String> getPurities() {

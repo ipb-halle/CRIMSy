@@ -202,7 +202,7 @@
                                             label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
                                             value="#{itemBean.state.editedItem.solvent}">
                                             <f:selectItems 
-                                                value="#{itemBean.getSolvents()}"
+                                                value="#{itemBean.availableSolvents}"
                                                 var="s"
                                                 itemLabel="#{s.getLocalizedName()}"/>
                                         </b:selectOneMenu>
