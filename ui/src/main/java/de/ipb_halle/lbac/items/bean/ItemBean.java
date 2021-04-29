@@ -96,9 +96,9 @@ public class ItemBean implements Serializable {
     private List<Project> projects = new ArrayList<>();
     private List<Container> containers = new ArrayList<>();
     private List<Solvent> availableSolvents = new ArrayList<>();
-    private List<String> purities = new ArrayList<>();
-    private List<Unit> units = new ArrayList<>();
-    private List<ContainerType> containerTypes = new ArrayList<>();
+    private List<String> availablePurities = new ArrayList<>();
+    private List<Unit> availableAmountUnits = new ArrayList<>();
+    private List<ContainerType> availableContainerTypes = new ArrayList<>();
 
     private boolean commercialMaterial;
     private Validator validator;
@@ -122,7 +122,11 @@ public class ItemBean implements Serializable {
     @PostConstruct
     public void init() {
         validator = new Validator(containerPositionService, labelService);
-
+        availableAmountUnits = loadUnits();
+        availableSolvents = loadAndI18nSolvents();
+        availablePurities = loadPurities();
+        availableContainerTypes = containerService.loadContainerTypes();
+        filterAndLocalizeContainerTypes();
     }
 
     public void actionApplyNextPositiveDifference() {
@@ -288,11 +292,6 @@ public class ItemBean implements Serializable {
     private void initData() {
         projects = loadReadableProjects(userBean.getCurrentAccount());
         containers = containerService.loadContainers(userBean.getCurrentAccount());
-        containerTypes = containerService.loadContainerTypes();
-        filterAndLocalizeContainerTypes();
-        units = loadUnits();
-        availableSolvents = loadAndI18nSolvents();
-        purities = loadPurities();
         this.printBean.setLabelDataObject(state.getEditedItem());
         this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
         this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer());
@@ -330,8 +329,8 @@ public class ItemBean implements Serializable {
         return containerPresenter;
     }
 
-    public List<ContainerType> getContainerTypes() {
-        return containerTypes;
+    public List<ContainerType> getAvailableContainerTypes() {
+        return availableContainerTypes;
     }
 
     public boolean isCommercialMaterial() {
@@ -396,16 +395,16 @@ public class ItemBean implements Serializable {
         this.containerName = containerName;
     }
 
-    public List<Unit> getUnits() {
-        return units;
+    public List<Unit> getAvailableAmountUnits() {
+        return availableAmountUnits;
     }
 
     public List<Solvent> getAvailableSolvents() {
         return availableSolvents;
     }
 
-    public List<String> getPurities() {
-        return purities;
+    public List<String> getAvailablePurities() {
+        return availablePurities;
     }
 
     public ItemState getState() {
@@ -450,12 +449,12 @@ public class ItemBean implements Serializable {
      * name
      */
     private void filterAndLocalizeContainerTypes() {
-        for (int i = containerTypes.size() - 1; i >= 0; i--) {
-            if (containerTypes.get(i).getRank() > 0) {
-                containerTypes.remove(i);
+        for (int i = availableContainerTypes.size() - 1; i >= 0; i--) {
+            if (availableContainerTypes.get(i).getRank() > 0) {
+                availableContainerTypes.remove(i);
             } else {
                 try {
-                    containerTypes.get(i).setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + containerTypes.get(i).getName(), null));
+                    availableContainerTypes.get(i).setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + availableContainerTypes.get(i).getName(), null));
                 } catch (Exception e) {
                     logger.error("Could not set localized containerTypeName");
                 }
