@@ -107,7 +107,7 @@ public class BiomaterialServiceTest extends TestBase {
         materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>());
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(owner, 0, 100);
          requestBuilder.addMaterialType(MaterialType.BIOMATERIAL);
-        SearchResult result = materialService.getReadableMaterials(requestBuilder.build());
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         List<BioMaterial> bioMaterials = result.getAllFoundObjects(BioMaterial.class, result.getNode());
         Assert.assertEquals(1, bioMaterials.size());
         BioMaterial bm = bioMaterials.get(0);
