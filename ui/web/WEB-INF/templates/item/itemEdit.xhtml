@@ -54,9 +54,6 @@
                                 <b:commandButton
                                     icon-awesome="fa-backward"
                                     disabled="#{itemBean.state.startingHistoryItem}"
-                                    ajax="true"
-                                    process="@this"
-                                    update="@form"
                                     action="#{itemBean.actionApplyNextNegativeDifference()}">
                                 </b:commandButton>
                             </b:column>
@@ -82,9 +79,6 @@
                                 <b:commandButton
                                     icon-awesome="fa-forward"
                                     disabled="#{itemBean.state.lastHistoryItem}"
-                                    ajax="true"
-                                    process="@this"
-                                    update="@form"
                                     action="#{itemBean.actionApplyNextPositiveDifference()}">
                                 </b:commandButton>
                             </b:column>
