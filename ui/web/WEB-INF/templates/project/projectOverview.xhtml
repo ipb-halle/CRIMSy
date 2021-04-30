@@ -48,7 +48,8 @@
                             paginated="false"
                             id="projectTableId"
                             value="#{projectBean.getReadableProjects()}"
-                            var="project">
+                            var="project"
+                            saveState="false">
                             <b:dataTableColumn
                                 label="#{msgs.project_overview_header_name}"
                                 value="#{project.name}">

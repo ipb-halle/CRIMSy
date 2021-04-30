@@ -29,7 +29,8 @@
         value="#{experimentBean.experiments}"
         var="experiment"
         styleClass="experimentsDataTable"
-        searching="false">
+        searching="false"
+        saveState="false">
     <b:dataTableColumn
         label="#{experimentBean.templateMode ? msgs.expTemplates : msgs.expExperiments}">
             <p:outputPanel  styleClass="expListEntry #{experimentBean.getStyleClassOfLink(experiment)}">

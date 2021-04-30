@@ -39,7 +39,8 @@
                                 styleClass="#{action}"
                                 paginated="false"
                                 value="#{projectEditBean.getACEntriesForDetailRole(action)}"
-                                var="acEntry">
+                                var="acEntry"
+                                saveState="false">
                                 <b:dataTableColumn
                                     styleClass="projectEdit_aclTable_firstColumn"
                                     value="#{acEntry.getMember().getName()}"
@@ -93,7 +94,8 @@
                                 styleClass="possibleGroupsTable"
                                 paginated="false"
                                 value="#{projectEditBean.getAddableGroupsForRoleTemplates(action)}"
-                                var="group">
+                                var="group"
+                                saveState="false">
 
                                 <b:dataTableColumn
                                     styleClass="projectEdit_aclTable_groupsToAdd_firstColumn"

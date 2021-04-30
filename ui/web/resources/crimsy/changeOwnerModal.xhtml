@@ -44,7 +44,8 @@
             <center>
                 <b:dataTable
                     var="user"
-                    value="#{cc.attrs.bean.getLocalUsers()}">
+                    value="#{cc.attrs.bean.getLocalUsers()}"
+                    saveState="false">
                     <b:dataTableColumn
                         value="#{user.getName()}"
                         label="#{msgs.ownerDialog_tableHeader_name}"/>

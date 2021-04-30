@@ -168,7 +168,8 @@
                                          customOptions="autoWidth:true"
                                          fixedHeader="true"
                                          var="document"
-                                         csv="false">
+                                         csv="false"
+                                         saveState="false">
                                 <b:dataTableColumn label="#{msgs.searchMgr_resulttable_document}">
                                     <b:navLink href="#{document.getLink()}" value="#{document.originalName}"/>
                                 </b:dataTableColumn>
