@@ -43,6 +43,7 @@ import de.ipb_halle.lbac.util.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -126,7 +127,7 @@ public class ItemBean implements Serializable {
         availableSolvents = loadAndI18nSolvents();
         availablePurities = loadPurities();
         availableContainerTypes = containerService.loadContainerTypes();
-        filterAndLocalizeContainerTypes();
+        filterLocalizeAndSortAvailableContainerTypes();
     }
 
     public void actionApplyNextPositiveDifference() {
@@ -444,21 +445,28 @@ public class ItemBean implements Serializable {
     }
 
     /**
-     * Removes all container with a rank greater than zero and set its localized
-     * name
+     * Removes all containers with a rank greater than zero in the list of
+     * available container types, sets the localized name for the remaining
+     * containers and sorts the list.
      */
-    private void filterAndLocalizeContainerTypes() {
+    private void filterLocalizeAndSortAvailableContainerTypes() {
         for (int i = availableContainerTypes.size() - 1; i >= 0; i--) {
-            if (availableContainerTypes.get(i).getRank() > 0) {
+            ContainerType type = availableContainerTypes.get(i);
+            if (type.getRank() > 0) {
                 availableContainerTypes.remove(i);
             } else {
-                try {
-                    availableContainerTypes.get(i).setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + availableContainerTypes.get(i).getName(), null));
-                } catch (Exception e) {
-                    logger.error("Could not set localized containerTypeName");
+                type.setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + type.getName(), null));
+
+                if ((type.getLocalizedName() == null) || type.getLocalizedName().isEmpty()) {
+                    logger.error("Could not set localized containerTypeName for " + type.getName());
+
+                    // fallback to name of the entity or sorting will fail with a NPE
+                    type.setLocalizedName(type.getName());
                 }
             }
         }
+
+        availableContainerTypes.sort(Comparator.comparing(ContainerType::getLocalizedName));
     }
 
     public boolean isUnitEditable() {
