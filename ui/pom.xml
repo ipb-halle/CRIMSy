@@ -41,6 +41,7 @@
     </organization>
 
     <properties>
+        <hibernate.version>5.3.20.Final</hibernate.version>
         <tomee.classifier>plus</tomee.classifier>
         <tomee.servlet-engine>7.0.81</tomee.servlet-engine>
         <servlet.version>3.1.0</servlet.version>
@@ -170,7 +171,7 @@
                     <dependency>
                         <groupId>org.hibernate</groupId>
                         <artifactId>hibernate-jpamodelgen</artifactId>
-                        <version>5.3.6.Final</version>
+                        <version>${hibernate.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -336,7 +337,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>5.3.6.Final</version>
+            <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
         
@@ -446,7 +447,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>5.3.6.Final</version>
+            <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -454,7 +455,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.3.6.Final</version>
+            <version>${hibernate.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -485,7 +486,7 @@
         <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-52</artifactId>
-            <version>2.1.1</version>
+            <version>2.10.4</version>
         </dependency>
         
         
