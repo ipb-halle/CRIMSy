@@ -455,7 +455,11 @@ public class ItemBean implements Serializable {
             if (type.getRank() > 0) {
                 availableContainerTypes.remove(i);
             } else {
-                type.setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + type.getName(), null));
+                try {
+                    type.setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + type.getName(), null));
+                } catch (Exception e) {
+                    logger.error("Could not set localized containerTypeName for " + type.getName());
+                }
 
                 if ((type.getLocalizedName() == null) || type.getLocalizedName().isEmpty()) {
                     logger.error("Could not set localized containerTypeName for " + type.getName());
