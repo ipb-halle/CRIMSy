@@ -61,6 +61,8 @@ public class ContainerControllerTest {
         Assert.assertEquals("possible-place", controller.getStyleOfContainerPlace(0, 0));
         Assert.assertEquals("own-place", controller.getStyleOfContainerPlace(1, 0));
         Assert.assertEquals("occupied-place", controller.getStyleOfContainerPlace(0, 1));
+         bean.mode=ItemBean.Mode.HISTORY;
+         Assert.assertEquals("possible-place", controller.getStyleOfContainerPlace(0, 0));
     }
     
     @Test
@@ -83,9 +85,9 @@ public class ContainerControllerTest {
     
     @Test
     public void test004_isContainerPlaceDisabled() {
-        Assert.assertFalse(controller.isContainerPlaceDisabled(0, 0));
+        Assert.assertFalse(controller.isContainerPlaceDisabled(0, 0)); //empty slot
         Assert.assertFalse(controller.isContainerPlaceDisabled(1, 0)); //own item
-        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 1));
+        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 1));  // another item
         bean.mode=ItemBean.Mode.HISTORY;
         Assert.assertTrue(controller.isContainerPlaceDisabled(0, 0));
     }

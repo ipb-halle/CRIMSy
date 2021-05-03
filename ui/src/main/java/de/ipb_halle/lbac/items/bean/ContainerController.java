@@ -214,9 +214,8 @@ public class ContainerController {
 
     /**
      * Checks if the checkbox for putting a item at a place (x,y) is disabled.
-     * It is disabled if:
-     * (1) itembean is in history mode
-     * (2) another item blocks the place
+     * It is disabled if: (1) itembean is in history mode (2) another item
+     * blocks the place
      *
      * @param x
      * @param y
@@ -226,14 +225,10 @@ public class ContainerController {
         if (itemBean.isHistoryMode()) {
             return true;
         }
-        if (container.getItemAtPos(x, y) == null) {
+        if(container.getItemAtPos(x, y)==null){
             return false;
-        } else if (itemBean.getState().getOriginalItem() == null) {
-            return false;
-
-        } else {
-            return !Objects.equals(container.getItemAtPos(x, y).getId(), itemBean.getState().getOriginalItem().getId());
         }
+        return !isOriginalItem(container.getItemAtPos(x, y));
     }
 
     public void actionClickCheckBox(int x, int y) {
@@ -250,11 +245,11 @@ public class ContainerController {
         return messagePresenter.presentMessage("container_slot_free_place");
     }
 
-    public String getStyleOfContainerPlace(int x, int y) {
+    public String getStyleOfContainerPlace(int y, int x) {
         try {
-            if (container.getItemAtPos(x, y) == null) {
+            if (container.getItemAtPos(y, x) == null) {
                 return "possible-place";
-            } else if (itemBean.getState().getOriginalItem() != null && Objects.equals(container.getItemAtPos(x, y).getId(), itemBean.getState().getOriginalItem().getId())) {
+            } else if (isOriginalItem(container.getItemAtPos(y, x))) {
                 return "own-place";
             } else {
                 return "occupied-place";
@@ -262,6 +257,20 @@ public class ContainerController {
         } catch (Exception e) {
             return "no class set due error";
         }
+    }
+
+    /**
+     * Checks if the passed item is the original item. If the original item is
+     * null, return false
+     *
+     * @param item
+     * @return
+     */
+    private boolean isOriginalItem(Item item) {
+        if (itemBean.getState().getOriginalItem() == null || item == null) {
+            return false;
+        }
+        return Objects.equals(item.getId(), itemBean.getState().getOriginalItem().getId());
     }
 
     public void setItemAtPosition(int y, int x) {
