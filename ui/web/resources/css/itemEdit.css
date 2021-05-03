@@ -75,7 +75,7 @@
     box-shadow: none;
 }
 
-.checkbox-round >.ui-state-disabled{
+.occupied-place >div >.ui-chkbox-box{
     background: rgba(200, 0, 0,0.5);
     border-radius: 16px;
 }
