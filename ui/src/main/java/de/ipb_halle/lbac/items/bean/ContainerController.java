@@ -226,7 +226,7 @@ public class ContainerController {
         if (itemBean.isHistoryMode()) {
             return true;
         }
-        if(container.getItemAtPos(x, y)==null){
+        if (container.getItemAtPos(x, y) == null) {
             return false;
         }
         return !isOriginalItem(container.getItemAtPos(x, y));
@@ -279,7 +279,9 @@ public class ContainerController {
     }
 
     public void removeItemFromPosition(int y, int x) {
-        itemPositions[x][y] = false;
+        if (itemPositions != null) {
+            itemPositions[x][y] = false;
+        }
     }
 
     public Container getContainer() {
