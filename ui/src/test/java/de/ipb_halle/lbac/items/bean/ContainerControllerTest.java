@@ -86,6 +86,8 @@ public class ContainerControllerTest {
         Assert.assertFalse(controller.isContainerPlaceDisabled(0, 0));
         Assert.assertFalse(controller.isContainerPlaceDisabled(1, 0)); //own item
         Assert.assertTrue(controller.isContainerPlaceDisabled(0, 1));
+        bean.mode=ItemBean.Mode.HISTORY;
+        Assert.assertTrue(controller.isContainerPlaceDisabled(0, 0));
     }
     
     @Test

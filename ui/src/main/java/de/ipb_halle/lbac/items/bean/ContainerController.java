@@ -213,13 +213,19 @@ public class ContainerController {
     }
 
     /**
-     * Checks if another item is present at place x/y.
+     * Checks if the checkbox for putting a item at a place (x,y) is disabled.
+     * It is disabled if:
+     * (1) itembean is in history mode
+     * (2) another item blocks the place
      *
      * @param x
      * @param y
      * @return true if another item blocks the slot
      */
     public boolean isContainerPlaceDisabled(int x, int y) {
+        if (itemBean.isHistoryMode()) {
+            return true;
+        }
         if (container.getItemAtPos(x, y) == null) {
             return false;
         } else if (itemBean.getState().getOriginalItem() == null) {
