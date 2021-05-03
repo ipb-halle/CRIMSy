@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
@@ -121,6 +122,7 @@ public class ItemBeanTest extends TestBase {
         itemBean.setContainerPositionService(containerPositionService);
         itemBean.setNavigator(new NavigatorMock(userBean));
         itemBean.setUserBean(userBean);
+        itemBean.setMessagePresenter(new MessagePresenterMock());
         itemBean.init();
 
     }

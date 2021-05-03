@@ -31,8 +31,9 @@ import de.ipb_halle.lbac.container.service.ContainerService;
 
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.label.LabelService;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.Material;
-
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
@@ -62,7 +63,6 @@ import org.primefaces.event.SelectEvent;
 @Named
 public class ItemBean implements Serializable {
 
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private ItemState state;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private HistoryOperation historyOperation;
@@ -115,6 +115,8 @@ public class ItemBean implements Serializable {
     protected Mode mode;
     private String customLabelValue;
     private ContainerPresenter containerPresenter;
+
+    protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -455,11 +457,7 @@ public class ItemBean implements Serializable {
             if (type.getRank() > 0) {
                 availableContainerTypes.remove(i);
             } else {
-                try {
-                    type.setLocalizedName(Messages.getString(MESSAGE_BUNDLE, "container_type_" + type.getName(), null));
-                } catch (Exception e) {
-                    logger.error("Could not set localized containerTypeName for " + type.getName());
-                }
+                type.setLocalizedName(messagePresenter.presentMessage("container_type_" + type.getName()));
 
                 if ((type.getLocalizedName() == null) || type.getLocalizedName().isEmpty()) {
                     logger.error("Could not set localized containerTypeName for " + type.getName());
