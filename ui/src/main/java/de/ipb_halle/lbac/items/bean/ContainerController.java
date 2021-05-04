@@ -278,9 +278,9 @@ public class ContainerController {
         itemPositions[x][y] = true;
     }
 
-    public void removeItemFromPosition(int y, int x) {
+    public void removeItemFromPosition() {
         if (itemPositions != null) {
-            itemPositions[x][y] = false;
+            itemPositions=new boolean[itemPositions.length][itemPositions[0].length];
         }
     }
 
