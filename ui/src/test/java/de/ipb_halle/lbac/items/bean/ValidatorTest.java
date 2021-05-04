@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.items.bean;
 import de.ipb_halle.lbac.container.mock.ErrorMessagePresenterMock;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.mocks.ContainerPositionServiceMock;
+import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
 import de.ipb_halle.lbac.items.mocks.LabelServiceMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,7 +35,7 @@ public class ValidatorTest {
     private final ContainerPositionServiceMock containerServiceMock = new ContainerPositionServiceMock();
     private final LabelServiceMock labelServiceMock = new LabelServiceMock();
     private final Item item = new Item();
-    private final ContainerController containerController = new ContainerController(null, null);
+    private final ContainerController containerController = new ContainerController(new ItemBeanMock(), null);
     private final String customLabel = "customLabel";
     private boolean isCustomLabel;
     private Validator validator;

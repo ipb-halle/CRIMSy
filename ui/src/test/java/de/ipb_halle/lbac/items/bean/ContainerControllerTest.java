@@ -79,7 +79,7 @@ public class ContainerControllerTest {
         controller.setItemAtPosition(0, 0);
         controller.actionClickCheckBox(0, 0);
         Assert.assertTrue(controller.getItemPositions()[0][0]);
-        controller.removeItemFromPosition(0, 0);
+        controller.removeItemFromPosition();
         Assert.assertFalse(controller.getItemPositions()[0][0]);
     }
     
