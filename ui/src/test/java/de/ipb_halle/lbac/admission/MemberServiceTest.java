@@ -266,7 +266,7 @@ public class MemberServiceTest extends TestBase {
         String name = "test008_name";
         String pw = "test008_pw";
         String phone = "test008_phone";
-        String shortCut = "test008_shortcut";
+        String shortCut = "TEST008_SHORTCUT";
         User user = new User();
         user.setEmail(email);
         user.setLogin(logIn);
@@ -289,10 +289,32 @@ public class MemberServiceTest extends TestBase {
         Assert.assertEquals(shortCut, loadedUser.getShortcut());
 
         loadedUser.setId(null);
+        // both users have the same shortcut
         Assert.assertThrows(
                 EJBException.class,
                 () -> {
                     memberService.save(loadedUser);
+                }
+        );
+
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user.getId());
+    }
+
+    @Test
+    public void test009_uppercaseShortcut() {
+        User user = new User();
+        user.setNode(nodeService.getLocalNode());
+        user.setSubSystemType(AdmissionSubSystemType.LOCAL);
+
+        user.setShortcut("ABC");
+        user = memberService.save(user);
+
+        user.setShortcut("abc");
+        User u = user;
+        Assert.assertThrows(
+                EJBException.class,
+                () -> {
+                    memberService.save(u);
                 }
         );
 
