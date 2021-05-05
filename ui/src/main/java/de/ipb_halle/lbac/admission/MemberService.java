@@ -359,6 +359,9 @@ public class MemberService implements Serializable {
      */
     public User save(User u) {
         try {
+            if(u.getShortcut()!=null){
+                u.setShortcut(u.getShortcut().toUpperCase());
+            }
             UserEntity ue = u.createEntity();
             ue = em.merge(ue);
             if (ue != null) {

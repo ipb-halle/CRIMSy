@@ -301,7 +301,7 @@ public class MemberServiceTest extends TestBase {
     }
 
     @Test
-    public void test009_uppercaseShortcut() {
+    public void test009_duplicateShortcut() {
         User user = new User();
         user.setNode(nodeService.getLocalNode());
         user.setSubSystemType(AdmissionSubSystemType.LOCAL);
@@ -309,12 +309,15 @@ public class MemberServiceTest extends TestBase {
         user.setShortcut("ABC");
         user = memberService.save(user);
 
-        user.setShortcut("abc");
-        User u = user;
+        User anotherUser = new User();
+        anotherUser.setNode(nodeService.getLocalNode());
+        anotherUser.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        anotherUser.setShortcut("abc");
+
         Assert.assertThrows(
                 EJBException.class,
                 () -> {
-                    memberService.save(u);
+                    memberService.save(anotherUser);
                 }
         );
 
