@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
-import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.Container;

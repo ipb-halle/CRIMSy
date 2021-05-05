@@ -47,6 +47,8 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
@@ -128,6 +130,7 @@ public class MaterialBean implements Serializable {
 
     private TaxonomySelectionController taxonomyController;
     private TissueController tissueController;
+    private MessagePresenter messagePresenter=JsfMessagePresenter.getInstance();
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -377,7 +380,7 @@ public class MaterialBean implements Serializable {
             overviewBean.getSearchController().actionStartMaterialSearch();
             navigator.navigate("/material/materials");
         } catch (Exception e) {
-            UIMessage.info(MESSAGE_BUNDLE, "materialCreation_creation_error");
+            messagePresenter.error("materialCreation_creation_error",getErrorMessages());
         }
     }
 

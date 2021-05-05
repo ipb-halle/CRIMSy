@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
+import de.ipb_halle.lbac.container.Container;
+import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ErrorMessagePresenter;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.items.Item;
@@ -58,7 +60,17 @@ public class Validator {
             messagePresenter.presentErrorMessage("itemEdit_label_unavailable");
             valide = false;
         }
+        if (containerWithPlaces(containerController.getContainer())) {
+            if(containerController.resolveItemPositions().isEmpty()){
+                messagePresenter.presentErrorMessage("itemEdit_item_not_placed");
+                valide = false;
+            }
+        }
         return valide;
+    }
+
+    private boolean containerWithPlaces(Container c) {
+        return c != null && c.getRows() > 0;
     }
 
     public void setMessagePresenter(ErrorMessagePresenter messagePresenter) {
