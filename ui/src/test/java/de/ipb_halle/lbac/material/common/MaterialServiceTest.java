@@ -55,6 +55,7 @@ import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.service.FileService;
@@ -119,9 +120,8 @@ public class MaterialServiceTest extends TestBase {
     public void test001_saveStructure() {
         // Initialisieng the userbean for ownership of material
         UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        instance.setUserBean(userBean);
-
+        userBean.setCurrentAccount(publicUser);
+      
         //Preparing project and material
         Project p = creationTools.createProject();
         Structure m = creationTools.createStructure(p);
@@ -130,7 +130,7 @@ public class MaterialServiceTest extends TestBase {
         m = calc.calculate(m);
         Integer idOfMatGeneralRights = p.getUserGroups().getId();
 
-        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates());
+        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates(),publicUser);
 
         String ownerId = userBean.getCurrentAccount().getId().toString();
         List materials = entityManagerService.doSqlQuery(
@@ -231,7 +231,7 @@ public class MaterialServiceTest extends TestBase {
 
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-        instance.setUserBean(userBean);
+       
 
         Structure structure = creationTools.createStructure(p);
 
@@ -253,7 +253,7 @@ public class MaterialServiceTest extends TestBase {
         structure.setMolecule(new Molecule("molecule-model", 0));
 
         //Save the material to the db
-        instance.saveMaterialToDB(structure, p.getUserGroups().getId(), p.getDetailTemplates());
+        instance.saveMaterialToDB(structure, p.getUserGroups().getId(), p.getDetailTemplates(),publicUser);
 
         //Create a second material
         Structure editedMaterial = (Structure) structure.copyMaterial();
@@ -343,7 +343,7 @@ public class MaterialServiceTest extends TestBase {
         User user = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(user);
-        instance.setUserBean(userBean);
+       
 
         Structure m = creationTools.createStructure(p);
         m.setHazards(new HazardInformation());
@@ -351,7 +351,7 @@ public class MaterialServiceTest extends TestBase {
         m.getHazards().setAttention(true);
         m.getHazards().setHazardStatements("H-Statement before Edit");
 
-        instance.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates());
+        instance.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates(),publicUser);
 
         //Create a second material
         Structure editedMaterial = (Structure) m.copyMaterial();
@@ -400,12 +400,11 @@ public class MaterialServiceTest extends TestBase {
     public void test004_getSimilarMaterialNames() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        instance.setUserBean(userBean);
-
+      
         Project p = creationTools.createProject();
         Structure m = creationTools.createStructure(p);
         Integer idOfMatGeneralRights = p.getUserGroups().getId();
-        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates());
+        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates(),publicUser);
 
         List<String> nameSuggestions = instance.getSimilarMaterialNames("Test-Str", userBean.getCurrentAccount());
         Assert.assertEquals(2, nameSuggestions.size());
@@ -417,8 +416,7 @@ public class MaterialServiceTest extends TestBase {
     public void test005_saveTaxonomy() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        instance.setUserBean(userBean);
-
+     
         creationTools = new CreationTools("", "", "", memberService, projectService);
         Project p = creationTools.createProject();
 
@@ -430,22 +428,22 @@ public class MaterialServiceTest extends TestBase {
 
         Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
         t.setLevel(levels.get(0));
-        instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
+        instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>(),publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("red rose", "en", 1));
-        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), publicUser, new Date());
         t2.getTaxHierachy().add(t);
         t2.setLevel(levels.get(1));
-        instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>());
+        instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>(),publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("small red rose", "en", 1));
-        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(),publicUser, new Date());
         t3.getTaxHierachy().add(t);
         t3.getTaxHierachy().add(t2);
         t3.setLevel(levels.get(2));
-        instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>());
+        instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>(),publicUser);
 
         List<Integer> results = (List) entityManagerService.doSqlQuery("SELECT parentid FROM effective_taxonomy WHERE taxoid=0");
         Assert.assertTrue(results.isEmpty());
@@ -468,7 +466,6 @@ public class MaterialServiceTest extends TestBase {
         userBean.setCurrentAccount(testUser);
         membershipService.addMembership(memberService.loadGroupById(GlobalAdmissionContext.PUBLIC_GROUP_ID), testUser);
 
-        instance.setUserBean(userBean);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Project project2 = creationTools.createAndSaveProject("administration-test-project");
@@ -480,7 +477,7 @@ public class MaterialServiceTest extends TestBase {
         si.setStorageClass(si.getPossibleStorageClassById(1));
         struture1.setStorageInformation(si);
 
-        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),testUser);
 
         //Create a structure which is not readable
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
@@ -491,7 +488,7 @@ public class MaterialServiceTest extends TestBase {
         structure2.getNames().clear();
         structure2.getNames().add(new MaterialName("structure2", "de", 1));
         structure2.getIndices().clear();
-        instance.saveMaterialToDB(structure2, noRightsAcl.getId(), project1.getDetailTemplates());
+        instance.saveMaterialToDB(structure2, noRightsAcl.getId(), project1.getDetailTemplates(),publicUser);
         userBean.setCurrentAccount(testUser);
         //Create a biomaterial
 
@@ -606,6 +603,20 @@ public class MaterialServiceTest extends TestBase {
         structures = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
         Assert.assertEquals(1, instance.loadMaterialAmount(requestBuilder.build()));
         Assert.assertEquals(1, structures.size());
+    }
+
+    @Test
+    public void test009_saveConsumable() {
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(publicUser);
+        creationTools = new CreationTools("", "", "", memberService, projectService);
+        Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
+        
+        List<MaterialName> names=new ArrayList<>();
+        names.add(new MaterialName("test009_saveConsumable_consumable_name_de", "de", 1));
+        names.add(new MaterialName("test009_saveConsumable_consumable_name_en", "en", 1));
+        Consumable co=new Consumable(0, names, project1.getId(), new HazardInformation(), new StorageClassInformation());
+  
     }
 
     @Test
