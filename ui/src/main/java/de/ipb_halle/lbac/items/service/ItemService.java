@@ -155,7 +155,7 @@ public class ItemService {
         EntityGraph itemGraph = graphBuilder.buildEntityGraph(true);
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 itemGraph,
-                new Attribute("items", AttributeType.BARCODE));
+                new Attribute("items", AttributeType.ID));
 
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(itemGraph, "items");
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
@@ -217,6 +217,7 @@ public class ItemService {
 
     public Item loadItemByIdWithoutContainer(int id) {
         ItemEntity entity = this.em.find(ItemEntity.class, id);
+
         return new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
                 null,
@@ -239,16 +240,16 @@ public class ItemService {
         String solventName = (String) q.getSingleResult();
         return new Solvent(id, solventName, solventName);
     }
-    
-    public List<Solvent> loadSolvents(){
-        List<Solvent> solvents=new ArrayList<>();
+
+    public List<Solvent> loadSolvents() {
+        List<Solvent> solvents = new ArrayList<>();
         Query q = em.createNativeQuery("SELECT id,name FROM solvents");
-        for(Object[] o:(List<Object[]>)q.getResultList()){
-            int id=(int)o[0];
-            String name=(String)o[1];
+        for (Object[] o : (List<Object[]>) q.getResultList()) {
+            int id = (int) o[0];
+            String name = (String) o[1];
             solvents.add(new Solvent(id, name, name));
         }
-        
+
         return solvents;
     }
 

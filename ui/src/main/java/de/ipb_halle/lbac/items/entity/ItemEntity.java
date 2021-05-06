@@ -40,6 +40,7 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @AttributeTag(type = AttributeType.ID)
     @Id
     private Integer id;
 
