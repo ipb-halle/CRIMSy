@@ -70,7 +70,6 @@ public class MaterialOverviewBeanTest extends TestBase {
     User customUser;
     ACList acl;
     Material material;
-    UserBeanMock userBean;
     Project project;
 
     @Inject
@@ -90,16 +89,11 @@ public class MaterialOverviewBeanTest extends TestBase {
         project.setACList(acl);
         projectService.saveProjectToDb(project);
 
-        userBean = new UserBeanMock();
-        userBean.setCurrentAccount(publicUser);
-
         material = creationTools.createStructure(project);
         Structure s = (Structure) material;
         s.getMolecule().setStructureModel(null);
         material.setOwner(publicUser);
-        materialService.setUserBean(userBean);
-
-        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>());
+        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
     }
 
     @After
@@ -122,7 +116,7 @@ public class MaterialOverviewBeanTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialOverviewBeanTest.war")
-                .addClass(IndexService.class);
+                        .addClass(IndexService.class);
         deployment = UserBeanDeployment.add(deployment);
         deployment = ItemDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);

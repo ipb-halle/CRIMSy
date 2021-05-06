@@ -71,9 +71,7 @@ public class TissueServiceTest extends TestBase {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-
         ownerid = owner.getId();
-        materialService.setUserBean(userBean);
         project = creationTools.createProject();
     }
 
@@ -89,27 +87,27 @@ public class TissueServiceTest extends TestBase {
         }
         Taxonomy taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(3);
         Tissue tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("Hyphen", "de", 1));
         names.add(new MaterialName("flocci, hyphae", "la", 2));
         taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(1);
         tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("Blüte", "de", 1));
        
         Taxonomy seerose = taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(11);
         tissue = new Tissue(100, names, seerose);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("Stützrippe", "de", 1));
         taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(18);
         tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
 
         List<Tissue> loadedTissues = tissueService.loadTissues();
         Assert.assertEquals(4, loadedTissues.size());

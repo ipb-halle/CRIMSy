@@ -102,9 +102,8 @@ public class MaterialBeanTest extends TestBase {
         Structure s = (Structure) material;
         s.getMolecule().setStructureModel(null);
         material.setOwner(publicUser);
-        materialService.setUserBean(userBean);
 
-        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>());
+        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
 
         instance.setMaterialIndexBean(new MaterialIndexBean());
         instance.setMaterialNameBean(new MaterialNameBean());

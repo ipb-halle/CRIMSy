@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
@@ -70,27 +71,23 @@ public class MaterialCreationSaverTest extends TestBase {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
     }
+
     @After
-    public void after(){
+    public void after() {
         cleanItemsFromDb();
-        cleanMaterialsFromDB();        
+        cleanMaterialsFromDB();
     }
 
     @Test
     public void test001_saveNewStructure() {
-
         MaterialNameBean nameBean = new MaterialNameBean();
         MaterialCreationSaver saver = new MaterialCreationSaver(nameBean, materialService);
-        UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        materialService.setUserBean(userBean);
         Project p = creationTools.createProject();
-
         StructureInformation structureInfos = new StructureInformation();
         StorageClassInformation sci = new StorageClassInformation();
         sci.setRemarks("test-remark");
         //sci.setStorageClass(storageClass);
-        saver.saveNewStructure(true, structureInfos, p, new HazardInformation(), sci, new ArrayList<>());
+        saver.saveNewStructure(true, structureInfos, p, new HazardInformation(), sci, new ArrayList<>(), publicUser);
 
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());
@@ -106,19 +103,17 @@ public class MaterialCreationSaverTest extends TestBase {
         MaterialNameBean nameBean = new MaterialNameBean();
         MaterialCreationSaver saver = new MaterialCreationSaver(nameBean, materialService);
         UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        materialService.setUserBean(userBean);
-        Project p = creationTools.createProject();
+        userBean.setCurrentAccount(publicUser);
        
+        Project p = creationTools.createProject();
         StorageClassInformation sci = new StorageClassInformation();
-        
-        saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList());
+        saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList(),publicUser);
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());
-        
-        MaterialSearchRequestBuilder b=new MaterialSearchRequestBuilder(userBean.getCurrentAccount(),0,25);
+
+        MaterialSearchRequestBuilder b = new MaterialSearchRequestBuilder(userBean.getCurrentAccount(), 0, 25);
         b.addMaterialType(MaterialType.CONSUMABLE);
-        List<Consumable> c=materialService.getReadableMaterials(b.build()).getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
+        List<Consumable> c = materialService.getReadableMaterials(b.build()).getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
         c.get(0);
     }
 

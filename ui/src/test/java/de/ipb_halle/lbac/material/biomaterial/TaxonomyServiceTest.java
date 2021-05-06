@@ -73,7 +73,6 @@ public class TaxonomyServiceTest extends TestBase {
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
         ownerid = owner.getId();
-        materialService.setUserBean(userBean);
     }
 
     @Test

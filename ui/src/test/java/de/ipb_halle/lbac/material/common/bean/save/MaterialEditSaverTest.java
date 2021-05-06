@@ -92,8 +92,6 @@ public class MaterialEditSaverTest extends TestBase {
     String precautionaryStatement = "PrecautionaryStatement - Text";
     String storageClassRemark = "storageClassRemark";
 
-    UserBeanMock userBean = new UserBeanMock();
-
     @Before
     public void init() {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
@@ -107,8 +105,8 @@ public class MaterialEditSaverTest extends TestBase {
         projectService.saveProjectToDb(p);
         mOld = creationTools.createEmptyStructure(p.getId());
         mOld.getStorageInformation().setStorageClass(new StorageClass(1, "storageClass-1"));
-        userBean.setCurrentAccount(u);
-        materialService.setUserBean(userBean);
+      
+      
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
     }
 
@@ -126,7 +124,7 @@ public class MaterialEditSaverTest extends TestBase {
         mOld.getStorageInformation().setLightSensitive(true);
         mOld.getStorageInformation().setKeepCool(true);
 
-        materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>());
+        materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>(),publicUser);
         mNew = mOld.copyMaterial();
         mNew.getStorageInformation().setStorageClass(new StorageClass(2, "storageClass-2"));
         mNew.getStorageInformation().setRemarks("new storage remarks");
@@ -168,7 +166,7 @@ public class MaterialEditSaverTest extends TestBase {
     public void test002_saveStorageConditionsDiffsWithoutStorageClassDiffs() throws Exception {
         mOld.getStorageInformation().setAcidSensitive(true);
         mOld.getStorageInformation().setKeepCool(true);
-        materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>());
+        materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>(), publicUser);
         mNew = mOld.copyMaterial();
         mNew.getStorageInformation().setKeepCool(false);
         mNew.getStorageInformation().setLightSensitive(true);
