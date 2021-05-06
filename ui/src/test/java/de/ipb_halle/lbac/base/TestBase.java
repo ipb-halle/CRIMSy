@@ -128,6 +128,7 @@ public class TestBase implements Serializable {
     protected GlobalAdmissionContext context;
 
     protected ACList acListReadable, acListNonReadable;
+    protected User publicUser;
 
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
@@ -174,6 +175,7 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM files");
 
         cleanExperimentsFromDB();
+        publicUser=memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
     protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {
