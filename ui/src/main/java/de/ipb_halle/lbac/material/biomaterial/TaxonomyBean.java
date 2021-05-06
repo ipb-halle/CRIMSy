@@ -94,7 +94,7 @@ public class TaxonomyBean implements Serializable {
         currentUser = evt.getCurrentAccount();
         levelController.setLevels(taxonomyService.loadTaxonomyLevel());
         levelController.setSelectedLevel(levelController.getRootLevel());
-        
+
         treeController.initialise();
         selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
         initHistoryDate();
@@ -273,7 +273,11 @@ public class TaxonomyBean implements Serializable {
             taxonomyToCreate.getTaxHierachy().add(parent);
             taxonomyToCreate.getTaxHierachy().addAll(parent.getTaxHierachy());
         }
-        materialService.saveMaterialToDB(taxonomyToCreate, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(
+                taxonomyToCreate,
+                GlobalAdmissionContext.getPublicReadACL().getId(),
+                new HashMap<>(),
+                currentUser);
         return taxonomyToCreate;
     }
 

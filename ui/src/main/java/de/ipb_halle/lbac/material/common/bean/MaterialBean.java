@@ -130,7 +130,7 @@ public class MaterialBean implements Serializable {
 
     private TaxonomySelectionController taxonomyController;
     private TissueController tissueController;
-    private MessagePresenter messagePresenter=JsfMessagePresenter.getInstance();
+    private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -203,7 +203,7 @@ public class MaterialBean implements Serializable {
                     structureInfos,
                     storageClassInformation,
                     taxonomyController);
-            
+
         } catch (Exception e) {
             logger.info("Error in Line " + e.getStackTrace()[0].getLineNumber());
             logger.error(e);
@@ -295,9 +295,9 @@ public class MaterialBean implements Serializable {
                         materialEditState.getCurrentProject(),
                         hazards,
                         storageClassInformation,
-                        materialIndexBean.getIndices());
-            }
-            else if (currentMaterialType == MaterialType.BIOMATERIAL) {
+                        materialIndexBean.getIndices(),
+                        userBean.getCurrentAccount());
+            } else if (currentMaterialType == MaterialType.BIOMATERIAL) {
                 Taxonomy t = (Taxonomy) taxonomyController.getSelectedTaxonomy().getData();
                 creationSaver.saveNewBioMaterial(
                         materialEditState.getCurrentProject(),
@@ -305,11 +305,16 @@ public class MaterialBean implements Serializable {
                         t,
                         taxonomyController.getSelectedTissue(),
                         hazards,
-                        storageClassInformation);
-            }else if (currentMaterialType == MaterialType.CONSUMABLE) {
-                  creationSaver.saveConsumable( materialEditState.getCurrentProject(), hazards, storageClassInformation,  materialIndexBean.getIndices());
+                        storageClassInformation,
+                        userBean.getCurrentAccount());
+            } else if (currentMaterialType == MaterialType.CONSUMABLE) {
+                creationSaver.saveConsumable(
+                        materialEditState.getCurrentProject(),
+                        hazards, storageClassInformation,
+                        materialIndexBean.getIndices(),
+                        userBean.getCurrentAccount());
             }
-        }else{
+        } else {
             throw new Exception("Material not valide");
         }
     }
@@ -380,7 +385,7 @@ public class MaterialBean implements Serializable {
             overviewBean.getSearchController().actionStartMaterialSearch();
             navigator.navigate("/material/materials");
         } catch (Exception e) {
-            messagePresenter.error("materialCreation_creation_error",getErrorMessages());
+            messagePresenter.error("materialCreation_creation_error", getErrorMessages());
         }
     }
 
@@ -463,7 +468,7 @@ public class MaterialBean implements Serializable {
      * @return true if user is project edit is possible
      */
     public boolean isProjectEditEnabled() {
-        logger.info("Mode "+mode);
+        logger.info("Mode " + mode);
         switch (mode) {
             case CREATE:
                 return true;

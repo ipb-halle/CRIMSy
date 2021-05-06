@@ -125,9 +125,6 @@ public class MaterialService implements Serializable {
 
     protected MaterialHistoryService materialHistoryService;
 
-    @Inject
-    protected UserBean userBean;
-
     @PersistenceContext(name = "de.ipb_halle.lbac")
     protected EntityManager em;
 
@@ -518,15 +515,10 @@ public class MaterialService implements Serializable {
             Integer projectAclId,
             Map<MaterialDetailType, ACList> detailTemplates,
             Integer onwerId) {
-        logger.info("Try to save material");
         saveMaterialOverview(m, projectAclId, onwerId);
-        logger.info("Overview saved");
         saveMaterialNames(m);
-        logger.info("Names saved");
         saveMaterialHazards(m);
-        logger.info("Hazards saved");
         saveStorageConditions(m);
-        logger.info("Storage saved");
         saveDetailRightsFromTemplate(m, detailTemplates);
 
         if (m.getType() == MaterialType.STRUCTURE) {
@@ -553,12 +545,13 @@ public class MaterialService implements Serializable {
     public void saveMaterialToDB(
             Material m,
             Integer projectAclId,
-            Map<MaterialDetailType, ACList> detailTemplates) {
+            Map<MaterialDetailType, ACList> detailTemplates,
+            User owner) {
         saveMaterialToDB(
                 m,
                 projectAclId,
                 detailTemplates,
-                userBean.getCurrentAccount().getId());
+                owner.getId());
 
     }
 
@@ -652,14 +645,6 @@ public class MaterialService implements Serializable {
 
     public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {
         this.editedMaterialSaver = editedMaterialSaver;
-    }
-
-    /**
-     *
-     * @param userBean
-     */
-    public void setUserBean(UserBean userBean) {
-        this.userBean = userBean;
     }
 
     public void setStructureInformationSaver(StructureInformationSaver structureInformationSaver) {

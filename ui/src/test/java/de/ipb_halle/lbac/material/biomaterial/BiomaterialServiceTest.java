@@ -85,7 +85,6 @@ public class BiomaterialServiceTest extends TestBase {
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         ownerid = owner.getId().toString();
-        materialService.setUserBean(userBean);
         project = creationTools.createProject();
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
     }
@@ -104,9 +103,9 @@ public class BiomaterialServiceTest extends TestBase {
         names.add(new MaterialName(materialName, "de", 1));
         BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
         ACList materialACList = project.getUserGroups();
-        materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>());
+        materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>(), publicUser);
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(owner, 0, 100);
-         requestBuilder.addMaterialType(MaterialType.BIOMATERIAL);
+        requestBuilder.addMaterialType(MaterialType.BIOMATERIAL);
         SearchResult result = materialService.getReadableMaterials(requestBuilder.build());
         List<BioMaterial> bioMaterials = result.getAllFoundObjects(BioMaterial.class, result.getNode());
         Assert.assertEquals(1, bioMaterials.size());
@@ -144,7 +143,7 @@ public class BiomaterialServiceTest extends TestBase {
         biomaterial.setACList(project.getUserGroups());
         biomaterial.setOwner(owner);
 
-        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         BioMaterial editedBioMaterial = biomaterial.copyMaterial();
         editedBioMaterial.setTissue(null);
@@ -165,7 +164,7 @@ public class BiomaterialServiceTest extends TestBase {
         names.add(new MaterialName("Root", "en", 2));
         names.add(new MaterialName("Radix", "la", 3));
         Tissue tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
         return tissue;
     }
 
