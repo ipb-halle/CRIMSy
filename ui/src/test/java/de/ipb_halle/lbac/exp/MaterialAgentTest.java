@@ -113,7 +113,7 @@ public class MaterialAgentTest extends TestBase {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
 
-        materialService.setUserBean(userBean);
+     
 
         materialAgent = new MaterialAgentMock();
         materialAgent.setGlobalAdmissionContext(context);
@@ -213,13 +213,8 @@ public class MaterialAgentTest extends TestBase {
         Map<MaterialDetailType, ACList> rights = new HashMap<>();
         rights.put(MaterialDetailType.INDEX, publicReadAcl);
         biomaterial.getDetailRights().add(detailRight);
-        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), rights);
+        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), rights,publicUser);
         return biomaterial;
 
     }
-
-    private void createStructure(String name) {
-
-    }
-
 }
