@@ -60,11 +60,11 @@
         <repository>
             <id>pentaho-releases</id>
             <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
-            <url>http://nexus.pentaho.org/content/groups/omni</url>
+            <url>https://nexus.pentaho.org/content/groups/omni</url>
         </repository>
         <repository>
             <id>primefaces themes</id>
-            <url>http://repository.primefaces.org/</url>
+            <url>https://repository.primefaces.org/</url>
         </repository>
     </repositories>
 
