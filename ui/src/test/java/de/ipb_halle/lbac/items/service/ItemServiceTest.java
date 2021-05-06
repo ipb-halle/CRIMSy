@@ -631,7 +631,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: Owner-id must be " + ownerid, owner.getId(), loadedItem.getOwner().getId());
         Assert.assertEquals("Testcase 001: Project-id must be " + project.getId(), project.getId(), loadedItem.getProject().getId());
         Assert.assertEquals("Testcase 001: Purity must be 'rein'", "rein", loadedItem.getPurity());
-        Assert.assertEquals("Testcase 001: One nested Container must be found", 2, loadedItem.getNestedContainer().size());
+        Assert.assertEquals("Testcase 001: The direct Container must be found", 1, loadedItem.getNestedContainer().size());
         Assert.assertNull("Testcase 001: Solvent must be null", loadedItem.getSolvent());
         Assert.assertNotNull(loadedItem.getcTime());
 

@@ -60,6 +60,7 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -118,6 +119,7 @@ public class ItemService {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Code25LabelGenerator labelGenerator;
+    private Date time;
 
     @PostConstruct
     public void init() {
@@ -125,6 +127,8 @@ public class ItemService {
     }
 
     public SearchResult loadItems(SearchRequest request) {
+        time = new Date();
+        logger.info(new Date());
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
         EntityGraph itemGraph = graphBuilder.buildEntityGraph(true);
@@ -139,13 +143,15 @@ public class ItemService {
         Query q = createQueryWithParams(sqlBuilder, sql, ItemEntity.class);
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
-
+        logger.info(new Date().getTime() - time.getTime());
         List<ItemEntity> entities = q.getResultList();
         for (ItemEntity ie : entities) {
             Item item = createItemFromEntity(ie, request.getUser());
+            logger.info("  " + (new Date().getTime() - time.getTime()));
             item.setHistory(loadHistoryOfItem(item));
             result.addResult(item);
         }
+        logger.info(new Date().getTime() - time.getTime());
 
         return result;
     }
@@ -184,19 +190,21 @@ public class ItemService {
 
     private Item createItemFromEntity(ItemEntity entity, User user) {
         Material m = materialService.loadMaterialById(entity.getMaterialid());
+        logger.info("Material loaded " + (new Date().getTime() - time.getTime()));
         if (!aclistService.isPermitted(ACPermission.permREAD, m, user)) {
             m = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
         }
         Item item = new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
-                entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
+                entity.getContainerid() == null ? null : containerService.loadSlimContainerById(entity.getContainerid()),
                 m,
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
-                containerService.loadNestedContainer(entity.getContainerid()),
+                entity.getContainerid() == null ? new ArrayList<>() : Arrays.asList(containerService.loadSlimContainerById(entity.getContainerid())),
                 aclistService.loadById(entity.getACList())
         );
+        logger.info("Details loaded " + (new Date().getTime() - time.getTime()));
         return item;
     }
 

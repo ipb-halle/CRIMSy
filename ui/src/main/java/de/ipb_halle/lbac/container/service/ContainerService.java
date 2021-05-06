@@ -104,7 +104,8 @@ public class ContainerService implements Serializable {
             + "AND (LOWER(c.label) LIKE LOWER(:label) OR :label = 'no_label') "
             + "AND (c2.label=:location OR :location ='no_location') "
             + "AND c.deactivated =FALSE "
-            + "ORDER BY c.id";
+            + "ORDER BY c.id "
+            + "LIMIT 5";
 
     private final String SQL_LOAD_NESTED_CONTAINER
             = "SELECT  "
@@ -171,6 +172,20 @@ public class ContainerService implements Serializable {
             container.add(c);
         }
 
+        return container;
+    }
+
+    /**
+     * Loads a container by id without its items, its hierarchy and its
+     * autocompletestring
+     *
+     * @param id
+     * @return
+     */
+    public Container loadSlimContainerById(int id) {
+        ContainerEntity entity = this.em.find(ContainerEntity.class, id);
+        Container container = new Container(entity);
+        container.setType(loadContainerTypeByName(entity.getType()));
         return container;
     }
 
