@@ -551,7 +551,9 @@ CREATE TABLE items(
     aclist_id INTEGER NOT NULL,
     expiry_date TIMESTAMP,
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
-    label VARCHAR);
+    label VARCHAR,
+    parent_id INTEGER REFERENCES items(id)
+ );
 
 CREATE TABLE item_positions(
     id SERIAL NOT NULL PRIMARY KEY,

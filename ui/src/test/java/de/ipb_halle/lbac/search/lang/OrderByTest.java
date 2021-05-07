@@ -30,9 +30,11 @@ import org.junit.Test;
  * @author fmauz
  */
 public class OrderByTest {
-    
+
     @Test
-    public void test001_orderBy(){
+    public void test001_orderBy() {
+
+        String expectedString = "SELECT DISTINCT a.solventid, a.aclist_id, a.amount, a.purity, a.owner_id, a.expiry_date, a.articleid, a.description, a.containersize, a.concentration, a.label, a.materialid, a.containertype, a.unit, a.parent_id, a.ctime, a.id, a.containerid, a.projectid, a.concentrationunit FROM items AS a ORDER BY a.id DESC ";
         EntityGraph graph = new EntityGraph(ItemEntity.class);
         SqlBuilder builder = new SqlBuilder(graph);
 
@@ -40,13 +42,13 @@ public class OrderByTest {
                 .setColumnName("id")
                 .setTableName("items")
                 .setOrderDirection(OrderDirection.DESC);
-        
-        List<DbField> orderList = new ArrayList<> ();
+
+        List<DbField> orderList = new ArrayList<>();
         orderList.add(labelField);
 
         String sql = builder.query(null, orderList);
-        sql=sql.replaceAll("\n", "");
-        assertEquals("Invalid ORDER BY clause", "SELECT DISTINCT a.solventid, a.aclist_id, a.amount, a.purity, a.owner_id, a.expiry_date, a.articleid, a.description, a.containersize, a.concentration, a.label, a.materialid, a.containertype, a.unit, a.ctime, a.id, a.containerid, a.projectid, a.concentrationunit FROM items AS a ORDER BY a.id DESC ", sql);
+        sql = sql.replaceAll("\n", "");
+        assertEquals("Invalid ORDER BY clause", expectedString, sql);
     }
-    
+
 }

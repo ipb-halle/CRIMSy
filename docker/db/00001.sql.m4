@@ -675,7 +675,8 @@ CREATE TABLE items(
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
     expiry_date TIMESTAMP,
     aclist_id INTEGER NOT NULL,
-    label VARCHAR
+    label VARCHAR,
+    parent_id INTEGER REFERENCES items(id) 
 );
 
 CREATE TABLE item_positions(

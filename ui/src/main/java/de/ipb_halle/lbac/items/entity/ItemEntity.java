@@ -94,6 +94,9 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
     @AttributeTag(type = AttributeType.BARCODE)
     private String label;
 
+    @Column
+    private Integer parent_id;
+
     public Integer getId() {
         return id;
     }
@@ -228,6 +231,14 @@ public class ItemEntity extends ACObjectEntity implements Serializable {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Integer getParent_id() {
+        return parent_id;
+    }
+
+    public void setParent_id(Integer parent_id) {
+        this.parent_id = parent_id;
     }
 
 }
