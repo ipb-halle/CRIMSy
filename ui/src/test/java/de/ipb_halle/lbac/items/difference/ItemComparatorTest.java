@@ -66,7 +66,7 @@ public class ItemComparatorTest {
         ItemHistory history = comparator.compareItems(item1, item2, user1);
         Assert.assertNull("test001: same items must have no difference", history);
 
-        //Change concentration
+        //Change description
         item2.setDescription("Description-Item edited");
         history = comparator.compareItems(item1, item2, user1);
         Assert.assertNotNull("test001 description was changed", history);
@@ -83,11 +83,25 @@ public class ItemComparatorTest {
 
         // Change Concentration
         item2.setAmount(22d);
-        item2.setConcentration(01d);
+        item2.setConcentration(null);
         history = comparator.compareItems(item1, item2, user1);
         Assert.assertNotNull("test001 amount was changed", history);
-        Assert.assertEquals("test001 old concentration of must be 22", 33d, (double) history.getConcentrationOld(), 0);
-        Assert.assertEquals("test001 new concentration of must be 1", 1d, (double) history.getConcentrationNew(), 0);
+        Assert.assertEquals("test001 old concentration of must be 33", 33d, (double) history.getConcentrationOld(), 0);
+        Assert.assertNull(history.getConcentrationNew());
+
+        item1.setConcentration(null);
+        item2.setConcentration(33d);
+        history = comparator.compareItems(item1, item2, user1);
+        Assert.assertNotNull("test001 amount was changed", history);
+        Assert.assertEquals("test001 old concentration of must be 33", 33d, (double) history.getConcentrationNew(), 0);
+        Assert.assertNull(history.getConcentrationOld());
+        
+        item1.setConcentration(33d);
+        item2.setConcentration(17d);
+        history = comparator.compareItems(item1, item2, user1);
+        Assert.assertNotNull("test001 concentration was changed", history);
+        Assert.assertEquals("test001 old concentration of must be 33", 33d, (double) history.getConcentrationOld(), 0);
+        Assert.assertEquals("test001 new concentration of must be 17", 17d, (double) history.getConcentrationNew(), 0);
 
         //Change Owner
         item2.setConcentration(33d);

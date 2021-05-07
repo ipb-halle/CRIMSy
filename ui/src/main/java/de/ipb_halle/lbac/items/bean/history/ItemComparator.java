@@ -59,13 +59,21 @@ public class ItemComparator {
             history.setAmountNew(amountNew.doubleValue());
         }
         if (!Objects.equals(itemOld.getConcentration(), itemNew.getConcentration())) {
-            BigDecimal concentrationOld = new BigDecimal(itemOld.getConcentration());
-            BigDecimal concentrationNew = new BigDecimal(itemNew.getConcentration());
-            if (concentrationNew.compareTo(concentrationOld) != 0) {
-                differenceFound = true;
-                history.setConcentrationNew(concentrationNew.doubleValue());
-                history.setConcentrationOld(concentrationOld.doubleValue());
+            if (itemOld.getConcentration() == null) {
+                history.setConcentrationNew(itemNew.getConcentration());
+                history.setConcentrationOld(null);
+            } else if (itemNew.getConcentration() == null) {
+                history.setConcentrationNew(null);
+                history.setConcentrationOld(itemOld.getConcentration());
+            } else {
+                BigDecimal concentrationOld = new BigDecimal(itemOld.getConcentration());
+                BigDecimal concentrationNew = new BigDecimal(itemNew.getConcentration());
+                if (concentrationNew.compareTo(concentrationOld) != 0) {
+                    history.setConcentrationNew(concentrationNew.doubleValue());
+                    history.setConcentrationOld(concentrationOld.doubleValue());
+                }
             }
+            differenceFound = true;
         }
         if (!Objects.equals(itemOld.getDescription(), itemNew.getDescription())) {
             differenceFound = true;
