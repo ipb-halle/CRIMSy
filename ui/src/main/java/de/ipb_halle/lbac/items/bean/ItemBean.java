@@ -297,7 +297,7 @@ public class ItemBean implements Serializable {
     
     private void initData() {
         projects = loadReadableProjects(userBean.getCurrentAccount());
-        containers = containerService.loadContainers(userBean.getCurrentAccount());
+        containers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
         this.printBean.setLabelDataObject(state.getEditedItem());
         this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
         this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer());

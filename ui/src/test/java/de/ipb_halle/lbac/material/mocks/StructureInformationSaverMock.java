@@ -31,6 +31,7 @@ import javax.persistence.Query;
 public class StructureInformationSaverMock extends StructureInformationSaver {
 
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule) VALUES(?,?)";
+    private static int molId = 0;
 
     public StructureInformationSaverMock(EntityManager em) {
         super(em);
@@ -38,12 +39,12 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
 
     @Override
     public void saveStructureInformation(Material m) {
-        int molId = (int) (Math.random() * 100000);
+
         Structure s = (Structure) m;
         for (IndexEntry ie : s.getIndices()) {
             em.persist(ie.toDbEntity(m.getId(), 0));
         }
-        if (s.getMolecule().getStructureModel() != null) {
+        if (s.getMolecule() != null && s.getMolecule().getStructureModel() != null) {
             Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
                     .setParameter(1, molId)
                     .setParameter(2, s.getMolecule().getStructureModel());
@@ -51,6 +52,7 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
             q.executeUpdate();
             s.getMolecule().setId(molId);
             em.persist(s.createEntity());
+            molId++;
 
         } else {
             em.persist(s.createEntity());

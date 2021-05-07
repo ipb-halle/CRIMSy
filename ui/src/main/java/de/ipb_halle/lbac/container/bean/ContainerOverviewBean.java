@@ -80,7 +80,7 @@ public class ContainerOverviewBean implements Serializable {
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
-        setReadableContainer(containerService.loadContainers(currentUser));
+        setReadableContainer(containerService.loadContainersWithoutItems(currentUser));
         mode = Mode.SHOW;
     }
 
@@ -117,7 +117,7 @@ public class ContainerOverviewBean implements Serializable {
         if (searchMaskBean.getSearchLocation() != null && !searchMaskBean.getSearchLocation().trim().isEmpty()) {
             cmap.put("location", searchMaskBean.getSearchLocation());
         }
-        setReadableContainer(containerService.loadContainers(currentUser, cmap));
+        setReadableContainer(containerService.loadContainersWithoutItems(currentUser, cmap));
     }
 
     public void actionTriggerContainerSave() {

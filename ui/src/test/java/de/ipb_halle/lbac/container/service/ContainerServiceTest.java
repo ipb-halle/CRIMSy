@@ -34,7 +34,13 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,12 +87,20 @@ public class ContainerServiceTest extends TestBase {
     @Inject
     private ContainerPositionService positionService;
 
+    @Inject
+    private MaterialService materialService;
+
+    @Inject
+    private ItemService itemService;
+
     @Before
     @Override
     public void setUp() {
+
         super.setUp();
         cleanItemsFromDb();
         cleanMaterialsFromDB();
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
@@ -189,7 +203,7 @@ public class ContainerServiceTest extends TestBase {
         c4.setType(new ContainerType("CARTON", 190, true, false));
         instance.saveContainer(c4);
 
-        List<Container> result = instance.loadContainers(publicUser);
+        List<Container> result = instance.loadContainersWithoutItems(publicUser);
         Assert.assertEquals("Three containers must be found", 3, result.size());
         Assert.assertNull("testcase 002: First container must have no parent", result.get(0).getParentContainer());
         Assert.assertNotNull("testcase 002: Second container must have a parent", result.get(1).getParentContainer());
@@ -298,30 +312,30 @@ public class ContainerServiceTest extends TestBase {
 
         List<Object> en = entityManagerService.doSqlQuery("SELECT * from containers");
 
-        List<Container> loadedContainer = instance.loadContainers(testUser);
+        List<Container> loadedContainer = instance.loadContainersWithoutItems(testUser);
 
         entityManagerService.doSqlUpdate("UPDATE  containers SET deactivated=false");
         Assert.assertEquals(2, loadedContainer.size());
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", c0.getId());
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(1, loadedContainer.size());
 
         cmap.clear();
         cmap.put("project", "Container Test Project");
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(0, loadedContainer.size());
-        loadedContainer = instance.loadContainers(user, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(user, cmap);
         Assert.assertEquals(1, loadedContainer.size());
 
         cmap.clear();
         cmap.put("label", "R302");
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(1, loadedContainer.size());
 
         cmap.clear();
         cmap.put("location", "R302");
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(2, loadedContainer.size());
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
@@ -416,6 +430,57 @@ public class ContainerServiceTest extends TestBase {
         // Container c3 is in c1 and no more in c0
         Assert.assertEquals(c3.getId(), (int) i.get(1)[0]);
         Assert.assertEquals(c1.getId(), (int) i.get(1)[1]);
+    }
+
+    @Test
+    public void test010_loadContainersWithManyItems() {
+        Project project = creationTools.createAndSaveProject("ContainerServiceTest_test010_loadContainersWithManyItems_project");
+        instance.saveContainer(c0);
+
+        for (int i = 0; i < 4; i++) {
+            Container wellPlate = createWellPlate(String.format("wp%d", i + 1));
+            instance.saveContainer(wellPlate);
+            for (int j = 0; j < 70; j++) {
+                Structure s = creationTools.createStructure(project);
+                s.setMolecule(null);
+                materialService.saveMaterialToDB(s, project.getACList().getId(), new HashMap(), publicUser);
+                Item item = createAndSaveItem(wellPlate, project, s);
+                positionService.saveItemInContainer(item.getId(), wellPlate.getId(), i % 8, (i / 8));
+            }
+        }
+
+        List<Container> loadedContainers = instance.loadContainersWithoutItems(publicUser);
+        Assert.assertEquals(5, loadedContainers.size());
+    }
+
+    private Item createAndSaveItem(Container c, Project p, Structure s) {
+        Item item = new Item();
+        item.setACList(p.getACList());
+        item.setOwner(publicUser);
+        item.setAmount(0d);
+        item.setConcentration(0d);
+        item.setConcentrationUnit("%");
+        item.setContainer(c);
+        item.setMaterial(s);
+        item.setProject(p);
+        item.setUnit(Unit.getUnit("g"));
+        item.setcTime(new Date());
+        itemService.saveItem(item);
+        return item;
+
+    }
+
+    private Container createWellPlate(String name) {
+        Container wellPlate = new Container();
+        wellPlate.setBarCode(name);
+        wellPlate.setColumns(12);
+        wellPlate.setRows(8);
+        wellPlate.setFireArea(c0.getFireArea());
+        wellPlate.setGmoSafetyLevel(c0.getGmoSafetyLevel());
+        wellPlate.setLabel(name);
+        wellPlate.setParentContainer(c0);
+        wellPlate.setType(new ContainerType("WELLPLATE", 90, true, false));
+        return wellPlate;
     }
 
     @Deployment

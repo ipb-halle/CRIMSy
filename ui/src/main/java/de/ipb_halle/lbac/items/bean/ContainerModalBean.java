@@ -49,7 +49,7 @@ public class ContainerModalBean implements Serializable {
     private List<ContainerType> blackList = new ArrayList<>();
 
     public List<Container> getContainer() {
-        container = service.loadContainers(userBean.getCurrentAccount());
+        container = service.loadContainersWithoutItems(userBean.getCurrentAccount());
 
         for (int i = container.size() - 1; i >= 0; i--) {
             if (blackList.contains(container.get(i).getType())) {

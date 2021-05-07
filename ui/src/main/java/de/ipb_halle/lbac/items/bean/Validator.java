@@ -18,11 +18,12 @@
 package de.ipb_halle.lbac.items.bean;
 
 import de.ipb_halle.lbac.container.Container;
-import de.ipb_halle.lbac.container.ContainerType;
 import de.ipb_halle.lbac.container.bean.ErrorMessagePresenter;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.label.LabelService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -32,7 +33,7 @@ public class Validator {
 
     private ErrorMessagePresenter messagePresenter;
     boolean valide = true;
-
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
     private final ContainerPositionService containerPositionService;
     private final LabelService labelService;
 
@@ -61,7 +62,7 @@ public class Validator {
             valide = false;
         }
         if (containerWithPlaces(containerController.getContainer())) {
-            if(containerController.resolveItemPositions().isEmpty()){
+            if (containerController.resolveItemPositions().isEmpty()) {
                 messagePresenter.presentErrorMessage("itemEdit_item_not_placed");
                 valide = false;
             }
