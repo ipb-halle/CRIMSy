@@ -60,12 +60,12 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ItemBeanTest extends TestBase {
-
+    
     private ItemBeanMock itemBean;
     private PrintBean printBean;
     private ItemOverviewBean overviewBean;
     private UserBeanMock userBean;
-
+    
     @Inject
     private ItemService itemService;
     @Inject
@@ -74,18 +74,18 @@ public class ItemBeanTest extends TestBase {
     private ContainerService containerService;
     @Inject
     private ContainerPositionService containerPositionService;
-
+    
     @Inject
     private TaxonomyNestingService taxoNestingService;
-
+    
     @Inject
     protected MaterialService materialService;
     protected Project project;
     protected Material structure;
     protected User user;
-
+    
     protected ItemOverviewBean itemOverviewBean;
-
+    
     @Before
     @Override
     public void setUp() {
@@ -98,10 +98,10 @@ public class ItemBeanTest extends TestBase {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
         materialService.setEditedMaterialSaver(new MaterialEditSaver(materialService, taxoNestingService));
         materialService.saveMaterialToDB(structure, project.getUserGroups().getId(), new HashMap<>(), user.getId());
-
+        
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(user);
-
+        
         itemBean = new ItemBeanMock();
         printBean = new PrintBean();
         overviewBean = new ItemOverviewBeanMock()
@@ -113,7 +113,7 @@ public class ItemBeanTest extends TestBase {
                 .setProjectService(projectService)
                 .setNodeService(nodeService)
                 .setUser(user);
-
+        
         itemBean.setItemService(itemService);
         itemBean.setPrintBean(printBean);
         itemBean.setItemOverviewBean(overviewBean);
@@ -124,22 +124,24 @@ public class ItemBeanTest extends TestBase {
         itemBean.setUserBean(userBean);
         itemBean.setMessagePresenter(new MessagePresenterMock());
         itemBean.init();
-
+        
     }
-
+    
     @Test
     public void test001_createNewItem() {
+       
         itemBean.actionStartItemCreation(structure);
         itemBean.getState().getEditedItem().setAmount(20d);
         itemBean.getState().getEditedItem().setUnit(Unit.getUnit("g"));
         itemBean.getState().getEditedItem().setContainerType(new ContainerType("GLAS_FLASK", 0, false, false));
+        itemBean.setSolved(true);
         itemBean.getState().getEditedItem().setConcentration(.5d);
         itemBean.getState().getEditedItem().setContainerSize(40d);
         itemBean.getState().getEditedItem().setProject(project);
         itemBean.getState().getEditedItem().setPurity("pure");
-
+        
         Assert.assertEquals(ItemBean.Mode.CREATE, itemBean.mode);
-
+        
         itemBean.actionSave();
         Item item = itemService.loadItemById(itemBean.getState().getEditedItem().getId());
         Assert.assertEquals(structure.getId(), item.getMaterial().getId());
@@ -150,9 +152,9 @@ public class ItemBeanTest extends TestBase {
         Assert.assertEquals(.5d, item.getConcentration(), 0);
         Assert.assertEquals(project.getId(), item.getProject().getId());
         Assert.assertEquals("pure", item.getPurity());
-
+        
     }
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ItemBeanTest.war")

@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.items;
 
+import java.util.Objects;
+
 /**
  *
  * @author fmauz
@@ -54,6 +56,31 @@ public class Solvent {
 
     public String getLocalizedName() {
         return localizedName;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Solvent other = (Solvent) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }
