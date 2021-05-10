@@ -442,7 +442,7 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
 
         entityManagerService.doSqlUpdate("delete from storagesconditions_storages_hist");
-        entityManagerService.doSqlUpdate("delete from hazards_materials_hist");
+        entityManagerService.doSqlUpdate("delete from material_hazards_hist");
         entityManagerService.doSqlUpdate("delete from storages_hist");
         entityManagerService.doSqlUpdate("delete from material_indices_hist");
         entityManagerService.doSqlUpdate("delete from storageconditions_storages");
@@ -454,7 +454,7 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("delete from structures");
         entityManagerService.doSqlUpdate("delete from storageconditions_storages");
         entityManagerService.doSqlUpdate("delete from storages");
-        entityManagerService.doSqlUpdate("delete from hazards_materials");
+        entityManagerService.doSqlUpdate("delete from material_hazards");
         entityManagerService.doSqlUpdate("delete from materials");
     }
 

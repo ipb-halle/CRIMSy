@@ -101,7 +101,7 @@ public class MaterialService implements Serializable {
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
-    private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM hazards_materials WHERE materialid=:mid";
+    private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM material_hazards WHERE materialid=:mid";
     private final String SQL_GET_INDICES = "SELECT id,materialid,typeid,value,language,rank FROM material_indices WHERE materialid=:mid order by rank";
     private final String SQL_GET_STRUCTURE_INFOS = "SELECT id,sumformula,molarmass,exactmolarmass,moleculeid FROM structures WHERE id=:mid";
     private final String SQL_GET_MOLECULE = "SELECT id,molecule FROM molecules WHERE id=:mid";

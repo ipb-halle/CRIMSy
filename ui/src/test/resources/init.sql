@@ -352,9 +352,11 @@ CREATE TABLE structures_hist (
 
 CREATE TABLE  hazards (
         id INTEGER PRIMARY KEY,
-        name VARCHAR NOT NULL);
+        name VARCHAR NOT NULL,
+        category INTEGER NOT NULL,
+        has_remarks BOOLEAN NOT NULL DEFAULT false);
 
-CREATE TABLE  hazards_materials (
+CREATE TABLE  material_hazards (
         typeid INTEGER NOT NULL REFERENCES hazards(id),
         materialid INTEGER NOT NULL REFERENCES materials(materialid),
         remarks VARCHAR,
@@ -426,19 +428,23 @@ insert into storageclasses(id,name)values(21,'11');
 insert into storageclasses(id,name)values(22,'12');
 insert into storageclasses(id,name)values(23,'13');
 
-insert into hazards(id,name)values(1,'explosive');
-insert into hazards(id,name)values(2,'highlyFlammable');
-insert into hazards(id,name)values(3,'oxidizing');
-insert into hazards(id,name)values(4,'compressedGas');
-insert into hazards(id,name)values(5,'corrosive');
-insert into hazards(id,name)values(6,'poisonous');
-insert into hazards(id,name)values(7,'irritant');
-insert into hazards(id,name)values(8,'unhealthy');
-insert into hazards(id,name)values(9,'environmentallyHazardous');
-insert into hazards(id,name)values(10,'danger');
-insert into hazards(id,name)values(11,'attention');
-insert into hazards(id,name)values(12,'hazardStatements');
-insert into hazards(id,name)values(13,'precautionaryStatements');
+insert into hazards(id,name,category,has_remarks)values(1,'GHS01',1,false);
+insert into hazards(id,name,category,has_remarks)values(2,'GHS02',1,false);
+insert into hazards(id,name,category,has_remarks)values(3,'GHS03',1,false);
+insert into hazards(id,name,category,has_remarks)values(4,'GHS04',1,false);
+insert into hazards(id,name,category,has_remarks)values(5,'GHS05',1,false);
+insert into hazards(id,name,category,has_remarks)values(6,'GHS06',1,false);
+insert into hazards(id,name,category,has_remarks)values(7,'GHS07',1,false);
+insert into hazards(id,name,category,has_remarks)values(8,'GHS08',1,false);
+insert into hazards(id,name,category,has_remarks)values(9,'GHS09',1,false);
+insert into hazards(id,name,category,has_remarks)values(10,'HS',2,true);
+insert into hazards(id,name,category,has_remarks)values(11,'PS',2,true);
+insert into hazards(id,name,category,has_remarks)values(12,'S1',3,false);
+insert into hazards(id,name,category,has_remarks)values(13,'S2',3,false);
+insert into hazards(id,name,category,has_remarks)values(14,'S3',3,false);
+insert into hazards(id,name,category,has_remarks)values(15,'S4',3,false);
+insert into hazards(id,name,category,has_remarks)values(16,'R1',4,false);
+insert into hazards(id,name,category,has_remarks)values(17,'C1',5,true);
 
 CREATE TABLE  materials_hist (
         materialid INTEGER NOT NULL REFERENCES materials(materialid),
@@ -468,7 +474,7 @@ CREATE TABLE  material_indices_hist (
     language_old VARCHAR,
     language_new VARCHAR);
 
-CREATE TABLE  hazards_materials_hist (
+CREATE TABLE  material_hazards_hist (
     id SERIAL NOT NULL PRIMARY KEY,
     materialid INTEGER NOT NULL REFERENCES materials(materialid),
     mdate TIMESTAMP NOT NULL,

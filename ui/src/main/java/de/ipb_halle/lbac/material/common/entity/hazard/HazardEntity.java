@@ -19,8 +19,10 @@ package de.ipb_halle.lbac.material.common.entity.hazard;
 
 import java.io.Serializable;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -28,37 +30,52 @@ import javax.persistence.Table;
  * @author fmauz
  */
 @Entity
-@Table(name = "material_hazards")
-public class HazardsMaterialsEntity implements Serializable {
+@Table(name = "hazards")
+public class HazardEntity implements Serializable {
 
-    @EmbeddedId
-    private HazardMaterialId id;
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
     @Column
-    private String remarks;
+    private String name;
+    @Column
+    private Integer category;
+    @Column
+    private Boolean has_remarks;
 
-    public HazardsMaterialsEntity() {
+    public HazardEntity() {
     }
 
-    public HazardsMaterialsEntity(HazardMaterialId id, String remarks) {
-        this.id = id;
-        this.remarks = remarks;
-    }
-
-    public HazardMaterialId getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(HazardMaterialId id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public String getName() {
+        return name;
     }
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getCategory() {
+        return category;
+    }
+
+    public void setCategory(Integer category) {
+        this.category = category;
+    }
+
+    public Boolean getHas_remarks() {
+        return has_remarks;
+    }
+
+    public void setHas_remarks(Boolean has_remarks) {
+        this.has_remarks = has_remarks;
     }
 
 }

@@ -108,7 +108,7 @@ public class MaterialHistoryService implements Serializable {
             + "typeid_new,"
             + "remarks_old,"
             + "remarks_new"
-            + " FROM hazards_materials_hist"
+            + " FROM material_hazards_hist"
             + " WHERE materialid=:mid";
 
     private final String SQL_GET_TAXONOMY_HISTORY

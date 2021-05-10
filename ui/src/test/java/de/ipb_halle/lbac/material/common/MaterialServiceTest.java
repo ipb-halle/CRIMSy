@@ -72,7 +72,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -159,7 +158,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("expected roughly 74", 74.0, (double) structure[2], 0.2);
 
         //Checking the hazard information
-        List hazards = entityManagerService.doSqlQuery("select typeid,remarks from hazards_materials where materialid=" + m.getId() + " order by typeid asc");
+        List hazards = entityManagerService.doSqlQuery("select typeid,remarks from material_hazards where materialid=" + m.getId() + " order by typeid asc");
         Assert.assertEquals(4, hazards.size());
 
         Object[] h1 = (Object[]) hazards.get(0);
@@ -364,7 +363,7 @@ public class MaterialServiceTest extends TestBase {
                 editedMaterial, m, p.getUserGroups().getId(),
                 user.getId()
         );
-        List hazardHists = entityManagerService.doSqlQuery("select materialid,typeid_old,typeid_new ,remarks_old,remarks_new from hazards_materials_hist order by typeid_old,typeid_new");
+        List hazardHists = entityManagerService.doSqlQuery("select materialid,typeid_old,typeid_new ,remarks_old,remarks_new from material_hazards_hist order by typeid_old,typeid_new");
         Assert.assertEquals(4, hazardHists.size());
 
         Object[] poisonousEntry = (Object[]) hazardHists.get(0);

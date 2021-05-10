@@ -32,7 +32,7 @@ import javax.persistence.Temporal;
  * @author fmauz
  */
 @Entity
-@Table(name = "hazards_materials_hist")
+@Table(name = "material_hazards_hist")
 public class HazardsMaterialHistEntity implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

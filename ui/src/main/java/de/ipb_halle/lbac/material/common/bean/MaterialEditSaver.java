@@ -70,7 +70,7 @@ public class MaterialEditSaver implements Serializable {
     protected String SQL_INSERT_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(:taxoid,:parentid)";
     protected String SQL_UPDATE_TAXONOMY_LEVEL = "UPDATE taxonomy SET level=:level WHERE id=:id";
     protected String SQL_DELETE_INDICES = "DELETE FROM material_indices WHERE materialid=:mid";
-    protected String SQL_DELETE_HAZARDS = "DELETE FROM hazards_materials WHERE materialid=:mid";
+    protected String SQL_DELETE_HAZARDS = "DELETE FROM material_hazards WHERE materialid=:mid";
 
     private StructureInformationSaver structureSaver;
 
