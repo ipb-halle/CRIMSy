@@ -50,6 +50,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -101,6 +102,9 @@ public class MaterialBean implements Serializable {
 
     @Inject
     protected TaxonomyService taxonomyService;
+
+    @Inject
+    protected HazardService hazardService;
 
     @Inject
     protected TissueService tissueService;
@@ -202,7 +206,9 @@ public class MaterialBean implements Serializable {
                     materialIndexBean,
                     structureInfos,
                     storageClassInformation,
-                    taxonomyController);
+                    taxonomyController,
+                    hazardService.getAllHazardTypes()
+            );
 
         } catch (Exception e) {
             logger.info("Error in Line " + e.getStackTrace()[0].getLineNumber());

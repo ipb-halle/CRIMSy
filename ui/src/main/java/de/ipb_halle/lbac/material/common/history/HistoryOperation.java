@@ -19,8 +19,7 @@ package de.ipb_halle.lbac.material.common.history;
 
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
-import de.ipb_halle.lbac.material.common.Hazard;
-import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
@@ -33,8 +32,7 @@ import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -56,6 +54,7 @@ public class HistoryOperation implements Serializable {
     protected StructureInformation structureInfos;
     protected StorageClassInformation storageInformation;
     protected TaxonomySelectionController taxonomySelectionController;
+    protected List<HazardType> possibleHazards = new ArrayList<>();
 
     /**
      * Initialises the functionality by neccessary services and the history
@@ -77,7 +76,8 @@ public class HistoryOperation implements Serializable {
             MaterialIndexBean indexBean,
             StructureInformation structureInfos,
             StorageClassInformation storageClassInformation,
-            TaxonomySelectionController taxonomySelectionController) {
+            TaxonomySelectionController taxonomySelectionController,
+            List<HazardType> possibleHazards) {
         this.projectBean = projectBean;
         this.materialEditState = materialEditState;
         this.materialNameBean = nameBean;
@@ -85,6 +85,7 @@ public class HistoryOperation implements Serializable {
         this.structureInfos = structureInfos;
         this.storageInformation = storageClassInformation;
         this.taxonomySelectionController = taxonomySelectionController;
+        this.possibleHazards = possibleHazards;
     }
 
     /**
@@ -157,7 +158,8 @@ public class HistoryOperation implements Serializable {
     }
 
     /**
-     * @return true if the currently shown material state is the original version
+     * @return true if the currently shown material state is the original
+     * version
      */
     public boolean isOriginalMaterial() {
         return materialEditState.getCurrentVersiondate() == null;
@@ -170,24 +172,10 @@ public class HistoryOperation implements Serializable {
                 Integer newTypeId = diff.getTypeIdsNew().get(i);
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String newValue = diff.getRemarksNew().get(i);
-                boolean isHazardStatementEntry
-                        = Objects.equals(HazardInformation.HAZARD_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.HAZARD_STATEMENT, newTypeId);
-                if (isHazardStatementEntry) {
-                    materialEditState.getHazards().setHazardStatements(newValue);
-                    continue;
-                }
-                boolean isPreStatementEntry
-                        = Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
-                if (isPreStatementEntry) {
-                    materialEditState.getHazards().setPrecautionaryStatements(newValue);
-                    continue;
-                }
                 if (newTypeId != null) {
-                    materialEditState.getHazards().getHazards().add(Hazard.getHazardById(newTypeId));
+                    materialEditState.getHazards().getHazards().put(getHazardById(newTypeId), newValue);
                 } else {
-                    materialEditState.getHazards().getHazards().remove(Hazard.getHazardById(oldTypeId));
+                    materialEditState.getHazards().getHazards().remove(getHazardById(oldTypeId));
                 }
             }
         }
@@ -200,24 +188,10 @@ public class HistoryOperation implements Serializable {
                 Integer newTypeId = diff.getTypeIdsNew().get(i);
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String oldValue = diff.getRemarksOld().get(i);
-                boolean isHazardStatementEntry
-                        = Objects.equals(HazardInformation.HAZARD_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.HAZARD_STATEMENT, newTypeId);
-                if (isHazardStatementEntry) {
-                    materialEditState.getHazards().setHazardStatements(oldValue);
-                    continue;
-                }
-                boolean isPreStatementEntry
-                        = Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
-                if (isPreStatementEntry) {
-                    materialEditState.getHazards().setPrecautionaryStatements(oldValue);
-                    continue;
-                }
                 if (oldTypeId != null) {
-                    materialEditState.getHazards().getHazards().add(Hazard.getHazardById(oldTypeId));
+                    materialEditState.getHazards().getHazards().put(getHazardById(newTypeId), oldValue);
                 } else {
-                    materialEditState.getHazards().getHazards().remove(Hazard.getHazardById(newTypeId));
+                    materialEditState.getHazards().getHazards().remove(getHazardById(newTypeId));
                 }
             }
         }
@@ -441,7 +415,15 @@ public class HistoryOperation implements Serializable {
         if (taxonomySelectionController != null) {
             taxonomySelectionController.deactivateTree();
         }
+    }
 
+    private HazardType getHazardById(int id) {
+        for (HazardType hazard : possibleHazards) {
+            if (hazard.getId() == id) {
+                return hazard;
+            }
+        }
+        return null;
     }
 
 }
