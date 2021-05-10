@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.ProjectService;
 
@@ -37,6 +38,7 @@ public class MaterialDeployment {
                 .addClass(TaxonomyService.class)
                 .addClass(TissueService.class)
                 .addClass(MaterialService.class)
+                .addClass(HazardService.class)
                 .addClass(TaxonomyNestingService.class);
     }
 }
