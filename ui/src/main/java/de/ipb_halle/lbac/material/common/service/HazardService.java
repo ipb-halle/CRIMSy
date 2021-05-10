@@ -17,14 +17,16 @@
  */
 package de.ipb_halle.lbac.material.common.service;
 
-import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardEntity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -60,6 +62,35 @@ public class HazardService implements Serializable {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * Returns all possible hazardcategories for a given materialtype
+     *
+     * @param type
+     * @return
+     */
+    public Set<HazardType.Category> getAllowedCatsOf(MaterialType type) {
+        Set<HazardType.Category> categories = new HashSet<>();
+        categories.add(HazardType.Category.CUSTOM);
+        if (type == MaterialType.BIOMATERIAL) {
+            categories.add(HazardType.Category.BSL);
+        }
+        if (type == MaterialType.COMPOSITION) {
+            categories.add(HazardType.Category.GHS);
+            categories.add(HazardType.Category.RADIOACTIVITY);
+            categories.add(HazardType.Category.BSL);
+            categories.add(HazardType.Category.STATEMENTS);
+        }
+        if (type == MaterialType.STRUCTURE) {
+            categories.add(HazardType.Category.GHS);
+            categories.add(HazardType.Category.RADIOACTIVITY);
+            categories.add(HazardType.Category.STATEMENTS);
+        }
+        if (type == MaterialType.TISSUE) {
+            categories.add(HazardType.Category.BSL);
+        }
+        return categories;
     }
 
     @PostConstruct

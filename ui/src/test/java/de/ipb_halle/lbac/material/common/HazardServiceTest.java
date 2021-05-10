@@ -20,8 +20,10 @@ package de.ipb_halle.lbac.material.common;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -52,6 +54,35 @@ public class HazardServiceTest extends TestBase {
         Assert.assertEquals(1, hazards.size());
         hazards = hazardService.getHazardOf(HazardType.Category.CUSTOM);
         Assert.assertEquals(1, hazards.size());
+    }
+
+    @Test
+    public void test002_getPossibleCategories() {
+        Set<HazardType.Category> cats = hazardService.getAllowedCatsOf(MaterialType.TISSUE);
+        Assert.assertEquals(2, cats.size());
+        Assert.assertTrue(cats.contains(HazardType.Category.BSL));
+        Assert.assertTrue(cats.contains(HazardType.Category.CUSTOM));
+
+        cats = hazardService.getAllowedCatsOf(MaterialType.BIOMATERIAL);
+        Assert.assertEquals(2, cats.size());
+        Assert.assertTrue(cats.contains(HazardType.Category.BSL));
+        Assert.assertTrue(cats.contains(HazardType.Category.CUSTOM));
+
+        cats = hazardService.getAllowedCatsOf(MaterialType.COMPOSITION);
+        Assert.assertEquals(5, cats.size());
+        Assert.assertTrue(cats.contains(HazardType.Category.BSL));
+        Assert.assertTrue(cats.contains(HazardType.Category.CUSTOM));
+        Assert.assertTrue(cats.contains(HazardType.Category.GHS));
+        Assert.assertTrue(cats.contains(HazardType.Category.STATEMENTS));
+        Assert.assertTrue(cats.contains(HazardType.Category.RADIOACTIVITY));
+
+        cats = hazardService.getAllowedCatsOf(MaterialType.STRUCTURE);
+        Assert.assertEquals(4, cats.size());
+        Assert.assertTrue(cats.contains(HazardType.Category.CUSTOM));
+        Assert.assertTrue(cats.contains(HazardType.Category.GHS));
+        Assert.assertTrue(cats.contains(HazardType.Category.STATEMENTS));
+        Assert.assertTrue(cats.contains(HazardType.Category.RADIOACTIVITY));
+
     }
 
     @Deployment
