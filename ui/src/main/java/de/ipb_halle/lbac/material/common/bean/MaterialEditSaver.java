@@ -220,7 +220,7 @@ public class MaterialEditSaver implements Serializable {
                 this.materialService.getEm().persist(dbEntity);
             }
             deleteOldHazards(newMaterial);
-            List<HazardsMaterialsEntity> newDbEntities = newMaterial.getHazards().createDBInstances(newMaterial.getId());
+            List<HazardsMaterialsEntity> newDbEntities = newMaterial.getHazards().createEntity(newMaterial.getId());
             for (HazardsMaterialsEntity dbEntity : newDbEntities) {
                 this.materialService.getEm().persist(dbEntity);
             }

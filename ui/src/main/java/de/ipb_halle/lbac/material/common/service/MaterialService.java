@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
-import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
@@ -142,6 +141,9 @@ public class MaterialService implements Serializable {
 
     @Inject
     protected TaxonomyService taxonomyService;
+
+    @Inject
+    protected HazardService hazardService;
 
     @Inject
     protected TissueService tissueService;
@@ -318,7 +320,7 @@ public class MaterialService implements Serializable {
     private HazardInformation loadHazardInformation(int materialId) {
         Query q3 = em.createNativeQuery(SQL_GET_HAZARDS, HazardsMaterialsEntity.class);
         q3.setParameter("mid", materialId);
-        return HazardInformation.createObjectFromDbEntity(q3.getResultList());
+        return new HazardInformation(q3.getResultList(), hazardService.getAllHazardTypes());
     }
 
     /**
@@ -441,7 +443,7 @@ public class MaterialService implements Serializable {
     }
 
     private Consumable loadConsumable(MaterialEntity me) {
-        Consumable c= new Consumable(
+        Consumable c = new Consumable(
                 me.getMaterialid(),
                 loadMaterialNamesById(me.getMaterialid()),
                 me.getProjectid(),
@@ -493,14 +495,14 @@ public class MaterialService implements Serializable {
                 projectAcl, actorId);
         editedMaterialSaver.saveEditedMaterialOverview();
         editedMaterialSaver.saveEditedMaterialIndices();
-        if(newMaterial.getType()==MaterialType.STRUCTURE){
+        if (newMaterial.getType() == MaterialType.STRUCTURE) {
             editedMaterialSaver.saveEditedMaterialStructure();
         }
         editedMaterialSaver.saveEditedMaterialHazards();
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
-       
+
     }
 
     /**
@@ -608,7 +610,7 @@ public class MaterialService implements Serializable {
      * @param m
      */
     protected void saveMaterialHazards(Material m) {
-        for (HazardsMaterialsEntity haMaEn : m.getHazards().createDBInstances(m.getId())) {
+        for (HazardsMaterialsEntity haMaEn : m.getHazards().createEntity(m.getId())) {
             em.persist(haMaEn);
         }
     }

@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.util.InputConverter;
 import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -142,11 +143,10 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
             logger.info("  " + mn.getTypeId() + " -> " + mn.getValue());
         }
         logger.info("----- Hazards ------");
-        for (Hazard h : hazards.getHazards()) {
-            logger.info("  " + h.getTypeId() + ": " + h.name());
+        for (HazardType h : hazards.getHazards().keySet()) {
+            logger.info("  " + h.getName()+ ": " + hazards.getHazards().get(h));
         }
-        logger.info("  H-Statements " + hazards.getHazardStatements());
-        logger.info("  P-Statements " + hazards.getPrecautionaryStatements());
+      
         logger.info("----- StorageInformation ------");
         logger.info("  StorageClass: " + storageInformation.getStorageClass().getName());
         logger.info("  Remarks: " + storageInformation.getRemarks());
