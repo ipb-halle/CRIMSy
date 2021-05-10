@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardEntity;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -62,6 +63,15 @@ public class HazardService implements Serializable {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public List<HazardType> getAllHazardTypes() {
+        List<HazardType> hazards = new ArrayList<>();
+        for (HazardType.Category cat : HazardType.Category.values()) {
+            hazards.addAll(getHazardOf(cat));
+        }
+
+        return hazards;
     }
 
     /**
