@@ -189,7 +189,7 @@ public class HistoryOperation implements Serializable {
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String oldValue = diff.getRemarksOld().get(i);
                 if (oldTypeId != null) {
-                    materialEditState.getHazards().getHazards().put(getHazardById(newTypeId), oldValue);
+                    materialEditState.getHazards().getHazards().put(getHazardById(oldTypeId), oldValue);
                 } else {
                     materialEditState.getHazards().getHazards().remove(getHazardById(newTypeId));
                 }

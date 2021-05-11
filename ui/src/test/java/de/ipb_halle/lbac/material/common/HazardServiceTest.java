@@ -39,6 +39,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class HazardServiceTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private HazardService hazardService;
 
