@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
@@ -82,32 +83,32 @@ public class TissueServiceTest extends TestBase {
         names.add(new MaterialName("Wurzel", "de", 1));
         names.add(new MaterialName("Root", "en", 2));
         names.add(new MaterialName("Radix", "la", 3));
-         for (Taxonomy t : taxoService.loadTaxonomy(new HashMap<>(), true)) {
+        for (Taxonomy t : taxoService.loadTaxonomy(new HashMap<>(), true)) {
             System.out.println(t.getFirstName());
         }
         Taxonomy taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(3);
         Tissue tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("Hyphen", "de", 1));
         names.add(new MaterialName("flocci, hyphae", "la", 2));
         taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(1);
         tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("Blüte", "de", 1));
-       
+
         Taxonomy seerose = taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(11);
         tissue = new Tissue(100, names, seerose);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("Stützrippe", "de", 1));
         taxo = taxoService.loadTaxonomy(new HashMap<>(), true).get(18);
         tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(),publicUser);
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         List<Tissue> loadedTissues = tissueService.loadTissues();
         Assert.assertEquals(4, loadedTissues.size());
@@ -124,6 +125,6 @@ public class TissueServiceTest extends TestBase {
                 .addClass(TaxonomyNestingService.class)
                 .addClass(TissueService.class)
                 .addClass(TaxonomyService.class);
-        return UserBeanDeployment.add(deployment);
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

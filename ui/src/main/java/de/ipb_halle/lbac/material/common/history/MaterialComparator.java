@@ -357,7 +357,7 @@ public class MaterialComparator implements Serializable {
             Material editedMat) {
         MaterialHazardDifference hazardDiff = new MaterialHazardDifference();
         Map<HazardType, String> newHazards = editedMat.getHazards().getHazards();
-        Map<HazardType, String> oldHazards = editedMat.getHazards().getHazards();
+        Map<HazardType, String> oldHazards = originalMat.getHazards().getHazards();
         //Find all hazards in edited material, but not in original one
         Set<HazardType> hazardsInEditedButNotInOld
                 = AWithoutB(newHazards.keySet(), oldHazards.keySet());
@@ -366,7 +366,7 @@ public class MaterialComparator implements Serializable {
         }
         //Find all hazards in original material, but not in edited one
         Set<HazardType> hazardsInOldButNotInNew
-                = AWithoutB(newHazards.keySet(), oldHazards.keySet());
+                = AWithoutB(oldHazards.keySet(),newHazards.keySet() );
         for (HazardType hazard : hazardsInOldButNotInNew) {
             hazardDiff.addHazardRemovement(hazard.getId(), oldHazards.get(hazard));
         }

@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.common.HazardType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -134,10 +135,12 @@ public class CreationTools {
         Structure m = createEmptyStructure(p.getId());
 
         HazardInformation hazardInfos = new HazardInformation();
-        hazardInfos.setAttention(true);
-        hazardInfos.setIrritant(true);
-        hazardInfos.setHazardStatements(hazardStatement);
-        hazardInfos.setPrecautionaryStatements(precautionaryStatement);
+        hazardInfos.getHazards().put(new HazardType(2, false, "GHS02", 1), null);
+        hazardInfos.getHazards().put(new HazardType(8, false, "GHS08", 1), null);
+        hazardInfos.getHazards().put(new HazardType(10, true, "HS", 2), hazardStatement);
+        hazardInfos.getHazards().put(new HazardType(10, true, "HS", 2), hazardStatement);
+        hazardInfos.getHazards().put(new HazardType(11, true, "PS", 2), precautionaryStatement);
+
         m.setHazards(hazardInfos);
 
         StorageClassInformation storageInfos = new StorageClassInformation();
