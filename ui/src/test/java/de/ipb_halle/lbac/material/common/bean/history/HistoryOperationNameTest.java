@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -65,7 +64,7 @@ public class HistoryOperationNameTest {
         mnb.setNames(names);
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(),new StorageClassInformation(),null);
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(),new StorageClassInformation(),null,new ArrayList<>());
     }
 
     @Test

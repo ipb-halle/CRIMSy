@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.material.common.bean.save;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionBean;
@@ -50,6 +49,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.HashMap;
@@ -70,6 +70,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class MaterialEditSaverTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     private CreationTools creationTools;
 
@@ -200,28 +202,7 @@ public class MaterialEditSaverTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("MaterialEditSaverTest.war")
-                .addClass(ACListService.class)
-                .addClass(CollectionBean.class)
-                .addClass(CollectionService.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
-                .addClass(CollectionOrchestrator.class)
-                .addClass(EntityManagerService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchService.class)
-                .addClass(ProjectService.class)
-                .addClass(CollectionWebClient.class)
-                .addClass(Updater.class)
-                .addClass(Navigator.class)
-                .addClass(WordCloudBean.class)
-                .addClass(ACListService.class)
-                .addClass(WordCloudWebClient.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(TissueService.class)
-                .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("MaterialEditSaverTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

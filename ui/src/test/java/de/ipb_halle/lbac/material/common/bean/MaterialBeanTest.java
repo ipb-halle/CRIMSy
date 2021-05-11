@@ -39,6 +39,8 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 import java.util.HashMap;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -56,6 +58,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class MaterialBeanTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     private ACListService aclistService;
@@ -77,11 +81,15 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private IndexService indexService;
+    
+    @Inject 
+    private HazardService hazardService;
 
     @Before
     public void init() {
         instance = new MateriaBeanMock();
         instance.setAcListService(aclistService);
+        instance.setHazardService(hazardService);
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
@@ -140,13 +148,15 @@ public class MaterialBeanTest extends TestBase {
     @Test
     public void test002_navigateInHistory() throws Exception {
         MaterialIndexBean indexBean = new MaterialIndexBean();
+       
         instance.setProjectService(projectService);
         indexBean.setIndexService(indexService);
         instance.setMaterialIndexBean(indexBean);
 
         instance.setProjectBean(new ProjectBean());
+        
         Material originalMaterial = materialService.loadMaterialById(material.getId());
-
+instance.startMaterialEdit(originalMaterial.copyMaterial());
         MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, originalMaterial.getHazards());
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
@@ -181,6 +191,6 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
-        return PrintBeanDeployment.add(deployment);
+        return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }

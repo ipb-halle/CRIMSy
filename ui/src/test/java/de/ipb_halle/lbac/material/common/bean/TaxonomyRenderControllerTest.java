@@ -21,22 +21,16 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyBean;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
-import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.project.ProjectBean;
-import de.ipb_halle.lbac.project.ProjectEditBean;
-import de.ipb_halle.lbac.project.ProjectService;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,6 +54,8 @@ import org.primefaces.model.TreeNode;
  */
 @RunWith(Arquillian.class)
 public class TaxonomyRenderControllerTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     private TaxonomyService taxonomyService;
@@ -213,16 +209,8 @@ public class TaxonomyRenderControllerTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("TaxonomyRenderControllerTest.war")
-                .addClass(ProjectService.class)
-                .addClass(MaterialService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(TissueService.class)
-                .addClass(ProjectEditBean.class)
-                .addClass(Navigator.class)
-                .addClass(ProjectBean.class)
-                .addClass(TaxonomyService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("TaxonomyRenderControllerTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 
 }

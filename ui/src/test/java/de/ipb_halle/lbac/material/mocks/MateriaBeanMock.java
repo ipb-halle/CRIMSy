@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 
 /**
  *
@@ -73,6 +74,10 @@ public class MateriaBeanMock extends MaterialBean {
     @Override
     public boolean hasDetailRight(ACPermission what, MaterialDetailType onWhat) {
         return rightToEdit;
+    }
+    
+    public void setHazardService(HazardService service){
+        this.hazardService=service;
     }
 
 }

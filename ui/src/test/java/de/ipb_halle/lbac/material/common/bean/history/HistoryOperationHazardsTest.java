@@ -17,7 +17,6 @@
  */
 package de.ipb_halle.lbac.material.common.bean.history;
 
-import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
@@ -25,6 +24,7 @@ import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
@@ -54,7 +54,7 @@ public class HistoryOperationHazardsTest {
     HistoryOperation instance;
     MaterialIndexDifference mid;
     MaterialIndexBean mib;
-    Random random=new Random();
+    Random random = new Random();
 
     @Before
     public void init() {
@@ -68,9 +68,14 @@ public class HistoryOperationHazardsTest {
         mib = new MaterialIndexBean();
         s.setIndices(indices);
         mid = new MaterialIndexDifference();
-       
-        mid.initialise(0,random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageClassInformation(),null);
+        List<HazardType> possibleHazards=new ArrayList<>();
+        possibleHazards.add(new HazardType(5, false, "GHS05", 1));
+        possibleHazards.add(new HazardType(7, false, "GHS05", 1));
+        possibleHazards.add(new HazardType(8, false, "GHS05", 1));
+        possibleHazards.add(new HazardType(10, false, "GHS05", 1));
+        possibleHazards.add(new HazardType(11, false, "GHS05", 1));
+        mid.initialise(0, random.nextInt(100000), currentDate);
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageClassInformation(), null, possibleHazards);
     }
 
     /**
@@ -87,7 +92,7 @@ public class HistoryOperationHazardsTest {
 
         //First edit: add corrosive
         MaterialHazardDifference d1 = new MaterialHazardDifference();
-        d1.addDifference(null, Hazard.corrosive.getTypeId(), null, null);
+        d1.addDifference(null, 5, null, null);
         c.add(Calendar.MONTH, -2);
         Date date1 = c.getTime();
         d1.initialise(s.getId(), userID, date1);
@@ -96,50 +101,46 @@ public class HistoryOperationHazardsTest {
         //Second edit: add irritant and unhealthy, remove corrosive and 
         // add a precautionary statement with a remark
         MaterialHazardDifference d2 = new MaterialHazardDifference();
-        d2.addDifference(null, Hazard.unhealthy.getTypeId(), null, null);
-        d2.addDifference(null, Hazard.irritant.getTypeId(), null, null);
-        d2.addDifference(null, 12, null, "h - test statement");
-        d2.addDifference(null, 13, null, "p - test statement");
-        d2.addDifference(Hazard.corrosive.getTypeId(), null, null, null);
+        d2.addDifference(null, 8, null, null);
+        d2.addDifference(null, 7, null, null);
+        d2.addDifference(null, 10, null, "h - test statement");
+        d2.addDifference(null, 11, null, "p - test statement");
+        d2.addDifference(5, null, null, null);
         c.add(Calendar.MONTH, 1);
         Date date2 = c.getTime();
         d2.initialise(s.getId(), userID, date2);
         s.getHistory().addDifference(d2);
 
         //create current state 
-        mes.getHazards().getHazards().add(Hazard.irritant);
-        mes.getHazards().getHazards().add(Hazard.unhealthy);
-        mes.getHazards().setPrecautionaryStatements("p - test statement");
-        mes.getHazards().setHazardStatements("h - test statement");
+        mes.getHazards().getHazards().put(new HazardType(7, false, "GHS07", 1), null);
+        mes.getHazards().getHazards().put(new HazardType(8, false, "GHS08", 1), null);
+
+        mes.getHazards().getHazards().put(new HazardType(10, true, "h", 2), "H-Statement");
+        mes.getHazards().getHazards().put(new HazardType(11, true, "p", 2), "P-Statement");
         mes.setCurrentVersiondate(date2);
 
         // apply second edit: (irritant,unhealthy) -> (corrosive)
         instance.applyNextNegativeDifference();
         Assert.assertEquals(1, mes.getHazards().getHazards().size());
-        Assert.assertNull(mes.getHazards().getPrecautionaryStatements());
-        Assert.assertNull(mes.getHazards().getHazardStatements());
-        Assert.assertTrue(mes.getHazards().getHazards().contains(Hazard.corrosive));
+        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(5, false, "GHS05", 1)));
 
         // apply first edit: (corrosive) -> ( )
         instance.applyNextNegativeDifference();
         Assert.assertTrue(mes.getHazards().getHazards().isEmpty());
-        Assert.assertNull(mes.getHazards().getPrecautionaryStatements());
-        Assert.assertNull(mes.getHazards().getHazardStatements());
-
+      
         // apply first edit: ( )  -> (corrosive) 
         instance.applyNextPositiveDifference();
         Assert.assertEquals(1, mes.getHazards().getHazards().size());
-        Assert.assertTrue(mes.getHazards().getHazards().contains(Hazard.corrosive));
-        Assert.assertNull(mes.getHazards().getPrecautionaryStatements());
-        Assert.assertNull(mes.getHazards().getHazardStatements());
+        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(5, false, "GHS05", 1)));
+      
 
         // apply second edit: (corrosive) -> (irritant,unhealthy)
         instance.applyNextPositiveDifference();
-        Assert.assertEquals(2, mes.getHazards().getHazards().size());
-        Assert.assertTrue(mes.getHazards().getHazards().contains(Hazard.irritant));
-        Assert.assertTrue(mes.getHazards().getHazards().contains(Hazard.unhealthy));
-        Assert.assertEquals("p - test statement", mes.getHazards().getPrecautionaryStatements());
-        Assert.assertEquals("h - test statement", mes.getHazards().getHazardStatements());
+        Assert.assertEquals(4, mes.getHazards().getHazards().size());
+        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(7, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(8, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(10, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(11, false, "GHS05", 1)));
 
     }
 

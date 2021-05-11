@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
@@ -33,6 +32,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class MaterialComparatorTest {
     @Before
     public void init() {
         instance = new MaterialComparator();
-        user=new User();
+        user = new User();
         user.setId(-1);
     }
 
@@ -266,40 +266,45 @@ public class MaterialComparatorTest {
         UUID ownerID = UUID.randomUUID();
         Structure oldStruc = createEmptyStructure(user);
         Structure newStruc = createEmptyStructure(user);
+        oldStruc.getHazards().getHazards().put(new HazardType(10, true, "hStatement", 2), "HazardBeforeEdit");
+        oldStruc.getHazards().getHazards().put(new HazardType(11, true, "pStatement", 2), null);
+        oldStruc.getHazards().getHazards().put(new HazardType(2, false, "GHS02", 1), null);
+        oldStruc.getHazards().getHazards().put(new HazardType(6, false, "GHS06", 1), null);
 
-        oldStruc.getHazards().setHazardStatements("HazardBeforeEdit");
-        oldStruc.getHazards().setPrecautionaryStatements(null);
-        oldStruc.getHazards().setAttention(true);
-        oldStruc.getHazards().setHighlyFlammable(true);
-        oldStruc.getHazards().setPoisonous(true);
-
-        newStruc.getHazards().setHazardStatements("HazardAfterEdit");
-        newStruc.getHazards().setPrecautionaryStatements("PrecautionaryStatementAfterEdit");
-        newStruc.getHazards().setHighlyFlammable(true);
-        newStruc.getHazards().setIrritant(true);
+        newStruc.getHazards().getHazards().put(new HazardType(10, true, "hStatement", 2), "HazardAfterEdit");
+        newStruc.getHazards().getHazards().put(new HazardType(11, true, "hStatement", 2), "PrecautionaryStatementAfterEdit");
+        newStruc.getHazards().getHazards().put(new HazardType(2, false, "GHS02", 1), null);
+        newStruc.getHazards().getHazards().put(new HazardType(7, false, "GHS07", 1), null);
 
         List<MaterialDifference> diffs = instance.compareMaterial(
                 oldStruc, newStruc);
 
         MaterialHazardDifference hazardDiff = instance.getDifferenceOfType(diffs, MaterialHazardDifference.class);
         Assert.assertNotNull("Testcase 6 - Diff must be found", hazardDiff);
-        Assert.assertEquals("Testcase 6 - 5 diffs must be found", 5, hazardDiff.getEntries());
+        Assert.assertEquals("Testcase 6 - 5 diffs must be found", 4, hazardDiff.getEntries());
+        Assert.assertEquals(7, hazardDiff.getTypeIdsNew().get(0), 0);
+        Assert.assertNull(hazardDiff.getTypeIdsOld().get(0));
+        Assert.assertNull(hazardDiff.getRemarksNew().get(0));
+        Assert.assertNull(hazardDiff.getRemarksOld().get(0));
+        Assert.assertNull(hazardDiff.getTypeIdsNew().get(1));
+        Assert.assertEquals(6, hazardDiff.getTypeIdsOld().get(1), 0);
+        Assert.assertNull(hazardDiff.getRemarksNew().get(1));
+        Assert.assertNull(hazardDiff.getRemarksOld().get(1));
+        int indexOfHStatement = 3;
+        int indexOfPStatement=2;
+        if (hazardDiff.getTypeIdsNew().get(2) == 10) {
+            indexOfHStatement = 2;
+            indexOfPStatement=3;
+        }
+        Assert.assertEquals(10,hazardDiff.getTypeIdsNew().get(indexOfHStatement),0);
+        Assert.assertEquals(10, hazardDiff.getTypeIdsOld().get(indexOfHStatement), 0);
+        Assert.assertEquals("HazardAfterEdit",hazardDiff.getRemarksNew().get(indexOfHStatement));
+        Assert.assertEquals("HazardBeforeEdit",hazardDiff.getRemarksOld().get(indexOfHStatement));
+        Assert.assertEquals(11,hazardDiff.getTypeIdsNew().get(indexOfPStatement),0);
+        Assert.assertEquals(11, hazardDiff.getTypeIdsOld().get(indexOfPStatement), 0);
+        Assert.assertNull(hazardDiff.getRemarksOld().get(indexOfPStatement));
+        Assert.assertEquals("PrecautionaryStatementAfterEdit",hazardDiff.getRemarksNew().get(indexOfPStatement));
 
-        Assert.assertEquals("Testcase 6 - new HazardRemark must be 'HazardAfterEdit'", "HazardAfterEdit", hazardDiff.getRemarksNew().get(0));
-        Assert.assertEquals("Testcase 6 - old HazardRemark must be 'HazardBeforeEdit'", "HazardBeforeEdit", hazardDiff.getRemarksOld().get(0));
-        Assert.assertEquals("Testcase 6 - new PrecautionaryRemark must be 'Precautionary'", "PrecautionaryStatementAfterEdit", hazardDiff.getRemarksNew().get(1));
-        Assert.assertNull("Testcase 6 - old PrecautionaryRemark must be null", hazardDiff.getRemarksOld().get(1));
-        Integer indexOfAttention = hazardDiff.getTypeIdsOld().indexOf(Hazard.attention.getTypeId());
-        Assert.assertNotNull("Testcase 6 - Attention wast not removed", indexOfAttention);
-        Assert.assertNull("Testcase 6 - Attention was not removed", hazardDiff.getTypeIdsNew().get(indexOfAttention));
-
-        Integer indexOfPoisonous = hazardDiff.getTypeIdsOld().indexOf(Hazard.poisonous.getTypeId());
-        Assert.assertNotNull("Testcase 6 - Poisonous wast not removed", indexOfPoisonous);
-        Assert.assertNull("Testcase 6 - Poisonous was not removed", hazardDiff.getTypeIdsNew().get(indexOfPoisonous));
-
-        Integer indexOfIrritant = hazardDiff.getTypeIdsNew().indexOf(Hazard.irritant.getTypeId());
-        Assert.assertNotNull("Testcase 6 - Irritant wast not added", indexOfIrritant);
-        Assert.assertNull("Testcase 6 - Irritant was not added", hazardDiff.getTypeIdsOld().get(indexOfIrritant));
     }
 
     @Test
