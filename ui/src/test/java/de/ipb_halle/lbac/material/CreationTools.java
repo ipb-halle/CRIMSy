@@ -34,7 +34,11 @@ import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -138,7 +142,6 @@ public class CreationTools {
         hazardInfos.getHazards().put(new HazardType(2, false, "GHS02", 1), null);
         hazardInfos.getHazards().put(new HazardType(8, false, "GHS08", 1), null);
         hazardInfos.getHazards().put(new HazardType(10, true, "HS", 2), hazardStatement);
-        hazardInfos.getHazards().put(new HazardType(10, true, "HS", 2), hazardStatement);
         hazardInfos.getHazards().put(new HazardType(11, true, "PS", 2), precautionaryStatement);
 
         m.setHazards(hazardInfos);
@@ -167,5 +170,28 @@ public class CreationTools {
         m.getNames().add(new MaterialName("Test-Structure", "en", 1));
 
         return m;
+    }
+
+    /**
+     * Creates a biomaterial with the given parameter, but not saves it into the
+     * db
+     *
+     * @param p
+     * @param name
+     * @param taxo
+     * @return
+     */
+    public BioMaterial createBioMaterial(Project p, String name, Taxonomy taxo, Tissue tissue) {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName(name, "de", 0));
+        BioMaterial biomaterial = new BioMaterial(0, names, p.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        return biomaterial;
+    }
+
+    public Consumable createConsumable(Project p, String name) {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName(name, "de", 0));
+        Consumable con = new Consumable(0, names, 0, new HazardInformation(), new StorageClassInformation());
+        return con;
     }
 }

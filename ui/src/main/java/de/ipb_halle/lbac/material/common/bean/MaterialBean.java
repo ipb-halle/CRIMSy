@@ -136,6 +136,8 @@ public class MaterialBean implements Serializable {
     private TissueController tissueController;
     private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
 
+    private MaterialHazardController hazardController;
+
     public enum Mode {
         CREATE, EDIT, HISTORY
     };
@@ -144,7 +146,6 @@ public class MaterialBean implements Serializable {
     public void init() {
         permission = new MaterialEditPermission(this);
         tissueController = new TissueController(this);
-
     }
 
     public void setCurrentAccount(@Observes LoginEvent evt) {
@@ -160,6 +161,7 @@ public class MaterialBean implements Serializable {
             possibleProjects.add(materialEditState.getDefaultProject());
             possibleProjects.addAll(projectBean.getReadableProjects());
             taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, taxonomyService.loadTaxonomyById(1));
+            hazardController = new MaterialHazardController(hazardService, materialEditState.getMaterialToEdit());
         } catch (Exception e) {
             logger.error(e);
         }
@@ -177,6 +179,7 @@ public class MaterialBean implements Serializable {
             hazards = new HazardInformation(m);
             Project p = projectService.loadProjectById(m.getProjectId());
             materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m, hazards);
+            hazardController = new MaterialHazardController(hazardService, m);
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
             currentMaterialType = m.getType();

@@ -31,6 +31,7 @@
             <p:tab
                 title="#{msgs.materialCreation_panelHazard_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
+                <!--
                 <p:outputPanel
                     styleClass="indicesPanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
@@ -90,6 +91,7 @@
                         <f:converter converterId="InputConverter" />
                     </b:inputText>
                 </p:outputPanel>
+                -->
             </p:tab>
         </ui:composition>
     </h:body>
