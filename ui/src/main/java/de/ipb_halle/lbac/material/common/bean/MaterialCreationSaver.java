@@ -44,6 +44,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialCreationSaver implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     protected MaterialNameBean materialNameBean;
     protected MaterialService materialService;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -89,8 +91,7 @@ public class MaterialCreationSaver implements Serializable {
             HazardInformation hazards,
             StorageClassInformation storageClassInformation,
             List<IndexEntry> indices,
-            User owner
-    ) {
+            User owner) {
         try {
             Molecule mol = new Molecule(structureInfos.getStructureModel(), -1);
             if (mol.isEmptyMolecule()) {
@@ -116,19 +117,17 @@ public class MaterialCreationSaver implements Serializable {
                 hazards,
                 storageClassInformation,
                 new Molecule(structureInfos.getStructureModel(), 0));
-
         struc.getIndices().addAll(indices);
-
         materialService.saveMaterialToDB(
                 struc,
                 project.getUserGroups().getId(),
                 project.getDetailTemplates(),
                 owner
         );
+
     }
 
-    public void saveMaterialOverview(Material m, Project p,User owner) {
-
+    public void saveMaterialOverview(Material m, Project p, User owner) {
         if (m.getStorageInformation() == null) {
             m.setStorageInformation(new StorageClassInformation());
         }
@@ -140,7 +139,7 @@ public class MaterialCreationSaver implements Serializable {
             m.setHazards(new HazardInformation());
 
         }
-        materialService.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates(),owner);
+        materialService.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates(), owner);
     }
 
     public void saveConsumable(
@@ -151,7 +150,7 @@ public class MaterialCreationSaver implements Serializable {
             User owner) {
         Consumable consumable = new Consumable(0, materialNameBean.getNames(), project.getId(), hazards, storageClassInformation);
         consumable.getIndices().addAll(indices);
-        saveMaterialOverview(consumable, project,owner);
+        saveMaterialOverview(consumable, project, owner);
 
     }
 

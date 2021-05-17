@@ -55,6 +55,7 @@ import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
@@ -153,6 +154,7 @@ public class MaterialBean implements Serializable {
     }
 
     public void startMaterialCreation() {
+
         try {
             initState();
             materialEditState = new MaterialEditState();
@@ -162,9 +164,10 @@ public class MaterialBean implements Serializable {
             possibleProjects.addAll(projectBean.getReadableProjects());
             taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, taxonomyService.loadTaxonomyById(1));
             hazardController = new MaterialHazardController(
-                    hazardService, 
-                    materialEditState.getMaterialToEdit(),
-                    true);
+                    hazardService,
+                    currentMaterialType,
+                    true,
+                    new HashMap<>());
         } catch (Exception e) {
             logger.error(e);
         }
@@ -184,8 +187,9 @@ public class MaterialBean implements Serializable {
             materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m, hazards);
             hazardController = new MaterialHazardController(
                     hazardService,
-                    m,
-                    acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()));
+                    m.getType(),
+                    acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()),
+                    m.getHazards().getHazards());
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
@@ -265,6 +269,11 @@ public class MaterialBean implements Serializable {
 
     public void setCurrentMaterialType(MaterialType currentMaterialType) {
         this.currentMaterialType = currentMaterialType;
+        hazardController = new MaterialHazardController(
+                hazardService,
+                currentMaterialType,
+                true,
+                new HashMap<>());
     }
 
     public Project getCurrentProject() {
@@ -485,7 +494,6 @@ public class MaterialBean implements Serializable {
      * @return true if user is project edit is possible
      */
     public boolean isProjectEditEnabled() {
-        logger.info("Mode " + mode);
         switch (mode) {
             case CREATE:
                 return true;

@@ -115,6 +115,28 @@ public class HazardService implements Serializable {
         }
     }
 
+    public HazardType getHazardById(int id) {
+        for (HazardType.Category cat : loadedHazardTypes.keySet()) {
+            for (HazardType h : loadedHazardTypes.get(cat)) {
+                if (h.getId() == id) {
+                    return h;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Could not load hazard with id " + id);
+    }
+
+    public HazardType getHazardByName(String name) {
+        for (HazardType.Category cat : loadedHazardTypes.keySet()) {
+            for (HazardType h : loadedHazardTypes.get(cat)) {
+                if (h.getName().equals(name)) {
+                    return h;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Could not load hazard with name " + name);
+    }
+
     private List<HazardEntity> loadHazardEntities() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<HazardEntity> cq = cb.createQuery(HazardEntity.class);

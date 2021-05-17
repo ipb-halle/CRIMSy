@@ -366,7 +366,7 @@ public class MaterialComparator implements Serializable {
         }
         //Find all hazards in original material, but not in edited one
         Set<HazardType> hazardsInOldButNotInNew
-                = AWithoutB(oldHazards.keySet(),newHazards.keySet() );
+                = AWithoutB(oldHazards.keySet(),newHazards.keySet());
         for (HazardType hazard : hazardsInOldButNotInNew) {
             hazardDiff.addHazardRemovement(hazard.getId(), oldHazards.get(hazard));
         }

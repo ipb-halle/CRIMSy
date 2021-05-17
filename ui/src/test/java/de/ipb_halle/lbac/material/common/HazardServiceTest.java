@@ -84,7 +84,28 @@ public class HazardServiceTest extends TestBase {
         Assert.assertTrue(cats.contains(HazardType.Category.GHS));
         Assert.assertTrue(cats.contains(HazardType.Category.STATEMENTS));
         Assert.assertTrue(cats.contains(HazardType.Category.RADIOACTIVITY));
+    }
 
+    @Test
+    public void test003_getHazardById() {
+        Assert.assertNotNull(hazardService.getHazardById(1));
+        Assert.assertThrows(
+                Exception.class,
+                () -> {
+                    hazardService.getHazardById(-1);
+                }
+        );
+    }
+
+    @Test
+    public void test004_getHazardByName() {
+        Assert.assertNotNull(hazardService.getHazardByName("GHS01"));
+        Assert.assertThrows(
+                Exception.class,
+                () -> {
+                    hazardService.getHazardByName("non existing");
+                }
+        );
     }
 
     @Deployment

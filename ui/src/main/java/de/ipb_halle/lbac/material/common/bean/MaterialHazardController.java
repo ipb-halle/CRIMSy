@@ -17,7 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import java.util.ArrayList;
@@ -35,23 +35,35 @@ public class MaterialHazardController {
 
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private HazardService hazardService;
-    private Material material;
+    private MaterialType materialType;
     private String imageString = "/resources/img/hazards/%s.png";
-    private List<HazardType> selectedHazards;
+    private HazardType[] selectedHazards;
     private String hStatements;
     private String pStatements;
     private String customText;
     private boolean radioctive;
     private boolean editable;
+    private final int CUSTOM_STATEMENT_ID = 17;
+    private final int H_STATEMENT_ID = 10;
+    private final int P_STATEMENT_ID = 11;
+    private final int RADIOACTIVE_STATEMENT_ID = 16;
 
     public MaterialHazardController(
             HazardService hazardService,
-            Material material,
-            boolean isEditable) {
+            MaterialType materialType,
+            boolean isEditable,
+            Map<HazardType, String> hazards) {
+
         this.hazardService = hazardService;
-        this.material = material;
-        this.selectedHazards = new ArrayList<>(material.getHazards().getHazards().keySet());
-        this.editable=isEditable;
+        this.materialType = materialType;
+        selectedHazards = new HazardType[hazards.keySet().size()];
+        this.selectedHazards = new ArrayList<>(hazards.keySet()).toArray(selectedHazards);
+        this.editable = isEditable;
+        this.radioctive = hazards.keySet().contains(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID));
+        this.customText = hazards.get(hazardService.getHazardById(CUSTOM_STATEMENT_ID));
+        this.hStatements = hazards.get(hazardService.getHazardById(H_STATEMENT_ID));
+        this.pStatements = hazards.get(hazardService.getHazardById(P_STATEMENT_ID));
+
     }
 
     /**
@@ -61,10 +73,11 @@ public class MaterialHazardController {
      * @return
      */
     public boolean isHazardCategoryRendered(String category) {
-        return hazardService.getAllowedCatsOf(material.getType()).contains(HazardType.Category.valueOf(category));
+        boolean rendered = hazardService.getAllowedCatsOf(materialType).contains(HazardType.Category.valueOf(category));
+        return rendered;
     }
-    
-    public boolean isHazardEditable(){
+
+    public boolean isHazardEditable() {
         return editable;
     }
 
@@ -90,23 +103,26 @@ public class MaterialHazardController {
         return types;
     }
 
+    /**
+     * Create the Map which is used in the material model.
+     *
+     * @return
+     */
     public Map<HazardType, String> createHazardMap() {
         Map<HazardType, String> hazards = new HashMap<>();
-        for (HazardType hazard : selectedHazards) {
-            hazards.put(hazard, null);
+        for (int i = 0; i < selectedHazards.length; i++) {
+            hazards.put(selectedHazards[i], null);
         }
-        if (hStatements != null && !hStatements.trim().isEmpty()) {
-            hazards.put(hazardService.getHazardOf(HazardType.Category.STATEMENTS).get(0), hStatements);
-        }
-        if (pStatements != null && !pStatements.trim().isEmpty()) {
-            hazards.put(hazardService.getHazardOf(HazardType.Category.STATEMENTS).get(1), pStatements);
-        }
+        processStatement(hazards, hStatements, H_STATEMENT_ID);
+        processStatement(hazards, pStatements, P_STATEMENT_ID);
+        processStatement(hazards, customText, CUSTOM_STATEMENT_ID);
+
         if (radioctive) {
-            hazards.put(hazardService.getHazardOf(HazardType.Category.RADIOACTIVITY).get(0), null);
+            hazards.put(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID), null);
+        } else {
+            hazards.remove(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID));
         }
-        if (customText != null && !customText.trim().isEmpty()) {
-            hazards.put(hazardService.getHazardOf(HazardType.Category.CUSTOM).get(0), customText);
-        }
+
         return hazards;
     }
 
@@ -114,11 +130,16 @@ public class MaterialHazardController {
         return h.getName();
     }
 
-    public List<HazardType> getSelectedHazards() {
+    /**
+     * An array is necessary, list is not working
+     *
+     * @return
+     */
+    public HazardType[] getSelectedHazards() {
         return selectedHazards;
     }
 
-    public void setSelectedHazards(List<HazardType> selectedHazards) {
+    public void setSelectedHazards(HazardType[] selectedHazards) {
         this.selectedHazards = selectedHazards;
     }
 
@@ -152,6 +173,22 @@ public class MaterialHazardController {
 
     public void setRadioctive(boolean radioctive) {
         this.radioctive = radioctive;
+    }
+
+    /**
+     * Checks if a statement is not blank and puts it in the hazard list. If not
+     * blank, removes it if its in.
+     *
+     * @param hazards
+     * @param statement
+     * @param id
+     */
+    private void processStatement(Map<HazardType, String> hazards, String statement, int id) {
+        if (statement != null && !statement.trim().isEmpty()) {
+            hazards.put(hazardService.getHazardById(id), statement);
+        } else {
+            hazards.remove(hazardService.getHazardById(id));
+        }
     }
 
 }

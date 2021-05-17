@@ -487,6 +487,7 @@ public class MaterialService implements Serializable {
             Integer projectAcl,
             Integer actorId) throws Exception {
         Date modDate = new Date();
+
         List<MaterialDifference> diffs = comparator.compareMaterial(oldMaterial, newMaterial);
         for (MaterialDifference md : diffs) {
             md.initialise(newMaterial.getId(), actorId, modDate);
@@ -502,7 +503,6 @@ public class MaterialService implements Serializable {
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
-
     }
 
     /**
@@ -535,7 +535,6 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.BIOMATERIAL) {
             saveBioMaterial((BioMaterial) m);
         }
-        logger.info("Save finished");
     }
 
     /**
