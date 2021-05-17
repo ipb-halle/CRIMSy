@@ -26,14 +26,13 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -73,28 +72,88 @@ public class MaterialHazardControllerTest extends TestBase {
     }
 
     @Test
-    public void test001_checkPossibleHauardCategories() {
+    public void test001_checkPossibleHazardCategories() {
         //Check Structure
-        MaterialHazardController controller = new MaterialHazardController(hazardService, structure);
+        MaterialHazardController controller = new MaterialHazardController(hazardService, structure,true);
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Biomaterial
-        controller = new MaterialHazardController(hazardService, bioMaterial);
+        controller = new MaterialHazardController(hazardService, bioMaterial,true);
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Consumable
-        controller = new MaterialHazardController(hazardService, consumable);
+        controller = new MaterialHazardController(hazardService, consumable,true);
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
+    }
+
+    @Test
+    public void test002_getImageLocation() {
+        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable,true);
+        Assert.assertEquals(
+                "/resources/img/hazards/GHS01.png",
+                controller.getImageLocation(new HazardType(1, true, "GHS01", 1)));
+    }
+
+    @Test
+    public void test003_getHazardsOfType() {
+        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable,true);
+        List<HazardType> hazards = controller.getHazardsOfType(HazardType.Category.BSL.toString());
+        Assert.assertEquals(4, hazards.size());
+        Assert.assertEquals(12, hazards.get(0).getId());
+        Assert.assertEquals(13, hazards.get(1).getId());
+        Assert.assertEquals(14, hazards.get(2).getId());
+        Assert.assertEquals(15, hazards.get(3).getId());
+
+        hazards = controller.getHazardsOfType(HazardType.Category.CUSTOM.toString());
+        Assert.assertEquals(1, hazards.size());
+        Assert.assertEquals(17, hazards.get(0).getId());
+
+        hazards = controller.getHazardsOfType(HazardType.Category.GHS.toString());
+        Assert.assertEquals(9, hazards.size());
+        for (int i = 1; i < 10; i++) {
+            Assert.assertEquals(i, hazards.get(i - 1).getId());
+        }
+
+        hazards = controller.getHazardsOfType(HazardType.Category.RADIOACTIVITY.toString());
+        Assert.assertEquals(1, hazards.size());
+        Assert.assertEquals(16, hazards.get(0).getId());
+
+        hazards = controller.getHazardsOfType(HazardType.Category.STATEMENTS.toString());
+        Assert.assertEquals(2, hazards.size());
+        Assert.assertEquals(10, hazards.get(0).getId());
+        Assert.assertEquals(11, hazards.get(1).getId());
+    }
+
+    @Test
+    public void test004_createHazardMap() {
+        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable,true);
+        Assert.assertTrue(controller.createHazardMap().isEmpty());
+
+        controller.getSelectedHazards().add(hazardService.getHazardOf(HazardType.Category.GHS).get(0));
+
+        Assert.assertEquals(1, controller.createHazardMap().size());
+
+        controller.setRadioctive(true);
+        Assert.assertEquals(2, controller.createHazardMap().size());
+
+        controller.setpStatements("P-Statemnet");
+        Assert.assertEquals(3, controller.createHazardMap().size());
+
+        controller.sethStatements("H-Statemnet");
+        Assert.assertEquals(4, controller.createHazardMap().size());
+
+        controller.setCustomText("C-Statemnet");
+        Assert.assertEquals(5, controller.createHazardMap().size());
     }
 
     @Deployment
