@@ -46,17 +46,31 @@ public class MaterialHazardController {
     private String customText;
     private boolean radioctive;
     private boolean editable;
-    private final int CUSTOM_STATEMENT_ID = 17;
+    private String bioSavetyLevel;
+    private List<String> possibleBioSavetyLevels = new ArrayList<>();
+
     private final int H_STATEMENT_ID = 10;
     private final int P_STATEMENT_ID = 11;
+    private final int[] BSL_IDS = new int[]{12, 13, 14, 15};
     private final int RADIOACTIVE_STATEMENT_ID = 16;
+    private final int CUSTOM_STATEMENT_ID = 17;
 
     public MaterialHazardController(
             HazardService hazardService,
             MaterialType materialType,
             boolean isEditable,
             Map<HazardType, String> hazards) {
+        this(hazardService, materialType, isEditable, hazards, JsfMessagePresenter.getInstance());
 
+    }
+
+    public MaterialHazardController(
+            HazardService hazardService,
+            MaterialType materialType,
+            boolean isEditable,
+            Map<HazardType, String> hazards,
+            MessagePresenter presenter) {
+        this.messagePresenter = presenter;
         this.hazardService = hazardService;
         this.materialType = materialType;
         selectedHazards = new HazardType[hazards.keySet().size()];
@@ -66,6 +80,16 @@ public class MaterialHazardController {
         this.customText = hazards.get(hazardService.getHazardById(CUSTOM_STATEMENT_ID));
         this.hStatements = hazards.get(hazardService.getHazardById(H_STATEMENT_ID));
         this.pStatements = hazards.get(hazardService.getHazardById(P_STATEMENT_ID));
+        for (int i = 0; i < 5; i++) {
+            possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(i));
+        }
+        this.bioSavetyLevel = possibleBioSavetyLevels.get(0);
+
+        for (int i = 0; i < BSL_IDS.length; i++) {
+            if (hazards.keySet().contains(hazardService.getHazardById(BSL_IDS[i]))) {
+                this.bioSavetyLevel = possibleBioSavetyLevels.get(i + 1);
+            }
+        }
 
     }
 
@@ -119,6 +143,7 @@ public class MaterialHazardController {
         processStatement(hazards, hStatements, H_STATEMENT_ID);
         processStatement(hazards, pStatements, P_STATEMENT_ID);
         processStatement(hazards, customText, CUSTOM_STATEMENT_ID);
+        processBioSavetyLevels(hazards);
 
         if (radioctive) {
             hazards.put(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID), null);
@@ -140,9 +165,13 @@ public class MaterialHazardController {
     public String getLocalizedCustomLabel() {
         return getLocalizedName(hazardService.getHazardById(17));
     }
-    
-    public String getLocalizedStatements(){
+
+    public String getLocalizedStatements() {
         return messagePresenter.presentMessage("hazard_Statements");
+    }
+
+    public String getLocalizedBioSavetyLabel(int level) {
+        return messagePresenter.presentMessage("hazard_S" + level);
     }
 
     /**
@@ -204,6 +233,31 @@ public class MaterialHazardController {
         } else {
             hazards.remove(hazardService.getHazardById(id));
         }
+    }
+
+    private void processBioSavetyLevels(Map<HazardType, String> hazards) {
+        //Put selected savety level in hazards
+        for (int i = 0; i < BSL_IDS.length; i++) {
+            if (bioSavetyLevel.equals(possibleBioSavetyLevels.get(i+1))) {
+                hazards.put(hazardService.getHazardById(BSL_IDS[i]), null);
+            }
+        }
+    }
+
+    public String getBioSavetyLevel() {
+        return bioSavetyLevel;
+    }
+
+    public void setBioSavetyLevel(String bioSavetyLevel) {
+        this.bioSavetyLevel = bioSavetyLevel;
+    }
+
+    public List<String> getPossibleBioSavetyLevels() {
+        return possibleBioSavetyLevels;
+    }
+
+    public void setMessagePresenter(MessagePresenter messagePresenter) {
+        this.messagePresenter = messagePresenter;
     }
 
 }

@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.consumable.Consumable;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -76,21 +77,21 @@ public class MaterialHazardControllerTest extends TestBase {
     @Test
     public void test001_checkPossibleHazardCategories() {
         //Check Structure
-        MaterialHazardController controller = new MaterialHazardController(hazardService, structure.getType(), true, new HashMap<>());
+        MaterialHazardController controller = new MaterialHazardController(hazardService, structure.getType(), true, new HashMap<>(), new MessagePresenterMock());
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Biomaterial
-        controller = new MaterialHazardController(hazardService, bioMaterial.getType(), true, new HashMap<>());
+        controller = new MaterialHazardController(hazardService, bioMaterial.getType(), true, new HashMap<>(), new MessagePresenterMock());
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Consumable
-        controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>());
+        controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(controller.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(controller.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
@@ -100,7 +101,7 @@ public class MaterialHazardControllerTest extends TestBase {
 
     @Test
     public void test002_getImageLocation() {
-        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>());
+        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
         Assert.assertEquals(
                 "/resources/img/hazards/GHS01.png",
                 controller.getImageLocation(new HazardType(1, true, "GHS01", 1)));
@@ -108,7 +109,7 @@ public class MaterialHazardControllerTest extends TestBase {
 
     @Test
     public void test003_getHazardsOfType() {
-        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>());
+        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
         List<HazardType> hazards = controller.getHazardsOfType(HazardType.Category.BSL.toString());
         Assert.assertEquals(4, hazards.size());
         Assert.assertEquals(12, hazards.get(0).getId());
@@ -138,7 +139,7 @@ public class MaterialHazardControllerTest extends TestBase {
 
     @Test
     public void test004_createHazardMap() {
-        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>());
+        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
         Assert.assertTrue(controller.createHazardMap().isEmpty());
         HazardType explosive = hazardService.getHazardOf(HazardType.Category.GHS).get(0);
         controller.setSelectedHazards(new HazardType[]{explosive});
@@ -165,9 +166,63 @@ public class MaterialHazardControllerTest extends TestBase {
         types.put(hazardService.getHazardOf(HazardType.Category.GHS).get(0), null);
         types.put(hazardService.getHazardOf(HazardType.Category.CUSTOM).get(0), "customText");
         types.put(hazardService.getHazardOf(HazardType.Category.STATEMENTS).get(0), "h-statement");
-        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, types);
+        MaterialHazardController controller = new MaterialHazardController(hazardService, consumable.getType(), true, types, new MessagePresenterMock());
 
         Assert.assertEquals(3, controller.createHazardMap().size());
+    }
+
+    @Test
+    public void test006_createHazardMapWithBioSavetyLevel() {
+        MaterialHazardController controller = new MaterialHazardController(hazardService, bioMaterial.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        Map<HazardType, String> hazards = controller.createHazardMap();
+        Assert.assertEquals(0, hazards.size());
+        //set level 0
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(0));
+        hazards = controller.createHazardMap();
+        Assert.assertEquals(0, hazards.size());
+        // Set level 1
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(1));
+        hazards = controller.createHazardMap();
+        Assert.assertEquals(1, hazards.size());
+        hazards.keySet().iterator().next().equals(hazardService.getHazardById(12));
+        // Set level 2
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(2));
+        hazards = controller.createHazardMap();
+        Assert.assertEquals(1, hazards.size());
+        hazards.keySet().iterator().next().equals(hazardService.getHazardById(13));
+        // Set level 3
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(3));
+        hazards = controller.createHazardMap();
+        Assert.assertEquals(1, hazards.size());
+        hazards.keySet().iterator().next().equals(hazardService.getHazardById(14));
+        // Set level 4
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(4));
+        hazards = controller.createHazardMap();
+        Assert.assertEquals(1, hazards.size());
+        hazards.keySet().iterator().next().equals(hazardService.getHazardById(15));
+    }
+
+    @Test
+    public void test007_createControllerWithSavetyLevel() {
+        Map<HazardType, String> hazards = new HashMap<>();
+        hazards.put(hazardService.getHazardById(12), null);
+        MaterialHazardController controller = new MaterialHazardController(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        Assert.assertEquals(controller.getPossibleBioSavetyLevels().get(1), controller.getBioSavetyLevel());
+
+        hazards.clear();
+        hazards.put(hazardService.getHazardById(13), null);
+        controller = new MaterialHazardController(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        Assert.assertEquals(controller.getPossibleBioSavetyLevels().get(2), controller.getBioSavetyLevel());
+
+        hazards.clear();
+        hazards.put(hazardService.getHazardById(14), null);
+        controller = new MaterialHazardController(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        Assert.assertEquals(controller.getPossibleBioSavetyLevels().get(3), controller.getBioSavetyLevel());
+
+        hazards.clear();
+        hazards.put(hazardService.getHazardById(15), null);
+        controller = new MaterialHazardController(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        Assert.assertEquals(controller.getPossibleBioSavetyLevels().get(4), controller.getBioSavetyLevel());
     }
 
     @Deployment

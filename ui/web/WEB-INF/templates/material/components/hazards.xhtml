@@ -69,6 +69,35 @@
                     </p:panelGrid>
                 </p:panel>
                 <p:panel
+                    header="Bio Savety Levels"
+                    rendered="#{materialBean.hazardController.isHazardCategoryRendered('BSL')}">
+
+                    <p:selectOneRadio    
+                        id="custom_bsl"
+                        value="#{materialBean.hazardController.bioSavetyLevel}"
+                        layout="custom">
+                        <f:selectItems 
+                            value="#{materialBean.hazardController.possibleBioSavetyLevels}"
+                            var="bsl" itemLabel="#{bsl}"
+                            itemValue="#{bsl}"/>
+                    </p:selectOneRadio>
+                    <p:panelGrid columns="2">
+                        <c:forEach 
+                            varStatus="status"
+                            var="bsl"
+                            items="#{materialBean.hazardController.possibleBioSavetyLevels}">
+                            <p:radioButton 
+                                for="custom_bsl"
+                                itemIndex="#{status.index}"
+                                disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                            <p:outputLabel
+                                for="@previous" 
+                                value="#{bsl}"/>
+                        </c:forEach>
+                    </p:panelGrid>
+
+                </p:panel>
+                <p:panel
                     header="#{materialBean.hazardController.getLocalizedStatements()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('STATEMENTS')}">
                     <p:inputText 
