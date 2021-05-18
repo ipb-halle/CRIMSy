@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialHazardController {
 
+    private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private HazardService hazardService;
     private MaterialType materialType;
@@ -127,7 +130,19 @@ public class MaterialHazardController {
     }
 
     public String getLocalizedName(HazardType h) {
-        return h.getName();
+        return messagePresenter.presentMessage("hazard_" + h.getName());
+    }
+
+    public String getLocalizedRadioactiveLabel() {
+        return getLocalizedName(hazardService.getHazardById(16));
+    }
+
+    public String getLocalizedCustomLabel() {
+        return getLocalizedName(hazardService.getHazardById(17));
+    }
+    
+    public String getLocalizedStatements(){
+        return messagePresenter.presentMessage("hazard_Statements");
     }
 
     /**

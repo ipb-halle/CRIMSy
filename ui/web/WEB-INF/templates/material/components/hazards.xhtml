@@ -69,7 +69,7 @@
                     </p:panelGrid>
                 </p:panel>
                 <p:panel
-                    header="Statements"
+                    header="#{materialBean.hazardController.getLocalizedStatements()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('STATEMENTS')}">
                     <p:inputText 
                         value="#{materialBean.hazardController.hStatements}"
@@ -79,15 +79,15 @@
                         disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
                 </p:panel>
                 <p:panel
-                    header="Radioactive"
+                    header="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('RADIOACTIVITY')}">
                     <p:selectBooleanCheckbox
                         value="#{materialBean.hazardController.radioctive}"
+                        label="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"
                         disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
-
                 </p:panel>
                 <p:panel
-                    header="Custom Label"
+                    header="#{materialBean.hazardController.getLocalizedCustomLabel()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('CUSTOM')}">
                     <p:inputText 
                         value="#{materialBean.hazardController.customText}"
