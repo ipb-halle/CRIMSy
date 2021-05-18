@@ -40,13 +40,13 @@ public class HazardConverter implements Converter {
     @Override
     public String getAsString(FacesContext fc, UIComponent uic, Object o) throws ConverterException {
         if (o == null) {
-            return null;
+            return "";
         }
         if (o instanceof HazardType) {
             HazardType ht = (HazardType) o;
             return ht.getName();
         } else {
-            return null;
+            return "";
         }
     }
 

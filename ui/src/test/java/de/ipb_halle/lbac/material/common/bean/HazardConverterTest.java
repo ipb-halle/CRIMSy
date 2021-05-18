@@ -17,37 +17,19 @@
  */
 package de.ipb_halle.lbac.material.common.bean;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.admission.ACList;
-import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.common.service.IndexService;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectBean;
-import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
-import java.util.HashMap;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,8 +64,8 @@ public class HazardConverterTest extends TestBase {
     public void test002_objectToString() {
         HazardType hazard = hazardService.getHazardById(3);
         HazardConverter conv = new HazardConverter();
-        Assert.assertNull(conv.getAsString(null, null, null));
-        Assert.assertNull(conv.getAsString(null, null, new Integer(2)));
+        Assert.assertEquals("", conv.getAsString(null, null, null));
+        Assert.assertEquals("", conv.getAsString(null, null, new Integer(2)));
         Assert.assertEquals(hazard.getName(), conv.getAsString(null, null, hazard));
     }
 
