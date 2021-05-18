@@ -263,7 +263,6 @@ public class MaterialComparatorTest {
 
     @Test
     public void test006_compareMaterialWithHazardDifference() throws Exception {
-        UUID ownerID = UUID.randomUUID();
         Structure oldStruc = createEmptyStructure(user);
         Structure newStruc = createEmptyStructure(user);
         oldStruc.getHazards().getHazards().put(new HazardType(10, true, "hStatement", 2), "HazardBeforeEdit");
@@ -291,19 +290,19 @@ public class MaterialComparatorTest {
         Assert.assertNull(hazardDiff.getRemarksNew().get(1));
         Assert.assertNull(hazardDiff.getRemarksOld().get(1));
         int indexOfHStatement = 3;
-        int indexOfPStatement=2;
+        int indexOfPStatement = 2;
         if (hazardDiff.getTypeIdsNew().get(2) == 10) {
             indexOfHStatement = 2;
-            indexOfPStatement=3;
+            indexOfPStatement = 3;
         }
-        Assert.assertEquals(10,hazardDiff.getTypeIdsNew().get(indexOfHStatement),0);
+        Assert.assertEquals(10, hazardDiff.getTypeIdsNew().get(indexOfHStatement), 0);
         Assert.assertEquals(10, hazardDiff.getTypeIdsOld().get(indexOfHStatement), 0);
-        Assert.assertEquals("HazardAfterEdit",hazardDiff.getRemarksNew().get(indexOfHStatement));
-        Assert.assertEquals("HazardBeforeEdit",hazardDiff.getRemarksOld().get(indexOfHStatement));
-        Assert.assertEquals(11,hazardDiff.getTypeIdsNew().get(indexOfPStatement),0);
+        Assert.assertEquals("HazardAfterEdit", hazardDiff.getRemarksNew().get(indexOfHStatement));
+        Assert.assertEquals("HazardBeforeEdit", hazardDiff.getRemarksOld().get(indexOfHStatement));
+        Assert.assertEquals(11, hazardDiff.getTypeIdsNew().get(indexOfPStatement), 0);
         Assert.assertEquals(11, hazardDiff.getTypeIdsOld().get(indexOfPStatement), 0);
         Assert.assertNull(hazardDiff.getRemarksOld().get(indexOfPStatement));
-        Assert.assertEquals("PrecautionaryStatementAfterEdit",hazardDiff.getRemarksNew().get(indexOfPStatement));
+        Assert.assertEquals("PrecautionaryStatementAfterEdit", hazardDiff.getRemarksNew().get(indexOfPStatement));
 
     }
 
@@ -339,6 +338,24 @@ public class MaterialComparatorTest {
 
         Assert.assertEquals("Testcase 7 - 3 differences in old storage conditions must be found", 2, storageDiff.getStorageConditionsOld().size());
         Assert.assertEquals("Testcase 7 - 3 differences in new storage conditions must be found", 2, storageDiff.getStorageConditionsNew().size());
+    }
+
+    @Test
+    public void compareBioMaterialWithHazardDiffs() throws Exception {
+
+        BioMaterial original = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), null, null);
+        original.setACList(new ACList());
+        original.setOwner(user);
+        original.getHazards().getHazards().put(new HazardType(12, false, "S1", 2), null);
+        BioMaterial copy = original.copyMaterial();
+        List<MaterialDifference> diffs=instance.compareMaterial(original, copy);
+        Assert.assertEquals(0,diffs.size());
+        
+        copy.getHazards().getHazards().clear();
+        copy.getHazards().getHazards().put(new HazardType(13, false, "S2", 2), null);
+        diffs=instance.compareMaterial(original, copy);
+        Assert.assertEquals(1,diffs.size());
+
     }
 
     protected Structure createEmptyStructure(User user) {
