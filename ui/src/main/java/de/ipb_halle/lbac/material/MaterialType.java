@@ -49,9 +49,11 @@ public enum MaterialType implements Serializable {
     BIOMATERIAL(
             3,
             MaterialDetailType.COMMON_INFORMATION,
+            MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.TAXONOMY),
     CONSUMABLE(
             4,
+            MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.COMMON_INFORMATION),
     SEQUENCE(
             5,
@@ -63,7 +65,7 @@ public enum MaterialType implements Serializable {
     INACCESSIBLE(8);
 
     private final List<MaterialDetailType> types;
-    private static final Map<String, MaterialType>  string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
+    private static final Map<String, MaterialType> string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
     private final int id;
 
     /**
@@ -79,7 +81,7 @@ public enum MaterialType implements Serializable {
     public static MaterialType fromString(String type) {
         return string2Enum.get(type);
     }
-    
+
     /**
      * Returns all detail informations of the specific type
      *
