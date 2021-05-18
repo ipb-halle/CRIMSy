@@ -236,9 +236,13 @@ public class MaterialHazardController {
     }
 
     private void processBioSavetyLevels(Map<HazardType, String> hazards) {
+        //Remove previous bio savety levels to avoid multiple entries
+        for (int i = 0; i < BSL_IDS.length; i++) {
+            hazards.remove(hazardService.getHazardById(BSL_IDS[i]));
+        }
         //Put selected savety level in hazards
         for (int i = 0; i < BSL_IDS.length; i++) {
-            if (bioSavetyLevel.equals(possibleBioSavetyLevels.get(i+1))) {
+            if (bioSavetyLevel.equals(possibleBioSavetyLevels.get(i + 1))) {
                 hazards.put(hazardService.getHazardById(BSL_IDS[i]), null);
             }
         }

@@ -109,9 +109,13 @@ public class MaterialComparator implements Serializable {
                     (Taxonomy) editedMat);
         }
         if (originalMat.getType() == MaterialType.BIOMATERIAL) {
-            addBioMaterialDifference(differences,
-                    (BioMaterial) originalMat,
-                    (BioMaterial) editedMat);
+            try {
+                addBioMaterialDifference(differences,
+                        (BioMaterial) originalMat,
+                        (BioMaterial) editedMat);
+            } catch (Exception e) {
+                logger.info("Error at calculating bio diffs");
+            }
         }
 
         return differences;
@@ -366,7 +370,7 @@ public class MaterialComparator implements Serializable {
         }
         //Find all hazards in original material, but not in edited one
         Set<HazardType> hazardsInOldButNotInNew
-                = AWithoutB(oldHazards.keySet(),newHazards.keySet());
+                = AWithoutB(oldHazards.keySet(), newHazards.keySet());
         for (HazardType hazard : hazardsInOldButNotInNew) {
             hazardDiff.addHazardRemovement(hazard.getId(), oldHazards.get(hazard));
         }

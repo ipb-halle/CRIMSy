@@ -51,7 +51,7 @@ public class HazardInformation implements Serializable {
     }
 
     public HazardInformation(Material m) {
-        hazards = (m.getHazards().getHazards());
+        hazards = new HashMap<>((m.getHazards().getHazards()));
     }
 
     public List<HazardsMaterialsEntity> createEntity(int materialId) {

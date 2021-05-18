@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -51,6 +52,7 @@ public class BioMaterial extends Material {
         this.type = MaterialType.BIOMATERIAL;
         this.tissue = tissue;
         this.taxonomy = taxonomy;
+        this.creationTime = new Date();
     }
 
     @Override
