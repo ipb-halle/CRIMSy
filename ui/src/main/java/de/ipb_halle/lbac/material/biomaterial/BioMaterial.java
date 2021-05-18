@@ -70,6 +70,7 @@ public class BioMaterial extends Material {
                 tissue == null ? null : tissue.copyMaterial());
         b.setACList(getACList());
         b.setOwner(getOwner());
+        b.setCreationTime(creationTime);
         b.setHistory(history);
         return b;
     }

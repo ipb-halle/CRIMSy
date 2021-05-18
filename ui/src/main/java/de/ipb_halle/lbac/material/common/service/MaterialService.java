@@ -439,6 +439,7 @@ public class MaterialService implements Serializable {
         material.setOwner(memberService.loadUserById(entity.getOwner()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
         material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
+        material.setCreationTime(entity.getCtime());
         return material;
     }
 
