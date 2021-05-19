@@ -17,6 +17,13 @@
  */
 package de.ipb_halle.lbac.material.common.bean.history;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
@@ -27,26 +34,40 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.bean.MaterialHazardController;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
+import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.common.service.IndexService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.project.Project;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author fmauz
  */
-public class HistoryOperationHazardsTest {
+@RunWith(Arquillian.class)
+public class HistoryOperationHazardsTest extends TestBase {
 
+    @Inject
+    private HazardService hazardService;
     List<IndexEntry> indices;
     Structure s;
     Date currentDate;
@@ -63,12 +84,18 @@ public class HistoryOperationHazardsTest {
         currentDate = new Date();
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);
+        mes = new MaterialEditState(
+                new Project(), 
+                currentDate,
+                s,
+                s,
+                new MaterialHazardController(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), new MessagePresenterMock()));
 
         mes.setCurrentVersiondate(currentDate);
         mib = new MaterialIndexBean();
         s.setIndices(indices);
         mid = new MaterialIndexDifference();
-        List<HazardType> possibleHazards=new ArrayList<>();
+        List<HazardType> possibleHazards = new ArrayList<>();
         possibleHazards.add(new HazardType(5, false, "GHS05", 1));
         possibleHazards.add(new HazardType(7, false, "GHS05", 1));
         possibleHazards.add(new HazardType(8, false, "GHS05", 1));
@@ -112,36 +139,44 @@ public class HistoryOperationHazardsTest {
         s.getHistory().addDifference(d2);
 
         //create current state 
-        mes.getHazards().getHazards().put(new HazardType(7, false, "GHS07", 1), null);
-        mes.getHazards().getHazards().put(new HazardType(8, false, "GHS08", 1), null);
+        mes.getHazardController().addHazardType(new HazardType(7, false, "GHS07", 1), null);
+        mes.getHazardController().addHazardType(new HazardType(8, false, "GHS08", 1), null);
 
-        mes.getHazards().getHazards().put(new HazardType(10, true, "h", 2), "H-Statement");
-        mes.getHazards().getHazards().put(new HazardType(11, true, "p", 2), "P-Statement");
+        mes.getHazardController().addHazardType(new HazardType(10, true, "h", 2), "H-Statement");
+        mes.getHazardController().addHazardType(new HazardType(11, true, "p", 2), "P-Statement");
         mes.setCurrentVersiondate(date2);
 
         // apply second edit: (irritant,unhealthy) -> (corrosive)
         instance.applyNextNegativeDifference();
-        Assert.assertEquals(1, mes.getHazards().getHazards().size());
-        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(5, false, "GHS05", 1)));
+        Assert.assertEquals(1, mes.getHazardController().createHazardMap().size());
+        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(5, false, "GHS05", 1)));
 
         // apply first edit: (corrosive) -> ( )
         instance.applyNextNegativeDifference();
-        Assert.assertTrue(mes.getHazards().getHazards().isEmpty());
-      
+        Assert.assertTrue(mes.getHazardController().createHazardMap().isEmpty());
+
         // apply first edit: ( )  -> (corrosive) 
         instance.applyNextPositiveDifference();
-        Assert.assertEquals(1, mes.getHazards().getHazards().size());
-        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(5, false, "GHS05", 1)));
-      
+        Assert.assertEquals(1, mes.getHazardController().createHazardMap().size());
+        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(5, false, "GHS05", 1)));
 
         // apply second edit: (corrosive) -> (irritant,unhealthy)
         instance.applyNextPositiveDifference();
-        Assert.assertEquals(4, mes.getHazards().getHazards().size());
-        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(7, false, "GHS05", 1)));
-        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(8, false, "GHS05", 1)));
-        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(10, false, "GHS05", 1)));
-        Assert.assertTrue(mes.getHazards().getHazards().keySet().contains(new HazardType(11, false, "GHS05", 1)));
+        Assert.assertEquals(4, mes.getHazardController().createHazardMap().size());
+        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(7, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(8, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(10, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(11, false, "GHS05", 1)));
 
     }
 
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment
+                = prepareDeployment("HistoryOperationHazardsTest.war")
+                        .addClass(IndexService.class);
+        deployment = ItemDeployment.add(deployment);
+        deployment = UserBeanDeployment.add(deployment);
+        return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
+    }
 }

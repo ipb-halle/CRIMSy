@@ -23,9 +23,11 @@ import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,6 +63,53 @@ public class MaterialHazardController {
             boolean isEditable,
             Map<HazardType, String> hazards) {
         this(hazardService, materialType, isEditable, hazards, JsfMessagePresenter.getInstance());
+
+    }
+
+    public void removeHazard(HazardType hazard) {
+        for (int i = 0; i < BSL_IDS.length; i++) {
+            if (hazard.getId() == BSL_IDS[i]) {
+                bioSavetyLevel = possibleBioSavetyLevels.get(0);
+            }
+        }
+
+        if (hazard.getId() == H_STATEMENT_ID) {
+            hStatements = null;
+        }
+        if (hazard.getId() == P_STATEMENT_ID) {
+            pStatements = null;
+        }
+        if (hazard.getId() == CUSTOM_STATEMENT_ID) {
+            customText = null;
+        }
+        if (hazard.getId() == RADIOACTIVE_STATEMENT_ID) {
+            radioctive = false;
+        }
+        ArrayList<HazardType> tmpArray = new ArrayList<>(Arrays.asList(selectedHazards));
+        tmpArray.remove(hazard);
+        selectedHazards = tmpArray.stream().toArray(HazardType[]::new);
+    }
+
+    public void addHazardType(HazardType hazard, String remark) {
+        for (int i = 0; i < BSL_IDS.length; i++) {
+            if (hazard.getId() == BSL_IDS[i]) {
+                bioSavetyLevel = possibleBioSavetyLevels.get(i + 1);
+            }
+        }
+        if (hazard.getId() == H_STATEMENT_ID) {
+            hStatements = remark;
+        } else if (hazard.getId() == P_STATEMENT_ID) {
+            pStatements = remark;
+        } else if (hazard.getId() == CUSTOM_STATEMENT_ID) {
+            customText = remark;
+        } else if (hazard.getId() == RADIOACTIVE_STATEMENT_ID) {
+            radioctive = true;
+        } else {
+            ArrayList<HazardType> newHazards = Arrays.stream(selectedHazards).collect(Collectors
+                    .toCollection(ArrayList::new));
+            newHazards.add(hazard);
+            selectedHazards = newHazards.stream().toArray(HazardType[]::new);
+        }
 
     }
 
@@ -107,6 +156,11 @@ public class MaterialHazardController {
     public boolean isHazardEditable() {
         return editable;
     }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+    }
+    
 
     /**
      * Returns the location of the associated image of the hazard

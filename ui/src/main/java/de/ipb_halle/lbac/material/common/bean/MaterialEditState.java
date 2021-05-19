@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialEditState implements Serializable{
+public class MaterialEditState implements Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Project currentProject;
@@ -38,7 +38,7 @@ public class MaterialEditState implements Serializable{
     private Material materialBeforeEdit;
     private Material materialToEdit;
     private Project defaultProject;
-    private HazardInformation hazards=new HazardInformation();
+    private MaterialHazardController hazardController;
 
     public MaterialEditState() {
         defaultProject = new Project(ProjectType.DUMMY_PROJECT, "bitte das Projekt auswählen");
@@ -50,12 +50,12 @@ public class MaterialEditState implements Serializable{
             Date currentVersiondate,
             Material materialBeforeEdit,
             Material materialToEdit,
-            HazardInformation hazards) {
+            MaterialHazardController hazards) {
         this.currentProject = currentProject;
         this.currentVersiondate = currentVersiondate;
         this.materialBeforeEdit = materialBeforeEdit;
         this.materialToEdit = materialToEdit;
-        this.hazards = hazards;
+        this.hazardController = hazards;
 
         defaultProject = new Project(ProjectType.DUMMY_PROJECT, "bitte das Projekt auswählen");
 
@@ -112,13 +112,12 @@ public class MaterialEditState implements Serializable{
                         .getFollowingKey(date));
     }
 
-    public HazardInformation getHazards() {
-        return hazards;
-    }
-    
     public boolean isMostRecentVersion() {
         return materialToEdit.getHistory().isMostRecentVersion(currentVersiondate);
     }
-            
+
+    public MaterialHazardController getHazardController() {
+        return hazardController;
+    }
 
 }

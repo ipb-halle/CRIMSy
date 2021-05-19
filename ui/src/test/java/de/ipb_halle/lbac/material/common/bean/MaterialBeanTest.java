@@ -167,7 +167,7 @@ public class MaterialBeanTest extends TestBase {
         
         Material originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial.copyMaterial());
-        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, originalMaterial.getHazards());
+        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController());
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
         
@@ -200,7 +200,6 @@ public class MaterialBeanTest extends TestBase {
         indexBean.setIndexService(indexService);
         instance.setMaterialIndexBean(indexBean);
         instance.setTaxonomyService(taxoService);
-                
         
         BioMaterial bioMat = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(bioMat, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
@@ -208,23 +207,31 @@ public class MaterialBeanTest extends TestBase {
         instance.setProjectBean(new ProjectBean());
         instance.startMaterialEdit(bioMat);
         
-        
         instance.getHazardController().setBioSavetyLevel(instance.getHazardController().getPossibleBioSavetyLevels().get(1));
         
         instance.actionSaveMaterial();
         
-        Material loadedBioMat=materialService.loadMaterialById(bioMat.getId());
-        Assert.assertEquals(1,loadedBioMat.getHazards().getHazards().size());
-        Assert.assertEquals(12,loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
+        Material loadedBioMat = materialService.loadMaterialById(bioMat.getId());
+        Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
+        Assert.assertEquals(12, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
         
         instance.startMaterialEdit(loadedBioMat);
         instance.getHazardController().setBioSavetyLevel(instance.getHazardController().getPossibleBioSavetyLevels().get(2));
         instance.actionSaveMaterial();
         
-        loadedBioMat=materialService.loadMaterialById(bioMat.getId());
-        Assert.assertEquals(1,loadedBioMat.getHazards().getHazards().size());
-        Assert.assertEquals(13,loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
+        loadedBioMat = materialService.loadMaterialById(bioMat.getId());
+        instance.getMaterialEditState().setMaterialBeforeEdit(loadedBioMat);
+        instance.getMaterialEditState().setCurrentVersiondate(loadedBioMat.getHistory().getChanges().keySet().stream().reduce((first,second)->second).orElse(null));
+        Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
+        Assert.assertEquals(13, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
         
+        instance.switchOneVersionBack();
+        
+        instance.switchOneVersionBack();
+        
+        instance.switchOneVersionForward();
+        
+        instance.switchOneVersionForward();
         
     }
     

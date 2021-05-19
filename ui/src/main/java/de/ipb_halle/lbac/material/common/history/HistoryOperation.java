@@ -101,7 +101,6 @@ public class HistoryOperation implements Serializable {
         applyPositiveHazards();
         applyPositiveStorage();
         applyPositiveTaxonomy();
-
     }
 
     /**
@@ -173,9 +172,9 @@ public class HistoryOperation implements Serializable {
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String newValue = diff.getRemarksNew().get(i);
                 if (newTypeId != null) {
-                    materialEditState.getHazards().getHazards().put(getHazardById(newTypeId), newValue);
+                    materialEditState.getHazardController().addHazardType(getHazardById(newTypeId), newValue);
                 } else {
-                    materialEditState.getHazards().getHazards().remove(getHazardById(oldTypeId));
+                    materialEditState.getHazardController().removeHazard(getHazardById(oldTypeId));
                 }
             }
         }
@@ -184,14 +183,15 @@ public class HistoryOperation implements Serializable {
     protected void applyNegativeHazards() {
         MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
+            materialEditState.getHazardController().setEditable(false);
             for (int i = 0; i < diff.getEntries(); i++) {
                 Integer newTypeId = diff.getTypeIdsNew().get(i);
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String oldValue = diff.getRemarksOld().get(i);
                 if (oldTypeId != null) {
-                    materialEditState.getHazards().getHazards().put(getHazardById(oldTypeId), oldValue);
+                    materialEditState.getHazardController().addHazardType(getHazardById(oldTypeId), oldValue);
                 } else {
-                    materialEditState.getHazards().getHazards().remove(getHazardById(newTypeId));
+                    materialEditState.getHazardController().removeHazard(getHazardById(newTypeId));
                 }
             }
         }

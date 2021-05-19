@@ -24,7 +24,6 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -184,12 +183,14 @@ public class MaterialBean implements Serializable {
             }
             hazards = new HazardInformation(m);
             Project p = projectService.loadProjectById(m.getProjectId());
-            materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m, hazards);
             hazardController = new MaterialHazardController(
                     hazardService,
                     m.getType(),
                     acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()),
                     m.getHazards().getHazards(), messagePresenter);
+
+            materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m, hazardController);
+
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
@@ -346,8 +347,6 @@ public class MaterialBean implements Serializable {
 
     public void saveEditedMaterial() throws Exception {
         setBasicInfos();
-       
-
         if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
             saveEditedStructure();
         }
@@ -515,6 +514,7 @@ public class MaterialBean implements Serializable {
 
     public void switchOneVersionBack() {
         historyOperation.applyNextNegativeDifference();
+        hazardController.setEditable(false);
         mode = Mode.HISTORY;
 
     }
@@ -523,7 +523,10 @@ public class MaterialBean implements Serializable {
         historyOperation.applyNextPositiveDifference();
         mode = Mode.HISTORY;
         if (materialEditState.getMaterialBeforeEdit().getHistory().isMostRecentVersion(materialEditState.getCurrentVersiondate())) {
+            hazardController.setEditable(true);
             mode = Mode.EDIT;
+        } else {
+            hazardController.setEditable(false);
         }
     }
 
