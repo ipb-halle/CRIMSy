@@ -30,116 +30,23 @@
         <ui:composition>
             <b:container
                 styleClass="div-container-hazard">
-                <!--
                 <b:row>
-                    
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isExplosive()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS01.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_explosive}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isHighlyFlammable()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS02.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_flammable}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isOxidizing()}"
-                              tooltip="#{msgs.materialOverview_tooltip_oxidating}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS03.png"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards(). isCompressedGas()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS04.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_compressedGas}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isCorrosive()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS05.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_corrosive}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isPoisonous()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS06.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_poisonous}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
+                    <ui:repeat
+                        var ="hazardLocation"
+                        value="#{materialOverviewBean.getImageLocationOfHazards(material)}">
 
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isIrritant()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS07.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_irritant}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isUnhealthy()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS08.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_unhealthy}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isEnvironmentallyHazardous()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS09.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_environmentHazard}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isDanger()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS07.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_danger}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                    <b:column span="1"
-                              rendered="#{material.getHazards().isAttention()}"
-                              styleClass="div-col-hazard">
-                        <b:image value="/resources/img/hazards/GHS07.png"
-                                 tooltip="#{msgs.materialOverview_tooltip_attention}"
-                                 styleClass="img-hazard"/>
-                    </b:column>
-                </b:row>
-                
-                
-                <b:row>
-                    <b:column span="2">
-                        <h:outputText
-                            value="#{msgs.materialOverview_tableheader_hStatements}">
-                        </h:outputText>
-                    </b:column>
-                    <b:column span="10">
-                        <h:outputText
-                            value="#{material.getHazards().hazardStatements}">
-                        </h:outputText>
-                    </b:column>
+                        <b:image value="#{hazardLocation}"/>  
+
+                    </ui:repeat>
                 </b:row>
                 <b:row>
-                    <b:column span="2">
-                        <h:outputText
-                            value="#{msgs.materialOverview_tableheader_pStatements}">
-                        </h:outputText>
-                    </b:column>
-                    <b:column span="10">
-                        <h:outputText
-                            value="#{material.getHazards().precautionaryStatements}">
-                        </h:outputText>
-                    </b:column>
+                    <h:outputText
+                        value="#{materialOverviewBean.getHazardRemark(material, 10)}"/>
                 </b:row>
-                
--->
+                <b:row>
+                    <h:outputText
+                        value="#{materialOverviewBean.getHazardRemark(material, 11)}"/>
+                </b:row>
             </b:container>
         </ui:composition>
     </h:body>

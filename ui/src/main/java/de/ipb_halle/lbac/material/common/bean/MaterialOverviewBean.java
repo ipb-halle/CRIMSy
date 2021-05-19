@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.common.HazardType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +63,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
+    private String hazardImageString = "/resources/img/hazards/%s.png";
 
     @Inject
     private ItemBean itemBean;
@@ -203,6 +205,25 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     @Override
     public ACObjectController getAcObjectController() {
         return acObjectController;
+    }
+
+    public List<String> getImageLocationOfHazards(Material m) {
+        List<String> locations = new ArrayList<>();
+        for (HazardType ht : m.getHazards().getHazards().keySet()) {
+            if (ht.getCategory() == HazardType.Category.GHS) {
+                locations.add(String.format(hazardImageString, ht.getName()));
+            }
+        }
+        return locations;
+    }
+    
+    public String getHazardRemark(Material m,int hazardId){
+        for(HazardType h : m.getHazards().getHazards().keySet()){
+            if(h.getId()==hazardId){
+                return m.getHazards().getHazards().get(h);
+            }
+        }
+        return "";
     }
 
 }
