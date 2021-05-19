@@ -129,9 +129,11 @@ public class MaterialHazardController {
         this.customText = hazards.get(hazardService.getHazardById(CUSTOM_STATEMENT_ID));
         this.hStatements = hazards.get(hazardService.getHazardById(H_STATEMENT_ID));
         this.pStatements = hazards.get(hazardService.getHazardById(P_STATEMENT_ID));
-        for (int i = 0; i < 5; i++) {
+        for (int i = 1; i < 5; i++) {
             possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(i));
         }
+         possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(0));
+         
         this.bioSavetyLevel = possibleBioSavetyLevels.get(0);
 
         for (int i = 0; i < BSL_IDS.length; i++) {

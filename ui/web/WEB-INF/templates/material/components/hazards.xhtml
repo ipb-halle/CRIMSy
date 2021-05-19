@@ -33,7 +33,7 @@
                 title="#{msgs.materialCreation_panelHazard_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('HAZARD_INFORMATION')}">
                 <p:panel
-                    header="GHS"
+                    header="#{msgs.hazard_GHS_Label}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('GHS')}">
                     <p:selectManyCheckbox
                         id="ghsHazardsId"
@@ -54,7 +54,8 @@
                     see: https://www.primefaces.org/showcase/ui/input/manyCheckbox.xhtml?jfwid=13083
                     -->
                     <p:panelGrid 
-                        columns="12">
+                        columns="12"
+                        styleClass="borderlessGridPanel">
                         <c:forEach 
                             varStatus="status"
                             var="hazard"
@@ -63,13 +64,16 @@
                                 for="ghsHazardsId"
                                 itemIndex="#{status.index}"
                                 disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
-                            <p:outputLabel for="@previous" value="#{materialBean.hazardController.getLocalizedName(hazard)}"/>
-                            <b:image value="#{materialBean.hazardController.getImageLocation(hazard)}"/>                                
+                            <p:outputLabel 
+                                for="@previous" 
+                                value="#{materialBean.hazardController.getLocalizedName(hazard)}"/>
+                            <b:image 
+                                value="#{materialBean.hazardController.getImageLocation(hazard)}"/>                                
                         </c:forEach>
                     </p:panelGrid>
                 </p:panel>
                 <p:panel
-                    header="Bio Savety Levels"
+                    header="#{msgs.hazard_S_Label}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('BSL')}">
 
                     <p:selectOneRadio    
@@ -81,12 +85,15 @@
                             var="bsl" itemLabel="#{bsl}"
                             itemValue="#{bsl}"/>
                     </p:selectOneRadio>
-                    <p:panelGrid columns="2">
+                    <p:panelGrid
+                        styleClass="borderlessGridPanel"
+                        columns="2">
                         <c:forEach 
                             varStatus="status"
                             var="bsl"
                             items="#{materialBean.hazardController.possibleBioSavetyLevels}">
                             <p:radioButton 
+                                styleClass="bioSavetyCheckBox"
                                 for="custom_bsl"
                                 itemIndex="#{status.index}"
                                 disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
@@ -100,25 +107,47 @@
                 <p:panel
                     header="#{materialBean.hazardController.getLocalizedStatements()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('STATEMENTS')}">
-                    <p:inputText 
-                        value="#{materialBean.hazardController.hStatements}"
-                        disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
-                    <p:inputText 
-                        value="#{materialBean.hazardController.pStatements}"
-                        disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                    <b:row>
+                        <h:outputText
+                            styleClass="statementHeader"
+                            value="#{msgs.hazard_HS}"/>
+                    </b:row>
+                    <b:row>
+                        <p:inputText 
+                            styleClass="hazardStatementRemark"
+                            value="#{materialBean.hazardController.hStatements}"
+                            disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                    </b:row>
+                    <b:row>
+                        <h:outputText
+                            styleClass="statementHeader"
+                            value="#{msgs.hazard_PS}"/>
+                    </b:row>
+                    <b:row>
+                        <p:inputText 
+                            styleClass="hazardStatementRemark"
+                            value="#{materialBean.hazardController.pStatements}"
+                            disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                    </b:row>
                 </p:panel>
                 <p:panel
                     header="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('RADIOACTIVITY')}">
                     <p:selectBooleanCheckbox
+                        id="radioctiveCheckBox"
                         value="#{materialBean.hazardController.radioctive}"
                         label="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"
                         disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                    <p:outputLabel
+                        for="@previous"
+                        styleClass="radioactiveLabel"
+                        value="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"/>
                 </p:panel>
                 <p:panel
                     header="#{materialBean.hazardController.getLocalizedCustomLabel()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('CUSTOM')}">
                     <p:inputText 
+                        styleClass="customRemarks"
                         value="#{materialBean.hazardController.customText}"
                         disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
                 </p:panel>

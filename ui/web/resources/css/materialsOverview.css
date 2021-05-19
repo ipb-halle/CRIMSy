@@ -73,7 +73,7 @@
     left: 22px;
 }
 .materialNameText div {
- width: 100% !important;  
+    width: 100% !important;  
 }
 
 .materialNameLanguage{
@@ -82,7 +82,7 @@
 
 
 .materialNameText div input{
- width: 100% !important;  
+    width: 100% !important;  
 }
 
 .materialNameLanguage *{
@@ -91,4 +91,50 @@
 .materialNameAction{
     width:150px !important;
 }
+.hazardImage{
+    width: 10%;
+    height: 10%;
+}
 
+.borderlessGridPanel tbody tr{
+    border-width: 0px;
+}
+.borderlessGridPanel tbody tr td{
+    border-width: 0px !important;
+}
+
+.statementHeader{
+    font-size: 115%;
+    font-weight: bold; 
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.hazardStatementRemark{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    width: 95%;
+}
+
+.bioSavetyCheckBox .ui-radiobutton-box{
+    width:18px;
+    height:18px;
+}
+
+.customRemarks{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+
+.radioactiveLabel{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    width: 25%;
+}
