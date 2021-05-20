@@ -20,48 +20,31 @@ package de.ipb_halle.lbac.material.common;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionOrchestrator;
-import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.consumable.Consumable;
-import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
-import de.ipb_halle.lbac.webservice.Updater;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -184,7 +167,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("Remark of storage not valide", storageClassRemark, s[1]);
         List storageProperties = entityManagerService.doSqlQuery(
                 "select conditionid"
-                + " from storageconditions_storages"
+                + " from storageconditions_material"
                 + " where materialid=" + m.getId()
                 + " order by conditionid");
 
@@ -364,8 +347,8 @@ public class MaterialServiceTest extends TestBase {
         );
         List hazardHists = entityManagerService.doSqlQuery(
                 "SELECT materialid,typeid_old,typeid_new ,remarks_old,remarks_new "
-                        + "FROM material_hazards_hist "
-                        + "ORDER BY typeid_old,typeid_new");
+                + "FROM material_hazards_hist "
+                + "ORDER BY typeid_old,typeid_new");
         Assert.assertEquals(4, hazardHists.size());
 
         // Add poisonous hazard (GHS06)
@@ -381,11 +364,11 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertNull("Testcase 3.2 - old typeid  must be null, h-statement  was added", hStatementsEntry[1]);
         Assert.assertEquals("Testcase 3.2 - new typeid  must be 10, h-statement was added", 10, hStatementsEntry[2]);
         Assert.assertNull("Testcase 3.2 - no remarks expected", hStatementsEntry[3]);
-        Assert.assertEquals("Testcase 3.2 - no remarks expected","H-Statement after Edit", hStatementsEntry[4]);
+        Assert.assertEquals("Testcase 3.2 - no remarks expected", "H-Statement after Edit", hStatementsEntry[4]);
         // Remove of unhealthy hazard (GHS08)
         Object[] harmfullEntry = (Object[]) hazardHists.get(2);
         Assert.assertEquals("Testcase 3.3 - materialId of historyentry must be 1", editedMaterial.getId(), harmfullEntry[0]);
-        Assert.assertEquals("Testcase 3.3 - old typeid of harmfull must be 8, irritant was removed",8, harmfullEntry[1]);
+        Assert.assertEquals("Testcase 3.3 - old typeid of harmfull must be 8, irritant was removed", 8, harmfullEntry[1]);
         Assert.assertNull("Testcase 3.3 - new typeid of irritant must be null,irritant was removed", harmfullEntry[2]);
         Assert.assertNull("Testcase 3.3 - no remarks expected", harmfullEntry[3]);
         Assert.assertNull("Testcase 3.3 - no remarks expected", harmfullEntry[4]);
@@ -396,7 +379,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("Testcase 3.3 - new typeid of hazardStatementsEntry must be 12", 11, pStatementsEntry[2]);
         Assert.assertEquals("Testcase 3.3 - old remarks of hazardStatementsEntry must be 'P-Statement before Edit'", "P-Statement before Edit", pStatementsEntry[3]);
         Assert.assertEquals("Testcase 3.3 - new remarks of hazardStatementsEntry must be 'P-Statement after Edit'", "P-Statement after Edit", pStatementsEntry[4]);
- 
+
     }
 
     @Test
@@ -609,6 +592,12 @@ public class MaterialServiceTest extends TestBase {
     }
 
     @Test
+    public void test008_loadStorageClasses() {
+        List<StorageClass> classes = instance.loadStorageClasses();
+        Assert.assertEquals(23, classes.size());
+    }
+
+    @Test
     public void test009_saveConsumable() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
@@ -619,13 +608,18 @@ public class MaterialServiceTest extends TestBase {
         names.add(new MaterialName("test009_saveConsumable_consumable_name_de", "de", 1));
         names.add(new MaterialName("test009_saveConsumable_consumable_name_en", "en", 1));
         Consumable co = new Consumable(0, names, project1.getId(), new HazardInformation(), new StorageClassInformation());
-
     }
 
     @Test
-    public void test008_loadStorageClasses() {
-        List<StorageClass> classes = instance.loadStorageClasses();
-        Assert.assertEquals(23, classes.size());
+    public void test010_saveLoadMaterialWithoutStorageClass() {
+        Project p = creationTools.createAndSaveProject("biochemical-test-project");
+        Structure struc = creationTools.createStructure(p);
+        struc.getStorageInformation().setStorageClass(null);
+        instance.saveMaterialToDB(struc, p.getUserGroups().getId(), new HashMap<>(), publicUser);
+
+        Material loadedMat = instance.loadMaterialById(struc.getId());
+        Assert.assertNull(loadedMat.getStorageInformation().getStorageClass());
+
     }
 
     @Deployment

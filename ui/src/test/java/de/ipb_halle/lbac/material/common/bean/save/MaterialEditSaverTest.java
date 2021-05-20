@@ -141,7 +141,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 001 - new description must be 'new storage remarks'", "new storage remarks", (String) storageClass.get(0)[1]);
 
         //  Check the new storage conditions
-        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_storages where materialid=" + mNew.getId() + " order by conditionid");
+        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_material where materialid=" + mNew.getId() + " order by conditionid");
         Assert.assertEquals("Testcase 001 - 3 storage conditions must be found", 3, newStorageConditions.size());
         Assert.assertEquals("Testcase 001 - First new condition must be light sensitive", (Integer) StorageCondition.lightSensitive.getId(), newStorageConditions.get(0));
         Assert.assertEquals("Testcase 001 - Second new condition must be acid sensitive", (Integer) StorageCondition.acidSensitive.getId(), newStorageConditions.get(1));
@@ -181,7 +181,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertNull("Testcase 002 - new description must be null", storageClass.get(0)[1]);
 
         //  Check the new storage conditions
-        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_storages where materialid=" + mNew.getId() + " order by conditionid");
+        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_material where materialid=" + mNew.getId() + " order by conditionid");
         Assert.assertEquals("Testcase 002 - 2 storage conditions must be found", 2, newStorageConditions.size());
         Assert.assertEquals("Testcase 002 - First new condition must be light sensitive", (Integer) StorageCondition.lightSensitive.getId(), newStorageConditions.get(0));
         Assert.assertEquals("Testcase 002 - Second new condition must be acid sensitive", (Integer) StorageCondition.acidSensitive.getId(), newStorageConditions.get(1));

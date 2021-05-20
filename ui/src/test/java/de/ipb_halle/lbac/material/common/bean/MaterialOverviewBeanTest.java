@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.mocks.MaterialOverviewBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectType;
@@ -94,6 +95,9 @@ public class MaterialOverviewBeanTest extends TestBase {
         s.getMolecule().setStructureModel(null);
         material.setOwner(publicUser);
         materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
+
+        instance = new MaterialOverviewBeanMock();
+        instance.init();
     }
 
     @After
@@ -110,6 +114,17 @@ public class MaterialOverviewBeanTest extends TestBase {
         instance.init();
         Assert.assertEquals("Test-Struktur<br>...", instance.getWrappedNames(m, 1));
         Assert.assertEquals("Test-Struktur<br>Test-Structure", instance.getWrappedNames(m, 2));
+    }
+
+    @Test
+    public void test002_isRadioactive() {
+
+        Material m = materialService.loadMaterialById(material.getId());
+
+        Assert.assertFalse(instance.isRadioactive(m));
+        m.getHazards().getHazards().put(new HazardType(16, false, "R1", 3), null);
+        Assert.assertTrue(instance.isRadioactive(m));
+
     }
 
     @Deployment

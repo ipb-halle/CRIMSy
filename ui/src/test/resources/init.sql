@@ -380,9 +380,9 @@ CREATE TABLE  storages (
 );
 
 
-CREATE TABLE  storageconditions_storages (
+CREATE TABLE  storageconditions_material (
         conditionId INTEGER NOT NULL REFERENCES storageconditions(id),
-        materialid INTEGER NOT NULL REFERENCES storages(materialid),
+        materialid INTEGER NOT NULL REFERENCES materials(materialid),
         PRIMARY KEY (conditionId,materialid)
 );
 

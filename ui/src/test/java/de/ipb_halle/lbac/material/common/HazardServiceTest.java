@@ -47,7 +47,7 @@ public class HazardServiceTest extends TestBase {
     @Test
     public void test001_loadHazards() {
         List<HazardType> hazards = hazardService.getHazardOf(HazardType.Category.GHS);
-        Assert.assertEquals(9, hazards.size());
+        Assert.assertEquals(11, hazards.size());
         hazards = hazardService.getHazardOf(HazardType.Category.STATEMENTS);
         Assert.assertEquals(2, hazards.size());
         hazards = hazardService.getHazardOf(HazardType.Category.BSL);

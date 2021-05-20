@@ -95,7 +95,7 @@ public class MaterialCreationSaverTest extends TestBase {
         Assert.assertEquals(1, o.size());
 
         o = entityManagerService.doSqlQuery("SELECT * FROM storages");
-        Assert.assertEquals(1, o.size());
+        Assert.assertEquals(0, o.size());
     }
 
     @Test

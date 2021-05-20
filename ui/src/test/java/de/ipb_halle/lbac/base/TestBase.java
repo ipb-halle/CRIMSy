@@ -445,14 +445,14 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("delete from material_hazards_hist");
         entityManagerService.doSqlUpdate("delete from storages_hist");
         entityManagerService.doSqlUpdate("delete from material_indices_hist");
-        entityManagerService.doSqlUpdate("delete from storageconditions_storages");
+        entityManagerService.doSqlUpdate("delete from storageconditions_material");
         entityManagerService.doSqlUpdate("delete from storages");
         entityManagerService.doSqlUpdate("delete from structures_hist");
         entityManagerService.doSqlUpdate("delete from materials_hist");
         entityManagerService.doSqlUpdate("delete from material_indices");
         entityManagerService.doSqlUpdate("delete from materialdetailrights");
         entityManagerService.doSqlUpdate("delete from structures");
-        entityManagerService.doSqlUpdate("delete from storageconditions_storages");
+        entityManagerService.doSqlUpdate("delete from storageconditions_material");
         entityManagerService.doSqlUpdate("delete from storages");
         entityManagerService.doSqlUpdate("delete from material_hazards");
         entityManagerService.doSqlUpdate("delete from materials");
