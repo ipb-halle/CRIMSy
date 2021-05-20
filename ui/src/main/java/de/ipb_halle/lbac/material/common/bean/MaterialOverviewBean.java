@@ -63,6 +63,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
+    private final int HAZARD_RADIACTIVE_ID=16;
     private String hazardImageString = "/resources/img/hazards/%s.png";
 
     @Inject
@@ -216,14 +217,23 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         }
         return locations;
     }
-    
-    public String getHazardRemark(Material m,int hazardId){
-        for(HazardType h : m.getHazards().getHazards().keySet()){
-            if(h.getId()==hazardId){
+
+    public String getHazardRemark(Material m, int hazardId) {
+        for (HazardType h : m.getHazards().getHazards().keySet()) {
+            if (h.getId() == hazardId) {
                 return m.getHazards().getHazards().get(h);
             }
         }
         return "";
+    }
+
+    public boolean isRadioactive(Material m) {
+        for (HazardType ht : m.getHazards().getHazards().keySet()) {
+            if (ht.getId()== HAZARD_RADIACTIVE_ID) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

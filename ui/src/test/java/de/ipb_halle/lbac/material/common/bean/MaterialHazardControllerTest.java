@@ -122,7 +122,7 @@ public class MaterialHazardControllerTest extends TestBase {
         Assert.assertEquals(17, hazards.get(0).getId());
 
         hazards = controller.getHazardsOfType(HazardType.Category.GHS.toString());
-        Assert.assertEquals(9, hazards.size());
+        Assert.assertEquals(11, hazards.size());
         for (int i = 1; i < 10; i++) {
             Assert.assertEquals(i, hazards.get(i - 1).getId());
         }

@@ -71,42 +71,7 @@
                                 value="#{materialBean.hazardController.getImageLocation(hazard)}"/>                                
                         </c:forEach>
                     </p:panelGrid>
-                </p:panel>
-                <p:panel
-                    header="#{msgs.hazard_S_Label}"
-                    rendered="#{materialBean.hazardController.isHazardCategoryRendered('BSL')}">
 
-                    <p:selectOneRadio    
-                        id="custom_bsl"
-                        value="#{materialBean.hazardController.bioSavetyLevel}"
-                        layout="custom">
-                        <f:selectItems 
-                            value="#{materialBean.hazardController.possibleBioSavetyLevels}"
-                            var="bsl" itemLabel="#{bsl}"
-                            itemValue="#{bsl}"/>
-                    </p:selectOneRadio>
-                    <p:panelGrid
-                        styleClass="borderlessGridPanel"
-                        columns="2">
-                        <c:forEach 
-                            varStatus="status"
-                            var="bsl"
-                            items="#{materialBean.hazardController.possibleBioSavetyLevels}">
-                            <p:radioButton 
-                                styleClass="bioSavetyCheckBox"
-                                for="custom_bsl"
-                                itemIndex="#{status.index}"
-                                disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
-                            <p:outputLabel
-                                for="@previous" 
-                                value="#{bsl}"/>
-                        </c:forEach>
-                    </p:panelGrid>
-
-                </p:panel>
-                <p:panel
-                    header="#{materialBean.hazardController.getLocalizedStatements()}"
-                    rendered="#{materialBean.hazardController.isHazardCategoryRendered('STATEMENTS')}">
                     <b:row>
                         <h:outputText
                             styleClass="statementHeader"
@@ -142,6 +107,41 @@
                         for="@previous"
                         styleClass="radioactiveLabel"
                         value="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"/>
+                    <b:image 
+                        styleClass="radioactiveImage"
+                        value="/resources/img/hazards/R1.png"/>   
+                </p:panel>
+                <p:panel
+                    header="#{msgs.hazard_S_Label}"
+                    rendered="#{materialBean.hazardController.isHazardCategoryRendered('BSL')}">
+
+                    <p:selectOneRadio    
+                        id="custom_bsl"
+                        value="#{materialBean.hazardController.bioSavetyLevel}"
+                        layout="custom">
+                        <f:selectItems 
+                            value="#{materialBean.hazardController.possibleBioSavetyLevels}"
+                            var="bsl" itemLabel="#{bsl}"
+                            itemValue="#{bsl}"/>
+                    </p:selectOneRadio>
+                    <p:panelGrid
+                        styleClass="borderlessGridPanel"
+                        columns="2">
+                        <c:forEach 
+                            varStatus="status"
+                            var="bsl"
+                            items="#{materialBean.hazardController.possibleBioSavetyLevels}">
+                            <p:radioButton 
+                                styleClass="bioSavetyCheckBox"
+                                for="custom_bsl"
+                                itemIndex="#{status.index}"
+                                disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                            <p:outputLabel
+                                for="@previous" 
+                                value="#{bsl}"/>
+                        </c:forEach>
+                    </p:panelGrid>
+
                 </p:panel>
                 <p:panel
                     header="#{materialBean.hazardController.getLocalizedCustomLabel()}"
