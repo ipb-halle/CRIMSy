@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageEntity;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import java.io.Serializable;
@@ -45,22 +45,23 @@ public class StorageClassInformation implements Serializable {
 
     public StorageClassInformation() {
         init();
-        storageClass = possibleStorageClasses.get(0);
+        storageClass = null;
     }
 
     public StorageClassInformation(List<StorageClass> possibleClasses) {
         possibleStorageClasses = possibleClasses;
-        storageClass = possibleStorageClasses.get(0);
+        storageClass = null;
     }
 
     public StorageClassInformation(Material m, List<StorageClass> possibleClasses) {
         possibleStorageClasses.clear();
         this.possibleStorageClasses = possibleClasses;
         storageConditions.addAll(m.getStorageInformation().getStorageConditions());
-
-        storageClass = new StorageClass(
-                m.getStorageInformation().getStorageClass().id,
-                m.getStorageInformation().getStorageClass().getName());
+        if (m.getStorageInformation().getStorageClass() != null) {
+            storageClass = new StorageClass(
+                    m.getStorageInformation().getStorageClass().id,
+                    m.getStorageInformation().getStorageClass().getName());
+        }
     }
 
     public boolean isMoistureSensitive() {
@@ -252,28 +253,32 @@ public class StorageClassInformation implements Serializable {
         StorageEntity entity = new StorageEntity();
         entity.setDescription(remarks);
         entity.setMaterialId(materialId);
-        entity.setStorageClass(storageClass.getId());
+        if (storageClass != null) {
+            entity.setStorageClass(storageClass.getId());
+        }
 
         return entity;
     }
 
-    public List<StorageConditionStorageEntity> createDBInstances(int materialId) {
-        List<StorageConditionStorageEntity> entities = new ArrayList<>();
+    public List<StorageConditionMaterialEntity> createDBInstances(int materialId) {
+        List<StorageConditionMaterialEntity> entities = new ArrayList<>();
 
         for (StorageCondition sc : storageConditions) {
 
-            entities.add(new StorageConditionStorageEntity(new StorageConditionStorageId(sc.getId(), materialId)));
+            entities.add(new StorageConditionMaterialEntity(new StorageConditionStorageId(sc.getId(), materialId)));
 
         }
 
         return entities;
     }
 
-    public static StorageClassInformation createObjectByDbEntity(StorageEntity sE, List<StorageConditionStorageEntity> storageParameter) {
+    public static StorageClassInformation createObjectByDbEntity(List<StorageEntity> sE, List<StorageConditionMaterialEntity> storageParameter) {
         StorageClassInformation sci = new StorageClassInformation();
-        sci.setRemarks(sE.getDescription());
-        sci.setStorageClass(sci.getPossibleStorageClassById(sE.getStorageClass()));
-        for (StorageConditionStorageEntity scse : storageParameter) {
+        if (sE.size() == 1) {
+            sci.setRemarks(sE.get(0).getDescription());
+            sci.setStorageClass(sci.getPossibleStorageClassById(sE.get(0).getStorageClass()));
+        }
+        for (StorageConditionMaterialEntity scse : storageParameter) {
             sci.getStorageConditions().add(StorageCondition.getStorageConditionById(scse.getId().getConditionid()));
         }
         return sci;
@@ -290,7 +295,11 @@ public class StorageClassInformation implements Serializable {
     public StorageClassInformation copy() {
         StorageClassInformation copy = new StorageClassInformation();
         copy.possibleStorageClasses = possibleStorageClasses;
-        copy.storageClass = new StorageClass(storageClass.getId(), storageClass.getName());
+        if (storageClass != null) {
+            copy.storageClass = new StorageClass(storageClass.getId(), storageClass.getName());
+        } else {
+            copy.storageClass = null;
+        }
         copy.storageConditions.addAll(storageConditions);
         copy.remarks = remarks;
 

@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageEntity;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
@@ -64,7 +64,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialEditSaver implements Serializable {
     
-    protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_storages WHERE materialid=:mid";
+    protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_material WHERE materialid=:mid";
     protected String SQL_DELETE_EFFECTIVE_TAXONOMY = "DELETE FROM effective_taxonomy WHERE taxoid=:taxoid";
     protected String SQL_INSERT_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(:taxoid,:parentid)";
     protected String SQL_UPDATE_TAXONOMY_LEVEL = "UPDATE taxonomy SET level=:level WHERE id=:id";
@@ -162,7 +162,7 @@ public class MaterialEditSaver implements Serializable {
                     .executeUpdate();
             
             for (StorageCondition sc : newMaterial.getStorageInformation().getStorageConditions()) {
-                StorageConditionStorageEntity dbEntity = new StorageConditionStorageEntity();
+                StorageConditionMaterialEntity dbEntity = new StorageConditionMaterialEntity();
                 dbEntity.setId(new StorageConditionStorageId(sc.getId(), newMaterial.getId()));
                 this.materialService.getEm().persist(dbEntity);
             }

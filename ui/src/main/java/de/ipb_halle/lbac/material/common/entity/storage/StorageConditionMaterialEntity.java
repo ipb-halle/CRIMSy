@@ -27,17 +27,17 @@ import javax.persistence.Table;
  * @author fmauz
  */
 @Entity
-@Table(name = "storageconditions_storages")
-public class StorageConditionStorageEntity implements Serializable {
+@Table(name = "storageconditions_material")
+public class StorageConditionMaterialEntity implements Serializable {
 
     @EmbeddedId
     private StorageConditionStorageId id;
 
-    public StorageConditionStorageEntity(StorageConditionStorageId id) {
+    public StorageConditionMaterialEntity(StorageConditionStorageId id) {
         this.id = id;
     }
 
-    public StorageConditionStorageEntity() {
+    public StorageConditionMaterialEntity() {
     }
 
     public StorageConditionStorageId getId() {

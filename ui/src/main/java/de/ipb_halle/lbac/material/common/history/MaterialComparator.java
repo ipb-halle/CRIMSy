@@ -211,8 +211,8 @@ public class MaterialComparator implements Serializable {
             Material originalMat,
             Material editedMat) throws Exception {
         MaterialStorageDifference diff = new MaterialStorageDifference();
-        Integer newStorageClassId = editedMat.getStorageInformation().getStorageClass().getId();
-        Integer oldStorageClassId = originalMat.getStorageInformation().getStorageClass().getId();
+        Integer newStorageClassId = editedMat.getStorageInformation().getStorageClass()==null?null:editedMat.getStorageInformation().getStorageClass().getId();
+        Integer oldStorageClassId = originalMat.getStorageInformation().getStorageClass()==null?null:originalMat.getStorageInformation().getStorageClass().getId();
         String newDescription = editedMat.getStorageInformation().getRemarks();
         String oldDescription = originalMat.getStorageInformation().getRemarks();
         Set<StorageCondition> oldConditions = originalMat.getStorageInformation().getStorageConditions();

@@ -42,7 +42,7 @@ import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryId;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageEntity;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
@@ -99,7 +99,7 @@ public class MaterialService implements Serializable {
     protected StructureInformationSaver structureInformationSaver;
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
-    private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
+    private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_material WHERE materialid=:mid";
     private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM material_hazards WHERE materialid=:mid";
     private final String SQL_GET_INDICES = "SELECT id,materialid,typeid,value,language,rank FROM material_indices WHERE materialid=:mid order by rank";
     private final String SQL_GET_STRUCTURE_INFOS = "SELECT id,sumformula,molarmass,exactmolarmass,moleculeid FROM structures WHERE id=:mid";
@@ -305,12 +305,12 @@ public class MaterialService implements Serializable {
     @SuppressWarnings("unchecked")
     private StorageClassInformation loadStorageClassInformation(int materialId) {
         Query q = em.createNativeQuery(SQL_GET_STORAGE, StorageEntity.class);
-        Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionStorageEntity.class);
+        Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionMaterialEntity.class);
         q2.setParameter("mid", materialId);
         q.setParameter("mid", materialId);
 
         StorageClassInformation storageInfos = StorageClassInformation.createObjectByDbEntity(
-                (StorageEntity) q.getSingleResult(),
+                q.getResultList(),
                 q2.getResultList()
         );
         return storageInfos;
@@ -330,10 +330,6 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     protected Structure getStructure(MaterialEntity me) {
-
-        StorageClassInformation storageInfos = loadStorageClassInformation(me.getMaterialid());
-        HazardInformation hazardInfos = loadHazardInformation(me.getMaterialid());
-
         Query q4 = em.createNativeQuery(SQL_GET_INDICES, MaterialIndexEntryEntity.class);
         q4.setParameter("mid", me.getMaterialid());
 
@@ -355,8 +351,8 @@ public class MaterialService implements Serializable {
 
         Structure s = Structure.createInstanceFromDB(
                 me,
-                hazardInfos,
-                storageInfos,
+                loadHazardInformation(me.getMaterialid()),
+                loadStorageClassInformation(me.getMaterialid()),
                 q4.getResultList(),
                 sE,
                 molecule,
@@ -620,8 +616,10 @@ public class MaterialService implements Serializable {
      * @param m
      */
     protected void saveStorageConditions(Material m) {
-        em.persist(m.getStorageInformation().createStorageDBInstance(m.getId()));
-        for (StorageConditionStorageEntity scsE : m.getStorageInformation().createDBInstances(m.getId())) {
+        if (m.getStorageInformation().getStorageClass() != null) {
+            em.persist(m.getStorageInformation().createStorageDBInstance(m.getId()));
+        }
+        for (StorageConditionMaterialEntity scsE : m.getStorageInformation().createDBInstances(m.getId())) {
             em.persist(scsE);
         }
     }
