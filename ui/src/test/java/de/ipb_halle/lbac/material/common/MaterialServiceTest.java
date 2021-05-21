@@ -458,9 +458,9 @@ public class MaterialServiceTest extends TestBase {
 
         //Create a structure
         Structure struture1 = creationTools.createStructure(project1);
-        StorageClassInformation si = new StorageClassInformation(instance.loadStorageClasses());
+        StorageClassInformation si = new StorageClassInformation();
         si.setRemarks("test remarks");
-        si.setStorageClass(si.getPossibleStorageClassById(1));
+        si.setStorageClass(instance.loadStorageClasses().get(0));
         struture1.setStorageInformation(si);
 
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), testUser);

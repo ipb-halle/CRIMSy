@@ -68,9 +68,6 @@ public class MaterialCreationSaver implements Serializable {
         if (storageInfos == null) {
             storageInfos = new StorageClassInformation();
         }
-        if (storageInfos.getStorageClass() == null) {
-            storageInfos.setStorageClass(storageInfos.getPossibleStorageClasses().get(0));
-        }
         if (hazards == null) {
             hazards = new HazardInformation();
         }
@@ -130,9 +127,6 @@ public class MaterialCreationSaver implements Serializable {
     public void saveMaterialOverview(Material m, Project p, User owner) {
         if (m.getStorageInformation() == null) {
             m.setStorageInformation(new StorageClassInformation());
-        }
-        if (m.getStorageInformation().getStorageClass() == null) {
-            m.getStorageInformation().setStorageClass(m.getStorageInformation().getPossibleStorageClasses().get(0));
         }
 
         if (m.getHazards() == null) {

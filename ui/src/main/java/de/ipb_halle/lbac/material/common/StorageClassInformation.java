@@ -38,24 +38,14 @@ public class StorageClassInformation implements Serializable {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private String remarks;
-
-    private List<StorageClass> possibleStorageClasses = new ArrayList<>();
     private StorageClass storageClass;
     private Set<StorageCondition> storageConditions = new HashSet<>();
 
     public StorageClassInformation() {
-        init();
         storageClass = null;
     }
 
-    public StorageClassInformation(List<StorageClass> possibleClasses) {
-        possibleStorageClasses = possibleClasses;
-        storageClass = null;
-    }
-
-    public StorageClassInformation(Material m, List<StorageClass> possibleClasses) {
-        possibleStorageClasses.clear();
-        this.possibleStorageClasses = possibleClasses;
+    public StorageClassInformation(Material m) {
         storageConditions.addAll(m.getStorageInformation().getStorageConditions());
         if (m.getStorageInformation().getStorageClass() != null) {
             storageClass = new StorageClass(
@@ -224,23 +214,6 @@ public class StorageClassInformation implements Serializable {
         this.remarks = remarks;
     }
 
-    public List<StorageClass> getPossibleStorageClasses() {
-        return possibleStorageClasses;
-    }
-
-    public StorageClass getPossibleStorageClassById(int id) {
-        for (StorageClass sc : getPossibleStorageClasses()) {
-            if (sc.getId() == id) {
-                return sc;
-            }
-        }
-        return null;
-    }
-
-    public void setPossibleStorageClasses(List<StorageClass> possibleStorageClasses) {
-        this.possibleStorageClasses = possibleStorageClasses;
-    }
-
     public StorageClass getStorageClass() {
         return storageClass;
     }
@@ -272,12 +245,22 @@ public class StorageClassInformation implements Serializable {
         return entities;
     }
 
-    public static StorageClassInformation createObjectByDbEntity(List<StorageEntity> sE, List<StorageConditionMaterialEntity> storageParameter) {
+    public static StorageClassInformation createObjectByDbEntity(
+            List<StorageConditionMaterialEntity> storageParameter) {
         StorageClassInformation sci = new StorageClassInformation();
-        if (sE.size() == 1) {
-            sci.setRemarks(sE.get(0).getDescription());
-            sci.setStorageClass(sci.getPossibleStorageClassById(sE.get(0).getStorageClass()));
+        for (StorageConditionMaterialEntity scse : storageParameter) {
+            sci.getStorageConditions().add(StorageCondition.getStorageConditionById(scse.getId().getConditionid()));
         }
+        return sci;
+    }
+
+    public static StorageClassInformation createObjectByDbEntity(
+            String remarks,
+            StorageClass storageClass,
+            List<StorageConditionMaterialEntity> storageParameter) {
+        StorageClassInformation sci = new StorageClassInformation();
+        sci.setRemarks(remarks);
+        sci.setStorageClass(storageClass);
         for (StorageConditionMaterialEntity scse : storageParameter) {
             sci.getStorageConditions().add(StorageCondition.getStorageConditionById(scse.getId().getConditionid()));
         }
@@ -294,7 +277,6 @@ public class StorageClassInformation implements Serializable {
 
     public StorageClassInformation copy() {
         StorageClassInformation copy = new StorageClassInformation();
-        copy.possibleStorageClasses = possibleStorageClasses;
         if (storageClass != null) {
             copy.storageClass = new StorageClass(storageClass.getId(), storageClass.getName());
         } else {
@@ -305,34 +287,4 @@ public class StorageClassInformation implements Serializable {
 
         return copy;
     }
-
-    private void init() {
-        possibleStorageClasses = new ArrayList<>();
-        possibleStorageClasses.add(new StorageClass(1, "1"));
-        possibleStorageClasses.add(new StorageClass(2, "2A"));
-        possibleStorageClasses.add(new StorageClass(3, "2B"));
-        possibleStorageClasses.add(new StorageClass(4, "3"));
-        possibleStorageClasses.add(new StorageClass(5, "4.1A"));
-        possibleStorageClasses.add(new StorageClass(6, "4.1B"));
-        possibleStorageClasses.add(new StorageClass(7, "4.2"));
-        possibleStorageClasses.add(new StorageClass(8, "4.3"));
-        possibleStorageClasses.add(new StorageClass(9, "5.1A"));
-        possibleStorageClasses.add(new StorageClass(10, "5.1B"));
-        possibleStorageClasses.add(new StorageClass(11, "5.1C"));
-        possibleStorageClasses.add(new StorageClass(12, "5.2"));
-        possibleStorageClasses.add(new StorageClass(13, "6.1A"));
-        possibleStorageClasses.add(new StorageClass(14, "6.1B"));
-        possibleStorageClasses.add(new StorageClass(15, "6.1C"));
-        possibleStorageClasses.add(new StorageClass(16, "6.1D"));
-        possibleStorageClasses.add(new StorageClass(17, "6.2"));
-        possibleStorageClasses.add(new StorageClass(18, "7"));
-        possibleStorageClasses.add(new StorageClass(19, "8A"));
-        possibleStorageClasses.add(new StorageClass(20, "8B"));
-        possibleStorageClasses.add(new StorageClass(21, "10"));
-        possibleStorageClasses.add(new StorageClass(22, "11"));
-        possibleStorageClasses.add(new StorageClass(23, "12"));
-        possibleStorageClasses.add(new StorageClass(24, "13"));
-
-    }
-
 }

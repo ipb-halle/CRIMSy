@@ -95,6 +95,7 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class MaterialService implements Serializable {
 
+    private List<StorageClass> storageClasses = new ArrayList<>();
     private MaterialEntityGraphBuilder graphBuilder;
     protected StructureInformationSaver structureInformationSaver;
 
@@ -163,6 +164,7 @@ public class MaterialService implements Serializable {
         materialHistoryService = new MaterialHistoryService(this);
         editedMaterialSaver = new MaterialEditSaver(this, taxonomyNestingService);
         structureInformationSaver = new StructureInformationSaver(em);
+        storageClasses = loadStorageClasses();
     }
 
     /**
@@ -304,15 +306,23 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     private StorageClassInformation loadStorageClassInformation(int materialId) {
+
         Query q = em.createNativeQuery(SQL_GET_STORAGE, StorageEntity.class);
         Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionMaterialEntity.class);
         q2.setParameter("mid", materialId);
         q.setParameter("mid", materialId);
+        List<StorageEntity> storageEntities = q.getResultList();
+        StorageClassInformation storageInfos=null;
+        if (storageEntities.isEmpty()) {
+            storageInfos = StorageClassInformation.createObjectByDbEntity(
+                    q2.getResultList());
+        } else {
+            String remarks = storageEntities.get(0).getDescription();
+            StorageClass storageClass = loadStorageClassById(storageEntities.get(0).getStorageClass());
+            storageInfos = StorageClassInformation.createObjectByDbEntity(
+                    remarks, storageClass, q2.getResultList());
+        }
 
-        StorageClassInformation storageInfos = StorageClassInformation.createObjectByDbEntity(
-                q.getResultList(),
-                q2.getResultList()
-        );
         return storageInfos;
     }
 
@@ -674,13 +684,24 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<StorageClass> loadStorageClasses() {
-        List<StorageClass> classes = new ArrayList<>();
-        List<Object> objects = this.em.createNativeQuery(SQL_GET_STORAGE_CLASSES).getResultList();
-        for (Object o : objects) {
-            Object[] oo = (Object[]) o;
-            classes.add(new StorageClass((Integer) oo[0], (String) oo[1]));
+        if (storageClasses.isEmpty()) {
+            List<Object> objects = this.em.createNativeQuery(SQL_GET_STORAGE_CLASSES).getResultList();
+            for (Object o : objects) {
+                Object[] oo = (Object[]) o;
+                storageClasses.add(new StorageClass((Integer) oo[0], (String) oo[1]));
+            }
         }
-        return classes;
+        return storageClasses;
+    }
+
+    private StorageClass loadStorageClassById(int id) {
+        for (StorageClass sc : storageClasses) {
+            if (sc.getId() == id) {
+                return sc;
+            }
+        }
+        throw new IllegalArgumentException("Could not load storage class with id: " + id);
+
     }
 
     private EntityGraph createEntityGraph() {
