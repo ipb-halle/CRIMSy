@@ -34,8 +34,6 @@
                 <p:outputPanel
                     styleClass="storagePanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
-
-
                     <b:container>
                         <b:row>
                             <b:column span="2">
@@ -44,7 +42,8 @@
                             </b:column>
                             <b:column span="5">
                                 <b:selectOneMenu
-                                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')
+                                                &&!materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
                                     value="#{materialBean.getStorageInformationBuilder().choosenStorageClass}">
                                     <f:selectItems 
                                         var="item"
@@ -56,15 +55,15 @@
 
                     </b:container>
                     <b:inputText
-                        disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
+                        disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')
+                                    &&!materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
                         label="#{msgs.materialCreation_panelStorage_remarks}"
                         value="#{materialBean.getStorageInformationBuilder().remarks}">
                         <f:converter converterId="InputConverter" />
                     </b:inputText>
                     <p:panel>
                         <p:selectManyCheckbox
-                            value="#{materialBean.storageInformationBuilder().selectedConditions}" 
-                            >
+                            value="#{materialBean.storageInformationBuilder().selectedConditions}">
                             <f:selectItems 
                                 value="#{materialBean.getStorageInformationBuilder().possibleConditions}" 
                                 itemLabel="#{hazard.toString()}"

@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author fmauz
  */
-public class StorageClassBuilder {
+public class StorageInformationBuilder {
 
     private boolean storageClassActivated;
     private MessagePresenter messagePresenter;
@@ -41,8 +41,9 @@ public class StorageClassBuilder {
     private String remarks;
     private List<StorageCondition> selectedConditions = new ArrayList<>();
     private List<StorageCondition> possibleConditions = new ArrayList<>();
+    private boolean inHistoryMode;
 
-    public StorageClassBuilder(
+    public StorageInformationBuilder(
             MessagePresenter messagePresenter,
             MaterialService materialService,
             Material material) {
@@ -54,13 +55,13 @@ public class StorageClassBuilder {
         this.storageClassActivated = choosenStorageClass != null;
     }
 
-    public StorageClassBuilder(
+    public StorageInformationBuilder(
             MessagePresenter messagePresenter,
             MaterialService materialService) {
         this.messagePresenter = messagePresenter;
         this.materialService = materialService;
         this.possibleStorageClasses = initStorageClassNames();
-        choosenStorageClass = possibleStorageClasses.get(0);
+        this.choosenStorageClass = possibleStorageClasses.get(0);
     }
 
     private List<StorageClass> initStorageClassNames() {
@@ -87,6 +88,10 @@ public class StorageClassBuilder {
 
     public boolean isStorageClassActivated() {
         return storageClassActivated;
+    }
+
+    public boolean isStorageClassDisabled() {
+        return !storageClassActivated || inHistoryMode;
     }
 
     public void setStorageClassActivated(boolean storageClassActivated) {
@@ -127,6 +132,14 @@ public class StorageClassBuilder {
 
     public void setSelectedConditions(List<StorageCondition> selectedConditions) {
         this.selectedConditions = selectedConditions;
+    }
+
+    public boolean isInHistoryMode() {
+        return inHistoryMode;
+    }
+
+    public void setInHistoryMode(boolean inHistoryMode) {
+        this.inHistoryMode = inHistoryMode;
     }
 
 }

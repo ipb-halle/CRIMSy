@@ -136,7 +136,7 @@ public class MaterialBean implements Serializable {
     private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
 
     private MaterialHazardController hazardController;
-    private StorageClassBuilder storageInformationBuilder;
+    private StorageInformationBuilder storageInformationBuilder;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -167,6 +167,10 @@ public class MaterialBean implements Serializable {
                     currentMaterialType,
                     true,
                     new HashMap<>());
+            storageInformationBuilder = new StorageInformationBuilder(
+                    messagePresenter,
+                    materialService
+            );
         } catch (Exception e) {
             logger.error(e);
         }
@@ -220,6 +224,12 @@ public class MaterialBean implements Serializable {
                     m.getStorageInformation(),
                     taxonomyController,
                     hazardService.getAllHazardTypes()
+            );
+
+            storageInformationBuilder = new StorageInformationBuilder(
+                    messagePresenter,
+                    materialService,
+                    m
             );
 
         } catch (Exception e) {
@@ -574,8 +584,8 @@ public class MaterialBean implements Serializable {
         this.taxonomyService = taxonomyService;
     }
 
-    public StorageClassBuilder getStorageInformationBuilder() {
+    public StorageInformationBuilder getStorageInformationBuilder() {
         return storageInformationBuilder;
     }
-    
+
 }
