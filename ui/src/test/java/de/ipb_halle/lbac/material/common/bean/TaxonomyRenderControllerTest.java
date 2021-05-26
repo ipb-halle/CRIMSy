@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyDifference;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.mocks.TaxonomyBeanMock;
 import java.text.SimpleDateFormat;
@@ -200,7 +200,7 @@ public class TaxonomyRenderControllerTest extends TestBase {
                 id,
                 mnames,
                 new HazardInformation(),
-                new StorageClassInformation(),
+                new StorageInformation(),
                 new ArrayList<>(),
                 user,
                 creationDate

@@ -26,7 +26,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
@@ -52,7 +52,7 @@ public class HistoryOperation implements Serializable {
     protected MaterialNameBean materialNameBean;
     protected MaterialIndexBean indexBean;
     protected StructureInformation structureInfos;
-    protected StorageClassInformation storageInformation;
+    protected StorageInformation storageInformation;
     protected TaxonomySelectionController taxonomySelectionController;
     protected List<HazardType> possibleHazards = new ArrayList<>();
 
@@ -68,6 +68,7 @@ public class HistoryOperation implements Serializable {
      * @param structureInfos
      * @param storageClassInformation
      * @param taxonomySelectionController
+     * @param possibleHazards
      */
     public HistoryOperation(
             MaterialEditState materialEditState,
@@ -75,7 +76,7 @@ public class HistoryOperation implements Serializable {
             MaterialNameBean nameBean,
             MaterialIndexBean indexBean,
             StructureInformation structureInfos,
-            StorageClassInformation storageClassInformation,
+            StorageInformation storageClassInformation,
             TaxonomySelectionController taxonomySelectionController,
             List<HazardType> possibleHazards) {
         this.projectBean = projectBean;

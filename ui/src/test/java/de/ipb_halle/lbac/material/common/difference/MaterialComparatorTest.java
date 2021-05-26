@@ -30,9 +30,10 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,14 +60,13 @@ public class MaterialComparatorTest {
 
     @Test(expected = Exception.class)
     public void test001_compareMaterialWithDifferentType() throws Exception {
-        instance.compareMaterial(
-                createEmptyStructure(user),
+        instance.compareMaterial(createEmptyStructure(user),
                 new BioMaterial(
                         34,
                         new ArrayList<>(),
                         1,
                         new HazardInformation(),
-                        new StorageClassInformation(),
+                        new StorageInformation(),
                         null, null)
         );
     }
@@ -317,13 +317,14 @@ public class MaterialComparatorTest {
         MaterialStorageDifference storageDiff = instance.getDifferenceOfType(diffs, MaterialStorageDifference.class);
         Assert.assertNull(storageDiff);
 
-        oldStruc.getStorageInformation().setAcidSensitive(true);
-        oldStruc.getStorageInformation().setKeepMoist(true);
+        oldStruc.getStorageInformation().getStorageConditions().add(StorageCondition.lightSensitive);
+
+        oldStruc.getStorageInformation().getStorageConditions().add(StorageCondition.keepMoist);
         oldStruc.getStorageInformation().setStorageClass(new StorageClass(1, "oldStorageClass"));
 
-        newStruc.getStorageInformation().setAcidSensitive(false);
-        newStruc.getStorageInformation().setKeepMoist(true);
-        newStruc.getStorageInformation().setKeepTempBelowMinus40Celsius(true);
+        newStruc.getStorageInformation().getStorageConditions().remove(StorageCondition.acidSensitive);
+        newStruc.getStorageInformation().getStorageConditions().add(StorageCondition.keepMoist);
+        newStruc.getStorageInformation().getStorageConditions().add(StorageCondition.keepTempBelowMinus40Celsius);
         newStruc.getStorageInformation().setStorageClass(new StorageClass(2, "newStorageClass"));
 
         diffs = instance.compareMaterial(
@@ -343,7 +344,7 @@ public class MaterialComparatorTest {
     @Test
     public void compareBioMaterialWithHazardDiffs() throws Exception {
 
-        BioMaterial original = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), null, null);
+        BioMaterial original = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), null, null);
         original.setACList(new ACList());
         original.setOwner(user);
         original.getHazards().getHazards().put(new HazardType(12, false, "S1", 2), null);
@@ -362,7 +363,7 @@ public class MaterialComparatorTest {
         List<MaterialName> names = new ArrayList<>();
         int projectId = 4;
         HazardInformation hazards = new HazardInformation();
-        StorageClassInformation storage = new StorageClassInformation();
+        StorageInformation storage = new StorageInformation();
         double molarMass = 0;
         double exactMolarMass = 0;
         int id = 0;

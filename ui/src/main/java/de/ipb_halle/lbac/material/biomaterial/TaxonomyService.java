@@ -18,7 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.admission.MemberService;
@@ -148,7 +148,7 @@ public class TaxonomyService implements Serializable {
                     entity.getId(),
                     materialService.loadMaterialNamesById(entity.getId()),
                     new HazardInformation(),
-                    new StorageClassInformation(),
+                    new StorageInformation(),
                     taxonomyHierarchy,
                     memberService.loadUserById(userId),
                     new Date(((Timestamp) o[0]).getTime()));

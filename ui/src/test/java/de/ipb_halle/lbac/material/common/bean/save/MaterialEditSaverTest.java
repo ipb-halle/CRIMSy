@@ -123,14 +123,14 @@ public class MaterialEditSaverTest extends TestBase {
     @Test
     public void test001_saveStorageDiffs() throws Exception {
 
-        mOld.getStorageInformation().setLightSensitive(true);
-        mOld.getStorageInformation().setKeepCool(true);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.lightSensitive);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.keepCool);
 
         materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>(),publicUser);
         mNew = mOld.copyMaterial();
         mNew.getStorageInformation().setStorageClass(new StorageClass(2, "storageClass-2"));
         mNew.getStorageInformation().setRemarks("new storage remarks");
-        mNew.getStorageInformation().setAcidSensitive(true);
+        mNew.getStorageInformation().getStorageConditions().add(StorageCondition.acidSensitive);
 
         materialService.saveEditedMaterial(mNew, mOld, aclist.getId(), u.getId());
 
@@ -166,12 +166,12 @@ public class MaterialEditSaverTest extends TestBase {
     @SuppressWarnings("unchecked")
     @Test
     public void test002_saveStorageConditionsDiffsWithoutStorageClassDiffs() throws Exception {
-        mOld.getStorageInformation().setAcidSensitive(true);
-        mOld.getStorageInformation().setKeepCool(true);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.acidSensitive);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.keepCool);
         materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>(), publicUser);
         mNew = mOld.copyMaterial();
-        mNew.getStorageInformation().setKeepCool(false);
-        mNew.getStorageInformation().setLightSensitive(true);
+        mNew.getStorageInformation().getStorageConditions().remove(StorageCondition.keepCool);
+        mNew.getStorageInformation().getStorageConditions().add(StorageCondition.lightSensitive);
         materialService.saveEditedMaterial(mNew, mOld, aclist.getId(), u.getId());
 
         // check the new storage class and its remarks

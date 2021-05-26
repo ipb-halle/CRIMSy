@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
@@ -51,14 +51,14 @@ public class HistoryOperationStructureTest {
     @Before
     public void init() {
 
-        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
+        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);
         mes.setCurrentVersiondate(currentDate);
         strucInfo = new StructureInformation();
 
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), new MaterialIndexBean(), strucInfo, new StorageClassInformation(), null,new ArrayList<>());
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), new MaterialIndexBean(), strucInfo, new StorageInformation(), null,new ArrayList<>());
     }
 
     @Test

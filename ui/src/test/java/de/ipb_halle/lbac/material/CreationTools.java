@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,7 +76,7 @@ public class CreationTools {
     public Structure createEmptyStructure(int projectId) {
         List<MaterialName> names = new ArrayList<>();
         HazardInformation hazards = new HazardInformation();
-        StorageClassInformation storage = new StorageClassInformation();
+        StorageInformation storage = new StorageInformation();
         storage.setStorageClass(new StorageClass(1, "xyz"));
         double molarMass = 10;
         double exactMolarMass = 20;
@@ -146,9 +147,9 @@ public class CreationTools {
 
         m.setHazards(hazardInfos);
 
-        StorageClassInformation storageInfos = new StorageClassInformation();
-        storageInfos.setKeepCool(true);
-        storageInfos.setKeepFrozen(true);
+        StorageInformation storageInfos = new StorageInformation();
+        storageInfos.getStorageConditions().add(StorageCondition.keepCool);
+        storageInfos.getStorageConditions().add(StorageCondition.keepFrozen);
         storageInfos.setStorageClass(new StorageClass(1, "1"));
         storageInfos.setRemarks(storageClassRemark);
         m.setStorageInformation(storageInfos);
@@ -184,14 +185,14 @@ public class CreationTools {
     public BioMaterial createBioMaterial(Project p, String name, Taxonomy taxo, Tissue tissue) {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName(name, "de", 0));
-        BioMaterial biomaterial = new BioMaterial(0, names, p.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        BioMaterial biomaterial = new BioMaterial(0, names, p.getId(), new HazardInformation(), new StorageInformation(), taxo, tissue);
         return biomaterial;
     }
 
     public Consumable createConsumable(Project p, String name) {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName(name, "de", 0));
-        Consumable con = new Consumable(0, names, 0, new HazardInformation(), new StorageClassInformation());
+        Consumable con = new Consumable(0, names, 0, new HazardInformation(), new StorageInformation());
         return con;
     }
 }

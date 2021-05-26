@@ -45,10 +45,10 @@
                             <b:column span="5">
                                 <b:selectOneMenu
                                     disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
-                                    value="#{materialBean.storageClassInformation.storageClass}">
+                                    value="#{materialBean.getStorageInformationBuilder().choosenStorageClass}">
                                     <f:selectItems 
                                         var="item"
-                                        value="#{materialBean.storageClassInformation.possibleStorageClasses}"
+                                        value="#{materialBean.getStorageInformationBuilder().possibleStorageClasses}"
                                         itemLabel="#{item.getName()}" />
                                 </b:selectOneMenu>
                             </b:column>
@@ -58,10 +58,20 @@
                     <b:inputText
                         disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')}"
                         label="#{msgs.materialCreation_panelStorage_remarks}"
-                        value="#{materialBean.storageClassInformation.remarks}">
+                        value="#{materialBean.getStorageInformationBuilder().remarks}">
                         <f:converter converterId="InputConverter" />
                     </b:inputText>
-                   
+                    <p:panel>
+                        <p:selectManyCheckbox
+                            value="#{materialBean.storageInformationBuilder().selectedConditions}" 
+                            >
+                            <f:selectItems 
+                                value="#{materialBean.getStorageInformationBuilder().possibleConditions}" 
+                                itemLabel="#{hazard.toString()}"
+                                var="hazard"> 
+                            </f:selectItems>
+                        </p:selectManyCheckbox>
+                    </p:panel>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>

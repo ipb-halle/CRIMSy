@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
@@ -52,7 +52,7 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
     protected Integer projectId;
     protected Date creationTime;
     protected HazardInformation hazards;
-    protected StorageClassInformation storageInformation;
+    protected StorageInformation storageInformation;
     protected List<IndexEntry> indices = new ArrayList<>();
     protected List<MaterialDetailRight> detailRights = new ArrayList<>();
     protected MaterialHistory history = new MaterialHistory();
@@ -63,7 +63,7 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
             List<MaterialName> names,
             Integer projectId,
             HazardInformation hazards,
-            StorageClassInformation storageInformation) {
+            StorageInformation storageInformation) {
         this.id = id;
         this.names = names;
         this.projectId = projectId;
@@ -122,11 +122,11 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
         this.hazards = hazards;
     }
 
-    public StorageClassInformation getStorageInformation() {
+    public StorageInformation getStorageInformation() {
         return storageInformation;
     }
 
-    public void setStorageInformation(StorageClassInformation storageInformation) {
+    public void setStorageInformation(StorageInformation storageInformation) {
         this.storageInformation = storageInformation;
     }
 

@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.biomaterial;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
@@ -43,7 +43,7 @@ public class Tissue extends Material {
             List<MaterialName> names,
             Taxonomy taxo
     ) {
-        super(id, names, null, new HazardInformation(), new StorageClassInformation());
+        super(id, names, null, new HazardInformation(), new StorageInformation());
         this.taxonomy = taxo;
         this.type = MaterialType.TISSUE;
     }

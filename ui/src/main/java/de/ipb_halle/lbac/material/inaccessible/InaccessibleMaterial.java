@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import java.util.List;
 public class InaccessibleMaterial extends Material {
 
     public InaccessibleMaterial(List<MaterialName> nameList, ACList aclist) {
-        super(-1, nameList, null, new HazardInformation(), new StorageClassInformation());
+        super(-1, nameList, null, new HazardInformation(), new StorageInformation());
         this.setType(MaterialType.INACCESSIBLE);
         this.setACList(aclist);
     }

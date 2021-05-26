@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.material.Material;
 
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.ArrayList;
@@ -39,8 +39,8 @@ public class StorageClassBuilder {
     private List<StorageClass> possibleStorageClasses;
     private StorageClass choosenStorageClass;
     private String remarks;
-    private List<StorageCondition> choosenConditions=new ArrayList<>();
-    private List<StorageCondition> possibleConditions=new ArrayList<>();
+    private List<StorageCondition> selectedConditions = new ArrayList<>();
+    private List<StorageCondition> possibleConditions = new ArrayList<>();
 
     public StorageClassBuilder(
             MessagePresenter messagePresenter,
@@ -48,17 +48,17 @@ public class StorageClassBuilder {
             Material material) {
         this.messagePresenter = messagePresenter;
         this.materialService = materialService;
-        this.remarks=material.getStorageInformation().getRemarks();
+        this.remarks = material.getStorageInformation().getRemarks();
         this.possibleStorageClasses = initStorageClassNames();
         this.choosenStorageClass = material.getStorageInformation().getStorageClass();
-        this.storageClassActivated=choosenStorageClass!=null;
+        this.storageClassActivated = choosenStorageClass != null;
     }
 
     public StorageClassBuilder(
             MessagePresenter messagePresenter,
             MaterialService materialService) {
         this.messagePresenter = messagePresenter;
-        this.materialService = materialService;       
+        this.materialService = materialService;
         this.possibleStorageClasses = initStorageClassNames();
         choosenStorageClass = possibleStorageClasses.get(0);
     }
@@ -73,11 +73,15 @@ public class StorageClassBuilder {
         }
         return classes;
     }
-    
-    public StorageClassInformation build(){
-        
-        StorageClassInformation storageInfos=new StorageClassInformation();
-        
+
+    public StorageInformation build() {
+
+        StorageInformation storageInfos = new StorageInformation();
+        if (storageClassActivated) {
+            storageInfos.setStorageClass(choosenStorageClass);
+            storageInfos.setRemarks(remarks);
+        }
+        storageInfos.getStorageConditions().addAll(selectedConditions);
         return storageInfos;
     }
 
@@ -91,14 +95,6 @@ public class StorageClassBuilder {
 
     public List<StorageClass> getPossibleStorageClasses() {
         return possibleStorageClasses;
-    }
-
-    public List<StorageCondition> getChoosenConditions() {
-        return choosenConditions;
-    }
-
-    public void setChoosenConditions(List<StorageCondition> choosenConditions) {
-        this.choosenConditions = choosenConditions;
     }
 
     public List<StorageCondition> getPossibleConditions() {
@@ -124,7 +120,13 @@ public class StorageClassBuilder {
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
-    
-    
+
+    public List<StorageCondition> getSelectedConditions() {
+        return selectedConditions;
+    }
+
+    public void setSelectedConditions(List<StorageCondition> selectedConditions) {
+        this.selectedConditions = selectedConditions;
+    }
 
 }

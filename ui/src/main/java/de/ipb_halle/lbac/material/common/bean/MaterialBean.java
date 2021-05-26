@@ -38,7 +38,7 @@ import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
@@ -136,7 +136,7 @@ public class MaterialBean implements Serializable {
     private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
 
     private MaterialHazardController hazardController;
-    private StorageClassBuilder storageController;
+    private StorageClassBuilder storageInformationBuilder;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -309,7 +309,7 @@ public class MaterialBean implements Serializable {
                         structureInfos,
                         materialEditState.getCurrentProject(),
                         hazards,
-                        storageController.build(),
+                        storageInformationBuilder.build(),
                         materialIndexBean.getIndices(),
                         userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.BIOMATERIAL) {
@@ -320,13 +320,13 @@ public class MaterialBean implements Serializable {
                         t,
                         taxonomyController.getSelectedTissue(),
                         hazards,
-                        storageController.build(),
+                        storageInformationBuilder.build(),
                         userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.CONSUMABLE) {
                 creationSaver.saveConsumable(
                         materialEditState.getCurrentProject(),
                         hazards,
-                        storageController.build(),
+                        storageInformationBuilder.build(),
                         materialIndexBean.getIndices(),
                         userBean.getCurrentAccount());
             }
@@ -573,4 +573,9 @@ public class MaterialBean implements Serializable {
     public void setTaxonomyService(TaxonomyService taxonomyService) {
         this.taxonomyService = taxonomyService;
     }
+
+    public StorageClassBuilder getStorageInformationBuilder() {
+        return storageInformationBuilder;
+    }
+    
 }

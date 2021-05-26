@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
@@ -63,10 +63,10 @@ public class MaterialCreationSaver implements Serializable {
             Taxonomy taxonomy,
             Tissue tissue,
             HazardInformation hazards,
-            StorageClassInformation storageInfos,
+            StorageInformation storageInfos,
             User owner) {
         if (storageInfos == null) {
-            storageInfos = new StorageClassInformation();
+            storageInfos = new StorageInformation();
         }
         if (hazards == null) {
             hazards = new HazardInformation();
@@ -86,7 +86,7 @@ public class MaterialCreationSaver implements Serializable {
             StructureInformation structureInfos,
             Project project,
             HazardInformation hazards,
-            StorageClassInformation storageClassInformation,
+            StorageInformation storageClassInformation,
             List<IndexEntry> indices,
             User owner) {
         try {
@@ -126,7 +126,7 @@ public class MaterialCreationSaver implements Serializable {
 
     public void saveMaterialOverview(Material m, Project p, User owner) {
         if (m.getStorageInformation() == null) {
-            m.setStorageInformation(new StorageClassInformation());
+            m.setStorageInformation(new StorageInformation());
         }
 
         if (m.getHazards() == null) {
@@ -139,7 +139,7 @@ public class MaterialCreationSaver implements Serializable {
     public void saveConsumable(
             Project project,
             HazardInformation hazards,
-            StorageClassInformation storageClassInformation,
+            StorageInformation storageClassInformation,
             List<IndexEntry> indices,
             User owner) {
         Consumable consumable = new Consumable(0, materialNameBean.getNames(), project.getId(), hazards, storageClassInformation);

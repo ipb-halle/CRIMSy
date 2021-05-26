@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -82,7 +82,7 @@ public class TaxonomyTreeControllerTest {
     }
 
     private Taxonomy createTaxonomy(String name, int id, int rank) {
-        Taxonomy t = new Taxonomy(id, Arrays.asList(new MaterialName(name, "de", 0)), new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), null, new Date());
+        Taxonomy t = new Taxonomy(id, Arrays.asList(new MaterialName(name, "de", 0)), new HazardInformation(), new StorageInformation(), new ArrayList<>(), null, new Date());
         t.setLevel(new TaxonomyLevel(rank, "Level " + rank, rank));
         return t;
     }

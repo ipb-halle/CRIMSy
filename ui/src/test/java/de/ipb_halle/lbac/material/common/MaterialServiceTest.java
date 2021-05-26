@@ -219,7 +219,7 @@ public class MaterialServiceTest extends TestBase {
 
         //Set initial storage parameter
         structure.getStorageInformation().setStorageClass(new StorageClass(1, "storage class 1"));
-        structure.getStorageInformation().setAcidSensitive(true);
+        structure.getStorageInformation().getStorageConditions().add(StorageCondition.acidSensitive);
         //set initial indices & names
         structure.getNames().add(new MaterialName("name1_before_edit", "en", 0));
         structure.getNames().add(new MaterialName("name2_before_edit", "de", 1));
@@ -241,8 +241,8 @@ public class MaterialServiceTest extends TestBase {
         Structure editedMaterial = (Structure) structure.copyMaterial();
         //Change the storage parameter
         editedMaterial.getStorageInformation().setStorageClass(new StorageClass(2, "storage class 2"));
-        editedMaterial.getStorageInformation().setKeepCool(false);
-        editedMaterial.getStorageInformation().setAwayFromOxidants(true);
+        editedMaterial.getStorageInformation().getStorageConditions().remove(StorageCondition.keepCool);
+        editedMaterial.getStorageInformation().getStorageConditions().add(StorageCondition.awayFromOxidants);
         //Change indices & names
         editedMaterial.getNames().clear();
         editedMaterial.getNames().add(new MaterialName("name2_after_edit", "de", 0));
@@ -286,7 +286,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertNull(storageDiff.getStorageConditionsOld().get(awayFromOxydantsIndex));
 
         Material secondEditedMaterial = editedMaterial.copyMaterial();
-        secondEditedMaterial.getStorageInformation().setKeepFrozen(false);
+        secondEditedMaterial.getStorageInformation().getStorageConditions().remove(StorageCondition.keepFrozen);
         instance.saveEditedMaterial(
                 secondEditedMaterial,
                 editedMaterial,
@@ -412,20 +412,20 @@ public class MaterialServiceTest extends TestBase {
         names.add(new MaterialName("Rose", "de", 2));
         names.add(new MaterialName("Rosa ", "la", 3));
 
-        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
         t.setLevel(levels.get(0));
         instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("red rose", "en", 1));
-        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), publicUser, new Date());
+        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), publicUser, new Date());
         t2.getTaxHierachy().add(t);
         t2.setLevel(levels.get(1));
         instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("small red rose", "en", 1));
-        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), publicUser, new Date());
+        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), publicUser, new Date());
         t3.getTaxHierachy().add(t);
         t3.getTaxHierachy().add(t2);
         t3.setLevel(levels.get(2));
@@ -458,7 +458,7 @@ public class MaterialServiceTest extends TestBase {
 
         //Create a structure
         Structure struture1 = creationTools.createStructure(project1);
-        StorageClassInformation si = new StorageClassInformation();
+        StorageInformation si = new StorageInformation();
         si.setRemarks("test remarks");
         si.setStorageClass(instance.loadStorageClasses().get(0));
         struture1.setStorageInformation(si);
@@ -607,7 +607,7 @@ public class MaterialServiceTest extends TestBase {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("test009_saveConsumable_consumable_name_de", "de", 1));
         names.add(new MaterialName("test009_saveConsumable_consumable_name_en", "en", 1));
-        Consumable co = new Consumable(0, names, project1.getId(), new HazardInformation(), new StorageClassInformation());
+        Consumable co = new Consumable(0, names, project1.getId(), new HazardInformation(), new StorageInformation());
     }
 
     @Test

@@ -25,7 +25,7 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -56,7 +56,7 @@ public class HistoryOperationIndexTest {
     @Before
     public void init() {
         indices = new ArrayList<>();
-        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
+        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);
@@ -65,7 +65,7 @@ public class HistoryOperationIndexTest {
         s.setIndices(indices);
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageClassInformation(),null,new ArrayList<>());
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageInformation(),null,new ArrayList<>());
     }
 
     @Test

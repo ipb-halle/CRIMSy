@@ -35,7 +35,7 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
@@ -305,21 +305,21 @@ public class MaterialService implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    private StorageClassInformation loadStorageClassInformation(int materialId) {
+    private StorageInformation loadStorageClassInformation(int materialId) {
 
         Query q = em.createNativeQuery(SQL_GET_STORAGE, StorageEntity.class);
         Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionMaterialEntity.class);
         q2.setParameter("mid", materialId);
         q.setParameter("mid", materialId);
         List<StorageEntity> storageEntities = q.getResultList();
-        StorageClassInformation storageInfos=null;
+        StorageInformation storageInfos=null;
         if (storageEntities.isEmpty()) {
-            storageInfos = StorageClassInformation.createObjectByDbEntity(
+            storageInfos = StorageInformation.createObjectByDbEntity(
                     q2.getResultList());
         } else {
             String remarks = storageEntities.get(0).getDescription();
             StorageClass storageClass = loadStorageClassById(storageEntities.get(0).getStorageClass());
-            storageInfos = StorageClassInformation.createObjectByDbEntity(
+            storageInfos = StorageInformation.createObjectByDbEntity(
                     remarks, storageClass, q2.getResultList());
         }
 

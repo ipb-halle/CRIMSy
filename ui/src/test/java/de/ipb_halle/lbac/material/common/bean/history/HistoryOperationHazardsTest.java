@@ -33,7 +33,7 @@ import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardController;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
@@ -80,7 +80,7 @@ public class HistoryOperationHazardsTest extends TestBase {
     @Before
     public void init() {
         indices = new ArrayList<>();
-        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
+        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);
@@ -102,7 +102,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageClassInformation(), null, possibleHazards);
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageInformation(), null, possibleHazards);
     }
 
     /**

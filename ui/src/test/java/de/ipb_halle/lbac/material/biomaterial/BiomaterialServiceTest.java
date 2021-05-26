@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
@@ -103,7 +103,7 @@ public class BiomaterialServiceTest extends TestBase {
         Tissue tissue = saveTissueInDB(taxo);
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName(materialName, "de", 1));
-        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageInformation(), taxo, tissue);
         ACList materialACList = project.getUserGroups();
         materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>(), publicUser);
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(owner, 0, 100);
@@ -141,7 +141,7 @@ public class BiomaterialServiceTest extends TestBase {
         Tissue tissue = saveTissueInDB(taxo);
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("Löwnzahn", "de", 1));
-        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageInformation(), taxo, tissue);
         biomaterial.setACList(project.getUserGroups());
         biomaterial.setOwner(owner);
 

@@ -24,7 +24,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class TaxonomyHistoryControllerTest extends TestBase {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("name_1", "de", 0));
         names.add(new MaterialName("name_2", "en", 1));
-        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), null, null);
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), null, null);
         bean = new TaxonomyBean();
         TreeNode node = new DefaultTreeNode(t);
         bean.setSelectedTaxonomy(node);
