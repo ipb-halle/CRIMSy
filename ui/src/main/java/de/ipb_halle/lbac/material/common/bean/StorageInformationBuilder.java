@@ -26,6 +26,8 @@ import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -38,10 +40,11 @@ public class StorageInformationBuilder {
     private MaterialService materialService;
     private List<StorageClass> possibleStorageClasses;
     private StorageClass choosenStorageClass;
-    private String remarks;
+    private String remarks = "";
     private List<StorageCondition> selectedConditions = new ArrayList<>();
     private List<StorageCondition> possibleConditions = new ArrayList<>();
     private boolean inHistoryMode;
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public StorageInformationBuilder(
             MessagePresenter messagePresenter,
@@ -51,8 +54,15 @@ public class StorageInformationBuilder {
         this.materialService = materialService;
         this.remarks = material.getStorageInformation().getRemarks();
         this.possibleStorageClasses = initStorageClassNames();
-        this.choosenStorageClass = material.getStorageInformation().getStorageClass();
-        this.storageClassActivated = choosenStorageClass != null;
+         this.storageClassActivated = choosenStorageClass != null;
+        if (material.getStorageInformation().getStorageClass() != null) {
+            this.choosenStorageClass = getStorageClassById(material.getStorageInformation().getStorageClass().id);
+        } else {
+            this.choosenStorageClass = possibleStorageClasses.get(0);
+        }
+
+       
+        logger.info("Class activated "+storageClassActivated);
     }
 
     public StorageInformationBuilder(
@@ -61,22 +71,33 @@ public class StorageInformationBuilder {
         this.messagePresenter = messagePresenter;
         this.materialService = materialService;
         this.possibleStorageClasses = initStorageClassNames();
-        this.choosenStorageClass = possibleStorageClasses.get(0);
+        this.choosenStorageClass = possibleStorageClasses.get(1);
+    }
+
+    private StorageClass getStorageClassById(int id) {
+        for (StorageClass sc : possibleStorageClasses) {
+            if (sc.id == id) {
+                return sc;
+            }
+        }
+        throw new IllegalArgumentException("No storage class found with id " + id);
     }
 
     private List<StorageClass> initStorageClassNames() {
         List<StorageClass> classes = materialService.loadStorageClasses();
         for (StorageClass sc : classes) {
-            sc.setName(
-                    messagePresenter.presentMessage(
-                            "materialCreation_storageclass_" + sc.getName()));
-
+            try {
+                sc.setName(
+                        messagePresenter.presentMessage(
+                                "materialCreation_storageclass_" + sc.getName()));
+            } catch (Exception e) {
+                logger.info("Error in getting names");
+            }
         }
         return classes;
     }
 
     public StorageInformation build() {
-
         StorageInformation storageInfos = new StorageInformation();
         if (storageClassActivated) {
             storageInfos.setStorageClass(choosenStorageClass);
@@ -87,14 +108,17 @@ public class StorageInformationBuilder {
     }
 
     public boolean isStorageClassActivated() {
+        
         return storageClassActivated;
     }
 
     public boolean isStorageClassDisabled() {
+        logger.info("Deactivated " + (!storageClassActivated || inHistoryMode));
         return !storageClassActivated || inHistoryMode;
     }
 
     public void setStorageClassActivated(boolean storageClassActivated) {
+        logger.info(!storageClassActivated || inHistoryMode);
         this.storageClassActivated = storageClassActivated;
     }
 

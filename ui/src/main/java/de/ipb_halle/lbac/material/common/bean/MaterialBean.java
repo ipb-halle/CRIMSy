@@ -192,15 +192,12 @@ public class MaterialBean implements Serializable {
                     m.getType(),
                     acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()),
                     m.getHazards().getHazards(), messagePresenter);
-
             materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m, hazardController);
-
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
             materialNameBean.getNames().addAll(m.getNames());
             materialIndexBean.getIndices().addAll(m.getIndices());
-
             if (m.getType() == MaterialType.STRUCTURE) {
                 Structure struc = (Structure) m;
                 structureInfos = new StructureInformation(m);
@@ -225,7 +222,6 @@ public class MaterialBean implements Serializable {
                     taxonomyController,
                     hazardService.getAllHazardTypes()
             );
-
             storageInformationBuilder = new StorageInformationBuilder(
                     messagePresenter,
                     materialService,
