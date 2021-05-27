@@ -32,7 +32,7 @@
                 title="#{msgs.materialCreation_panelStorage_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
                 <p:outputPanel
-                    styleClass="storagePanelClass"
+                    styleClass="storagePanelClass storageClassChoosable"
                     rendered="#{materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
                     <b:container>
                         <b:row>
@@ -40,38 +40,56 @@
                                 <h:outputText
                                     value="#{msgs.materialCreation_panelStorage_storageClass}"/>
                             </b:column>
-                            <b:column span="5">
+                            <b:column span="2">
+                                <p:selectBooleanCheckbox
+                                    value="#{materialBean.getStorageInformationBuilder().storageClassActivated}">
+                                    <p:ajax  update="@(.storageClassChoosable)"/> 
+                                </p:selectBooleanCheckbox>
+                            </b:column>
+                            
+                            <b:column span="5"
+                                      styleClass="storageClassChoosable">
                                 <b:selectOneMenu
-                                    disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')
-                                                &&!materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
+                                    id="ads"
+                                    ajax="true"
+                                    converter="StorageClassConverter"
+                                    disabled="#{materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
                                     value="#{materialBean.getStorageInformationBuilder().choosenStorageClass}">
                                     <f:selectItems 
                                         var="item"
+                                        itemValue="#{item}"
                                         value="#{materialBean.getStorageInformationBuilder().possibleStorageClasses}"
-                                        itemLabel="#{item.getName()}" />
+                                        itemLabel="#{item.name}" />
                                 </b:selectOneMenu>
                             </b:column>
+                            
                         </b:row>
 
                     </b:container>
-                    <b:inputText
-                        disabled="#{!materialBean.permission.isDetailInformationEditable('STORAGE_CLASSES')
-                                    &&!materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
-                        label="#{msgs.materialCreation_panelStorage_remarks}"
-                        value="#{materialBean.getStorageInformationBuilder().remarks}">
-                        <f:converter converterId="InputConverter" />
-                    </b:inputText>
-                    <p:panel>
-                        <p:selectManyCheckbox
-                            value="#{materialBean.storageInformationBuilder().selectedConditions}">
-                            <f:selectItems 
-                                value="#{materialBean.getStorageInformationBuilder().possibleConditions}" 
-                                itemLabel="#{hazard.toString()}"
-                                var="hazard"> 
-                            </f:selectItems>
-                        </p:selectManyCheckbox>
-                    </p:panel>
+
+                    <h:panelGroup
+                        id="storageRemarkId"
+                        styleClass="storageClassChoosable">
+                        <b:inputText
+                            readonly="#{materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
+                            label="#{msgs.materialCreation_panelStorage_remarks}"
+                            value="#{materialBean.getStorageInformationBuilder().remarks}">
+                            <f:converter converterId="InputConverter" />
+                        </b:inputText>
+                    </h:panelGroup>
+                    <!--
+                                        <p:panel>
+                                            <p:selectManyCheckbox
+                                                value="#{materialBean.getStorageInformationBuilder().selectedConditions}">
+                                                <f:selectItems 
+                                                    value="#{materialBean.getStorageInformationBuilder().possibleConditions}" 
+                                                    var="hazard"> 
+                                                </f:selectItems>
+                                            </p:selectManyCheckbox>
+                                        </p:panel>
+                    -->
                 </p:outputPanel>
+
             </p:tab>
         </ui:composition>
     </h:body>

@@ -312,7 +312,7 @@ public class MaterialService implements Serializable {
         q2.setParameter("mid", materialId);
         q.setParameter("mid", materialId);
         List<StorageEntity> storageEntities = q.getResultList();
-        StorageInformation storageInfos=null;
+        StorageInformation storageInfos = null;
         if (storageEntities.isEmpty()) {
             storageInfos = StorageInformation.createObjectByDbEntity(
                     q2.getResultList());
@@ -684,13 +684,13 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<StorageClass> loadStorageClasses() {
-        if (storageClasses.isEmpty()) {
-            List<Object> objects = this.em.createNativeQuery(SQL_GET_STORAGE_CLASSES).getResultList();
-            for (Object o : objects) {
-                Object[] oo = (Object[]) o;
-                storageClasses.add(new StorageClass((Integer) oo[0], (String) oo[1]));
-            }
+        storageClasses.clear();
+        List<Object> objects = this.em.createNativeQuery(SQL_GET_STORAGE_CLASSES).getResultList();
+        for (Object o : objects) {
+            Object[] oo = (Object[]) o;
+            storageClasses.add(new StorageClass((Integer) oo[0], (String) oo[1]));
         }
+
         return storageClasses;
     }
 

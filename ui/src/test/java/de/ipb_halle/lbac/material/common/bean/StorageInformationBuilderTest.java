@@ -50,7 +50,7 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class StorageClassControllerTest extends TestBase {
+public class StorageInformationBuilderTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
 
@@ -101,6 +101,14 @@ public class StorageClassControllerTest extends TestBase {
 
         Assert.assertEquals(1, controller.build().getStorageConditions().size(), 3);
 
+         controller = new StorageInformationBuilder(new MessagePresenterMock(), materialService, s);
+        Assert.assertEquals(23, controller.getPossibleStorageClasses().size());
+        Assert.assertNotNull(controller.build());
+        Assert.assertNotNull(controller.build().getStorageClass());
+        Assert.assertEquals(1, controller.build().getStorageClass().id, 0);
+
+        Assert.assertEquals(1, controller.build().getStorageConditions().size(), 3);
+        
     }
 
     @Test
