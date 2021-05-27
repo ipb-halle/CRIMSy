@@ -354,6 +354,7 @@ public class MaterialBean implements Serializable {
                 materialEditState.getMaterialBeforeEdit(),
                 materialEditState.getCurrentProject().getUserGroups().getId(),
                 userBean.getCurrentAccount().getId());
+        
     }
 
     private void setBasicInfos() {
@@ -363,6 +364,8 @@ public class MaterialBean implements Serializable {
         materialEditState.getMaterialToEdit().setNames(materialNameBean.getNames());
         materialEditState.getMaterialToEdit().setIndices(materialIndexBean.getIndices());
         materialEditState.getMaterialToEdit().setHazards(tmpHazards);
+        materialEditState.getMaterialToEdit().setStorageInformation(storageInformationBuilder.build());
+        
     }
 
     private void saveEditedStructure() {

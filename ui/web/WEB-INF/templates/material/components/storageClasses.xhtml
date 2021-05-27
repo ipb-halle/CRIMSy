@@ -32,7 +32,7 @@
                 title="#{msgs.materialCreation_panelStorage_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
                 <p:outputPanel
-                    styleClass="storagePanelClass storageClassChoosable"
+                    styleClass="storagePanelClass"
                     rendered="#{materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
                     <b:container>
                         <b:row>
@@ -61,10 +61,8 @@
                                         value="#{materialBean.getStorageInformationBuilder().possibleStorageClasses}"
                                         itemLabel="#{item.name}" />
                                 </b:selectOneMenu>
-                            </b:column>
-                            
+                            </b:column>                            
                         </b:row>
-
                     </b:container>
 
                     <h:panelGroup

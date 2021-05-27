@@ -231,7 +231,25 @@ public class MaterialBeanTest extends TestBase {
         
         instance.switchOneVersionForward();
         
-        instance.switchOneVersionForward();
+        instance.switchOneVersionForward(); 
+    }
+    
+     @Test
+    public void test004_editStorageInformationMaterial() {
+        MaterialIndexBean indexBean = new MaterialIndexBean();
+        indexBean.setIndexService(indexService);
+        instance.setMaterialIndexBean(indexBean);
+        instance.setTaxonomyService(taxoService);
+        
+        BioMaterial bioMat = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
+        materialService.saveMaterialToDB(bioMat, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
+        instance.setProjectService(projectService);
+        instance.setProjectBean(new ProjectBean());
+        instance.startMaterialEdit(bioMat);
+        instance.getStorageInformationBuilder().setStorageClassActivated(true);
+        instance.getStorageInformationBuilder().setChoosenStorageClass(materialService.loadStorageClasses().get(3));
+        
+        instance.actionSaveMaterial();
         
     }
     

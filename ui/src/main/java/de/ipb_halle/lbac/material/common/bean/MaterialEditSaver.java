@@ -171,11 +171,16 @@ public class MaterialEditSaver implements Serializable {
     }
     
     protected void updateStorageClass(MaterialStorageDifference diff) {
+        
         StorageEntity entity = this.materialService.getEm().find(StorageEntity.class, diff.getMaterialID());
+        logger.info("Ëntity "+entity);
         if (entity != null) {
             entity.setDescription(newMaterial.getStorageInformation().getRemarks());
             entity.setStorageClass(newMaterial.getStorageInformation().getStorageClass().getId());
             materialService.getEm().merge(entity);
+        } else {
+            entity = new StorageEntity(diff.getMaterialID(), diff.getStorageclassNew(), diff.getDescriptionNew());
+            materialService.getEm().persist(entity);
         }
     }
     

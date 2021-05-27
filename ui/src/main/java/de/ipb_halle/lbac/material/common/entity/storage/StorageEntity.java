@@ -40,7 +40,7 @@ public class StorageEntity implements Serializable {
     @Column
     private String description;
 
-    public StorageEntity(int materialId, int storageClass, String description) {
+    public StorageEntity(int materialId, Integer storageClass, String description) {
         this.materialId = materialId;
         this.storageClass = storageClass;
         this.description = description;

@@ -60,9 +60,6 @@ public class StorageInformationBuilder {
         } else {
             this.choosenStorageClass = possibleStorageClasses.get(0);
         }
-
-       
-        logger.info("Class activated "+storageClassActivated);
     }
 
     public StorageInformationBuilder(
@@ -104,6 +101,7 @@ public class StorageInformationBuilder {
             storageInfos.setRemarks(remarks);
         }
         storageInfos.getStorageConditions().addAll(selectedConditions);
+        
         return storageInfos;
     }
 
@@ -113,12 +111,10 @@ public class StorageInformationBuilder {
     }
 
     public boolean isStorageClassDisabled() {
-        logger.info("Deactivated " + (!storageClassActivated || inHistoryMode));
         return !storageClassActivated || inHistoryMode;
     }
 
     public void setStorageClassActivated(boolean storageClassActivated) {
-        logger.info(!storageClassActivated || inHistoryMode);
         this.storageClassActivated = storageClassActivated;
     }
 
