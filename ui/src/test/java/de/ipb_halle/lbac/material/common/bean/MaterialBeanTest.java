@@ -42,9 +42,12 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -122,12 +125,18 @@ public class MaterialBeanTest extends TestBase {
 
         materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
 
-        instance.setMaterialIndexBean(new MaterialIndexBean());
         instance.setMaterialNameBean(new MaterialNameBean());
         instance.setMessagePresenter(new MessagePresenterMock());
         instance.getMaterialEditState().setMaterialToEdit(material);
         instance.getMaterialEditState().setMaterialBeforeEdit(material);
         instance.setMaterialService(materialService);
+
+        MaterialIndexBean indexBean = new MaterialIndexBean();
+        indexBean.setIndexService(indexService);
+        instance.setMaterialIndexBean(indexBean);
+        instance.setTaxonomyService(taxoService);
+        instance.setProjectService(projectService);
+        instance.setProjectBean(new ProjectBean());
 
     }
 
@@ -235,22 +244,16 @@ public class MaterialBeanTest extends TestBase {
     }
 
     @Test
-    public void test004_editStorageInformationMaterial() {
-        MaterialIndexBean indexBean = new MaterialIndexBean();
-        indexBean.setIndexService(indexService);
-        instance.setMaterialIndexBean(indexBean);
-        instance.setTaxonomyService(taxoService);
-
+    public void test004_editStorageInformation() {
         material = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(material, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
-        instance.setProjectService(projectService);
-        instance.setProjectBean(new ProjectBean());
+        //Set storageclass from none -> ID:4
         instance.startMaterialEdit(material);
         instance.getStorageInformationBuilder().setStorageClassActivated(true);
         instance.getStorageInformationBuilder().setChoosenStorageClass(materialService.loadStorageClasses().get(3));
-
         instance.actionSaveMaterial();
 
+        //Load material,init storageInfortmationBuilder and check changes
         material = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(material);
         Assert.assertNotNull(instance.getStorageInformationBuilder().getChoosenStorageClass());
@@ -260,20 +263,24 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertTrue(
                 instance.getStorageInformationBuilder().isStorageClassActivated());
 
+        //Set storageclass from ID:4 -> ID:3
         instance.getStorageInformationBuilder().setChoosenStorageClass(materialService.loadStorageClasses().get(2));
         instance.actionSaveMaterial();
 
+        //Load material,init storageInfortmationBuilder and check changes
         material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
         Assert.assertEquals(
                 materialService.loadStorageClasses().get(2),
                 instance.getStorageInformationBuilder().getChoosenStorageClass());
         Assert.assertTrue(
                 instance.getStorageInformationBuilder().isStorageClassActivated());
 
-        instance.startMaterialEdit(material);
+        //Set storageclass from ID:3 -> none
         instance.getStorageInformationBuilder().setStorageClassActivated(false);
         instance.actionSaveMaterial();
 
+        //Load material,init storageInfortmationBuilder and check changes
         material = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(material);
         Assert.assertNull(material.getStorageInformation().getStorageClass());
@@ -282,6 +289,22 @@ public class MaterialBeanTest extends TestBase {
                 instance.getStorageInformationBuilder().getChoosenStorageClass());
         Assert.assertFalse(
                 instance.getStorageInformationBuilder().isStorageClassActivated());
+
+        //Check History of changes
+        Assert.assertEquals(3, material.getHistory().getChanges().size());
+        Iterator<Date> iter = material.getHistory().getChanges().keySet().iterator();
+        //First change : none -> 4
+        MaterialStorageDifference diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
+        Assert.assertEquals(4, diff.getStorageclassNew(), 0);
+        Assert.assertNull(diff.getStorageclassOld());
+        //Second change : 4 -> 3
+        diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
+        Assert.assertEquals(4, diff.getStorageclassOld(), 0);
+        Assert.assertEquals(3, diff.getStorageclassNew(), 0);
+        //Third change : 3 -> none
+        diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
+        Assert.assertEquals(3, diff.getStorageclassOld(), 0);
+        Assert.assertNull(diff.getStorageclassNew());
 
     }
 
@@ -294,4 +317,5 @@ public class MaterialBeanTest extends TestBase {
         deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
+
 }
