@@ -46,7 +46,7 @@
                                     <p:ajax  update="@(.storageClassChoosable)"/> 
                                 </p:selectBooleanCheckbox>
                             </b:column>
-                            
+
                             <b:column span="5"
                                       styleClass="storageClassChoosable">
                                 <b:selectOneMenu
@@ -75,17 +75,21 @@
                             <f:converter converterId="InputConverter" />
                         </b:inputText>
                     </h:panelGroup>
-                    <!--
-                                        <p:panel>
-                                            <p:selectManyCheckbox
-                                                value="#{materialBean.getStorageInformationBuilder().selectedConditions}">
-                                                <f:selectItems 
-                                                    value="#{materialBean.getStorageInformationBuilder().possibleConditions}" 
-                                                    var="hazard"> 
-                                                </f:selectItems>
-                                            </p:selectManyCheckbox>
-                                        </p:panel>
-                    -->
+
+
+                    <p:selectManyCheckbox
+                       
+                        layout="responsive" columns="2"
+                        value="#{materialBean.getStorageInformationBuilder().selectedConditions}">
+                        <p:ajax/>
+                        <f:selectItems 
+                            value="#{materialBean.getStorageInformationBuilder().possibleConditions}" 
+                            itemLabel="#{materialBean.getStorageInformationBuilder().getLocalizedConditionName(condition)}" 
+                            var="condition"> 
+                        </f:selectItems>
+                    </p:selectManyCheckbox>
+
+
                 </p:outputPanel>
 
             </p:tab>

@@ -183,8 +183,10 @@ public class MaterialEditSaver implements Serializable {
             }
 
         } else {
-            entity = new StorageEntity(diff.getMaterialID(), diff.getStorageclassNew(), diff.getDescriptionNew());
-            materialService.getEm().persist(entity);
+            if (diff.getStorageclassNew() != null) {
+                entity = new StorageEntity(diff.getMaterialID(), diff.getStorageclassNew(), diff.getDescriptionNew());
+                materialService.getEm().persist(entity);
+            }
         }
     }
 

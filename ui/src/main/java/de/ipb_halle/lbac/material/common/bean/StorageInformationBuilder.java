@@ -25,7 +25,10 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.faces.event.AjaxBehaviorEvent;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +44,7 @@ public class StorageInformationBuilder {
     private List<StorageClass> possibleStorageClasses;
     private StorageClass choosenStorageClass;
     private String remarks = "";
-    private List<StorageCondition> selectedConditions = new ArrayList<>();
+    private StorageCondition[] selectedConditions;
     private List<StorageCondition> possibleConditions = new ArrayList<>();
     private boolean inHistoryMode;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -54,12 +57,15 @@ public class StorageInformationBuilder {
         this.materialService = materialService;
         this.remarks = material.getStorageInformation().getRemarks();
         this.possibleStorageClasses = initStorageClassNames();
-         this.storageClassActivated = material.getStorageInformation().getStorageClass() != null;
+        this.selectedConditions = material.getStorageInformation().getStorageConditions().stream().toArray(StorageCondition[]::new);
+
+        this.storageClassActivated = material.getStorageInformation().getStorageClass() != null;
         if (material.getStorageInformation().getStorageClass() != null) {
             this.choosenStorageClass = getStorageClassById(material.getStorageInformation().getStorageClass().id);
         } else {
             this.choosenStorageClass = possibleStorageClasses.get(0);
         }
+        possibleConditions.addAll(Arrays.asList(StorageCondition.values()));
     }
 
     public StorageInformationBuilder(
@@ -68,7 +74,9 @@ public class StorageInformationBuilder {
         this.messagePresenter = messagePresenter;
         this.materialService = materialService;
         this.possibleStorageClasses = initStorageClassNames();
-        this.choosenStorageClass = possibleStorageClasses.get(1);
+        this.choosenStorageClass = possibleStorageClasses.get(0);
+        this.possibleConditions.addAll(Arrays.asList(StorageCondition.values()));
+        this.selectedConditions=new StorageCondition[0];
     }
 
     private StorageClass getStorageClassById(int id) {
@@ -94,19 +102,23 @@ public class StorageInformationBuilder {
         return classes;
     }
 
+    public String getLocalizedConditionName(StorageCondition con) {
+        return messagePresenter.presentMessage("materialCreation_panelStorage_" + con.toString());
+    }
+
     public StorageInformation build() {
         StorageInformation storageInfos = new StorageInformation();
         if (storageClassActivated) {
             storageInfos.setStorageClass(choosenStorageClass);
             storageInfos.setRemarks(remarks);
         }
-        storageInfos.getStorageConditions().addAll(selectedConditions);
-        
+        storageInfos.getStorageConditions().addAll(Arrays.asList(selectedConditions));
+
         return storageInfos;
     }
 
     public boolean isStorageClassActivated() {
-        
+
         return storageClassActivated;
     }
 
@@ -146,11 +158,11 @@ public class StorageInformationBuilder {
         this.remarks = remarks;
     }
 
-    public List<StorageCondition> getSelectedConditions() {
+    public StorageCondition[] getSelectedConditions() {
         return selectedConditions;
     }
 
-    public void setSelectedConditions(List<StorageCondition> selectedConditions) {
+    public void setSelectedConditions(StorageCondition[] selectedConditions) {
         this.selectedConditions = selectedConditions;
     }
 

@@ -42,12 +42,14 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -263,8 +265,9 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertTrue(
                 instance.getStorageInformationBuilder().isStorageClassActivated());
 
-        //Set storageclass from ID:4 -> ID:3
+        //Set storageclass from ID:4 -> ID:3, also add Remark
         instance.getStorageInformationBuilder().setChoosenStorageClass(materialService.loadStorageClasses().get(2));
+        instance.getStorageInformationBuilder().setRemarks("Remark!!");
         instance.actionSaveMaterial();
 
         //Load material,init storageInfortmationBuilder and check changes
@@ -273,6 +276,9 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertEquals(
                 materialService.loadStorageClasses().get(2),
                 instance.getStorageInformationBuilder().getChoosenStorageClass());
+        Assert.assertEquals(
+                "Remark!!",
+                instance.getStorageInformationBuilder().getRemarks());
         Assert.assertTrue(
                 instance.getStorageInformationBuilder().isStorageClassActivated());
 
@@ -289,7 +295,9 @@ public class MaterialBeanTest extends TestBase {
                 instance.getStorageInformationBuilder().getChoosenStorageClass());
         Assert.assertFalse(
                 instance.getStorageInformationBuilder().isStorageClassActivated());
-
+        Assert.assertNull(
+                instance.getStorageInformationBuilder().getRemarks()
+        );
         //Check History of changes
         Assert.assertEquals(3, material.getHistory().getChanges().size());
         Iterator<Date> iter = material.getHistory().getChanges().keySet().iterator();
@@ -301,11 +309,71 @@ public class MaterialBeanTest extends TestBase {
         diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
         Assert.assertEquals(4, diff.getStorageclassOld(), 0);
         Assert.assertEquals(3, diff.getStorageclassNew(), 0);
+        Assert.assertNull(diff.getDescriptionOld());
+        Assert.assertEquals("Remark!!", diff.getDescriptionNew());
         //Third change : 3 -> none
         diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
         Assert.assertEquals(3, diff.getStorageclassOld(), 0);
         Assert.assertNull(diff.getStorageclassNew());
+        Assert.assertEquals("Remark!!", diff.getDescriptionOld());
+        Assert.assertNull(diff.getDescriptionNew());
 
+    }
+
+    @Test
+    public void test005_editStorageConditions() {
+        material = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
+        materialService.saveMaterialToDB(material, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
+        instance.startMaterialEdit(material);
+
+        Assert.assertEquals(23, instance.getStorageInformationBuilder().getPossibleStorageClasses().size());
+        // add frozen and lightsensitive
+
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepFrozen);
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.lightSensitive);
+
+        instance.actionSaveMaterial();
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertEquals(2, instance.getStorageInformationBuilder().getSelectedConditions().length);
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.keepFrozen));
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.lightSensitive));
+
+        //remove frozen, add acidSensitive, keep cool
+        removeStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepFrozen);
+
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.acidSensitive);
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepCool);
+
+        instance.actionSaveMaterial();
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertEquals(3, instance.getStorageInformationBuilder().getSelectedConditions().length);
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.lightSensitive));
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.acidSensitive));
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.keepCool));
+
+        //remove all conditions and add keep below 40 degress
+        instance.getStorageInformationBuilder().setSelectedConditions(new StorageCondition[0]);
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepTempBelowMinus40Celsius);
+        instance.actionSaveMaterial();
+
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertEquals(1, instance.getStorageInformationBuilder().getSelectedConditions().length);
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.keepTempBelowMinus40Celsius));
+        //clear all conditions
+        instance.getStorageInformationBuilder().setSelectedConditions(new StorageCondition[0]);
+        instance.actionSaveMaterial();
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertTrue(instance.getStorageInformationBuilder().getSelectedConditions().length == 0);
+
+        //Check History of storage conditions
     }
 
     @Deployment
@@ -316,6 +384,38 @@ public class MaterialBeanTest extends TestBase {
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
+    }
+
+    private void addStorageCondition(StorageInformationBuilder builder, StorageCondition c) {
+        StorageCondition[] conds = builder.getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length + 1];
+        for (int i = 0; i < conds.length; i++) {
+            condsNew[i] = conds[i];
+        }
+        condsNew[condsNew.length - 1] = c;
+        builder.setSelectedConditions(condsNew);
+    }
+
+    private void removeStorageCondition(StorageInformationBuilder builder, StorageCondition c) {
+        StorageCondition[] conds = builder.getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length - 1];
+        int j = 0;
+        for (int i = 0; i < conds.length; i++) {
+            if (conds[i] != c) {
+                condsNew[j] = conds[i];
+                j++;
+            }
+        }
+        builder.setSelectedConditions(condsNew);
+    }
+
+    private boolean containsStorageCondition(StorageCondition[] conds, StorageCondition c) {
+        for (StorageCondition sc : conds) {
+            if (sc == c) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
