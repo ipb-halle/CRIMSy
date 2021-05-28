@@ -54,7 +54,7 @@ public class StorageInformationBuilder {
         this.materialService = materialService;
         this.remarks = material.getStorageInformation().getRemarks();
         this.possibleStorageClasses = initStorageClassNames();
-         this.storageClassActivated = choosenStorageClass != null;
+         this.storageClassActivated = material.getStorageInformation().getStorageClass() != null;
         if (material.getStorageInformation().getStorageClass() != null) {
             this.choosenStorageClass = getStorageClassById(material.getStorageInformation().getStorageClass().id);
         } else {
