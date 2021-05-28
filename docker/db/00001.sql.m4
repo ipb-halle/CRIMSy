@@ -475,7 +475,9 @@ CREATE TABLE structures_hist (
 
 CREATE TABLE  hazards (
         id INTEGER PRIMARY KEY,
-        name VARCHAR NOT NULL);
+        name VARCHAR NOT NULL,
+        category INTEGER NOT NULL,
+        has_remarks BOOLEAN NOT NULL DEFAULT false);
 
 CREATE TABLE  material_hazards (
         typeid INTEGER NOT NULL REFERENCES hazards(id),
