@@ -100,7 +100,7 @@ public class MaterialHazardBuilder {
         }
         possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(0));
 
-        this.bioSavetyLevel = possibleBioSavetyLevels.get(0);
+        this.bioSavetyLevel = possibleBioSavetyLevels.get(possibleBioSavetyLevels.size()-1);
 
         for (int i = 0; i < BSL_IDS.length; i++) {
             if (hazards.keySet().contains(hazardService.getHazardById(BSL_IDS[i]))) {
