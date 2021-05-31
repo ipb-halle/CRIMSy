@@ -19,22 +19,21 @@ package de.ipb_halle.lbac.material.common.history;
 
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
-import de.ipb_halle.lbac.material.common.Hazard;
-import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -54,8 +53,9 @@ public class HistoryOperation implements Serializable {
     protected MaterialNameBean materialNameBean;
     protected MaterialIndexBean indexBean;
     protected StructureInformation structureInfos;
-    protected StorageClassInformation storageInformation;
+    protected StorageInformationBuilder storageInformationBuilder;
     protected TaxonomySelectionController taxonomySelectionController;
+    protected List<HazardType> possibleHazards = new ArrayList<>();
 
     /**
      * Initialises the functionality by neccessary services and the history
@@ -67,8 +67,9 @@ public class HistoryOperation implements Serializable {
      * @param nameBean
      * @param indexBean
      * @param structureInfos
-     * @param storageClassInformation
+     * @param storageInformationBuilder
      * @param taxonomySelectionController
+     * @param possibleHazards
      */
     public HistoryOperation(
             MaterialEditState materialEditState,
@@ -76,15 +77,17 @@ public class HistoryOperation implements Serializable {
             MaterialNameBean nameBean,
             MaterialIndexBean indexBean,
             StructureInformation structureInfos,
-            StorageClassInformation storageClassInformation,
-            TaxonomySelectionController taxonomySelectionController) {
+            StorageInformationBuilder storageInformationBuilder,
+            TaxonomySelectionController taxonomySelectionController,
+            List<HazardType> possibleHazards) {
         this.projectBean = projectBean;
         this.materialEditState = materialEditState;
         this.materialNameBean = nameBean;
         this.indexBean = indexBean;
         this.structureInfos = structureInfos;
-        this.storageInformation = storageClassInformation;
+        this.storageInformationBuilder = storageInformationBuilder;
         this.taxonomySelectionController = taxonomySelectionController;
+        this.possibleHazards = possibleHazards;
     }
 
     /**
@@ -100,7 +103,6 @@ public class HistoryOperation implements Serializable {
         applyPositiveHazards();
         applyPositiveStorage();
         applyPositiveTaxonomy();
-
     }
 
     /**
@@ -122,16 +124,23 @@ public class HistoryOperation implements Serializable {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
             if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
-                storageInformation.setRemarks(diff.getDescriptionNew());
+                storageInformationBuilder.setRemarks(diff.getDescriptionNew());
             }
             if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
-                storageInformation.setStorageClass(new StorageClass(diff.getStorageclassNew(), ""));
+                if (diff.getStorageclassNew() != null) {
+                    storageInformationBuilder.setChoosenStorageClass(storageInformationBuilder.getStorageClassById(diff.getStorageclassNew()));
+                    storageInformationBuilder.setStorageClassActivated(true);
+
+                } else {
+                    storageInformationBuilder.setStorageClassActivated(false);
+                }
             }
             for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
                 if (diff.getStorageConditionsOld().get(i) == null) {
-                    storageInformation.getStorageConditions().add(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+                    storageInformationBuilder.addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+
                 } else {
-                    storageInformation.getStorageConditions().remove(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+                    storageInformationBuilder.removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
                 }
             }
         }
@@ -141,23 +150,30 @@ public class HistoryOperation implements Serializable {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
             if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
-                storageInformation.setRemarks(diff.getDescriptionOld());
+                storageInformationBuilder.setRemarks(diff.getDescriptionOld());
             }
             if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
-                storageInformation.setStorageClass(new StorageClass(diff.getStorageclassOld(), ""));
+                if (diff.getStorageclassOld() != null) {
+                    storageInformationBuilder.setChoosenStorageClass(storageInformationBuilder.getStorageClassById(diff.getStorageclassOld()));
+                    storageInformationBuilder.setStorageClassActivated(true);
+                } else {
+                    storageInformationBuilder.setStorageClassActivated(false);
+                }
             }
             for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
                 if (diff.getStorageConditionsNew().get(i) == null) {
-                    storageInformation.getStorageConditions().add(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+                    storageInformationBuilder.addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+
                 } else {
-                    storageInformation.getStorageConditions().remove(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+                    storageInformationBuilder.removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
                 }
             }
         }
     }
 
     /**
-     * @return true if the currently shown material state is the original version
+     * @return true if the currently shown material state is the original
+     * version
      */
     public boolean isOriginalMaterial() {
         return materialEditState.getCurrentVersiondate() == null;
@@ -170,24 +186,10 @@ public class HistoryOperation implements Serializable {
                 Integer newTypeId = diff.getTypeIdsNew().get(i);
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String newValue = diff.getRemarksNew().get(i);
-                boolean isHazardStatementEntry
-                        = Objects.equals(HazardInformation.HAZARD_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.HAZARD_STATEMENT, newTypeId);
-                if (isHazardStatementEntry) {
-                    materialEditState.getHazards().setHazardStatements(newValue);
-                    continue;
-                }
-                boolean isPreStatementEntry
-                        = Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
-                if (isPreStatementEntry) {
-                    materialEditState.getHazards().setPrecautionaryStatements(newValue);
-                    continue;
-                }
                 if (newTypeId != null) {
-                    materialEditState.getHazards().getHazards().add(Hazard.getHazardById(newTypeId));
+                    materialEditState.getHazardController().addHazardType(getHazardById(newTypeId), newValue);
                 } else {
-                    materialEditState.getHazards().getHazards().remove(Hazard.getHazardById(oldTypeId));
+                    materialEditState.getHazardController().removeHazard(getHazardById(oldTypeId));
                 }
             }
         }
@@ -195,29 +197,17 @@ public class HistoryOperation implements Serializable {
 
     protected void applyNegativeHazards() {
         MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
+       
         if (diff != null) {
+            materialEditState.getHazardController().setEditable(false);
             for (int i = 0; i < diff.getEntries(); i++) {
                 Integer newTypeId = diff.getTypeIdsNew().get(i);
                 Integer oldTypeId = diff.getTypeIdsOld().get(i);
                 String oldValue = diff.getRemarksOld().get(i);
-                boolean isHazardStatementEntry
-                        = Objects.equals(HazardInformation.HAZARD_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.HAZARD_STATEMENT, newTypeId);
-                if (isHazardStatementEntry) {
-                    materialEditState.getHazards().setHazardStatements(oldValue);
-                    continue;
-                }
-                boolean isPreStatementEntry
-                        = Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, oldTypeId)
-                        || Objects.equals(HazardInformation.PRECAUTIONARY_STATEMENT, newTypeId);
-                if (isPreStatementEntry) {
-                    materialEditState.getHazards().setPrecautionaryStatements(oldValue);
-                    continue;
-                }
                 if (oldTypeId != null) {
-                    materialEditState.getHazards().getHazards().add(Hazard.getHazardById(oldTypeId));
+                    materialEditState.getHazardController().addHazardType(getHazardById(oldTypeId), oldValue);
                 } else {
-                    materialEditState.getHazards().getHazards().remove(Hazard.getHazardById(newTypeId));
+                    materialEditState.getHazardController().removeHazard(getHazardById(newTypeId));
                 }
             }
         }
@@ -441,7 +431,15 @@ public class HistoryOperation implements Serializable {
         if (taxonomySelectionController != null) {
             taxonomySelectionController.deactivateTree();
         }
+    }
 
+    private HazardType getHazardById(int id) {
+        for (HazardType hazard : possibleHazards) {
+            if (hazard.getId() == id) {
+                return hazard;
+            }
+        }
+        return null;
     }
 
 }

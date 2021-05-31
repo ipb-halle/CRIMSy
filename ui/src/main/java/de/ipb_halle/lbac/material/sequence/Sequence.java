@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.sequence;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -39,7 +39,7 @@ public class Sequence extends Material {
             List<MaterialName> names,
             int projectId,
             HazardInformation hazards,
-            StorageClassInformation storageInfos) {
+            StorageInformation storageInfos) {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.SEQUENCE;
 

@@ -26,7 +26,7 @@ import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.project.Project;
@@ -84,7 +84,7 @@ public class MaterialCreationSaverTest extends TestBase {
         MaterialCreationSaver saver = new MaterialCreationSaver(nameBean, materialService);
         Project p = creationTools.createProject();
         StructureInformation structureInfos = new StructureInformation();
-        StorageClassInformation sci = new StorageClassInformation();
+        StorageInformation sci = new StorageInformation();
         sci.setRemarks("test-remark");
         //sci.setStorageClass(storageClass);
         saver.saveNewStructure(true, structureInfos, p, new HazardInformation(), sci, new ArrayList<>(), publicUser);
@@ -95,7 +95,7 @@ public class MaterialCreationSaverTest extends TestBase {
         Assert.assertEquals(1, o.size());
 
         o = entityManagerService.doSqlQuery("SELECT * FROM storages");
-        Assert.assertEquals(1, o.size());
+        Assert.assertEquals(0, o.size());
     }
 
     @Test
@@ -106,7 +106,7 @@ public class MaterialCreationSaverTest extends TestBase {
         userBean.setCurrentAccount(publicUser);
        
         Project p = creationTools.createProject();
-        StorageClassInformation sci = new StorageClassInformation();
+        StorageInformation sci = new StorageInformation();
         saver.saveConsumable(p, new HazardInformation(), sci, new ArrayList(),publicUser);
         List<Object> o = entityManagerService.doSqlQuery("SELECT * FROM materials");
         Assert.assertEquals(1, o.size());

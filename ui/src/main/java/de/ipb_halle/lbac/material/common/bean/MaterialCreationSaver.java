@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
@@ -43,6 +43,8 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class MaterialCreationSaver implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected MaterialNameBean materialNameBean;
     protected MaterialService materialService;
@@ -61,13 +63,10 @@ public class MaterialCreationSaver implements Serializable {
             Taxonomy taxonomy,
             Tissue tissue,
             HazardInformation hazards,
-            StorageClassInformation storageInfos,
+            StorageInformation storageInfos,
             User owner) {
         if (storageInfos == null) {
-            storageInfos = new StorageClassInformation();
-        }
-        if (storageInfos.getStorageClass() == null) {
-            storageInfos.setStorageClass(storageInfos.getPossibleStorageClasses().get(0));
+            storageInfos = new StorageInformation();
         }
         if (hazards == null) {
             hazards = new HazardInformation();
@@ -87,10 +86,9 @@ public class MaterialCreationSaver implements Serializable {
             StructureInformation structureInfos,
             Project project,
             HazardInformation hazards,
-            StorageClassInformation storageClassInformation,
+            StorageInformation storageClassInformation,
             List<IndexEntry> indices,
-            User owner
-    ) {
+            User owner) {
         try {
             Molecule mol = new Molecule(structureInfos.getStructureModel(), -1);
             if (mol.isEmptyMolecule()) {
@@ -116,42 +114,37 @@ public class MaterialCreationSaver implements Serializable {
                 hazards,
                 storageClassInformation,
                 new Molecule(structureInfos.getStructureModel(), 0));
-
         struc.getIndices().addAll(indices);
-
         materialService.saveMaterialToDB(
                 struc,
                 project.getUserGroups().getId(),
                 project.getDetailTemplates(),
                 owner
         );
+
     }
 
-    public void saveMaterialOverview(Material m, Project p,User owner) {
-
+    public void saveMaterialOverview(Material m, Project p, User owner) {
         if (m.getStorageInformation() == null) {
-            m.setStorageInformation(new StorageClassInformation());
-        }
-        if (m.getStorageInformation().getStorageClass() == null) {
-            m.getStorageInformation().setStorageClass(m.getStorageInformation().getPossibleStorageClasses().get(0));
+            m.setStorageInformation(new StorageInformation());
         }
 
         if (m.getHazards() == null) {
             m.setHazards(new HazardInformation());
 
         }
-        materialService.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates(),owner);
+        materialService.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates(), owner);
     }
 
     public void saveConsumable(
             Project project,
             HazardInformation hazards,
-            StorageClassInformation storageClassInformation,
+            StorageInformation storageClassInformation,
             List<IndexEntry> indices,
             User owner) {
         Consumable consumable = new Consumable(0, materialNameBean.getNames(), project.getId(), hazards, storageClassInformation);
         consumable.getIndices().addAll(indices);
-        saveMaterialOverview(consumable, project,owner);
+        saveMaterialOverview(consumable, project, owner);
 
     }
 

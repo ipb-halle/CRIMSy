@@ -20,18 +20,14 @@ package de.ipb_halle.lbac.datalink;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.Hazard;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import org.apache.logging.log4j.LogManager;
@@ -50,23 +46,8 @@ public class LinkedDataAgent implements Serializable {
     private LinkedData linkedData;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private Map<Hazard, String> hazardImageLocs = new HashMap<>();
+    private String hazardImageLocation = "/resources/img/hazards/%s.png";
     private Material material;
-
-    @PostConstruct
-    public void init() {
-        hazardImageLocs.put(Hazard.explosive, "/resources/img/hazards/GHS01.png");
-        hazardImageLocs.put(Hazard.highlyFlammable, "/resources/img/hazards/GHS02.png");
-        hazardImageLocs.put(Hazard.oxidizing, "/resources/img/hazards/GHS03.png");
-        hazardImageLocs.put(Hazard.compressedGas, "/resources/img/hazards/GHS04.png");
-        hazardImageLocs.put(Hazard.corrosive, "/resources/img/hazards/GHS05.png");
-        hazardImageLocs.put(Hazard.poisonous, "/resources/img/hazards/GHS06.png");
-        hazardImageLocs.put(Hazard.irritant, "/resources/img/hazards/GHS07.png");
-        hazardImageLocs.put(Hazard.unhealthy, "/resources/img/hazards/GHS08.png");
-        hazardImageLocs.put(Hazard.environmentallyHazardous, "/resources/img/hazards/GHS09.png");
-        hazardImageLocs.put(Hazard.danger, "/resources/img/hazards/GHS07.png");
-        hazardImageLocs.put(Hazard.attention, "/resources/img/hazards/GHS07.png");
-    }
 
     public LinkedData getLinkedData() {
         return this.linkedData;
@@ -103,15 +84,15 @@ public class LinkedDataAgent implements Serializable {
         this.linkedData = data;
     }
 
-    public Set<Hazard> getHazards() {
+    public Set<HazardType> getHazards() {
         if (material == null) {
             return new HashSet<>();
         }
-        return material.getHazards().getHazards();
+        return material.getHazards().getHazards().keySet();
     }
 
-    public String getImageIconOf(Hazard hazard) {
-        return hazardImageLocs.get(hazard);
+    public String getImageIconOf(HazardType hazard) {
+        return String.format(hazardImageLocation, hazard.getName());
     }
 
     public List<String> getNamesOfMaterial(int maxNames) {
@@ -180,7 +161,7 @@ public class LinkedDataAgent implements Serializable {
             return "";
         }
         if (linkedData.getItem().getContainer() != null) {
-            return linkedData.getItem().getContainer().getNameToDisplay() +" -> "+linkedData.getItem().getContainer().getLocation(true, false);
+            return linkedData.getItem().getContainer().getNameToDisplay() + " -> " + linkedData.getItem().getContainer().getLocation(true, false);
         }
         return "";
     }

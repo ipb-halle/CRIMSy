@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -53,7 +53,7 @@ public class Structure extends Material {
             List<MaterialName> names,
             Integer projectId,
             HazardInformation hazards,
-            StorageClassInformation storageInfos,
+            StorageInformation storageInfos,
             Molecule molecule) {
         super(id, names, projectId, hazards, storageInfos);
         this.sumFormula = sumFormula;
@@ -70,15 +70,14 @@ public class Structure extends Material {
             int id,
             List<MaterialName> names,
             Integer projectId) {
-        this(
-                sumFormula,
+        this(sumFormula,
                 molarMass,
                 exactMolarMass,
                 id,
                 names,
                 projectId,
                 new HazardInformation(),
-                new StorageClassInformation(),
+                new StorageInformation(),
                 null);
 
     }
@@ -134,7 +133,7 @@ public class Structure extends Material {
     public static Structure createInstanceFromDB(
             MaterialEntity mE,
             HazardInformation hazardInfos,
-            StorageClassInformation storageInfos,
+            StorageInformation storageInfos,
             List<MaterialIndexEntryEntity> indices,
             StructureEntity strcutureEntity,
             String molecule,

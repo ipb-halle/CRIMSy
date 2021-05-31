@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageEntity;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
@@ -55,7 +55,6 @@ import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,7 +64,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialEditSaver implements Serializable {
 
-    protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_storages WHERE materialid=:mid";
+    protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_material WHERE materialid=:mid";
     protected String SQL_DELETE_EFFECTIVE_TAXONOMY = "DELETE FROM effective_taxonomy WHERE taxoid=:taxoid";
     protected String SQL_INSERT_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy(taxoid,parentid) VALUES(:taxoid,:parentid)";
     protected String SQL_UPDATE_TAXONOMY_LEVEL = "UPDATE taxonomy SET level=:level WHERE id=:id";
@@ -122,28 +121,32 @@ public class MaterialEditSaver implements Serializable {
     }
 
     public void saveEditedTaxonomy() {
-        TaxonomyDifference diff = comparator.getDifferenceOfType(diffs, TaxonomyDifference.class);
-        if (diff != null) {
-            TaxonomyHistEntity the = new TaxonomyHistEntity();
-            the.setAction("EDIT");
-            the.setId(new TaxonomyHistEntityId(oldMaterial.getId(), diff.getModificationDate(), actorId));
-            if (diff.isHierarchyChanged()) {
-                updateEffectiveTaxonomy(diff);
-                the.setParentid_new(diff.getNewHierarchy().get(0));
-                Taxonomy t = (Taxonomy) oldMaterial;
-                the.setParentid_old(t.getTaxHierachy().get(0).getId());
-            }
-            if (diff.isLevelChanged()) {
-                materialService.getEm().createNativeQuery(SQL_UPDATE_TAXONOMY_LEVEL)
-                        .setParameter("id", diff.getMaterialId())
-                        .setParameter("level", diff.getNewLevelId())
-                        .executeUpdate();
-                the.setLevel_new(diff.getNewLevelId());
-                the.setLevel_old(diff.getOldLevelId());
-            }
+        try {
+            TaxonomyDifference diff = comparator.getDifferenceOfType(diffs, TaxonomyDifference.class);
+            if (diff != null) {
+                TaxonomyHistEntity the = new TaxonomyHistEntity();
+                the.setAction("EDIT");
+                the.setId(new TaxonomyHistEntityId(oldMaterial.getId(), diff.getModificationDate(), actorId));
+                if (diff.isHierarchyChanged()) {
+                    updateEffectiveTaxonomy(diff);
+                    the.setParentid_new(diff.getNewHierarchy().get(0));
+                    Taxonomy t = (Taxonomy) oldMaterial;
+                    the.setParentid_old(t.getTaxHierachy().get(0).getId());
+                }
+                if (diff.isLevelChanged()) {
+                    materialService.getEm().createNativeQuery(SQL_UPDATE_TAXONOMY_LEVEL)
+                            .setParameter("id", diff.getMaterialId())
+                            .setParameter("level", diff.getNewLevelId())
+                            .executeUpdate();
+                    the.setLevel_new(diff.getNewLevelId());
+                    the.setLevel_old(diff.getOldLevelId());
+                }
 
-            materialService.getEm().persist(the);
+                materialService.getEm().persist(the);
 
+            }
+        } catch (Exception e) {
+            logger.info("Error in saveing edited taxonomy");
         }
     }
 
@@ -159,7 +162,7 @@ public class MaterialEditSaver implements Serializable {
                     .executeUpdate();
 
             for (StorageCondition sc : newMaterial.getStorageInformation().getStorageConditions()) {
-                StorageConditionStorageEntity dbEntity = new StorageConditionStorageEntity();
+                StorageConditionMaterialEntity dbEntity = new StorageConditionMaterialEntity();
                 dbEntity.setId(new StorageConditionStorageId(sc.getId(), newMaterial.getId()));
                 this.materialService.getEm().persist(dbEntity);
             }
@@ -168,11 +171,22 @@ public class MaterialEditSaver implements Serializable {
     }
 
     protected void updateStorageClass(MaterialStorageDifference diff) {
+
         StorageEntity entity = this.materialService.getEm().find(StorageEntity.class, diff.getMaterialID());
         if (entity != null) {
             entity.setDescription(newMaterial.getStorageInformation().getRemarks());
-            entity.setStorageClass(newMaterial.getStorageInformation().getStorageClass().getId());
-            materialService.getEm().merge(entity);
+            if (newMaterial.getStorageInformation().getStorageClass() != null) {
+                entity.setStorageClass(newMaterial.getStorageInformation().getStorageClass().getId());
+                materialService.getEm().merge(entity);
+            } else {
+                materialService.getEm().remove(entity);
+            }
+
+        } else {
+            if (diff.getStorageclassNew() != null) {
+                entity = new StorageEntity(diff.getMaterialID(), diff.getStorageclassNew(), diff.getDescriptionNew());
+                materialService.getEm().persist(entity);
+            }
         }
     }
 
@@ -213,14 +227,13 @@ public class MaterialEditSaver implements Serializable {
 
     public void saveEditedMaterialHazards() {
         MaterialHazardDifference hazardDiff = comparator.getDifferenceOfType(diffs, MaterialHazardDifference.class);
-
         if (hazardDiff != null) {
             List<HazardsMaterialHistEntity> dbEntities = hazardDiff.createDbInstances();
             for (HazardsMaterialHistEntity dbEntity : dbEntities) {
                 this.materialService.getEm().persist(dbEntity);
             }
             deleteOldHazards(newMaterial);
-            List<HazardsMaterialsEntity> newDbEntities = newMaterial.getHazards().createDBInstances(newMaterial.getId());
+            List<HazardsMaterialsEntity> newDbEntities = newMaterial.getHazards().createEntity(newMaterial.getId());
             for (HazardsMaterialsEntity dbEntity : newDbEntities) {
                 this.materialService.getEm().persist(dbEntity);
             }

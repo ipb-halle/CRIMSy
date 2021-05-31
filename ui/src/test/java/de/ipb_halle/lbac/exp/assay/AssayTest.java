@@ -23,7 +23,7 @@ import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.Arrays;
 import org.junit.Assert;
@@ -68,7 +68,7 @@ public class AssayTest {
     }
 
     private BioMaterial createBioMaterial(String name) {
-        return new BioMaterial(1, Arrays.asList(new MaterialName(name, "en", 0)), 0, new HazardInformation(), new StorageClassInformation(), null, null);
+        return new BioMaterial(1, Arrays.asList(new MaterialName(name, "en", 0)), 0, new HazardInformation(), new StorageInformation(), null, null);
     }
 
     private Structure createStructure(String name) {

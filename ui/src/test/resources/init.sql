@@ -380,9 +380,9 @@ CREATE TABLE  storages (
 );
 
 
-CREATE TABLE  storageconditions_storages (
+CREATE TABLE  storageconditions_material (
         conditionId INTEGER NOT NULL REFERENCES storageconditions(id),
-        materialid INTEGER NOT NULL REFERENCES storages(materialid),
+        materialid INTEGER NOT NULL REFERENCES materials(materialid),
         PRIMARY KEY (conditionId,materialid)
 );
 
@@ -445,6 +445,9 @@ insert into hazards(id,name,category,has_remarks)values(14,'S3',3,false);
 insert into hazards(id,name,category,has_remarks)values(15,'S4',3,false);
 insert into hazards(id,name,category,has_remarks)values(16,'R1',4,false);
 insert into hazards(id,name,category,has_remarks)values(17,'C1',5,true);
+insert into hazards(id,name,category,has_remarks)values(18,'GHS10',1,false);
+insert into hazards(id,name,category,has_remarks)values(19,'GHS11',1,false);
+insert into hazards(id,name,category,has_remarks)values(20,'GMO',6,false);
 
 CREATE TABLE  materials_hist (
         materialid INTEGER NOT NULL REFERENCES materials(materialid),

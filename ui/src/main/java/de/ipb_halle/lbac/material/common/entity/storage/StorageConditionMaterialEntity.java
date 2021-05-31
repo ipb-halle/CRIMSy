@@ -15,49 +15,37 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common;
+package de.ipb_halle.lbac.material.common.entity.storage;
 
 import java.io.Serializable;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  *
  * @author fmauz
  */
-public enum Hazard  implements Serializable {
+@Entity
+@Table(name = "storageconditions_material")
+public class StorageConditionMaterialEntity implements Serializable {
 
-    explosive(1),
-    highlyFlammable(2),
-    oxidizing(3),
-    compressedGas(4),
-    corrosive(5),
-    poisonous(6),
-    irritant(7),
-    unhealthy(8),
-    environmentallyHazardous(9),
-    danger(10),
-    attention(11);
+    @EmbeddedId
+    private StorageConditionStorageId id;
 
-    private int typeId;
-
-    private Hazard(int typeId) {
-        this.typeId = typeId;
+    public StorageConditionMaterialEntity(StorageConditionStorageId id) {
+        this.id = id;
     }
 
-    public int getTypeId() {
-        return typeId;
+    public StorageConditionMaterialEntity() {
     }
 
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
+    public StorageConditionStorageId getId() {
+        return id;
     }
 
-    public static Hazard getHazardById(int id) {
-        for (Hazard h : Hazard.values()) {
-            if (h.getTypeId() == id) {
-                return h;
-            }
-        }
-        return null;
+    public void setId(StorageConditionStorageId id) {
+        this.id = id;
     }
 
 }

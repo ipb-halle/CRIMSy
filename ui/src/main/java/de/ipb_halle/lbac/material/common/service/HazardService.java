@@ -17,14 +17,17 @@
  */
 package de.ipb_halle.lbac.material.common.service;
 
-import de.ipb_halle.lbac.container.entity.ContainerTypeEntity;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardEntity;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -62,6 +65,45 @@ public class HazardService implements Serializable {
         }
     }
 
+    public List<HazardType> getAllHazardTypes() {
+        List<HazardType> hazards = new ArrayList<>();
+        for (HazardType.Category cat : HazardType.Category.values()) {
+            hazards.addAll(getHazardOf(cat));
+        }
+
+        return hazards;
+    }
+
+    /**
+     * Returns all possible hazardcategories for a given materialtype
+     *
+     * @param type
+     * @return
+     */
+    public Set<HazardType.Category> getAllowedCatsOf(MaterialType type) {
+        Set<HazardType.Category> categories = new HashSet<>();
+        categories.add(HazardType.Category.CUSTOM);
+        if (type == MaterialType.BIOMATERIAL) {
+            categories.add(HazardType.Category.BSL);
+            categories.add(HazardType.Category.GMO);
+        }
+        if (type == MaterialType.COMPOSITION) {
+            categories.add(HazardType.Category.GHS);
+            categories.add(HazardType.Category.RADIOACTIVITY);
+            categories.add(HazardType.Category.BSL);
+            categories.add(HazardType.Category.STATEMENTS);
+        }
+        if (type == MaterialType.STRUCTURE) {
+            categories.add(HazardType.Category.GHS);
+            categories.add(HazardType.Category.RADIOACTIVITY);
+            categories.add(HazardType.Category.STATEMENTS);
+        }
+        if (type == MaterialType.TISSUE) {
+            categories.add(HazardType.Category.BSL);
+        }
+        return categories;
+    }
+
     @PostConstruct
     public void init() {
         List<HazardEntity> entities = loadHazardEntities();
@@ -72,6 +114,28 @@ public class HazardService implements Serializable {
             }
             loadedHazardTypes.get(hazard.getCategory()).add(hazard);
         }
+    }
+
+    public HazardType getHazardById(int id) {
+        for (HazardType.Category cat : loadedHazardTypes.keySet()) {
+            for (HazardType h : loadedHazardTypes.get(cat)) {
+                if (h.getId() == id) {
+                    return h;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Could not load hazard with id " + id);
+    }
+
+    public HazardType getHazardByName(String name) {
+        for (HazardType.Category cat : loadedHazardTypes.keySet()) {
+            for (HazardType h : loadedHazardTypes.get(cat)) {
+                if (h.getName().equals(name)) {
+                    return h;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Could not load hazard with name " + name);
     }
 
     private List<HazardEntity> loadHazardEntities() {

@@ -30,7 +30,7 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.RemoteMaterial;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.NetObject;
@@ -159,7 +159,7 @@ public class NetObjectFactory {
                 names,
                 project.getId(),
                 new HazardInformation(),
-                new StorageClassInformation(),
+                new StorageInformation(),
                 null);
 
     }

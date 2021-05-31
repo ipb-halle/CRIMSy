@@ -17,31 +17,47 @@
  */
 package de.ipb_halle.lbac.material.common.bean.history;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
-import de.ipb_halle.lbac.material.structure.StructureInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
+import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
+import de.ipb_halle.lbac.material.common.service.IndexService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.material.structure.StructureInformation;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author fmauz
  */
+@RunWith(Arquillian.class)
 public class HistoryOperationIndexTest {
 
     List<IndexEntry> indices;
@@ -53,10 +69,13 @@ public class HistoryOperationIndexTest {
     MaterialIndexBean mib;
     Random random = new Random();
 
+    @Inject
+    private MaterialService materialService;
+
     @Before
     public void init() {
         indices = new ArrayList<>();
-        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), new Molecule("h2o", 0));
+        s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);
@@ -65,7 +84,8 @@ public class HistoryOperationIndexTest {
         s.setIndices(indices);
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageClassInformation(),null);
+        StorageInformationBuilder storageInfoBuilder = new StorageInformationBuilder(new MessagePresenterMock(), materialService);
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), storageInfoBuilder, null, new ArrayList<>());
     }
 
     @Test
@@ -171,6 +191,16 @@ public class HistoryOperationIndexTest {
         Assert.assertEquals("Testcase 4 - Type of index must be 2", 3, resultIndices.get(0).getTypeId());
         Assert.assertEquals("Testcase 4 - Value of index must be A38", "A38", resultIndices.get(0).getValue());
 
+    }
+
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment
+                = prepareDeployment("HistoryOperationIndexTest.war")
+                        .addClass(IndexService.class);
+        deployment = ItemDeployment.add(deployment);
+        deployment = UserBeanDeployment.add(deployment);
+        return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 
 }

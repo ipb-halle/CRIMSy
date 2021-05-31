@@ -91,7 +91,7 @@ public class HazardType {
     }
 
     public enum Category {
-        GHS(1), STATEMENTS(2), BSL(3), RADIOACTIVITY(4), CUSTOM(5);
+        GHS(1), STATEMENTS(2), BSL(3), RADIOACTIVITY(4), CUSTOM(5),GMO(6);
         public final int id;
 
         Category(int id) {

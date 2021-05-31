@@ -24,18 +24,18 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.common.ModificationType;
-import de.ipb_halle.lbac.material.common.Hazard;
-import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.common.HazardType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -109,9 +109,13 @@ public class MaterialComparator implements Serializable {
                     (Taxonomy) editedMat);
         }
         if (originalMat.getType() == MaterialType.BIOMATERIAL) {
-            addBioMaterialDifference(differences,
-                    (BioMaterial) originalMat,
-                    (BioMaterial) editedMat);
+            try {
+                addBioMaterialDifference(differences,
+                        (BioMaterial) originalMat,
+                        (BioMaterial) editedMat);
+            } catch (Exception e) {
+                logger.info("Error at calculating bio diffs");
+            }
         }
 
         return differences;
@@ -207,8 +211,8 @@ public class MaterialComparator implements Serializable {
             Material originalMat,
             Material editedMat) throws Exception {
         MaterialStorageDifference diff = new MaterialStorageDifference();
-        Integer newStorageClassId = editedMat.getStorageInformation().getStorageClass().getId();
-        Integer oldStorageClassId = originalMat.getStorageInformation().getStorageClass().getId();
+        Integer newStorageClassId = editedMat.getStorageInformation().getStorageClass()==null?null:editedMat.getStorageInformation().getStorageClass().getId();
+        Integer oldStorageClassId = originalMat.getStorageInformation().getStorageClass()==null?null:originalMat.getStorageInformation().getStorageClass().getId();
         String newDescription = editedMat.getStorageInformation().getRemarks();
         String oldDescription = originalMat.getStorageInformation().getRemarks();
         Set<StorageCondition> oldConditions = originalMat.getStorageInformation().getStorageConditions();
@@ -356,26 +360,37 @@ public class MaterialComparator implements Serializable {
             Material originalMat,
             Material editedMat) {
         MaterialHazardDifference hazardDiff = new MaterialHazardDifference();
-
-        addSingleHazardDiff(
-                hazardDiff,
-                originalMat.getHazards().getHazardStatements(),
-                editedMat.getHazards().getHazardStatements(),
-                HazardInformation.HAZARD_STATEMENT);
-
-        addSingleHazardDiff(
-                hazardDiff,
-                originalMat.getHazards().getPrecautionaryStatements(),
-                editedMat.getHazards().getPrecautionaryStatements(),
-                HazardInformation.PRECAUTIONARY_STATEMENT);
-        Set<Hazard> removedHazards = getNotMatchingHazards(originalMat.getHazards().getHazards(), editedMat.getHazards().getHazards());
-        Set<Hazard> newHazards = getNotMatchingHazards(editedMat.getHazards().getHazards(), originalMat.getHazards().getHazards());
-        for (Hazard h : removedHazards) {
-            hazardDiff.addHazardRemovement(h.getTypeId());
+        Map<HazardType, String> newHazards = editedMat.getHazards().getHazards();
+        Map<HazardType, String> oldHazards = originalMat.getHazards().getHazards();
+        //Find all hazards in edited material, but not in original one
+        Set<HazardType> hazardsInEditedButNotInOld
+                = AWithoutB(newHazards.keySet(), oldHazards.keySet());
+        for (HazardType hazard : hazardsInEditedButNotInOld) {
+            hazardDiff.addHazardExpansion(hazard.getId(), newHazards.get(hazard));
         }
-        for (Hazard h : newHazards) {
-            hazardDiff.addHazardExpansion(h.getTypeId());
+        //Find all hazards in original material, but not in edited one
+        Set<HazardType> hazardsInOldButNotInNew
+                = AWithoutB(oldHazards.keySet(), newHazards.keySet());
+        for (HazardType hazard : hazardsInOldButNotInNew) {
+            hazardDiff.addHazardRemovement(hazard.getId(), oldHazards.get(hazard));
         }
+        //Find all hazards which are in old and new material, but gor a different remark string
+        for (HazardType oldHazard : oldHazards.keySet()) {
+            for (HazardType newHazard : newHazards.keySet()) {
+                if (newHazard.equals(oldHazard)) {
+                    String newRemark = newHazards.get(newHazard);
+                    String oldRemark = oldHazards.get(oldHazard);
+                    if (!Objects.equals(newRemark, oldRemark)) {
+                        hazardDiff.addDifference(
+                                oldHazard.getId(),
+                                newHazard.getId(),
+                                oldRemark,
+                                newRemark);
+                    }
+                }
+            }
+        }
+
         if (hazardDiff.getEntries() > 0) {
             differences.add(hazardDiff);
         }
@@ -444,35 +459,25 @@ public class MaterialComparator implements Serializable {
         return originalStruc == null && editedStruc == null;
     }
 
-    protected Set<Hazard> getNotMatchingHazards(
-            Set<Hazard> valuestoCheck,
-            Set<Hazard> valuestoCheckAgainst) {
-        Set<Hazard> x = new HashSet<>();
-        for (Hazard y : valuestoCheck) {
-            if (!valuestoCheckAgainst.contains(y)) {
-                x.add(y);
+    /**
+     * Return the result of the set operation "A without B" without altering the
+     * original sets A and B
+     *
+     * @param A
+     * @param B
+     * @return
+     */
+    protected Set<HazardType> AWithoutB(
+            Set<HazardType> A,
+            Set<HazardType> B) {
+        Set<HazardType> diff = new HashSet<>();
+        for (HazardType y : A) {
+            if (!B.contains(y)) {
+                diff.add(y);
             }
         }
-        return x;
+        return diff;
 
-    }
-
-    protected void addSingleHazardDiff(
-            MaterialHazardDifference hazardDiff,
-            String oldValue,
-            String newValue,
-            Integer typId) {
-        oldValue = "".equals(oldValue) ? null : oldValue;
-        newValue = "".equals(newValue) ? null : newValue;
-        if (!Objects.equals(oldValue, newValue)) {
-            if (oldValue == null) {
-                hazardDiff.addDifference(null, typId, null, newValue);
-            } else if (newValue == null) {
-                hazardDiff.addDifference(typId, null, oldValue, null);
-            } else {
-                hazardDiff.addDifference(typId, typId, oldValue, newValue);
-            }
-        }
     }
 
 }

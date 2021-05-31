@@ -27,7 +27,7 @@ import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.collections.CollectionService;
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ public class HealthStateRepair {
     public void repairRootTaxonomy() {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("Life", "en", 1));
-        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), adminAccount, new Date());
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), adminAccount, new Date());
         t.setLevel(new TaxonomyLevel(1, "", 1));
         materialService.saveMaterialToDB(t, publicReadAcl.getId(), new HashMap<>(), adminAccount.getId());
     }

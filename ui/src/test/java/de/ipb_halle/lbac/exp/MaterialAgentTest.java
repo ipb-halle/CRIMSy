@@ -43,7 +43,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -206,7 +206,7 @@ public class MaterialAgentTest extends TestBase {
         for (int i = 0; i < names.length; i++) {
             nameList.add(new MaterialName(names[i], "de", i + 1));
         }
-        BioMaterial biomaterial = new BioMaterial(0, nameList, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, null);
+        BioMaterial biomaterial = new BioMaterial(0, nameList, project.getId(), new HazardInformation(), new StorageInformation(), taxo, null);
         MaterialDetailRight detailRight = new MaterialDetailRight();
         detailRight.setType(MaterialDetailType.INDEX);
         detailRight.setAcList(acListReadable);

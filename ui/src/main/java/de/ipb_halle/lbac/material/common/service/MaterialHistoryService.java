@@ -301,8 +301,17 @@ public class MaterialHistoryService implements Serializable {
                 .createNativeQuery(SQL_GET_HAZARD_HISTORY, HazardsMaterialHistEntity.class)
                 .setParameter("mid", materialId)
                 .getResultList();
+        Map<Date, List<HazardsMaterialHistEntity>> entitiesByDate = new HashMap<>();
         if (dbEntities.size() > 0) {
-            history.addDifference(new MaterialHazardDifference(dbEntities));
+            for (HazardsMaterialHistEntity dbe : dbEntities) {
+                if (!entitiesByDate.containsKey(dbe.getmDate())) {
+                    entitiesByDate.put(dbe.getmDate(), new ArrayList<>());
+                }
+                entitiesByDate.get(dbe.getmDate()).add(dbe);
+            }
+            for (Date d : entitiesByDate.keySet()) {
+                history.addDifference(new MaterialHazardDifference(entitiesByDate.get(d)));
+            }
         }
     }
 

@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.material.common.bean.save;
 import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionBean;
@@ -50,6 +49,7 @@ import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.webservice.Updater;
 import java.util.HashMap;
@@ -70,6 +70,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class MaterialEditSaverTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     private CreationTools creationTools;
 
@@ -121,14 +123,14 @@ public class MaterialEditSaverTest extends TestBase {
     @Test
     public void test001_saveStorageDiffs() throws Exception {
 
-        mOld.getStorageInformation().setLightSensitive(true);
-        mOld.getStorageInformation().setKeepCool(true);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.lightSensitive);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.keepCool);
 
         materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>(),publicUser);
         mNew = mOld.copyMaterial();
         mNew.getStorageInformation().setStorageClass(new StorageClass(2, "storageClass-2"));
         mNew.getStorageInformation().setRemarks("new storage remarks");
-        mNew.getStorageInformation().setAcidSensitive(true);
+        mNew.getStorageInformation().getStorageConditions().add(StorageCondition.acidSensitive);
 
         materialService.saveEditedMaterial(mNew, mOld, aclist.getId(), u.getId());
 
@@ -139,7 +141,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 001 - new description must be 'new storage remarks'", "new storage remarks", (String) storageClass.get(0)[1]);
 
         //  Check the new storage conditions
-        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_storages where materialid=" + mNew.getId() + " order by conditionid");
+        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_material where materialid=" + mNew.getId() + " order by conditionid");
         Assert.assertEquals("Testcase 001 - 3 storage conditions must be found", 3, newStorageConditions.size());
         Assert.assertEquals("Testcase 001 - First new condition must be light sensitive", (Integer) StorageCondition.lightSensitive.getId(), newStorageConditions.get(0));
         Assert.assertEquals("Testcase 001 - Second new condition must be acid sensitive", (Integer) StorageCondition.acidSensitive.getId(), newStorageConditions.get(1));
@@ -164,12 +166,12 @@ public class MaterialEditSaverTest extends TestBase {
     @SuppressWarnings("unchecked")
     @Test
     public void test002_saveStorageConditionsDiffsWithoutStorageClassDiffs() throws Exception {
-        mOld.getStorageInformation().setAcidSensitive(true);
-        mOld.getStorageInformation().setKeepCool(true);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.acidSensitive);
+        mOld.getStorageInformation().getStorageConditions().add(StorageCondition.keepCool);
         materialService.saveMaterialToDB(mOld, aclist.getId(), new HashMap<>(), publicUser);
         mNew = mOld.copyMaterial();
-        mNew.getStorageInformation().setKeepCool(false);
-        mNew.getStorageInformation().setLightSensitive(true);
+        mNew.getStorageInformation().getStorageConditions().remove(StorageCondition.keepCool);
+        mNew.getStorageInformation().getStorageConditions().add(StorageCondition.lightSensitive);
         materialService.saveEditedMaterial(mNew, mOld, aclist.getId(), u.getId());
 
         // check the new storage class and its remarks
@@ -179,7 +181,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertNull("Testcase 002 - new description must be null", storageClass.get(0)[1]);
 
         //  Check the new storage conditions
-        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_storages where materialid=" + mNew.getId() + " order by conditionid");
+        List<Integer> newStorageConditions = (List) entityManagerService.doSqlQuery("select conditionid from storageconditions_material where materialid=" + mNew.getId() + " order by conditionid");
         Assert.assertEquals("Testcase 002 - 2 storage conditions must be found", 2, newStorageConditions.size());
         Assert.assertEquals("Testcase 002 - First new condition must be light sensitive", (Integer) StorageCondition.lightSensitive.getId(), newStorageConditions.get(0));
         Assert.assertEquals("Testcase 002 - Second new condition must be acid sensitive", (Integer) StorageCondition.acidSensitive.getId(), newStorageConditions.get(1));
@@ -200,28 +202,7 @@ public class MaterialEditSaverTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("MaterialEditSaverTest.war")
-                .addClass(ACListService.class)
-                .addClass(CollectionBean.class)
-                .addClass(CollectionService.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
-                .addClass(CollectionOrchestrator.class)
-                .addClass(EntityManagerService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchService.class)
-                .addClass(ProjectService.class)
-                .addClass(CollectionWebClient.class)
-                .addClass(Updater.class)
-                .addClass(Navigator.class)
-                .addClass(WordCloudBean.class)
-                .addClass(ACListService.class)
-                .addClass(WordCloudWebClient.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(TissueService.class)
-                .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("MaterialEditSaverTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

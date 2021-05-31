@@ -39,7 +39,17 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
+import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -56,6 +66,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class MaterialBeanTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     @Inject
     private ACListService aclistService;
@@ -78,11 +90,21 @@ public class MaterialBeanTest extends TestBase {
     @Inject
     private IndexService indexService;
 
+    @Inject
+    private HazardService hazardService;
+
+    @Inject
+    private TaxonomyService taxoService;
+
     @Before
     public void init() {
+        super.setUp();
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        ACList publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
+        createTaxonomyTreeInDB(publicReadAcl.getId(), publicUser.getId());
         instance = new MateriaBeanMock();
         instance.setAcListService(aclistService);
-
+        instance.setHazardService(hazardService);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -105,12 +127,19 @@ public class MaterialBeanTest extends TestBase {
 
         materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
 
-        instance.setMaterialIndexBean(new MaterialIndexBean());
         instance.setMaterialNameBean(new MaterialNameBean());
-
+        instance.setMessagePresenter(new MessagePresenterMock());
         instance.getMaterialEditState().setMaterialToEdit(material);
         instance.getMaterialEditState().setMaterialBeforeEdit(material);
         instance.setMaterialService(materialService);
+
+        MaterialIndexBean indexBean = new MaterialIndexBean();
+        indexBean.setIndexService(indexService);
+        instance.setMaterialIndexBean(indexBean);
+        instance.setTaxonomyService(taxoService);
+        instance.setProjectService(projectService);
+        instance.setProjectBean(new ProjectBean());
+
     }
 
     @After
@@ -140,14 +169,16 @@ public class MaterialBeanTest extends TestBase {
     @Test
     public void test002_navigateInHistory() throws Exception {
         MaterialIndexBean indexBean = new MaterialIndexBean();
+
         instance.setProjectService(projectService);
         indexBean.setIndexService(indexService);
         instance.setMaterialIndexBean(indexBean);
 
         instance.setProjectBean(new ProjectBean());
-        Material originalMaterial = materialService.loadMaterialById(material.getId());
 
-        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, originalMaterial.getHazards());
+        Material originalMaterial = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(originalMaterial.copyMaterial());
+        MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController());
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
 
@@ -174,6 +205,177 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertEquals("Edited-name-2", instance.getMaterialNameBean().getNames().get(3).getValue());
     }
 
+    @Test
+    public void test003_editBioMaterial() {
+        MaterialIndexBean indexBean = new MaterialIndexBean();
+        indexBean.setIndexService(indexService);
+        instance.setMaterialIndexBean(indexBean);
+        instance.setTaxonomyService(taxoService);
+
+        BioMaterial bioMat = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
+        materialService.saveMaterialToDB(bioMat, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
+        instance.setProjectService(projectService);
+        instance.setProjectBean(new ProjectBean());
+        instance.startMaterialEdit(bioMat);
+
+        instance.getHazardController().setBioSavetyLevel(instance.getHazardController().getPossibleBioSavetyLevels().get(1));
+
+        instance.actionSaveMaterial();
+
+        Material loadedBioMat = materialService.loadMaterialById(bioMat.getId());
+        Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
+        Assert.assertEquals(12, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
+
+        instance.startMaterialEdit(loadedBioMat);
+        instance.getHazardController().setBioSavetyLevel(instance.getHazardController().getPossibleBioSavetyLevels().get(2));
+        instance.actionSaveMaterial();
+
+        loadedBioMat = materialService.loadMaterialById(bioMat.getId());
+        instance.getMaterialEditState().setMaterialBeforeEdit(loadedBioMat);
+        instance.getMaterialEditState().setCurrentVersiondate(loadedBioMat.getHistory().getChanges().keySet().stream().reduce((first, second) -> second).orElse(null));
+        Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
+        Assert.assertEquals(13, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
+
+        instance.switchOneVersionBack();
+
+        instance.switchOneVersionBack();
+
+        instance.switchOneVersionForward();
+
+        instance.switchOneVersionForward();
+    }
+
+    @Test
+    public void test004_editStorageInformation() {
+        material = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
+        materialService.saveMaterialToDB(material, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
+        //Set storageclass from none -> ID:4
+        instance.startMaterialEdit(material);
+        instance.getStorageInformationBuilder().setStorageClassActivated(true);
+        instance.getStorageInformationBuilder().setChoosenStorageClass(materialService.loadStorageClasses().get(3));
+        instance.actionSaveMaterial();
+
+        //Load material,init storageInfortmationBuilder and check changes
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertNotNull(instance.getStorageInformationBuilder().getChoosenStorageClass());
+        Assert.assertEquals(
+                materialService.loadStorageClasses().get(3),
+                instance.getStorageInformationBuilder().getChoosenStorageClass());
+        Assert.assertTrue(
+                instance.getStorageInformationBuilder().isStorageClassActivated());
+
+        //Set storageclass from ID:4 -> ID:3, also add Remark
+        instance.getStorageInformationBuilder().setChoosenStorageClass(materialService.loadStorageClasses().get(2));
+        instance.getStorageInformationBuilder().setRemarks("Remark!!");
+        instance.actionSaveMaterial();
+
+        //Load material,init storageInfortmationBuilder and check changes
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertEquals(
+                materialService.loadStorageClasses().get(2),
+                instance.getStorageInformationBuilder().getChoosenStorageClass());
+        Assert.assertEquals(
+                "Remark!!",
+                instance.getStorageInformationBuilder().getRemarks());
+        Assert.assertTrue(
+                instance.getStorageInformationBuilder().isStorageClassActivated());
+
+        //Set storageclass from ID:3 -> none
+        instance.getStorageInformationBuilder().setStorageClassActivated(false);
+        instance.actionSaveMaterial();
+
+        //Load material,init storageInfortmationBuilder and check changes
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertNull(material.getStorageInformation().getStorageClass());
+        Assert.assertEquals(
+                materialService.loadStorageClasses().get(0),
+                instance.getStorageInformationBuilder().getChoosenStorageClass());
+        Assert.assertFalse(
+                instance.getStorageInformationBuilder().isStorageClassActivated());
+        Assert.assertNull(
+                instance.getStorageInformationBuilder().getRemarks()
+        );
+        //Check History of changes
+        Assert.assertEquals(3, material.getHistory().getChanges().size());
+        Iterator<Date> iter = material.getHistory().getChanges().keySet().iterator();
+        //First change : none -> 4
+        MaterialStorageDifference diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
+        Assert.assertEquals(4, diff.getStorageclassNew(), 0);
+        Assert.assertNull(diff.getStorageclassOld());
+        //Second change : 4 -> 3
+        diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
+        Assert.assertEquals(4, diff.getStorageclassOld(), 0);
+        Assert.assertEquals(3, diff.getStorageclassNew(), 0);
+        Assert.assertNull(diff.getDescriptionOld());
+        Assert.assertEquals("Remark!!", diff.getDescriptionNew());
+        //Third change : 3 -> none
+        diff = (MaterialStorageDifference) material.getHistory().getChanges().get(iter.next()).get(0);
+        Assert.assertEquals(3, diff.getStorageclassOld(), 0);
+        Assert.assertNull(diff.getStorageclassNew());
+        Assert.assertEquals("Remark!!", diff.getDescriptionOld());
+        Assert.assertNull(diff.getDescriptionNew());
+
+    }
+
+    @Test
+    public void test005_editStorageConditions() {
+        material = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
+        materialService.saveMaterialToDB(material, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
+        instance.startMaterialEdit(material);
+
+        Assert.assertEquals(23, instance.getStorageInformationBuilder().getPossibleStorageClasses().size());
+        // add frozen and lightsensitive
+
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepFrozen);
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.lightSensitive);
+
+        instance.actionSaveMaterial();
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertEquals(2, instance.getStorageInformationBuilder().getSelectedConditions().length);
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.keepFrozen));
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.lightSensitive));
+
+        //remove frozen, add acidSensitive, keep cool
+        removeStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepFrozen);
+
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.acidSensitive);
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepCool);
+
+        instance.actionSaveMaterial();
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertEquals(3, instance.getStorageInformationBuilder().getSelectedConditions().length);
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.lightSensitive));
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.acidSensitive));
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.keepCool));
+
+        //remove all conditions and add keep below 40 degress
+        instance.getStorageInformationBuilder().setSelectedConditions(new StorageCondition[0]);
+        addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepTempBelowMinus40Celsius);
+        instance.actionSaveMaterial();
+
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertEquals(1, instance.getStorageInformationBuilder().getSelectedConditions().length);
+        Assert.assertTrue(containsStorageCondition(instance.getStorageInformationBuilder().getSelectedConditions(), StorageCondition.keepTempBelowMinus40Celsius));
+        //clear all conditions
+        instance.getStorageInformationBuilder().setSelectedConditions(new StorageCondition[0]);
+        instance.actionSaveMaterial();
+        //load material and check new conditions
+        material = materialService.loadMaterialById(material.getId());
+        instance.startMaterialEdit(material);
+        Assert.assertTrue(instance.getStorageInformationBuilder().getSelectedConditions().length == 0);
+
+        //Check History of storage conditions
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
@@ -181,6 +383,39 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
-        return PrintBeanDeployment.add(deployment);
+        return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
+
+    private void addStorageCondition(StorageInformationBuilder builder, StorageCondition c) {
+        StorageCondition[] conds = builder.getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length + 1];
+        for (int i = 0; i < conds.length; i++) {
+            condsNew[i] = conds[i];
+        }
+        condsNew[condsNew.length - 1] = c;
+        builder.setSelectedConditions(condsNew);
+    }
+
+    private void removeStorageCondition(StorageInformationBuilder builder, StorageCondition c) {
+        StorageCondition[] conds = builder.getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length - 1];
+        int j = 0;
+        for (int i = 0; i < conds.length; i++) {
+            if (conds[i] != c) {
+                condsNew[j] = conds[i];
+                j++;
+            }
+        }
+        builder.setSelectedConditions(condsNew);
+    }
+
+    private boolean containsStorageCondition(StorageCondition[] conds, StorageCondition c) {
+        for (StorageCondition sc : conds) {
+            if (sc == c) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

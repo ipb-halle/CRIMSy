@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDifference;
 import de.ipb_halle.lbac.items.ItemHistory;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.util.Unit;
@@ -183,7 +183,7 @@ public class ItemStateTest {
         ACList acl = new ACList();
         acl.setId(1000);
         acl.setName("test-acl");
-        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
+        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
         item.setACList(acl);

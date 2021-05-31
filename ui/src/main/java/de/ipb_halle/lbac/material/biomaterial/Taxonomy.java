@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
@@ -46,7 +46,7 @@ public class Taxonomy extends Material {
     public Taxonomy(int id,
             List<MaterialName> names,
             HazardInformation hazards,
-            StorageClassInformation storageInformation,
+            StorageInformation storageInformation,
             List<Taxonomy> hierarchy,
             User owner,
             Date creationDate) {

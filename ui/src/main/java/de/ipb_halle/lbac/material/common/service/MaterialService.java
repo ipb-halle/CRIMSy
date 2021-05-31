@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
-import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
@@ -36,14 +35,14 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryId;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageEntity;
+import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
@@ -96,11 +95,12 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class MaterialService implements Serializable {
 
+    private List<StorageClass> storageClasses = new ArrayList<>();
     private MaterialEntityGraphBuilder graphBuilder;
     protected StructureInformationSaver structureInformationSaver;
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
-    private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_storages WHERE materialid=:mid";
+    private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_material WHERE materialid=:mid";
     private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM material_hazards WHERE materialid=:mid";
     private final String SQL_GET_INDICES = "SELECT id,materialid,typeid,value,language,rank FROM material_indices WHERE materialid=:mid order by rank";
     private final String SQL_GET_STRUCTURE_INFOS = "SELECT id,sumformula,molarmass,exactmolarmass,moleculeid FROM structures WHERE id=:mid";
@@ -144,6 +144,9 @@ public class MaterialService implements Serializable {
     protected TaxonomyService taxonomyService;
 
     @Inject
+    protected HazardService hazardService;
+
+    @Inject
     protected TissueService tissueService;
 
     @Inject
@@ -161,6 +164,7 @@ public class MaterialService implements Serializable {
         materialHistoryService = new MaterialHistoryService(this);
         editedMaterialSaver = new MaterialEditSaver(this, taxonomyNestingService);
         structureInformationSaver = new StructureInformationSaver(em);
+        storageClasses = loadStorageClasses();
     }
 
     /**
@@ -301,16 +305,24 @@ public class MaterialService implements Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    private StorageClassInformation loadStorageClassInformation(int materialId) {
+    private StorageInformation loadStorageClassInformation(int materialId) {
+
         Query q = em.createNativeQuery(SQL_GET_STORAGE, StorageEntity.class);
-        Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionStorageEntity.class);
+        Query q2 = em.createNativeQuery(SQL_GET_STORAGE_CONDITION, StorageConditionMaterialEntity.class);
         q2.setParameter("mid", materialId);
         q.setParameter("mid", materialId);
+        List<StorageEntity> storageEntities = q.getResultList();
+        StorageInformation storageInfos = null;
+        if (storageEntities.isEmpty()) {
+            storageInfos = StorageInformation.createObjectByDbEntity(
+                    q2.getResultList());
+        } else {
+            String remarks = storageEntities.get(0).getDescription();
+            StorageClass storageClass = loadStorageClassById(storageEntities.get(0).getStorageClass());
+            storageInfos = StorageInformation.createObjectByDbEntity(
+                    remarks, storageClass, q2.getResultList());
+        }
 
-        StorageClassInformation storageInfos = StorageClassInformation.createObjectByDbEntity(
-                (StorageEntity) q.getSingleResult(),
-                q2.getResultList()
-        );
         return storageInfos;
     }
 
@@ -318,7 +330,7 @@ public class MaterialService implements Serializable {
     private HazardInformation loadHazardInformation(int materialId) {
         Query q3 = em.createNativeQuery(SQL_GET_HAZARDS, HazardsMaterialsEntity.class);
         q3.setParameter("mid", materialId);
-        return HazardInformation.createObjectFromDbEntity(q3.getResultList());
+        return new HazardInformation(q3.getResultList(), hazardService.getAllHazardTypes());
     }
 
     /**
@@ -328,10 +340,6 @@ public class MaterialService implements Serializable {
      */
     @SuppressWarnings("unchecked")
     protected Structure getStructure(MaterialEntity me) {
-
-        StorageClassInformation storageInfos = loadStorageClassInformation(me.getMaterialid());
-        HazardInformation hazardInfos = loadHazardInformation(me.getMaterialid());
-
         Query q4 = em.createNativeQuery(SQL_GET_INDICES, MaterialIndexEntryEntity.class);
         q4.setParameter("mid", me.getMaterialid());
 
@@ -353,8 +361,8 @@ public class MaterialService implements Serializable {
 
         Structure s = Structure.createInstanceFromDB(
                 me,
-                hazardInfos,
-                storageInfos,
+                loadHazardInformation(me.getMaterialid()),
+                loadStorageClassInformation(me.getMaterialid()),
                 q4.getResultList(),
                 sE,
                 molecule,
@@ -434,14 +442,16 @@ public class MaterialService implements Serializable {
             material = loadConsumable(entity);
         }
         material.setACList(aclService.loadById(entity.getACList()));
+        material.setStorageInformation(loadStorageClassInformation(id));
         material.setOwner(memberService.loadUserById(entity.getOwner()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
         material.setHistory(materialHistoryService.loadHistoryOfMaterial(material.getId()));
+        material.setCreationTime(entity.getCtime());
         return material;
     }
 
     private Consumable loadConsumable(MaterialEntity me) {
-        Consumable c= new Consumable(
+        Consumable c = new Consumable(
                 me.getMaterialid(),
                 loadMaterialNamesById(me.getMaterialid()),
                 me.getProjectid(),
@@ -485,6 +495,7 @@ public class MaterialService implements Serializable {
             Integer projectAcl,
             Integer actorId) throws Exception {
         Date modDate = new Date();
+
         List<MaterialDifference> diffs = comparator.compareMaterial(oldMaterial, newMaterial);
         for (MaterialDifference md : diffs) {
             md.initialise(newMaterial.getId(), actorId, modDate);
@@ -493,14 +504,13 @@ public class MaterialService implements Serializable {
                 projectAcl, actorId);
         editedMaterialSaver.saveEditedMaterialOverview();
         editedMaterialSaver.saveEditedMaterialIndices();
-        if(newMaterial.getType()==MaterialType.STRUCTURE){
+        if (newMaterial.getType() == MaterialType.STRUCTURE) {
             editedMaterialSaver.saveEditedMaterialStructure();
         }
         editedMaterialSaver.saveEditedMaterialHazards();
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
-       
     }
 
     /**
@@ -533,7 +543,6 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.BIOMATERIAL) {
             saveBioMaterial((BioMaterial) m);
         }
-        logger.info("Save finished");
     }
 
     /**
@@ -608,7 +617,7 @@ public class MaterialService implements Serializable {
      * @param m
      */
     protected void saveMaterialHazards(Material m) {
-        for (HazardsMaterialsEntity haMaEn : m.getHazards().createDBInstances(m.getId())) {
+        for (HazardsMaterialsEntity haMaEn : m.getHazards().createEntity(m.getId())) {
             em.persist(haMaEn);
         }
     }
@@ -618,8 +627,10 @@ public class MaterialService implements Serializable {
      * @param m
      */
     protected void saveStorageConditions(Material m) {
-        em.persist(m.getStorageInformation().createStorageDBInstance(m.getId()));
-        for (StorageConditionStorageEntity scsE : m.getStorageInformation().createDBInstances(m.getId())) {
+        if (m.getStorageInformation().getStorageClass() != null) {
+            em.persist(m.getStorageInformation().createStorageDBInstance(m.getId()));
+        }
+        for (StorageConditionMaterialEntity scsE : m.getStorageInformation().createDBInstances(m.getId())) {
             em.persist(scsE);
         }
     }
@@ -674,13 +685,24 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     public List<StorageClass> loadStorageClasses() {
-        List<StorageClass> classes = new ArrayList<>();
+        storageClasses.clear();
         List<Object> objects = this.em.createNativeQuery(SQL_GET_STORAGE_CLASSES).getResultList();
         for (Object o : objects) {
             Object[] oo = (Object[]) o;
-            classes.add(new StorageClass((Integer) oo[0], (String) oo[1]));
+            storageClasses.add(new StorageClass((Integer) oo[0], (String) oo[1]));
         }
-        return classes;
+
+        return storageClasses;
+    }
+
+    private StorageClass loadStorageClassById(int id) {
+        for (StorageClass sc : storageClasses) {
+            if (sc.getId() == id) {
+                return sc;
+            }
+        }
+        throw new IllegalArgumentException("Could not load storage class with id: " + id);
+
     }
 
     private EntityGraph createEntityGraph() {

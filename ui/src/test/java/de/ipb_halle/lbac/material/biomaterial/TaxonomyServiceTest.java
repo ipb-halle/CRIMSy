@@ -25,6 +25,7 @@ import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
@@ -265,13 +266,7 @@ public class TaxonomyServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("TaxonomyServiceTest.war")
-                .addClass(ProjectService.class)
-                .addClass(GlobalAdmissionContext.class)
-                .addClass(MaterialService.class)
-                .addClass(TissueService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(TaxonomyService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("TaxonomyServiceTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }
