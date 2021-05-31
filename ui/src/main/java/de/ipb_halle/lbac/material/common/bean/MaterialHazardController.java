@@ -132,8 +132,8 @@ public class MaterialHazardController {
         for (int i = 1; i < 5; i++) {
             possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(i));
         }
-         possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(0));
-         
+        possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(0));
+
         this.bioSavetyLevel = possibleBioSavetyLevels.get(0);
 
         for (int i = 0; i < BSL_IDS.length; i++) {
@@ -162,7 +162,6 @@ public class MaterialHazardController {
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
-    
 
     /**
      * Returns the location of the associated image of the hazard
@@ -318,6 +317,15 @@ public class MaterialHazardController {
 
     public void setMessagePresenter(MessagePresenter messagePresenter) {
         this.messagePresenter = messagePresenter;
+    }
+
+    public String getImageLocationOfBls(Integer index) {
+        logger.info(index);
+        if (index == 1 || index == 2 || index == 3) {
+            return String.format(imageString, "BIOHAZARD");
+        }
+
+        return String.format(imageString, "Empty");
     }
 
 }

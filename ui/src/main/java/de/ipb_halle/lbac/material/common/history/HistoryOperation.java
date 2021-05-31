@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
@@ -52,7 +53,7 @@ public class HistoryOperation implements Serializable {
     protected MaterialNameBean materialNameBean;
     protected MaterialIndexBean indexBean;
     protected StructureInformation structureInfos;
-    protected StorageInformation storageInformation;
+    protected StorageInformationBuilder storageInformationBuilder;
     protected TaxonomySelectionController taxonomySelectionController;
     protected List<HazardType> possibleHazards = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class HistoryOperation implements Serializable {
      * @param nameBean
      * @param indexBean
      * @param structureInfos
-     * @param storageClassInformation
+     * @param storageInformationBuilder
      * @param taxonomySelectionController
      * @param possibleHazards
      */
@@ -76,7 +77,7 @@ public class HistoryOperation implements Serializable {
             MaterialNameBean nameBean,
             MaterialIndexBean indexBean,
             StructureInformation structureInfos,
-            StorageInformation storageClassInformation,
+            StorageInformationBuilder storageInformationBuilder,
             TaxonomySelectionController taxonomySelectionController,
             List<HazardType> possibleHazards) {
         this.projectBean = projectBean;
@@ -84,7 +85,7 @@ public class HistoryOperation implements Serializable {
         this.materialNameBean = nameBean;
         this.indexBean = indexBean;
         this.structureInfos = structureInfos;
-        this.storageInformation = storageClassInformation;
+        this.storageInformationBuilder = storageInformationBuilder;
         this.taxonomySelectionController = taxonomySelectionController;
         this.possibleHazards = possibleHazards;
     }
@@ -123,16 +124,23 @@ public class HistoryOperation implements Serializable {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
             if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
-                storageInformation.setRemarks(diff.getDescriptionNew());
+                storageInformationBuilder.setRemarks(diff.getDescriptionNew());
             }
             if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
-                storageInformation.setStorageClass(new StorageClass(diff.getStorageclassNew(), ""));
+                if (diff.getStorageclassNew() != null) {
+                    storageInformationBuilder.setChoosenStorageClass(storageInformationBuilder.getStorageClassById(diff.getStorageclassNew()));
+                    storageInformationBuilder.setStorageClassActivated(true);
+
+                } else {
+                    storageInformationBuilder.setStorageClassActivated(false);
+                }
             }
             for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
                 if (diff.getStorageConditionsOld().get(i) == null) {
-                    storageInformation.getStorageConditions().add(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+                    storageInformationBuilder.addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+
                 } else {
-                    storageInformation.getStorageConditions().remove(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+                    storageInformationBuilder.removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
                 }
             }
         }
@@ -142,16 +150,22 @@ public class HistoryOperation implements Serializable {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
             if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
-                storageInformation.setRemarks(diff.getDescriptionOld());
+                storageInformationBuilder.setRemarks(diff.getDescriptionOld());
             }
             if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
-                storageInformation.setStorageClass(new StorageClass(diff.getStorageclassOld(), ""));
+                if (diff.getStorageclassOld() != null) {
+                    storageInformationBuilder.setChoosenStorageClass(storageInformationBuilder.getStorageClassById(diff.getStorageclassOld()));
+                    storageInformationBuilder.setStorageClassActivated(true);
+                } else {
+                    storageInformationBuilder.setStorageClassActivated(false);
+                }
             }
             for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
                 if (diff.getStorageConditionsNew().get(i) == null) {
-                    storageInformation.getStorageConditions().add(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+                    storageInformationBuilder.addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+
                 } else {
-                    storageInformation.getStorageConditions().remove(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+                    storageInformationBuilder.removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
                 }
             }
         }

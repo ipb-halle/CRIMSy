@@ -37,9 +37,6 @@ import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageInformation;
-
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
@@ -212,20 +209,23 @@ public class MaterialBean implements Serializable {
                 BioMaterial bm = (BioMaterial) m;
                 taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, bm.getTaxonomy());
             }
+
+            storageInformationBuilder = new StorageInformationBuilder(
+                    messagePresenter,
+                    materialService,
+                    m
+            );
+            storageInformationBuilder.setAccessRightToEdit(acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()));
+
             historyOperation = new HistoryOperation(
                     materialEditState,
                     projectBean,
                     materialNameBean,
                     materialIndexBean,
                     structureInfos,
-                    m.getStorageInformation(),
+                    storageInformationBuilder,
                     taxonomyController,
                     hazardService.getAllHazardTypes()
-            );
-            storageInformationBuilder = new StorageInformationBuilder(
-                    messagePresenter,
-                    materialService,
-                    m
             );
 
         } catch (Exception e) {
@@ -354,7 +354,7 @@ public class MaterialBean implements Serializable {
                 materialEditState.getMaterialBeforeEdit(),
                 materialEditState.getCurrentProject().getUserGroups().getId(),
                 userBean.getCurrentAccount().getId());
-        
+
     }
 
     private void setBasicInfos() {
@@ -365,7 +365,7 @@ public class MaterialBean implements Serializable {
         materialEditState.getMaterialToEdit().setIndices(materialIndexBean.getIndices());
         materialEditState.getMaterialToEdit().setHazards(tmpHazards);
         materialEditState.getMaterialToEdit().setStorageInformation(storageInformationBuilder.build());
-        
+
     }
 
     private void saveEditedStructure() {
@@ -512,6 +512,7 @@ public class MaterialBean implements Serializable {
 
     public void switchOneVersionBack() {
         historyOperation.applyNextNegativeDifference();
+        storageInformationBuilder.setInHistoryMode(true);
         hazardController.setEditable(false);
         mode = Mode.HISTORY;
 
@@ -521,7 +522,12 @@ public class MaterialBean implements Serializable {
         historyOperation.applyNextPositiveDifference();
         mode = Mode.HISTORY;
         if (materialEditState.getMaterialBeforeEdit().getHistory().isMostRecentVersion(materialEditState.getCurrentVersiondate())) {
-            hazardController.setEditable(true);
+            hazardController.setEditable(
+                    acListService.isPermitted(
+                            ACPermission.permEDIT,
+                            materialEditState.getMaterialBeforeEdit(),
+                            userBean.getCurrentAccount()));
+            storageInformationBuilder.setInHistoryMode(false);
             mode = Mode.EDIT;
         } else {
             hazardController.setEditable(false);

@@ -35,11 +35,13 @@ import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardController;
+import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
@@ -68,6 +70,8 @@ public class HistoryOperationHazardsTest extends TestBase {
 
     @Inject
     private HazardService hazardService;
+    @Inject
+    private MaterialService materialService;
     List<IndexEntry> indices;
     Structure s;
     Date currentDate;
@@ -85,7 +89,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         mes = new MaterialEditState();
         mes.setMaterialBeforeEdit(s);
         mes = new MaterialEditState(
-                new Project(), 
+                new Project(),
                 currentDate,
                 s,
                 s,
@@ -102,7 +106,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageInformation(), null, possibleHazards);
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageInformationBuilder(new MessagePresenterMock(), materialService), null, possibleHazards);
     }
 
     /**

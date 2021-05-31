@@ -151,7 +151,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     }
     
     public void actionEditMaterial(Material m) {
-        logger.info("storage class before in materil bean " + m.getStorageInformation().getStorageClass());
         try {
             m.setHistory(materialService.loadHistoryOfMaterial(m.getId()));
             

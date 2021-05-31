@@ -143,3 +143,21 @@
     width: 30px;
     height: 30px;
 }
+
+.invisibleText{
+    color: rgba(0,0,0,0.0);;
+}
+
+.storagePanelClass > .ui-selectmanycheckbox .ui-state-disabled{
+    background-color: white;
+}
+
+.storageClassHeader{
+    font-weight: bold;
+    margin-top: 8px;
+}
+
+.bioHazardImage{
+    width: 60%;
+    height: 60%;
+}

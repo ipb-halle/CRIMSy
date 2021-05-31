@@ -36,12 +36,16 @@
                     rendered="#{materialBean.permission.isDetailPanelVisible('STORAGE_CLASSES')}">
                     <b:container>
                         <b:row>
-                            <b:column span="2">
+                            <b:column span="2"
+                                      styleClass="storageClassHeader">
                                 <h:outputText
+
                                     value="#{msgs.materialCreation_panelStorage_storageClass}"/>
                             </b:column>
-                            <b:column span="2">
+                            <b:column span="2"
+                                      styleClass="storageClassHeader">
                                 <p:selectBooleanCheckbox
+                                    disabled="#{!materialBean.getStorageInformationBuilder().accessRightToEdit}"
                                     value="#{materialBean.getStorageInformationBuilder().storageClassActivated}">
                                     <p:ajax  update="@(.storageClassChoosable)"/> 
                                 </p:selectBooleanCheckbox>
@@ -52,6 +56,7 @@
                                 <b:selectOneMenu
                                     id="ads"
                                     ajax="true"
+                                    styleClass="#{materialBean.getStorageInformationBuilder().getStorageClassMenuStyleClass()}"
                                     converter="StorageClassConverter"
                                     disabled="#{materialBean.getStorageInformationBuilder().isStorageClassDisabled()}"
                                     value="#{materialBean.getStorageInformationBuilder().choosenStorageClass}">
@@ -76,9 +81,8 @@
                         </b:inputText>
                     </h:panelGroup>
 
-
                     <p:selectManyCheckbox
-                       
+                        disabled="#{!materialBean.getStorageInformationBuilder().isConditionEditable()}"
                         layout="responsive" columns="2"
                         value="#{materialBean.getStorageInformationBuilder().selectedConditions}">
                         <p:ajax/>

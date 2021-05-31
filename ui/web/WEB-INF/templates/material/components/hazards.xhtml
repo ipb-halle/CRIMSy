@@ -37,6 +37,7 @@
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('GHS')}">
                     <p:selectManyCheckbox
                         id="ghsHazardsId"
+                        disabled="#{!materialBean.hazardController.isHazardEditable()}" 
                         value="#{materialBean.hazardController.selectedHazards}" 
                         converter="HazardConverter"
                         layout="custom">
@@ -118,6 +119,7 @@
                     <p:selectOneRadio    
                         id="custom_bsl"
                         value="#{materialBean.hazardController.bioSavetyLevel}"
+                        disabled="#{!materialBean.hazardController.isHazardEditable()}" 
                         layout="custom">
                         <f:selectItems 
                             value="#{materialBean.hazardController.possibleBioSavetyLevels}"
@@ -126,7 +128,7 @@
                     </p:selectOneRadio>
                     <p:panelGrid
                         styleClass="borderlessGridPanel"
-                        columns="2">
+                        columns="3">
                         <c:forEach 
                             varStatus="status"
                             var="bsl"
@@ -139,6 +141,9 @@
                             <p:outputLabel
                                 for="@previous" 
                                 value="#{bsl}"/>
+                            <b:image 
+                                styleClass="bioHazardImage"
+                                value="#{materialBean.hazardController.getImageLocationOfBls(status.index)}"/>   
                         </c:forEach>
                     </p:panelGrid>
 

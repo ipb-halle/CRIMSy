@@ -27,8 +27,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.faces.event.AjaxBehaviorEvent;
-import org.apache.logging.log4j.Level;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,6 +47,7 @@ public class StorageInformationBuilder {
     private List<StorageCondition> possibleConditions = new ArrayList<>();
     private boolean inHistoryMode;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
+    protected boolean accessRightToEdit = true;
 
     public StorageInformationBuilder(
             MessagePresenter messagePresenter,
@@ -76,12 +76,12 @@ public class StorageInformationBuilder {
         this.possibleStorageClasses = initStorageClassNames();
         this.choosenStorageClass = possibleStorageClasses.get(0);
         this.possibleConditions.addAll(Arrays.asList(StorageCondition.values()));
-        this.selectedConditions=new StorageCondition[0];
+        this.selectedConditions = new StorageCondition[0];
     }
 
-    private StorageClass getStorageClassById(int id) {
+    public StorageClass getStorageClassById(Integer id) {
         for (StorageClass sc : possibleStorageClasses) {
-            if (sc.id == id) {
+            if (Objects.equals(sc.id, id)) {
                 return sc;
             }
         }
@@ -117,13 +117,23 @@ public class StorageInformationBuilder {
         return storageInfos;
     }
 
+    public String getStorageClassMenuStyleClass() {
+        if (!isStorageClassDisabled()) {
+            logger.info("activated");
+            return "storageClassChoosable";
+        } else {
+            logger.info("deactivated");
+            return "invisibleText storageClassChoosable";
+        }
+    }
+
     public boolean isStorageClassActivated() {
 
         return storageClassActivated;
     }
 
     public boolean isStorageClassDisabled() {
-        return !storageClassActivated || inHistoryMode;
+        return !storageClassActivated || inHistoryMode || !accessRightToEdit;
     }
 
     public void setStorageClassActivated(boolean storageClassActivated) {
@@ -172,6 +182,41 @@ public class StorageInformationBuilder {
 
     public void setInHistoryMode(boolean inHistoryMode) {
         this.inHistoryMode = inHistoryMode;
+    }
+
+    public void addStorageCondition(StorageCondition c) {
+        StorageCondition[] conds = getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length + 1];
+        for (int i = 0; i < conds.length; i++) {
+            condsNew[i] = conds[i];
+        }
+        condsNew[condsNew.length - 1] = c;
+        setSelectedConditions(condsNew);
+    }
+
+    public void removeStorageCondition(StorageCondition c) {
+        StorageCondition[] conds = getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length - 1];
+        int j = 0;
+        for (int i = 0; i < conds.length; i++) {
+            if (conds[i] != c) {
+                condsNew[j] = conds[i];
+                j++;
+            }
+        }
+        setSelectedConditions(condsNew);
+    }
+
+    public boolean isConditionEditable() {
+        return !inHistoryMode && accessRightToEdit;
+    }
+
+    public void setAccessRightToEdit(boolean accessRightToEdit) {
+        this.accessRightToEdit = accessRightToEdit;
+    }
+
+    public boolean isAccessRightToEdit() {
+        return accessRightToEdit;
     }
 
 }
