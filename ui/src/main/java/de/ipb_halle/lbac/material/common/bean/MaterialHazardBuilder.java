@@ -32,10 +32,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Manages the interactions with the frontend and provides a method for building
+ * the "backend" ready datastructure for further actions (like saving etc).
  *
  * @author fmauz
  */
-public class MaterialHazardController {
+public class MaterialHazardBuilder {
 
     private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -50,14 +52,16 @@ public class MaterialHazardController {
     private boolean editable;
     private String bioSavetyLevel;
     private List<String> possibleBioSavetyLevels = new ArrayList<>();
+    private boolean gmo;
 
     private final int H_STATEMENT_ID = 10;
     private final int P_STATEMENT_ID = 11;
     private final int[] BSL_IDS = new int[]{12, 13, 14, 15};
     private final int RADIOACTIVE_STATEMENT_ID = 16;
     private final int CUSTOM_STATEMENT_ID = 17;
+    private final int GMO_STATEMENT_ID = 20;
 
-    public MaterialHazardController(
+    public MaterialHazardBuilder(
             HazardService hazardService,
             MaterialType materialType,
             boolean isEditable,
@@ -66,54 +70,15 @@ public class MaterialHazardController {
 
     }
 
-    public void removeHazard(HazardType hazard) {
-        for (int i = 0; i < BSL_IDS.length; i++) {
-            if (hazard.getId() == BSL_IDS[i]) {
-                bioSavetyLevel = possibleBioSavetyLevels.get(0);
-            }
-        }
-
-        if (hazard.getId() == H_STATEMENT_ID) {
-            hStatements = null;
-        }
-        if (hazard.getId() == P_STATEMENT_ID) {
-            pStatements = null;
-        }
-        if (hazard.getId() == CUSTOM_STATEMENT_ID) {
-            customText = null;
-        }
-        if (hazard.getId() == RADIOACTIVE_STATEMENT_ID) {
-            radioctive = false;
-        }
-        ArrayList<HazardType> tmpArray = new ArrayList<>(Arrays.asList(selectedHazards));
-        tmpArray.remove(hazard);
-        selectedHazards = tmpArray.stream().toArray(HazardType[]::new);
-    }
-
-    public void addHazardType(HazardType hazard, String remark) {
-        for (int i = 0; i < BSL_IDS.length; i++) {
-            if (hazard.getId() == BSL_IDS[i]) {
-                bioSavetyLevel = possibleBioSavetyLevels.get(i + 1);
-            }
-        }
-        if (hazard.getId() == H_STATEMENT_ID) {
-            hStatements = remark;
-        } else if (hazard.getId() == P_STATEMENT_ID) {
-            pStatements = remark;
-        } else if (hazard.getId() == CUSTOM_STATEMENT_ID) {
-            customText = remark;
-        } else if (hazard.getId() == RADIOACTIVE_STATEMENT_ID) {
-            radioctive = true;
-        } else {
-            ArrayList<HazardType> newHazards = Arrays.stream(selectedHazards).collect(Collectors
-                    .toCollection(ArrayList::new));
-            newHazards.add(hazard);
-            selectedHazards = newHazards.stream().toArray(HazardType[]::new);
-        }
-
-    }
-
-    public MaterialHazardController(
+    /**
+     *
+     * @param hazardService
+     * @param materialType
+     * @param isEditable
+     * @param hazards
+     * @param presenter
+     */
+    public MaterialHazardBuilder(
             HazardService hazardService,
             MaterialType materialType,
             boolean isEditable,
@@ -126,6 +91,7 @@ public class MaterialHazardController {
         this.selectedHazards = new ArrayList<>(hazards.keySet()).toArray(selectedHazards);
         this.editable = isEditable;
         this.radioctive = hazards.keySet().contains(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID));
+        this.gmo = hazards.keySet().contains(hazardService.getHazardById(GMO_STATEMENT_ID));
         this.customText = hazards.get(hazardService.getHazardById(CUSTOM_STATEMENT_ID));
         this.hStatements = hazards.get(hazardService.getHazardById(H_STATEMENT_ID));
         this.pStatements = hazards.get(hazardService.getHazardById(P_STATEMENT_ID));
@@ -140,6 +106,61 @@ public class MaterialHazardController {
             if (hazards.keySet().contains(hazardService.getHazardById(BSL_IDS[i]))) {
                 this.bioSavetyLevel = possibleBioSavetyLevels.get(i + 1);
             }
+        }
+
+    }
+
+    /**
+     * Removes a Hazard. If the hazard is a h- or p-statement, radioactivity,
+     * gmo or a custom statement the corresponding varable will be changed.
+     *
+     * @param hazard
+     */
+    public void removeHazard(HazardType hazard) {
+        for (int i = 0; i < BSL_IDS.length; i++) {
+            if (hazard.getId() == BSL_IDS[i]) {
+                bioSavetyLevel = possibleBioSavetyLevels.get(0);
+            }
+        }
+
+        hStatements = hazard.getId() == H_STATEMENT_ID ? null : hStatements;
+        pStatements = hazard.getId() == P_STATEMENT_ID ? null : pStatements;
+        customText = hazard.getId() == CUSTOM_STATEMENT_ID ? null : customText;
+        radioctive = hazard.getId() == RADIOACTIVE_STATEMENT_ID ? false : radioctive;
+        gmo = hazard.getId() == GMO_STATEMENT_ID ? false : gmo;
+
+        ArrayList<HazardType> tmpArray = new ArrayList<>(Arrays.asList(selectedHazards));
+        tmpArray.remove(hazard);
+        selectedHazards = tmpArray.stream().toArray(HazardType[]::new);
+    }
+
+    /**
+     * Adds a Hazard. If the hazard is a h- or p-statement, radioactivity, gmo
+     * or a custom statement the corresponding varable will be changed.
+     *
+     * @param hazard
+     */
+    public void addHazardType(HazardType hazard, String remark) {
+        for (int i = 0; i < BSL_IDS.length; i++) {
+            if (hazard.getId() == BSL_IDS[i]) {
+                bioSavetyLevel = possibleBioSavetyLevels.get(i + 1);
+            }
+        }
+        if (hazard.getId() == H_STATEMENT_ID) {
+            hStatements = remark;
+        } else if (hazard.getId() == P_STATEMENT_ID) {
+            pStatements = remark;
+        } else if (hazard.getId() == CUSTOM_STATEMENT_ID) {
+            customText = remark;
+        } else if (hazard.getId() == RADIOACTIVE_STATEMENT_ID) {
+            radioctive = true;
+        } else if (hazard.getId() == GMO_STATEMENT_ID) {
+            gmo = true;
+        } else {
+            ArrayList<HazardType> newHazards = Arrays.stream(selectedHazards).collect(Collectors
+                    .toCollection(ArrayList::new));
+            newHazards.add(hazard);
+            selectedHazards = newHazards.stream().toArray(HazardType[]::new);
         }
 
     }
@@ -190,7 +211,7 @@ public class MaterialHazardController {
      *
      * @return
      */
-    public Map<HazardType, String> createHazardMap() {
+    public Map<HazardType, String> buildHazardsMap() {
         Map<HazardType, String> hazards = new HashMap<>();
         for (int i = 0; i < selectedHazards.length; i++) {
             hazards.put(selectedHazards[i], null);
@@ -200,6 +221,11 @@ public class MaterialHazardController {
         processStatement(hazards, customText, CUSTOM_STATEMENT_ID);
         processBioSavetyLevels(hazards);
 
+        if (gmo) {
+            hazards.put(hazardService.getHazardById(GMO_STATEMENT_ID), null);
+        } else {
+            hazards.remove(hazardService.getHazardById(GMO_STATEMENT_ID), null);
+        }
         if (radioctive) {
             hazards.put(hazardService.getHazardById(RADIOACTIVE_STATEMENT_ID), null);
         } else {
@@ -319,13 +345,27 @@ public class MaterialHazardController {
         this.messagePresenter = messagePresenter;
     }
 
+    /**
+     * Returns a biohazard image if riskgroup 2,3 or 4 is choosen. Returns a
+     * empty image else
+     *
+     * @param index
+     * @return
+     */
     public String getImageLocationOfBls(Integer index) {
-        logger.info(index);
         if (index == 1 || index == 2 || index == 3) {
             return String.format(imageString, "BIOHAZARD");
         }
 
         return String.format(imageString, "Empty");
+    }
+
+    public boolean isGmo() {
+        return gmo;
+    }
+
+    public void setGmo(boolean gmo) {
+        this.gmo = gmo;
     }
 
 }

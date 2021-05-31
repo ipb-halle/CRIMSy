@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,12 @@
  */
 package de.ipb_halle.lbac.material.common.bean.history;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.history.HistoryOperation;
@@ -24,24 +30,39 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
+import de.ipb_halle.lbac.material.common.service.IndexService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.material.structure.StructureInformation;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  *
  * @author fmauz
  */
-public class HistoryOperationNameTest {
+@RunWith(Arquillian.class)
+public class HistoryOperationNameTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private MaterialService materialService;
     List<MaterialName> names;
     Structure s;
     Date currentDate;
@@ -63,10 +84,11 @@ public class HistoryOperationNameTest {
         mnb.setNames(names);
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
-        //  instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(),new StorageInformation(),null,new ArrayList<>());
+
+        StorageInformationBuilder storageInfoBuilder = new StorageInformationBuilder(new MessagePresenterMock(), materialService);
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(), storageInfoBuilder, null, new ArrayList<>());
     }
 
-    @Ignore
     @Test
     public void test01_nameDifferenceOperations() {
 
@@ -99,7 +121,6 @@ public class HistoryOperationNameTest {
         Assert.assertEquals("Testcase 1 - Rank must be 0", (long) 0, (long) resultNames.get(0).getRank());
     }
 
-    @Ignore
     @Test
     public void test02_nameDifferenceOperations() {
 
@@ -453,6 +474,15 @@ public class HistoryOperationNameTest {
         Assert.assertEquals("Testcase 10.3 - Language must be de", "de", resultNames.get(2).getLanguage());
         Assert.assertEquals("Testcase 10.3 - Value must be C", "C", resultNames.get(2).getValue());
         Assert.assertEquals("Testcase 10.3 - Rank must be 2", (long) 2, (long) resultNames.get(2).getRank());
+    }
 
+    @Deployment
+    public static WebArchive createDeployment() {
+        WebArchive deployment
+                = prepareDeployment("HistoryOperationNameTest.war")
+                        .addClass(IndexService.class);
+        deployment = ItemDeployment.add(deployment);
+        deployment = UserBeanDeployment.add(deployment);
+        return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }

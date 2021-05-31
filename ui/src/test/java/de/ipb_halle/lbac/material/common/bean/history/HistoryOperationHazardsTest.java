@@ -34,7 +34,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageInformation;
-import de.ipb_halle.lbac.material.common.bean.MaterialHazardController;
+import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
 import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
@@ -93,7 +93,7 @@ public class HistoryOperationHazardsTest extends TestBase {
                 currentDate,
                 s,
                 s,
-                new MaterialHazardController(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), new MessagePresenterMock()));
+                new MaterialHazardBuilder(hazardService, MaterialType.BIOMATERIAL, true, new HashMap<>(), new MessagePresenterMock()));
 
         mes.setCurrentVersiondate(currentDate);
         mib = new MaterialIndexBean();
@@ -152,25 +152,25 @@ public class HistoryOperationHazardsTest extends TestBase {
 
         // apply second edit: (irritant,unhealthy) -> (corrosive)
         instance.applyNextNegativeDifference();
-        Assert.assertEquals(1, mes.getHazardController().createHazardMap().size());
-        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(5, false, "GHS05", 1)));
+        Assert.assertEquals(1, mes.getHazardController().buildHazardsMap().size());
+        Assert.assertTrue(mes.getHazardController().buildHazardsMap().keySet().contains(new HazardType(5, false, "GHS05", 1)));
 
         // apply first edit: (corrosive) -> ( )
         instance.applyNextNegativeDifference();
-        Assert.assertTrue(mes.getHazardController().createHazardMap().isEmpty());
+        Assert.assertTrue(mes.getHazardController().buildHazardsMap().isEmpty());
 
         // apply first edit: ( )  -> (corrosive) 
         instance.applyNextPositiveDifference();
-        Assert.assertEquals(1, mes.getHazardController().createHazardMap().size());
-        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(5, false, "GHS05", 1)));
+        Assert.assertEquals(1, mes.getHazardController().buildHazardsMap().size());
+        Assert.assertTrue(mes.getHazardController().buildHazardsMap().keySet().contains(new HazardType(5, false, "GHS05", 1)));
 
         // apply second edit: (corrosive) -> (irritant,unhealthy)
         instance.applyNextPositiveDifference();
-        Assert.assertEquals(4, mes.getHazardController().createHazardMap().size());
-        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(7, false, "GHS05", 1)));
-        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(8, false, "GHS05", 1)));
-        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(10, false, "GHS05", 1)));
-        Assert.assertTrue(mes.getHazardController().createHazardMap().keySet().contains(new HazardType(11, false, "GHS05", 1)));
+        Assert.assertEquals(4, mes.getHazardController().buildHazardsMap().size());
+        Assert.assertTrue(mes.getHazardController().buildHazardsMap().keySet().contains(new HazardType(7, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazardController().buildHazardsMap().keySet().contains(new HazardType(8, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazardController().buildHazardsMap().keySet().contains(new HazardType(10, false, "GHS05", 1)));
+        Assert.assertTrue(mes.getHazardController().buildHazardsMap().keySet().contains(new HazardType(11, false, "GHS05", 1)));
 
     }
 

@@ -447,6 +447,7 @@ insert into hazards(id,name,category,has_remarks)values(16,'R1',4,false);
 insert into hazards(id,name,category,has_remarks)values(17,'C1',5,true);
 insert into hazards(id,name,category,has_remarks)values(18,'GHS10',1,false);
 insert into hazards(id,name,category,has_remarks)values(19,'GHS11',1,false);
+insert into hazards(id,name,category,has_remarks)values(20,'GMO',6,false);
 
 CREATE TABLE  materials_hist (
         materialid INTEGER NOT NULL REFERENCES materials(materialid),

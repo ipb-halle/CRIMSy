@@ -197,6 +197,7 @@ public class HistoryOperation implements Serializable {
 
     protected void applyNegativeHazards() {
         MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
+       
         if (diff != null) {
             materialEditState.getHazardController().setEditable(false);
             for (int i = 0; i < diff.getEntries(); i++) {

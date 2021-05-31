@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
+ * Manages the interactions with the frontend and provides a method for building
+ * the "backend" ready datastructure for further actions (like saving etc).
  *
  * @author fmauz
  */
@@ -49,6 +51,13 @@ public class StorageInformationBuilder {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected boolean accessRightToEdit = true;
 
+    /**
+     * Constructor for usecase : edit a material
+     *
+     * @param messagePresenter
+     * @param materialService
+     * @param material
+     */
     public StorageInformationBuilder(
             MessagePresenter messagePresenter,
             MaterialService materialService,
@@ -56,7 +65,7 @@ public class StorageInformationBuilder {
         this.messagePresenter = messagePresenter;
         this.materialService = materialService;
         this.remarks = material.getStorageInformation().getRemarks();
-        this.possibleStorageClasses = initStorageClassNames();
+        this.possibleStorageClasses = loadAndI18nStorageClasses();
         this.selectedConditions = material.getStorageInformation().getStorageConditions().stream().toArray(StorageCondition[]::new);
 
         this.storageClassActivated = material.getStorageInformation().getStorageClass() != null;
@@ -68,15 +77,54 @@ public class StorageInformationBuilder {
         possibleConditions.addAll(Arrays.asList(StorageCondition.values()));
     }
 
+    /**
+     * Constructor for usecase : create a new material
+     *
+     * @param messagePresenter
+     * @param materialService
+     */
     public StorageInformationBuilder(
             MessagePresenter messagePresenter,
             MaterialService materialService) {
         this.messagePresenter = messagePresenter;
         this.materialService = materialService;
-        this.possibleStorageClasses = initStorageClassNames();
+        this.possibleStorageClasses = loadAndI18nStorageClasses();
         this.choosenStorageClass = possibleStorageClasses.get(0);
         this.possibleConditions.addAll(Arrays.asList(StorageCondition.values()));
         this.selectedConditions = new StorageCondition[0];
+    }
+
+    /**
+     * Builds the datamodel for storageinformation. Contains the storageclass if
+     * activated with its remarks and all storageconditions
+     *
+     * @return
+     */
+    public StorageInformation build() {
+        StorageInformation storageInfos = new StorageInformation();
+        if (storageClassActivated) {
+            storageInfos.setStorageClass(choosenStorageClass);
+            storageInfos.setRemarks(remarks);
+        }
+        storageInfos.getStorageConditions().addAll(Arrays.asList(selectedConditions));
+
+        return storageInfos;
+    }
+
+    /**
+     * Due to the fact that the storage classes must be stored in an array
+     * (typisation must be done at compile time), a new array is created.
+     *
+     * @param c
+     */
+    public void addStorageCondition(StorageCondition c) {
+        StorageCondition[] conds = getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length + 1];
+        for (int i = 0; i < conds.length; i++) {
+            condsNew[i] = conds[i];
+        }
+        condsNew[condsNew.length - 1] = c;
+        setSelectedConditions(condsNew);
     }
 
     public StorageClass getStorageClassById(Integer id) {
@@ -88,7 +136,13 @@ public class StorageInformationBuilder {
         throw new IllegalArgumentException("No storage class found with id " + id);
     }
 
-    private List<StorageClass> initStorageClassNames() {
+    /**
+     * Loads the storageclasses from the database and i18n the names by the
+     * preferred language
+     *
+     * @return
+     */
+    private List<StorageClass> loadAndI18nStorageClasses() {
         List<StorageClass> classes = materialService.loadStorageClasses();
         for (StorageClass sc : classes) {
             try {
@@ -102,38 +156,55 @@ public class StorageInformationBuilder {
         return classes;
     }
 
-    public String getLocalizedConditionName(StorageCondition con) {
-        return messagePresenter.presentMessage("materialCreation_panelStorage_" + con.toString());
-    }
-
-    public StorageInformation build() {
-        StorageInformation storageInfos = new StorageInformation();
-        if (storageClassActivated) {
-            storageInfos.setStorageClass(choosenStorageClass);
-            storageInfos.setRemarks(remarks);
-        }
-        storageInfos.getStorageConditions().addAll(Arrays.asList(selectedConditions));
-
-        return storageInfos;
-    }
-
+    /**
+     * Returns a css styleclass for a deactivated storage class. It will make
+     * the text in the comboBox invisible.
+     *
+     * @return
+     */
     public String getStorageClassMenuStyleClass() {
         if (!isStorageClassDisabled()) {
-            logger.info("activated");
             return "storageClassChoosable";
         } else {
-            logger.info("deactivated");
             return "invisibleText storageClassChoosable";
         }
     }
 
-    public boolean isStorageClassActivated() {
-
-        return storageClassActivated;
-    }
-
+    /**
+     * Disabled if : user has not edit rights, state is in history mode or
+     * checkBox is not selected
+     *
+     * @return
+     */
     public boolean isStorageClassDisabled() {
         return !storageClassActivated || inHistoryMode || !accessRightToEdit;
+    }
+
+    /**
+     * Due to the fact that the storage classes must be stored in an array
+     * (typisation must be done at compile time), a new array is created.
+     *
+     * @param c
+     */
+    public void removeStorageCondition(StorageCondition c) {
+        StorageCondition[] conds = getSelectedConditions();
+        StorageCondition[] condsNew = new StorageCondition[conds.length - 1];
+        int j = 0;
+        for (int i = 0; i < conds.length; i++) {
+            if (conds[i] != c) {
+                condsNew[j] = conds[i];
+                j++;
+            }
+        }
+        setSelectedConditions(condsNew);
+    }
+
+    public String getLocalizedConditionName(StorageCondition con) {
+        return messagePresenter.presentMessage("materialCreation_panelStorage_" + con.toString());
+    }
+
+    public boolean isStorageClassActivated() {
+        return storageClassActivated;
     }
 
     public void setStorageClassActivated(boolean storageClassActivated) {
@@ -182,29 +253,6 @@ public class StorageInformationBuilder {
 
     public void setInHistoryMode(boolean inHistoryMode) {
         this.inHistoryMode = inHistoryMode;
-    }
-
-    public void addStorageCondition(StorageCondition c) {
-        StorageCondition[] conds = getSelectedConditions();
-        StorageCondition[] condsNew = new StorageCondition[conds.length + 1];
-        for (int i = 0; i < conds.length; i++) {
-            condsNew[i] = conds[i];
-        }
-        condsNew[condsNew.length - 1] = c;
-        setSelectedConditions(condsNew);
-    }
-
-    public void removeStorageCondition(StorageCondition c) {
-        StorageCondition[] conds = getSelectedConditions();
-        StorageCondition[] condsNew = new StorageCondition[conds.length - 1];
-        int j = 0;
-        for (int i = 0; i < conds.length; i++) {
-            if (conds[i] != c) {
-                condsNew[j] = conds[i];
-                j++;
-            }
-        }
-        setSelectedConditions(condsNew);
     }
 
     public boolean isConditionEditable() {

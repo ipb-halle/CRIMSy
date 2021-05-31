@@ -66,7 +66,7 @@ public class HazardServiceTest extends TestBase {
         Assert.assertTrue(cats.contains(HazardType.Category.CUSTOM));
 
         cats = hazardService.getAllowedCatsOf(MaterialType.BIOMATERIAL);
-        Assert.assertEquals(2, cats.size());
+        Assert.assertEquals(3, cats.size());
         Assert.assertTrue(cats.contains(HazardType.Category.BSL));
         Assert.assertTrue(cats.contains(HazardType.Category.CUSTOM));
 

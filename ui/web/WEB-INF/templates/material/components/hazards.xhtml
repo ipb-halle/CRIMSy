@@ -148,6 +148,17 @@
                     </p:panelGrid>
 
                 </p:panel>
+
+                <p:panel
+                    header="#{msgs.hazard_GMO}"
+                    rendered="#{materialBean.hazardController.isHazardCategoryRendered('GMO')}">
+                    <p:selectBooleanCheckbox
+                        styleClass="customRemarks"
+                        itemLabel="#{msgs.hazard_GMO}"
+                        value="#{materialBean.hazardController.gmo}"
+                        disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
+                </p:panel>
+
                 <p:panel
                     header="#{materialBean.hazardController.getLocalizedCustomLabel()}"
                     rendered="#{materialBean.hazardController.isHazardCategoryRendered('CUSTOM')}">

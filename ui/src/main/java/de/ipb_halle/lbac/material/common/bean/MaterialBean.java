@@ -132,7 +132,7 @@ public class MaterialBean implements Serializable {
     private TissueController tissueController;
     private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
 
-    private MaterialHazardController hazardController;
+    private MaterialHazardBuilder hazardController;
     private StorageInformationBuilder storageInformationBuilder;
 
     public enum Mode {
@@ -159,7 +159,7 @@ public class MaterialBean implements Serializable {
             possibleProjects.add(materialEditState.getDefaultProject());
             possibleProjects.addAll(projectBean.getReadableProjects());
             taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, taxonomyService.loadTaxonomyById(1));
-            hazardController = new MaterialHazardController(
+            hazardController = new MaterialHazardBuilder(
                     hazardService,
                     currentMaterialType,
                     true,
@@ -184,7 +184,7 @@ public class MaterialBean implements Serializable {
             }
             hazards = new HazardInformation(m);
             Project p = projectService.loadProjectById(m.getProjectId());
-            hazardController = new MaterialHazardController(
+            hazardController = new MaterialHazardBuilder(
                     hazardService,
                     m.getType(),
                     acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()),
@@ -273,7 +273,7 @@ public class MaterialBean implements Serializable {
 
     public void setCurrentMaterialType(MaterialType currentMaterialType) {
         this.currentMaterialType = currentMaterialType;
-        hazardController = new MaterialHazardController(
+        hazardController = new MaterialHazardBuilder(
                 hazardService,
                 currentMaterialType,
                 true,
@@ -309,7 +309,7 @@ public class MaterialBean implements Serializable {
 
     public void saveNewMaterial() throws Exception {
         if (checkInputValidity()) {
-            hazards.setHazards(hazardController.createHazardMap());
+            hazards.setHazards(hazardController.buildHazardsMap());
             if (currentMaterialType == MaterialType.STRUCTURE) {
                 creationSaver.saveNewStructure(autoCalcFormularAndMasses,
                         structureInfos,
@@ -359,7 +359,7 @@ public class MaterialBean implements Serializable {
 
     private void setBasicInfos() {
         HazardInformation tmpHazards = new HazardInformation();
-        tmpHazards.setHazards(hazardController.createHazardMap());
+        tmpHazards.setHazards(hazardController.buildHazardsMap());
         materialEditState.getMaterialToEdit().setProjectId(materialEditState.getCurrentProject().getId());
         materialEditState.getMaterialToEdit().setNames(materialNameBean.getNames());
         materialEditState.getMaterialToEdit().setIndices(materialIndexBean.getIndices());
@@ -577,7 +577,7 @@ public class MaterialBean implements Serializable {
         return tissueController.isTissueRendered();
     }
 
-    public MaterialHazardController getHazardController() {
+    public MaterialHazardBuilder getHazardController() {
         return hazardController;
     }
 

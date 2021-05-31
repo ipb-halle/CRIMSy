@@ -38,7 +38,7 @@ public class MaterialEditState implements Serializable {
     private Material materialBeforeEdit;
     private Material materialToEdit;
     private Project defaultProject;
-    private MaterialHazardController hazardController;
+    private MaterialHazardBuilder hazardController;
 
     public MaterialEditState() {
         defaultProject = new Project(ProjectType.DUMMY_PROJECT, "bitte das Projekt auswählen");
@@ -50,7 +50,7 @@ public class MaterialEditState implements Serializable {
             Date currentVersiondate,
             Material materialBeforeEdit,
             Material materialToEdit,
-            MaterialHazardController hazards) {
+            MaterialHazardBuilder hazards) {
         this.currentProject = currentProject;
         this.currentVersiondate = currentVersiondate;
         this.materialBeforeEdit = materialBeforeEdit;
@@ -116,7 +116,7 @@ public class MaterialEditState implements Serializable {
         return materialToEdit.getHistory().isMostRecentVersion(currentVersiondate);
     }
 
-    public MaterialHazardController getHazardController() {
+    public MaterialHazardBuilder getHazardController() {
         return hazardController;
     }
 

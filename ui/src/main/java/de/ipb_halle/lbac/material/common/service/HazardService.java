@@ -85,6 +85,7 @@ public class HazardService implements Serializable {
         categories.add(HazardType.Category.CUSTOM);
         if (type == MaterialType.BIOMATERIAL) {
             categories.add(HazardType.Category.BSL);
+            categories.add(HazardType.Category.GMO);
         }
         if (type == MaterialType.COMPOSITION) {
             categories.add(HazardType.Category.GHS);
