@@ -76,10 +76,7 @@ public class HazardInformation implements Serializable {
 
     public HazardInformation copy() {
         HazardInformation copy = new HazardInformation();
-        Map<HazardType, String> copiedHazards = new HashMap<>();
-        for (HazardType hazard : hazards.keySet()) {
-            copiedHazards.put(hazard, hazards.get(hazard));
-        }
+        Map<HazardType, String> copiedHazards = new HashMap<>(hazards);
         copy.setHazards(copiedHazards);
         return copy;
     }
