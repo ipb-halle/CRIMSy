@@ -218,13 +218,23 @@ public class TaxonomyTreeController implements Serializable {
     }
 
     /**
-     * Loads all taxonomies from the database and selects a taxonomy if there is
-     * one and expands all taxonomies which were expanded before
+     * Loads  taxonomies from the database and selects a taxonomy if there is
+     * one and expands all taxonomies which were expanded before. 
+     * @param t
      */
     public final void reloadTreeNode(Taxonomy t) {
         try {
             shownTaxonomies = loadShownTaxos();
             addAbsentTaxo(t);
+            for(Taxonomy ht:t.getTaxHierachy()){
+                List<Taxonomy> childrenOfHierEntry=taxonomyService.loadDirectChildrenOf(ht.getId());
+                List<Taxonomy> grandChildrenOfHierEntry=new ArrayList<>();
+                for(Taxonomy ce:childrenOfHierEntry){
+                    grandChildrenOfHierEntry.addAll(taxonomyService.loadDirectChildrenOf(ce.getId()));
+                }
+                addAbsentTaxos(childrenOfHierEntry);
+                addAbsentTaxos(grandChildrenOfHierEntry);
+            }
             addAbsentTaxos(t.getTaxHierachy());
             reorganizeTaxonomyTree();
 
