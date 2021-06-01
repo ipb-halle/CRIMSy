@@ -193,7 +193,7 @@ public class MaterialBean implements Serializable {
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
-            materialNameBean.getNames().addAll(m.getNames());
+            materialNameBean.getNames().addAll(m.getCopiedNames());
             materialIndexBean.getIndices().addAll(m.getIndices());
             if (m.getType() == MaterialType.STRUCTURE) {
                 Structure struc = (Structure) m;
