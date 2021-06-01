@@ -45,13 +45,13 @@ public class TaxonomySelectionController implements Serializable {
             Taxonomy taxonomyOfMaterial) {
         this.tissueService = tissueService;
         treeController = new TaxonomyTreeController(
-                selectedTaxonomy,
+                taxonomyOfMaterial,
                 taxonomyService,
                 new SimpleTaxonomyLevelController(taxonomyService.loadTaxonomyLevel()));
-
+       
         treeController.selectTaxonomy(taxonomyOfMaterial);
         treeController.initSelectionAndExpanseState();
-
+        selectedTaxonomy=treeController.selectedTaxonomy;
     }
 
     public TaxonomyTreeController getTreeController() {

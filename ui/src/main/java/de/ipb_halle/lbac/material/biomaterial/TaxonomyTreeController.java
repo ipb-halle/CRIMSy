@@ -64,6 +64,22 @@ public class TaxonomyTreeController implements Serializable {
         reloadTreeNode();
     }
 
+    /**
+     *
+     * @param selectedTaxonomy
+     * @param taxonomyService
+     * @param levelController
+     */
+    public TaxonomyTreeController(
+            Taxonomy selectedTaxonomy,
+            TaxonomyService taxonomyService,
+            TaxonomyLevelController levelController) {
+        this.idOfSelectedTaxonomy = selectedTaxonomy.getId();
+        this.taxonomyService = taxonomyService;
+        this.levelController = levelController;
+        reloadTreeNode(selectedTaxonomy);
+    }
+
     public void addTaxonomy(Taxonomy taxo) {
         List<Taxonomy> children = taxonomyService.loadDirectChildrenOf(taxo.getId());
         List<Taxonomy> grandChildren = new ArrayList<>();
@@ -164,9 +180,9 @@ public class TaxonomyTreeController implements Serializable {
      */
     public void initialise() {
         expandedTreeNodes.clear();
-        idOfSelectedTaxonomy=null;
+        idOfSelectedTaxonomy = null;
         selectedTaxonomy = null;
-        taxonomyTree=null;
+        taxonomyTree = null;
         reloadTreeNode();
         setSelectedTaxonomy(taxonomyTree.getChildren().get(0));
     }
@@ -194,6 +210,22 @@ public class TaxonomyTreeController implements Serializable {
     public final void reloadTreeNode() {
         try {
             shownTaxonomies = loadShownTaxos();
+            reorganizeTaxonomyTree();
+
+        } catch (Exception e) {
+            logger.error(e);
+        }
+    }
+
+    /**
+     * Loads all taxonomies from the database and selects a taxonomy if there is
+     * one and expands all taxonomies which were expanded before
+     */
+    public final void reloadTreeNode(Taxonomy t) {
+        try {
+            shownTaxonomies = loadShownTaxos();
+            addAbsentTaxo(t);
+            addAbsentTaxos(t.getTaxHierachy());
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {

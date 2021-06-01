@@ -41,6 +41,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
@@ -49,7 +50,8 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.stream.Stream;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.behavior.BehaviorBase;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -59,6 +61,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.primefaces.component.contextmenu.ContextMenu.PropertyKeys.event;
+import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.TreeNode;
 
 /**
  *
@@ -77,6 +83,8 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private ProjectService projectService;
+
+    private TreeNode nodeToOperateOn;
 
     MateriaBeanMock instance;
     CreationTools creationTools;
@@ -376,6 +384,30 @@ public class MaterialBeanTest extends TestBase {
         //Check History of storage conditions
     }
 
+    @Test
+    public void test006_editTaxonomyOfBioMaterial() {
+
+        ACList publicAcl = GlobalAdmissionContext.getPublicReadACL();
+        cleanMaterialsFromDB();
+        createTaxonomyTreeInDB(GlobalAdmissionContext.getPublicReadACL().getId(), publicUser.getId());
+        Taxonomy mushromTaxo = taxoService.loadTaxonomyById(2);
+        material = creationTools.createBioMaterial(project, "BioMat-001", mushromTaxo, null);
+        materialService.saveMaterialToDB(material, publicAcl.getId(), new HashMap<>(), publicUser);
+
+        instance.startMaterialEdit(material);
+        instance.getTaxonomyController().onTaxonomyExpand(createExpandEvent("Pilze_de"));
+        instance.getTaxonomyController().onTaxonomyExpand(createExpandEvent("Agaricomycetes_de"));
+        instance.getTaxonomyController().onTaxonomySelect(createSelectEvent("Champignonartige_de"));
+
+        instance.actionSaveMaterial();
+
+        BioMaterial bioMaterial = (BioMaterial)materialService.loadMaterialById(material.getId());
+        Assert.assertEquals(4, bioMaterial.getTaxonomy().getId());
+        
+        instance.startMaterialEdit(bioMaterial);
+        int i=0;
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
@@ -416,6 +448,42 @@ public class MaterialBeanTest extends TestBase {
             }
         }
         return false;
+    }
+
+    private NodeExpandEvent createExpandEvent(String nameOfTaxToSelect) {
+        nodeToOperateOn = null;
+        selectTaxonomyFromTree(nameOfTaxToSelect, instance.getTaxonomyController().getTreeController().getTaxonomyTree());
+        if (nodeToOperateOn == null) {
+            throw new RuntimeException("Could not find " + nameOfTaxToSelect + " in tree");
+        }
+        return new NodeExpandEvent(
+                new UIViewRoot(),
+                new BehaviorBase(),
+                nodeToOperateOn
+        );
+    }
+
+    private void selectTaxonomyFromTree(String name, TreeNode tree) {
+        Taxonomy taxo = (Taxonomy) tree.getData();
+        if (taxo.getFirstName().equals(name)) {
+            nodeToOperateOn = tree;
+        }
+        for (TreeNode n : tree.getChildren()) {
+            selectTaxonomyFromTree(name, n);
+        }
+    }
+
+    private NodeSelectEvent createSelectEvent(String nameOfTaxToSelect) {
+        nodeToOperateOn = null;
+        selectTaxonomyFromTree(nameOfTaxToSelect, instance.getTaxonomyController().getTreeController().getTaxonomyTree());
+        if (nodeToOperateOn == null) {
+            throw new RuntimeException("Could not find " + nameOfTaxToSelect + " in tree");
+        }
+        return new NodeSelectEvent(
+                new UIViewRoot(),
+                new BehaviorBase(),
+                nodeToOperateOn
+        );
     }
 
 }
