@@ -100,7 +100,7 @@ public class MaterialHazardBuilder {
         }
         possibleBioSavetyLevels.add(getLocalizedBioSavetyLabel(0));
 
-        this.bioSavetyLevel = possibleBioSavetyLevels.get(possibleBioSavetyLevels.size()-1);
+        this.bioSavetyLevel = possibleBioSavetyLevels.get(possibleBioSavetyLevels.size() - 1);
 
         for (int i = 0; i < BSL_IDS.length; i++) {
             if (hazards.keySet().contains(hazardService.getHazardById(BSL_IDS[i]))) {
@@ -157,8 +157,7 @@ public class MaterialHazardBuilder {
         } else if (hazard.getId() == GMO_STATEMENT_ID) {
             gmo = true;
         } else {
-            ArrayList<HazardType> newHazards = Arrays.stream(selectedHazards).collect(Collectors
-                    .toCollection(ArrayList::new));
+            ArrayList<HazardType> newHazards = new ArrayList<>(Arrays.asList(selectedHazards));
             newHazards.add(hazard);
             selectedHazards = newHazards.stream().toArray(HazardType[]::new);
         }

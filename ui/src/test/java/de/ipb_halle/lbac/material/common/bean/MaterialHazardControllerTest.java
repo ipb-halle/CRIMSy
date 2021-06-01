@@ -177,26 +177,26 @@ public class MaterialHazardControllerTest extends TestBase {
         Map<HazardType, String> hazards = controller.buildHazardsMap();
         Assert.assertEquals(0, hazards.size());
         //set level 0
-        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(0));
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(4));
         hazards = controller.buildHazardsMap();
         Assert.assertEquals(0, hazards.size());
         // Set level 1
-        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(1));
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(0));
         hazards = controller.buildHazardsMap();
         Assert.assertEquals(1, hazards.size());
         hazards.keySet().iterator().next().equals(hazardService.getHazardById(12));
         // Set level 2
-        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(2));
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(1));
         hazards = controller.buildHazardsMap();
         Assert.assertEquals(1, hazards.size());
         hazards.keySet().iterator().next().equals(hazardService.getHazardById(13));
         // Set level 3
-        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(3));
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(2));
         hazards = controller.buildHazardsMap();
         Assert.assertEquals(1, hazards.size());
         hazards.keySet().iterator().next().equals(hazardService.getHazardById(14));
         // Set level 4
-        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(4));
+        controller.setBioSavetyLevel(controller.getPossibleBioSavetyLevels().get(3));
         hazards = controller.buildHazardsMap();
         Assert.assertEquals(1, hazards.size());
         hazards.keySet().iterator().next().equals(hazardService.getHazardById(15));
