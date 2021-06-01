@@ -134,127 +134,128 @@ limitations under the License.
                             </b:column>
                         </b:row>
 
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column
-                                span="4"
-                                styleClass="containerEditLabel">
-                                <h:outputText 
-                                    rendered="#{containerEditBean.isDimensionVisible()}"
-                                    value="#{msgs.container_edit_label_size}"/>
-                            </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="containerFilterRow"
-                            id="sizeRowId">
-                            <b:column 
-                                span="1"
-                                id="widthcolId">
-                                <b:inputText
-                                    disabled="#{!containerEditBean.isEditable()}"
-                                    rendered="#{containerEditBean.isDimensionVisible()}"
-                                    id="width"
-                                    value="#{containerEditBean.containerWidth}"
-                                    styleClass="containerEditDimesionField"
-                                    label="#{msgs.container_edit_label_size_width}">
-                                    <f:converter converterId="InputConverter" />
-                                </b:inputText>
-                            </b:column>
-                            <b:column
-                                id="heightcolId"
-                                offset="1"
-                                span="1"
-                                >
-                                <b:inputText
-                                    disabled="#{!containerEditBean.isEditable()}"
-                                    rendered="#{containerEditBean.isDimensionVisible()}"
-                                    id="height"
-                                    value="#{containerEditBean.containerHeight}"
-                                    styleClass="containerEditDimesionField"
-                                    label="#{msgs.container_edit_label_size_height}">
-                                    <f:converter converterId="InputConverter" />
-                                </b:inputText>
-                            </b:column>
-                            <b:column
-                                id="zerocolId"
-                                offset="2"
-                                span="1"
-                                >
-                                <b:switch
-                                    disabled="#{!containerEditBean.isEditable()}"
-                                    rendered="#{containerEditBean.isDimensionVisible()}"
-                                    id="zero"
-                                    value="#{containerEditBean.containerZeroBased}"
-                                    onText="0"
-                                    offText="1"
-                                    tooltip="#{msgs.container_edit_zero_tooltip}"
-                                    styleClass="containerEditDimesionField"
-                                    label="#{msgs.container_edit_label_zero}">
-                                </b:switch>
-                            </b:column>
-                            <b:column
-                                id="swapcolId"
-                                offset="3"
-                                span="1"
-                                >
-                                <b:switch 
-                                    disabled="#{!containerEditBean.isEditable()}"
-                                    rendered="#{containerEditBean.isDimensionVisible()}"
-                                    id="swap"
-                                    value="#{containerEditBean.containerSwapDimensions}"
-                                    onText="#{msgs.container_edit_swap_cols}"
-                                    offText="#{msgs.container_edit_swap_rows}"
-                                    tooltip="#{msgs.container_edit_swap_tooltip}"
-                                    styleClass="containerEditDimesionField"
-                                    label="#{msgs.container_edit_label_swap}">
-                                </b:switch>
-                            </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column span="4"
-                                      rendered="#{containerEditBean.isGmoSafetyLevelVisible()}"
-                                      styleClass="containerEditLabel">
-                                <h:outputText 
-                                    value="#{msgs.container_edit_label_gmosafetylevel}"/>
-                            </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column span="4"
-                                      >
-                                <b:selectOneMenu 
-                                    value="#{containerEditBean.gmoSafetyLevel}" 
-                                    styleClass="containerEditInputfield"
-                                    rendered="#{containerEditBean.isGmoSafetyLevelVisible()}">
-                                    <f:selectItems
-                                        value="#{containerEditBean.getGmoSafetyLevels()}"/>
-                                </b:selectOneMenu>
-                            </b:column>
-                        </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column
-                                span="4" 
-                                rendered="#{containerEditBean.isGmoSafetyLevelVisible()}"
-                                styleClass="containerEditLabel">
-                                <h:outputText 
-                                    value="#{msgs.container_edit_label_firearea}"/>
-                            </b:column>
-                        </b:row>
+                        <!-- Dimension settings for containers (not rendered for rooms) -->
+                        <h:panelGroup id="containerDimensionsId" styleClass="containerFilterRow">
+                            <ui:fragment rendered="#{containerEditBean.isDimensionVisible()}">
+                                <b:row>
+                                    <b:column
+                                        span="4"
+                                        styleClass="containerEditLabel">
+                                        <h:outputText
+                                            value="#{msgs.container_edit_label_size}"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row
+                                    id="sizeRowId">
+                                    <b:column 
+                                        span="1"
+                                        id="widthcolId">
+                                        <b:inputText
+                                            disabled="#{!containerEditBean.isEditable()}"
+                                            id="width"
+                                            value="#{containerEditBean.containerWidth}"
+                                            styleClass="containerEditDimesionField"
+                                            label="#{msgs.container_edit_label_size_width}">
+                                            <f:converter converterId="InputConverter" />
+                                        </b:inputText>
+                                    </b:column>
+                                    <b:column
+                                        id="heightcolId"
+                                        offset="1"
+                                        span="1">
+                                        <b:inputText
+                                            disabled="#{!containerEditBean.isEditable()}"
+                                            id="height"
+                                            value="#{containerEditBean.containerHeight}"
+                                            styleClass="containerEditDimesionField"
+                                            label="#{msgs.container_edit_label_size_height}">
+                                            <f:converter converterId="InputConverter" />
+                                        </b:inputText>
+                                    </b:column>
+                                    <b:column
+                                        id="zerocolId"
+                                        offset="2"
+                                        span="1">
+                                        <b:switch
+                                            disabled="#{!containerEditBean.isEditable()}"
+                                            id="zero"
+                                            value="#{containerEditBean.containerZeroBased}"
+                                            onText="0"
+                                            offText="1"
+                                            tooltip="#{msgs.container_edit_zero_tooltip}"
+                                            styleClass="containerEditDimesionField"
+                                            label="#{msgs.container_edit_label_zero}">
+                                        </b:switch>
+                                    </b:column>
+                                    <b:column
+                                        id="swapcolId"
+                                        offset="3"
+                                        span="1">
+                                        <b:switch 
+                                            disabled="#{!containerEditBean.isEditable()}"
+                                            id="swap"
+                                            value="#{containerEditBean.containerSwapDimensions}"
+                                            onText="#{msgs.container_edit_swap_cols}"
+                                            offText="#{msgs.container_edit_swap_rows}"
+                                            tooltip="#{msgs.container_edit_swap_tooltip}"
+                                            styleClass="containerEditDimesionField"
+                                            label="#{msgs.container_edit_label_swap}">
+                                        </b:switch>
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:alert
+                                        severity="warning"
+                                        title="#{msgs.container_dimensions_warning_title}"
+                                        value="#{msgs.container_dimensions_warning_text}" />
+                                </b:row>
+                            </ui:fragment>
+                        </h:panelGroup>
 
-                        <b:row
-                            styleClass="containerFilterRow">
-                            <b:column 
-                                span="4"
-                                rendered="#{containerEditBean.isGmoSafetyLevelVisible()}">
-                                <b:inputText
-                                    value="#{containerEditBean.fireArea}"
-                                    styleClass="containerEditInputfield">
-                                    <f:converter converterId="InputConverter" />
-                                </b:inputText>
-                            </b:column>
-                        </b:row>
+                        <!-- Only for rooms: GMO safety level and fire area -->
+                        <h:panelGroup id="containerGmoSafetyLevelId" styleClass="containerFilterRow">
+                            <ui:fragment rendered="#{containerEditBean.isGmoSafetyLevelVisible()}">
+                                <b:row
+                                    styleClass="containerFilterRow">
+                                    <b:column span="4"
+                                              styleClass="containerEditLabel">
+                                        <h:outputText 
+                                            value="#{msgs.container_edit_label_gmosafetylevel}"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row
+                                    styleClass="containerFilterRow">
+                                    <b:column span="4">
+                                        <b:selectOneMenu 
+                                            value="#{containerEditBean.gmoSafetyLevel}" 
+                                            styleClass="containerEditInputfield">
+                                            <f:selectItems
+                                                value="#{containerEditBean.getGmoSafetyLevels()}"/>
+                                        </b:selectOneMenu>
+                                    </b:column>
+                                </b:row>
+                                <b:row
+                                    styleClass="containerFilterRow">
+                                    <b:column
+                                        span="4"
+                                        styleClass="containerEditLabel">
+                                        <h:outputText 
+                                            value="#{msgs.container_edit_label_firearea}"/>
+                                    </b:column>
+                                </b:row>
+
+                                <b:row
+                                    styleClass="containerFilterRow">
+                                    <b:column span="4">
+                                        <b:inputText
+                                            value="#{containerEditBean.fireArea}"
+                                            styleClass="containerEditInputfield">
+                                            <f:converter converterId="InputConverter" />
+                                        </b:inputText>
+                                    </b:column>
+                                </b:row>
+                            </ui:fragment>
+                        </h:panelGroup>
 
                         <b:row styleClass="containerEditButtonRowClass">
                             <p:commandButton
