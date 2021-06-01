@@ -119,12 +119,9 @@ public class StorageInformationBuilder {
      */
     public void addStorageCondition(StorageCondition c) {
         StorageCondition[] conds = getSelectedConditions();
-        StorageCondition[] condsNew = new StorageCondition[conds.length + 1];
-        for (int i = 0; i < conds.length; i++) {
-            condsNew[i] = conds[i];
-        }
-        condsNew[condsNew.length - 1] = c;
-        setSelectedConditions(condsNew);
+        ArrayList<StorageCondition> currentConditions = new ArrayList<>(Arrays.asList(conds));
+        currentConditions.add(c);
+        setSelectedConditions(currentConditions.stream().toArray(StorageCondition[]::new));
     }
 
     public StorageClass getStorageClassById(Integer id) {
@@ -188,15 +185,9 @@ public class StorageInformationBuilder {
      */
     public void removeStorageCondition(StorageCondition c) {
         StorageCondition[] conds = getSelectedConditions();
-        StorageCondition[] condsNew = new StorageCondition[conds.length - 1];
-        int j = 0;
-        for (int i = 0; i < conds.length; i++) {
-            if (conds[i] != c) {
-                condsNew[j] = conds[i];
-                j++;
-            }
-        }
-        setSelectedConditions(condsNew);
+        ArrayList<StorageCondition> currentConditions = new ArrayList<>(Arrays.asList(conds));
+        currentConditions.remove(c);
+        setSelectedConditions(currentConditions.stream().toArray(StorageCondition[]::new));
     }
 
     public String getLocalizedConditionName(StorageCondition con) {
