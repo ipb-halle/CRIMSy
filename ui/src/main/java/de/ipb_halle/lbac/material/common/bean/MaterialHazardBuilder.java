@@ -323,7 +323,7 @@ public class MaterialHazardBuilder {
         }
         //Put selected savety level in hazards
         for (int i = 0; i < BSL_IDS.length; i++) {
-            if (bioSavetyLevel.equals(possibleBioSavetyLevels.get(i + 1))) {
+            if (bioSavetyLevel.equals(possibleBioSavetyLevels.get(i))) {
                 hazards.put(hazardService.getHazardById(BSL_IDS[i]), null);
             }
         }

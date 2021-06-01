@@ -224,7 +224,7 @@ public class MaterialBeanTest extends TestBase {
 
         Material loadedBioMat = materialService.loadMaterialById(bioMat.getId());
         Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
-        Assert.assertEquals(12, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
+        Assert.assertEquals(13, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
 
         instance.startMaterialEdit(loadedBioMat);
         instance.getHazardController().setBioSavetyLevel(instance.getHazardController().getPossibleBioSavetyLevels().get(2));
@@ -234,7 +234,7 @@ public class MaterialBeanTest extends TestBase {
         instance.getMaterialEditState().setMaterialBeforeEdit(loadedBioMat);
         instance.getMaterialEditState().setCurrentVersiondate(loadedBioMat.getHistory().getChanges().keySet().stream().reduce((first, second) -> second).orElse(null));
         Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
-        Assert.assertEquals(13, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
+        Assert.assertEquals(14, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
 
         instance.switchOneVersionBack();
 
