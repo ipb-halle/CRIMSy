@@ -25,6 +25,7 @@ limitations under the License.
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <p:dialog 
+            id="dlgcontainerEditId"
             closable="false"
             widgetVar="dlgcontainerEdit"
             modal="true" 
@@ -60,12 +61,10 @@ limitations under the License.
                                         value="#{containerEditBean.getContainerTypesWithRankGreaterZero()}" 
                                         noSelectionValue="true"
                                         itemLabel="#{type.getLocalizedName()}"/>
-
                                 </b:selectOneMenu>
                             </b:column>
                         </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
+                        <b:row>
                             <b:column
                                 span="4"
                                 styleClass="containerEditLabel">
@@ -73,11 +72,9 @@ limitations under the License.
                                     value="#{msgs.container_edit_label_label}"/>
                             </b:column>
                         </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
+                        <b:row>
                             <b:column span="4">
                                 <b:inputText
-                                    ajax="true"
                                     id="editNameInputField"
                                     value="#{containerEditBean.containerName}"
                                     styleClass="containerEditInputfield nameInputFieldClass">
@@ -85,8 +82,8 @@ limitations under the License.
                                 </b:inputText>
                             </b:column>
                         </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
+
+                        <b:row>
                             <b:column
                                 span="4"
                                 styleClass="containerEditLabel">
@@ -94,9 +91,7 @@ limitations under the License.
                                     value="#{msgs.container_edit_label_project}"/>
                             </b:column>
                         </b:row>
-
-                        <b:row
-                            styleClass="containerFilterRow">
+                        <b:row>
                             <b:column span="4">
                                 <p:autoComplete value="#{containerEditBean.preferredProjectName}"
                                                 maxResults="10"
@@ -105,6 +100,7 @@ limitations under the License.
                                 </p:autoComplete>
                             </b:column>
                         </b:row>
+
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
@@ -115,8 +111,7 @@ limitations under the License.
                                     />
                             </b:column>
                         </b:row>
-                        <b:row
-                            styleClass="containerFilterRow">
+                        <b:row>
                             <b:column span="4">
                                 <p:autoComplete value="#{containerEditBean.containerLocation}"
                                                 maxResults="10"
@@ -127,9 +122,6 @@ limitations under the License.
                                                 itemLabel="#{c.getAutoCompleteString()}"
                                                 itemValue="#{c}"
                                                 styleClass="containerEditInputfield">
-                                    <p:ajax event="itemSelect"
-                                            listener="#{containerSearchMaskBean.handleSelect}"
-                                            update="@form" />
                                 </p:autoComplete>
                             </b:column>
                         </b:row>
@@ -262,9 +254,9 @@ limitations under the License.
                                 id="CancelButtonId"
                                 styleClass="containerEditButtonLeft containerEditButton"
                                 action="#{containerOverviewBean.actionCancel()}"
-                                immediate="true"
                                 value="#{msgs.container_button_cancel}"
                                 ajax="true"
+                                process="@this"
                                 update="@(.topLevelRowForm)"
                                 oncomplete="PF('dlgcontainerEdit').hide();"/>
                             <p:commandButton

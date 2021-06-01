@@ -123,9 +123,4 @@ public class ContainerSearchMaskBean implements Serializable {
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
     }
-
-    public void handleSelect(SelectEvent event) {
-
-    }
-
 }
