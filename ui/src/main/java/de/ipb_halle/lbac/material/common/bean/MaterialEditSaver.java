@@ -251,7 +251,6 @@ public class MaterialEditSaver implements Serializable {
             Molecule oldMol = strucDiff.getMoleculeId_old();
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
-                    int id = structureSaver.saveMolecule(newMol.getStructureModel());
                     newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel()));
                 }
             }
