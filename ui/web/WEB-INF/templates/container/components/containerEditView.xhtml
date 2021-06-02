@@ -40,13 +40,13 @@ limitations under the License.
                         id="containerEditId"
                         styleClass="containerEdit">
 
+                        <!-- Container type: room, freezer, etc. -->
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column span="4" styleClass="containerEditLabel">
                                 <h:outputText value="#{msgs.container_edit_label_type}"/>
                             </b:column>
                         </b:row>
-
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column span="4">
@@ -64,6 +64,8 @@ limitations under the License.
                                 </b:selectOneMenu>
                             </b:column>
                         </b:row>
+
+                        <!-- Container name (aka "label") -->
                         <b:row>
                             <b:column
                                 span="4"
@@ -83,6 +85,7 @@ limitations under the License.
                             </b:column>
                         </b:row>
 
+                        <!-- Project name (autocomplete) -->
                         <b:row>
                             <b:column
                                 span="4"
@@ -101,6 +104,7 @@ limitations under the License.
                             </b:column>
                         </b:row>
 
+                        <!-- Location (autocomplete) -->
                         <b:row
                             styleClass="containerFilterRow">
                             <b:column
@@ -207,6 +211,7 @@ limitations under the License.
                         <!-- Only for rooms: GMO safety level and fire area -->
                         <h:panelGroup id="containerGmoSafetyLevelId" styleClass="containerFilterRow">
                             <ui:fragment rendered="#{containerEditBean.isGmoSafetyLevelVisible()}">
+                                <!-- GMO safety level -->
                                 <b:row
                                     styleClass="containerFilterRow">
                                     <b:column span="4"
@@ -226,6 +231,8 @@ limitations under the License.
                                         </b:selectOneMenu>
                                     </b:column>
                                 </b:row>
+
+                                <!-- Fire area -->
                                 <b:row
                                     styleClass="containerFilterRow">
                                     <b:column

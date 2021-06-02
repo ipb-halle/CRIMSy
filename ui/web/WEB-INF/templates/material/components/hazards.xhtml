@@ -40,7 +40,8 @@
                         disabled="#{!materialBean.hazardController.isHazardEditable()}" 
                         value="#{materialBean.hazardController.selectedHazards}" 
                         converter="HazardConverter"
-                        layout="custom">
+                        layout="custom"
+                        binding="#{ghsHazardsSelectManyCheckbox}">
                         <f:selectItems 
                             value="#{materialBean.hazardController.getHazardsOfType('GHS')}"
                             var="hazard" 
@@ -52,7 +53,7 @@
                     To get an image into the checkbox it must put in another
                     component a be linked to the item in the 
                     <p:selectManyCheckbox> component
-                    see: https://www.primefaces.org/showcase/ui/input/manyCheckbox.xhtml?jfwid=13083
+                    see: https://www.primefaces.org/showcase/ui/input/manyCheckbox.xhtml
                     -->
                     <p:panelGrid 
                         columns="12"
@@ -61,15 +62,39 @@
                             varStatus="status"
                             var="hazard"
                             items="#{materialBean.hazardController.getHazardsOfType('GHS')}">
-                            <p:checkbox  
+                            <p:checkbox
                                 for="ghsHazardsId"
                                 itemIndex="#{status.index}"
                                 disabled="#{!materialBean.hazardController.isHazardEditable()}"/>
-                            <p:outputLabel 
-                                for="@previous" 
-                                value="#{materialBean.hazardController.getLocalizedName(hazard)}"/>
-                            <b:image 
-                                value="#{materialBean.hazardController.getImageLocation(hazard)}"/>                                
+                            <!-- There is a bug in PrimeFaces 6.2 that causes p:outputLabel to reference
+                                 the wrong target id in the previous p:selectManyCheckbox component. This 
+                                 can also be observed in the PF showcase for this version and was solved
+                                 in a later version. To be specific: Instead of the <input type="checkbox">
+                                 it targets a parent <div>.
+                            -->
+							<!-- This is broken:
+                                <p:outputLabel 
+                                    for="@previous" 
+                                    value="#{materialBean.hazardController.getLocalizedName(hazard)}"/>
+                            -->
+                            <!-- This is the workaround:
+                                 Note the binding attribute for p:selectManyCheckbox
+                                 (Kudos to BalusC, https://stackoverflow.com/a/12127017)
+                            -->
+                            <h:panelGroup>
+                                <label
+                                    for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
+                                    <h:outputText 
+                                        value="#{materialBean.hazardController.getLocalizedName(hazard)}"/>
+                                </label>
+                            </h:panelGroup>
+                            <h:panelGroup>
+                                <label
+                                    for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
+                                    <b:image 
+                                        value="#{materialBean.hazardController.getImageLocation(hazard)}"/>
+                                </label>
+                            </h:panelGroup>                                
                         </c:forEach>
                     </p:panelGrid>
 
