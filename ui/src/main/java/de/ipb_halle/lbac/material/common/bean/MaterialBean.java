@@ -58,6 +58,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -229,8 +230,7 @@ public class MaterialBean implements Serializable {
             );
 
         } catch (Exception e) {
-            logger.info("Error in Line " + e.getStackTrace()[0].getLineNumber());
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -254,7 +254,7 @@ public class MaterialBean implements Serializable {
             }
         } catch (Exception e) {
             logger.info("Error in getMaterialTypes(): " + materialEditState.getCurrentProject().getName());
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return new ArrayList<>();
     }
@@ -395,7 +395,7 @@ public class MaterialBean implements Serializable {
         try {
             biomaterial.setTaxonomy((Taxonomy) taxonomyController.getSelectedTaxonomy().getData());
         } catch (Exception e) {
-            logger.info("Could not set taxonomy to biomaterial");
+            logger.info("Could not set taxonomy to biomaterial: "+ExceptionUtils.getStackTrace(e));
         }
     }
 

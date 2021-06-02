@@ -141,6 +141,7 @@ public class ItemService {
         Query q = createQueryWithParams(sqlBuilder, sql, ItemEntity.class);
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
+        @SuppressWarnings("unchecked")
         List<ItemEntity> entities = q.getResultList();
         for (ItemEntity ie : entities) {
             Item item = createItemFromEntity(ie, request.getUser());
@@ -242,6 +243,7 @@ public class ItemService {
         return new Solvent(id, solventName, solventName);
     }
 
+    @SuppressWarnings("unchecked")
     public List<Solvent> loadSolvents() {
         List<Solvent> solvents = new ArrayList<>();
         Query q = em.createNativeQuery("SELECT id,name FROM solvents");

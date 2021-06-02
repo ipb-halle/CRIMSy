@@ -46,10 +46,11 @@ public class SqlInsertBuilder {
 
     /**
      * constructor
+     * @param graph
      */
     public SqlInsertBuilder(EntityGraph graph) {
         this.entityGraph = graph;
-        this.allFields = new ArrayList(this.entityGraph.getAllFields());
+        this.allFields = new ArrayList<>(this.entityGraph.getAllFields());
         this.insertSql = insert();
         
     }

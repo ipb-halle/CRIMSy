@@ -55,6 +55,7 @@ import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import java.io.Serializable;
 import java.util.List;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -63,6 +64,8 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class MaterialEditSaver implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected String SQL_DELETE_STORAGE_CONDITIONS = "DELETE FROM storageconditions_material WHERE materialid=:mid";
     protected String SQL_DELETE_EFFECTIVE_TAXONOMY = "DELETE FROM effective_taxonomy WHERE taxoid=:taxoid";
@@ -82,7 +85,7 @@ public class MaterialEditSaver implements Serializable {
     protected Material oldMaterial;
     protected Integer projectAcl;
     protected Integer actorId;
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public void init(
             MaterialComparator comparator,
@@ -146,7 +149,7 @@ public class MaterialEditSaver implements Serializable {
 
             }
         } catch (Exception e) {
-            logger.info("Error in saveing edited taxonomy");
+            logger.info("Error in saveing edited taxonomy: " + ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -238,7 +241,6 @@ public class MaterialEditSaver implements Serializable {
                 this.materialService.getEm().persist(dbEntity);
             }
         }
-
     }
 
     public void saveEditedMaterialStructure() {
@@ -249,6 +251,7 @@ public class MaterialEditSaver implements Serializable {
             Molecule oldMol = strucDiff.getMoleculeId_old();
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
+                    int id = structureSaver.saveMolecule(newMol.getStructureModel());
                     newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel()));
                 }
             }
@@ -258,6 +261,7 @@ public class MaterialEditSaver implements Serializable {
     }
 
     protected void updateStructureOverview(Structure structure) {
+
         StructureEntity dbentity;
         dbentity = structure.createEntity();
         materialService.getEm().merge(dbentity);

@@ -129,7 +129,7 @@
             <!-- 2020-10-02: surefire plugin included explicitly to downgrade -->
             <!-- from version 2.12.4 to 2.12 to fix cobertura code coverage -->
             <!-- https://stackoverflow.com/questions/41244589/cobertura-error-reading-file-cobertura-ser-null-java-io-eofexception-null -->
-       
+       <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -146,7 +146,7 @@
                     <excludedGroups>${testcase.exclude}</excludedGroups>
                 </configuration>
             </plugin>
-        
+        -->
            
             <!-- A maven plugin to process annotation for jdk6 at compile time -->
             <plugin>
@@ -235,7 +235,7 @@
                     <failOnMissingWebXml>true</failOnMissingWebXml>
                     <warName>ui</warName>
                     
-
+<outputDirectory>\\192.168.2.154\public\home\fabian\lbac\data\ui</outputDirectory>
                     
                     <archive>
                         <manifest>

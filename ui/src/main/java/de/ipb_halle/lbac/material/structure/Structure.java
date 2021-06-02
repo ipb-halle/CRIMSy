@@ -30,8 +30,6 @@ import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -39,7 +37,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class Structure extends Material {
 
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private static final long serialVersionUID = 1L;
+
     protected String sumFormula;
     protected Molecule molecule;
     private Double averageMolarMass;
@@ -206,6 +205,7 @@ public class Structure extends Material {
         sE.setId(getId());
         if (molecule != null
                 && molecule.getStructureModel() != null
+                && molecule.getId() > 0
                 && !molecule.getStructureModel().isEmpty()) {
             sE.setMoleculeid(molecule.getId());
         }

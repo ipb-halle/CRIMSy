@@ -268,8 +268,8 @@ public class TaxonomyTreeController implements Serializable {
      * Reorders taxonomies by first its level and second by its names
      */
     protected void reorderTaxonomies() {
-        Comparator rankCom = Comparator.comparing((Taxonomy t) -> t.getLevel().getRank());
-        Comparator nameCom = Comparator.comparing((Taxonomy t) -> t.getFirstName());
+        Comparator<Taxonomy> rankCom = Comparator.comparing((Taxonomy t) -> t.getLevel().getRank());
+        Comparator<Taxonomy> nameCom = Comparator.comparing((Taxonomy t) -> t.getFirstName());
         shownTaxonomies.sort(rankCom.thenComparing(nameCom));
     }
 

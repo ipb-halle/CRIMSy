@@ -170,6 +170,7 @@ public class ProjectService implements Serializable {
         for (Value param : builder.getValueList()) {
             query.setParameter(param.getArgumentKey(), param.getValue());
         }
+        @SuppressWarnings("unchecked")
         List<ProjectEntity> entities = query.getResultList();
         for (ProjectEntity entity : entities) {
             result.addResult(loadDetailInfosOfProject(entity));

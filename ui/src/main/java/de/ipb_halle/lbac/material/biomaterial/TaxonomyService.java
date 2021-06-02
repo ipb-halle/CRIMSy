@@ -170,6 +170,7 @@ public class TaxonomyService implements Serializable {
         List<Taxonomy> results = new ArrayList<>();
         Query q = this.em.createNativeQuery(SQL_GET_DIRECT_CHILDREN);
         q.setParameter("taxoid", taxonomyId);
+        @SuppressWarnings("unchecked")
         List<Integer> a = (List) q.getResultList();
         for (Integer tid : a) {
             results.add(loadTaxonomyById(tid));

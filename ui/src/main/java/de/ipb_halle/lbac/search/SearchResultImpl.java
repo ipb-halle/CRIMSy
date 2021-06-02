@@ -81,6 +81,7 @@ public class SearchResultImpl implements SearchResult, Serializable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> List<T> getAllFoundObjects(Class T, Node n) {
         List<Searchable> netObjects = getAllFoundObjects(n);
         List<T> objectsOfType = new ArrayList<>();

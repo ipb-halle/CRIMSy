@@ -95,6 +95,8 @@ import org.apache.logging.log4j.Logger;
 @Stateless
 public class MaterialService implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private List<StorageClass> storageClasses = new ArrayList<>();
     private MaterialEntityGraphBuilder graphBuilder;
     protected StructureInformationSaver structureInformationSaver;
@@ -243,7 +245,8 @@ public class MaterialService implements Serializable {
             for (Value param : sqlBuilder.getValueList()) {
                 q.setParameter(param.getArgumentKey(), param.getValue());
             }
-            List<MaterialEntity> entities = q.getResultList();
+            @SuppressWarnings("unchecked")
+            List<MaterialEntity> entities =q.getResultList();
             for (MaterialEntity me : entities) {
                 Material material = loadMaterialById(me.getMaterialid());
                 result.addResult(material);
@@ -502,15 +505,25 @@ public class MaterialService implements Serializable {
         }
         editedMaterialSaver.init(comparator, diffs, newMaterial, oldMaterial,
                 projectAcl, actorId);
+        logger.info("1");
         editedMaterialSaver.saveEditedMaterialOverview();
+        logger.info("2");
         editedMaterialSaver.saveEditedMaterialIndices();
+        logger.info("3");
         if (newMaterial.getType() == MaterialType.STRUCTURE) {
+            logger.info("4");
             editedMaterialSaver.saveEditedMaterialStructure();
+            logger.info("5");
         }
+        logger.info("6");
         editedMaterialSaver.saveEditedMaterialHazards();
+        logger.info("7");
         editedMaterialSaver.saveEditedMaterialStorage();
+        logger.info("8");
         editedMaterialSaver.saveEditedTaxonomy();
+        logger.info("9");
         editedMaterialSaver.saveEditedBiomaterial();
+        logger.info("10");
     }
 
     /**
