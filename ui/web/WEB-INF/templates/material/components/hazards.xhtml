@@ -92,7 +92,7 @@
                                 <label
                                     for="#{ghsHazardsSelectManyCheckbox.clientId}:#{status.index}_clone">
                                     <b:image 
-                                        value="#{materialBean.hazardController.getImageLocation(hazard)}"/>
+                                        name="#{materialBean.hazardController.getImageLocation(hazard)}"/>
                                 </label>
                             </h:panelGroup>                                
                         </c:forEach>
@@ -135,7 +135,7 @@
                         value="#{materialBean.hazardController.getLocalizedRadioactiveLabel()}"/>
                     <b:image 
                         styleClass="radioactiveImage"
-                        value="/resources/img/hazards/R1.png"/>   
+                        name="#{materialBean.hazardController.radioactiveImageLocation}"/>   
                 </p:panel>
                 <p:panel
                     header="#{msgs.hazard_S_Label}"
@@ -168,7 +168,7 @@
                                 value="#{bsl}"/>
                             <b:image 
                                 styleClass="bioHazardImage"
-                                value="#{materialBean.hazardController.getImageLocationOfBls(status.index)}"/>   
+                                name="#{materialBean.hazardController.getImageLocationOfBls(status.index)}"/>   
                         </c:forEach>
                     </p:panelGrid>
 

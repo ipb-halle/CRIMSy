@@ -22,6 +22,8 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.util.resources.ResourceLocation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,7 +45,6 @@ public class MaterialHazardBuilder {
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private HazardService hazardService;
     private MaterialType materialType;
-    private String imageString = "/resources/img/hazards/%s.png";
     private HazardType[] selectedHazards;
     private String hStatements;
     private String pStatements;
@@ -190,7 +191,11 @@ public class MaterialHazardBuilder {
      * @return
      */
     public String getImageLocation(HazardType h) {
-        return String.format(imageString, h.getName());
+        return ResourceLocation.getHazardImageLocation(h);
+    }
+
+    public String getRadioactiveImageLocation() {
+        return getImageLocation(hazardService.getHazardById(16));
     }
 
     /**
@@ -353,10 +358,10 @@ public class MaterialHazardBuilder {
      */
     public String getImageLocationOfBls(Integer index) {
         if (index == 1 || index == 2 || index == 3) {
-            return String.format(imageString, "BIOHAZARD");
+            return ResourceLocation.getHazardImageLocation("BIOHAZARD");
         }
 
-        return String.format(imageString, "Empty");
+        return ResourceLocation.getHazardImageLocation("Empty");
     }
 
     public boolean isGmo() {

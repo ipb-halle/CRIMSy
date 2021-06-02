@@ -24,10 +24,12 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.resources.ResourceLocation;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.common.HazardType;
 import java.io.Serializable;
@@ -64,7 +66,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
     private final int HAZARD_RADIACTIVE_ID = 16;
-    private String hazardImageString = "/resources/img/hazards/%s.png";
     
     @Inject
     private ItemBean itemBean;
@@ -83,6 +84,9 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private HazardService hazardService;
 
     /**
      * Creates the tablecontroller and the controller for managing the search
@@ -212,7 +216,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         List<String> locations = new ArrayList<>();
         for (HazardType ht : m.getHazards().getHazards().keySet()) {
             if (ht.getCategory() == HazardType.Category.GHS) {
-                locations.add(String.format(hazardImageString, ht.getName()));
+                locations.add(ResourceLocation.getHazardImageLocation(ht.getName()));
             }
         }
         return locations;
@@ -236,4 +240,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         return false;
     }
     
+    public String getRadioactiveImageLocation() {
+        return ResourceLocation.getHazardImageLocation(hazardService.getHazardById(16));
+    }
 }

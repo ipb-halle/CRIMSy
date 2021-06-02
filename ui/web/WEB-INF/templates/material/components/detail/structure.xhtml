@@ -37,13 +37,13 @@
 
                         <b:image 
                             styleClass="hazardImage"
-                            value="#{hazardLocation}"
+                            name="#{hazardLocation}"
                             />  
                     </ui:repeat>
                     <b:image 
                         styleClass="hazardImage"
                         rendered="#{materialOverviewBean.isRadioactive(material)}"
-                        value="/resources/img/hazards/R1.png"
+                        name="#{materialOverviewBean.radioactiveImageLocation}"
                         />  
                 </b:row>
                 <b:row>

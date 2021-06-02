@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.util.resources.ResourceLocation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -46,7 +47,6 @@ public class LinkedDataAgent implements Serializable {
     private LinkedData linkedData;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
-    private String hazardImageLocation = "/resources/img/hazards/%s.png";
     private Material material;
 
     public LinkedData getLinkedData() {
@@ -92,7 +92,7 @@ public class LinkedDataAgent implements Serializable {
     }
 
     public String getImageIconOf(HazardType hazard) {
-        return String.format(hazardImageLocation, hazard.getName());
+        return ResourceLocation.getHazardImageLocation(hazard);
     }
 
     public List<String> getNamesOfMaterial(int maxNames) {

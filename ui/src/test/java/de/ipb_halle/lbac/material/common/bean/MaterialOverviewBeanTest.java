@@ -124,7 +124,15 @@ public class MaterialOverviewBeanTest extends TestBase {
         Assert.assertFalse(instance.isRadioactive(m));
         m.getHazards().getHazards().put(new HazardType(16, false, "R1", 3), null);
         Assert.assertTrue(instance.isRadioactive(m));
+    }
 
+    @Test
+    public void test003_getImageLocationOfHazards() {
+        Material m = materialService.loadMaterialById(material.getId());
+
+        Assert.assertEquals(2, instance.getImageLocationOfHazards(m).size());
+        Assert.assertTrue(instance.getImageLocationOfHazards(m).contains("img/hazards/GHS02.png"));
+        Assert.assertTrue(instance.getImageLocationOfHazards(m).contains("img/hazards/GHS08.png"));
     }
 
     @Deployment
