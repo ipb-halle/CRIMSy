@@ -32,7 +32,7 @@ import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.WebXmlImpl;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
 import de.ipb_halle.lbac.util.pref.PreferenceType;
-import de.ipb_halle.molecularfaces.MolPluginCore.PluginType;
+import de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType;
 
 /**
  * This bean manages the user preferences for the plugin types and provides

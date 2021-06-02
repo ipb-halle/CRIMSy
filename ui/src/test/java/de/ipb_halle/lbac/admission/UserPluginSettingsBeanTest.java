@@ -41,7 +41,7 @@ import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.util.WebXml;
 import de.ipb_halle.lbac.util.pref.PreferenceService;
-import de.ipb_halle.molecularfaces.MolPluginCore.PluginType;
+import de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType;
 
 @RunWith(Arquillian.class)
 public class UserPluginSettingsBeanTest extends TestBase {

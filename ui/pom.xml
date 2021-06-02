@@ -594,10 +594,12 @@
         <dependency>
             <groupId>de.ipb-halle</groupId>
             <artifactId>molecularfaces</artifactId>
-            <version>0.2.0</version>
+            <version>0.3.0</version>
         </dependency>
 
-        <!-- OWASP JSON sanitizer -->
+        <!-- The OWASP JSON sanitizer is used by the
+             JsonSanitizingConverter class for sanitizing
+             user input data. -->
         <dependency>
             <groupId>com.mikesamuel</groupId>
             <artifactId>json-sanitizer</artifactId>
