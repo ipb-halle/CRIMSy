@@ -17,13 +17,13 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,8 @@ public class TaxonomyTreeControllerTest {
 
     @Before
     public void init() {
-        controller = new TaxonomyTreeController(null, null, null);
+        controller = new TaxonomyTreeController(
+                new Taxonomy(0, new ArrayList<>(), new HazardInformation(), new StorageInformation(), new ArrayList<>(), new User(), new Date()), null, null);
     }
 
     @Test
