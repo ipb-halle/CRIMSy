@@ -109,6 +109,7 @@ public class ExperimentService implements Serializable {
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
 
+        @SuppressWarnings("unchecked")
         List<ExperimentEntity> entities = q.getResultList();
 
         for (ExperimentEntity e : entities) {

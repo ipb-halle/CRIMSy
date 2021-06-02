@@ -394,6 +394,7 @@ public class EntityGraph {
      * field
      * @param field the field
      */
+    @SuppressWarnings({"unchecked"})
     private void processColumn(List<Field> accessors, String parentFieldName, Field field) {
         String fieldName = parentFieldName.isEmpty()
                 ? field.getName()
@@ -401,6 +402,7 @@ public class EntityGraph {
 
         if (field.getAnnotation(EmbeddedId.class) != null) {
             Class<?> clazz = field.getType();
+            
             processFields(clazz, new ArrayList(accessors), fieldName, true);
             return;
         }
@@ -450,7 +452,7 @@ public class EntityGraph {
      */
     private void processFields(Class<?> clazz, List<Field> parentAccessors, String parentFieldName, boolean isIndex) {
         for (Field field : clazz.getDeclaredFields()) {
-            List<Field> accessors = new ArrayList(parentAccessors);
+            List<Field> accessors = new ArrayList<>(parentAccessors);
             accessors.add(field);
             if (isIndex) {
                 processId(accessors, parentFieldName, field);

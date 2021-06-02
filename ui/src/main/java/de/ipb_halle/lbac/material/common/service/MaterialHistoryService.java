@@ -209,6 +209,7 @@ public class MaterialHistoryService implements Serializable {
     }
 
     public void loadBioMaterialHistory(int materialId, MaterialHistory history) {
+        @SuppressWarnings("unchecked")
         List<BioMaterialHistoryEntity> dbEntities = materialService.
                 getEm().
                 createNativeQuery(SQL_GET_BIOMATERIAL_HISTORY, BioMaterialHistoryEntity.class)

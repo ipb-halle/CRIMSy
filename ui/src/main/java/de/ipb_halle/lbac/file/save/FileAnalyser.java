@@ -52,6 +52,7 @@ public class FileAnalyser {
     }
 
     public String getLanguage() {
+        @SuppressWarnings("unchecked")
         SortedSet<Language> languages = (SortedSet) this.parseTool
                 .getFilterData()
                 .getValue(LanguageDetectorFilter.LANGUAGE_PROP);
@@ -89,6 +90,7 @@ public class FileAnalyser {
 
     public List<StemmedWordOrigin> getWordOrigins() {
         List<StemmedWordOrigin> wordOrigins = new ArrayList<>();
+        @SuppressWarnings("unchecked")
         Map<String, Set<String>> map = (Map) parseTool.getFilterData().getValue(TermVectorFilter.STEM_DICT);
         for (String s : map.keySet()) {
             wordOrigins.add(new StemmedWordOrigin(s, map.get(s)));
@@ -98,6 +100,7 @@ public class FileAnalyser {
 
     public List<TermVector> getTermVector() {
         List<TermVector> termVectors = new ArrayList<>();
+        @SuppressWarnings("unchecked")
         Map<String, Integer> termvectorMap = (Map) parseTool.getFilterData().getValue(TermVectorFilter.TERM_VECTOR);
         for (String tv : termvectorMap.keySet()) {
             termVectors.add(new TermVector(tv, fileId, termvectorMap.get(tv)));

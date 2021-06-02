@@ -173,6 +173,7 @@ public class DocumentSearchService {
 
     private int loadTotalCountOfFiles() {
         Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
+        @SuppressWarnings("unchecked")
         List<BigInteger> result = q.getResultList();
         return result.get(0).intValue();
     }
@@ -195,6 +196,7 @@ public class DocumentSearchService {
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
+        @SuppressWarnings("unchecked")
         List<FileObjectEntity> entities = q.getResultList();
         for (FileObjectEntity entity : entities) {
             foundDocs.add(convertFileObjectToDocument(
@@ -303,6 +305,7 @@ public class DocumentSearchService {
 
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
         Set<Document> documents = new HashSet<>();
+        @SuppressWarnings("unchecked")
         List<FileObjectEntity> results = this.em.createNativeQuery(SQL_LOAD_DOCUMENTS, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
                 .setParameter("termvectorLength", request.wordsToSearchFor.getAllStemmedWords().size())

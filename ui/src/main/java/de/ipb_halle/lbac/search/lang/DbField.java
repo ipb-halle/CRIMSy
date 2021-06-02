@@ -45,7 +45,7 @@ public class DbField {
     public DbField() {
         this(false, false);
     }
-
+    @SuppressWarnings("unchecked")
     public DbField(boolean indexField, boolean generatedField) {
         this.alias = "";
         this.indexField = indexField;
