@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -29,7 +30,11 @@ import java.io.UnsupportedEncodingException;
  */
 public class NetObjectPresenter {
 
-    private NodeService nodeService;
+    private User user;
+
+    public NetObjectPresenter(User user) {
+        this.user = user;
+    }
 
     public String getName(NetObject no) {
         return no.getNameToDisplay();
@@ -46,13 +51,13 @@ public class NetObjectPresenter {
     public boolean isInternalLinkVisible(NetObject no) {
         boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
         boolean local = no.getNode().getLocal();
-        return noDoc&&local;
+        return noDoc && local && !user.isPublicAccount();
     }
 
     public boolean isExternalLinkVisible(NetObject no) {
         boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
         boolean local = no.getNode().getLocal();
-        return noDoc&&!local;
+        return noDoc && (!local || user.isPublicAccount());
     }
 
     public String getObjectType(NetObject no) {
