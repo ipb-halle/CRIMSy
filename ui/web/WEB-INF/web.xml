@@ -231,8 +231,8 @@
     <!-- Plugin types from MolecularFaces that are available for users. -->
     <!-- Available molecular structure plugin types: This needs to be a 
          comma-separated list of item names from the enum class 
-         de.ipb_halle.molecularfaces.MolPluginCore.PluginType. The first
-         entry is taken as default plugin type. -->
+         de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType.
+         The first entry is taken as default plugin type. -->
     <context-param>
         <param-name>de.ipb_halle.lbac.AvailableMolPluginTypes</param-name>
         <param-value>OpenChemLibJS,MolPaintJS</param-value>
@@ -284,6 +284,13 @@
         <auth-constraint>
             <role-name>role-admin</role-name>
         </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>The /resources folder</web-resource-name>
+            <url-pattern>/resources/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint />
     </security-constraint>
     <security-role>
         <role-name>role-admin</role-name>
