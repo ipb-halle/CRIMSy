@@ -7,32 +7,7 @@
 
     <h:head>
         <title>Funding</title>
-        <!-- CSP Header -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-        <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-        <meta http-equiv="X-WebKit-CSP" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-        <!-- -->
-        <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-        <meta name="apple-mobile-web-app-capable" content="yes"/>
-        <link rel="apple-touch-startup-image" href="resources/img/systemIcons/apple-icon-180x180.png"/>
-        <link rel="apple-touch-icon" sizes="57x57" href="resources/img/systemIcons/apple-icon-57x57.png"/>
-        <link rel="apple-touch-icon" sizes="60x60" href="resources/img/systemIcons/apple-icon-60x60.png"/>
-        <link rel="apple-touch-icon" sizes="72x72" href="resources/img/systemIcons/apple-icon-72x72.png"/>
-        <link rel="apple-touch-icon" sizes="76x76" href="resources/img/systemIcons/apple-icon-76x76.png"/>
-        <link rel="apple-touch-icon" sizes="114x114" href="resources/img/systemIcons/apple-icon-114x114.png"/>
-        <link rel="apple-touch-icon" sizes="120x120" href="resources/img/systemIcons/apple-icon-120x120.png"/>
-        <link rel="apple-touch-icon" sizes="144x144" href="resources/img/systemIcons/apple-icon-144x144.png"/>
-        <link rel="apple-touch-icon" sizes="152x152" href="resources/img/systemIcons/apple-icon-152x152.png"/>
-        <link rel="apple-touch-icon" sizes="180x180" href="resources/img/systemIcons/apple-icon-180x180.png"/>
-        <link rel="icon" type="image/png" sizes="192x192" href="resources/img/systemIcons/android-icon-192x192.png"/>
-        <link rel="icon" type="image/png" sizes="32x32" href="resources/img/systemIcons/avicon-32x32.png"/>
-        <link rel="icon" type="image/png" sizes="96x96" href="resources/img/systemIcons/avicon-96x96.png"/>
-        <link rel="icon" type="image/png" sizes="16x16" href="resources/img/systemIcons/favicon-16x16.png"/>
-        <link rel="manifest" href="resources/img/systemIcons/manifest.json"/>
-        <meta name="msapplication-TileColor" content="#ffffff"/>
-        <meta name="msapplication-TileImage" content="resources/img/systemIcons/ms-icon-144x144.png"/>
-        <meta name="theme-color" content="#ffffff"/>
-
+        <ui:include src="/WEB-INF/templates/head.xhtml" />
 
         <h:outputStylesheet name="css/fontawsome/font-awesome.min.css" target="head"/>
         <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
@@ -45,16 +20,16 @@
     </h:head>
     <h:body style="background-color:#ffffff;">
         <center>
-            <a href="/ui/index.xhtml"><img src="/ui/resources/img/cloud_x130.png" alt="Logo" border="0" /></a>
+            <a href="/ui/index.xhtml"><img src="#{resource['img/cloud_x130.png']}" alt="Logo" border="0" /></a>
         </center>
         <h1>Förderer</h1>
         <p>
         <table>
-        <tr><td><img src="/ui/resources/img/ipb_logo.png" height="100px" alt="Leibniz-Institut für Pflanzenbiochemie"/></td>
+        <tr><td><img src="#{resource['img/ipb_logo.png']}" height="100px" alt="Leibniz-Institut für Pflanzenbiochemie"/></td>
         <td>Das Leibniz-Institut für Pflanzenbiochemie in Halle (Saale) trägt von Beginn an die Lohnkosten für einen Entwickler und finanziert den Großteil der für die Entwicklung benötigten Infrastruktur.</td></tr>
-        <tr><td><img src="/ui/resources/img/efre_logo.jpg" height="100px" alt="Europäischer Fonds für regionale Entwicklung (EFRE)"/></td>
+        <tr><td><img src="#{resource['img/efre_logo.jpg']}" height="100px" alt="Europäischer Fonds für regionale Entwicklung (EFRE)"/></td>
         <td>Seit November 2019 unterstützt der Europäische Fonds für regionale Entwicklung (EFRE) die Entwicklung des "Cloud Resource and Information Management System" im Rahmen des Projekts "ProCognito - Pflanzliche Wirkstoffe zum Erhalt der kognitiven Leistungsfähigkeit im Alter".</td></tr>
-        <tr><td><img src="/ui/resources/img/lfv_logo.png" height="100px" alt='Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie"' /></td>
+        <tr><td><img src="#{resource['img/lfv_logo.png']}" height="100px" alt='Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie"' /></td>
         <td>Das Projekt wurde 2016 als "Leibniz Bioactives Cloud" vom Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie" initiiert und bis 2020 aus Mitteln des Leibniz-Senatsausschuss Strategie (SAS) unterstützt.</td></tr>
         </table>
         </p>
