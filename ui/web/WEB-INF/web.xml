@@ -147,10 +147,6 @@
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
-        <!-- map external javascript ressources  -->
-        <!-- see: faces-configs.xml -->
-        <!-- see: http://showcase.omnifaces.org/resourcehandlers/UnmappedResourceHandler -->
-        <url-pattern>/javax.faces.resource/*</url-pattern>
     </servlet-mapping>
     <!-- bootfaces theme -->
     <context-param>
