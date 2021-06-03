@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -40,14 +41,15 @@ import de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType;
  *
  * @author flange
  */
-@Dependent
+@SessionScoped
 public class UserPluginSettingsBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
      * Key in the preferences table for the chemical structure plugin type.
      */
-    private static final String MOLPLUGINTYPE_PREFERENCE_KEY = PreferenceType.MolPluginType.toString();
+    private static final String MOLPLUGINTYPE_PREFERENCE_KEY = PreferenceType.MolPluginType
+            .toString();
 
     /**
      * Name of the web.xml context-param that specifies the available chemical
@@ -66,6 +68,8 @@ public class UserPluginSettingsBean implements Serializable {
     private List<String> availableMolPluginTypes;
 
     private String defaultMolPluginType = "";
+
+    private String pref = null;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -115,6 +119,17 @@ public class UserPluginSettingsBean implements Serializable {
     }
 
     /**
+     * Resets the preference upon login of a user. The next call to
+     * {@link #getPreferredMolPluginType()} will reload the preference from the
+     * database.
+     * 
+     * @param evt
+     */
+    public void onLogin(@Observes LoginEvent evt) {
+        pref = null;
+    }
+
+    /**
      * Returns a list of chemical structure plugins supported by MolecularFaces.
      */
     private List<String> getSupportedMolPluginTypes() {
@@ -150,14 +165,22 @@ public class UserPluginSettingsBean implements Serializable {
      * @return chemical structure plugin type
      */
     public String getPreferredMolPluginType() {
-        String pref = preferenceService.getPreferenceValue(
+        if (pref == null) {
+            loadPreferredMolPluginType();
+        }
+
+        return pref;
+    }
+
+    private void loadPreferredMolPluginType() {
+        String loadedPref = preferenceService.getPreferenceValue(
                 userBean.getCurrentAccount(), MOLPLUGINTYPE_PREFERENCE_KEY,
                 defaultMolPluginType);
 
-        if (availableMolPluginTypes.contains(pref)) {
-            return pref;
+        if (availableMolPluginTypes.contains(loadedPref)) {
+            pref = loadedPref;
         } else {
-            return defaultMolPluginType;
+            pref = defaultMolPluginType;
         }
     }
 
@@ -171,6 +194,7 @@ public class UserPluginSettingsBean implements Serializable {
         if (availableMolPluginTypes.contains(pluginType)) {
             preferenceService.setPreference(userBean.getCurrentAccount(),
                     MOLPLUGINTYPE_PREFERENCE_KEY, pluginType);
+            pref = pluginType;
             return true;
         } else {
             logger.warn("Could not set the plugin type '" + pluginType
