@@ -41,6 +41,7 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.net.URL;
@@ -126,6 +127,9 @@ public class TestBase implements Serializable {
 
     @Inject
     protected GlobalAdmissionContext context;
+    
+    @Inject
+    protected ProjectService projectService;
 
     protected ACList acListReadable, acListNonReadable;
     protected User publicUser;
@@ -147,6 +151,7 @@ public class TestBase implements Serializable {
                 .addClass(FileService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
+                .addClass(ProjectService.class)
                 .addClass(KeyStoreFactory.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsResource("init.sql", "init.sql")
@@ -176,6 +181,7 @@ public class TestBase implements Serializable {
 
         cleanExperimentsFromDB();
         publicUser=memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        creationTools=new CreationTools("", "", "", memberService, projectService);
     }
 
     protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {
