@@ -77,6 +77,14 @@ public class UserTimeZoneSettingsBeanTest extends TestBase {
         assertEquals(timeZonesBean.getDefaultTimeZone(),
                 bean.getPreferredTimeZone());
 
+        // Manipulate database entry to an invalid time zone.
+        preferenceService.setPreference(user,
+                UserTimeZoneSettingsBean.TIMEZONE_PREFERENCE_KEY,
+                "Invalid time zone");
+        // Expecting default.
+        assertEquals(timeZonesBean.getDefaultTimeZone(),
+                bean.getPreferredTimeZone());
+
         // Insert something valid
         assertTrue(bean.setPreferredTimeZone("UTC"));
         assertEquals("UTC", bean.getPreferredTimeZone());
@@ -85,9 +93,8 @@ public class UserTimeZoneSettingsBeanTest extends TestBase {
         preferenceService.setPreference(user,
                 UserTimeZoneSettingsBean.TIMEZONE_PREFERENCE_KEY,
                 "Invalid time zone");
-        // Expecting default now.
-        assertEquals(timeZonesBean.getDefaultTimeZone(),
-                bean.getPreferredTimeZone());
+        // Expecting that the setting wasn't changed.
+        assertEquals("UTC", bean.getPreferredTimeZone());
     }
 
     @After
