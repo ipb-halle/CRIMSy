@@ -106,8 +106,11 @@
                                         <b:inputText
                                             value="#{itemBean.state.editedItem.amount}"
                                             label="#{msgs.itemEdit_itemPanel_amount}">
+                                            <f:convertNumber
+                                                type="number"
+                                                groupingUsed="false"
+                                                locale="#{globalLocaleBean.numberConverterLocale}" />
                                             <f:validateDoubleRange minimum="0" />
-                                            <f:converter converterId="InputConverter" />
                                         </b:inputText>
                                     </b:column>
                                     <b:column span="3">
@@ -143,7 +146,10 @@
                                             required="true"
                                             required-message="#{msgs.itemEdit_itemPanel_amount_requiredtext}"
                                             label="#{msgs.itemEdit_itemPanel_container_size}">
-                                            <f:converter converterId="InputConverter" />
+                                            <f:convertNumber
+                                                type="number"
+                                                groupingUsed="false"
+                                                locale="#{globalLocaleBean.numberConverterLocale}" />
                                             <f:validateDoubleRange minimum="0" />
                                         </b:inputText>
                                     </b:column>
@@ -175,7 +181,10 @@
                                         <b:inputText
                                             label="#{msgs.itemEdit_itemPanel_concentration}"
                                             value="#{itemBean.state.editedItem.concentration}">
-                                            <f:converter converterId="InputConverter" />
+                                            <f:convertNumber
+                                                type="number"
+                                                groupingUsed="false"
+                                                locale="#{globalLocaleBean.numberConverterLocale}" />
                                             <f:validateDoubleRange minimum="0" />
                                         </b:inputText>
                                     </b:column>
