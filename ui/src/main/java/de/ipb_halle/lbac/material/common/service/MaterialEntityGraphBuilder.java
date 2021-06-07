@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.material.common.service;
 
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberEntity;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
@@ -69,6 +71,16 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
     }
 
+    protected void addBioMaterial() {
+        EntityGraph subGraph = addJoin(JoinType.LEFT, BioMaterialEntity.class, "materialid", "id");
+        EntityGraph taxoGraph = addJoinToChild(JoinType.LEFT, subGraph, MaterialIndexEntryEntity.class, "materialid", "taxoid");
+        subGraph.addAttributeType(AttributeType.TOPLEVEL);
+        subGraph.setSubSelectAttribute(AttributeType.DIRECT);
+        taxoGraph.addAttributeType(AttributeType.TOPLEVEL);
+        taxoGraph.setSubSelectAttribute(AttributeType.DIRECT);
+
+    }
+
     @Override
     public EntityGraph buildEntityGraph(boolean toplevel) {
         addIndex();
@@ -77,6 +89,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         addDetailRights();
         addProject();
         addAcls();
+        //addBioMaterial();
         graph.addAttributeType(AttributeType.DIRECT);
         if (toplevel) {
             indexGraph.addAttributeType(AttributeType.TOPLEVEL);

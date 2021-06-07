@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
@@ -44,7 +45,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,13 +58,14 @@ public class NetObjectPresenterTest extends TestBase {
     private List<NetObject> netObjects;
 
     private NetObjectFactory netObjectFactory = new NetObjectFactory();
-    private NetObjectPresenter presenter = new NetObjectPresenter();
+    private NetObjectPresenter presenter;
 
     @Before
     @Override
     public void setUp() {
         super.setUp();
         netObjects = netObjectFactory.createNetObjects();
+        presenter = new NetObjectPresenter(new User());
     }
 
     @Test

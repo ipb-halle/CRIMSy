@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.DocumentCreator;
@@ -65,29 +66,29 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class SearchBeanTest extends TestBase {
-
+    
     private NetObjectFactory factory = new NetObjectFactory();
     private List<NetObject> netObjects;
-
+    
     @Inject
     private SearchService searchService;
-
+    
     @Inject
     private GlobalAdmissionContext context;
-
+    
     @Inject
     private ProjectService projectService;
-
+    
     private User publicUser;
     private Collection col;
     private DocumentCreator documentCreator;
     private ItemCreator itemCreator;
     private MaterialCreator materialCreator;
     private ProjectCreator projectCreator;
-
+    
     @Inject
     private SearchOrchestrator orchestrator;
-
+    
     @Before
     @Override
     public void setUp() {
@@ -99,7 +100,7 @@ public class SearchBeanTest extends TestBase {
                 collectionService,
                 nodeService,
                 termVectorEntityService);
-
+        
         try {
             col = documentCreator.uploadDocuments(
                     publicUser,
@@ -114,12 +115,13 @@ public class SearchBeanTest extends TestBase {
         projectCreator = new ProjectCreator(projectService, GlobalAdmissionContext.getPublicReadACL());
         Project project = projectCreator.createAndSaveProject(publicUser);
         materialCreator.createStructure(publicUser.getId(), GlobalAdmissionContext.getPublicReadACL().getId(), project.getId(), "java");
-
+        
     }
-
+    
     @Test
     public void test001_actionAddFoundObjectsToShownObjects() {
         SearchBean bean = new SearchBean();
+        bean.setCurrentAccount(new LoginEvent(new User()));
         bean.getSearchState().addNoteToSearch(netObjects.get(0).getNode().getId());
         Assert.assertTrue(bean.isSearchActive());
         bean.getSearchState().removeNodeFromSearch(netObjects.get(0).getNode());
@@ -135,7 +137,7 @@ public class SearchBeanTest extends TestBase {
         bean.actionAddFoundObjectsToShownObjects();
         Assert.assertEquals(4, bean.getShownObjects().size());
         Assert.assertEquals(0, bean.getUnshownButFoundObjects());
-
+        
         bean.getSearchState().removeNodeFromSearch(netObjects.get(0).getNode());
         bean.getSearchState().addNetObjects(Arrays.asList(
                 netObjects.get(0)));
@@ -143,10 +145,10 @@ public class SearchBeanTest extends TestBase {
         bean.actionAddFoundObjectsToShownObjects();
         Assert.assertEquals(4, bean.getShownObjects().size());
         Assert.assertEquals(0, bean.getUnshownButFoundObjects());
-
+        
         Assert.assertEquals("localDoc", bean.getNetObjectPresenter().getName(netObjects.get(0)));
     }
-
+    
     @Test
     public void test002_actionTriggerSearch() {
         SearchBean bean = new SearchBean(searchService, publicUser, nodeService);
@@ -156,13 +158,13 @@ public class SearchBeanTest extends TestBase {
         List<NetObject> shownObjects = bean.getShownObjects();
         Assert.assertEquals(3, shownObjects.size());
     }
-
+    
     @Test
     public void test003_logOut() {
         SearchBean bean = new SearchBean();
         Assert.assertEquals("fa-plus-circle", bean.getAdvancedSearchIcon());
     }
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("SearchBeanTest.war")
@@ -184,5 +186,5 @@ public class SearchBeanTest extends TestBase {
                 .addClass(TaxonomyNestingService.class);
         return ExperimentDeployment.add(ItemDeployment.add(UserBeanDeployment.add(deployment)));
     }
-
+    
 }

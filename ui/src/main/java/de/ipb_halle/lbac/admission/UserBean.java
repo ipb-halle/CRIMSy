@@ -429,7 +429,11 @@ public class UserBean implements Serializable {
     }
 
     public boolean isComponentAccessable(String s) {
-        return true;
+        if (s.equals("InhouseDB")) {
+            return !currentAccount.isPublicAccount();
+        } else {
+            return true;
+        }
     }
 
 }
