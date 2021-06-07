@@ -48,6 +48,7 @@ public class MaterialAgent implements Serializable {
     private final static long serialVersionUID = 1L;
     private int MAX_MATERIALS_TO_SEARCH = 5;
 
+
     @Inject
     protected GlobalAdmissionContext globalAdmissionContext;
 

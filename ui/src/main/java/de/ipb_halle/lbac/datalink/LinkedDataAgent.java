@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.util.resources.ResourceLocation;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,9 +46,14 @@ public class LinkedDataAgent implements Serializable {
     private final static long serialVersionUID = 1L;
 
     private LinkedData linkedData;
+    private Set<Integer> hazardsWithoutIcons = new HashSet<>();
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private Material material;
+
+    public LinkedDataAgent() {
+        hazardsWithoutIcons.addAll(Arrays.asList(10, 11, 12, 17, 18, 19, 20));
+    }
 
     public LinkedData getLinkedData() {
         return this.linkedData;
@@ -84,11 +90,22 @@ public class LinkedDataAgent implements Serializable {
         this.linkedData = data;
     }
 
+    /**
+     * Returns all Hazards of a material without those ones which has no icons
+     *
+     * @return
+     */
     public Set<HazardType> getHazards() {
-        if (material == null) {
-            return new HashSet<>();
+        Set<HazardType> hazards = new HashSet<>();
+        if (material != null) {
+            for (HazardType ht : material.getHazards().getHazards().keySet()) {
+                if (!hazardsWithoutIcons.contains(ht.getId())) {
+                    hazards.add(ht);
+                }
+            }
         }
-        return material.getHazards().getHazards().keySet();
+        return hazards;
+
     }
 
     public String getImageIconOf(HazardType hazard) {
