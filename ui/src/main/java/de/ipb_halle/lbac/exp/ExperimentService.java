@@ -174,7 +174,6 @@ public class ExperimentService implements Serializable {
      * @return the persisted Experiment DTO
      */
     public Experiment save(Experiment e) {
-        e.setCode(e.getCode().toUpperCase());
         return new Experiment(
                 this.em.merge(e.createEntity()),
                 e.getACList(),

@@ -55,7 +55,7 @@ public class ExperimentCode {
     }
 
     public String generateExistingExperimentCode() {
-        return prefix + seperator + suffix;
+        return prefix.toUpperCase() + seperator + suffix;
     }
 
     public static ExperimentCode createNewInstance(String userShortCut) {
