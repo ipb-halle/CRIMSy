@@ -17,11 +17,11 @@
  */
 package de.ipb_halle.lbac.items.bean;
 
-import de.ipb_halle.lbac.container.mock.ErrorMessagePresenterMock;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.mocks.ContainerPositionServiceMock;
 import de.ipb_halle.lbac.items.mocks.ItemBeanMock;
 import de.ipb_halle.lbac.items.mocks.LabelServiceMock;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class ValidatorTest {
     @Before
     public void setUp() {
         validator = new Validator(containerServiceMock, labelServiceMock);
-        validator.setMessagePresenter(new ErrorMessagePresenterMock());
+        validator.setMessagePresenter(new MessagePresenterMock());
         containerServiceMock.arePositionsFree = true;
         labelServiceMock.isLabelAvailable = true;
         isCustomLabel = false;
