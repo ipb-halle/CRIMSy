@@ -42,13 +42,13 @@ import de.ipb_halle.lbac.util.Quality;
 import de.ipb_halle.lbac.util.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.event.PhaseId;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -99,6 +99,7 @@ public class ItemBean implements Serializable {
     private List<Solvent> availableSolvents = new ArrayList<>();
     private List<String> availablePurities = new ArrayList<>();
     private List<Unit> availableAmountUnits = new ArrayList<>();
+    private List<Unit> availableConcentrationUnits = new ArrayList<>();
     private List<ContainerType> availableContainerTypes = new ArrayList<>();
 
     private boolean commercialMaterial;
@@ -125,7 +126,8 @@ public class ItemBean implements Serializable {
     @PostConstruct
     public void init() {
         validator = new Validator(containerPositionService, labelService);
-        availableAmountUnits = loadUnits();
+        availableAmountUnits = loadAmountUnits();
+        availableConcentrationUnits = loadConcentrationUnits();
         availableSolvents = loadAndI18nSolvents();
         availablePurities = loadPurities();
         availableContainerTypes = containerService.loadContainerTypes();
@@ -210,13 +212,6 @@ public class ItemBean implements Serializable {
 
     public PrintBean getPrintBean() {
         return this.printBean;
-    }
-
-    public List<String> getConcentrationUnits() {
-        List<Unit> units = Unit.getUnitsOfQuality(Quality.MOLAR_CONCENTRATION, Quality.PERCENT_CONCENTRATION);
-        return units.stream()
-                .map(u -> u.getUnit())
-                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void actionSave() {
@@ -414,6 +409,10 @@ public class ItemBean implements Serializable {
         return availableAmountUnits;
     }
 
+    public List<Unit> getAvailableConcentrationUnits() {
+        return availableConcentrationUnits;
+    }
+
     public List<Solvent> getAvailableSolvents() {
         return availableSolvents;
     }
@@ -452,11 +451,17 @@ public class ItemBean implements Serializable {
         return solvents;
     }
 
-    private List<Unit> loadUnits() {
+    private List<Unit> loadAmountUnits() {
         return Unit.getUnitsOfQuality(
                 Quality.MASS,
                 Quality.VOLUME,
                 Quality.PIECES);
+    }
+
+    private List<Unit> loadConcentrationUnits() {
+        return Unit.getUnitsOfQuality(
+                Quality.MOLAR_CONCENTRATION,
+                Quality.PERCENT_CONCENTRATION);
     }
 
     /**
@@ -482,6 +487,103 @@ public class ItemBean implements Serializable {
         }
 
         availableContainerTypes.sort(Comparator.comparing(ContainerType::getLocalizedName));
+    }
+
+    /**
+     * This method should be triggered when the amount unit changes. It
+     * transforms the amount and (if necessary) the container size of the
+     * currently edited item to the new unit if the new and old unit qualities
+     * match.
+     * 
+     * @param event
+     */
+    public void amountUnitChanged(ValueChangeEvent event) {
+        /*
+         * Postpone this event to a later phase because we want to update some
+         * item values, which will be overwritten in the upcoming
+         * UPDATE_MODEL_VALUES phase. See https://stackoverflow.com/a/11883021
+         */
+        if (event.getPhaseId() != PhaseId.INVOKE_APPLICATION) {
+            event.setPhaseId(PhaseId.INVOKE_APPLICATION);
+            event.queue();
+            return;
+        }
+
+        Unit oldUnit = (Unit) event.getOldValue();
+        Unit newUnit = (Unit) event.getNewValue();
+
+        if (oldUnit == null) {
+            return;
+        }
+
+        if (oldUnit.getQuality() == newUnit.getQuality()) {
+            Item item = getState().getEditedItem();
+
+            if (item.getAmount() != null) {
+                item.setAmount(item.getAmount() * oldUnit.transform(newUnit));
+            }
+
+            if (isDirectContainer() && (item.getContainerSize() != null)) {
+                item.setContainerSize(item.getContainerSize() * oldUnit.transform(newUnit));
+            }
+        }
+    }
+
+    /**
+     * This method should be triggered when the concentration unit changes. It
+     * transforms the concentration of the currently edited item to the new unit
+     * if the new and old unit qualities match.
+     * 
+     * @param event
+     */
+    public void concentrationUnitChanged(ValueChangeEvent event) {
+        /*
+         * Postpone this event to a later phase because we want to update some
+         * item values, which will be overwritten in the upcoming
+         * UPDATE_MODEL_VALUES phase. See https://stackoverflow.com/a/11883021
+         */
+        if (event.getPhaseId() != PhaseId.INVOKE_APPLICATION) {
+            event.setPhaseId(PhaseId.INVOKE_APPLICATION);
+            event.queue();
+            return;
+        }
+
+        Item item = getState().getEditedItem();
+        if (item.getConcentration() == null) {
+            return;
+        }
+
+        Unit oldUnit = (Unit) event.getOldValue();
+        Unit newUnit = (Unit) event.getNewValue();
+
+        if (oldUnit == null) {
+            return;
+        }
+
+        if ((oldUnit.getQuality() == newUnit.getQuality()) && getSolved()) {
+            item.setConcentration(
+                    item.getConcentration() * oldUnit.transform(newUnit));
+        }
+    }
+
+    /**
+     * Called when the 'substance solved' status of the currently edited item
+     * changes. This method initializes/resets solvent-related properties of the
+     * item.
+     */
+    public void onChangeSolved() {
+        Item item = getState().getEditedItem();
+        if (getSolved()) {
+            item.setConcentrationUnit(availableConcentrationUnits.get(0));
+
+            if (!availableSolvents.isEmpty()) {
+                item.setSolvent(availableSolvents.get(0));
+            }
+        } else {
+            item.setConcentration(null);
+            item.setConcentrationUnit(null);
+            item.setSolvent(null);
+        }
     }
 
     public boolean isUnitEditable() {

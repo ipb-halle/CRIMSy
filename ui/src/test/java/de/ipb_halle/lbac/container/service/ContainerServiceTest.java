@@ -459,7 +459,7 @@ public class ContainerServiceTest extends TestBase {
         item.setOwner(publicUser);
         item.setAmount(0d);
         item.setConcentration(0d);
-        item.setConcentrationUnit("%");
+        item.setConcentrationUnit(Unit.getUnit("%"));
         item.setContainer(c);
         item.setMaterial(s);
         item.setProject(p);

@@ -35,17 +35,17 @@ import de.ipb_halle.lbac.util.WebXmlImpl;
 @ApplicationScoped
 public class GlobalLocaleBean {
     public static final String WEBXML_NUMBERCONVERTER_LOCALE = "de.ipb_halle.lbac.NumberConverterLocale";
-    
+
     private WebXml webXml = new WebXmlImpl();
-    
-    private Locale numberConverterLocale; 
+
+    private Locale numberConverterLocale;
 
     /**
      * default constructor
      */
     public GlobalLocaleBean() {
     }
-    
+
     /**
      * test constructor with dependency injection
      * 
@@ -54,16 +54,17 @@ public class GlobalLocaleBean {
     protected GlobalLocaleBean(WebXml webXml) {
         this.webXml = webXml;
     }
-    
+
     @PostConstruct
     public void init() {
         initNumberConverterLocale();
     }
 
     private void initNumberConverterLocale() {
-        numberConverterLocale = new Locale(webXml.getContextParam(WEBXML_NUMBERCONVERTER_LOCALE, "en"));
+        numberConverterLocale = new Locale(
+                webXml.getContextParam(WEBXML_NUMBERCONVERTER_LOCALE, "en"));
     }
-    
+
     public Locale getNumberConverterLocale() {
         return numberConverterLocale;
     }

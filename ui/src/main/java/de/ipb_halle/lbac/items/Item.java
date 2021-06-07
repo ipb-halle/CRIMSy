@@ -52,7 +52,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     private Unit unit;
     private Article article;
     private Double concentration;
-    private String concentrationUnit;
+    private Unit concentrationUnit;
     private Container container;
     private Double containerSize;
     private ContainerType containerType;
@@ -85,7 +85,12 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.unit = Unit.getUnit(entity.getUnit());
         this.article = art;
         this.concentration = entity.getConcentration();
-        this.concentrationUnit = entity.getConcentrationUnit();
+
+        String concentrationUnit = entity.getConcentrationUnit();
+        if ((concentrationUnit != null) && !concentrationUnit.isEmpty()) {
+            this.concentrationUnit = Unit.getUnit(entity.getConcentrationUnit());
+        }
+
         this.container = con;
         this.containerSize = entity.getContainersize();
         this.expiry_date = entity.getExpiry_date();
@@ -114,7 +119,11 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
             entity.setArticleid(article.getId());
         }
         entity.setConcentration(concentration);
-        entity.setConcentrationUnit(concentrationUnit);
+
+        if (concentrationUnit != null) {
+            entity.setConcentrationUnit(concentrationUnit.getUnit());
+        }
+
         if (container != null) {
             entity.setContainerid(container.getId());
         }
@@ -202,7 +211,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         return concentration;
     }
 
-    public String getConcentrationUnit() {
+    public Unit getConcentrationUnit() {
         return concentrationUnit;
     }
 
@@ -215,7 +224,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.concentration = concentration;
     }
 
-    public void setConcentrationUnit(String unit) {
+    public void setConcentrationUnit(Unit unit) {
         this.concentrationUnit = unit;
     }
 

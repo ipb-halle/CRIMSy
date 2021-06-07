@@ -101,9 +101,12 @@
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_basicInformation}">
                         <o:massAttribute name="disabled" value="#{itemBean.historyMode}">
                             <b:container>
+
+                                <!-- Amount and purity -->
                                 <b:row>
                                     <b:column span="2" offset="2">
                                         <b:inputText
+                                            id="itemAmountId"
                                             value="#{itemBean.state.editedItem.amount}"
                                             label="#{msgs.itemEdit_itemPanel_amount}">
                                             <f:convertNumber
@@ -113,17 +116,21 @@
                                             <f:validateDoubleRange minimum="0" />
                                         </b:inputText>
                                     </b:column>
-                                    <b:column span="3">
+                                    <b:column span="2">
                                         <b:selectOneMenu
                                             label="#{msgs.itemEdit_itemPanel_container_unit}"
-                                            value="#{itemBean.state.editedItem.unit}">
+                                            value="#{itemBean.state.editedItem.unit}"
+                                            ajax="true"
+                                            valueChangeListener="#{itemBean.amountUnitChanged}"
+                                            process="@this itemAmountId boundContainerSizeId"
+                                            update="itemAmountId boundContainerSizeId boundContainerUnitId">
                                             <f:selectItems
                                                 value="#{itemBean.availableAmountUnits}"
                                                 var="unit"
                                                 itemLabel="#{unit.unit}" />
                                         </b:selectOneMenu>
                                     </b:column> 
-                                    <b:column span="2">
+                                    <b:column span="3">
                                         <b:selectOneMenu
                                             label="#{msgs.itemEdit_itemPanel_amount_purity}"
                                             value="#{itemBean.state.editedItem.purity}">
@@ -131,6 +138,8 @@
                                         </b:selectOneMenu>
                                     </b:column>
                                 </b:row>
+
+                                <!-- Bound (optional) -->
                                 <b:row>
                                     <b:column span="2" styleClass="boldSelectBooleanCheckboxCaption">
                                         <b:selectBooleanCheckbox
@@ -141,6 +150,7 @@
                                     </b:column>
                                     <b:column span="2" styleClass="directContainerClass">
                                         <b:inputText
+                                            id="boundContainerSizeId"
                                             rendered="#{itemBean.directContainer}"
                                             value="#{itemBean.state.editedItem.containerSize}"
                                             required="true"
@@ -152,6 +162,14 @@
                                                 locale="#{globalLocaleBean.numberConverterLocale}" />
                                             <f:validateDoubleRange minimum="0" />
                                         </b:inputText>
+                                    </b:column>
+                                    <b:column span="2" styleClass="directContainerClass">
+                                        <b:inputText
+                                            id="boundContainerUnitId"
+                                            rendered="#{itemBean.directContainer}"
+                                            disabled="true"
+                                            label="#{msgs.itemEdit_itemPanel_container_unit}"
+                                            value="#{itemBean.state.editedItem.unit.unit}" />
                                     </b:column>
                                     <b:column span="3" styleClass="directContainerClass">
                                         <b:selectOneMenu
@@ -165,6 +183,8 @@
                                         </b:selectOneMenu>
                                     </b:column> 
                                 </b:row>
+
+                                <!-- Solvent (optional) -->
                                 <b:row styleClass="solventClass">
                                     <b:column 
                                         span="2"
@@ -173,12 +193,14 @@
                                             caption="#{msgs.itemEdit_itemPanel_solvent}"
                                             ajax="true"
                                             update="@(.solventClass)"
-                                            value="#{itemBean.solved}"/>
+                                            value="#{itemBean.solved}"
+                                            onchange="ajax:itemBean.onChangeSolved()" />
                                     </b:column>
                                     <b:column
                                         span="2"
                                         rendered="#{itemBean.isSolventRowVisisble()}">
                                         <b:inputText
+                                            id="concentrationId"
                                             label="#{msgs.itemEdit_itemPanel_concentration}"
                                             value="#{itemBean.state.editedItem.concentration}">
                                             <f:convertNumber
@@ -189,16 +211,23 @@
                                         </b:inputText>
                                     </b:column>
                                     <b:column
-                                        span="3"
+                                        span="2"
                                         rendered="#{itemBean.isSolventRowVisisble()}">
                                         <b:selectOneMenu
                                             label="#{msgs.itemEdit_itemPanel_concentration_unit}"
-                                            value="#{itemBean.state.editedItem.concentrationUnit}">
-                                            <f:selectItems value="#{itemBean.getConcentrationUnits()}"/>
+                                            value="#{itemBean.state.editedItem.concentrationUnit}"
+                                            ajax="true"
+                                            valueChangeListener="#{itemBean.concentrationUnitChanged}"
+                                            process="@this concentrationId"
+                                            update="concentrationId">
+                                            <f:selectItems
+                                                value="#{itemBean.availableConcentrationUnits}"
+                                                var="unit"
+                                                itemLabel="#{unit.unit}" />
                                         </b:selectOneMenu>
                                     </b:column> 
                                     <b:column
-                                        span="2"
+                                        span="3"
                                         rendered="#{itemBean.isSolventRowVisisble()}">
                                         <b:selectOneMenu
                                             label="#{msgs.itemEdit_itemPanel_concentration_solvent}"
@@ -210,6 +239,8 @@
                                         </b:selectOneMenu>
                                     </b:column>
                                 </b:row>
+
+                                <!-- Custom Label (optional) -->
                                 <b:row>
                                     <b:column span="2"
                                               styleClass="boldSelectBooleanCheckboxCaption">
@@ -231,6 +262,8 @@
                                         </b:inputText>
                                     </b:column>
                                 </b:row>
+
+                                <!-- Description -->
                                 <b:row>
                                     <b:column span="9">
                                         <b:inputTextarea
