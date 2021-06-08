@@ -76,7 +76,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private MaterialBean materialEditBean;
 
     @Inject
-    private MaterialService materialService;
+    protected MaterialService materialService;
 
     @Inject
     private MemberService memberService;
@@ -88,7 +88,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private ProjectService projectService;
 
     @Inject
-    private HazardService hazardService;
+    protected HazardService hazardService;
 
     /**
      * Creates the tablecontroller and the controller for managing the search

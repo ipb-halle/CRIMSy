@@ -19,10 +19,12 @@ package de.ipb_halle.lbac.material.mocks;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 
+
 /**
  *
  * @author fmauz
  */
 public class MaterialOverviewBeanMock extends MaterialOverviewBean {
+    
 
 }
