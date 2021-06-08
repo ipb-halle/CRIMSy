@@ -324,6 +324,7 @@ public class ItemBean implements Serializable {
     public void actionStartItemCreation(Material m) {
         mode = Mode.CREATE;
         state = new ItemState();
+        state.getEditedItem().setUnit(availableAmountUnits.get(0));
         state.getEditedItem().setMaterial(m);
         directContainer = true;
         solved = false;

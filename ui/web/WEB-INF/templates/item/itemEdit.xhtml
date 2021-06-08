@@ -52,10 +52,10 @@
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
-                                    immediate="true"
                                     icon-awesome="fa-backward"
                                     disabled="#{itemBean.state.startingHistoryItem}"
                                     action="#{itemBean.actionApplyNextNegativeDifference()}">
+                                    <o:skipValidators />
                                 </b:commandButton>
                             </b:column>
                             <b:column span="3">
@@ -78,10 +78,10 @@
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
-                                    immediate="true"
                                     icon-awesome="fa-forward"
                                     disabled="#{itemBean.state.lastHistoryItem}"
                                     action="#{itemBean.actionApplyNextPositiveDifference()}">
+                                    <o:skipValidators />
                                 </b:commandButton>
                             </b:column>
                             <b:column  span="1">
@@ -152,6 +152,7 @@
                                     <b:selectBooleanCheckbox
                                         caption="#{msgs.itemEdit_itemPanel_directContainer}"
                                         ajax="true"
+                                        process="@this"
                                         update="@(.directContainerClass)"
                                         value="#{itemBean.directContainer}"
                                         disabled="#{itemBean.historyMode or itemBean.editMode}" />
@@ -223,6 +224,7 @@
                                     <b:selectBooleanCheckbox
                                         caption="#{msgs.itemEdit_itemPanel_solvent}"
                                         ajax="true"
+                                        process="@this"
                                         update="@(.solventClass)"
                                         value="#{itemBean.solved}"
                                         disabled="#{itemBean.historyMode or itemBean.editMode}"
