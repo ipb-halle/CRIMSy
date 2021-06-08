@@ -220,36 +220,39 @@ public class ItemBean implements Serializable {
     }
 
     public void actionSave() {
-        /*
-         * This is double-safety: The commandButton is disabled in the UI when
-         * viewing the history.
-         */
-        if (mode == Mode.HISTORY) {
-            return;
-        }
-        if (!solved) {
-            state.getEditedItem().setConcentration(null);
-            state.getEditedItem().setConcentrationUnit(null);
-            state.getEditedItem().setSolvent(null);
-
-        }
-        state.getEditedItem().setContainer(containerController.getContainer());
-        if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
-            if (isCreateMode()) {
-                saveNewItem();
-            } else {
-
-                itemService.saveEditedItem(
-                        state.getEditedItem(),
-                        state.getOriginalItem(),
-                        userBean.getCurrentAccount(),
-                        containerController.resolveItemPositions());
+        try {
+            /*
+             * This is double-safety: The commandButton is disabled in the UI when
+             * viewing the history.
+             */
+            if (mode == Mode.HISTORY) {
+                return;
             }
-            this.printBean.setLabelDataObject(state.getEditedItem());
-            itemOverviewBean.reloadItems();
-            navigator.navigate("/item/items");
+            if (!solved) {
+                state.getEditedItem().setConcentration(null);
+                state.getEditedItem().setConcentrationUnit(null);
+                state.getEditedItem().setSolvent(null);
+            }
+            state.getEditedItem().setContainer(containerController.getContainer());
+            if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
+                if (isCreateMode()) {
+                    saveNewItem();
+                    messagePresenter.info("itemEdit_save_new_success");
+                } else {
+                    itemService.saveEditedItem(
+                            state.getEditedItem(),
+                            state.getOriginalItem(),
+                            userBean.getCurrentAccount(),
+                            containerController.resolveItemPositions());
+                    messagePresenter.info("itemEdit_save_edit_success");
+                }
+                this.printBean.setLabelDataObject(state.getEditedItem());
+                itemOverviewBean.reloadItems();
+                navigator.navigate("/item/items");
+            }
+        } catch (Exception e) {
+            messagePresenter.error("materialCreation_creation_error");
         }
-
     }
 
     private void saveNewItem() {
