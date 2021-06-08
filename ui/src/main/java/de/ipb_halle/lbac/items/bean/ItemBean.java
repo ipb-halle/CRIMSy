@@ -47,8 +47,13 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
@@ -618,4 +623,74 @@ public class ItemBean implements Serializable {
         this.state = state;
     }
 
+    /**
+     * Cross-field validator that checks if the amount is less than or equal the
+     * container size. This is the implementation of method #1 of
+     * https://stackoverflow.com/a/6282509
+     * 
+     * @param context
+     * @param component UIInput component of the inputHidden
+     * @param value
+     * @throws ValidatorException
+     */
+    public void validateAmountVsContainerSize(FacesContext context,
+            UIComponent component, Object value) throws ValidatorException {
+        UIInput amountInputComponent = (UIInput) component.getAttributes()
+                .get("amount");
+        UIInput containerSizeInputComponent = (UIInput) component
+                .getAttributes().get("containerSize");
+
+        /*
+         * No null-check before, thus we will throw a NPE in case the EL-binding
+         * fails or the attribute tag wasn't set.
+         */
+        Object val1 = amountInputComponent.getValue();
+        Object val2 = containerSizeInputComponent.getValue();
+
+        if ((val1 == null) || (val2 == null)) {
+            throw new ValidatorException(new FacesMessage());
+        }
+        /*
+         * JSF's convertNumber is not very exact on the specific type. Thus, we
+         * need to convert to double.
+         */
+        if (!(val1 instanceof Number) || !(val2 instanceof Number)) {
+            throw new ValidatorException(new FacesMessage());
+        }
+        double amount = ((Number) val1).doubleValue();
+        double containerSize = ((Number) val2).doubleValue();
+
+        if (amount > containerSize) {
+            throw new ValidatorException(new FacesMessage());
+        }
+    }
+
+//    /*
+//     * Please use this implementation as soon as https://github.com/omnifaces/omnifaces/issues/411 is
+//     * implemented in OmniFaces' 2.x branch.
+//     */
+//    public boolean validateAmountVsContainerSize(FacesContext context, List<UIInput> components, List<Object> values) {
+//        if (values.size() != 2) {
+//            return false;
+//        }
+//
+//        Object val1 = values.get(0);
+//        Object val2 = values.get(1);
+//
+//        if ((val1 == null) || (val2 == null)) {
+//            return false;
+//        }
+//
+//        /*
+//         * JSF's convertNumber is not very exact on the specific type. Thus, we
+//         * need to convert to double.
+//         */
+//        if (!(val1 instanceof Number) || !(val2 instanceof Number)) {
+//            return false;
+//        }
+//        double amount = ((Number) val1).doubleValue();
+//        double containerSize = ((Number) val2).doubleValue();
+//
+//        return amount <= containerSize;
+//    }
 }

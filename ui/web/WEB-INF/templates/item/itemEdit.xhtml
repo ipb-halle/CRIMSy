@@ -52,6 +52,7 @@
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
+                                    immediate="true"
                                     icon-awesome="fa-backward"
                                     disabled="#{itemBean.state.startingHistoryItem}"
                                     action="#{itemBean.actionApplyNextNegativeDifference()}">
@@ -77,6 +78,7 @@
                             </b:column>
                             <b:column span="1">
                                 <b:commandButton
+                                    immediate="true"
                                     icon-awesome="fa-forward"
                                     disabled="#{itemBean.state.lastHistoryItem}"
                                     action="#{itemBean.actionApplyNextPositiveDifference()}">
@@ -108,7 +110,10 @@
                                         id="itemAmountId"
                                         value="#{itemBean.state.editedItem.amount}"
                                         disabled="#{itemBean.historyMode}"
-                                        label="#{msgs.itemEdit_itemPanel_amount}">
+                                        label="#{msgs.itemEdit_itemPanel_amount}"
+                                        binding="#{amountInput}"
+                                        required="true"
+                                        required-message="#{msgs.itemEdit_itemPanel_amount_requiredtext}">
                                         <f:convertNumber
                                             type="number"
                                             groupingUsed="false"
@@ -156,8 +161,9 @@
                                         id="boundContainerSizeId"
                                         rendered="#{itemBean.directContainer}"
                                         value="#{itemBean.state.editedItem.containerSize}"
+                                        binding="#{boundContainerSizeInput}"
                                         required="true"
-                                        required-message="#{msgs.itemEdit_itemPanel_amount_requiredtext}"
+                                        required-message="#{msgs.itemEdit_itemPanel_container_size_requiredtext}"
                                         label="#{msgs.itemEdit_itemPanel_container_size}"
                                         disabled="#{itemBean.historyMode or itemBean.editMode}">
                                         <f:convertNumber
@@ -166,6 +172,26 @@
                                             locale="#{globalLocaleBean.numberConverterLocale}" />
                                         <f:validateDoubleRange minimum="0" />
                                     </b:inputText>
+
+                                    <!-- Cross-field validation using method #1 from https://stackoverflow.com/a/6282509 -->
+                                    <h:inputHidden
+                                        value="true"
+                                        validator="#{itemBean.validateAmountVsContainerSize}"
+                                        validatorMessage="#{msgs.itemEdit_itemPanel_validationError_amount_greaterThan_containerSize}"
+                                        rendered="#{itemBean.directContainer}"
+                                        disabled="#{itemBean.historyMode}">
+                                        <f:attribute name="amount" value="#{amountInput}" />
+                                        <f:attribute name="containerSize" value="#{boundContainerSizeInput}" />
+                                    </h:inputHidden>
+                                    <!-- This can be used as soon as https://github.com/omnifaces/omnifaces/issues/411 is
+                                         implemented in OmniFaces' 2.x branch. Also remove the 'binding' attributes from 
+                                         the inputText components 'itemAmountId' and 'boundContainerSizeId'. --> 
+                                    <!-- <o:validateMultiple
+                                        components="itemAmountId boundContainerSizeId"
+                                        validator="#{itemBean.validateAmountVsContainerSize}"
+                                        message="#{msgs.itemEdit_itemPanel_validationError_amount_greaterThan_containerSize}"
+                                        rendered="#{itemBean.directContainer}"
+                                        disabled="#{itemBean.historyMode}" /> -->
                                 </b:column>
                                 <b:column span="2" styleClass="directContainerClass">
                                     <b:inputText
@@ -288,6 +314,7 @@
                                     </b:inputTextarea>
                                 </b:column>
                             </b:row>
+                            <b:messages />
                         </b:container>
                     </p:tab>
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_project}">
