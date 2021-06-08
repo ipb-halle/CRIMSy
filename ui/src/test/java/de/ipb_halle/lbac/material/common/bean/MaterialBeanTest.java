@@ -47,6 +47,7 @@ import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -107,6 +108,7 @@ public class MaterialBeanTest extends TestBase {
     @Before
     public void init() {
         super.setUp();
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         ACList publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
         createTaxonomyTreeInDB(publicReadAcl.getId(), publicUser.getId());
@@ -401,11 +403,22 @@ public class MaterialBeanTest extends TestBase {
 
         instance.actionSaveMaterial();
 
-        BioMaterial bioMaterial = (BioMaterial)materialService.loadMaterialById(material.getId());
+        BioMaterial bioMaterial = (BioMaterial) materialService.loadMaterialById(material.getId());
         Assert.assertEquals(4, bioMaterial.getTaxonomy().getId());
-        
+
         instance.startMaterialEdit(bioMaterial);
-        int i=0;
+    }
+
+    @Test
+    public void test007_tryToEditMaterialWithoutName() {
+        material = creationTools.createStructure(project);
+        materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+
+        instance.startMaterialEdit(material);
+        instance.getMaterialNameBean().getNames().clear();
+        instance.actionSaveMaterial();
+
+        Assert.assertEquals("There must be at least one materialname", instance.getErrorMessages());
     }
 
     @Deployment

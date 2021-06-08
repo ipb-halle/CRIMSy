@@ -342,19 +342,23 @@ public class MaterialBean implements Serializable {
     }
 
     public void saveEditedMaterial() throws Exception {
-        setBasicInfos();
-        if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
-            saveEditedStructure();
-        }
-        if (materialEditState.getMaterialToEdit().getType() == MaterialType.BIOMATERIAL) {
-            setTaxonomyToBioMaterial();
-        }
-        materialService.saveEditedMaterial(
-                materialEditState.getMaterialToEdit(),
-                materialEditState.getMaterialBeforeEdit(),
-                materialEditState.getCurrentProject().getUserGroups().getId(),
-                userBean.getCurrentAccount().getId());
 
+        setBasicInfos();
+        if (checkInputValidity()) {
+            if (materialEditState.getMaterialToEdit().getType() == MaterialType.STRUCTURE) {
+                saveEditedStructure();
+            }
+            if (materialEditState.getMaterialToEdit().getType() == MaterialType.BIOMATERIAL) {
+                setTaxonomyToBioMaterial();
+            }
+            materialService.saveEditedMaterial(
+                    materialEditState.getMaterialToEdit(),
+                    materialEditState.getMaterialBeforeEdit(),
+                    materialEditState.getCurrentProject().getUserGroups().getId(),
+                    userBean.getCurrentAccount().getId());
+        } else {
+            throw new Exception("Material not valide");
+        }
     }
 
     private void setBasicInfos() {
@@ -395,7 +399,7 @@ public class MaterialBean implements Serializable {
         try {
             biomaterial.setTaxonomy((Taxonomy) taxonomyController.getSelectedTaxonomy().getData());
         } catch (Exception e) {
-            logger.info("Could not set taxonomy to biomaterial: "+ExceptionUtils.getStackTrace(e));
+            logger.info("Could not set taxonomy to biomaterial: " + ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -460,6 +464,10 @@ public class MaterialBean implements Serializable {
         boolean isValide = true;
         errorMessages.clear();
         int count = 1;
+        if (materialNameBean.getNames().isEmpty()) {
+            isValide = false;
+            errorMessages.add("There must be at least one materialname");
+        }
         for (MaterialName mn : materialNameBean.getNames()) {
             if (mn.getValue().isEmpty()) {
                 isValide = false;
