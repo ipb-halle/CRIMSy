@@ -251,7 +251,7 @@ public class ItemBean implements Serializable {
                 navigator.navigate("/item/items");
             }
         } catch (Exception e) {
-            messagePresenter.error("materialCreation_creation_error");
+            messagePresenter.error("itemEdit_save_failed");
         }
     }
 
