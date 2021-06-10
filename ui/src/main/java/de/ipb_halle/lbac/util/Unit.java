@@ -62,9 +62,9 @@ public class Unit {
         addUnit(new Unit(Quality.VOLUME, "l", 1.0e-3));
         addUnit(new Unit(Quality.VOLUME, "ml", 1.0e-6));
         addUnit(new Unit(Quality.VOLUME, "µl", 1.0e-9));
-        addUnit(new Unit(Quality.VOLUME, "dm^3", 1.0e-3));
-        addUnit(new Unit(Quality.VOLUME, "cm^3", 1.0e-6));
-        addUnit(new Unit(Quality.VOLUME, "mm^3", 1.0e-9));
+//        addUnit(new Unit(Quality.VOLUME, "dm^3", 1.0e-3));
+//        addUnit(new Unit(Quality.VOLUME, "cm^3", 1.0e-6));
+//        addUnit(new Unit(Quality.VOLUME, "mm^3", 1.0e-9));
 
         addUnit(new Unit(Quality.MASS, "kg", 1.0));
         addUnit(new Unit(Quality.MASS, "g", 1.0e-3));
@@ -90,6 +90,9 @@ public class Unit {
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "%", 1.0e-2));
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "ppm", 1.0e-6));
         addUnit(new Unit(Quality.PERCENT_CONCENTRATION, "ppb", 1.0e-9));
+
+        addUnit(new Unit(Quality.MASS_CONCENTRATION, "g/l", 1.0));
+        addUnit(new Unit(Quality.MASS_CONCENTRATION, "mg/l", 1.0e-3));
     }
 
     /*

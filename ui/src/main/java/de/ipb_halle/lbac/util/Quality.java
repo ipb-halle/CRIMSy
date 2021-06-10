@@ -34,7 +34,8 @@ public enum Quality {
     AMOUNT_OF_SUBSTANCE("mol"),
     MOLAR_MASS("g/mol"),
     MOLAR_CONCENTRATION("M"),
-    PERCENT_CONCENTRATION("[1]");
+    PERCENT_CONCENTRATION("[1]"),
+    MASS_CONCENTRATION("g/l");
 
     private String baseUnit;
 

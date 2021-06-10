@@ -470,6 +470,7 @@ public class ItemBean implements Serializable {
     private List<Unit> loadConcentrationUnits() {
         return Unit.getUnitsOfQuality(
                 Quality.MOLAR_CONCENTRATION,
+                Quality.MASS_CONCENTRATION,
                 Quality.PERCENT_CONCENTRATION);
     }
 
