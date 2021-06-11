@@ -391,7 +391,7 @@ public class ItemBean implements Serializable {
     }
 
     public String getMaterialName() {
-        return state.getEditedItem().getMaterial().getNames().get(0).getValue();
+        return state.getEditedItem().getMaterial().getFirstName();
     }
 
     public List<Project> getProjects() {

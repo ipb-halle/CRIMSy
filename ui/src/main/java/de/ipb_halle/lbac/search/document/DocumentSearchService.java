@@ -188,11 +188,9 @@ public class DocumentSearchService {
         DocumentSearchConditionBuilder conBuilder = new DocumentSearchConditionBuilder(createEntityGraph(), "files");
         conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(conBuilder.convertRequestToCondition(request, ACPermission.permREAD));
-        logger.info(sql);
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
-            logger.info(param.getArgumentKey() + " : " + param.getValue());
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());

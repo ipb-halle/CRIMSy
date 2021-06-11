@@ -143,9 +143,9 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
         }
         logger.info("----- Hazards ------");
         for (HazardType h : hazards.getHazards().keySet()) {
-            logger.info("  " + h.getName()+ ": " + hazards.getHazards().get(h));
+            logger.info("  " + h.getName() + ": " + hazards.getHazards().get(h));
         }
-      
+
         logger.info("----- StorageInformation ------");
         logger.info("  StorageClass: " + storageInformation.getStorageClass().getName());
         logger.info("  Remarks: " + storageInformation.getRemarks());
@@ -161,11 +161,15 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
         } catch (Exception e) {
             // ignore
         }
-        return "Name not set: MaterialId " + Integer.toString(id);
+        return "Material " + Integer.toString(id);
     }
 
     public String getFirstName() {
-        return names.get(0).getValue();
+        if (!names.isEmpty()) {
+            return names.get(0).getValue();
+        } else {
+            return Integer.toString(id);
+        }
     }
 
     public List<IndexEntry> getIndices() {

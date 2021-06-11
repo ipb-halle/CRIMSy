@@ -21,8 +21,9 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchTarget;
-import de.ipb_halle.lbac.service.NodeService;
 import java.io.UnsupportedEncodingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -31,6 +32,7 @@ import java.io.UnsupportedEncodingException;
 public class NetObjectPresenter {
 
     private User user;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public NetObjectPresenter(User user) {
         this.user = user;
