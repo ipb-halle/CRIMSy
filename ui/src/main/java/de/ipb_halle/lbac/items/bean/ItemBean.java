@@ -630,72 +630,52 @@ public class ItemBean implements Serializable {
 
     /**
      * Cross-field validator that checks if the amount is less than or equal the
-     * container size. This is the implementation of method #1 of
-     * https://stackoverflow.com/a/6282509
+     * container size. See https://github.com/omnifaces/omnifaces/issues/411 for
+     * details on how to use o:validateMultiple with disabled target components.
      * 
      * @param context
-     * @param component UIInput component of the inputHidden
-     * @param value
-     * @throws ValidatorException
+     * @param components components to be validated
+     * @param values the components' submitted values
+     * @return true if validation succeeds
      */
-    public void validateAmountVsContainerSize(FacesContext context,
-            UIComponent component, Object value) throws ValidatorException {
-        UIInput amountInputComponent = (UIInput) component.getAttributes()
-                .get("amount");
-        UIInput containerSizeInputComponent = (UIInput) component
-                .getAttributes().get("containerSize");
-
+    public boolean validateAmountVsContainerSize(FacesContext context, List<UIInput> components, List<Object> values) {
         /*
-         * No null-check before, thus we will throw a NPE in case the EL-binding
-         * fails or the attribute tag wasn't set.
+         * This is a workaround.
+         * The validation process of o:validateMultiple could be disabled via
+         * disabled="#{itemBean.historyMode}". For some reason, the validator
+         * is not invoked when returning back to the edit state from navigation
+         * through the history.
          */
-        Object val1 = amountInputComponent.getValue();
-        Object val2 = containerSizeInputComponent.getValue();
-
-        if ((val1 == null) || (val2 == null)) {
-            throw new ValidatorException(new FacesMessage());
+        if (!isDirectContainer() || isHistoryMode()) {
+            return true;
         }
+        if (values.size() != 2) {
+            return false;
+        }
+
+        Object val1 = values.get(0);
+        Object val2 = values.get(1);
+
+        // amount field is null, that's not expected.
+        if (val1 == null) {
+            return false;
+        }
+
+        // containerSize field can be null in case the component is disabled (e.g. in edit mode).
+        if (val2 == null) {
+            val2 = components.get(1).getValue();
+        }
+
         /*
          * JSF's convertNumber is not very exact on the specific type. Thus, we
          * need to convert to double.
          */
         if (!(val1 instanceof Number) || !(val2 instanceof Number)) {
-            throw new ValidatorException(new FacesMessage());
+            return false;
         }
         double amount = ((Number) val1).doubleValue();
         double containerSize = ((Number) val2).doubleValue();
 
-        if (amount > containerSize) {
-            throw new ValidatorException(new FacesMessage());
-        }
+        return amount <= containerSize;
     }
-
-//    /*
-//     * Please use this implementation as soon as https://github.com/omnifaces/omnifaces/issues/411 is
-//     * implemented in OmniFaces' 2.x branch.
-//     */
-//    public boolean validateAmountVsContainerSize(FacesContext context, List<UIInput> components, List<Object> values) {
-//        if (values.size() != 2) {
-//            return false;
-//        }
-//
-//        Object val1 = values.get(0);
-//        Object val2 = values.get(1);
-//
-//        if ((val1 == null) || (val2 == null)) {
-//            return false;
-//        }
-//
-//        /*
-//         * JSF's convertNumber is not very exact on the specific type. Thus, we
-//         * need to convert to double.
-//         */
-//        if (!(val1 instanceof Number) || !(val2 instanceof Number)) {
-//            return false;
-//        }
-//        double amount = ((Number) val1).doubleValue();
-//        double containerSize = ((Number) val2).doubleValue();
-//
-//        return amount <= containerSize;
-//    }
 }
