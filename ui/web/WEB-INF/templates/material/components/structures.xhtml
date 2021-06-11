@@ -52,6 +52,7 @@
                                 <mol:molecule
                                     value="#{materialBean.structureInfos.structureModel}"
                                     pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                    format="MDLV2000"
                                     border="true"
                                     readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
                                     widgetVar="structurePlugin">
