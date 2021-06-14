@@ -190,7 +190,7 @@ public class MaterialBean implements Serializable {
                     m.getType(),
                     acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()),
                     m.getHazards().getHazards(), messagePresenter);
-            materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m, hazardController);
+            materialEditState = new MaterialEditState(p, currentVersionDate, m.copyMaterial(), m.copyMaterial(), hazardController);
             possibleProjects.clear();
             possibleProjects.addAll(projectBean.getReadableProjects());
             currentMaterialType = m.getType();
@@ -228,13 +228,13 @@ public class MaterialBean implements Serializable {
                     taxonomyController,
                     hazardService.getAllHazardTypes()
             );
-
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
     private void initState() {
+        errorMessages = new ArrayList<>();
         hazards = new HazardInformation();
         structureInfos = new StructureInformation();
         materialNameBean.init();
