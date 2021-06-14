@@ -239,11 +239,13 @@ public class MaterialService implements Serializable {
 
             String sql = sqlBuilder.query(con,
                     createOrderList());
+            logger.info(sql);
             Query q = em.createNativeQuery(sql, MaterialEntity.class);
             q.setFirstResult(request.getFirstResult());
             q.setMaxResults(request.getMaxResults());
             for (Value param : sqlBuilder.getValueList()) {
                 q.setParameter(param.getArgumentKey(), param.getValue());
+                logger.info("  "+param.getArgumentKey()+" : "+ param.getValue());
             }
             @SuppressWarnings("unchecked")
             List<MaterialEntity> entities =q.getResultList();

@@ -614,11 +614,11 @@ insert into containertypes(name,description,rank,transportable,unique_name)value
 insert into containertypes(name,description,rank,transportable,unique_name)values('FREEZER',null,90,false,false);
 insert into containertypes(name,description,rank,transportable,unique_name)values('TRAY',null,60,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('WELLPLATE',null,50,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_FLASK',null,0,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_FLASK',null,0,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_VIAL',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLASS_BOTTLE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_BOTTLE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLASS_VIAL',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_VIAL',null,0,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_AMPOULE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLASS_AMPOULE',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_AMPOULE',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('STEEL_BARREL',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_BARREL',null,0,true,true);

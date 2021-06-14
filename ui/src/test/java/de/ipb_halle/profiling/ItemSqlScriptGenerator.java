@@ -85,7 +85,7 @@ public class ItemSqlScriptGenerator {
                     + "null," //solventid
                     + "'item %s'," //description                    
                     + "100," //containersize
-                    + "'GLAS_FLASK',"
+                    + "'GLASS_FLASK',"
                     + "null,"
                     + "cast('%s' as UUID),"
                     + "now());",

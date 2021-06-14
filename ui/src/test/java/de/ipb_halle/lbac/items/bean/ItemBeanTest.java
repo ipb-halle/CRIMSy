@@ -133,7 +133,7 @@ public class ItemBeanTest extends TestBase {
         itemBean.actionStartItemCreation(structure);
         itemBean.getState().getEditedItem().setAmount(20d);
         itemBean.getState().getEditedItem().setUnit(Unit.getUnit("g"));
-        itemBean.getState().getEditedItem().setContainerType(new ContainerType("GLAS_FLASK", 0, false, false));
+        itemBean.getState().getEditedItem().setContainerType(new ContainerType("GLASS_BOTTLE", 0, false, false));
         itemBean.setSolved(true);
         itemBean.getState().getEditedItem().setConcentration(.5d);
         itemBean.getState().getEditedItem().setContainerSize(40d);
@@ -147,7 +147,7 @@ public class ItemBeanTest extends TestBase {
         Assert.assertEquals(structure.getId(), item.getMaterial().getId());
         Assert.assertEquals(20d, item.getAmount(), 0);
         Assert.assertEquals("g", item.getUnit().getUnit());
-        Assert.assertEquals("GLAS_FLASK", item.getContainerType().getName());
+        Assert.assertEquals("GLASS_BOTTLE", item.getContainerType().getName());
         Assert.assertEquals(40d, item.getContainerSize(), 0);
         Assert.assertEquals(.5d, item.getConcentration(), 0);
         Assert.assertEquals(project.getId(), item.getProject().getId());
