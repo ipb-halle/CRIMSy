@@ -348,7 +348,7 @@ public class SearchServiceTest extends TestBase {
         createExp4_notReadableItem();
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
-        builder.setMaterialName("Testmaterial-001");
+        builder.setMaterialName("Testmaterial-001");      
         SearchRequest request = builder.build();
         List<Experiment> results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects(Experiment.class, localNode);
         List<Integer> ids = results.stream()
