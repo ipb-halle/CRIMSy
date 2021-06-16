@@ -18,20 +18,25 @@
 package de.ipb_halle.lbac.material.structure;
 
 import java.io.Serializable;
+import java.io.StringReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openscience.cdk.AtomContainer;
+import org.openscience.cdk.interfaces.IAtomContainer;
+import org.openscience.cdk.io.MDLV2000Reader;
 
 /**
  *
  * @author fmauz
  */
-public class Molecule  implements Serializable{
+public class Molecule implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected final Logger logger = LogManager.getLogger(this.getClass().getName());
 
     protected String structureModel;
     private int id;
-  
 
     public Molecule() {
     }
@@ -39,7 +44,7 @@ public class Molecule  implements Serializable{
     public Molecule(String structureModel, int id) {
         this.structureModel = structureModel;
         this.id = id;
-       
+
     }
 
     public String getStructureModel() {
@@ -58,9 +63,17 @@ public class Molecule  implements Serializable{
         this.id = id;
     }
 
-    //ToDo: implement method
     public boolean isEmptyMolecule() {
-       return structureModel==null || structureModel.isEmpty();
+        boolean empty = structureModel == null || structureModel.isEmpty();
+        boolean noAtoms = true;
+        try (MDLV2000Reader reader = new MDLV2000Reader(new StringReader(structureModel))) {
+            IAtomContainer atom = reader.read(new AtomContainer());
+            noAtoms = atom.getAtomCount() == 0;
+        } catch (Exception e) {
+            return true;
+        }
+        return empty || noAtoms;
+
     }
 
 }
