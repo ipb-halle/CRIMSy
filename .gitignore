@@ -1,9 +1,20 @@
 META-INF
 config
+docs/_build
 documentation/**/*.pdf
 target
+agency/target
+agency/test
+agency-api/target
 ui/doc/diagrams/png/
 ui/doc/diagrams/svg/
 ui/nbactions.xml
 ui/nb-configuration.xml
 ui/target
+*~
+
+# Eclipse IDE
+*/.classpath
+*/.project
+*/.settings/
+*/.metadata/

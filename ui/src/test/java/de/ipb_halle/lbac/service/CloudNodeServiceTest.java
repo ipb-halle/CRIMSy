@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,7 @@ public class CloudNodeServiceTest extends TestBase {
      */
     @Test
     public void testCloudNodeService() {
+        
         Cloud cloud = cloudService.save(new Cloud(TEST_CLOUDNODESERVICE_CLOUD));
         Node node = nodeService.loadById(TEST_NODE_ID);
         CloudNode cloudNode = cloudNodeService.save(new CloudNode(cloud, node));

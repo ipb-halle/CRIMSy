@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,11 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.entity.InfoEntityList;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.service.InfoObjectService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -34,7 +32,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.Context;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -47,6 +44,7 @@ public class SystemSettings implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     public final static String SETTING_FORCE_LOGIN = "SETTING_FORCE_LOGIN";
+    public final static String SETTING_AGENCY_SECRET = "SETTING_AGENCY_SECRET";
 
     private transient Logger logger;
 
@@ -78,6 +76,7 @@ public class SystemSettings implements Serializable {
         initProperty(this.stringSettings, "SETTING_GDPR_CONTACT", "Name, Vorname");
         initProperty(this.stringSettings, "SETTING_INSTITUTION_WEB", "Homepage");
         initProperty(this.boolSettings, SETTING_FORCE_LOGIN, "True");
+        initProperty(this.stringSettings, SETTING_AGENCY_SECRET, "");
     }
 
     public Boolean getBoolean(String prop) {
@@ -124,7 +123,6 @@ public class SystemSettings implements Serializable {
         ListIterator<InfoObject> iter = items.listIterator();
         while (iter.hasNext()) {
             InfoObject ie = iter.next();
-            this.logger.info(String.format("save(): %s -> %s", ie.getKey(), ie.getValue()));
             infoObjectService.save((InfoObject) ie
                     .setOwner(this.globalAdmissionContext.getAdminAccount())
                     .setACList(this.globalAdmissionContext.getAdminOnlyACL()));

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@ package de.ipb_halle.lbac.globals;
 
 import de.ipb_halle.lbac.globals.health.HealthState;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.announcement.membership.MembershipWebService;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.admission.MembershipWebService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
@@ -30,6 +29,8 @@ import de.ipb_halle.lbac.webservice.CloudNodeWebService;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
 import de.ipb_halle.lbac.globals.health.HealthStateCheck;
 import de.ipb_halle.lbac.globals.health.HealthStateRepair;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.DependsOn;
@@ -43,6 +44,7 @@ import org.apache.logging.log4j.LogManager;
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 @Singleton
 @Startup
@@ -68,14 +70,17 @@ public class InitApplication {
     private NodeService nodeService;
 
     @Inject
-    private SolrAdminService solrAdminService;
-
-    @Inject
     private FileService fs;
     private Logger logger = LogManager.getLogger(InitApplication.class);
 
     @Inject
     private KeyManager keyManager;
+
+    @Inject
+    private TaxonomyService taxonomyService;
+
+    @Inject
+    private MaterialService materialService;
 
     @PostConstruct
     public void init() {
@@ -84,7 +89,7 @@ public class InitApplication {
         try {
             healthCheck();
         } catch (Exception e) {
-            logger.error("Error at healthcheck", e);
+            logger.error("Error at healthcheck", ExceptionUtils.getStackTrace(e));
         }
         restCheck();
         initialiseKeyManager();
@@ -102,15 +107,13 @@ public class InitApplication {
     private void healthCheck() {
         HealthStateCheck healthChecker = new HealthStateCheck(
                 infoObjectService,
-                solrAdminService,
                 fs,
                 PUBLIC_COLLECTION_NAME,
                 nodeService,
-                collectionService);
-
+                collectionService,
+                taxonomyService);
         //*** check DB connection and db schema ***
         HealthState healthState = healthChecker.checkHealthState();
-
         HealthStateRepair healthRepairer = new HealthStateRepair(
                 PUBLIC_COLLECTION_NAME,
                 healthState,
@@ -119,16 +122,19 @@ public class InitApplication {
                 this.globalAdmissionContext.getPublicReadACL(),
                 this.globalAdmissionContext.getAdminAccount(),
                 fs,
-                solrAdminService);
+                materialService);
 
         if (healthRepairer.isRepairOfPublicCollectionNeeded()) {
             healthRepairer.repairPublicCollection();
+        }
+
+        if (healthRepairer.isTaxonomyRepairNeeded()) {
+            healthRepairer.repairRootTaxonomy();
         }
     }
 
     private void restCheck() {
         logger.info("--- 2. check rest api ---");
-
         logger.info("REST CollectionWebService: " + getRestApiDefaultPath(CollectionWebService.class));
         logger.info("REST CloudNodeWebService: " + getRestApiDefaultPath(CloudNodeWebService.class));
         logger.info("REST MembershipWebService: " + getRestApiDefaultPath(MembershipWebService.class));
@@ -144,7 +150,7 @@ public class InitApplication {
                 keyManager.updatePublicKeyOfLocalNode();
             }
         } catch (Exception e) {
-            logger.error("Error at initialising keymanager", e);
+            logger.error("Error at initialising keymanager", ExceptionUtils.getStackTrace(e));
         }
     }
 }

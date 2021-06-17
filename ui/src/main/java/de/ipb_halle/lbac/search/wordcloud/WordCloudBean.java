@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,10 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.entity.TermFrequency;
-import de.ipb_halle.lbac.entity.TermFrequencyList;
-import de.ipb_halle.lbac.file.StemmedWordOrigin;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.search.document.Document;
+import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -43,6 +42,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.primefaces.event.SelectEvent;
@@ -134,7 +134,7 @@ public class WordCloudBean implements Serializable {
             createWordCloud(wordTerms);
             
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -168,7 +168,7 @@ public class WordCloudBean implements Serializable {
 
             createWordCloud(remainingTerms);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -282,7 +282,7 @@ public class WordCloudBean implements Serializable {
             d.setTermFreqList(
                     new TermFrequencyList(
                             termVectorService.getTermVector(
-                                    Arrays.asList(d.getId().toString()),
+                                    Arrays.asList(d.getId()),
                                     Integer.parseInt(maxTerms)
                             )
                     ));

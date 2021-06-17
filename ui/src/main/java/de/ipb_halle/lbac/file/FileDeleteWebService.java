@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,9 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
-import de.ipb_halle.lbac.file.FileDeleteExec;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.collections.CollectionService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,13 +33,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @WebServlet(name = "FileDeleteWebService", urlPatterns = {"/deletedocs/*"}, asyncSupported = true)
 public class FileDeleteWebService extends HttpServlet {
 
-    private final static long   serialVersionUID = 1L;
-    private final        Logger logger           = LogManager.getLogger(FileDeleteWebService.class);
+    private final static long serialVersionUID = 1L;
+    private final Logger logger = LogManager.getLogger(FileDeleteWebService.class);
 
     @Inject
     private CollectionService collectionService;
@@ -51,28 +49,21 @@ public class FileDeleteWebService extends HttpServlet {
     private FileEntityService fileEntityService;
 
     @Inject
-    private SolrAdminService solrAdminService;
-
-    @Inject
     private ACListService aclistService;
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-
         final HttpSession session = req.getSession();
-
-        this.logger.info("doDelete::start");
         final AsyncContext asyncContext = req.startAsync();
         resp.setContentType("text/html");
 
         //*** check session object for security ***
         User user = (User) session.getAttribute("currentUser");
-        if (user == null){
+        if (user == null) {
             logger.warn("get user session object failed.");
             resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             return;
         }
-
 
         /**
          * TODO: check DELETE access permission
@@ -86,7 +77,7 @@ public class FileDeleteWebService extends HttpServlet {
             List<FileObject> fe = this.fileEntityService.load(cmap);
 
             if ((fe != null) && (fe.size() > 0)) {
-                asyncContext.start(new FileDeleteExec(fe.get(0), fileEntityService, solrAdminService, asyncContext));
+                asyncContext.start(new FileDeleteExec(fe.get(0), fileEntityService, asyncContext));
 
             } else {
                 this.logger.warn("doDelete(): could not obtain fileEntity");

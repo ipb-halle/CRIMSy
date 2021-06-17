@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,13 @@
  */
 package de.ipb_halle.lbac.collections.mock;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.file.FileObject;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  *
@@ -49,7 +48,7 @@ public class FileEntityServiceMock extends FileEntityService {
     }
 
     @Override
-    public FileObject getFileEntity(UUID uuid) {
+    public FileObject getFileEntity(Integer id) {
         return new FileObject();
     }
 
@@ -68,12 +67,13 @@ public class FileEntityServiceMock extends FileEntityService {
     }
 
     @Override
-    public void save(FileObject fileEntity) {
-
+    public FileObject save(FileObject fileEntity) {
+        return null;
     }
+
     @Override
     public void delete(Collection collection) {
-        
+
     }
 
 }

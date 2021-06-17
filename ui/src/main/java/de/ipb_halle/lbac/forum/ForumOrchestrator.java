@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,10 @@ package de.ipb_halle.lbac.forum;
 import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.NodeService;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
@@ -36,7 +36,7 @@ import javax.inject.Inject;
  * @author fmauz
  */
 @Stateless
-public class ForumOrchestrator {
+public class ForumOrchestrator implements Serializable{
 
     @Resource
     ManagedExecutorService managedExecutorService;

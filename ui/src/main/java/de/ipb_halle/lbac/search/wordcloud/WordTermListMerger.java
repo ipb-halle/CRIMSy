@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.entity.TermFrequency;
+import de.ipb_halle.lbac.search.document.Document;
+import de.ipb_halle.lbac.file.TermFrequency;
+import java.io.Serializable;
 import java.util.List;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
  * Merges a list of wordterms with a new chunk of found documents from a remote
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
  *
  * @author fmauz
  */
-public class WordTermListMerger {
+public class WordTermListMerger implements Serializable{
 
     public List<WordTerm> mergeTerms(
             List<WordTerm> originalList,

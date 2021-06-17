@@ -23,21 +23,21 @@
  http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.ipb_halle</groupId>
-    <artifactId>lbac-ui</artifactId>
+    <groupId>de.ipb-halle</groupId>
+    <artifactId>ui</artifactId>
     <version>1.3.0</version>
     <scm>
-        <connection>scm:git:http://bitbucket.ipb-halle.de/scm/lbac/lbac.git</connection>
-        <url>http://bitbucket.ipb-halle.de/scm/lbac/lbac.git</url>
+        <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
+        <url>https://github.com/ipb-halle/CRIMSy.git</url>
     </scm>
     <packaging>war</packaging>
 
-    <name>lbac-ui</name>
-    <url>http://www.leibniz-wirkstoffe.de</url>
+    <name>CRIMSy ui</name>
+    <url>https://github.com/ipb-halle/CRIMSy</url>
 
     <organization>
         <name>Leibniz Inst. of Plant Biochemistry (IPB), Halle (Saale), Germany</name>
-        <url>http://www.ipb-halle.de</url>
+        <url>https://www.ipb-halle.de</url>
     </organization>
 
     <properties>
@@ -60,11 +60,11 @@
         <repository>
             <id>pentaho-releases</id>
             <!-- address no longer valid <url>http://repository.pentaho.org/artifactory/repo/</url> -->
-            <url>http://nexus.pentaho.org/content/groups/omni</url>
+            <url>https://nexus.pentaho.org/content/groups/omni</url>
         </repository>
         <repository>
             <id>primefaces themes</id>
-            <url>http://repository.primefaces.org/</url>
+            <url>https://repository.primefaces.org/</url>
         </repository>
     </repositories>
 
@@ -87,6 +87,20 @@
                     <encoding>UTF-8</encoding>
                     <nohelp>true</nohelp>
                     <show>private</show>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <quiet>true</quiet>
+                    <cobertura.maxmem>1024m</cobertura.maxmem>
+                    <instrumentation>
+                        <maxmem>1024m</maxmem>
+                    </instrumentation>
+                    <argLine>-Xms1024m -Xmx4096m -XX:MaxPermSize=4096m</argLine>
+                    <!-- <argLine>-Xmx2048m</argLine> -->
                 </configuration>
             </plugin>
         </plugins>
@@ -112,9 +126,28 @@
                 </configuration>
             </plugin>
             
-
-                
-            
+            <!-- 2020-10-02: surefire plugin included explicitly to downgrade -->
+            <!-- from version 2.12.4 to 2.12 to fix cobertura code coverage -->
+            <!-- https://stackoverflow.com/questions/41244589/cobertura-error-reading-file-cobertura-ser-null-java-io-eofexception-null -->
+      
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>2.17</version>
+                    </dependency>
+                </dependencies>             
+                <configuration>                     
+                    <groups>${testcase.include}</groups>
+                    <excludedGroups>${testcase.exclude}</excludedGroups>
+                </configuration>
+            </plugin>
+      
+           
             <!-- A maven plugin to process annotation for jdk6 at compile time -->
             <plugin>
                 <groupId>org.bsc.maven</groupId>
@@ -201,6 +234,9 @@
                     <warSourceDirectory>web</warSourceDirectory>
                     <failOnMissingWebXml>true</failOnMissingWebXml>
                     <warName>ui</warName>
+                    
+
+                    
                     <archive>
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
@@ -241,6 +277,28 @@
 
 
     <dependencies>
+
+        <!-- crimsy-agency-api -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>crimsy-agency-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- OWASP java HTML sanitizer -->
+        <dependency>
+            <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+            <artifactId>owasp-java-html-sanitizer</artifactId>
+            <version>20200713.1</version>
+        </dependency>
+
+        <!-- barcoding: Google ZXing -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
         <!-- Provided dependencies by the server -->
         <!-- APIs for CDI (Contexts and Dependency Injection for Java)-->
         <dependency>
@@ -250,10 +308,11 @@
             <scope>provided</scope>
         </dependency>
         
-        <!-- compined (API and implementation) jsf  -->
+        <!-- Apache MyFaces JSF -->
+        <!-- Mojarra 2.2.12 had issues with nested ui:repeat elements -->
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.faces</artifactId>
+            <groupId>org.apache.myfaces.core</groupId>
+            <artifactId>myfaces-api</artifactId>
             <version>2.2.12</version>
             <scope>provided</scope>
         </dependency>
@@ -298,11 +357,75 @@
             <scope>compile</scope>
         </dependency>
         
-        <!-- Ui Library for jsf-->
+        <!-- RTF ParserKit -->
+        <dependency>
+            <groupId>com.github.joniles</groupId>
+            <artifactId>rtfparserkit</artifactId>
+            <version>1.15.0</version>
+        </dependency>
+
+        <!-- CDK -->
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-core</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-ctab</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-data</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-formula</artifactId>
+            <version>2.3</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-smiles</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-interfaces</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-io</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openscience.cdk</groupId>
+            <artifactId>cdk-valencycheck</artifactId>
+            <version>2.3</version>
+        </dependency>
+
+
+        <!-- PrimeFaces Ui Library for jsf-->
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>6.1</version>
+            <version>6.2</version>
+        </dependency>
+
+        <!-- PrimeFaces FontAwesome 5.x -->
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>font-awesome</artifactId>
+            <version>5.12.0</version>
         </dependency>
         
         <!-- PrimeFaces Bootstrap Theme. Has its own repository -->
@@ -325,6 +448,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
             <version>${hibernate.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- hibernate stuff -->
@@ -332,28 +456,30 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <version>${hibernate.version}</version>
+            <scope>provided</scope>
         </dependency>
-        
+
         <!-- Hibernate Validator Engine Relocation Artifact -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>5.3.6.Final</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Clean-room definition of JPA APIs intended for use in 
-        developing Hibernate JPA implementation -->
+        <!-- jpa2.2 - replacement for jpa2.1 -->
         <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>1.0.2.Final</version>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
         </dependency>
         
         <!-- org.postgresql/postgresql JDBC 4.2 -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.1.4</version>
+            <version>42.2.16</version>
         </dependency>
         
         <!--hibernate support for postgres json, jsonb field types -->
@@ -362,7 +488,6 @@
             <artifactId>hibernate-types-52</artifactId>
             <version>2.10.4</version>
         </dependency>
-        
 
         <!-- SolrJ -->
         <dependency>
@@ -373,9 +498,9 @@
 
         <!-- Reference implementation of JSON encoders/decoders -->
         <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20180130</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
         </dependency>
         
         <!-- tomee javaEE api-->
@@ -389,7 +514,7 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.13.1</version>
+            <version>2.13.2</version>
         </dependency>
 
         <dependency>
@@ -412,7 +537,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.191</version>
+            <version>1.4.200</version>
             <scope>test</scope>
         </dependency>
 
@@ -420,7 +545,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
             <artifactId>arquillian-junit-container</artifactId>
-            <version>1.1.13.Final</version>
+            <version>1.6.0.Final</version>
             <scope>test</scope>
         </dependency>
 
@@ -440,6 +565,12 @@
             <version>7.0.5</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>4.0.3</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Needed for shrinkwrap -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -451,6 +582,35 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
             <version>1.2.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>de.ipb_halle</groupId>
+            <artifactId>tx</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- MolecularFaces -->
+        <dependency>
+            <groupId>de.ipb-halle</groupId>
+            <artifactId>molecularfaces</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+
+        <!-- The OWASP JSON sanitizer is used by the
+             JsonSanitizingConverter class for sanitizing
+             user input data. -->
+        <dependency>
+            <groupId>com.mikesamuel</groupId>
+            <artifactId>json-sanitizer</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
+        <!-- PrettyTime is used in conversion of date and time.
+             This offers the JSF converter 'prettyTimeConverter'. -->
+        <dependency>
+            <groupId>org.ocpsoft.prettytime</groupId>
+            <artifactId>prettytime-integration-jsf</artifactId>
+            <version>5.0.0.Final</version>
         </dependency>
     </dependencies>
 </project> 

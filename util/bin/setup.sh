@@ -21,8 +21,10 @@
 # 
 #==========================================================
 #
-LBAC_EXPECTED_CONFIG_VERSION=3
+LBAC_EXPECTED_CONFIG_VERSION=5
 LBAC_CONFIG=etc/config.sh
+
+LBAC_DB_PWFILE=db.passwd
 
 LBAC_SSL_KEYFILE=lbac_cert.key
 LBAC_SSL_PWFILE=lbac_cert.passwd
@@ -33,58 +35,31 @@ LBAC_OFFICIAL_PWFILE=official_cert.passwd
 
 LBAC_M4=dist/etc/config_m4.inc
 LBAC_PGSQL_PORT_ENABLE="dnl"
-LBAC_SOLR_PORT_ENABLE="dnl"
 LBAC_TOMEE_PORT_ENABLE="dnl"
 LBAC_HSTS_ENABLE="dnl"
-LBAC_PROXY_OVERRIDE="AUTO";
 LBAC_CLOUD_MODE="AUTO";
-LBAC_SKIP_PREINSTALL="OFF"
+LBAC_SKIP_SNAPSHOT="OFF"
 #
 #==========================================================
 #
-# configure the proxy (eventually override ON / OFF)
-# ToDo: enable / override HSTS
+# clean the distribution directory (everything except dist/etc)
+#
+function cleanDist {
+    pushd dist > /dev/null
+    # ToDo: remove folder pgchem in future revisions
+    rm -rf bin db extralib pgchem proxy ui
+    popd > /dev/null
+    
+}
+#
+#==========================================================
+# configure the proxy 
 #
 function configProxy {
-        case $LBAC_PROXY_MODE in
-            OFF)
-                LBAC_PROXY_ENABLE="dnl"
-                LBAC_TOMEE_PORT_ENABLE=" "
-                LBAC_PROXY_ENABLE2="OFF"
-                ;;
-            ON)
-                LBAC_PROXY_ENABLE=" "
-                LBAC_PROXY_ENABLE2="ON"
-                ;;
-            *)
-                LBAC_PROXY_ENABLE=" "
-                LBAC_PROXY_ENABLE2="ON"
-        esac 
 
-        #
-        # CAVEAT side effect: TomEE port will still be enabled if 
-        # LBAC_PROXY_MODE is OFF but is overriden to ON by command line
-        #
-        case $LBAC_PROXY_OVERRIDE in
-            ON)
-                LBAC_PROXY_ENABLE=" "
-                LBAC_PROXY_ENABLE2="ON"
-            ;;
-            OFF)
-                LBAC_PROXY_ENABLE="dnl"
-                LBAC_PROXY_ENABLE2="OFF"
-                LBAC_TOMEE_PORT_ENABLE=" "
-            ;;
-        esac
+    # update current certificates and CRLs
+    $LBAC_DATASTORE/dist/bin/updateCloud.sh install
 
-        echo "LBAC_PROXY_ENABLE2=\"$LBAC_PROXY_ENABLE2\"" \
-          >> "$LBAC_DATASTORE/dist/$LBAC_CONFIG"
-
-        # update current certificates and CRLs
-        # chain
-        if test $LBAC_PROXY_ENABLE2 = "ON" ; then
-            $LBAC_DATASTORE/dist/bin/updateCloud.sh install
-        fi
 }
 
 #
@@ -92,20 +67,21 @@ function configProxy {
 # Note: This function must be run prior to mfour()!
 #
 function copyConfig {
+	mkdir -p $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD
 
-	# directory dist/etc already created by createProperties
 	cp $LBAC_DATASTORE/$LBAC_CONFIG $LBAC_DATASTORE/dist/etc
+        cp $LBAC_DATASTORE/etc/primary.cfg $LBAC_DATASTORE/dist/etc
+        cp $LBAC_DATASTORE/etc/clouds.cfg $LBAC_DATASTORE/dist/etc
+	cp $LBAC_DATASTORE/etc/$LBAC_SSL_PWFILE $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.keypass
 }
 
 #
 # create a properties file
 #
 function createProperties {
-	# LBAC_SSL_PWFILE copied already by keySetup
 	LBAC_KEYSTORE_PASSWORD=`cat $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.keypass`
 	LBAC_TRUSTSTORE_PASSWORD=`cat $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.trustpass`
 
-	mkdir -p $LBAC_DATASTORE/dist/etc
 	cat <<EOF > $LBAC_DATASTORE/dist/etc/lbac_properties.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
@@ -138,7 +114,6 @@ EOF
 #
 function keySetup {
         # keystore password
-	cp "$LBAC_DATASTORE/etc/$LBAC_SSL_PWFILE" "$LBAC_DATASTORE/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.keypass"
 
         #
 	# store unencrypted keys for proxy 
@@ -211,8 +186,6 @@ function keySetup {
 #
 function makeDataDir {
 	mkdir -p "$LBAC_DATASTORE/data/db"
-	mkdir -p "$LBAC_DATASTORE/data/htdocs"
-	mkdir -p "$LBAC_DATASTORE/data/solr"
 	mkdir -p "$LBAC_DATASTORE/data/ui"
 }
 
@@ -257,11 +230,10 @@ define(\`LBAC_MASTER_INSTITUTION', \`$LBAC_MASTER_INSTITUTION')dnl
 define(\`LBAC_NODE_ID',\`$LBAC_NODE_ID')dnl
 define(\`LBAC_NODE_RANK',\`$LBAC_NODE_RANK')dnl
 define(\`LBAC_PGSQL_PORT_ENABLE',\`$LBAC_PGSQL_PORT_ENABLE')dnl
-define(\`LBAC_SOLR_PORT_ENABLE',\`$LBAC_SOLR_PORT_ENABLE')dnl
 define(\`LBAC_TOMEE_PORT_ENABLE',\`$LBAC_TOMEE_PORT_ENABLE')dnl
-define(\`LBAC_PROXY_ENABLE',\`$LBAC_PROXY_ENABLE')dnl
 define(\`LBAC_HSTS_ENABLE',\`$LBAC_HSTS_ENABLE')dnl
 define(\`LBAC_PRIMARY_CLOUD',\`$LBAC_CLOUD')dnl
+define(\`LBAC_DB_PASSWD',\``cat $LBAC_DATASTORE/etc/$LBAC_DB_PWFILE`')dnl
 EOF
 }
 
@@ -279,56 +251,47 @@ function preprocess {
 export -f preprocess
 
 #
-# test if a previous installation of LBAC exists
-# and act accordingly:
-# - possibly shut down node
-# - backup and make database dump
-#
-function preInstallTest {
-    if [ -f "$LBAC_DATASTORE/dist/bin/setupROOT.sh" ] ;then
-        LBAC_OLDINSTALL_AVAIL=TRUE
-        echo "  scheduling snapshot / backup ..." 
-
-        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" snapshot
-
-        echo "  shutting down containers ..."
-        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" shutdown
-        
-	if test -e $LBAC_DATASTORE/dist/dirty ; then
-		rm -rf $LBAC_DATASTORE/dist
-	fi
-    else
-        echo "  No previous installation found":
-        LBAC_OLDINSTALL_AVAIL=FALSE
-    fi
-}
-
-#
 # extract the archive from this file and call all the 
 # other functions
 #
 function setup {
 	cd $LBAC_DATASTORE
 
-        if test $LBAC_SKIP_PREINSTALL = "OFF" ; then
-            echo "Checking of previous installation ..."
-            preInstallTest
+        if test $LBAC_SKIP_SNAPSHOT = "OFF" ; then
+            snapshot 
             echo "Done."
         else
-            echo "Skipping preinstall test"
+            echo "Skipping snapshot / backup"
+        fi
+
+        if [ -f "$LBAC_DATASTORE/dist/bin/setupROOT.sh" ] ;then
+            echo "shutting down instance ..."
+            sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" shutdown
+        fi
+
+        if test -e $LBAC_DATASTORE/dist/dirty ; then
+            # clean up entire dist/ directory if demanded during configure.sh version update
+            echo "completely removing old distribution directory ..."
+            rm -rf $LBAC_DATASTORE/dist
+        else 
+            # otherwise clean up everything except dist/etc/
+            if test -d $LBAC_DATASTORE/dist ; then
+                echo "cleaning up distribution directory (keeping dist/etc/) ..."
+                cleanDist
+            fi
         fi
 
 	echo "Extracting archive ... "
 	cat $1 | uudecode | tar -xzf -
         chmod -R +x $LBAC_DATASTORE/dist/bin
-        LBAC_CLOUD=`cat $LBAC_DATASTORE/dist/etc/primary.cfg`
-
-	echo "Key setup ... "
-	keySetup
+        LBAC_CLOUD=`cat $LBAC_DATASTORE/etc/primary.cfg`
 
 	echo "Preparing configuration ... "
-	createProperties
 	copyConfig
+	createProperties
+
+        echo "Key setup ... "
+        keySetup
 
         echo "Config proxy ..."
         configProxy
@@ -345,14 +308,29 @@ function setup {
 
         echo "Doing superuser actions ..."
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" remove 
-        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" buildPgChem
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" setPermissions
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" installInit
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" installCron
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" postInstall
         sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" start
 
+        echo "Eventually joining other clouds ..."
+        $LBAC_DATASTORE/dist/bin/join.sh --auto
+
 	echo "Setup is finished" 
+}
+
+#
+# test if a previous installation of LBAC exists
+# and make a full backup 
+#
+function snapshot {
+    if [ -f "$LBAC_DATASTORE/dist/bin/setupROOT.sh" ] ;then
+        echo "  scheduling snapshot / backup ..." 
+        sudo "$LBAC_DATASTORE/dist/bin/setupROOT.sh" snapshot
+    else
+        echo "  No previous installation found":
+    fi
 }
 
 function error {
@@ -389,32 +367,20 @@ for i in $* ; do
         --debug)
             echo "Activating debug mode ..."
             LBAC_PGSQL_PORT_ENABLE=" "
-            LBAC_SOLR_PORT_ENABLE=" "
             LBAC_TOMEE_PORT_ENABLE=" "
             ;;
         --help)
             echo "Usage: setup.sh [--debug] [--noproxy] [--proxy] [--standalone]"
             echo 
             echo "  --debug            enable debugging (i.e. open ports)"
-            echo "  --noproxy          disable proxy (requires manual proxy configuration)"
-            echo "  --proxy            enable proxy where manual configuration is default"
-            echo "  --skip-preinstall  skip preinstallation procedure (backup, shutdown, ...)"
+            echo "  --skip-snapshot    skip preinstallation procedure (snapshot / backup)"
             echo "  --standalone       configure node to run standalone"
             echo 
             echo "Please consult manual for further information"
             exit 1
             ;;
-        --noproxy)
-            echo "Disabling https proxy container ..."
-            echo "PLEASE NOTE: You must configure an external proxy yourself!"
-            LBAC_PROXY_OVERRIDE="OFF"
-            ;;
-        --proxy)
-            echo "Enabling https proxy container ..."
-            LBAC_PROXY_OVERRIDE="ON"
-            ;;
-        --skip-preinstall)
-            LBAC_SKIP_PREINSTALL="ON"
+        --skip-snapshot)
+            LBAC_SKIP_SNAPSHOT="ON"
             ;;
         --standalone)
             echo "Activating standalone mode ..."

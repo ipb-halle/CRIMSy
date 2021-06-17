@@ -27,7 +27,7 @@
             <property name="properties">
                 apiDS = new://Resource?type=DataSource
                 apiDS.JdbcDriver = org.h2.Driver
-                apiDS.JdbcUrl = jdbc:h2:mem:test;INIT=RUNSCRIPT FROM 'classpath:init.sql';
+                apiDS.JdbcUrl = jdbc:h2:mem:;INIT=RUNSCRIPT FROM 'classpath:init.sql';
                 apiDS.JtaManaged = true
                 apiDS.LogSql = true
             </property>

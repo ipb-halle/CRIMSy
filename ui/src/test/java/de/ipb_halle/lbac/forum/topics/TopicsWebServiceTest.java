@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ package de.ipb_halle.lbac.forum.topics;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.forum.Topic;
 import de.ipb_halle.lbac.forum.TopicsList;
 import de.ipb_halle.lbac.forum.postings.PostingWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
@@ -91,9 +91,7 @@ public class TopicsWebServiceTest extends TestBase {
 
         User u = createUser(
                 "test",
-                "testName",
-                nodeService.getLocalNode(),
-                memberService, membershipService);
+                "testName");
 
         TopicsWebRequest webRequest = createWebRequest(u);
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);

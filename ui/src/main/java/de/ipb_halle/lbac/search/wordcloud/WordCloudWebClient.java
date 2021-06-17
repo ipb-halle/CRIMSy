@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@
 package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
@@ -29,9 +28,7 @@ import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -54,7 +51,7 @@ public class WordCloudWebClient extends LbacWebClient {
             User user,
             CloudNode cloudNode,
             Set<String> tags,
-            Set<UUID> collectionIDs) {
+            Set<Integer> collectionIDs) {
         WordCloudWebRequest request = new WordCloudWebRequest();;
         try {
             WebRequestSignature signature = createWebRequestSignature(

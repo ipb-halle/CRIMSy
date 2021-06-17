@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,27 +21,19 @@ import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.cert.X509Certificate;
 import java.security.KeyStore;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.*;
-import javax.security.auth.x500.X500Principal;
 
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.jaxrs.client.ClientConfiguration;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.cxf.transport.http.HTTPConduit;
-import org.apache.cxf.transports.http.configuration.ConnectionType;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * SecureWebClient This class configures a JAX-RS WebClient to use our keystore
@@ -62,7 +54,7 @@ public class SecureWebClientBuilder {
      */
     private SecureWebClientBuilder() {
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.sslContext = new HashMap<String, SSLContext> ();
+        this.sslContext = new HashMap<String, SSLContext>();
     }
 
     /**
@@ -93,7 +85,7 @@ public class SecureWebClientBuilder {
      */
     public static WebClient createWebClient(CloudNode cloudNode, String localPath) {
 
-        WebClient wc = WebClient.create(cloudNode.getNode().getBaseUrl() + localPath);
+        WebClient wc = WebClient.create(cloudNode.getNode().getBaseUrl()+localPath);
 
         ClientConfiguration cc = WebClient.getConfig(wc);
 
@@ -162,9 +154,8 @@ public class SecureWebClientBuilder {
             tmf.init(ts);
 
             // helper(tmf);
-
             SSLContext ctx = SSLContext.getInstance(
-                    KeyStoreFactory.getInstance().getSSL_PROTOCOL()); 
+                    KeyStoreFactory.getInstance().getSSL_PROTOCOL());
             ctx.init(kmf.getKeyManagers(), tmf.getTrustManagers(),
                     new java.security.SecureRandom());
             this.sslContext.put(cloudName, ctx);
@@ -180,12 +171,12 @@ public class SecureWebClientBuilder {
      * log some information for debugging purposes
      */
     private void helper(TrustManagerFactory tmf) {
-        for(TrustManager tm : tmf.getTrustManagers()) {
+        for (TrustManager tm : tmf.getTrustManagers()) {
             try {
-                for(X509Certificate c : ((X509TrustManager) tm).getAcceptedIssuers()) {
+                for (X509Certificate c : ((X509TrustManager) tm).getAcceptedIssuers()) {
                     this.logger.info("Principal: " + c.getSubjectX500Principal().toString());
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 this.logger.info("helper() Caught an exception", (Throwable) e);
                 this.logger.info(String.format("TrustManager dump: %s --> %s", tm.getClass().getName(), tm.toString()));
             }

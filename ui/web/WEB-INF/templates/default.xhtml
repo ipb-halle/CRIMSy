@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <!--
-  Leibniz Bioactives Cloud
-  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,137 +22,269 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
 
 
     <h:body>
+
+
         <ui:composition>
             <ui:insert name="fileupload">
                 <ui:include src="/WEB-INF/templates/fileupload.xhtml"/>
             </ui:insert>
+            <b:form horizontal="true" id="form1">
+                <b:row>
+                    <b:column span="10">
+                        <b:jumbotron id="jumboHeader" styleClass="defaultFormat">
+                            <b:row id="lbac_logo">
+                                <b:image name="img/cloudlogo.svg"
+                                         id="cloudlogo"
+                                         styleClass="img-responsive,centerPanel"/>
+                            </b:row>
+                        </b:jumbotron>
 
-            <b:jumbotron id="jumboHeader">
-                <b:row id="lbac_logo">
-                    <b:image value="/resources/img/cloudlogo.svg"
-                             id="cloudlogo"
-                             styleClass="img-responsive,centerPanel"/>
-                </b:row>
-            </b:jumbotron>
-            <b:row>
-                <b:column colMd="10"
-                          offsetMd="1" 
-                          colXs="10" 
-                          offsetXs="1">
-                    <b:form horizontal="true" id="form1">
-                        <b:poll id="searchPoll"
-                                interval="#{documentSearchBean.getPollIntervall()}" 
-                                update="form2:spinningIcon form2:newDocumentsBadge searchPoll form2:addDocumentButton"
-                                actionListener="#{documentSearchBean.refreshDocumentsToShow}"/>
+                        <b:row styleClass="defaultFormat">
+                            <b:column colMd="#{searchBean.getTextFieldLength()}"
+                                      colXs="#{searchBean.getTextFieldLength()}" 
+                                      offset="1">
 
-                        <b:poll id="refreshPollTable"
-                                interval="#{documentSearchBean.getTableRefreshPollIntervall()}"
-                                update="frmDocumentSearchResults refreshPollTable"
-                                stop="#{documentSearchBean.getTableRefreshPollState()}" />
+                                <b:poll id="searchPoll"
+                                        interval="#{searchBean.getPollIntervall()}" 
+                                        update="spinningIcon newDocumentsBadge searchPoll addDocumentButton"/>
 
-                        <b:inputText styleClass="searchRequest"
-                                     placeholder=" #{msgs.searchMgr_searchtext_placeholder}"
-                                     required="false" label=""
-                                     value="#{documentSearchBean.searchFieldText}"
-                                     labelColXs="0" labelColMd="0">
+                                <b:inputText styleClass="searchRequest"
+                                             placeholder=" #{msgs.searchMgr_searchtext_placeholder}"
+                                             required="false" label=""
+                                             value="#{searchBean.searchFilter.searchTerms}"
+                                             labelColXs="0" labelColMd="0">
 
-                            <f:facet name="prepend">
-                                <b:iconAwesome name="cloud"/>
-                            </f:facet>
-                            <f:facet name="append">
+                                    <f:facet name="prepend">
+                                        <b:iconAwesome name="cloud"/>
+                                    </f:facet>
+                                    <f:facet name="append">
+                                        <b:commandButton look="primary"
+                                                         value=""
+                                                         style="margin-left: 8px"
+                                                         type="submit"
+                                                         action="#{searchBean.actionTriggerSearch()}"
+                                                         ajax="true"
+                                                         update="@form  spinningIcon newDocumentsBadge"
+                                                         icon="search"
+                                                         icon-align="left"/>
+                                    </f:facet>
+                                </b:inputText>
+
+
+                            </b:column>
+                            <b:column  col-xs="1"
+                                       col-lg="1"
+                                       col-md="1"
+                                       col-sm="1">
+
                                 <b:commandButton look="primary"
-                                                 value=""
-                                                 style="margin-left: 8px"
-                                                 type="submitt"
-                                                 action="#{documentSearchBean.actionStartSearch()}"
+                                                 styleClass="#{searchBean.getActualizeButtonStyleClass()}"
+                                                 tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
+                                                 id="addDocumentButton"
+                                                 type="button"
+                                                 action="#{searchBean.actionAddFoundObjectsToShownObjects()}"
                                                  ajax="true"
-                                                 update="@form frmDocumentSearchResults form2:spinningIcon form2:newDocumentsBadge searchPoll refreshPollTable"
-                                                 icon="search"
-                                                 icon-align="left"/>
-                            </f:facet>
-                        </b:inputText>
-                    </b:form>
-                </b:column>
-                <b:column 
-                    colMd="4"
-                    offsetMd="4"
-                    colXs="4"
-                    offsetXs="4">
-                    <b:button icon="cloud-upload"
-                              value="#{msgs.searchMgr_uploadbutton}"
-                              update="@none"
-                              icon-size="2x"
-                              look="info"
-                              onclick="$('tbody.files').find('tr').remove();
-                                      $('.modalFileUpload').modal()"
-                              style="margin-top:10px" 
-                              rendered="#{userBean.hasUploadPermission()}"/>
-                </b:column>
-            </b:row>
-            <b:row>
-                <b:form id="frmDocumentSearchResults">
-                    <b:dataTable id="documentList"
-                                 value="#{documentSearchBean.getFoundDocuments()}"
-                                 striped="true"
-                                 responsive="false"
-                                 customOptions="autoWidth:true"
-                                 fixedHeader="true"
-                                 var="document"
-                                 csv="false">
-                        <b:dataTableColumn label="#{msgs.searchMgr_resulttable_document}">
-                            <b:navLink href="#{document.getLink()}" value="#{document.originalName}"/>
-                        </b:dataTableColumn>
-                        <b:dataTableColumn 
-                            label="#{msgs.searchMgr_resulttable_source}"
-                            value="#{document.getRichSourceInfo()}"/>
-                        <b:dataTableColumn 
-                            label="#{msgs.searchMgr_resulttable_relevance}">
-                            <h:outputText value="#{document.getFormatedRelevance()}"/>
-                        </b:dataTableColumn>
+                                                 update="foundObjectDataTableId newDocumentsBadge spinningIcon addDocumentButton"
+                                                 icon-align="right"
+                                                 rendered="true"
+                                                 value="#{msgs.searchMgr_fetchButton}">
+                                    <b:badge 
+                                        style="margin-left: 4px"
+                                        styleClass="pc_badge"
+                                        id="newDocumentsBadge"
+                                        value="#{searchBean.getAmountOfNotShownObjects()}" />
+                                    <b:iconAwesome 
+                                        style="margin-left: 4px"
+                                        styleClass="pc_icon"
+                                        id="spinningIcon"
+                                        name="refresh"
+                                        spin="#{searchBean.isSearchActive()}"
+                                        size="1x" />#{'   '}
+                                </b:commandButton>
 
-                    </b:dataTable>
-                </b:form>
-            </b:row>
-            <b:row>
-                <b:column span="10">
+                            </b:column>
+                            <b:column 
+                                offset="1"
+                                col-xs="3"
+                                col-lg="3"
+                                col-md="3"
+                                col-sm="3">
+                                <b:button icon="cloud-upload"
+                                          value="#{msgs.searchMgr_uploadbutton}"
+                                          update="@none"
+                                          icon-size="1x"
+                                          look="info"
+                                          onclick="$('tbody.files').find('tr').remove();
+                                                  $('.modalFileUpload').modal()"
+                                          styleClass="documentUploadButton" 
+                                          rendered="#{userBean.hasUploadPermission()}"/>
+                            </b:column>
 
-                </b:column>
-                <b:column span="1">
-                    <b:form horizontal="true" id="form2">
-                        <b:commandButton look="primary"
-                                         styleClass="#{documentSearchBean.getActualizeButtonStyleClass()}"
-                                         style="margin-left: 8px"
-                                         tooltip="#{msgs.searchMgr_refreshButton_tooltip}"
-                                         id="addDocumentButton"
-                                         type="button"
-                                         action="#{documentSearchBean.addNewSearchResultsToTable()}"
-                                         ajax="true"
-                                         update="frmDocumentSearchResults newDocumentsBadge spinningIcon form1:searchPoll addDocumentButton"
-                                         icon-align="right"
-                                         rendered="true"
-                                         value="#{msgs.searchMgr_fetchButton}">
-                            <b:badge 
-                                style="margin-left: 4px"
-                                styleClass="pc_badge"
-                                id="newDocumentsBadge"
-                                value="#{documentSearchBean.getNewDocumentsToShow()}" />
-                            <b:iconAwesome 
-                                style="margin-left: 4px"
-                                styleClass="pc_icon"
-                                id="spinningIcon"
-                                name="refresh"
-                                spin="#{documentSearchBean.isSearchActive()}"
-                                size="1x" />#{'   '}
-                        </b:commandButton>
-                    </b:form>
-                </b:column>
+                        </b:row>
+                        <b:row  styleClass="defaultFormat">
+                            <b:dataTable
+                                styleClass="foundObjectDataTable"
+                                id="foundObjectDataTableId"
+                                var="searchable"
+                                value="#{searchBean.shownObjects}"
+                                saveState="false">
+                                <b:dataTableColumn
+                                    label="Name">
+                                    <b:navLink
+                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                        rendered="#{searchBean.netObjectPresenter.isDownloadLinkVisible(searchable)}"
+                                        />
+                                    <b:commandLink
+                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                        action="#{searchBean.navigateToObject(searchable)}"
+                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                        rendered="#{searchBean.netObjectPresenter.isInternalLinkVisible(searchable)}"
+                                        />
+                                    <b:commandLink
+                                        href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
+                                        disabled="true"
+                                        value="#{searchBean.netObjectPresenter.getName(searchable)}"
+                                        rendered="#{searchBean.netObjectPresenter.isExternalLinkVisible(searchable)}"
+                                        />
 
-            </b:row>
+                                </b:dataTableColumn>
+                                <b:dataTableColumn
+                                    label="Location"
+                                    value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
+                                <b:dataTableColumn
+                                    label="Type"
+                                    value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
+                                <b:dataTableColumn
+                                    label="Relevanz"
+                                    value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
+                            </b:dataTable>
 
+                        </b:row>
+                    </b:column>
+                    <b:column span="2"
+                              styleClass="advancedSearchColumn">
+                        <b:row>
+                            <b:column span="1">
+                                <b:commandButton
+                                    styleClass="advancedSearchButton"
+                                    ajax="true"
+                                    update="@(.advancedSearchColumn)"
+                                    action="#{searchBean.toogleAdvancedSearch()}"
+                                    icon-awesome="#{searchBean.getAdvancedSearchIcon()}"/>
+                            </b:column>
+                            <b:column span="9" offset="1">
+                                <h:outputText
+                                    styleClass="advancedSearchHeaderTitle"
+                                    value="Advanced Search"/>
+                            </b:column>
+                        </b:row>
+                        <b:row>
+                            <b:column span="12">
+                                <p:tabView
+                                    rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
+                                    <p:tab title="Types">
+                                        <b:row>
+                                            <b:column span="1"
+                                                      styleClass="advancedSearchHeader">
+                                                <h:outputText
+                                                    value="Typen"/>
+                                            </b:column>
+                                            <b:column span="1"
+                                                      offset="4"
+                                                      styleClass="advancedSearchHeader">
+                                                MaterialTypen
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="1"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Dokumente"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.documents}"/>
+                                            </b:column>
+
+                                            <b:column span="1"
+                                                      offset="4"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
+                                                    ajax="true"
+                                                    label="Strukturen"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="1"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Materialien"
+                                                    ajax="true"
+                                                    update="@(.materialTypeFilter)"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
+                                            </b:column>
+                                            <b:column span="1"
+                                                      offset="4"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
+                                                    ajax="true"
+                                                    label="Biomaterial"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="1"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Gebinde"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.items}"/>
+                                            </b:column>
+                                            <b:column span="1"
+                                                      offset="4"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
+                                                    ajax="true"
+                                                    label="Sequenzen"/>
+                                            </b:column>
+                                        </b:row>
+                                        <b:row>
+                                            <b:column span="1"
+                                                      styleClass="rightLabeledCbx">
+                                                <b:selectBooleanCheckbox
+                                                    label="Experimente"
+                                                    ajax="true"
+                                                    value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
+                                            </b:column>
+                                        </b:row>
+
+
+
+                                        <b:row>
+                                            <b:column span="2">
+                                                <mol:molecule
+                                                    value="#{searchBean.getSearchFilter().structureString}"
+                                                    pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                    format="MDLV2000"
+                                                    border="true"
+                                                    readonly="false">
+                                                </mol:molecule>
+                                            </b:column>
+                                        </b:row>
+                                    </p:tab>
+                                </p:tabView>
+                            </b:column>
+                        </b:row>
+                    </b:column>
+                </b:row>
+            </b:form>
 
         </ui:composition>
     </h:body>

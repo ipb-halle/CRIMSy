@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,9 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.collections.CollectionBean;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Group;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
 import de.ipb_halle.lbac.service.InfoObjectService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
@@ -40,8 +33,10 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Singleton(name = "globalAdmissionContext")
 @Startup
@@ -53,14 +48,14 @@ public class GlobalAdmissionContext implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-    private final static String ADMIN_ACCOUNT_KEY = "ADMIN_ACCOUNT_ID";
     private final static String ADMIN_DEFAULT_PASSWORD = "admin";
-    private final static String ADMIN_GROUP_KEY = "ADMIN_GROUP_ID";
     public final static String PUBLIC_NODE_ID = "1e0f832b-3d9e-4ebb-9e68-5a9fc2d9bee8";
 
-    public final static String OWNER_ACCOUNT_ID = "0a662938-e11e-4825-bd45-fa117963d12f";
-    public final static String PUBLIC_ACCOUNT_ID = "088e3bc0-7fb2-422e-b29a-71ca3ec907d2";
-    public final static String PUBLIC_GROUP_ID = "be851b5b-64f0-4298-b8c0-b5b3d4629d6e";
+    public final static Integer PUBLIC_GROUP_ID = 1;
+    public final static Integer PUBLIC_ACCOUNT_ID = 2;
+    public final static Integer OWNER_ACCOUNT_ID = 3;
+    public final static Integer ADMIN_GROUP_ID = 4;
+    private final static Integer ADMIN_ACCOUNT_ID = 5;
     public static final String NAME_OF_DEACTIVATED_USER = "deactivated";
 
     private CredentialHandler credentialHandler;
@@ -83,8 +78,7 @@ public class GlobalAdmissionContext implements Serializable {
     private ACList adminOnlyACL;
     private ACList noAccessACL;
     private ACList ownerAllPermACL;
-    private ACList publicReadACL;
-    
+    private static ACList publicReadACL;
 
     private Group adminGroup;
     private Group publicGroup;
@@ -92,8 +86,9 @@ public class GlobalAdmissionContext implements Serializable {
     private Node publicNode;
     private User adminAccount;
     private User publicAccount;
+    private User ownerAccount;
 
-    private ConcurrentHashMap<String, LockoutInfo>   intruderLockoutMap;
+    private ConcurrentHashMap<String, LockoutInfo> intruderLockoutMap;
     private transient Logger logger;
 
     /**
@@ -102,7 +97,7 @@ public class GlobalAdmissionContext implements Serializable {
     public GlobalAdmissionContext() {
         this.logger = LogManager.getLogger(this.getClass().getName());
         this.credentialHandler = new CredentialHandler();
-        this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo> ();
+        this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo>();
     }
 
     /**
@@ -113,71 +108,76 @@ public class GlobalAdmissionContext implements Serializable {
     @PostConstruct
     private void init() {
         try {
-            // public node
+            /*
+            this.logger.info("************ START REPAIR PERMCODES ***************");
+            this.aclistService.repairPermCodes();
+            this.logger.info("************ FINISH REPAIR PERMCODES **************");
+             */
             this.publicNode = createPublicNode(UUID.fromString(PUBLIC_NODE_ID));
-
-            // public group
-            this.publicGroup = createGroup(UUID.fromString(PUBLIC_GROUP_ID), AdmissionSubSystemType.BUILTIN, this.publicNode, "Public Group");
-
-            // public account
+            this.publicGroup = createGroup(PUBLIC_GROUP_ID, AdmissionSubSystemType.BUILTIN, this.publicNode, "Public Group");
             createPublicAccount();
-
-            // no access ACL
-            this.noAccessACL = this.aclistService.save(new ACList().setName("No Access ACL"));
-
-            // admin group
-            InfoObject adm = this.infoObjectService.loadByKey(ADMIN_GROUP_KEY);
-            UUID id;
-            if (adm == null) {
-                id = UUID.fromString(this.infoObjectService.save((InfoObject) new InfoObject(ADMIN_GROUP_KEY, UUID.randomUUID().toString())
-                                .setOwner(this.publicAccount).setACList(this.noAccessACL))
-                                .getValue());
-            } else {
-                id = UUID.fromString(adm.getValue());
-            }
-            this.adminGroup = createGroup(id, AdmissionSubSystemType.LOCAL, this.nodeService.getLocalNode(), "Admin Group");
-
-            // ACL: Admin group only, full permission
-            this.adminOnlyACL = this.aclistService.save(new ACList()
-                    .setName("Admin Only ACL")
-                    .addACE(this.adminGroup, new ACPermission[]{ACPermission.permREAD, ACPermission.permEDIT,
-                ACPermission.permCREATE, ACPermission.permDELETE, ACPermission.permCHOWN, ACPermission.permGRANT, ACPermission.permSUPER}));
-
-            // ACL: public group read access, admin group full permission
-            this.publicReadACL = this.aclistService.save(
-                    new ACList()
-                            .setName("Public Readable ACL")
-                            .addACE(
-                                    this.adminGroup,
-                                    new ACPermission[]{
-                                        ACPermission.permREAD,
-                                        ACPermission.permEDIT,
-                                        ACPermission.permCREATE,
-                                        ACPermission.permDELETE,
-                                        ACPermission.permCHOWN,
-                                        ACPermission.permGRANT,
-                                        ACPermission.permSUPER}
-                            )
-                            .addACE(
-                                    this.publicGroup,
-                                    new ACPermission[]{
-                                        ACPermission.permREAD}
-                            )
-            );
-
-            // admin account
+            this.ownerAccount = createOwnerAccount();
+            this.adminGroup = createGroup(ADMIN_GROUP_ID, AdmissionSubSystemType.LOCAL, this.nodeService.getLocalNode(), "Admin Group");
             createAdminAccount();
 
-            // owner account
-            User ownerAccount = createOwnerAccount();
+            this.noAccessACL = this.aclistService.save(new ACList().setName("No Access ACL"));
+            createAdminOnlyAcl();
+            createPublicReadableAcl();
+            createOwnerAllAcl();
 
-            // owner all privileges ACL
-            this.ownerAllPermACL = this.aclistService.save(
-                    new ACList()
-                            .setName("Owner all permissions ACL")
-                            .addACE(
-                                    ownerAccount, 
-                                    new ACPermission[]{
+            createInfoEntity(UserMgrBean.USERMGR_PERM_KEY, "don't care", this.adminOnlyACL);
+            createInfoEntity("LDAP_ENABLE", "false", this.adminOnlyACL);
+            createInfoEntity(CollectionBean.getCollectionsPermKey(), "don't care", this.adminOnlyACL);
+        } catch (Exception e) {
+            logger.error("Error at initialisiing", ExceptionUtils.getStackTrace(e));
+        }
+
+    }
+
+    private void createAdminOnlyAcl() {
+        this.adminOnlyACL = this.aclistService.save(new ACList()
+                .setName("Admin Only ACL")
+                .addACE(this.adminGroup,
+                        new ACPermission[]{
+                            ACPermission.permREAD,
+                            ACPermission.permEDIT,
+                            ACPermission.permCREATE,
+                            ACPermission.permDELETE,
+                            ACPermission.permCHOWN,
+                            ACPermission.permGRANT,
+                            ACPermission.permSUPER}));
+    }
+
+    private void createPublicReadableAcl() {
+        this.publicReadACL = this.aclistService.save(
+                new ACList()
+                        .setName("Public Readable ACL")
+                        .addACE(
+                                this.adminGroup,
+                                new ACPermission[]{
+                                    ACPermission.permREAD,
+                                    ACPermission.permEDIT,
+                                    ACPermission.permCREATE,
+                                    ACPermission.permDELETE,
+                                    ACPermission.permCHOWN,
+                                    ACPermission.permGRANT,
+                                    ACPermission.permSUPER}
+                        )
+                        .addACE(
+                                this.publicGroup,
+                                new ACPermission[]{
+                                    ACPermission.permREAD}
+                        )
+        );
+    }
+
+    private void createOwnerAllAcl() {
+        this.ownerAllPermACL = this.aclistService.save(
+                new ACList()
+                        .setName("Owner all permissions ACL")
+                        .addACE(
+                                this.ownerAccount,
+                                new ACPermission[]{
                                     ACPermission.permREAD,
                                     ACPermission.permEDIT,
                                     ACPermission.permCREATE,
@@ -185,34 +185,16 @@ public class GlobalAdmissionContext implements Serializable {
                                     ACPermission.permCHOWN,
                                     ACPermission.permGRANT,
                                     ACPermission.permSUPER}));
-            
-            // infoEntities
-            createInfoEntity(UserMgrBean.USERMGR_PERM_KEY, "don't care", this.adminOnlyACL);
-            createInfoEntity("LDAP_ENABLE", "false", this.adminOnlyACL);
-            createInfoEntity(CollectionBean.getCollectionsPermKey(), "don't care", this.adminOnlyACL);
-        } catch (Exception e) {
-            logger.error("Error at initialisiing", e);
-        }
-
     }
 
     /**
      * create the admin account
      */
     private void createAdminAccount() {
-        InfoObject adm = this.infoObjectService.loadByKey(ADMIN_ACCOUNT_KEY);
-        UUID id;
-        if (adm == null) {
-            id = UUID.fromString(this.infoObjectService.save((InfoObject) new InfoObject(ADMIN_ACCOUNT_KEY, UUID.randomUUID().toString())
-                            .setOwner(this.publicAccount).setACList(this.noAccessACL))
-                            .getValue());
-        } else {
-            id = UUID.fromString(adm.getValue());
-        }
-        User u = this.memberService.loadUserById(id);
+        User u = this.memberService.loadUserById(ADMIN_ACCOUNT_ID);
         if (u == null) {
             u = new User();
-            u.setId(id);
+            u.setId(ADMIN_ACCOUNT_ID);
             u.setLogin("admin");
             u.setName("Admin");
             u.setNode(this.nodeService.getLocalNode());
@@ -235,7 +217,7 @@ public class GlobalAdmissionContext implements Serializable {
      * @param name the name of the group
      * @return the group
      */
-    private Group createGroup(UUID id, AdmissionSubSystemType type, Node node, String name) {
+    private Group createGroup(Integer id, AdmissionSubSystemType type, Node node, String name) {
         Group g = this.memberService.loadGroupById(id);
         if (g == null) {
             g = new Group();
@@ -271,10 +253,10 @@ public class GlobalAdmissionContext implements Serializable {
      * to add the Membership!
      */
     public User createOwnerAccount() {
-        User o = this.memberService.loadUserById(UUID.fromString(OWNER_ACCOUNT_ID));
+        User o = this.memberService.loadUserById(OWNER_ACCOUNT_ID);
         if (o == null) {
             o = new User();
-            o.setId(UUID.fromString(OWNER_ACCOUNT_ID));
+            o.setId(OWNER_ACCOUNT_ID);
             o.setLogin("@owner");
             o.setName("Owner Account");
             o.setNode(this.publicNode);
@@ -290,10 +272,10 @@ public class GlobalAdmissionContext implements Serializable {
      * create the public account and assign necessary group memberships
      */
     private void createPublicAccount() {
-        User p = this.memberService.loadUserById(UUID.fromString(PUBLIC_ACCOUNT_ID));
+        User p = this.memberService.loadUserById(PUBLIC_ACCOUNT_ID);
         if (p == null) {
             p = new User();
-            p.setId(UUID.fromString(PUBLIC_ACCOUNT_ID));
+            p.setId(PUBLIC_ACCOUNT_ID);
             p.setLogin("@public");
             p.setName("Public Account");
             p.setNode(this.publicNode);
@@ -340,7 +322,6 @@ public class GlobalAdmissionContext implements Serializable {
         return ownerAllPermACL;
     }
 
-
     public User getPublicAccount() {
         return this.publicAccount;
     }
@@ -349,12 +330,13 @@ public class GlobalAdmissionContext implements Serializable {
         return this.publicGroup;
     }
 
-    public ACList getPublicReadACL() {
-        return this.publicReadACL;
+    public static ACList getPublicReadACL() {
+        return GlobalAdmissionContext.publicReadACL;
     }
 
     /**
      * prevent password brute forcing
+     *
      * @param login user name to check
      * @param ipAddress ip address of the user request
      * @return true if the account or the address is locked, false otherwise
@@ -387,12 +369,12 @@ public class GlobalAdmissionContext implements Serializable {
      */
     private void intruderLockoutExpire() {
         long time = new Date().getTime();
-        this.intruderLockoutMap.entrySet().removeIf(e -> e.getValue().expired(time)); 
+        this.intruderLockoutMap.entrySet().removeIf(e -> e.getValue().expired(time));
     }
 
     /**
-     * increment the lock record for a given user 
-     * and ip address
+     * increment the lock record for a given user and ip address
+     *
      * @param login the login of the user
      * @param ipAddress the ip address of the user request
      */
@@ -407,6 +389,7 @@ public class GlobalAdmissionContext implements Serializable {
 
     /**
      * perform a lock operation on a single record
+     *
      * @param key the record key in the intruderLockoutMap
      */
     private void intruderLockoutLockRecord(String key) {
@@ -419,19 +402,21 @@ public class GlobalAdmissionContext implements Serializable {
     }
 
     /**
-     * reset the intruder lockout 
+     * reset the intruder lockout
+     *
      * @param login the login name of the successfully logged in user
      * @param ipAddress the source ip address of the users request
      */
     public void intruderLockoutUnlock(String login, String ipAddress) {
         if (ipAddress != null) {
-                intruderLockoutUnlockRecord(ipAddress);
+            intruderLockoutUnlockRecord(ipAddress);
         }
         intruderLockoutUnlockRecord(login);
     }
 
     /**
      * perform a unlock operation on a single record
+     *
      * @param key the record key in the intruderLockoutMap
      */
     private void intruderLockoutUnlockRecord(String key) {

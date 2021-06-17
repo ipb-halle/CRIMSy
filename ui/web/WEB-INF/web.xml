@@ -20,15 +20,22 @@
 <web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
     <description>Leibniz Bioactives Cloud</description>
     <display-name>Leibniz Bioactives Cloud (UI and REST)</display-name>
+
+    <!--
+        2020-12-22: FBroda
+        According to TomEE logs, this parameter is not needed, because it is 
+        specified already in the deployment descriptor.
+
     <context-param>
         <param-name>javax.faces.CONFIG_FILES</param-name>
         <param-value>/WEB-INF/faces-config.xml</param-value>
-        <!--
+
             Comma separated list of URIs of (additional) faces configs files.
             (e.g. /WEB-INF/my-configs.xml)
             See JSF 1.0 PRD2, 10.3.2
-        -->
+
     </context-param>
+    -->
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
         <param-value>server</param-value>
@@ -41,7 +48,21 @@
         <param-name>document.search.enableDelayedPresentation</param-name>
         <param-value>false</param-value>
     </context-param>
-    
+    <filter>
+        <filter-name>characterEncodingFilter</filter-name>
+        <filter-class>org.omnifaces.filter.CharacterEncodingFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
+    </listener>
+
+
     <!--
         Tells Bootsfaces to download the components (Datatable, JQuery, 
         CSS, ...) from CDN (true), leave this task to local html document 
@@ -60,6 +81,10 @@
         <param-value>false</param-value>
     </context-param>
     <context-param>
+        <param-name>facelets.LIBRARIES</param-name>
+        <param-value>/WEB-INF/nwc.taglib.xml</param-value>
+    </context-param>
+    <context-param>
         <param-name>net.bootsfaces.get_bootstrap_from_cdn</param-name>
         <param-value>false</param-value>
     </context-param>
@@ -71,7 +96,7 @@
     <!-- debugging mode for jsf: set param to Development -->
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
-        <param-value>Production</param-value>
+        <param-value>Development</param-value>
     </context-param>
     <context-param>
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
@@ -81,6 +106,17 @@
         <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
         <param-value>true</param-value>
     </context-param>
+
+    <!-- This solves a nasty bug, where MyFaces' FacesConfigurator.purgeConfiguration() 
+         fails due to an IllegalArgumentException. This setting simply stops
+         the frequent refresh of the configuration files in WEB-INF. It does
+         not interfere with our typical deployment mechanism that overwrites
+         ui.war. -->
+    <context-param>
+        <param-name>org.apache.myfaces.CONFIG_REFRESH_PERIOD</param-name>
+        <param-value>0</param-value>
+    </context-param>
+
     <!-- file upload servlet incl. filter -->
     <servlet>
         <display-name>FileUpload Service</display-name>
@@ -95,6 +131,7 @@
     <filter>
         <filter-name>FileUploadSecurityFilter</filter-name>
         <filter-class>de.ipb_halle.lbac.cloud.servlet.FileUploadSecurityFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
     <filter-mapping>
         <filter-name>FileUploadSecurityFilter</filter-name>
@@ -110,10 +147,6 @@
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
-        <!-- map external javascript ressources  -->
-        <!-- see: faces-configs.xml -->
-        <!-- see: http://showcase.omnifaces.org/resourcehandlers/UnmappedResourceHandler -->
-        <url-pattern>/javax.faces.resource/*</url-pattern>
     </servlet-mapping>
     <!-- bootfaces theme -->
     <context-param>
@@ -124,10 +157,14 @@
         <param-name>BootsFaces_THEME</param-name>
         <param-value>simplex</param-value>
     </context-param>
-    <!-- primefaces theme -->
+    <!-- primefaces stuff -->
     <context-param>
         <param-name>primefaces.THEME</param-name>
         <param-value>bootstrap</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
     </context-param>
     <!-- add new mime types for bootstrap fonts and javascript extensions -->
     <mime-mapping>
@@ -172,6 +209,41 @@
         <param-name>net.bootsfaces.defaults.decorator</param-name>
         <param-value>false</param-value>
     </context-param>
+
+    <!-- MolecularFaces plugin settings -->
+    <context-param>
+        <param-name>de.ipb_halle.molecularfaces.OPENCHEMLIBJS_URL</param-name>
+        <param-value>/plugins/openchemlibjs/openchemlib-full.js</param-value>
+    </context-param>
+    <context-param>
+        <param-name>de.ipb_halle.molecularfaces.MOLPAINTJS_URL</param-name>
+        <param-value>/plugins/molpaintjs/molpaint.js</param-value>
+    </context-param>
+    <!--<context-param>
+        <param-name>de.ipb_halle.molecularfaces.MARVINJS_BASE_URL</param-name>
+        <param-value>/plugins/marvinjs</param-value>
+    </context-param>
+    <context-param>
+        <param-name>de.ipb_halle.molecularfaces.MARVINJS_LICENSE_URL</param-name>
+        <param-value>marvin4js-license.cxl</param-value>
+    </context-param>-->
+
+    <!-- Plugin types from MolecularFaces that are available for users. -->
+    <!-- Available molecular structure plugin types: This needs to be a 
+         comma-separated list of item names from the enum class 
+         de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType.
+         The first entry is taken as default plugin type. -->
+    <context-param>
+        <param-name>de.ipb_halle.lbac.AvailableMolPluginTypes</param-name>
+        <param-value>OpenChemLibJS,MolPaintJS</param-value>
+    </context-param>
+
+    <!-- maximum upload file size for images in experimental records -->
+    <context-param>
+    	<param-name>de.ipb_halle.lbac.exp.images.MaxUploadFileSize</param-name>
+    	<param-value>10485760</param-value><!-- 10 MiB -->
+    </context-param>
+
     <!-- Document Servlet -->
     <servlet>
         <servlet-name>DocumentServlet</servlet-name>
@@ -212,6 +284,13 @@
         <auth-constraint>
             <role-name>role-admin</role-name>
         </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>The /resources folder</web-resource-name>
+            <url-pattern>/resources/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint />
     </security-constraint>
     <security-role>
         <role-name>role-admin</role-name>

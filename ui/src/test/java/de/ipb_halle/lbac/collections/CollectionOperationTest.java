@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,34 +18,23 @@
 package de.ipb_halle.lbac.collections;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.collections.mock.FileEntityServiceMock;
 import de.ipb_halle.lbac.collections.mock.FileServiceMock;
-import de.ipb_halle.lbac.collections.mock.SolarAdminServiceMock;
-
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.Updater;
-import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-import javax.persistence.PersistenceContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -73,16 +62,12 @@ public class CollectionOperationTest extends TestBase {
     @Inject
     GlobalAdmissionContext globalAdmissionContext;
 
-    @Inject
-    SolrTermVectorSearch solrTermVectorSearch;
-
     @Before
     public void init() {
 
         Assert.assertNotNull("NodeService not injected", nodeService);
         Assert.assertNotNull("CollectionService not injected", collectionService);
 
-        SolarAdminServiceMock solarAdminMock = new SolarAdminServiceMock();
         FileServiceMock fileServiceMock = new FileServiceMock();
         FileEntityServiceMock fileEntityMock = new FileEntityServiceMock();
 
@@ -90,13 +75,10 @@ public class CollectionOperationTest extends TestBase {
                 fileServiceMock,
                 fileEntityMock,
                 globalAdmissionContext,
-                solarAdminMock,
                 nodeService,
                 collectionService,
                 PUBLIC_COLL_NAME,
-                solrTermVectorSearch,
-                termVectorEntityService,
-                null);
+                termVectorEntityService);
 
         resetDB(memberService);
     }
@@ -109,10 +91,7 @@ public class CollectionOperationTest extends TestBase {
         String collName = "test001_testColl";
         User u = createUser(
                 "testuser",
-                "testuser",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         //Try to create a collection with reserved name
         Collection coll = new Collection();
@@ -154,16 +133,14 @@ public class CollectionOperationTest extends TestBase {
         String collName = "deleteCollectionTest_collection";
         User u = createUser(
                 "testuser",
-                "testuser",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         Collection coll = new Collection();
         coll.setOwner(u);
         coll.setName(collName);
         coll.setDescription("testColl-description");
         CollectionOperation.OperationState state = instance.createCollection(coll, u);
+        coll = collectionService.load(nameCmap(collName)).get(0);
         Assert.assertTrue("Collection was not created", CollectionOperation.OperationState.OPERATION_SUCCESS == state);
         List<Collection> loadedColls = collectionService.load(nameCmap(collName));
         Assert.assertTrue(!loadedColls.isEmpty());
@@ -184,10 +161,7 @@ public class CollectionOperationTest extends TestBase {
         String collName = "testColl";
         User u = createUser(
                 "testuser",
-                "testuser",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         Collection coll = new Collection();
 
@@ -195,9 +169,11 @@ public class CollectionOperationTest extends TestBase {
         coll.setName(collName);
         coll.setDescription("testColl-description");
         instance.createCollection(coll, u);
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("name", coll.getName());
+        coll = collectionService.load(cmap).get(0);
 
         coll.setDescription(NEW_DESCRIPTION);
-
         instance.updateCollection(coll, u);
         List<Collection> loadedColls = collectionService.load(nameCmap(collName));
         Assert.assertTrue(!loadedColls.isEmpty());
@@ -206,31 +182,20 @@ public class CollectionOperationTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("PermissionEditBeanTest.war")
-                .addPackage(Collection.class.getPackage())
-                .addClass(KeyManager.class)
+        WebArchive deployment = prepareDeployment("PermissionEditBeanTest.war")
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
-                .addPackage(CollectionBean.class.getPackage())
-                .addClass(MembershipOrchestrator.class)
-                .addPackage(WebRequestAuthenticator.class.getPackage())
                 .addClass(Updater.class)
                 .addClass(Navigator.class)
-                .addClass(GlobalAdmissionContext.class)
                 .addClass(CollectionWebServiceMock.class)
                 .addClass(CollectionSearchState.class)
-                .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
                 .addClass(TermVectorEntityService.class)
                 .addClass(EntityManager.class)
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class)
                 .addClass(CollectionService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(SolrTermVectorSearch.class)
-                .addPackage(UserBean.class.getPackage());
+                .addClass(TermVectorEntityService.class);
+        return UserBeanDeployment.add(deployment);
     }
 
 }

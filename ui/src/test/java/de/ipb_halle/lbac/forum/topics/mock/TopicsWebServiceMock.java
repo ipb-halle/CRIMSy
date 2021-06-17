@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.forum.topics.mock;
 
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.forum.Posting;
 import de.ipb_halle.lbac.forum.Topic;
@@ -62,7 +62,7 @@ public class TopicsWebServiceMock {
         
         Posting p = new Posting();
         p.setCreated(new Date());
-        p.setId(UUID.randomUUID());
+        p.setId(100000);
         p.setOwner(request.getUser());
         p.setText("TestBeitrag");
         p.setTopic(t);

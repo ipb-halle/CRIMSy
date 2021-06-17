@@ -1,3 +1,6 @@
+![](https://github.com/ipb-halle/CRIMSy/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![codecov](https://codecov.io/gh/ipb-halle/CRIMSy/branch/LBAC-60-CloudLIMS/graph/badge.svg)](https://codecov.io/gh/ipb-halle/CRIMSy)
+
 # CRIMSy
 _Cloud Resource & Information Managment System_
 
@@ -7,5 +10,3 @@ Additional information is available on the website of the Leibniz Research Allia
 
 We took part in the Hackathon EUvsVirus Hackathon 2020.The homepage of the project can be found at: 
 https://devpost.com/software/crimsy-cloud-information-resource-management-system
-
-The master branch might appear inactive because development is progressing currently in branch [LBAC-60-CloudLIMS](https://github.com/ipb-halle/CRIMSy/tree/LBAC-60-CloudLIMS).

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,9 @@ package de.ipb_halle.lbac.forum;
 
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Obfuscatable;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -33,7 +32,7 @@ public class Posting implements Serializable, Comparable<Posting>, DTO,Obfuscata
 
     private final static long serialVersionUID = 1L;
 
-    private UUID id;
+    private Integer id;
 
     private Topic topic;
 
@@ -44,7 +43,7 @@ public class Posting implements Serializable, Comparable<Posting>, DTO,Obfuscata
     private Date created;
 
     public Posting() {
-        id = UUID.randomUUID();
+    
     }
 
     /**
@@ -71,11 +70,11 @@ public class Posting implements Serializable, Comparable<Posting>, DTO,Obfuscata
                 .setTopic(topic.getId());
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

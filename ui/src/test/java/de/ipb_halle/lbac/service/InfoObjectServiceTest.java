@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2019 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,31 @@
  */
 package de.ipb_halle.lbac.service;
 
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.document.DocumentSearchOrchestrator;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.webservice.Updater;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,11 +49,7 @@ import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.transaction.UserTransaction;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
-
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -91,7 +85,7 @@ public class InfoObjectServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("InfoEntityServiceTest.war")
+        return prepareDeployment("InfoObjectServiceTest.war")
                 .addClass(KeyManager.class)
                 .addClass(CollectionService.class)
                 .addClass(CollectionOrchestrator.class)
@@ -101,24 +95,20 @@ public class InfoObjectServiceTest extends TestBase {
                 .addClass(ACListService.class)
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
-                .addClass(SolrSearcher.class)
-                .addClass(SolrAdminService.class)
                 .addClass(CollectionBean.class)
-                .addClass(SolrTermVectorSearch.class)
-                .addClass(DocumentSearchBean.class)
                 .addClass(DocumentSearchService.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchOrchestrator.class)
                 .addClass(MembershipOrchestrator.class);
     }
-    
-    private User createUser(String login, String name) {
+
+    @Override
+    public User createUser(String login, String name) {
         User u = new User();
         u.setLogin(login);
         u.setName(name);
         u.setNode(this.nodeService.getLocalNode());
         u.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        this.memberService.save(u);
+        u = this.memberService.save(u);
         this.membershipService.addMembership(u, u);
         return u;
     }
@@ -128,7 +118,7 @@ public class InfoObjectServiceTest extends TestBase {
         g.setName(name);
         g.setNode(this.nodeService.getLocalNode());
         g.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        this.memberService.save(g);
+        g = this.memberService.save(g);
         this.membershipService.addMembership(g, g);
         return g;
     }

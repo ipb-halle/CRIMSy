@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,36 +17,20 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.CloudService;
-import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
 import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.io.IOException;
-import java.net.URL;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -54,7 +38,6 @@ import java.security.PublicKey;
 import java.util.Base64;
 import java.util.List;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
@@ -80,43 +63,27 @@ public class CollectionWebClientTest extends TestBase {
     @Inject
     CollectionWebClient collectionWebClient;
 
-// xxx    @Inject
-// xxx    KeyManager keymanager;
-
     @Inject
     private CollectionWebServiceMock webService;
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("CollectionWebClientTest.war")
-                .addPackage(CollectionService.class.getPackage())
+        WebArchive deployment = prepareDeployment("CollectionWebClientTest.war")
                 .addClass(CollectionOrchestrator.class)
                 .addClass(CollectionWebClient.class)
                 .addClass(Updater.class)
                 .addClass(CollectionSearchState.class)
-                .addPackage(ACListService.class.getPackage())
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(Navigator.class)
-                .addPackage(GlobalAdmissionContext.class.getPackage())
-                .addPackage(Logger.class.getPackage())
-                .addClass(KeyManager.class)
-                .addPackage(CollectionBean.class.getPackage())
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
-                .addPackage(WordCloudWebService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
-                .addPackage(SolrTermVectorSearch.class.getPackage())
-                .addPackage(SolrAdminService.class.getPackage())
                 .addClass(CollectionWebClient.class)
                 .addClass(CollectionWebServiceMock.class)
-                .addPackage(UserBean.class.getPackage())
-                .addPackage(WebRequestAuthenticator.class.getPackage())
-                .addClass(MembershipOrchestrator.class)
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class);
+        return UserBeanDeployment.add(deployment);
     }
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         initializeBaseUrl();
@@ -133,7 +100,7 @@ public class CollectionWebClientTest extends TestBase {
 
         Cloud c = cloudService.loadByName(TESTCLOUD);
         Node n = nodeService.getLocalNode();
-        CloudNode cn = cloudNodeService.loadCloudNode(c,n);
+        CloudNode cn = cloudNodeService.loadCloudNode(c, n);
         cn.setPublicKey(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
         cn = cloudNodeService.save(cn);
 
@@ -181,7 +148,7 @@ public class CollectionWebClientTest extends TestBase {
     public void testCollectionWebClient() throws IOException {
         resetCollectionsInDb(collectionService);
 
-        User u = createUser("test", "testName", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("test", "testName");
 
         createLocalCollections(
                 createAcList(u, true),
@@ -196,7 +163,7 @@ public class CollectionWebClientTest extends TestBase {
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
         List<Collection> readableColls
                 = collectionWebClient.getCollectionsFromRemoteNode(
-                        cn, 
+                        cn,
                         u
                 );
         Assert.assertEquals(1, readableColls.size());

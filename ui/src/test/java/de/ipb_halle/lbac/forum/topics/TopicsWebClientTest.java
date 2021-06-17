@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.ForumSearchState;
 import de.ipb_halle.lbac.forum.topics.mock.TopicsWebServiceMock;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import java.util.UUID;
@@ -74,10 +74,10 @@ public class TopicsWebClientTest extends TestBase {
 
         Node n = nodeService.getLocalNode();
         Cloud c = cloudService.loadByName(TESTCLOUD);
-        CloudNode cn = cloudNodeService.loadCloudNode(c,n);
+        CloudNode cn = cloudNodeService.loadCloudNode(c, n);
 
         User publicUser = memberService.loadUserById(
-                UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+                GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
         ForumSearchState state = new ForumSearchState();
 

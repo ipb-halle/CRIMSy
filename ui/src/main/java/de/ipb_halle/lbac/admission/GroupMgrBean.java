@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,10 @@
 package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.admission.group.DeactivateGroupOrchestrator;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Member;
-import de.ipb_halle.lbac.entity.Membership;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
@@ -35,14 +31,18 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Named("groupMgrBean")
 @SessionScoped
 public class GroupMgrBean implements Serializable {
+
+    private MessagePresenter messagePresenter;
 
     private enum MODE {
         CREATE, READ, UPDATE, DELETE
@@ -51,11 +51,6 @@ public class GroupMgrBean implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     private final static Long serialVersionUID = 1L;
-
-    @Inject
-    private ACListService aclistService;
-
-  
 
     @Inject
     private NodeService nodeService;
@@ -67,11 +62,13 @@ public class GroupMgrBean implements Serializable {
     private MembershipService membershipService;
 
     @Inject
-    private UserBean userBean;
+    private DeactivateGroupOrchestrator deactivateOrchestrator;
 
     private Group group;
     private transient Logger logger;
     private boolean nestedFlag;
+    private GroupNameValidator groupNameValidator;
+    private User currentUser;
 
     private MODE mode;
 
@@ -86,13 +83,40 @@ public class GroupMgrBean implements Serializable {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
+    /**
+     * Constructor for injecting the dependencies if class is instanciated not
+     * by container (via @Inject) but by new.(This happens in tests, because we
+     * have problems with starting @SessionScoped containers in the arquillian
+     * environment)
+     *
+     * @param nodeService
+     * @param memberService
+     * @param membershipService
+     * @param messagePresenter
+     */
+    public GroupMgrBean(
+            NodeService nodeService,
+            MemberService memberService,
+            MembershipService membershipService,
+            MessagePresenter messagePresenter) {
+        this();
+        this.nodeService = nodeService;
+        this.memberService = memberService;
+        this.membershipService = membershipService;
+        this.messagePresenter = messagePresenter;
+        this.groupNameValidator = new GroupNameValidator(memberService);
+        initGroup();
+
+    }
 
     /**
      * Initialization depending on injected resources
      */
     @PostConstruct
     private void InitGroupMgrBean() {
-        initGroup(); 
+        this.messagePresenter = JsfMessagePresenter.getInstance();
+        this.groupNameValidator = new GroupNameValidator(memberService);
+        initGroup();
     }
 
     public void actionAddMembership(Member m) {
@@ -100,9 +124,15 @@ public class GroupMgrBean implements Serializable {
     }
 
     public void actionCreate() {
-        this.memberService.save(this.group);
-        initGroup();
+        if (groupNameValidator.isGroupNameValide(this.group.getName())) {
+            this.memberService.save(this.group);
+            initGroup();
+            messagePresenter.info("groupMgr_group_added");
+        } else {
+            messagePresenter.error("groupMgr_no_valide_name");
+        }
         this.mode = MODE.READ;
+
     }
 
     /**
@@ -110,9 +140,12 @@ public class GroupMgrBean implements Serializable {
      * subSystemType - node - no delete for adminGroup or publicGroup - ...
      */
     public void actionDelete() {
-//      this.memberService.delete(this.group);
+        deactivateOrchestrator.startGroupDeactivation(group.copy(), currentUser);
+        this.memberService.deactivateGroup(this.group);
+
         initGroup();
         this.mode = MODE.READ;
+        messagePresenter.info("groupMgr_group_deactivated");
     }
 
     public void actionDeleteMembership(Membership ms) {
@@ -127,13 +160,20 @@ public class GroupMgrBean implements Serializable {
     }
 
     public void actionUpdate() {
-        this.memberService.save(this.group);
+        if (groupNameValidator.isGroupNameValide(this.group.getName())) {
+            this.memberService.save(this.group);
+            messagePresenter.info("groupMgr_group_edited");
+        } else {
+            messagePresenter.error("groupMgr_no_valide_name");
+        }
         initGroup();
         this.mode = MODE.READ;
     }
 
     /**
      * return a title for the modal group dialog
+     *
+     * @return
      */
     public String getDialogTitle() {
         switch (this.mode) {
@@ -148,17 +188,24 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
-     * get a list of groups
+     * get a list of groups. Queries directly the database.
+     *
+     * @return
      */
     public List<Group> getGroupList() {
-        return this.memberService.loadGroups(new HashMap<String, Object>());
+        return this.memberService.loadGroups(new HashMap<>());
     }
 
     /**
      * return a list of memberships for the currently active group
+     *
+     * @return
      */
     public List<Membership> getMembershipList() {
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Object> cmap = new HashMap<>();
+        if (this.group.getId() == null) {
+            return new ArrayList<>();
+        }
         cmap.put("group_id", this.group.getId());
 
         // nestedFlag == true means show all (nested & direct)!
@@ -177,8 +224,9 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
-     * return the currently selected group. The group instance may be a detached
-     * instance.
+     * return the currently selected group.
+     *
+     * @return
      */
     public Group getGroup() {
         return this.group;
@@ -193,20 +241,41 @@ public class GroupMgrBean implements Serializable {
      * @return a list of Member objects (users followed by groups)
      */
     public List<Member> getMemberList() {
-        HashMap<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put("subSystemType", new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP, AdmissionSubSystemType.LBAC_REMOTE});
-        List<Member> members = new ArrayList<Member>();
+        List<Member> members = new ArrayList<>();
+        List<User> users = this.memberService.loadUsers(createcMapForSubSystem());
+        removeDeactivatedUsers(users);
+        members.addAll(users);
+        members.addAll(this.memberService.loadGroups(createcMapForSubSystem()));
+        return members;
+    }
 
-        List<User> users = this.memberService.loadUsers(cmap);
+    private HashMap<String, Object> createcMapForSubSystem() {
+        HashMap<String, Object> cmap = new HashMap<>();
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
+                new AdmissionSubSystemType[]{
+                    AdmissionSubSystemType.LOCAL,
+                    AdmissionSubSystemType.LDAP,
+                    AdmissionSubSystemType.LBAC_REMOTE});
+        return cmap;
+    }
+
+    private void removeDeactivatedUsers(List<User> users) {
         for (int i = users.size() - 1; i >= 0; i--) {
-            if (users.get(i).getName().equals(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER)) {
+            if (users.get(i).getName()
+                    .equals(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER)) {
                 users.remove(i);
             }
         }
+    }
 
-        members.addAll(users);
-        members.addAll(this.memberService.loadGroups(cmap));
-        return members;
+    /**
+     *
+     *
+     *
+     * @param evt the LoginEvent scheduled by UserBean
+     */
+    public void setCurrentAccount(@Observes LoginEvent evt) {
+        currentUser = evt.getCurrentAccount();
     }
 
     /**
@@ -282,6 +351,12 @@ public class GroupMgrBean implements Serializable {
     public String getOPERATIONNAME_MANAGE_MEMBERS() {
         return OPERATIONNAME_MANAGE_MEMBERS;
     }
-    
-    
+
+    public boolean isDeactivationForbidden(Group g) {
+        return !memberService.canGroupBeDeactivated(g);
+    }
+
+    public void setMessagePresenter(MessagePresenter messagePresenter) {
+        this.messagePresenter = messagePresenter;
+    }
 }

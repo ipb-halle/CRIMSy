@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<facelet-taglib version="2.2"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+    <namespace>http://ipb-halle.de/nwc</namespace>
+
+    <!-- Components -->
+    <tag>
+        <tag-name>augmentedText</tag-name>
+        <component>
+            <component-type>UIAugmentedText</component-type>
+            <!--<component-class>de.ipb_halle.lbac.plugin.UIAugmentedText</component-class>-->
+        </component>
+    </tag>
+    <tag>
+        <!-- This component supports the same attributes like OmniFaces' <o:inputFile>,
+             see https://omnifaces.org/docs/vdldoc/3.10/o/inputFile.html -->
+        <tag-name>inputFile</tag-name>
+        <component>
+            <component-type>imageAnnotation.InputFile</component-type>
+        </component>
+    </tag>
+
+    <!-- EL functions -->
+    <function>
+        <function-name>formatDateWithTimezone</function-name>
+        <function-class>de.ipb_halle.lbac.util.jsf.DateFunctions</function-class>
+        <function-signature>java.lang.String formatDateWithTimezone(java.util.Date)</function-signature>
+    </function>
+    <function>
+        <function-name>formatNumberInEnglish</function-name>
+        <function-class>de.ipb_halle.lbac.util.jsf.NumberFunctions</function-class>
+        <function-signature>java.lang.String formatNumberInEnglish(java.lang.Number, java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>min</function-name>
+        <function-class>java.lang.Math</function-class>
+        <function-signature>int min(int, int)</function-signature>
+    </function>
+</facelet-taglib>

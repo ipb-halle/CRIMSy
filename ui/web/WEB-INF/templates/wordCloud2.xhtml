@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~     Leibniz Bioactives Cloud
-  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
-  ~
-  ~     Licensed under the Apache License, Version 2.0 (the "License");
-  ~     you may not use this file except in compliance with the License.
-  ~     You may obtain a copy of the License at
-  ~
-  ~         http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~     Unless required by applicable law or agreed to in writing, software
-  ~     distributed under the License is distributed on an "AS IS" BASIS,
-  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~     See the License for the specific language governing permissions and
-  ~     limitations under the License.
-  ~
-  ~
-  ~
+
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
 -->
 
 <!DOCTYPE html>
@@ -30,7 +29,7 @@
 
     <h:body onload="colorCloudTerms()">
         <ui:composition>
-            <b:form id="form">
+            <b:form id="socialForumFormId">
                 <b:container id="wordCloudPage">
                     <b:row>
                         <b:column span="12">
@@ -38,10 +37,10 @@
                                 <b:row>
                                     <b:column span="2"/>
                                     <b:column span="1">
-                                        <b:image value="/resources/img/simpleCloud.svg"  styleClass="img-cloud1" />
+                                        <b:image name="img/simpleCloud.svg" styleClass="img-cloud1" />
                                     </b:column>
                                     <b:column span="1">
-                                        <b:image value="/resources/img/wordcloudLogo.svg"  styleClass="img-cloud2"/>
+                                        <b:image name="img/wordcloudLogo.svg" styleClass="img-cloud2"/>
 
                                     </b:column>
                                 </b:row>
@@ -105,7 +104,7 @@
                                 <f:facet name="append">
                                     <b:commandButton look="primary"
                                                      value=""
-                                                     type="submitt"
+                                                     type="submit"
                                                      icon="search"
                                                      ajax="true"
                                                      id="startSearchButton"
@@ -169,7 +168,8 @@
                                          customOptions="autoWidth:true"
                                          fixedHeader="true"
                                          var="document"
-                                         csv="false">
+                                         csv="false"
+                                         saveState="false">
                                 <b:dataTableColumn label="#{msgs.searchMgr_resulttable_document}">
                                     <b:navLink href="#{document.getLink()}" value="#{document.originalName}"/>
                                 </b:dataTableColumn>

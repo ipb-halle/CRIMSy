@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,12 @@
 package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.entity.InfoEntityList;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.service.InfoObjectService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -178,7 +176,6 @@ public class LdapProperties implements Serializable {
         ListIterator<InfoObject> iter = this.ldapProperties.listIterator();
         while (iter.hasNext()) {
             ie = iter.next();
-            this.logger.info(String.format("save(): %s -> %s", ie.getKey(), ie.getValue()));
             infoObjectService.save((InfoObject) ie
                     .setOwner(this.globalAdmissionContext.getAdminAccount())
                     .setACList(this.globalAdmissionContext.getAdminOnlyACL()));

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,15 @@
  */
 package de.ipb_halle.lbac.file;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.FileObjectEntity;
-import de.ipb_halle.lbac.entity.TermVector;
-import de.ipb_halle.lbac.service.CollectionService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.admission.MemberService;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -40,8 +36,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class FileEntityService implements Serializable {
@@ -113,7 +111,7 @@ public class FileEntityService implements Serializable {
         criteriaQuery.select(fileRoot);
         criteriaQuery.where(builder.equal(fileRoot.get("collection"), collection.getId()));
 
-        List<FileObjectEntity> entities = this.em.createQuery(criteriaQuery) .getResultList();
+        List<FileObjectEntity> entities = this.em.createQuery(criteriaQuery).getResultList();
         List<FileObject> results = new ArrayList<>();
 
         for (FileObjectEntity entity : entities) {
@@ -134,21 +132,20 @@ public class FileEntityService implements Serializable {
                     .setParameter("c", collection.getId())
                     .getSingleResult();
             return cnt.longValue();
-        } catch(Exception e) {
+        } catch (Exception e) {
             this.logger.warn("getDocumentCount() caught an exception", e);
         }
         return -1;
     }
 
-
     /**
      * get file entity by id
      *
-     * @param uuid - id
+     * @param id - id
      * @return - file entity
      */
-    public FileObject getFileEntity(UUID uuid) {
-        FileObjectEntity entity = this.em.find(FileObjectEntity.class, uuid);
+    public FileObject getFileEntity(Integer id) {
+        FileObjectEntity entity = this.em.find(FileObjectEntity.class, id);
         if (entity != null) {
             return new FileObject(
                     entity,
@@ -191,7 +188,7 @@ public class FileEntityService implements Serializable {
             cmap = new HashMap<>();
         }
         if (cmap.get("id") != null) {
-            predicates.add(builder.equal(fileObjectRoot.get("id"), UUID.fromString(cmap.get("id").toString())));
+            predicates.add(builder.equal(fileObjectRoot.get("id"), cmap.get("id")));
         }
         if (cmap.get("name") != null) {
             predicates.add(builder.like(builder.lower(
@@ -225,9 +222,12 @@ public class FileEntityService implements Serializable {
      * save entity
      *
      * @param fileObject - save entity
+     * @return 
      */
-    public void save(FileObject fileObject) {
-        this.em.merge(fileObject.createEntity());
+    public FileObject save(FileObject fileObject) {
+        FileObjectEntity foe = this.em.merge(fileObject.createEntity());
+        fileObject.setId(foe.getId());
+        return fileObject;
     }
 
     /**
@@ -240,7 +240,7 @@ public class FileEntityService implements Serializable {
                 em.merge(tv.createEntity());
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 }

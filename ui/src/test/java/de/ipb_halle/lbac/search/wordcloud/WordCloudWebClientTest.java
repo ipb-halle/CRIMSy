@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
 import de.ipb_halle.lbac.service.CloudNodeService;

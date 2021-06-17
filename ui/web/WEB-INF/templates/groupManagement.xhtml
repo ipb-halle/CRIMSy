@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <!--
   
-  Leibniz Bioactives Cloud
-  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@
                     <b:message for="@previous"/>
                     <b:inputText id="name"
                                  value="#{groupMgrBean.getGroup().name}"
+                                 styleClass="tstGrpMgrNewName"
                                  label="#{msgs.Name}"
                                  disabled="#{groupMgrBean.getGroup().getSubSystemType().toString() != 'LOCAL'}"
                                  renderLabel="true"
@@ -75,26 +76,29 @@
                     <b:fetchBeanInfos/>
 
                     <b:row styleClass="modal-footer">
-                        <b:button value="#{msgs.Close}" dismiss="modal"/>
+                        <b:button value="#{msgs.Close}" styleClass="tstGrpMgrEditClose" dismiss="modal"/>
                         <b:commandButton value="#{msgs.Save}"
+                                         styleClass="tstGrpMgrCreate"
                                          rendered="#{groupMgrBean.mode == 'CREATE'}"
                                          type="submit"
                                          ajax="true"
-                                         update="@form frmGroupList:groupList"
+                                         update="@form frmGroupList:groupList growlMsg"
                                          onclick="ajax:groupMgrBean.actionCreate();"
                                          oncomplete="javascript:if(!validationFailed){$('.modalGroupDialog').modal('hide')};return false;"
                                          look="primary"/>
                         <b:commandButton value="#{msgs.Edit}"
+                                         styleClass="tstGrpMgrUpdate"
                                          rendered="#{groupMgrBean.mode == 'UPDATE'}"
                                          type="submit"
                                          ajax="true"
-                                         update="@form frmGroupList:groupList"
+                                         update="@form frmGroupList:groupList growlMsg"
                                          onclick="ajax:groupMgrBean.actionUpdate();"
                                          oncomplete="if(!validationFailed){$('.modalGroupDialog').modal('hide')};return false;"
                                          look="primary"/>
                         <b:commandButton value="#{msgs.Delete}"
+                                         styleClass="tstGrpMgrDelete"
                                          rendered="#{groupMgrBean.mode == 'DELETE'}"
-                                         update="frmGroupList:groupList"
+                                         update="frmGroupList:groupList growlMsg"
                                          type="submit"
                                          ajax="true"
                                          onclick="ajax:groupMgrBean.actionDelete();"
@@ -124,7 +128,8 @@
                                  fixedHeader="true"
                                  var="ms"
                                  csv="false"
-                                 columnVisibility="false">
+                                 columnVisibility="false"
+                                 saveState="false">
                         <f:facet name="header">
                             <tr>
                                 <th colspan="5">
@@ -152,6 +157,7 @@
                         <b:dataTableColumn value="#{ms.nested ? msgs.YES : msgs.NO}"/>
                         <b:dataTableColumn>
                             <b:commandButton style="padding: 0 4px;"
+                                             styleClass="tstGrpMgrRemoveMember"
                                              icon="trash"
                                              look="link"
                                              ajax="true"
@@ -175,7 +181,8 @@
                                  fixedHeader="true"
                                  var="member"
                                  csv="false"
-                                 columnVisibility="false">
+                                 columnVisibility="false"
+                                 saveState="false">
                         <f:facet name="header">
                             <tr>
                                 <th>#{msgs.Name}</th>
@@ -190,6 +197,7 @@
                         <b:dataTableColumn value="#{member.getSubSystemType().toString()}" />
                         <b:dataTableColumn>
                             <b:commandButton style="padding: 0 4px;"
+                                             styleClass="tstGrpMgrAddMember"
                                              iconAwesome="user-plus"
                                              look="link"
                                              ajax="true"
@@ -205,7 +213,7 @@
                     <b:fetchBeanInfos/>
 
                     <b:row styleClass="modal-footer">
-                        <b:button value="#{msgs.Close}" dismiss="modal"/>
+                        <b:button value="#{msgs.Close}" styleClass="tstGrpMgrMembershipClose" dismiss="modal"/>
                     </b:row>
                 </b:form>
             </b:modal>
@@ -223,11 +231,12 @@
                              fixedHeader="true"
                              var="group"
                              csv="true"
-                             columnVisibility="true">
+                             columnVisibility="true"
+                             saveState="false">
                     <f:facet name="header">
                         <tr>
                             <th colspan="4">
-                                <b:commandButton styleClass="pull-right"
+                                <b:commandButton styleClass="pull-right tstGrpMgrNewGroup"
                                                  style="margin:0 2px;"
                                                  iconAwesome="fa-plus-circle"
                                                  value="#{msgs.groupMgr_newGroup}"
@@ -238,7 +247,7 @@
                                                  rendered="#{userBean.getPermission('ADMISSION_MGR_ENABLE', 'permCREATE')}"
                                                  onclick="ajax:groupMgrBean.setModeCreate();"
                                                  oncomplete="$('.modalGroupDialog').modal();"/>
-                                <b:commandButton styleClass="pull-right"
+                                <b:commandButton styleClass="pull-right tstGrpMgrRefresh"
                                                  style="margin:0 2px;"
                                                  iconAwesome="refresh"
                                                  value="#{msgs.Refresh}"
@@ -262,6 +271,7 @@
                     <b:dataTableColumn value="#{group.node.institution}"/>
                     <b:dataTableColumn>
                         <b:commandButton style="padding: 0 4px;"
+                                         styleClass="tstGrpMgrEditDlg"
                                          icon="pencil"
                                          look="link"
                                          ajax="true"
@@ -273,6 +283,7 @@
                         <!-- possibly 'modalMembershipDialog.DataTable().responsive.recalc();' could be 
                              necessary for responsive tables within a modal form -->
                         <b:commandButton style="padding: 0 4px;"
+                                         styleClass="tstGrpMgrMembershipDlg"
                                          iconAwesome="users"
                                          look="link"
                                          ajax="true"
@@ -282,11 +293,12 @@
                                          onclick="ajax:groupMgrBean.setGroup(group);" 
                                          oncomplete="$('.modalMembershipDialog').modal();"/>
                         <b:commandButton style="padding: 0 4px;"
+                                         styleClass="tstGrpMgrDeleteDlg"
                                          icon="trash"
                                          look="link"
                                          ajax="true"
                                          type="button"
-                                         disabled="#{groupMgrBean.isOperationForbidden(group, 'delete')}"
+                                         disabled="#{groupMgrBean.isDeactivationForbidden(group)}"
                                          update="modalGroupDialog frmModalGroupDialog"
                                          onclick="ajax:groupMgrBean.setModeDelete();groupMgrBean.setGroup(group);"
                                          oncomplete="$('.modalGroupDialog').modal();"/>

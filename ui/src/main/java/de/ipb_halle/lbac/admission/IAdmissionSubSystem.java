@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,8 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Member;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
-import java.util.List;
-import java.util.Map;
 
 public interface IAdmissionSubSystem {
 

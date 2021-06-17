@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,13 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.User;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.globals.SessionHelper;
-import de.ipb_halle.lbac.service.MemberService;
+import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.FacesValidator;
@@ -38,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("AccountValidator")
-public class AccountValidator implements Validator {
+public class AccountValidator implements Validator,Serializable {
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
@@ -68,8 +65,9 @@ public class AccountValidator implements Validator {
      */
     private void checkDuplicateAccount(String login) throws ValidatorException {
         Map<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put("login", login);
-        cmap.put("subSystemType", new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
+        cmap.put(MemberService.PARAM_LOGIN, login);
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, 
+                new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
 
         List<User> list = this.memberService.loadUsers(cmap);
         if (list != null) {

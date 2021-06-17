@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +18,39 @@
 package de.ipb_halle.lbac.collections;
 
 import com.corejsf.util.Messages;
+import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 
 import de.ipb_halle.lbac.admission.LoginEvent;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.MemberService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import javax.annotation.PostConstruct;
+
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Controller for view templates/collectionManagement.xhtml This bean displays
@@ -74,7 +76,7 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
  */
 @SessionScoped
 @Named("collectionBean")
-public class CollectionBean implements Serializable {
+public class CollectionBean implements Serializable, ACObjectBean {
 
     private static final String PUBLIC_COLLECTION_NAME = "public";
     private final static long serialVersionUID = 1L;
@@ -92,11 +94,56 @@ public class CollectionBean implements Serializable {
     private CollectionPermissionAnalyser collPermAnalyser;
 
     private int shownCollections = -1;
+    private ACObjectController acObjectController;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+
+   
 
     @Inject
-    private DocumentSearchBean documentSearchBean;
+    protected MemberService memberService;
 
-    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    @Inject
+    protected CollectionService collectionService;
+
+    @Inject
+    protected NodeService nodeService;
+
+    @Inject
+    protected FileService fileService;
+
+    @Inject
+    protected FileEntityService fileEntityService;
+
+    @Inject
+    protected GlobalAdmissionContext globalAdmissionContext;
+
+    @Inject
+    private CollectionOrchestrator collectionOrchestrator;
+
+    @Inject
+    protected ACListService acListService;
+
+    @Inject
+    protected TermVectorEntityService termVectorEntityService;
+
+    @Override
+    public void applyAclChanges() {
+        activeCollection = collectionService.save(activeCollection);
+    }
+
+    @Override
+    public void cancelAclChanges() {
+    }
+
+    @Override
+    public void actionStartAclChange(ACObject aco) {
+        activeCollection = (Collection) aco;
+        acObjectController = new ACObjectController(
+                aco,
+                memberService.loadGroups(new HashMap<>()),
+                this,
+                activeCollection.getName() + " (" + activeCollection.getNode().getInstitution() + ")");
+    }
 
     private enum MODE {
         CREATE, //Creates a new collection
@@ -107,40 +154,7 @@ public class CollectionBean implements Serializable {
         CLEAR // removes all documents from collection
     };
 
-    @Inject
-    private CollectionService collectionService;
-
-    @Inject
-    private NodeService nodeService;
-
-    @Inject
-    private SolrAdminService solrAdminService;
-
-    @Inject
-    private FileService fileService;
-
-    @Inject
-    private FileEntityService fileEntityService;
-
-    @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
-    
-    @Inject
-    private SolrTermVectorSearch solrTermVectorSearch;
-
     private CollectionSearchState collectionSearchState = new CollectionSearchState();
-
-    @Inject
-    private CollectionOrchestrator collectionOrchestrator;
-
-    @Inject
-    private ACListService acListService;
-
-    @Inject
-    private SolrSearcher solrSearcher;
-
-    @Inject
-    private TermVectorEntityService termVectorEntityService;
 
     @PostConstruct
     public void initCollectionBean() {
@@ -150,13 +164,10 @@ public class CollectionBean implements Serializable {
                 fileService,
                 fileEntityService,
                 globalAdmissionContext,
-                solrAdminService,
                 nodeService,
                 collectionService,
                 PUBLIC_COLLECTION_NAME,
-                solrTermVectorSearch,
-                termVectorEntityService,
-                solrSearcher);
+                termVectorEntityService);
 
         collPermAnalyser = new CollectionPermissionAnalyser(
                 PUBLIC_COLLECTION_NAME,
@@ -196,7 +207,6 @@ public class CollectionBean implements Serializable {
         if (isOwner || acListService.isPermitted(ACPermission.permDELETE, activeCollection, currentAccount)) {
             collectionOperation.clearCollection(activeCollection, currentAccount);
             fileService.createDir(activeCollection.getName());
-            documentSearchBean.clearBean();
             refreshCollectionList();
         } else {
             UIMessage.info(MESSAGE_BUNDLE, "collMgr_clear_no_permission");
@@ -210,8 +220,10 @@ public class CollectionBean implements Serializable {
      *
      */
     public void actionCreate() {
-
         collectionOperation.createCollection(activeCollection, currentAccount);
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("name", activeCollection.getName());
+        activeCollection = collectionService.load(cmap).get(0);
         collectionSearchState.getCollections().add(activeCollection);
 
     }
@@ -224,7 +236,6 @@ public class CollectionBean implements Serializable {
     public void actionDelete() {
         if (collPermAnalyser.isDeleteAllowed(activeCollection, currentAccount)) {
             CollectionOperation.OperationState state = collectionOperation.deleteCollection(activeCollection, currentAccount);
-            documentSearchBean.clearBean();
             if (state == CollectionOperation.OperationState.OPERATION_SUCCESS) {
 
                 collectionSearchState.getCollections().remove(activeCollection);
@@ -245,7 +256,7 @@ public class CollectionBean implements Serializable {
     public void actionReindex() {
         boolean isOwner = currentAccount.equals(activeCollection.getOwner());
         if (isOwner || acListService.isPermitted(ACPermission.permEDIT, activeCollection, currentAccount)) {
-            collectionOperation.reindexCollection(activeCollection, currentAccount, solrSearcher);
+            collectionOperation.reindexCollection(activeCollection, currentAccount);
         } else {
             UIMessage.info(MESSAGE_BUNDLE, "collMgr_reindex_no_permission");
         }
@@ -278,15 +289,19 @@ public class CollectionBean implements Serializable {
     public List<Collection> getLocalCollectionList() {
         List<Collection> collsToShow = new ArrayList<>();
         if (!showLocalCollectionsOnly) {
-            return collectionSearchState.getCollections();
+            collsToShow = collectionSearchState.getCollections();
         } else {
             for (Collection c : collectionSearchState.getCollections()) {
                 if (c.getNode().getId().equals(nodeService.getLocalNodeId())) {
                     collsToShow.add(c);
                 }
             }
-            return collsToShow;
         }
+        Collections.sort(collsToShow,
+                (Collection c1, Collection c2)
+                -> (c1.getName() + c1.getNode().getInstitution())
+                        .compareTo(c2.getName() + c2.getNode().getInstitution()));
+        return collsToShow;
     }
 
     public List<Collection> getOnlyLocalCollections() {
@@ -339,6 +354,11 @@ public class CollectionBean implements Serializable {
 
     public String getEditMode() {
         return this.mode.toString();
+    }
+
+    public void actionShowNewCollectionDlg() {
+        setEditMode("CREATE");
+        initCollection();
     }
 
     public void setEditMode(String editModeString) {
@@ -486,6 +506,15 @@ public class CollectionBean implements Serializable {
         } else {
             return POLLING_INTERVALL_INACTIVE;
         }
+    }
+
+    @Override
+    public ACObjectController getAcObjectController() {
+        return acObjectController;
+    }
+
+    public void setAcObjectController(ACObjectController acObjectController) {
+        this.acObjectController = acObjectController;
     }
 
 }

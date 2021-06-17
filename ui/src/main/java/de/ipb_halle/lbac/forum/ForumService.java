@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,23 +19,23 @@ package de.ipb_halle.lbac.forum;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.Group;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.postings.PostingWebClient;
-import de.ipb_halle.lbac.service.ACListService;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.service.CloudNodeService;
-import de.ipb_halle.lbac.service.CloudService;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.service.NodeService;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.UUID;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -44,23 +44,22 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
  * @author fmauz
  */
 @Stateless
-public class ForumService {
+public class ForumService implements Serializable {
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
     @Inject
     private CloudNodeService cloudNodeService;
-
-    @Inject
-    private CloudService cloudService;
 
     @Inject
     private NodeService nodeService;
@@ -105,7 +104,7 @@ public class ForumService {
                             entity,
                             acListService.loadById(entity.getACList()),
                             memberService.loadUserById(entity.getOwner()),
-                            nodeService.loadById(entity.getNode()),
+                            nodeService.getLocalNode(),
                             cloud.getName()
                     );
 
@@ -119,7 +118,7 @@ public class ForumService {
             }
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return new ArrayList<>();
         }
         return readableTopics;
@@ -155,7 +154,7 @@ public class ForumService {
                 client.announcePostingToRemoteNode(t, u, cn);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return t;
     }
@@ -186,7 +185,7 @@ public class ForumService {
         topic.setNode(nodeService.getLocalNode());
         topic.setOwner(owner);
 
-        em.merge(topic.createEntity());
+        topic.setId(em.merge(topic.createEntity()).getId());
 
         return topic;
     }
@@ -220,7 +219,7 @@ public class ForumService {
     public ACList getPublicReadWriteList() {
         if (publicReadEditAcl == null) {
             Group g = memberService.loadGroupById(
-                    UUID.fromString(GlobalAdmissionContext.PUBLIC_GROUP_ID)
+                    GlobalAdmissionContext.PUBLIC_GROUP_ID
             );
             ACList publicReadWrite = new ACList();
             publicReadWrite.setName("Public Read/Edit ACL");
@@ -246,7 +245,7 @@ public class ForumService {
         ListIterator<Topic> li = oldTopics.listIterator();
         while (li.hasNext()) {
             Topic tmp = li.next();
-            if (tmp.getId().equals(newTopic.getId())) {
+            if (isSameTopic(tmp, newTopic)) {
                 li.set(newTopic); // replace the last element returned by next()
                 isNew = false;
             }
@@ -254,7 +253,11 @@ public class ForumService {
         if (isNew) {
             oldTopics.add(newTopic);
         }
-
         return oldTopics;
+    }
+
+    private boolean isSameTopic(Topic topic1, Topic topic2) {
+        return Objects.equals(topic1.getId(), topic2.getId())
+                && topic1.getNode().getId().equals(topic2.getNode().getId());
     }
 }

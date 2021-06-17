@@ -1,0 +1,288 @@
+/*
+ * Cloud Research & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+.assayTableHeader {
+    padding: 3px;
+}
+
+.assayTableCell {
+    padding: 3px;
+}
+
+.expSelectedEntry {
+    background-color: #229;
+    color: #fcfcfc;
+}
+
+.expNormalEntry {
+    background-color: #fcfcfc;
+    color: 222;
+}
+
+.expRecordEven {
+    background-color: #fffff0;
+}
+
+.expRecordOdd {
+    background-color: #fffff8;
+}
+
+.expRecordEdit {
+    background-color: #fafaff;
+}
+
+.dataTables_length{
+    visibility: hidden;
+}
+
+.experimentRecordContainer .dataTables_filter {
+    visibility: hidden;
+}
+
+.experimentActionButton{
+    width:150px !important;
+    height:45px !important;
+}
+
+.experimentRecordOrderButton{
+    width: 15px;
+}
+
+.experimentRecordButton{
+    margin-right: 5px;
+}
+
+.experimentRecordButtonAdd .caret{
+    visibility: hidden;
+}
+.experimentRecordBottomRow{
+    border-bottom: 1px !important;
+    border-bottom-color: black !important;
+    margin-bottom: 10px !important;
+    border-bottom-width: 1px !important;
+    border-bottom-style: solid !important;
+    padding-bottom: 10px !important;
+}
+
+.assayRemarkLabel{
+    margin-top: 10px;
+    padding-left: 25px;
+    margin-bottom: 2px;
+}
+.assayRemarkTextarea{
+    width:650px;
+    height: 71px;
+}
+
+.assayTargetRow{
+    margin-top: 10px;
+    margin-bottom:  10px;
+}
+.assayUnitRow{
+    padding-top: 5px;
+}
+.assayUnitRow input{
+    width:200px;
+}
+.assayOutcomeRow{
+    padding-top: 5px;
+}
+.assayUnitsSelectBox{
+    width: 200px ;
+}
+
+.ui-wizard-step-titles li{
+    padding-top: 0px;
+    border-top-width: 1px;
+    padding-bottom: 1px;
+    height: 24px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.ui-wizard-content{
+    width: 1100px;
+    height: 500px;
+}
+
+.linkWizardTextInput {
+    margin-top: 10px;
+}
+.linkWizardTypeSelect {
+    margin-top: 10px;
+    width:100%;
+}
+.expLinks{
+    border: 0px;
+    width: 100%;
+}
+.expLinks tr{
+    border: 0px;
+}
+.expLinks tr td{
+    border: 0px !important;
+}
+.expLinks .badge{
+    margin: 3px;
+}
+
+.errorMessageText{
+    text-align: center;
+    font-size: 1.25em;
+    font-weight: bold;
+}
+
+.linkCreation_panelStep1{
+    margin-left: 100px;
+}
+
+.dlgMaterialViewHazards{
+    margin-top: 6px;
+    margin-left: 0px;
+    padding-left:20px;
+}
+
+.dlgMaterialViewBorderLess *{
+    border-width: 0px !important; 
+}
+
+.dlgMaterialViewNames{
+    margin-top: 10px;
+}
+.dlgMaterialViewIndex{
+    margin-top: 10px;
+
+}
+.materialView{
+    margin-left: 10px;
+    width:450px;
+}
+.dlgMaterialViewHeader{
+    margin: auto;
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 125%;
+    text-align: center;
+}
+
+.dlgItemViewText{
+    margin-bottom: 10px;
+    margin-top: 10px;
+} 
+
+.dlgItemViewHeader{
+    font-weight: bold;
+}
+
+.panelBorderless tbody tr {
+    border-width: 0px !important;
+}
+.panelBorderless tbody tr td{
+    border-width: 0px !important;
+}
+
+.expPlotButton{
+    height: 25px;
+    width: 100px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-left: -70px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+}
+.expAppendButton{
+    height: 25px;
+    width: 100px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-left: -60px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-right: 0px;
+}
+
+.assayButtonRow{
+    margin-bottom: 10px;
+}
+
+.rightAligned{
+    margin-left: auto;
+    margin-right: 0px;
+    display: block;
+}
+
+.recordButtonGroup{
+    width:100%;
+}
+
+.recordButtonGroup tbody tr{
+    border-width: 0px;
+}
+.recordButtonGroup tbody tr td{
+    border-width: 0px !important;
+}
+
+.experimentRecordContainer .dataTables_wrapper .row:last-child{
+    height: 0px;
+}
+
+.shownExperiments .dataTables_wrapper .row .col-sm-7{
+    width: 400px;
+    margin-top: -30px;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.shownExperiments .dataTables_wrapper div:first-of-type .dataTables_length {
+    height: 1px;
+}
+
+.experimentFixedCodePart{
+    width: 80px;
+    padding-right: 0px;
+}
+.experimentFixedCodePart input{
+    width: 100%;
+    padding-right: 0px;
+}
+.experimentVariableCodePart{
+    padding-left: 0px;
+    padding-top:7px;
+}
+
+.experimentVariableCodePart input{
+    width:307px;
+}
+.expDescription{
+    padding-left: 7px;
+}
+.expDescription input{
+    width:380px;
+}
+
+.expProjectCB{
+    width:380px;
+}
+
+
+

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,16 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import java.util.Enumeration;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionContext;
 
 /**
  *
  * @author fmauz
  */
-public class HttpSessionMock implements HttpSession{
+public class HttpSessionMock implements HttpSession {
 
     @Override
     public long getCreationTime() {
@@ -60,18 +59,14 @@ public class HttpSessionMock implements HttpSession{
     }
 
     @Override
-    public HttpSessionContext getSessionContext() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public Object getAttribute(String name) {
-        
-        User u=new User();
+
+        User u = new User();
         return u;
-        
+
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public Object getValue(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -82,6 +77,7 @@ public class HttpSessionMock implements HttpSession{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String[] getValueNames() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -92,6 +88,7 @@ public class HttpSessionMock implements HttpSession{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void putValue(String name, Object value) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -102,6 +99,7 @@ public class HttpSessionMock implements HttpSession{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void removeValue(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -116,5 +114,11 @@ public class HttpSessionMock implements HttpSession{
     public boolean isNew() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public javax.servlet.http.HttpSessionContext getSessionContext() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

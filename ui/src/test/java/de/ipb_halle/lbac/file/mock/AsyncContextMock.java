@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,14 +32,19 @@ import javax.servlet.ServletResponse;
 public class AsyncContextMock implements AsyncContext {
 
     private final File file;
+    protected String collectionname;
+    private boolean complete;
 
-    public AsyncContextMock(File f) {
+    public AsyncContextMock(File f, String collectionName) {
         this.file = f;
+        this.collectionname = collectionName;
+        complete = false;
+
     }
 
     @Override
     public ServletRequest getRequest() {
-        return new HttpServletRequestMock(file);
+        return new HttpServletRequestMock(file, collectionname);
     }
 
     @Override
@@ -69,6 +74,11 @@ public class AsyncContextMock implements AsyncContext {
 
     @Override
     public void complete() {
+        complete = true;
+    }
+
+    public boolean isComplete() {
+        return complete;
 
     }
 

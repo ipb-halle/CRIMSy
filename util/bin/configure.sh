@@ -32,10 +32,12 @@ LBAC_DISTRIBUTION_POINT="CLOUDCONFIG_DOWNLOAD_URL"
 CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
 
 #
-LBAC_CONFIG=etc/config.sh
-LBAC_CURRENT_CONFIG_VERSION=3
+LBAC_CONFIG=config.sh
+LBAC_CONFIG_VERSION=5
+LBAC_CURRENT_CONFIG_VERSION=5
 LBAC_INSTALLER=bin/install.sh
 
+LBAC_DB_PWFILE=db.passwd
 LBAC_SSL_DEVCERT=devcert.pem
 LBAC_SSL_CHAIN=chain.txt
 LBAC_SSL_KEYFILE=lbac_cert.key
@@ -50,7 +52,7 @@ LBAC_OFFICIAL_PWFILE=official_cert.passwd
 #
 function dialog_START {
 	dialog --backtitle "$CLOUD_NAME" \
-	  --msgbox "Dieses Programm erhebt Daten für die Installation eines Knotens der $CLOUD_NAME. Bitte starten Sie dieses Programm auf dem Rechner und mit dem Account, mit dem später der Cloud-Knoten betrieben werden soll. Nähere Informationen und insbesondere Sicherheitshinweise entnehmen Sie bitte dem Konfigurationshandbuch: 
+	  --msgbox "Dieses Programm erhebt Daten für die Installation eines Knotens in der Cloud $CLOUD_NAME. Bitte starten Sie dieses Programm auf dem Rechner und mit dem Account, mit dem später der Cloud-Knoten betrieben werden soll. Nähere Informationen und insbesondere Sicherheitshinweise entnehmen Sie bitte dem Konfigurationshandbuch: 
 
 $LBAC_DISTRIBUTION_POINT/ConfigManual.pdf 
 
@@ -97,7 +99,7 @@ function dialog_DATASTORE {
 
 function dialog_CONFIG_OLD {
 	NEXT_FORM=DIALOG_OBJECT_IDS
-	if test ! -r $LBAC_DATASTORE/$LBAC_CONFIG ; then
+	if test ! -r $LBAC_DATASTORE/etc/$LBAC_CONFIG ; then
 		return
 	fi
 	dialog --backtitle "$CLOUD_NAME" \
@@ -110,7 +112,7 @@ Die empfohlene Antwort ist 'Ja'" \
 	0)
 		# safeguard if directory has moved
 		tmp=$LBAC_DATASTORE
-		. $LBAC_DATASTORE/$LBAC_CONFIG
+		. $LBAC_DATASTORE/etc/$LBAC_CONFIG
 		LBAC_DATASTORE=$tmp
 		
 		NEXT_FORM=DIALOG_OBJECT_IDS
@@ -155,7 +157,7 @@ function dialog_HARDWARE_OK {
 	case $? in
 	0)
 		# alles Ok.
-		NEXT_FORM=DIALOG_PROXY_MODE 
+		NEXT_FORM=DIALOG_PROXY_HSTS 
 		;;
 	1)
 		dialog --backtitle "$CLOUD_NAME" \
@@ -283,25 +285,16 @@ function dialog_INTERNET_FQHN {
 		esac
 }
 
-function dialog_PROXY_MODE {
-	if test -z "$LBAC_PROXY_MODE" ; then
-		LBAC_PROXY_MODE=ON 
-	fi
+function dialog_PROXY_HSTS {
         if test -z "$LBAC_PROXY_HSTS" ; then
                 LBAC_PROXY_HSTS=OFF
         fi
 	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
-          --checklist "Falls Sie über eine fortgeschrittene Firewall mit Proxy-Funktion und ggf. Intrusion Detection verfügen, können Sie optional auf die Konfiguration eines Proxy-Containers verzichten. Sie müssen Ihren Proxy dann manuell konfigurieren. Bitte konsultieren Sie hierzu das Handbuch. " 15 72 2 \
-          PROXY "Proxy-Container automatisch konfigurieren" $LBAC_PROXY_MODE \
+          --checklist "Zur Erhöhung der Sicherheit können Sie HTTP Strict Transport Security (HSTS) aktivieren. Dies setzt jedoch ein Zertifikat einer offiziellen Zertifizierungsstelle voraus." 15 72 2 \
           HSTS "HTTP Strict Transport Security (HSTS) aktivieren" $LBAC_PROXY_HSTS 2> $TMP_RESULT
 	case $? in
 		0)
-                        if grep -q PROXY $TMP_RESULT ; then
-                            echo "LBAC_PROXY_MODE=\"ON\"" >> $TMP_CONFIG
-                        else
-                            echo "LBAC_PROXY_MODE=\"OFF\"" >> $TMP_CONFIG
-                        fi
                         if grep -q HSTS $TMP_RESULT ; then
                             echo "LBAC_PROXY_HSTS=\"ON\"" >> $TMP_CONFIG
                         else
@@ -361,7 +354,7 @@ function dialog_DOCKER_HOST {
     fi
     dialog --backtitle "$CLOUD_NAME" \
       --cancel-label "Abbrechen" \
-      --checklist "Steht der Knoten / Docker-Host exklusiv für die $CLOUD_NAME zur Verfügung (empfohlene Einstellung: EXCLUSIV)? Falls auf dem dem Docker-Host weitere Container ausgeführt werden, müssen verwaiste Docker-Container, -Images und -Volumes manuell aufgeräumt werden." 15 72 1 \
+      --checklist "Steht der Knoten / Docker-Host exklusiv für CRIMSy zur Verfügung (empfohlene Einstellung: EXCLUSIV)? Falls auf dem dem Docker-Host weitere Container ausgeführt werden, müssen verwaiste Docker-Container, -Images und -Volumes manuell aufgeräumt werden." 15 72 1 \
       "DOCKER" "Exklusive Ausführung der Cloud" $LBAC_DOCKER_EXCLUSIVE 2>$TMP_RESULT
     case $? in
         0)
@@ -439,7 +432,7 @@ function dialog_CERT_DATA {
 	case $? in
 		0)
 			NEXT_FORM="ERROR: Funktion makeCertReq fehlgeschlagen."
-			makeCertReq && dialog_CERT_CHECK && \
+			getCertReqData && makeCertReq && dialog_CERT_CHECK && \
 			   dialog_CERT_OK DIALOG_CERT_INFO DIALOG_INTRANET_FQHN 
 			;;
 		*)
@@ -483,10 +476,6 @@ function dialog_CERT_OK {
 }
 
 function dialog_CERT_INFO {
-	echo "cat <<EOF >/dev/null" >> $TMP_CONFIG
-	cat "$LBAC_DATASTORE/etc/$LBAC_SSL_REQ" >> $TMP_CONFIG
-	echo "EOF" >> $TMP_CONFIG
-
 	dialog --colors --backtitle "$CLOUD_NAME" \
 	  --msgbox "Der Zertifikatsantrag wurde für Sie in der Datei 
 
@@ -501,6 +490,7 @@ $LBAC_DATASTORE/etc/$LBAC_OFFICIAL_PWFILE
 bevor Sie den Installationsprozess starten. \Z1\ZbBitte schlagen Sie für nähere Erläuterungen im Installationshandbuch nach!\Zn" 19 72
 	case $? in
 		0)
+                        appendCertRequest
 			NEXT_FORM=DIALOG_SAVE
 			;;
 		*)
@@ -517,7 +507,7 @@ function dialog_SAVE {
 	case $? in
 	0)
 		NEXT_FORM="ERROR: Fehler beim Abspeichern."
-		mv $TMP_CONFIG $LBAC_DATASTORE/$LBAC_CONFIG && \
+		mv $TMP_CONFIG $LBAC_DATASTORE/etc/$LBAC_CONFIG && \
 		copyInstaller && upgradeOldConfig && NEXT_FORM=DIALOG_ENCRYPT
 		;;
 	1)
@@ -541,25 +531,12 @@ function dialog_SAVE {
 function dialog_ENCRYPT {
 
 	dialog --backtitle "$CLOUD_NAME" \
-	  --msgbox "Die Konfigurationsdatei wird jetzt verschlüsselt. Bitte senden Sie uns die Datei $LBAC_DATASTORE/$LBAC_CONFIG.asc per Email zu. Sie erhalten dann von uns Nachricht, wann und wie Sie mit dem Installationsprozess fortfahren können. " \
+	  --msgbox "Die Konfigurationsdatei wird jetzt verschlüsselt. Bitte senden Sie uns die Datei $LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc per Email zu. Sie erhalten dann von uns Nachricht, wann und wie Sie mit dem Installationsprozess fortfahren können. " \
 	15 72
 	case $? in
 		0)
 			NEXT_FORM="ERROR: Fehler beim Verschlüsseln."
-			rm -f "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && \
-			cat << EOF > "$LBAC_DATASTORE/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
-#
-# LBAC_INSTITUTION=$LBAC_INSTITUTION
-# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT" -text | \
-          grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
-# `date`
-#
-# ----- SMIME ENCRYPTED CONFIG BEGIN -----
-`openssl smime -encrypt -binary -outform PEM -aes-256-cbc \
-  -in "$LBAC_DATASTORE/$LBAC_CONFIG" "$LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT"`
-# ----- SMIME ENCRYPTED CONFIG END -----
-EOF
-
+                        encrypt
 			;;
 		*)
 			NEXT_FORM=DIALOG_ABORT
@@ -571,7 +548,7 @@ function dialog_END {
 	dialog --backtitle "$CLOUD_NAME" \
 	  --infobox "Die Konfiguration ist beendet. Lassen Sie uns bitte die Datei 
 
-$LBAC_DATASTORE/$LBAC_CONFIG.asc
+$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc
 
 zukommen. Sie erhalten dann weitere Instruktionen für die Installation von uns." 15 72
 	
@@ -581,6 +558,12 @@ zukommen. Sie erhalten dann weitere Instruktionen für die Installation von uns.
 #
 #==========================================================
 #
+function appendCertRequest {
+	echo "cat <<EOF >/dev/null" >> $TMP_CONFIG
+	cat "$LBAC_DATASTORE/etc/$LBAC_SSL_REQ" >> $TMP_CONFIG
+	echo "EOF" >> $TMP_CONFIG
+}
+
 function checkTerminal {
 	if test ! -w `tty` ; then
 		dialog --backtitle "$CLOUD_NAME" \
@@ -675,21 +658,22 @@ if test "!" "(" -n "\$LBAC_DATASTORE" -a -d "\$LBAC_DATASTORE" \
 fi
 . \$LBAC_DATASTORE/etc/config.sh > /dev/null
 cd \$LBAC_DATASTORE
+CLOUD=`cat \$LBAC_DATASTORE/etc/primary.cfg`
 mkdir -p \$LBAC_DATASTORE/tmp 
 pushd \$LBAC_DATASTORE/tmp
 
-wget -O configure.sh.sig \$LBAC_DISTRIBUTION_POINT/configure.sh.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in configure.sh.sig -certfile ../etc/devcert.pem \
-  -CAfile ../etc/chain.txt -out configure.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
+curl --silent --output configure.sh.sig \$LBAC_DISTRIBUTION_POINT/configure.sh.sig || (echo "Download fehlgeschlagen" && exit 1)
+openssl smime -verify -in configure.sh.sig -certfile ../etc/\$CLOUD/devcert.pem \
+  -CAfile ../etc/\$CLOUD/chain.txt -out configure.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" \
   && rm configure.sh && exit 1)
 
-wget -O setup.asc.sig \$LBAC_DISTRIBUTION_POINT/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
-openssl smime -verify -in setup.asc.sig -certfile ../etc/devcert.pem \
- -CAfile ../etc/chain.txt | openssl smime -decrypt -inform PEM \
+curl --silent --output setup.asc.sig \$LBAC_DISTRIBUTION_POINT/\$LBAC_INSTITUTION_MD5.asc.sig || (echo "Download fehlgeschlagen" && exit 1)
+openssl smime -verify -in setup.asc.sig -certfile ../etc/\$CLOUD/devcert.pem \
+ -CAfile ../etc/\$CLOUD/chain.txt | openssl smime -decrypt -inform PEM \
  -inkey ../etc/lbac_cert.key -passin file:../etc/lbac_cert.passwd \
  -out setup.sh || (echo "Entschlüsselung oder Signaturprüfung fehlgeschlagen" && rm setup.sh && exit 1)
 chmod +x setup.sh configure.sh
-mv configure.sh ../bin
+mv configure.sh \$LBAC_DATASTORE/bin
 DATE=\`date "+%Y%m%d%H%M%S"\`
 ./setup.sh \$* 2>&1 | tee "\$LBAC_DATASTORE/tmp/setup.\$DATE.log" \
  || ( echo "Setup abgebrochen" && exit 1)
@@ -701,43 +685,33 @@ chmod +x "$LBAC_DATASTORE/$LBAC_INSTALLER"
 
 }
 
+# encrypt the configuration script
+function encrypt {
+        rm -f "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc" && \
+            cat << EOF > "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_CONFIG.asc" && echo > $TMP_SSL_DATA && NEXT_FORM=DIALOG_END
 #
-# Upgrade from config version 2 to version 3
+# LBAC_INSTITUTION=$LBAC_INSTITUTION
+# CERTIFICATE_ID=`openssl x509 -in "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT" -text | \
+          grep -A1 "X509v3 Subject Key Identifier" | tail -1 | tr -d $' \n'`
+# `date`
 #
-function upgradeOldConfig {
-	if test $LBAC_CONFIG_VERSION = 2 ; then
-
-		if test -f $LBAC_DATASTORE/etc/lbac_devcert.pem ; then 
-			mv $LBAC_DATASTORE/etc/lbac_devcert.pem $LBAC_DATASTORE/etc/devcert.pem
-		fi
-		if test -f $LBAC_DATASTORE/etc/lbac_cacert.pem ; then
-
-			cat <<EOF > $LBAC_DATASTORE/etc/chain.txt
-/C=DE/ST=Sachsen-Anhalt/L=Halle (Saale)/O=Leibniz-Institut fuer Pflanzenbiochemie (IPB) Halle/OU=Abt. Natur- und Wirkstoffchemie/CN=Leibniz Bioactives Cloud CA 1/emailAddress=fbroda@ipb-halle.de
-
-`cat $LBAC_DATASTORE/etc/lbac_cacert.pem`
+# ----- SMIME ENCRYPTED CONFIG BEGIN -----
+`openssl smime -encrypt -binary -outform PEM -aes-256-cbc \
+  -in "$LBAC_DATASTORE/etc/$LBAC_CONFIG" "$LBAC_DATASTORE/etc/$CLOUD_NAME/$LBAC_SSL_DEVCERT"`
+# ----- SMIME ENCRYPTED CONFIG END -----
 EOF
-
-			rm $LBAC_DATASTORE/etc/lbac_cacert.pem
-		fi
-
-		touch $LBAC_DATASTORE/dist/dirty
-	fi
 }
 
-# function installKeys {
-#	wget -O $LBAC_DATASTORE/etc/$LBAC_SSL_CHAIN $LBAC_DISTRIBUTION_POINT/$LBAC_SSL_CHAIN
-#	wget -O $LBAC_DATASTORE/etc/$LBAC_SSL_DEVCERT $LBAC_DISTRIBUTION_POINT/$LBAC_SSL_DEVCERT
-# }
- 
-function makeCertReq {
+function getCertReqData {
 	LBAC_COUNTRY=`head -1 $TMP_SSL_DATA | tr -d $'\n'`
 	LBAC_STATE=`head -2 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_CITY=`head -3 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_SSL_ORGANIZATION=`head -4 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_SSL_OU=`head -5 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
 	LBAC_SSL_EMAIL=`head -6 $TMP_SSL_DATA | tail -1 | tr -d $'\n'`
+}
 
+function makeCertReq {
 	echo "LBAC_COUNTRY=\"$LBAC_COUNTRY\"" >> $TMP_CONFIG
 	echo "LBAC_STATE=\"$LBAC_STATE\"" >> $TMP_CONFIG
 	echo "LBAC_CITY=\"$LBAC_CITY\"" >> $TMP_CONFIG
@@ -781,21 +755,26 @@ EOF
 	  -passout "file:$LBAC_DATASTORE/etc/$LBAC_SSL_PWFILE" \
 	  -subj "$TMP_SSL_SUBJECT" \
 	  -config $TMP_SSL_DATA
-
-#
-#	deactivated!
-#	installKeys
-#
 }
 
 function makeDirectories {
-	mkdir -p $LBAC_DATASTORE/etc && \
-	mkdir -p $LBAC_DATASTORE/bin
+	mkdir -p "$LBAC_DATASTORE/etc/$CLOUD_NAME" && \
+	mkdir -p "$LBAC_DATASTORE/bin"
+
+        if [ ! -f "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE" ] ; then
+            uuidgen -r | tr -d $'\n' > "$LBAC_DATASTORE/etc/$LBAC_DB_PWFILE"
+        fi
+
+        echo /$CLOUD_NAME$'\t/d\ni\n'$CLOUD_NAME$';'$LBAC_DISTRIBUTION_POINT$'\n.\nw\nq\n' | \
+            ed $LBAC_DATASTORE/etc/clouds.cfg
+
+        echo "$CLOUD_NAME;$LBAC_DISTRIBUTION_POINT" > $LBAC_DATASTORE/etc/clouds.cfg
+        echo "$CLOUD_NAME" > $LBAC_DATASTORE/etc/primary.cfg
 
 	# clean up certificates from download and 
 	# verification (see upload.sh)
-	test -s "$LBAC_SSL_CHAIN" && mv -f "$LBAC_SSL_CHAIN" "$LBAC_DATASTORE/etc" 
-	test -s "$LBAC_SSL_DEVCERT" &&  mv -f "$LBAC_SSL_DEVCERT" "$LBAC_DATASTORE/etc"
+	test -s "$LBAC_SSL_CHAIN" && mv -f "$LBAC_SSL_CHAIN" "$LBAC_DATASTORE/etc/$CLOUD_NAME" 
+	test -s "$LBAC_SSL_DEVCERT" &&  mv -f "$LBAC_SSL_DEVCERT" "$LBAC_DATASTORE/etc/$CLOUD_NAME"
 	return 0
 }
 
@@ -815,21 +794,9 @@ EOF
 }
 
 #
-#==========================================================
+# select and run the next dialog
 #
-# line drawing in UTF-8 PuTTY
-export NCURSES_NO_UTF8_ACS=1
-
-umask 0077
-checkSoftware
-if test $NEXT_FORM = DIALOG_START ; then
-	checkTerminal
-	checkUser
-	makeTempConfig
-	checkTerminalSize
-fi
-
-while true ; do 
+function runDialogs {
 
 	case $NEXT_FORM in
 
@@ -869,8 +836,8 @@ while true ; do
 	DIALOG_INTERNET_FQHN)
 		dialog_INTERNET_FQHN
 		;;
-	DIALOG_PROXY_MODE)
-		dialog_PROXY_MODE
+	DIALOG_PROXY_HSTS)
+		dialog_PROXY_HSTS
 		;;
 	DIALOG_DATASTORE)
 		dialog_DATASTORE
@@ -899,9 +866,9 @@ while true ; do
 	__END__)
 		cleanUp
                 echo "cleaning up intermediate files"
-                rm configure.sh.sig chain.txt devcert.pem
+                rm configure.sh.sig 
                 echo "Moving configure.sh to $LBAC_DATASTORE/bin"
-                mv $0 "$LBAC_DATASTORE/bin"
+                mv -f $0 "$LBAC_DATASTORE/bin"
 		exit 0
 		;;
 	*)
@@ -911,6 +878,57 @@ while true ; do
 		exit 1
 		;;
 	esac
+
+}
+
+#
+# Version Upgrade 
+# Various automatic setting updates and cleanups are performed during version upgrade.
+# This is more a convenience method and there is currently no support for skip versions.
+#
+#
+# - from 2 to 3 --> renaming of certificate files, MultiCloud, hierarchical PKI
+# - from 3 to 4 --> removal of pgchem and SolR
+#
+function upgradeOldConfig {
+	if test $LBAC_CONFIG_VERSION -lt 5 ; then
+
+                # move certificates of primary cloud
+                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem" && \
+                    mv "$LBAC_DATASTORE/etc/devcert.pem" "$LBAC_DATASTORE/etc/$CLOUD_NAME/devcert.pem"
+                test ! -s "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt" && \
+                    mv "$LBAC_DATASTORE/etc/chain.txt" "$LBAC_DATASTORE/etc/$CLOUD_NAME/chain.txt"
+
+                # remove old components
+                rm -rf "$LBAC_DATASTORE/dist/pgchem" 
+                rm -rf "$LBAC_DATASTORE/dist/solr"
+                sudo rm -rf "$LBAC_DATASTORE/data/solr"
+
+                # this time no need to remove the entire dist directory
+                # touch $LBAC_DATASTORE/dist/dirty
+
+	fi
+}
+#
+#==========================================================
+#
+# line drawing in UTF-8 PuTTY
+export NCURSES_NO_UTF8_ACS=1
+
+umask 0077
+# check for batch mode (configBatch.sh)
+if [ x$1 = 'xBATCH' ] ; then
+    return
+fi
+
+checkSoftware
+if test $NEXT_FORM = DIALOG_START ; then
+	checkTerminal
+	checkUser
+	makeTempConfig
+	checkTerminalSize
+fi
+
+while true ; do 
+    runDialogs
 done
-
-

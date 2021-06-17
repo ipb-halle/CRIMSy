@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,16 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.postings.PostingWebClient;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.forum.topics.TopicsWebClient;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.entity.Node;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -59,6 +60,8 @@ public class ForumServiceTest extends TestBase {
     @Inject
     private MembershipService memberShipService;
 
+    private User publicUser;
+
     public ForumServiceTest() {
 
     }
@@ -70,18 +73,18 @@ public class ForumServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("DELETE FROM topics");
         entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id>1");
         entityManagerService.doSqlUpdate("DELETE FROM clouds WHERE id>1");
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
     @Test
     public void test01_createNewTopic() throws Exception {
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         assert (instance != null);
         assert (memberService != null);
         assert (memberShipService != null);
 
         Cloud cloud = cloudService.load().get(0);
 
-        UUID id = instance.createNewTopic(
+        Integer id = instance.createNewTopic(
                 "Test Topic",
                 TopicCategory.OTHER,
                 publicUser,
@@ -91,28 +94,25 @@ public class ForumServiceTest extends TestBase {
         Assert.assertNotNull("Topic was not saved correctly", id);
 
         List<Object> o = entityManagerService.doSqlQuery("SELECT "
-                + "cast(id as VARCHAR), "
-                + "name,"
+                + "id , "
+                + "name, "
                 + "category, "
-                + "cast(owner_id as VARCHAR), "
-                + "cast(aclist_id as VARCHAR), "
-                + "cast(node_id as VARCHAR), "
+                + "owner_id , "
+                + "aclist_id , "
                 + "cloud_name FROM topics");
         Assert.assertEquals("Exact one topic must be found", 1, o.size());
         Object[] z = (Object[]) o.get(0);
-        String entityId = (String) z[0];
-        Assert.assertEquals("IDs do not match", id.toString(), entityId);
+        Integer entityId = (Integer) z[0];
+        Assert.assertEquals("IDs do not match", id, entityId);
         String name = (String) z[1];
         Assert.assertEquals("name does not match", "Test Topic", name);
         String category = (String) z[2];
         Assert.assertEquals("category does not match", "OTHER", category);
-        String user_id = (String) z[3];
-        Assert.assertEquals("Owner-ID does not match", publicUser.getId(), UUID.fromString(user_id));
-        String owner_id = (String) z[4];
-        Assert.assertEquals("ACL-ID does not match", instance.getPublicReadWriteList().getId(), UUID.fromString(owner_id));
-        String node_id = (String) z[5];
-        Assert.assertEquals("Node-ID does not match", nodeService.getLocalNode().getId(), UUID.fromString(node_id));
-        String cloud_name = (String) z[6];
+        Integer user_id = (Integer) z[3];
+        Assert.assertEquals("Owner-ID does not match", publicUser.getId(), user_id);
+        Integer owner_id = (Integer) z[4];
+        Assert.assertEquals("ACL-ID does not match", instance.getPublicReadWriteList().getId(), owner_id);
+        String cloud_name = (String) z[5];
         Assert.assertEquals("Cloud-ID does not match", cloud.getName(), cloud_name);
 
     }
@@ -122,13 +122,9 @@ public class ForumServiceTest extends TestBase {
      */
     @Test
     public void test02_addPostingToTopic() throws Exception {
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         User idOfUser2 = createUser(
                 "forumuser1",
-                "forumuser1",
-                nodeService.getLocalNode(),
-                memberService,
-                memberShipService);
+                "forumuser1");
 
         Cloud cloud = cloudService.load().get(0);
         Topic topic2 = instance.createNewTopic(
@@ -148,11 +144,9 @@ public class ForumServiceTest extends TestBase {
     /**
      *
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void test03_loadReadableTopics() {
-
-        // entityManagerService.doSqlQuery("DELETE FROM ")
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         Cloud cloud1 = cloudService.load().get(0);
         Cloud cloud2 = new Cloud();
         cloud2.setName("Cloud2");
@@ -188,6 +182,31 @@ public class ForumServiceTest extends TestBase {
         List<Topic> topicsOfCloud2 = instance.loadReadableTopics(publicUser, cloud2);
         Assert.assertEquals("1 Topic  must be found in cloud 1", 1, topicsOfCloud2.size());
 
+        entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id=" + cloudNode.getId());
+        entityManagerService.doSqlUpdate("DELETE FROM clouds WHERE name='Cloud2'");
+    }
+
+    @Test
+    public void test04_upsertTopicList() {
+        Node localNode = new Node();
+        Node remoteNode = new Node();
+        Topic topic_local1 = createTopic(1, localNode);
+        Topic topic_local2 = createTopic(2, localNode);
+        Topic topic_remote1 = createTopic(1, remoteNode);
+        Topic topic_remote2 = createTopic(2, remoteNode);
+
+        List<Topic> upsertedList = instance.upsertTopicList(topic_local1, new ArrayList<>());
+        Assert.assertEquals(1, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_local1, upsertedList);
+        Assert.assertEquals(1, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_local2, upsertedList);
+        Assert.assertEquals(2, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_remote1, upsertedList);
+        Assert.assertEquals(3, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_remote1, upsertedList);
+        Assert.assertEquals(3, upsertedList.size());
+        upsertedList = instance.upsertTopicList(topic_remote2, upsertedList);
+        Assert.assertEquals(4, upsertedList.size());
     }
 
     @Deployment
@@ -198,7 +217,13 @@ public class ForumServiceTest extends TestBase {
                 .addClass(PostingWebClient.class)
                 .addClass(EntityManagerService.class)
                 .addClass(KeyManager.class);
+    }
 
+    private Topic createTopic(int id, Node n) {
+        Topic topic = new Topic();
+        topic.setNode(n);
+        topic.setId(id);
+        return topic;
     }
 
 }

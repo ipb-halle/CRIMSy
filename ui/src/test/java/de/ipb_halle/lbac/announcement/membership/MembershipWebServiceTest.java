@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,42 +19,36 @@ package de.ipb_halle.lbac.announcement.membership;
 
 import de.ipb_halle.lbac.admission.AdmissionSubSystemType;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.announcement.membership.mock.MembershipWebServiceMock;
-import de.ipb_halle.lbac.announcement.membership.MembershipWebRequest;
-import de.ipb_halle.lbac.announcement.membership.MembershipWebService;
+import de.ipb_halle.lbac.admission.MembershipWebRequest;
+import de.ipb_halle.lbac.admission.MembershipWebService;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Group;
+import de.ipb_halle.lbac.admission.Group;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.entity.Membership;
+import de.ipb_halle.lbac.admission.Membership;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
-import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
-import java.net.URL;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,8 +56,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Test for receipt of an webrequest with the inquiry to save a remote user in
- * the local database inclusive its groups.
  *
  * @author fmauz
  */
@@ -98,8 +90,6 @@ public class MembershipWebServiceTest extends TestBase {
     public static WebArchive createDeployment() {
 
         return prepareDeployment("MembershipWebServiceTest.war")
-                .addPackage(MemberService.class.getPackage())
-                .addPackage(NodeService.class.getPackage())
                 .addClass(GlobalAdmissionContext.class)
                 .addClass(MembershipWebService.class)
                 .addClass(GlobalAdmissionContext.class)
@@ -148,7 +138,7 @@ public class MembershipWebServiceTest extends TestBase {
         assert (webService != null);
 
         Cloud c = cloudService.loadByName(TESTCLOUD);
-        CloudNode cn = cloudNodeService.loadCloudNode(c, nodeService.getLocalNode()); 
+        CloudNode cn = cloudNodeService.loadCloudNode(c, nodeService.getLocalNode());
         final WebClient wc = SecureWebClientBuilder.createWebClient(
                 cn,
                 "members");
@@ -165,14 +155,13 @@ public class MembershipWebServiceTest extends TestBase {
         testCloudNode.setPublicKey(Base64.getEncoder().encodeToString(keymanager.getLocalPublicKey(TESTCLOUD).getEncoded()));
         testCloudNode = cloudNodeService.save(testCloudNode);
 
-        User u = createUser("testUser", "testUser", n, memberService, membershipService);
+        User u = createUser("testUser", "testUser");
 
         Group group1 = createGroup("group1", n, memberService, membershipService);
-        membershipService.addMembership(group1,u);
+        membershipService.addMembership(group1, u);
 
-        UUID groupID = UUID.randomUUID();
         Group remoteGroup2 = new Group();
-        remoteGroup2.setId(groupID);
+        remoteGroup2.setId(-1000);
         remoteGroup2.setName("group2");
         remoteGroup2.setNode(n);
         remoteGroup2.setSubSystemData("/");
@@ -180,18 +169,18 @@ public class MembershipWebServiceTest extends TestBase {
         Set<Group> groupSet = new HashSet<>();
         groupSet.add(remoteGroup2);
 
-        Group publicGroup = memberService.loadGroupById(UUID.fromString(GlobalAdmissionContext.PUBLIC_GROUP_ID));
+        Group publicGroup = memberService.loadGroupById(GlobalAdmissionContext.PUBLIC_GROUP_ID);
         groupSet.add(publicGroup);
 
         Set<Membership> memberships = membershipService.loadMemberOf(u);
         for (Membership m : memberships) {
             membershipService.removeMembership(m);
         }
-        membershipService.addMembership(group1,u );
+        membershipService.addMembership(group1, u);
 
         LbacWebClient client = new LbacWebClient();
         WebRequestSignature signature = client.createWebRequestSignature(keymanager.getLocalPrivateKey(TESTCLOUD));
-
+        u.setNode(n);
         MembershipWebRequest webRequest = new MembershipWebRequest();
         webRequest.setUser(u);
         webRequest.setCloudName(TESTCLOUD);
@@ -202,7 +191,11 @@ public class MembershipWebServiceTest extends TestBase {
 
         wc.post(webRequest);
 
-        memberships = membershipService.loadMemberOf(u);
+        Integer remoteId = (Integer) entityManagerService.doSqlQuery(
+                String.format("SELECT id FROM usersgroups ug WHERE ug.subsystemdata ='%s'",
+                        u.getId().toString())).get(0);
+        memberships = membershipService.loadMemberOf(memberService.loadUserById(remoteId));
+
         Assert.assertEquals(3, memberships.size());
         boolean publicGroupFlag = false;
         boolean group2Flag = false;
@@ -210,8 +203,7 @@ public class MembershipWebServiceTest extends TestBase {
         for (Membership m : memberships) {
             if (m.getGroup().equals(publicGroup)) {
                 publicGroupFlag = true;
-            }
-            if (m.getGroup().equals(remoteGroup2)) {
+            } else if (m.getGroup().getSubSystemData().equals(remoteGroup2.getId().toString())) {
                 group2Flag = true;
             }
         }

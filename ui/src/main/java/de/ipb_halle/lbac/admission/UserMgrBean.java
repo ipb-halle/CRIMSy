@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,28 +18,25 @@
 package de.ipb_halle.lbac.admission;
 
 import com.corejsf.util.Messages;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
+import de.ipb_halle.lbac.container.bean.CallBackController;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Membership;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Named("userMgrBean")
 @SessionScoped
@@ -88,6 +85,8 @@ public class UserMgrBean implements Serializable {
     private MODE mode;
 
     private String tempPassword;
+    private MessagePresenter messagePresenter;
+    protected CallBackController callBackController = new CallBackController();
 
     /**
      * default constructor
@@ -101,11 +100,36 @@ public class UserMgrBean implements Serializable {
     }
 
     /**
+     * Injection of services and message presenter for test purposes
+     *
+     * @param nodeService
+     * @param memberService
+     * @param membershipService
+     * @param messagePresenter
+     * @param controllerMock
+     */
+    public UserMgrBean(
+            NodeService nodeService,
+            MemberService memberService,
+            MembershipService membershipService,
+            MessagePresenter messagePresenter,
+            CallBackController controllerMock) {
+        this();
+        this.nodeService = nodeService;
+        this.memberService = memberService;
+        this.membershipService = membershipService;
+        this.messagePresenter = messagePresenter;
+        this.callBackController = controllerMock;
+        initUser();
+    }
+
+    /**
      * Initialization depending on injected resources
      */
     @PostConstruct
     private void initUserMgrBean() {
         // uses nodeService, which is not available in constructor!
+        messagePresenter = JsfMessagePresenter.getInstance();
         initUser();
     }
 
@@ -122,17 +146,45 @@ public class UserMgrBean implements Serializable {
      * create a new user
      */
     public void actionCreate() {
-        this.logger.info("actionCreate(): creating Account");
         this.user.setPassword(this.credentialHandler.computeDigest(this.tempPassword));
-        this.user = this.memberService.save(this.user);
+        boolean userSaved = saveUser();
+        if (!userSaved) {
+            return;
+        }
         this.tempPassword = "";
         Group publicGroup = memberService.loadGroupById(
-                UUID.fromString(GlobalAdmissionContext.PUBLIC_GROUP_ID));
+                GlobalAdmissionContext.PUBLIC_GROUP_ID);
 
         this.membershipService.addMembership(publicGroup, user);
         initUser();
         this.mode = MODE.READ;
-        this.logger.info("actionCreate() finished.");
+    }
+
+    private boolean saveUser() {
+        try {
+            this.user = this.memberService.save(this.user);
+        } catch (Exception e) {
+            if ((e.getCause() != null && e.getCause() instanceof DuplicateShortcutException)
+                    || hasConstraintError(e)) {
+                messagePresenter.error("userMgr_error_duplicateShortcut");
+            } else {
+                messagePresenter.error("userMgr_error_unknown");
+            }
+            callBackController.addCallBackParameter("success", false);
+            return false;
+        }
+        callBackController.addCallBackParameter("success", true);
+        return true;
+    }
+
+    private boolean hasConstraintError(Throwable t) {
+        while (t.getCause() != null) {
+            if (t.getMessage().contains("ConstraintViolationException")) {
+                return true;
+            }
+            t = t.getCause();
+        }
+        return false;
     }
 
     /**
@@ -186,7 +238,10 @@ public class UserMgrBean implements Serializable {
     }
 
     public void actionUpdate() {
-        this.memberService.save(this.user);
+        boolean userSaved = saveUser();
+        if (!userSaved) {
+            return;
+        }
         this.tempPassword = "";
         initUser();
         this.mode = MODE.READ;
@@ -217,8 +272,8 @@ public class UserMgrBean implements Serializable {
      */
     public List<Group> getGroupList() {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put("node_id", this.nodeService.getLocalNode().getId());
-        cmap.put("subSystemType", AdmissionSubSystemType.LOCAL);
+        cmap.put(MemberService.PARAM_NODE_ID, this.nodeService.getLocalNode().getId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LOCAL);
         // TODO: filter out groups, the current user is already a member of
         return this.memberService.loadGroups(cmap);
     }
@@ -230,6 +285,9 @@ public class UserMgrBean implements Serializable {
      */
     public List<Membership> getMembershipList() {
         Map<String, Object> cmap = new HashMap<>();
+        if (this.user.getId() == null) {
+            return new ArrayList<Membership>();
+        }
         cmap.put("member_id", this.user.getId());
 
         // nestedFlag == true means show all (nested & direct)!
@@ -273,8 +331,9 @@ public class UserMgrBean implements Serializable {
      */
     public List<User> getUserList() {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put("node", this.nodeService.getLocalNode());
-        cmap.put("subSystemType", new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
+        cmap.put(MemberService.PARAM_NODE_ID, this.nodeService.getLocalNode().getId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
+                new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
         List<User> users = this.memberService.loadUsers(cmap);
         for (int i = users.size() - 1; i >= 0; i--) {
             if (users.get(i).getName().equals(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER)) {

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
+
+<h:body>
+
+        <crimsy:acobjectModal
+            id="dlgPrinterAcl"
+            acobjectController="#{printAdminBean.acObjectController}"
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="printerSettingsPanel" />
+
+        <b:form id="printerSettings" horizontal="true" method="post">
+
+            <b:panelGrid id="printerPanelId" 
+                    colSpans="12"
+                    styleClass="printerSettingsPanel"
+                    size="sm">
+                <b:panel id="panelSettings" title="#{msgs.PrinterSettings}" collapsible="false" look="info">
+
+                    <b:dataTable id="printerList"
+                                 value="#{printAdminBean.printers}"
+                                 styleClass="cloudNodeList"
+                                 striped="true"
+                                 responsive="false"
+                                 customOptions="autoWidth:true"
+                                 fixedHeader="true"
+                                 var="pl"
+                                 csv="true"
+                                 columnVisibility="true"
+                                 saveState="false">
+                        <f:facet name="header">
+                            <tr>
+                                <th>#{msgs.PrinterQueue}</th>
+                                <th>#{msgs.PrinterName}</th>
+                                <th>#{msgs.PrinterModel}</th>
+                                <th>#{msgs.PrinterContact}</th>
+                                <th>#{msgs.PrinterPlace}</th>
+                                <th>#{msgs.PrinterStatus}</th>
+                                <th style="min-width:30px">#{msgs.Tools}</th>
+                            </tr>
+                        </f:facet>
+                        <b:dataTableColumn value="#{pl.queue}" order="asc"/>
+                        <b:dataTableColumn value="#{pl.name}"/>
+                        <b:dataTableColumn value="#{pl.model}"/>
+                        <b:dataTableColumn value="#{pl.contact}"/>
+                        <b:dataTableColumn value="#{pl.place}"/>
+                        <b:dataTableColumn value="#{msgs['PrinterStatus_'.concat(pl.status)]}" />
+                        <b:dataTableColumn>
+                            <b:commandButton id="btnSelectPrinter"
+                                             style="padding: 0 4px;"
+                                             icon="pencil"
+                                             look="link"
+                                             type="submit"
+                                             action="#{printAdminBean.actionSelectPrinter(pl)}" />
+                            <b:commandButton id="btnAclPrinter"
+                                             style="padding: 0 4px;"
+                                             icon="glyphicon glyphicon-user"
+                                             look="link"
+                                             ajax="true"
+                                             process="@this"
+                                             tooltip="#{msgs.PrinterPermission_tooltip}"
+                                             update="@(.acoEditModal)"
+                                             type="button"
+                                             action="#{printAdminBean.actionStartAclChange(pl)}"
+                                             oncomplete="PF('dlgAcl').show();" 
+                                             disabled="false" />
+                            <p:commandButton id="btnDeletePrinter"
+                                             style="padding: 0 4px;"
+                                             styleClass="btn btn-link"
+                                             icon="fa fa-trash"
+                                             action="#{printAdminBean.actionDelete(pl)}"
+                                             update="printerSettings">
+                                <p:confirm header="#{msgs.PrinterConfirmDelete}" 
+                                                    message="#{msgs.PrinterConfirmDelete_detail}"
+                                                    icon="fa fa-warning" />
+                            </p:commandButton>
+                        </b:dataTableColumn>
+                    </b:dataTable>
+
+                    <b:row>
+                        <b:commandButton 
+                                id="btnAddPrinter"
+                                type="submit" 
+                                iconAwesome="plus" 
+                                style="margin-right:3px;"
+                                action="#{printAdminBean.actionAddPrinter}" 
+                                value="#{msgs.PrinterAddPrinter}"/>
+                    </b:row>
+                </b:panel>
+
+               <b:panel id="panelLabelSettings" title="#{msgs.LabelSettings}" collapsible="false" look="info">
+
+                    <b:dataTable id="labelList"
+                                 value="#{printAdminBean.labels}"
+                                 styleClass="cloudNodeList"
+                                 striped="true"
+                                 responsive="false"
+                                 customOptions="autoWidth:true"
+                                 fixedHeader="true"
+                                 var="ll"
+                                 csv="true"
+                                 columnVisibility="true"
+                                 saveState="false">
+                        <f:facet name="header">
+                            <tr>
+                                <th>#{msgs.LabelName}</th>
+                                <th>#{msgs.LabelType}</th>
+                                <th>#{msgs.PrinterModel}</th>
+                                <th style="min-width:30px">#{msgs.Tools}</th>
+                            </tr>
+                        </f:facet>
+                        <b:dataTableColumn value="#{ll.name}" order="asc"/>
+                        <b:dataTableColumn value="#{ll.labelType}"/>
+                        <b:dataTableColumn value="#{ll.printerModel}"/>
+                        <b:dataTableColumn>
+                            <b:commandButton id="btnSelectLabel"
+                                             style="padding: 0 4px;"
+                                             icon="pencil"
+                                             look="link"
+                                             type="submit"
+                                             action="#{printAdminBean.actionSelectLabel(ll)}" />
+                            <p:commandButton id="btnDeleteLabel"
+                                             style="padding: 0 4px;"
+                                             styleClass="btn btn-link"
+                                             icon="fa fa-trash"
+                                             action="#{printAdminBean.actionDelete(ll)}"
+                                             update="printerSettings">
+                                <p:confirm header="#{msgs.LabelConfirmDelete}" 
+                                                    message="#{msgs.LabelConfirmDelete_detail}"
+                                                    icon="fa fa-warning" />
+                            </p:commandButton>
+                        </b:dataTableColumn>
+                    </b:dataTable>
+
+                    <b:row>
+                        <b:commandButton  id="btnAddLabel"
+                                type="submit" 
+                                iconAwesome="plus" 
+                                style="margin-right:3px;"
+                                action="#{printAdminBean.actionAddLabel}" 
+                                value="#{msgs.LabelAddLabel}"/>
+                    </b:row>
+                </b:panel>
+
+            </b:panelGrid>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="btnConfirmOk" value="#{msgs.Ok}" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                <p:commandButton id="btnConfirmCancel" value="#{msgs.Cancel}" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-close" />
+            </p:confirmDialog>
+
+        </b:form>
+</h:body>
+</html>

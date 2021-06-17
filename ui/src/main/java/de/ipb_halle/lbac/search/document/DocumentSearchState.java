@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import de.ipb_halle.lbac.entity.Document;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -39,8 +37,9 @@ public class DocumentSearchState implements Serializable {
     private Logger LOGGER = LogManager.getLogger(DocumentSearchState.class);
     private int totalDocs = 0;
     private List<Document> foundDocuments = Collections.synchronizedList(new ArrayList<>());
-    private Set<UUID> unfinishedCollectionRequests = new HashSet<>();
+    private Set<Integer> unfinishedCollectionRequests = new HashSet<>();
     private SearchStatistic stats = new SearchStatistic();
+    private StemmedWordGroup searchWords=new StemmedWordGroup();
 
     @PostConstruct
     public void init() {
@@ -72,11 +71,11 @@ public class DocumentSearchState implements Serializable {
         this.foundDocuments = foundDocuments;
     }
 
-    public Set<UUID> getUnfinishedCollectionRequests() {
+    public Set<Integer> getUnfinishedCollectionRequests() {
         return unfinishedCollectionRequests;
     }
 
-    public void setUnfinishedCollectionRequests(Set<UUID> unfinishedNodeRequests) {
+    public void setUnfinishedCollectionRequests(Set<Integer> unfinishedNodeRequests) {
         this.unfinishedCollectionRequests = unfinishedNodeRequests;
     }
 
@@ -102,6 +101,14 @@ public class DocumentSearchState implements Serializable {
 
     public void setStats(SearchStatistic stats) {
         this.stats = stats;
+    }
+
+    public StemmedWordGroup getSearchWords() {
+        return searchWords;
+    }
+
+    public void setSearchWords(StemmedWordGroup searchWords) {
+        this.searchWords = searchWords;
     }
 
 }

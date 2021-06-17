@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,10 @@ public class EntityManagerService {
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 
+    public void flush() {
+        this.em.flush();
+    }
+
     public EntityManager getEm() {
         return em;
     }
@@ -40,6 +44,7 @@ public class EntityManagerService {
         em.createNativeQuery(query).executeUpdate();
     }
 
+    @SuppressWarnings("unchecked")
     public List<Object> doSqlQuery(String query) {
         return em.createNativeQuery(query).getResultList();
     }
@@ -48,6 +53,7 @@ public class EntityManagerService {
         this.em.createNativeQuery("delete from memberships where member_id='" + userId + "'").executeUpdate();
     }
 
+    @SuppressWarnings("unchecked")
     public void removeEntity(Class clazz, Object id) {
         this.em.remove(this.em.find(clazz, id));
 

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,45 @@
  */
 package de.ipb_halle.lbac.search.document;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.entity.TermFrequency;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.webclient.XmlSetWrapper;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
+import de.ipb_halle.lbac.file.FileObject;
+import de.ipb_halle.lbac.file.FileObjectEntity;
+import de.ipb_halle.lbac.file.FileSearchRequest;
+import de.ipb_halle.lbac.search.SearchCategory;
+import de.ipb_halle.lbac.search.SearchQueryStemmer;
+import de.ipb_halle.lbac.search.SearchRequest;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchResultImpl;
+import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
+import de.ipb_halle.lbac.search.lang.EntityGraph;
+import de.ipb_halle.lbac.search.lang.SqlBuilder;
+import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.faces.application.ProjectStage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -47,13 +64,13 @@ import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManage
 @Stateless
 public class DocumentSearchService {
 
-    private final Logger LOGGER = LogManager.getLogger(DocumentSearchService.class);
+    private final Logger logger = LogManager.getLogger(DocumentSearchService.class);
+
+    @PersistenceContext(name = "de.ipb_halle.lbac")
+    private EntityManager em;
 
     @Inject
     private FileEntityService fileEntityService;
-
-    @Inject
-    private SolrSearcher solrSearcher;
 
     @Inject
     private NodeService nodeService;
@@ -62,25 +79,53 @@ public class DocumentSearchService {
     private CollectionService collectionService;
 
     @Inject
+    private MemberService memberService;
+
+    @Inject
     private TermVectorEntityService termVectorEntityService;
 
     private final int MAX_TERMS = Integer.MAX_VALUE;
 
     private boolean development = false;
+    private ConditionValueFetcher fetcher;
 
     private String uriOfPublicColl;
+    protected SearchQueryStemmer searchQueryStemmer;
+    private DocumentEntityGraphBuilder graphBuilder;
 
-    /**
-     *
-     * @param searchState
-     * @param collsToSearchIn
-     * @param searchText
-     * @param limit
-     * @param offSet
-     * @param uriOfPublicColl
-     * @return
-     * @throws Exception
-     */
+    @PostConstruct
+    public void init() {
+        graphBuilder = new DocumentEntityGraphBuilder();
+        if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development) {
+            development = true;
+        }
+        fetcher = new ConditionValueFetcher();
+
+    }
+
+    protected String SQL_LOAD_DOCUMENTS = "SELECT DISTINCT "
+            + "f.id, "
+            + "f.name,"
+            + "f.filename,"
+            + "f.hash,"
+            + "f.created,"
+            + "f.user_id,"
+            + "f.collection_id,"
+            + "f.document_language "
+            + "FROM files f "
+            + "JOIN termvectors tv ON tv.file_id=f.id "
+            + "WHERE f.collection_id=:collectionid "
+            + "AND (:termvectorLength=0 OR tv.wordroot IN (:termvector))";
+
+    protected String SQL_LOAD_DOCUMENT_LENGTH
+            = "SELECT sum(termfrequency) "
+            + "FROM termvectors "
+            + "WHERE file_id=:file_id";
+
+    protected String SQL_LOAD_DOCUMENT_COUNT
+            = "SELECT count(*) "
+            + "FROM files";
+
     public DocumentSearchState actionStartDocumentSearch(
             DocumentSearchState searchState,
             List<Collection> collsToSearchIn,
@@ -88,75 +133,122 @@ public class DocumentSearchService {
             int limit,
             int offSet,
             String uriOfPublicColl) throws Exception {
-        if (development) {
-            infoStart(collsToSearchIn, searchText);
-        }
         this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
-
+        searchQueryStemmer = new SearchQueryStemmer();
         // fetches all documents of the collection and adds the total 
         // number of documents in the collection to the search state
+        StemmedWordGroup normalizedTerms = searchQueryStemmer.stemmQuery(searchText);
+        searchState.setSearchWords(normalizedTerms);
         for (Collection coll : collsToSearchIn) {
             if (coll.getNode().equals(nodeService.getLocalNode())) {
-
-                DocumentSearchRequest searchReq = new DocumentSearchRequest();
-                searchReq.setCollectionId(coll.getId());
-                searchReq.setLimit(limit);
-                searchReq.setOffset(offSet);
-                searchReq.setNodeId(nodeService.getLocalNode().getId());
-
-                DocumentSearchQuery sq = new DocumentSearchQuery();
-                sq.setQuery(searchText);
-                searchReq.setSearchQuery(sq);
-
-                solrSearcher.setRequest(searchReq);
-                DocumentSearchRequest searchReqWithResults = solrSearcher.search();
-
-                int totalDocsInColl = (int) collectionService.getFileCount(coll.getId());
-
-                searchState.addToTotalDocs(totalDocsInColl);
-                if (searchReqWithResults != null) {
-                    List<Document> results = searchReqWithResults.getResultList();
-                    for (Document d : results) {
-                        if (!searchState.getFoundDocuments().contains(d)) {
-                            searchState.getFoundDocuments().add(d);
-                        }
-                    }
-                }
+                FileSearchRequest searchRequest = new FileSearchRequest();
+                searchRequest.holder = coll;
+                searchRequest.wordsToSearchFor = normalizedTerms;
+                Set<Document> foundDocs = loadDocuments(searchRequest, limit);
+                searchState.getFoundDocuments().addAll(foundDocs);
+                searchState.addToTotalDocs(foundDocs.size());
             }
-        }
-        Set<String> normalizedTerms = getNormalizedWordsInAllLanguages(searchState.getFoundDocuments(), Arrays.asList(searchText.split(" ")));
 
-        List<UUID> docIds = new ArrayList<>();
+        }
+
+        List<Integer> docIds = new ArrayList<>();
         for (Document d : searchState.getFoundDocuments()) {
             docIds.add(d.getId());
         }
 
-        Map<UUID, Map<String, Integer>> totalTerms = termVectorEntityService.getTermVectorForSearch(
+        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
                 docIds,
-                normalizedTerms);
-
-        String normalizedSearchTerm = String.join("-", normalizedTerms);
+                normalizedTerms.getAllStemmedWords());
 
         for (Document d : searchState.getFoundDocuments()) {
-            if (development) {
-                LOGGER.info("FOUND: " + d.getOriginalName());
-            }
-            Map<String, Integer> terms = totalTerms.get(d.getId());
-            if (terms != null) {
-                for (String key : terms.keySet()) {
-                    d.setWordCount(d.getWordCount() + terms.get(key));
-                    if (normalizedSearchTerm.toLowerCase().contains(key)) {
-                        d.getTermFreqList().getTermFreq().add(new TermFrequency(key, terms.get(key)));
-                    }
-                }
+            d.setWordCount(getLengthOfDocument(d.getId()));
+            Map<String, Integer> words = totalTerms.getTermsOfDocument(d.getId());
+            for (String s : words.keySet()) {
+                d.getTermFreqList().getTermFreq().add(new TermFrequency(s, words.get(s)));
             }
         }
-        if (development) {
-            //infoCollection(searchState.getFoundDocuments(), searchState.getTotalDocs());
-        }
-
         return searchState;
+    }
+
+    private int loadTotalCountOfFiles() {
+        Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
+        @SuppressWarnings("unchecked")
+        List<BigInteger> result = q.getResultList();
+        return result.get(0).intValue();
+    }
+
+    public SearchResult loadDocuments(SearchRequest request) {
+        List<Searchable> foundDocs = new ArrayList<>();
+        SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
+        if (!hasWordRoots(request)) {
+            return result;
+        }
+        SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
+        DocumentSearchConditionBuilder conBuilder = new DocumentSearchConditionBuilder(createEntityGraph(), "files");
+        conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
+        String sql = sqlBuilder.query(conBuilder.convertRequestToCondition(request, ACPermission.permREAD));
+        Query q = em.createNativeQuery(sql, FileObjectEntity.class);
+        for (Value param : sqlBuilder.getValueList()) {
+            q.setParameter(param.getArgumentKey(), param.getValue());
+        }
+        q.setFirstResult(request.getFirstResult());
+        q.setMaxResults(request.getMaxResults());
+        @SuppressWarnings("unchecked")
+        List<FileObjectEntity> entities = q.getResultList();
+        for (FileObjectEntity entity : entities) {
+            foundDocs.add(convertFileObjectToDocument(
+                    new FileObject(
+                            entity,
+                            collectionService.loadById(entity.getCollection()),
+                            memberService.loadUserById(entity.getUser()))));
+
+        }
+        result.addResults(foundDocs);
+        List<Integer> docIds = getDocIds(foundDocs);
+
+        TermOcurrence totalTerms = termVectorEntityService.getTermVectorForSearch(
+                docIds,
+                getWordRoots(request));
+        calculateWordCountOfDocs(foundDocs, totalTerms);
+        result.getDocumentStatistic().setTotalDocsInNode(loadTotalCountOfFiles());
+        if (result.getDocumentStatistic().getTotalDocsInNode() > 0) {
+            result.getDocumentStatistic().setAverageWordLength(getSumOfWordsOfAllDocs() / result.getDocumentStatistic().getTotalDocsInNode());
+        }
+        return result;
+    }
+
+    private boolean hasWordRoots(SearchRequest request) {
+        return request.getSearchValues().get(SearchCategory.WORDROOT) != null
+                && !request.getSearchValues().get(SearchCategory.WORDROOT).getValues().isEmpty();
+
+    }
+
+    private Set<String> getWordRoots(SearchRequest request) {
+        XmlSetWrapper wrapper = request.getSearchValues().get(SearchCategory.WORDROOT);
+        if (wrapper != null) {
+            return wrapper.getValues();
+        }
+        return new HashSet<>();
+    }
+
+    private void calculateWordCountOfDocs(List<Searchable> foundDocs, TermOcurrence totalTerms) {
+        for (Searchable searchable : foundDocs) {
+            Document d = (Document) searchable;
+            d.setWordCount(getLengthOfDocument(d.getId()));
+            Map<String, Integer> words = totalTerms.getTermsOfDocument(d.getId());
+            for (String s : words.keySet()) {
+                d.getTermFreqList().getTermFreq().add(new TermFrequency(s, words.get(s)));
+            }
+        }
+    }
+
+    private List<Integer> getDocIds(List<Searchable> foundDocs) {
+        List<Integer> ids = new ArrayList<>();
+        for (Searchable s : foundDocs) {
+            ids.add(((Document) s).getId());
+        }
+        return ids;
     }
 
     /**
@@ -168,21 +260,10 @@ public class DocumentSearchService {
         return termVectorEntityService.getSumOfAllWordsFromAllDocs();
     }
 
-    @PostConstruct
-    public void init() {
-        if (FacesContext.getCurrentInstance() != null && FacesContext.getCurrentInstance().getApplication().getProjectStage() == ProjectStage.Development) {
-            development = true;
-        }
-    }
-
-    private void infoStart(List<Collection> colls, String searchText) {
-        LOGGER.info("");
-        LOGGER.info(String.format("Start documentsearch in %d collections with searchtext: %s", colls.size(), searchText));
-        LOGGER.info("Searching in ");
-        for (Collection c : colls) {
-            LOGGER.info("--> " + c.getName() + ":" + c.getNode().getInstitution());
-        }
-        LOGGER.info("----");
+    private int getLengthOfDocument(int documentId) {
+        return ((BigInteger) em.createNativeQuery(SQL_LOAD_DOCUMENT_LENGTH)
+                .setParameter("file_id", documentId).getResultList()
+                .get(0)).intValue();
     }
 
     /**
@@ -220,12 +301,66 @@ public class DocumentSearchService {
         return restUri;
     }
 
-    private Set<String> getNormalizedWordsInAllLanguages(List<Document> docs, List<String> splittedTerms) {
-        Set<String> normalizedWords = new HashSet<>();
-        for (Document d : docs) {
-            normalizedWords.addAll(solrSearcher.getNormalizedSearchTerms(splittedTerms, uriOfPublicColl, d.getLanguage()));
-        }
-        return normalizedWords;
+    public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
+        Set<Document> documents = new HashSet<>();
+        @SuppressWarnings("unchecked")
+        List<FileObjectEntity> results = this.em.createNativeQuery(SQL_LOAD_DOCUMENTS, FileObjectEntity.class)
+                .setParameter("collectionid", request.holder.getId())
+                .setParameter("termvectorLength", request.wordsToSearchFor.getAllStemmedWords().size())
+                .setParameter("termvector", request.wordsToSearchFor.getAllStemmedWords())
+                .getResultList();
 
+        int count = 0;
+        for (FileObjectEntity foe : results) {
+            if (count < limit) {
+                documents.add(
+                        convertFileObjectToDocument(
+                                new FileObject(
+                                        foe,
+                                        collectionService.loadById(foe.getCollection()),
+                                        memberService.loadUserById(foe.getUser())))
+                );
+            }
+        }
+        return documents;
+    }
+
+    private Document convertFileObjectToDocument(FileObject fo) {
+        Document d = new Document();
+        d.setId(fo.getId());
+        d.setCollectionId(fo.getCollection().getId());
+        d.setNodeId(nodeService.getLocalNodeId());
+        d.setNode(nodeService.getLocalNode());
+        d.setLanguage(fo.getDocument_language());
+        d.setCollection((Collection) fo.getCollection());
+        d.setPath(fo.getFileLocation());
+        d.setContentType(fo.getName().split("\\.")[fo.getName().split("\\.").length - 1]);
+        d.setOriginalName(fo.getName());
+        return d;
+
+    }
+
+    public String createSqlReplaceString(Map<String, Set<String>> stemmedWords) {
+        if (stemmedWords.isEmpty()) {
+            return "";
+        }
+        List<String> subClauses = new ArrayList<>();
+        for (String word : stemmedWords.keySet()) {
+            List<String> stemmedWordsWithQuotationMark = new ArrayList<>();
+            for (String w : stemmedWords.get(word)) {
+                stemmedWordsWithQuotationMark.add("'" + w + "'");
+            }
+
+            subClauses.add(
+                    String.format(" tv.wordroot IN (%s) ",
+                            String.join(",", stemmedWordsWithQuotationMark)));
+        }
+
+        return " AND (" + String.join(" OR ", subClauses) + ")";
+    }
+
+    private EntityGraph createEntityGraph() {
+        graphBuilder = new DocumentEntityGraphBuilder();
+        return graphBuilder.buildEntityGraph(true);
     }
 }

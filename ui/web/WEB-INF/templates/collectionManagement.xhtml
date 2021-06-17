@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <!--
   
-  Leibniz Bioactives Cloud
-  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,13 +23,16 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
 
     <h:body>
         <ui:composition>
-            <ui:insert name="acCols">
-                <ui:include src="/WEB-INF/templates/acEditModal.xhtml"/>
-            </ui:insert>
+            <crimsy:acobjectModal
+                acobjectController="#{collectionBean.getAcObjectController()}"
+                groupsAgent="#{groupAgent}"
+                updateTargetClass="collectionList"
+                />
             <h2>#{msgs.collMgr_header}</h2>
             <b:modal 
                 id="modalCollection"
@@ -116,7 +119,7 @@
                         <b:button value="#{msgs.collMgr_modal_cancel}" dismiss="modal"/>
                         <b:commandButton value="#{msgs.collMgr_modal_button_apply}"
                                          rendered="#{collectionBean.getEditMode() == 'CREATE'}"
-                                         update="@form frmCollectionList:collectionList"
+                                         update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
                                          onclick="ajax:collectionBean.actionCreate();"
@@ -124,7 +127,7 @@
                                          look="primary"/>
                         <b:commandButton value="#{msgs.collMgr_modal_button_edit}"
                                          rendered="#{collectionBean.getEditMode() == 'UPDATE'}"
-                                         update="@form frmCollectionList:collectionList"
+                                         update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
                                          onclick="ajax:collectionBean.actionUpdate();"
@@ -132,7 +135,7 @@
                                          look="primary"/>
                         <b:commandButton value="#{msgs.collMgr_modal_button_deletedocuments}"
                                          rendered="#{collectionBean.getEditMode() == 'CLEAR'}"
-                                         update="@form frmCollectionList:collectionList"
+                                         update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
                                          onclick="ajax:collectionBean.actionClear();"
@@ -140,7 +143,7 @@
                                          look="primary"/>
                         <b:commandButton value="#{msgs.collMgr_modal_button_reindex}"
                                          rendered="#{collectionBean.getEditMode() == 'REINDEX'}"
-                                         update="@form frmCollectionList:collectionList"
+                                         update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
                                          onclick="ajax:collectionBean.actionReindex();"
@@ -148,7 +151,7 @@
                                          look="primary"/>
                         <b:commandButton value="#{msgs.collMgr_mode_deleteCollection}"
                                          rendered="#{collectionBean.getEditMode() == 'DELETE'}"
-                                         update="@form frmCollectionList:collectionList"
+                                         update="growlMsg @form frmCollectionList:collectionList"
                                          type="submit"
                                          ajax="true"
                                          onclick="ajax:collectionBean.actionDelete();"
@@ -173,7 +176,8 @@
                              fixedHeader="true"
                              var="collection"
                              csv="false"
-                             columnVisibility="true">
+                             columnVisibility="true"
+                             saveState="false">
                     <f:facet name="header" id="facetHeader">
                         <tr>
                             <th colspan="7">
@@ -190,9 +194,9 @@
                                                  ajax="true"
                                                  type="button"
                                                  process="@this"
-                                                 update="modalCollection frmModalCollection"
+                                                 update="growlMsg modalCollection frmModalCollection"
                                                  rendered="#{userBean.getPermission('COLLECTIONS_MGR_ENABLE', 'permCREATE')}" 
-                                                 onclick="ajax:collectionBean.setEditMode('CREATE');"
+                                                 onclick="ajax:collectionBean.actionShowNewCollectionDlg();"
                                                  oncomplete="$('.modalCollection').modal()"/>
                                 <b:commandButton styleClass="refreshButtonClass pull-right"
                                                  style="margin:0 2px;"
@@ -204,7 +208,7 @@
                                                  process="@this"
                                                  id="collectionRefreshButton"
                                                  tooltip="#{collectionBean.getToolTipForRefresh()}"
-                                                 update="frmCollectionList:collectionList frmCollectionList:searchPoll"
+                                                 update="growlMsg frmCollectionList:collectionList frmCollectionList:searchPoll"
                                                  onclick="javascript:frmCollectionListCollectionListWidget.DataTable().destroy();ajax:collectionBean.refreshCollectionSearch();">
                                     <b:badge 
                                         style="margin-left: 4px"
@@ -245,7 +249,7 @@
                                          ajax="true"
                                          process="@this"
                                          type="button"
-                                         update="modalCollection frmModalCollection"
+                                         update="growlMsg modalCollection frmModalCollection"
                                          tooltip="#{msgs.collMgr_tooltip_editCollection}"
                                          disabled="#{!collectionBean.isEditAllowed(collection)}"
                                          action="#{collectionBean.setEditMode('UPDATE')}"
@@ -256,7 +260,7 @@
                                          look="link"
                                          ajax="true"
                                          process="@this"
-                                         update="modalCollection frmModalCollection"
+                                         update="growlMsg modalCollection frmModalCollection"
                                          disabled="#{!collectionBean.isClearAllowed(collection)}"
                                          type="button"
                                          tooltip="#{msgs.collMgr_tooltip_clearCollection}"
@@ -268,7 +272,7 @@
                                          ajax="true"
                                          process="@this"
                                          tooltip="#{msgs.collMgr_tooltip_reindex}"
-                                         update="modalCollection frmModalCollection"
+                                         update="growlMsg modalCollection frmModalCollection"
                                          disabled="#{!collectionBean.isReindexingAllowed(collection)}"
                                          type="button"
                                          onclick="ajax:collectionBean.setEditMode('REINDEX');collectionBean.setActiveCollection(collection);"
@@ -279,7 +283,7 @@
                                          ajax="true"
                                          process="@this"
                                          tooltip="#{msgs.collMgr_tooltip_deleteCollection}"
-                                         update="modalCollection frmModalCollection"
+                                         update="growlMsg modalCollection frmModalCollection"
                                          disabled="#{!collectionBean.isDeleteAllowed(collection)}"
                                          type="button"
                                          onclick="ajax:collectionBean.setEditMode('DELETE');collectionBean.setActiveCollection(collection);"
@@ -290,12 +294,12 @@
                                          ajax="true"
                                          process="@this"
                                          tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
-                                         update="modalAcListID frmACList"
+                                         update="@(.acoEditModal)"
                                          type="button"
-                                         action="#{permissionEditBean.initModal()}"
-                                         onclick="ajax:collectionBean.setActiveCollection(collection);"
-                                         oncomplete="$('.modalAcList').modal();return false;"
-                                         disabled="#{!collectionBean.isPermissionEditAllowed(collection)}"/>
+                                         action="#{collectionBean.actionStartAclChange(collection)}"
+                                         oncomplete="PF('dlgAcl').show();"
+                                         disabled="#{!collectionBean.isPermissionEditAllowed(collection)}">
+                        </b:commandButton>
                     </b:dataTableColumn>
                 </b:dataTable>
             </b:form>

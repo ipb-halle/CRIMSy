@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.forum.Topic;
 import de.ipb_halle.lbac.forum.postings.mock.PostingWebServiceMock;
@@ -79,9 +79,7 @@ public class PostingWebClientTest extends TestBase {
         Cloud cloud = cloudService.load().get(0);
         User u = createUser(
                 "test",
-                "testName",
-                nodeService.getLocalNode(),
-                memberService, membershipService);
+                "testName");
         Topic t = forumService.createNewTopic("TestTopic", TopicCategory.OTHER, u, cloud.getName());
         client.announcePostingToRemoteNode(t, u, cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID));
     }

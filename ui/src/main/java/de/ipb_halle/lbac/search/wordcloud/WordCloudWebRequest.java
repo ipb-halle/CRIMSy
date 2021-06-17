@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.webservice.WebRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -38,7 +37,7 @@ public class WordCloudWebRequest extends WebRequest {
 
     private List<Document> documentsWithTerms = new ArrayList<>();
     private Set<String> terms = new HashSet<>();
-    private Set<UUID> idsOfReadableCollections = new HashSet<>();
+    private Set<Integer> idsOfReadableCollections = new HashSet<>();
     private Integer maxTerms = Integer.MAX_VALUE;
 
     public List<Document> getDocumentsWithTerms() {
@@ -57,11 +56,11 @@ public class WordCloudWebRequest extends WebRequest {
         this.terms = terms;
     }
 
-    public Set<UUID> getIdsOfReadableCollections() {
+    public Set<Integer> getIdsOfReadableCollections() {
         return idsOfReadableCollections;
     }
 
-    public void setIdsOfReadableCollections(Set<UUID> idsOfReadableCollections) {
+    public void setIdsOfReadableCollections(Set<Integer> idsOfReadableCollections) {
         this.idsOfReadableCollections = idsOfReadableCollections;
     }
 

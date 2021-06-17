@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,17 @@ package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.TermVector;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -62,7 +59,7 @@ public class FileEntityServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("ForumServiceTest.war")
+        return prepareDeployment("FileEntityServiceTest.war")
                 .addClass(FileEntityService.class)
                 .addClass(FileService.class)
                 .addClass(FileObject.class)
@@ -79,51 +76,44 @@ public class FileEntityServiceTest extends TestBase {
 
         User u = createUser(
                 "testuser",
-                "testuser",
-                this.nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testuser");
 
         ACList acl = new ACList();
         acl.setName("test");
-        acl.setId(UUID.randomUUID());
         acl.addACE(u, ACPermission.values());
 
         Collection col = new Collection();
         col.setNode(this.nodeService.getLocalNode());
         col.setName("Test_Collection1");
         col.setDescription("Test_Collection1_Description");
-        col.setId(UUID.randomUUID());
         col.setIndexPath("/doc/test.pdf");
         col.setACList(acl);
         col.setOwner(u);
 
-        collectionService.save(col);
+        col=collectionService.save(col);
 
         FileObject fE = new FileObject();
         fE.setCollection(col);
         fE.setCreated(new Date());
         fE.setDocument_language("en");
-        fE.setFilename("testFile.pdf");
+        fE.setFileLocation("testFile.pdf");
         fE.setHash("testHash");
         fE.setName("testFile");
-        fE.setId(UUID.randomUUID());
         fE.setUser(u);
 
-        fileEntityService.save(fE);
+        fE=fileEntityService.save(fE);
 
         TermVector tv = new TermVector("testWord", fE.getId(), 3);
         fileEntityService.saveTermVectors(Arrays.asList(tv));
-        List<String> ids = new ArrayList<>();
-        ids.add(fE.getId().toString());
+        List<Integer> ids = new ArrayList<>();
+        ids.add(fE.getId());
         termVectorEntityService.getTermVector(ids, 10);
 
         int sumOfWords = termVectorEntityService.getSumOfAllWordsFromAllDocs();
-        int i = 0;
 
         List<FileObject> lfo = fileEntityService.getAllFilesInCollection(col);
         assertEquals("Found one file", 1, lfo.size());
-        assertEquals("Filename of file matches", "testFile.pdf", lfo.get(0).getFilename());
+        assertEquals("Filename of file matches", "testFile.pdf", lfo.get(0).getFileLocation());
         assertEquals("Document count matches", 1, fileEntityService.getDocumentCount(col));
     }
 }

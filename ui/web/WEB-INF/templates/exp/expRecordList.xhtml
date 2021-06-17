@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:nwc="http://ipb-halle.de/nwc">
+
+    <ui:composition>
+        <ui:repeat value="#{experimentBean.expRecordsWithNullRecord}" var="rec" varStatus="recStatus">
+            <b:container class="experimentRecordContainer">
+                <b:row
+                    styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}">
+                    <b:column span="10">
+                        <!-- Not rendered if this is the last record (= NullRecord) or this is a new record. -->
+                    	<h:panelGroup rendered="#{!recStatus.last and !rec.newRecord}">
+                            <h:outputText value="#{msgs.expRecord_name} " />
+                            <h:outputFormat value="#{msgs.expRecord_lastChanged}"
+                                            title="#{nwc:formatDateWithTimezone(rec.changeTime)}">
+                                <o:param value="#{rec.changeTime}"
+                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                            </h:outputFormat>
+                            <h:outputText value=", " />
+                            <h:outputFormat value="#{msgs.expRecord_created}"
+                                            title="#{nwc:formatDateWithTimezone(rec.creationTime)}">
+                                <o:param value="#{rec.creationTime}"
+                                         converter="org.ocpsoft.PrettyTimeConverter" />
+                            </h:outputFormat>
+                        </h:panelGroup>
+                        <!--
+            <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
+                 title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
+
+                    </b:column>
+                    <b:column span="2" style="text-align: right;">
+                        <!-- Move-up button is disabled in the first or last (= NullRecord) list entry or when
+                             any record is edited. -->
+                        <p:commandLink title="#{msgs.MoveUp}"
+                                       process="@this"
+                                       update="@form"
+                                       styleClass="experimentRecordOrderButton experimentRecordButton"
+                                       rendered="#{!recStatus.last}"
+                                       disabled="#{recStatus.first or recStatus.last or experimentBean.expRecordButtonsDisabled}"
+                                       action="#{experimentBean.actionRearrangeRecord(-1)}">
+                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                            <h:outputText styleClass="fa fa-angle-up" />
+                        </p:commandLink>
+                        <!-- Move-down button disabled in the last (= NullRecord) or next-to-last list entry or when
+                             any record is edited. -->
+                        <p:commandLink title="#{msgs.MoveDown}"
+                                       process="@this"
+                                       update="@form"
+                                       styleClass="experimentRecordOrderButton experimentRecordButton"
+                                       rendered="#{!recStatus.last}"
+                                       disabled="#{recStatus.last or (recStatus.end - recStatus.index == 2) or experimentBean.expRecordButtonsDisabled}"
+                                       action="#{experimentBean.actionRearrangeRecord(1)}">
+                            <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
+                            <h:outputText styleClass="fa fa-angle-down" />
+                        </p:commandLink>
+                        <p:commandLink title="Link erstellen" 
+                                       styleClass="experimentRecordButton"
+                                       process="@this"
+                                       update="ccDlgLinkCreation:dlgLinkCreationForm @(.experimentRecordContainer)"
+                                       disabled="#{experimentBean.expRecordButtonsDisabled}"
+                                       rendered="#{experimentBean.areLinksAddable(rec)}"
+                                       action="#{experimentBean.actionStartLinkCreation(rec)}"
+                                       oncomplete="PF('dlg_createLink').show();
+                                           if (typeof dlg_createLink_panelMaterialEdit_molEditor !== 'undefined'
+                                                   &amp;&amp; dlg_createLink_panelMaterialEdit_molEditor != null)
+                                           {dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());}"
+                        >
+                            <h:outputText styleClass="fa fa-link" />
+                        </p:commandLink>
+                        <p:commandLink title="#{msgs.Edit}" 
+                                       update="@form"
+                                       styleClass="experimentRecordButton"
+                                       rendered="#{rec.facelet != 'NULL'}"
+                                       disabled="#{experimentBean.expRecordButtonsDisabled}"
+                                       action="#{experimentBean.actionEditRecord(rec)}">
+                            <h:outputText styleClass="fa fa-pencil" />
+                        </p:commandLink>
+                        <b:dropMenu value="New" 
+                                    styleClass="experimentRecordButton experimentRecordButtonAdd"
+                                    icon-awesome="fa-plus"
+                                    iconAlign="left">
+                            <b:navLink header="Please select recordtype"/>
+                            <b:navCommandLink 
+                                ajax="true"
+                                update="@form growlMsg @(.assayTargetRow)"
+                                value="#{msgs.expText}"
+                                disabled="#{experimentBean.expRecordButtonsDisabled}"
+                                actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"
+                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                            <b:navCommandLink 
+                                ajax="true"
+                                update="@form growlMsg @(.assayTargetRow)"
+                                value="#{msgs.expAssay}"
+                                disabled="#{experimentBean.expRecordButtonsDisabled}"
+                                actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"
+                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                            <b:navCommandLink 
+                                ajax="true"
+                                update="@form growlMsg @(.assayTargetRow)"
+                                value="#{msgs.expImage}"
+                                disabled="#{experimentBean.expRecordButtonsDisabled}"
+                                actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"
+                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                        </b:dropMenu>
+                    </b:column>
+                    <br/>
+                </b:row>
+
+                <b:row>
+                    <b:column>
+                        <h:panelGroup id="recordDetails" 
+                                      layout="block"
+                                      styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
+                            <crimsy:assay assay="#{rec}"
+                                          bean="#{experimentBean}"
+                                          rendered="#{rec.facelet eq 'ASSAY'}" />
+                            <crimsy:textView text="#{rec.text}" 
+                                             agent="#{experimentBean.linkedDataAgent}"
+                                             linkedDataHolder="#{rec}"
+                                             rendered="#{(rec.facelet eq 'TEXT') and (! rec.edit)}" />
+                            <crimsy:textEdit text="#{rec.text}"
+                                             rendered="#{(rec.facelet eq 'TEXT') and rec.edit}" />
+                            <crimsy:image image="#{rec}"
+                                          controller="#{experimentBean.expRecordController}"
+                                          rendered="#{rec.facelet eq 'IMAGE'}" />
+                        </h:panelGroup>
+                <ui:fragment
+                        rendered="#{rec.edit}">
+                    <p:panelGrid styleClass="recordButtonGroup">
+                        <p:row>
+                            <p:column style="width:80%"/>
+                            <p:column style="width:10%">
+                                <p:commandButton 
+                                    styleClass="rightAligned"
+                                    value="#{msgs.Cancel}" 
+                                    action="#{experimentBean.expRecordController.actionCancel}" 
+                                    update="@form" 
+                                    process="@this" />
+                            </p:column>
+                            <p:column style="width:10%">
+                                <!-- This button cannot be a PrimeFaces p:commandButton, because it does
+                                     not support sending forms with enctype "multipart/form-data".
+                                     Note: The AJAX call is executed explicitly via the onclick event.
+                                     This is specified in the bean property and should follow the rules
+                                     of BootsFaces. -->
+                                <b:commandButton
+                                    ajax="true"
+                                    styleClass="rightAligned"
+                                    value="#{msgs.Save}"
+                                    onclick="#{experimentBean.saveButtonOnClick}"
+                                    action="#{experimentBean.expRecordController.actionSaveRecord}"
+                                    update="@form growlMsg @(.assayTargetRow)" />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </ui:fragment>
+            </b:column>
+        </b:row>
+        <p:panelGrid 
+                    styleClass="expLinks #{experimentBean.getRowStyle(recStatus.last)}"
+                    columns="10">
+                    <ui:repeat value="#{rec.getLinkNames()}" var="linkName">
+                        <b:badge
+                            styleClass="linkText"
+                            value="#{linkName}" style-class="tag-badge"/>
+                    </ui:repeat>
+        </p:panelGrid>
+    </b:container>
+</ui:repeat>
+</ui:composition>
+</html>

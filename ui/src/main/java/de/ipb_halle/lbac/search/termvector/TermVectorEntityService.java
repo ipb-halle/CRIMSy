@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@
  */
 package de.ipb_halle.lbac.search.termvector;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.TermVector;
-import de.ipb_halle.lbac.entity.TermVectorEntity;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.file.FileObject;
+import de.ipb_halle.lbac.file.TermVector;
+import de.ipb_halle.lbac.file.TermVectorEntity;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.file.StemmedWordOrigin;
 import de.ipb_halle.lbac.message.TermVectorMessage;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.search.document.TermOcurrence;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,15 +35,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class TermVectorEntityService implements Serializable {
@@ -81,20 +83,20 @@ public class TermVectorEntityService implements Serializable {
             = "delete from termvectors tv where tv.file_id in(:fileId)";
 
     protected final String SQL_INSERT_UNSTEMMED_WORD
-            = "insert into  unstemmed_words (unstemmed_word, file_id, wordroot) values"
-            + "(:usw,:did,:wr)";
+            = "insert into  unstemmed_words (unstemmed_word, file_id, stemmed_word) values"
+            + "(:unstemmed_word,:did,:stemmed_word)";
 
     protected final String SQL_LOAD_UNSTEMMED_WORD
             = "select unstemmed_word"
             + " from unstemmed_words"
             + " where file_id in (:id)"
-            + "AND wordroot=:wr";
+            + "AND stemmed_word=:wr";
 
     protected final String SQL_LOAD_UNSTEMMED_WORDS
-            = "select wordroot,unstemmed_word"
+            = "select stemmed_word,unstemmed_word"
             + " from unstemmed_words"
             + " where file_id in (:id)"
-            + "AND wordroot in (:wr)";
+            + "AND stemmed_word in (:wr)";
 
     protected final String SQL_DELETE_ALL_UNSTEMMED_WORDS
             = "delete from unstemmed_words";
@@ -120,11 +122,9 @@ public class TermVectorEntityService implements Serializable {
      * @param docIds - document ids
      * @param maxResult - return top max. rows for result set
      * @return - list (String word, Integer wordCount)
-     *
-     * hibernate except UUIDs only, can't cast Strings to UUIDs
      */
     @SuppressWarnings("unchecked")
-    public Map<String, Integer> getTermVector(List<String> docIds, Integer maxResult) {
+    public Map<String, Integer> getTermVector(List<Integer> docIds, Integer maxResult) {
         try {
             if (docIds.isEmpty()) {
                 return new HashMap<>();
@@ -138,10 +138,7 @@ public class TermVectorEntityService implements Serializable {
             return getMostFrequentTerms(list, maxResult, results);
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            for (StackTraceElement el : e.getStackTrace()) {
-                logger.error(el);
-            }
+            logger.error(ExceptionUtils.getStackTrace(e));
             return new HashMap<>();
         }
     }
@@ -154,20 +151,21 @@ public class TermVectorEntityService implements Serializable {
      * @param searchTerms
      * @return - list (String word, Integer wordCount)
      *
-     * hibernate except UUIDs only, can't cast Strings to UUIDs
      */
     @SuppressWarnings("unchecked")
-    public Map<UUID, Map<String, Integer>> getTermVectorForSearch(
-            List<UUID> docIds,
+    public TermOcurrence getTermVectorForSearch(
+            List<Integer> docIds,
             Set<String> searchTerms) {
-        Map<UUID, Map<String, Integer>> back = new HashMap<>();
-
+        TermOcurrence back = new TermOcurrence();
+        if (searchTerms.isEmpty()) {
+            return back;
+        }
         try {
             if (docIds.isEmpty()) {
-                return new HashMap<>();
+                return back;
             }
-
             List<TermVector> list = new ArrayList<>();
+
             List<TermVectorEntity> entities = this.em.createNativeQuery(
                     SQL_TERMVECTORS_BY_ID_AND_WORDS, TermVectorEntity.class)
                     .setParameter("id", docIds)
@@ -178,12 +176,7 @@ public class TermVectorEntityService implements Serializable {
             }
 
             for (TermVector tv : list) {
-                if (!back.containsKey(tv.getFileId())) {
-                    back.put(tv.getFileId(), new HashMap<>());
-                }
-                Map<String, Integer> tempMap = back.get(tv.getFileId());
-                tempMap.put(tv.getWordRoot(), tv.getTermFrequency());
-                back.put(tv.getFileId(), tempMap);
+                back.addOccurence(tv.getFileId(), tv.getWordRoot(), tv.getTermFrequency());
             }
 
         } catch (Exception e) {
@@ -191,7 +184,7 @@ public class TermVectorEntityService implements Serializable {
             for (StackTraceElement el : e.getStackTrace()) {
                 logger.error(el);
             }
-            return new HashMap<>();
+            return new TermOcurrence();
         }
         return back;
     }
@@ -254,13 +247,13 @@ public class TermVectorEntityService implements Serializable {
      */
     public void saveUnstemmedWordsOfDocument(
             List<StemmedWordOrigin> wordOrigins,
-            UUID documentId) {
+            Integer documentId) {
         for (StemmedWordOrigin swo : wordOrigins) {
             for (String s : swo.getOriginalWord()) {
                 this.em.createNativeQuery(SQL_INSERT_UNSTEMMED_WORD)
-                        .setParameter("usw", s)
+                        .setParameter("unstemmed_word", s)
                         .setParameter("did", documentId)
-                        .setParameter("wr", swo.getStemmedWord())
+                        .setParameter("stemmed_word", swo.getStemmedWord())
                         .executeUpdate();
                 this.em.flush();
             }
@@ -275,7 +268,7 @@ public class TermVectorEntityService implements Serializable {
      * @return
      */
     public List<StemmedWordOrigin> loadUnstemmedWordsOfDocument(
-            UUID documentId,
+            Integer documentId,
             String wordRoot) {
         List<StemmedWordOrigin> stemmedWords = new ArrayList<>();
 
@@ -303,7 +296,7 @@ public class TermVectorEntityService implements Serializable {
      * @return
      */
     public List<StemmedWordOrigin> loadUnstemmedWordsOfDocument(
-            UUID documentId,
+            Integer documentId,
             List<String> wordRoot) {
         List<StemmedWordOrigin> stemmedWords = new ArrayList<>();
         @SuppressWarnings("unchecked")
@@ -341,17 +334,17 @@ public class TermVectorEntityService implements Serializable {
      * @return
      */
     private List<TermVector> loadTermvectorsForDocuments(
-            List<String> docIds,
+            List<Integer> docIds,
             Integer maxResult) {
         List<TermVector> tvList = new ArrayList<>();
-        for (String id : docIds) {
+        for (Integer id : docIds) {
             // Loads the termvector for a documentid and limits 
             // the length by the given maximum result length
             @SuppressWarnings("unchecked")
             List<TermVectorEntity> entities = this.em.createNativeQuery(
                     SQL_TERMVECTORS_BY_ID,
                     TermVectorEntity.class)
-                    .setParameter("id", UUID.fromString(id))
+                    .setParameter("id", id)
                     .getResultList();
 
             List<TermVector> list = new ArrayList<>();

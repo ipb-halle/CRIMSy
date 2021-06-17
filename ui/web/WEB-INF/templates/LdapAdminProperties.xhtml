@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <!--
   
-  Leibniz Bioactives Cloud
-  Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
                         <b:focus rendered="true"/>
                     </b:inputText>
                     <b:message for="@previous"/>
-                    <b:inputSecret value="#{ldapTestBean.ldapPassword}" label="#{admission_loginForm_password}" required="true">
+                    <b:inputSecret value="#{ldapTestBean.ldapPassword}" label="#{msgs.admission_loginForm_password}" required="true">
                         <f:facet name="prepend">
                             <b:icon name="ok"/>
                         </f:facet>
@@ -53,7 +53,7 @@
                                          value="#{msgs.admission_ldap_check}"/>
                     </b:column>
                     <h:outputText id="testresult" value="#{msgs.test_result}:"/>
-                    <b:message showSummary="true" showDetail="true" for="testresult" escape="false"/>
+                    <b:message showSummary="true" showDetail="true" for="testresult"/>
                 </b:panel>
             </b:form>
         </b:modal>

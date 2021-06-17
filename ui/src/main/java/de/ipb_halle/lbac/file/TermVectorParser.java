@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,12 @@ package de.ipb_halle.lbac.file;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.ipb_halle.lbac.entity.TermVector;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.UUID;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -45,7 +43,7 @@ public class TermVectorParser {
 
     public List<TermVector> parseTermVectorJson(
             String json,
-            UUID documentId) throws IOException {
+            Integer documentId) throws IOException {
 
         List<TermVector> result = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
@@ -64,7 +62,7 @@ public class TermVectorParser {
     }
 
     public List<StemmedWordOrigin> parseTermVectorXmlToWordOrigins(
-            de.ipb_halle.lbac.entity.Document d,
+            de.ipb_halle.lbac.search.document.Document d,
             String xml)
             throws IOException {
         List<StemmedWordOrigin> results = new ArrayList<>();

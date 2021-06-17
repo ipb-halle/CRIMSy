@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,11 @@
  */
 package de.ipb_halle.lbac.forum;
 
+import de.ipb_halle.lbac.util.RichTextConverter;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
 import de.ipb_halle.lbac.entity.Cloud;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.CloudService;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,14 +29,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Manages the actions from the socialForum.xhtml
@@ -50,9 +53,8 @@ public class ForumBean implements Serializable {
     private ForumSearchState searchState = new ForumSearchState();
     private Topic activeTopic;
     private Logger logger = LogManager.getLogger(ForumBean.class);
-    private PostingTextTransformator postingTrafo = new PostingTextTransformator();
     private String fullTextSearch = "";
-    protected HTMLInputFilter vFilter;
+    protected RichTextConverter vFilter;
     protected final String TOPIC_HEADER_PRESTRING = "Topic: ";
 
     @Inject
@@ -72,7 +74,7 @@ public class ForumBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        vFilter = new HTMLInputFilter(true, true);
+        vFilter = new RichTextConverter();
     }
 
     /**
@@ -96,7 +98,7 @@ public class ForumBean implements Serializable {
      * Triggers a new search for local and remote topics with their postings
      */
     public void refreshForumState() {
-        UUID idOfActiveTopic = null;
+        Integer idOfActiveTopic = null;
         if (activeTopic != null) {
             idOfActiveTopic = activeTopic.getId();
         }
@@ -123,13 +125,10 @@ public class ForumBean implements Serializable {
         try {
             forumService.addPostingToTopic(
                     activeTopic,
-                    postingTrafo.transformPostingText(
-                            vFilter.filter(postingText),
-                            currentUser,
-                            creationDate),
+                    vFilter.filter(postingText),
                     currentUser, creationDate);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         postingText = "";
     }
@@ -145,7 +144,7 @@ public class ForumBean implements Serializable {
                     currentUser,
                     cloudOfTopic);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         newTopicName = "";
         refreshForumState();
@@ -245,10 +244,10 @@ public class ForumBean implements Serializable {
         return availableClouds;
     }
 
-    private void restoreActiveTopicFromId(UUID id) {
+    private void restoreActiveTopicFromId(Integer id) {
         if (id != null) {
             for (Topic t : searchState.getReadableTopics()) {
-                if (t.getId().equals(id)) {
+                if (Objects.equals(t.getId(), id)) {
                     activeTopic = t;
                 }
             }

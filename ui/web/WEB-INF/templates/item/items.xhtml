@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:nwc="http://ipb-halle.de/nwc"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:crimsy="http://xmlns.jcp.org/jsf/composite/crimsy">
+    <h:body>
+
+        <crimsy:acobjectModal
+            acobjectController="#{itemOverviewBean.acObjectController}"
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="itemOverviewContainer"/>
+        <b:form 
+            id="itemForm">
+            <b:container 
+                id="itemOverviewContainerId"
+                styleClass="itemOverviewContainer">
+                <b:row>
+                    <b:column span="2"> 
+                        <b:container>
+                            <b:row>
+                                <b:column>
+                                    <h:outputText value="Suchfilter"
+                                                  styleClass="searchFilterHeader"/>
+                                </b:column>
+                            </b:row>    
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="Materialname"
+                                                  />
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.materialName}"
+                                                    maxResults="10"
+                                                    completeMethod="#{itemOverviewBean.getSimilarMaterialNames}"
+                                                    styleClass="itemFilterInputfield"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="Gebindenummer"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <b:inputText
+                                        value="#{itemOverviewBean.searchMaskValues.label}"
+                                        styleClass="itemFilterInputfield"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="User"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.userName}"
+                                                    maxResults="10"
+                                                    completeMethod="#{itemOverviewBean.getSimilarUserNames}"
+                                                    styleClass="itemFilterInputfield"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="Project"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.projectName}"
+                                                    maxResults="10"
+                                                    completeMethod="#{itemOverviewBean.getSimilarProjectNames}"
+                                                    styleClass="itemFilterInputfield"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="Standort"/>
+                                </b:column>
+                            </b:row>  
+                            <b:row
+                                styleClass="itemFilterRow">  
+                                <b:column span="2">
+                                    <p:autoComplete value="#{itemOverviewBean.searchMaskValues.location}"
+                                                    maxResults="10"
+                                                    forceSelection="true"
+                                                    completeMethod="#{itemOverviewBean.getSimilarContainerNames}"
+                                                    styleClass="itemFilterInputfield"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <h:outputText value="Bemerkungen"/>
+                                </b:column>
+                            </b:row>
+                            <b:row
+                                styleClass="itemFilterRow">
+                                <b:column span="2">
+                                    <b:inputText value="#{itemOverviewBean.searchMaskValues.description}"
+                                                 styleClass="itemFilterInputfield"/>
+                                </b:column>
+                            </b:row>
+                            <b:row>
+                                <b:column
+                                    span="1" 
+                                    styleClass="itemFilterButtonColumn">
+                                    <b:commandButton 
+                                        styleClass="itemFilterButton"
+                                        value="Clear"
+                                        ajax="true"
+                                        update="itemForm"
+                                        onclick="ajax:itemOverviewBean.actionClearSearchFilter();"/>
+                                </b:column>
+                                <b:column
+                                    span="1"
+                                    styleClass="itemFilterButtonColumn itemFilterButtonRight">
+                                    <b:commandButton 
+                                        styleClass="itemFilterButton"
+                                        value="Search"
+                                        update="itemForm"
+                                        ajax="true"
+                                        onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
+                                </b:column>
+                            </b:row>
+                        </b:container>
+                    </b:column>    
+                    <b:column span="10">  
+                        <b:container styleClass="itemOverviewTableContainer">
+                            <b:row>
+                                <b:column span="12"
+                                          styleClass="itemDataTable">
+                                    <b:dataTable
+                                        paginated="false"
+                                        value="#{itemOverviewBean.items}"
+                                        searching="false"
+                                        var="item"
+                                        saveState="false">
+                                        <b:dataTableColumn
+                                            label="Label">
+                                            <h:outputText
+                                                id="itemLabel"
+                                                escape="false"
+                                                value="#{item.label}"
+                                                title="ID: #{item.id}" />
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_material}">
+                                            <h:panelGroup id="materialNames">
+                                                <ui:repeat value="#{item.material.names}"
+                                                           size="#{nwc:min(item.material.names.size(), 3)}"
+                                                           var="name"
+                                                           varStatus="namesStatus">
+                                                    <h:outputText value="#{name.value}" />
+                                                    <ui:fragment rendered="#{!namesStatus.last}">
+                                                        <br />
+                                                    </ui:fragment>
+                                                </ui:repeat>
+                                            </h:panelGroup>
+                                            <p:tooltip for="materialNames" position="right">
+                                                <ui:repeat value="#{item.material.names}"
+                                                           size="#{nwc:min(item.material.names.size(), 10)}"
+                                                           var="name"
+                                                           varStatus="namesStatus">
+                                                    <h:outputText value="#{name.value}" />
+                                                    <ui:fragment rendered="#{!namesStatus.last}">
+                                                        <br />
+                                                    </ui:fragment>
+                                                </ui:repeat>
+                                                <ui:fragment rendered="#{item.material.names.size() gt 10}">
+                                                    ...
+                                                </ui:fragment>
+                                            </p:tooltip>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_projectOwner}">
+                                            <h:outputFormat value="{0}/{1}">
+                                                <f:param value="#{item.project}" />
+                                                <f:param value="#{item.owner.name}" />
+                                            </h:outputFormat>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_amount}">
+                                            <!-- Number format "0.0##": 10000      -> 10000.0
+                                                                        10000.1    -> 10000.1 
+                                                                        10000.01   -> 10000.01
+                                                                        10000.001  -> 10000.001
+                                                                        10000.0001 -> 10000.0
+                                                                            0.001  ->     0.001 -->
+                                            <h:outputFormat value="{0} {1}">
+                                                <f:param value="#{nwc:formatNumberInEnglish(item.amount, '0.0##')}" />
+                                                <f:param value="#{item.unit.unit}" />
+                                            </h:outputFormat>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_location}"
+                                            value="#{item.nestedLocation}">
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_remarks}"
+                                            value="#{item.description}">
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.itemOverview_tableheader_dates}">
+                                            <h:panelGrid columns="3">
+                                                <h:outputText value="#{msgs.itemOverview_created}" />
+                                                <h:outputText value="&#160;" />
+                                                <h:outputText value="#{nwc:formatDateWithTimezone(item.cTime)}" />
+                                                <h:outputText value="#{msgs.itemOverview_modified}"
+                                                              rendered="#{!item.history.isEmpty()}" />
+                                                <h:outputText value="&#160;" />
+                                                <h:outputText value="#{nwc:formatDateWithTimezone(item.history.lastKey())}"
+                                                              rendered="#{!item.history.isEmpty()}" />
+                                            </h:panelGrid>
+                                        </b:dataTableColumn>
+                                        <b:dataTableColumn
+                                            label="#{msgs.materialOverview_tableheader_actions}">
+                                            <b:commandButton style="padding: 0 4px;"
+                                                             icon="pencil"
+                                                             look="link"
+                                                             type="submit"
+                                                             ajax="false"
+                                                             action="#{itemOverviewBean.actionStartItemEdit(item)}"
+                                                             />
+                                            <b:commandButton style="padding: 0 4px;"
+                                                             icon="glyphicon glyphicon-user"
+                                                             look="link"
+                                                             ajax="true"
+                                                             process="@this"
+                                                             tooltip="#{msgs.collMgr_tooltip_changeUserPermission}"
+                                                             update="@(.acoEditModal)"
+                                                             type="button"
+                                                             onclick="ajax:itemOverviewBean.actionStartAclChange(item)"
+                                                             oncomplete="PF('dlgAcl').show();"
+                                                             disabled="false"/>
+                                        </b:dataTableColumn>
+                                    </b:dataTable>
+                                </b:column> 
+                            </b:row>
+                            <b:row>
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
+                                    <b:commandButton 
+                                        styleClass="itemNavigationButton"
+                                        disabled="#{itemOverviewBean.isBackDeactivated()}"
+                                        onclick="ajax:itemOverviewBean.actionFirstItems();"
+                                        icon-awesome="fa-fast-backward"
+                                        ajax="true"
+                                        update="itemForm"
+                                        />
+                                </b:column>
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
+                                    <b:commandButton 
+                                        styleClass="itemNavigationButton"
+                                        disabled="#{itemOverviewBean.isBackDeactivated()}"
+                                        onclick="ajax:itemOverviewBean.actionLastItems();"
+                                        ajax="true"
+                                        update="itemForm"
+                                        icon-awesome="fa-backward"/>
+                                </b:column> 
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
+                                    <b:commandButton 
+                                        styleClass="itemNavigationButton"
+                                        disabled="#{itemOverviewBean.isForwardDeactivated()}"
+                                        onclick="ajax:itemOverviewBean.actionNextItems();"
+                                        ajax="true"
+                                        update="itemForm"
+                                        icon-awesome="fa-forward"
+                                        />
+                                </b:column> 
+                                <b:column span="1" styleClass="itemNavigationColumn"> 
+                                    <b:commandButton 
+                                        styleClass="itemNavigationButton"
+                                        disabled="#{itemOverviewBean.isForwardDeactivated()}"
+                                        onclick="ajax:itemOverviewBean.actionEndItems();"
+                                        ajax="true"
+                                        update="itemForm"
+                                        icon-awesome="fa-fast-forward"
+                                        />
+                                </b:column> 
+                                <b:column span="2" offset="1"> 
+                                    <h:outputFormat
+                                        value="#{msgs.itemOverview_itemsShownFormat}"
+                                        rendered="#{itemOverviewBean.itemAmount gt 0}">
+                                        <f:param value="#{itemOverviewBean.leftBorder}" />
+                                        <f:param value="#{itemOverviewBean.rightBorder}" />
+                                        <f:param value="#{itemOverviewBean.itemAmount}" />
+                                    </h:outputFormat>
+                                    <h:outputText
+                                        value="#{msgs.itemOverview_noItemsFound}"
+                                        rendered="#{itemOverviewBean.itemAmount le 0}" />
+                                </b:column> 
+                            </b:row>
+                        </b:container>
+                    </b:column> 
+                </b:row>
+            </b:container>
+
+
+
+
+
+
+
+
+        </b:form>
+    </h:body>
+
+</html>

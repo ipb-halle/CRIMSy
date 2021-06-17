@@ -8,10 +8,6 @@ include(dist/etc/config_m4.inc)dnl
     ServerName LBAC_INTRANET_FQHN
     Redirect / https://LBAC_INTRANET_FQHN/
 
-#    DocumentRoot /usr/local/apache2/htdocs 
-#    HostnameLookups Off
-#    UseCanonicalName Off
-
     # configures the footer on server-generated documents
     ServerSignature On
 

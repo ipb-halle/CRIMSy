@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
@@ -36,10 +37,10 @@ import static java.util.stream.Collectors.toMap;
  * LDAP is for all accounts or groups managed by LDAP
  *
  * LBAC_REMOTE is for all accounts or groups managed by a remote instance of 
- * Leibniz Bioactives Cloud
+ * Cloud Resource & Information Management System (CRIMSy)
  */
 
-public enum AdmissionSubSystemType {
+public enum AdmissionSubSystemType implements Serializable {
 
     BUILTIN(0),
     LOCAL(1), 

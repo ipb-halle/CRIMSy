@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +33,16 @@ import javax.servlet.http.HttpServletResponse;
  * @author fmauz
  */
 public class HttpServletResponseMock implements HttpServletResponse {
+
+    PrintWriter writer;
+
+    public HttpServletResponseMock() {
+        try {
+            writer = new WriterMock("WriterMock");
+        } catch (FileNotFoundException ex) {
+
+        }
+    }
 
     @Override
     public void addCookie(Cookie cookie) {
@@ -51,11 +64,13 @@ public class HttpServletResponseMock implements HttpServletResponse {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String encodeUrl(String url) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String encodeRedirectUrl(String url) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -111,6 +126,7 @@ public class HttpServletResponseMock implements HttpServletResponse {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void setStatus(int sc, String sm) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -153,7 +169,7 @@ public class HttpServletResponseMock implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        return new PrintWriter(System.out, true);
+        return writer;
     }
 
     @Override
@@ -173,7 +189,7 @@ public class HttpServletResponseMock implements HttpServletResponse {
 
     @Override
     public void setContentType(String type) {
-       
+
     }
 
     @Override
@@ -214,6 +230,24 @@ public class HttpServletResponseMock implements HttpServletResponse {
     @Override
     public Locale getLocale() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public class WriterMock extends PrintWriter {
+
+        private String json;
+
+        public WriterMock(String fileName) throws FileNotFoundException {
+            super(System.out);
+        }
+
+        @Override
+        public void write(String json) {
+            this.json = json;
+        }
+
+        public String getJson() {
+            return json;
+        }
     }
 
 }

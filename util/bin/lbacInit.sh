@@ -24,7 +24,6 @@ compose="dist_"
 
 lbac_db="db"
 lbac_proxy="proxy"
-lbac_solr="lbacsolr"
 lbac_ui="ui"
 #
 #==========================================================
@@ -132,11 +131,8 @@ function  startService() {
 
 function start() {
     startService $lbac_db || error "Starting database container failed"
-    startService $lbac_solr || error "Starting solr container failed"
     startService $lbac_ui || error "Starting ui container failed"
-    if [ $LBAC_PROXY_ENABLE2 = "ON" ] ; then
-        startService $lbac_proxy || error "Starting proxy container failes"
-    fi
+    startService $lbac_proxy || error "Starting proxy container failes"
 }
 #
 #==========================================================
@@ -147,11 +143,8 @@ function stopService() {
 }
 
 function stop() {
-    if [ $LBAC_PROXY_ENABLE2 = "ON" ] ; then
-        stopService $lbac_proxy
-    fi
+    stopService $lbac_proxy
     stopService $lbac_ui
-    stopService $lbac_solr
     stopService $lbac_db
 }
 #

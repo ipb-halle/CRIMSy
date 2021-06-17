@@ -21,16 +21,6 @@
 #
 #==========================================================
 #
-# build pgchem container
-#
-function buildPgChem {
-    pushd "$LBAC_DATASTORE/dist/pgchem" > /dev/null
-    docker build --pull -t pgchem .
-    popd
-}
-#
-#==========================================================
-#
 # Install or update crontab settings
 #
 function installCron {
@@ -94,27 +84,44 @@ EOF
 }
 
 #
-# Install an additional CLOUD
+# Install a single additional CLOUD
+# first step: copy certificates and truststores
 #
-function installCloud {
+function installCloudCert {
     pushd $LBAC_DATASTORE/dist/etc/$LBAC_CLOUD > /dev/null
 
-    # add certificate and CRL to proxy (if enabled)
-    if [ $LBAC_PROXY_ENABLE2 = 'ON' ] ; then
-        $LBAC_DATASTORE/dist/bin/updateCloud.sh cacrl
-    fi
+    # add certificate and CRL to proxy 
+    $LBAC_DATASTORE/dist/bin/updateCloud.sh cacrl
 
     # add certificate to truststore
     docker cp $LBAC_CLOUD.truststore dist_ui_1:/install
     docker cp $LBAC_CLOUD.trustpass dist_ui_1:/install
     docker cp $LBAC_CLOUD.pkcs12 dist_ui_1:/install
     docker cp $LBAC_CLOUD.keypass dist_ui_1:/install
+}
+
+#
+# Install all CLOUDs
+# second step: import certificates and SQL for _all_ clouds
+#
+function installClouds {
+    pushd $LBAC_DATASTORE/dist/etc
     docker exec dist_ui_1 /usr/local/bin/importKeystores.sh
 
     # add database records
-    docker cp $LBAC_CLOUD.sql dist_db_1:/tmp
+    docker cp clouds.sql dist_db_1:/tmp
     docker exec dist_db_1 /bin/bash -c \
-      "cat /tmp/$LBAC_CLOUD.sql | su -c 'psql -Ulbac lbac' postgres && rm /tmp/$LBAC_CLOUD.sql"
+      "cat /tmp/clouds.sql | su -c 'psql -Ulbac lbac' postgres && rm /tmp/clouds.sql"
+}
+
+#
+# install / recover / replay database backup
+#
+function installDbBackup {
+    echo "restoring data from database dump ..."
+    cat "$LBAC_DATASTORE/backup/db/dump.latest.sql" | \
+        docker exec -i -u postgres dist_db_1 psql template1 
+    echo "finished database restore ..."
 }
 
 #
@@ -194,9 +201,19 @@ function installInit {
 #
 function postInstall {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
-    echo "Waiting 10 sek. for database to come up ..."
-    sleep 10
-    docker exec -ti -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
+
+    echo "Waiting 15 sek. for database to come up ..."
+    sleep 15
+
+    docker exec -i dist_db_1 chown postgres /data/db
+    docker exec -i -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
+    if [ -f "$LBAC_DATASTORE/data/db/VERSION_UPDATE" ] ; then
+
+        installDbBackup
+        rm "$LBAC_DATASTORE/data/db/VERSION_UPDATE"
+        # re-run dbupdate after installation of backup
+        docker exec -u postgres dist_db_1 /usr/local/bin/dbupdate.sh
+    fi
 }
 
 #
@@ -204,7 +221,7 @@ function postInstall {
 #
 function removeFunc {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" remove 
-    docker rmi pgchem
+    docker rmi pgchem 2>/dev/null >/dev/null
 }
 
 #
@@ -219,8 +236,6 @@ function setInstallDir {
 #
 function setPermissions {
     chown 5432 "$LBAC_DATASTORE/data/db"
-    chown 80 "$LBAC_DATASTORE/data/htdocs"
-    chown 8983 "$LBAC_DATASTORE/data/solr"
     chown 8080 "$LBAC_DATASTORE/data/ui"
 }
 
@@ -245,7 +260,6 @@ function snapshotFunc {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService proxy 
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" stopService ui
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService db
-    "$LBAC_DATASTORE/dist/bin/lbacInit.sh" startService solr
 
     "$LBAC_DATASTORE/dist/bin/backup.sh"
 }
@@ -262,6 +276,30 @@ function startFunc {
             /etc/init.d/lbac start
             ;;
     esac
+}
+
+#
+#
+#
+function totalClean {
+    pushd $LBAC_DATASTORE >/dev/null
+
+    TMP_CRONTAB=`mktemp /tmp/crontab.XXXXXX`
+    crontab -l > $TMP_CRONTAB
+    cat << EOF | ed $TMP_CRONTAB
+/LBAC CRON BEGIN/,/LBAC CRON END/d
+w
+q
+EOF
+    cat $TMP_CRONTAB | crontab -u root -
+    rm $TMP_CRONTAB
+
+    shutdownFunc
+    sleep 15
+    removeFunc
+    rm -rf data/ dist/ etc/ tmp/ nodeconfig.txt configBatch.sh
+
+    popd > /dev/null
 }
 
 # 
@@ -290,18 +328,21 @@ fi
 . "$LBAC_DATASTORE/dist/etc/config.sh" || error "configuration missing: LBAC_DATASTORE/dist/etc/config.sh"
 
 case $1 in
-    buildPgChem)
-        echo "Setting up PGChem"
-        buildPgChem
-        ;;
     installCron)
         echo "Setting up CRON"
         installCron
         ;;
-    installCloud)
+    installCloudCert)
         LBAC_CLOUD=$2
         echo "Installing cloud: $LBAC_CLOUD"
-        installCloud
+        installCloudCert
+        ;;
+    installClouds)
+        echo "Activate all clouds"
+        installClouds
+        ;;
+    installDbBackup)
+        installDbBackup
         ;;
     installInit)
         echo "Installing Init Script"
@@ -330,6 +371,10 @@ case $1 in
     start)
         echo "Starting containers"
         startFunc
+        ;;
+    totalClean)
+        echo "Cleaning totally"
+        totalClean
         ;;
     *)
         error "setupROOT.sh called with invalid arguments"

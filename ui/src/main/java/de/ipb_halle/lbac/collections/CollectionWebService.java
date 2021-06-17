@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,8 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.ACEntry;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.CollectionList;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.ArrayList;
@@ -41,6 +37,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -76,7 +73,7 @@ public class CollectionWebService extends LbacWebService {
         try {
             checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
-            logger.error("Error at athentificating request", e);
+            logger.error("Error at athentificating request", ExceptionUtils.getStackTrace(e));
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -99,7 +96,7 @@ public class CollectionWebService extends LbacWebService {
             result.setCollectionList(filteredColls);
             return Response.ok(result).build();
         } catch (Exception e) {
-            logger.error("Error at fetching local collections", e);
+            logger.error("Error at fetching local collections", ExceptionUtils.getStackTrace(e));
             return Response.serverError().build();
         }
     }

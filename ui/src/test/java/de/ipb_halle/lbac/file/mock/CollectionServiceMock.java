@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
  */
 package de.ipb_halle.lbac.file.mock;
 
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class CollectionServiceMock extends CollectionService {
     @Override
     public List<Collection> load(Map<String, Object> cmap) {
         Collection c = new Collection();
-        c.setId(UUID.randomUUID());
+        c.setId(-10000);
         Node n = new Node();
         n.setId(UUID.randomUUID());
         c.setNode(n);

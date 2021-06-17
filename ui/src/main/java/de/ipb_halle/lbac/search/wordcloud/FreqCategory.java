@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,14 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
+import java.io.Serializable;
+
 /**
  * Determines the importance of a term in a sprecific environment
  *
  * @author fmauz
  */
-public enum FreqCategory {
+public enum FreqCategory implements Serializable{
 
     HIGHEST(5),
     HIGH(4),

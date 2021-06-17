@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.entity.Collection;
 import de.ipb_halle.lbac.i18n.UIMessage;
-import de.ipb_halle.lbac.service.CollectionService;
+import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +26,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.FacesValidator;
@@ -38,7 +36,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("CollectionInputValidator")
-public class CollectionInputValidator implements Validator {
+public class CollectionInputValidator implements Validator,Serializable{
 
     @Inject
     private CollectionService collectionService;

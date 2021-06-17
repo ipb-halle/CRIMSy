@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,32 +17,22 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
-import de.ipb_halle.lbac.entity.Cloud;
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.CollectionList;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.service.CollectionService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.exp.ExperimentDeployment;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.util.Base64;
 import javax.inject.Inject;
@@ -86,31 +76,20 @@ public class CollectionWebServiceTest
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("CollectionWebServiceTest.war")
+        WebArchive deployment = prepareDeployment("CollectionWebServiceTest.war")
                 .addClass(CollectionWebService.class)
-                .addPackage(CollectionService.class.getPackage())
                 .addClass(NodeService.class)
                 .addClass(KeyManager.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
-                .addPackage(WordCloudWebService.class.getPackage())
-                .addPackage(SolrSearcher.class.getPackage())
-                .addPackage(CollectionBean.class.getPackage())
-                .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(PermissionEditBean.class.getPackage())
-                .addPackage(UserBean.class.getPackage())
                 .addClass(CollectionWebServiceMock.class)
-                .addPackage(Navigator.class.getPackage())
-                .addPackage(Updater.class.getPackage())
-                .addClass(SolrTermVectorSearch.class)
-                .addClass(MembershipOrchestrator.class)
                 .addClass(FileService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(FileEntityService.class);
+        return ItemDeployment.add(ExperimentDeployment.add(UserBeanDeployment.add(deployment)));
     }
 
     @Before
+    @Override
     public void setUp() {
         super.setUp();
         initializeKeyStoreFactory();
@@ -121,8 +100,8 @@ public class CollectionWebServiceTest
 
         Assert.assertNotNull("Could not initialize WebService", collectionWebService);
 
-        User u = createUser("test", "testName", nodeService.getLocalNode(), memberService, membershipService);
-        User u2 = createUser("test2", "testName2", nodeService.getLocalNode(), memberService, membershipService);
+        User u = createUser("test", "testName");
+        User u2 = createUser("test2", "testName2");
 
         CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);
         cn.setPublicKey(Base64.getEncoder().encodeToString(keyManager.getLocalPublicKey(TESTCLOUD).getEncoded()));

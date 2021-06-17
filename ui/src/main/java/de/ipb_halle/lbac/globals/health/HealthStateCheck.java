@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,21 @@
  */
 package de.ipb_halle.lbac.globals.health;
 
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Checks some basic preconditions for start of the programm.
@@ -43,45 +44,47 @@ public class HealthStateCheck {
 
     private final Logger logger = LogManager.getLogger(HealthStateCheck.class);
     private InfoObjectService infoObjectService;
-    private SolrAdminService solrAdminService;
     private FileService fileService;
     private String PUBLIC_COLLECTION;
     private NodeService nodeService;
     private HealthState healthState;
     private CollectionService collectionService;
     private Collection publicCollection;
+    private TaxonomyService taxonomyService;
 
-    public HealthStateCheck(InfoObjectService infoObjectService,
-            SolrAdminService solrAdminService,
+    public HealthStateCheck(
+            InfoObjectService infoObjectService,
             FileService fileService,
             String PUBLIC_COLLECTION,
             NodeService nodeService,
-            CollectionService collectionService) {
+            CollectionService collectionService,
+            TaxonomyService taxonomyService) {
         this.infoObjectService = infoObjectService;
-        this.solrAdminService = solrAdminService;
         this.fileService = fileService;
         this.PUBLIC_COLLECTION = PUBLIC_COLLECTION;
         this.nodeService = nodeService;
         this.collectionService = collectionService;
-        healthState = new HealthState();
-        publicCollection = collectionService.getPublicCollectionFromDb();
+        this.healthState = new HealthState();
+        this.publicCollection = collectionService.getPublicCollectionFromDb();
+        this.taxonomyService = taxonomyService;
+
     }
 
     /**
      * Checks the db state of the local node and the public collection. It also
-     * checks if the local collections are in synchronity with the solR instance
-     * and the filesysten. If the public collection is out of sync the
-     * information in the database will be updated based on the information from
-     * solR and filesystem.
+     * checks if the local collections are in synchronity with filesysten. If
+     * the public collection is out of sync the information in the database will
+     * be updated based on the information from filesystem. If no root taxonomy
+     * is present one will be created
      *
      * @return The state of the preconditions
      */
     public HealthState checkHealthState() {
         checkDbState();
         checkFileSystemState();
-        checkSolRStatus();
         checkPublicCollectionSync();
         checkSyncOfLocalCollections();
+        checkRootTaxonomy();
         return reportHealthState();
     }
 
@@ -129,25 +132,17 @@ public class HealthStateCheck {
 
     }
 
-    /**
-     * Checks if there is a collection present in the solR instance for the
-     * public collection.
-     */
-    private void checkSolRStatus() {
-        //*** check 'public' collection on solr server ***
-        boolean localSolrCollectionCheck = solrAdminService.collectionExists(PUBLIC_COLLECTION);
-        if (!localSolrCollectionCheck) {
-            healthState.publicCollectionSolrState = HealthState.State.FAILED;
-            logger.error(String.format("Solr standard collection  %s not found.", PUBLIC_COLLECTION));
+    private void checkRootTaxonomy() {
+        if (taxonomyService.checkRootTaxonomy() == 0) {
+            healthState.rootTaxonomy = HealthState.State.FAILED;
         } else {
-            healthState.publicCollectionSolrState = HealthState.State.OK;
+            healthState.rootTaxonomy = HealthState.State.OK;
         }
-
     }
 
     /**
      * Checks if the information of the public collection in the database are in
-     * sync with the information in the solr instance and the filesystem.
+     * sync with the information in the filesystem.
      */
     private void checkPublicCollectionSync() {
         if (publicCollection != null) {
@@ -163,24 +158,14 @@ public class HealthStateCheck {
                     healthState.publicCollectionFileSyncState = HealthState.State.FAILED;
                 }
 
-                //Check if the name of the public collection in db is in sync with the
-                //name in local solr collection
-                String nameInSolr = solrAdminService.getSolrIndexPath(publicCollection);
-                if (healthState.publicCollectionSolrState == HealthState.State.OK
-                        && nameInSolr.equals(publicCollection.getIndexPath())) {
-                    healthState.publicCollectionSolrSyncState = HealthState.State.OK;
-                } else {
-                    healthState.publicCollectionSolrSyncState = HealthState.State.FAILED;
-                }
             } else {
                 healthState.publicCollectionFileSyncState = HealthState.State.FAILED;
-                healthState.publicCollectionSolrSyncState = HealthState.State.FAILED;
+
             }
         } else {
             healthState.publicCollectionFileState = HealthState.State.FAILED;
             healthState.publicCollectionFileSyncState = HealthState.State.FAILED;
-            healthState.publicCollectionSolrState = HealthState.State.FAILED;
-            healthState.publicCollectionSolrSyncState = HealthState.State.FAILED;
+
         }
 
     }
@@ -219,19 +204,14 @@ public class HealthStateCheck {
 
         logger.info(String.format("* local public collection in db: %s", healthState.publicCollectionDbState));
         logger.info(String.format("* local public collection in sync with file: %s", healthState.publicCollectionFileState));
-        logger.info(String.format("* local public collection in sync with solr: %s", healthState.publicCollectionSolrState));
 
-        boolean publicColInSync = healthState.publicCollectionFileSyncState == State.OK
-                && healthState.publicCollectionSolrSyncState == State.OK;
+        boolean publicColInSync = healthState.publicCollectionFileSyncState == State.OK;
         logger.info(String.format("* local public collection sync check: %sOK", publicColInSync ? "" : "NOT "));
 
         for (String name : healthState.collectionFileSyncList.keySet()) {
-            State stateOfSolr = healthState.collectionSolrSyncList.get(name);
+
             State stateOfFile = healthState.collectionFileSyncList.get(name);
-            if (stateOfSolr == null) {
-                stateOfSolr = State.FAILED;
-            }
-            logger.info("** name: " + name + " File: " + stateOfFile + " Solr: " + stateOfSolr);
+            logger.info("** name: " + name + " File: " + stateOfFile);
         }
 
         logger.info("--- end of health check report ---");
@@ -240,7 +220,7 @@ public class HealthStateCheck {
 
     /**
      * Checks if information of the local collections are in sync with the
-     * information in the solr instance and the filesystem.
+     * information in the filesystem.
      *
      */
     private void checkSyncOfLocalCollections() {
@@ -257,11 +237,7 @@ public class HealthStateCheck {
                 } else {
                     healthState.collectionFileSyncList.put(collection.getName(), State.FAILED);
                 }
-                if (solrAdminService.collectionExists(collection)) {
-                    healthState.collectionSolrSyncList.put(collection.getName(), State.OK);
-                } else {
-                    healthState.collectionSolrSyncList.put(collection.getName(), State.FAILED);
-                }
+
             }
         } catch (Exception e) {
             logger.error(String.format("Exception in LBAC all collection check."));

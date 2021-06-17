@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,32 +18,17 @@
 package de.ipb_halle.lbac.forum.postings;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.UserBean;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionWebService;
-import de.ipb_halle.lbac.collections.PermissionEditBean;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebService;
-import de.ipb_halle.lbac.service.CollectionService;
-import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import de.ipb_halle.lbac.webclient.WebRequestSignature;
-import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.util.UUID;
 import javax.inject.Inject;
@@ -52,7 +37,6 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -95,7 +79,7 @@ public class PostingWebServiceTest
 
     @Test
     public void testPostingWebService() throws Exception {
-        User publicUser = memberService.loadUserById(UUID.fromString(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
+        User publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         LbacWebClient client = new LbacWebClient();
         WebRequestSignature wrs = client.createWebRequestSignature(
                 keyManager.getLocalPrivateKey(TESTCLOUD)

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,16 +23,15 @@ import de.ipb_halle.lbac.globals.NavigationConstants;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
-import javax.ejb.DependsOn;
 import javax.enterprise.context.SessionScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Named("navigator")
 @SessionScoped
-@DependsOn({"userBean","systemSettings"})
 public class Navigator implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,17 +39,19 @@ public class Navigator implements Serializable {
     private String nextPage = NavigationConstants.LOGIN;
 
     @Inject
-    private UserBean userBean;
+    protected UserBean userBean;
 
     @Inject
     private SystemSettings systemSettings;
+
+    private transient Logger logger;
 
     /**
      * Initialize the Navigator for the session. 
      */
     @PostConstruct
     private void initNavigator() {
-        this.userBean.setNavigator(this);
+        this.logger = LogManager.getLogger(this.getClass().getName());
         initStartPage();
     }
 

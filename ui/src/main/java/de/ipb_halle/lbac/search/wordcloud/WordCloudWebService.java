@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,18 @@
  */
 package de.ipb_halle.lbac.search.wordcloud;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Document;
-import de.ipb_halle.lbac.entity.TermFrequencyList;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.search.document.Document;
+import de.ipb_halle.lbac.file.TermFrequencyList;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.document.DocumentSearchState;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -38,6 +37,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -88,7 +88,7 @@ public class WordCloudWebService extends LbacWebService {
         }
         try {
             List<Collection> collections = new ArrayList<>();
-            for (UUID id : request.getIdsOfReadableCollections()) {
+            for (Integer id : request.getIdsOfReadableCollections()) {
                 collections.add(collectionService.loadById(id));
             }
 
@@ -103,7 +103,7 @@ public class WordCloudWebService extends LbacWebService {
                 d.setTermFreqList(
                         new TermFrequencyList(
                                 termVectorService.getTermVector(
-                                        Arrays.asList(d.getId().toString()),
+                                        Arrays.asList(d.getId()),
                                         request.getMaxTerms()
                                 )
                         ));
@@ -118,7 +118,7 @@ public class WordCloudWebService extends LbacWebService {
             }
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return request;
 

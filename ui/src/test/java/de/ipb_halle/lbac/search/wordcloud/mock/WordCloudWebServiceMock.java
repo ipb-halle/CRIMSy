@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
  */
 package de.ipb_halle.lbac.search.wordcloud.mock;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.TermFrequency;
-import de.ipb_halle.lbac.entity.TermFrequencyList;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.lbac.file.TermFrequencyList;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.search.wordcloud.WordCloudWebRequest;
 import java.util.UUID;
 import javax.ws.rs.Consumes;
@@ -54,7 +54,7 @@ public class WordCloudWebServiceMock {
         n.setPublicNode(false);
 
         User u = new User();
-        u.setId(UUID.randomUUID());
+        u.setId(10000);
         u.setName("remote User");
         u.setLogin("RU");
         u.setPassword("Should be obfuscated");
@@ -64,7 +64,7 @@ public class WordCloudWebServiceMock {
         Collection c = new Collection();
         c.setCountDocs(1L);
         c.setDescription("Collection from MockServer - Description");
-        c.setId(UUID.randomUUID());
+        c.setId(100000);
         c.setIndexPath("/");
         c.setName("Mock-Collection");
         c.setNode(n);
@@ -78,7 +78,7 @@ public class WordCloudWebServiceMock {
         tfl.getTermFreq().add(new TermFrequency("word4", 1));
 
         Document d = new Document();
-        d.setCollectionId(UUID.randomUUID());
+        d.setCollectionId(1000);
         d.setCollection(c);
         d.setCollectionId(c.getId());
         d.setLanguage("de");

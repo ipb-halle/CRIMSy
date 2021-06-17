@@ -39,7 +39,6 @@
 #
 LBAC_UI="ui.war"
 
-
 #
 #==========================================================
 #
@@ -71,6 +70,12 @@ function decryptConfig {
         CURRENT_CONFIG_FILE=$tmp
 }
 
+function dialog_MASTER {
+                dialog --backtitle "$CLOUD_NAME" \
+                   --msgbox "Erstelle neuen Master-Knoten" 15 72 || error "Aborted"
+                setupMaster
+}
+
 function dialog_SELECT_CONFIG {
 
 	# declare -A inst
@@ -91,6 +96,16 @@ function dialog_SELECT_CONFIG {
 #
 #==========================================================
 #
+function autoPackage {
+	. $LBAC_REPO/config/$LBAC_CLOUD/master.sh || error "Master config not found"
+        for tmp in $LBAC_REPO/config/$LBAC_CLOUD/*.asc ; do
+            echo `basename $tmp`
+            decryptConfig $tmp
+            . $LBAC_CONFIG
+            genPackage
+        done
+}
+
 function makeCert {
 	# extract request
 	cat $LBAC_CONFIG | sed -n -e "/BEGIN CERTIFICATE REQUEST/,/END CERTIFICATE REQUEST/p" \
@@ -100,7 +115,7 @@ function makeCert {
 	LBAC_CERT_IDENTIFIER=`md5sum $TMP_RESULT | cut -c1-32`
 
     # test whether certificate has been revoked
-    $LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode testRevoked --hash $LBAC_CERT_IDENTIFIER
+    $LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode testRevoked --hash $LBAC_CERT_IDENTIFIER $BATCH
     case $? in 
         0)  # everything is fine - do nothing
             ;;
@@ -116,21 +131,21 @@ Für den Knoten muss mittels 'configure.sh' ein neuer Zertifikatsrequest erzeugt
             ;;
         2)  # certificate not found
             echo "certificate not found: $LBAC_CERT_IDENTIFIER"
-            dialog --backtitle "$CLOUD_NAME" \
-      --msgbox "Im folgenden Schritt wird ggf. das Zertifikat ausgestellt. Bitte prüfen Sie gründlich." 15 72 || error "Aborted"
+            if [ -z $BATCH ] ; then 
+                dialog --backtitle "$CLOUD_NAME" \
+                  --msgbox "Im folgenden Schritt wird ggf. das Zertifikat ausgestellt. Bitte prüfen Sie gründlich." 15 72 || error "Aborted"
+            fi 
             ;;
     esac
 
     # sign the certificate (or return an existing certificate)
     $LBAC_REPO/util/bin/camgr.sh --cloud $LBAC_CLOUD --mode sign \
-      --input $TMP_RESULT --output  $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.cert || \
+      --output  $LBAC_REPO/target/dist/etc/$LBAC_CLOUD/$LBAC_CLOUD.cert \
+      --input $TMP_RESULT $BATCH || \
       error "Error in makeCert"
 }
 
 function setupMaster {
-		dialog --backtitle "$CLOUD_NAME" \
-		   --msgbox "Erstelle neuen Master-Knoten" 15 72 || error "Aborted"
-
 		LBAC_MASTER_NODE_ID=$LBAC_NODE_ID
 		LBAC_MASTER_URL="https://$LBAC_INTERNET_FQHN:8443/ui"
 		LBAC_MASTER_INSTITUTION="$LBAC_INSTITUTION_SHORT"
@@ -154,7 +169,6 @@ function cleanTmp {
 }
 
 function cleanUp {
-	mkdir -p target
 	pushd target > /dev/null
 	rm -r dist
 	mkdir -p dist/etc/$LBAC_CLOUD
@@ -172,15 +186,11 @@ function copyCert {
 function copyDocker {
 	cp docker/docker-compose.yml.m4 target/dist
 	cp -r docker/db target/dist
-	cp -r docker/solr target/dist
-        cp -r docker/pgchem target/dist
 	cp -r docker/proxy target/dist
 	cp -r docker/ui target/dist
 }
 
 function copyFiles {
-        # primary cloud
-        echo -n "$LBAC_CLOUD" > target/dist/etc/primary.cfg
 
 	# directories already created by function copyDocker
 	cp ui/target/$LBAC_UI target/dist/ui
@@ -202,6 +212,18 @@ function error {
 	echo $1
 	cleanTmp
 	exit 1
+}
+
+function genPackage {
+    cleanUp
+    copyDocker
+    copyFiles
+    masterConfig
+    makeTomcatUsers
+    makeCert
+    copyCert
+    package
+    cleanTmp
 }
 
 function makeTomcatUsers {
@@ -261,18 +283,6 @@ function package {
 	popd >/dev/null
 }
 
-function genPackage {
-    cleanUp
-    copyDocker
-    copyFiles
-    masterConfig
-    makeTomcatUsers
-    makeCert
-    copyCert
-    package
-    cleanTmp
-}
-
 #
 #==========================================================
 #
@@ -281,6 +291,7 @@ function genPackage {
 p=`dirname $0`
 LBAC_REPO=`realpath $p/../..`
 LBAC_CLOUD=$1
+BATCH=""
 if [ x$LBAC_CLOUD = "x" ] ; then
     error "Usage: package.sh CLOUDNAME [MASTER | AUTO]"
 fi
@@ -290,27 +301,36 @@ LBAC_CONFIG=/tmp/lbac_config
 export LBAC_CA_DIR="$LBAC_REPO/config/$LBAC_CLOUD/CA"
 . $LBAC_CA_DIR/cloud.cfg
 
-cleanTmp
-
 pushd $LBAC_REPO > /dev/null
-#  . config/CA/lbac_ca.cfg
-#  mkdir -p $LBAC_REPO/config/$LBAC_CLOUD
+cleanTmp
+mkdir -p target
+
 . config/$LBAC_CLOUD/CA/cloud.cfg
 
 case $2 in
     MASTER)
         dialog_SELECT_CONFIG
-        setupMaster
+        dialog_MASTER
         genPackage
         ;;
-    AUTO)
-	. $LBAC_REPO/config/$LBAC_CLOUD/master.sh || error "Master config not found"
-        for tmp in $LBAC_REPO/config/$LBAC_CLOUD/*.asc ; do
-            echo `basename $tmp`
+    MASTERBATCH)
+        BATCH="--batch"
+        tmp=`grep $LBAC_CLOUD $LBAC_REPO/util/test/etc/cloudnodes.txt | grep MASTER | cut -d" " -f2`
+        tmp="$LBAC_REPO/config/nodes/$tmp.sh.asc"
+        if [ -f $tmp ] ; then
             decryptConfig $tmp
             . $LBAC_CONFIG
+            mv $tmp $LBAC_REPO/config/$LBAC_CLOUD
+            setupMaster
             genPackage
-        done
+        fi
+        ;;
+    AUTO)
+        autoPackage
+        ;;
+    AUTOBATCH)
+        BATCH="--batch"
+        autoPackage
         ;;
     *)
         . $LBAC_REPO/config/$LBAC_CLOUD/master.sh || error "Master config not found"

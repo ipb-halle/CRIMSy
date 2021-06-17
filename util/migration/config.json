@@ -1,0 +1,64 @@
+{
+ACLIST_ID:      2,
+CONTAINER_DIMENSIONS: "TS.10;25;1/TM.6;15;1/TH.5;12;1/TL.3;8;1",
+DATABASE_URL:   "jdbc:postgresql://localhost:5432/lbac?charSet=UTF-8&user=lbac&password=lbac",
+
+INITIAL_SQL: [ 
+ "DROP TABLE IF EXISTS tmp_import",
+ "CREATE TABLE tmp_import (old_id INTEGER, new_id INTEGER, type VARCHAR)",
+ "INSERT INTO indextypes (name) VALUES ('Mol_ID') ON CONFLICT DO NOTHING",
+ "INSERT INTO indextypes (name) VALUES ('IPBCode') ON CONFLICT DO NOTHING"
+],
+
+INPUT_EXPERIMENTS: "/dataPOOL/fblocal/inhouse/tblProcedure_20140331.txt",
+INPUT_MOLPROC: "/dataPOOL/fblocal/inhouse/tblCorr_Procedure_Moltable_20140401.txt",
+INPUT_ORGANISM_ID: "/dataPOOL/fblocal/inhouse/tblOrganism_20140331.txt",
+INPUT_ORGPROC: "/dataPOOL/fblocal/inhouse/tblCorr_Organism_Procedure_20140331.txt",
+INPUT_SAMPLES: "/dataPOOL/fblocal/inhouse/tblSample_20140331.txt",
+INPUT_STRUCTURE_NAMES: "/dataPOOL/fblocal/inhouse/tblCompoundSynonym_20140325.txt",
+INPUT_STRUCTURES:      "/dataPOOL/fblocal/inhouse/Structure_20140325.SDF",
+INPUT_TAXONOMY_CLASSES: "/dataPOOL/fblocal/inhouse/tblClass_20140331.txt",
+INPUT_TAXONOMY_FAMILIES: "/dataPOOL/fblocal/inhouse/tblFamily_20140331.txt",
+INPUT_TAXONOMY_SPECIES: "/dataPOOL/fblocal/inhouse/tblSpecies_20140331.txt",
+INPUT_TAXONOMY_SPECIES_SYNONYMS: "/dataPOOL/fblocal/inhouse/tblSpeciesSynonyma_20140331.txt",
+INPUT_TAXONOMY_STRAINS: "/dataPOOL/fblocal/inhouse/tblStrain_20140331.txt",
+
+INPUT_TAXONOMY_CLASS_LEVEL: 6,
+INPUT_TAXONOMY_FAMILY_LEVEL: 11,
+INPUT_TAXONOMY_SPECIES_LEVEL: 18,
+INPUT_TAXONOMY_STRAIN_LEVEL: 21,
+
+EXPERIMENT_FOLDER_ID: 1,
+MOLECULE_MATERIAL_TYPE_ID: 1,
+MOLPROC_QUERY: "INSERT INTO linked_data (exprecordid, materialid, type, rank, payload) 
+        SELECT exp.exp_id AS exprecordid, mat.mat_id AS materialid, 1 AS type, 
+        ROW_NUMBER() OVER (PARTITION BY exp_id) - 1 AS rank, '{\"text\":\"MolId' || mol.old_id || '\"}' AS payload 
+        FROM (SELECT old_id, new_id AS exp_id FROM tmp_import WHERE type='MolProcExp') AS exp 
+        JOIN (SELECT old_id, new_id AS mat_id FROM tmp_import WHERE type='MolProcMat') AS mat ON mat.old_id=exp.old_id 
+        JOIN (SELECT * FROM tmp_import WHERE type='TMP_MatId_MolId') AS mol ON mat.mat_id=mol.new_id",
+MOLPROC_UPDATE: "UPDATE exp_texts AS exp SET text=replace(text, '##LINKED_COMPOUNDS##', linkedCompounds) FROM (
+    SELECT ld.exprecordid, string_agg('#MolId' || mol.old_id, ', ') AS linkedCompounds 
+    FROM linked_data AS ld JOIN tmp_import AS mol ON ld.materialid=mol.new_id 
+    WHERE ld.payload like '%MolId%' AND mol.type='TMP_MatId_MolId' GROUP BY exprecordid )
+    AS newtext WHERE exp.exprecordid=newtext.exprecordid",
+ORGPROC_QUERY: "INSERT INTO linked_data (exprecordid, materialid, type, rank, payload)
+        SELECT exp.exp_id AS exprecordid, mat.mat_id AS materialid, 1 AS type,
+        ROW_NUMBER() OVER (PARTITION BY exp_id) + COALESCE(maxRank, 0) AS rank, '{\"text\":\"Organism' || mat.mat_id || '\"}' AS payload
+        FROM (SELECT old_id, new_id AS exp_id FROM tmp_import WHERE type='OrgProcExp') AS exp
+        JOIN (SELECT old_id, new_id AS mat_id FROM tmp_import WHERE type='OrgProcMat') AS mat ON mat.old_id=exp.old_id
+        RIGHT JOIN (SELECT exprecordid, MAX(rank) AS maxrank FROM linked_data GROUP BY exprecordid) AS rank ON exp.exp_id = rank.exprecordid 
+        WHERE mat.mat_id IS NOT NULL",
+ORGPROC_UPDATE: "UPDATE exp_texts AS exp SET text=replace(text, '##LINKED_ORGANISMS##', linkedOrganisms) FROM (
+    SELECT ld.exprecordid, string_agg('#Organism' || ld.materialid, ', ') AS linkedOrganisms
+    FROM linked_data AS ld WHERE payload like '%Organism%' GROUP BY ld.exprecordid )
+    AS newtext WHERE exp.exprecordid=newtext.exprecordid",
+
+PARENT_CONTAINER_ID: 1,
+TAXONOMY_MATERIAL_TYPE_ID: 7, 
+UNKNOWN_COMPOUND_ID: 494,
+UNKNOWN_TAXONOMY_PARENT_ID: 6,
+
+OWNER_ID:       5,
+PROJECT_ID:     1
+}
+

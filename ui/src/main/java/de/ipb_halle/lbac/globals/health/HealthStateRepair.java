@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,25 @@
  */
 package de.ipb_halle.lbac.globals.health;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.Collection;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.globals.health.HealthState.State;
-import de.ipb_halle.lbac.service.CollectionService;
-import java.util.UUID;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.collections.CollectionService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Tries to repair some discrepancies found by the healtcheck procedere
@@ -45,7 +53,7 @@ public class HealthStateRepair {
     private ACList publicReadAcl;
     private User adminAccount;
     private FileService fileService;
-    private SolrAdminService solrAdminService;
+    private MaterialService materialService;
 
     public HealthStateRepair(String publicCollectionName,
             HealthState healthState,
@@ -54,7 +62,7 @@ public class HealthStateRepair {
             ACList publicReadAcl,
             User adminAccount,
             FileService fileService,
-            SolrAdminService solrAdminService) {
+            MaterialService materialService) {
 
         this.publicCollectionName = publicCollectionName;
         this.healthState = healthState;
@@ -63,8 +71,9 @@ public class HealthStateRepair {
         this.publicReadAcl = publicReadAcl;
         this.adminAccount = adminAccount;
         this.fileService = fileService;
-        this.solrAdminService = solrAdminService;
         this.publicCollection = collectionService.getPublicCollectionFromDb();
+        this.materialService = materialService;
+
     }
 
     /**
@@ -84,7 +93,6 @@ public class HealthStateRepair {
         if (healthState.publicCollectionDbState == State.FAILED) {
             logger.info("Start creation of new public collection");
             publicCollection = createPublicCollectionInDb();
-            healthState.publicCollectionSolrSyncState = State.OK;
             healthState.publicCollectionFileSyncState = State.OK;
         }
         try {
@@ -95,15 +103,8 @@ public class HealthStateRepair {
                     healthState.publicCollectionFileSyncState = State.OK;
                 }
             }
-            if (healthState.publicCollectionSolrState == State.FAILED) {
-                repairPublicCollectionInSolR();
-                if (updatePublicCollectionInDb()) {
-                    healthState.publicCollectionSolrState = State.OK;
-                    healthState.publicCollectionSolrSyncState = State.OK;
-                }
-            }
         } catch (Exception e) {
-            logger.error("Could not vreate solr or file sync", e);
+            logger.error("Could not create file sync", e);
         }
         return healthState;
     }
@@ -112,10 +113,8 @@ public class HealthStateRepair {
      * The repair is nessecary if one of the following conditions is met
      * <ul>
      * <li> no public collection was found in db</li>
-     * <li> the public collection is not in sync with the filesystem or
-     * solr</li>
+     * <li> the public collection is not in sync with the filesystem</li>
      * <li> there is no folder for the collection in the filesystem</li>
-     * <li> there is no collection in the solr instance for the collection</li>
      * </ul>
      *
      * @return true if repair is needed
@@ -123,12 +122,22 @@ public class HealthStateRepair {
     public boolean isRepairOfPublicCollectionNeeded() {
         if (healthState.publicCollectionDbState == State.FAILED
                 || healthState.publicCollectionFileState == State.FAILED
-                || healthState.publicCollectionFileSyncState == State.FAILED
-                || healthState.publicCollectionSolrState == State.FAILED
-                || healthState.publicCollectionSolrSyncState == State.FAILED) {
+                || healthState.publicCollectionFileSyncState == State.FAILED) {
             return true;
         }
         return false;
+    }
+
+    public boolean isTaxonomyRepairNeeded() {
+        return healthState.rootTaxonomy == State.FAILED;
+    }
+
+    public void repairRootTaxonomy() {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("Life", "en", 1));
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), adminAccount, new Date());
+        t.setLevel(new TaxonomyLevel(1, "", 1));
+        materialService.saveMaterialToDB(t, publicReadAcl.getId(), new HashMap<>(), adminAccount.getId());
     }
 
     private void repairPublicCollectionInFileSystem() {
@@ -145,27 +154,15 @@ public class HealthStateRepair {
         }
     }
 
-    private void repairPublicCollectionInSolR() {
-        if (!solrAdminService.collectionExists(publicCollection)) {
-            if (solrAdminService.createCollection(publicCollectionName)) {
-                logger.info(String.format("solr standard collection  %s created.", publicCollectionName));
-            } else {
-                logger.error(String.format("solr standard collection  %s could not created.", publicCollectionName));
-            }
-        }
-    }
-
     private Collection createPublicCollectionInDb() {
         try {
             publicCollection = new Collection();
-            publicCollection.setId(UUID.randomUUID());
             publicCollection.setName(publicCollectionName);
             publicCollection.setStoragePath(String.format("%s/%s", FileService.getDefaultPath(), publicCollectionName));
-            publicCollection.setIndexPath(String.format("%s/%s", SolrAdminService.getBaseURLSolr(), publicCollectionName));
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
-            collectionService.save(publicCollection);
+            publicCollection = collectionService.save(publicCollection);
             return publicCollection;
         } catch (Exception e) {
             logger.error("Could not create public collection", e);
@@ -178,12 +175,11 @@ public class HealthStateRepair {
         try {
             publicCollection.setName(publicCollectionName);
             publicCollection.setStoragePath(String.format("%s/%s", FileService.getDefaultPath(), publicCollectionName));
-            publicCollection.setIndexPath(String.format("%s/%s", SolrAdminService.getBaseURLSolr(), publicCollectionName));
             publicCollection.setNode(localNode);
             publicCollection.setOwner(adminAccount);
             publicCollection.setACList(publicReadAcl);
 
-            collectionService.save(publicCollection);
+            publicCollection = collectionService.save(publicCollection);
             return true;
 
         } catch (Exception e) {

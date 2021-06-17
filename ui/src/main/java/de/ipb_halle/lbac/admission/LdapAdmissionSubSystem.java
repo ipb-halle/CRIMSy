@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,13 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Member;
-import de.ipb_halle.lbac.entity.Membership;
-import de.ipb_halle.lbac.entity.MemberType;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.UUID;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
@@ -88,7 +81,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             // in following steps
             u.setId(user.getId());
             // map the LdapObjects to Group, map might contain 'latent' objects
-            Map<UUID, Member> ldapUuidMap = getLdapGroups(ldapObjects, bean);
+            Map<Integer, Member> ldapUuidMap = getLdapGroups(ldapObjects, bean);
             ldapUuidMap.put(user.getId(), user);
 
             // compute the LDAP Memberships
@@ -145,10 +138,10 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     /**
      * build a map of Memberships from the ldapObjects map
      * @param ldapObjects a map of LDAP objects mapped by DN
-     * @param ldapUuidMap a map of LBAC objects mapped by id (UUID)
+     * @param ldapUuidMap a map of LBAC objects mapped by id 
      * @return a map of memberships mapped by groupId|memberId
      */
-    private Map<String, Membership> getLdapMemberships(Map <String, LdapObject> ldapObjects, Map<UUID, Member> ldapUuidMap) {
+    private Map<String, Membership> getLdapMemberships(Map <String, LdapObject> ldapObjects, Map<Integer, Member> ldapUuidMap) {
         Map<String, Membership> ldapMemberships = new HashMap<String, Membership> ();
         Iterator<LdapObject> iter = ldapObjects.values().iterator();
         while(iter.hasNext()) {
@@ -176,9 +169,9 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * to LBAC
      * @param lo the LdapObjects mapped by their DN
      * @param bean UserBean 
-     * @return LBAC Group objects mapped by their UUID
+     * @return LBAC Group objects mapped by their id
      */
-    private Map<UUID, Member> getLdapGroups(Map<String, LdapObject> lo, UserBean bean) {
+    private Map<Integer, Member> getLdapGroups(Map<String, LdapObject> lo, UserBean bean) {
         return lo.values().stream()
           .filter(lg -> lg.getType() == MemberType.GROUP)
           .map(lg -> lookupLbacGroup(lg, bean))
@@ -212,7 +205,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     /**
      * lookup LBAC group by LDAP uniqueId
      * @param lo the LDAP group object. If lookup is successful, the id property
-     * of this object will be modified to contain the UUID of the corresponding
+     * of this object will be modified to contain the id of the corresponding
      * LBAC object
      * @param bean the current sessions UserBean 
      * @return the Group object from the database or a 'latent' Group object which will
@@ -221,9 +214,9 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     private Group lookupLbacGroup(LdapObject lo, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
         Map<String, Object> cmap = new HashMap<String, Object> ();
-        cmap.put("subSystemType", AdmissionSubSystemType.LDAP);
-        cmap.put("subSystemData", lo.getUniqueId());
-        cmap.put("node_id", node.getId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP);
+        cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, lo.getUniqueId());
+        cmap.put(MemberService.PARAM_NODE_ID, node.getId());
         List<Group> groups = bean.getMemberService().loadGroups(cmap);
         Group g;
 
@@ -241,7 +234,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * lookup LBAC user by LDAP uniqueId
      * @param bean UserBean 
      * @param lo the LDAP user object. If lookup is successful, the id property
-     * of this object will be modified to contain the UUID of the corresponding
+     * of this object will be modified to contain the id of the corresponding
      * LBAC object
      * @return the User object from the database or a 'latent' User object which will 
      * be persisted upon successful authentication
@@ -249,9 +242,9 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     private User lookupLbacUser(LdapObject lo, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
         Map<String, Object> cmap = new HashMap<String, Object> ();
-        cmap.put("subSystemType", AdmissionSubSystemType.LDAP); 
-        cmap.put("subSystemData", lo.getUniqueId());
-        cmap.put("node", node);
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP); 
+        cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, lo.getUniqueId());
+        cmap.put(MemberService.PARAM_NODE_ID, node.getId());
 
         List<User> users = bean.getMemberService().loadUsers(cmap);
         if((users != null) && (users.size() == 1)) {
@@ -301,7 +294,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * 
      * @param ldapUuidMap a map containing all member objects discovered by LDAP
      */
-    private void saveObjects(Map<UUID, Member> ldapUuidMap, UserBean bean) {
+    private void saveObjects(Map<Integer, Member> ldapUuidMap, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
         Iterator<Member> iter = ldapUuidMap.values().iterator();
         while(iter.hasNext()) {

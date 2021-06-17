@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.Member;
-import de.ipb_halle.lbac.entity.User;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +56,9 @@ public class BuiltinAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     public User lookup(String login, UserBean bean) {
         Map<String, Object> cmap = new HashMap<String, Object> ();
-        cmap.put("login", login);
-        cmap.put("node_id", bean.getNodeService().getLocalNodeId());
-        cmap.put("subSystemType", getSubSystemType());
+        cmap.put(MemberService.PARAM_LOGIN, login);
+        cmap.put(MemberService.PARAM_NODE_ID, bean.getNodeService().getLocalNodeId());
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, getSubSystemType());
         List<User> lu = bean.getMemberService().loadUsers(cmap);
         if ((lu != null) && (lu.size() == 1)) {
             return lu.get(0);

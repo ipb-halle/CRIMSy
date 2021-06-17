@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+
+    <composite:interface name="dlgMaterialView"
+                         displayName="Material view dialog"
+                         preferred="true"
+                         expert="false"
+                         shortDescription="material view dialog">
+        <composite:attribute name="agent" required="true" />
+    </composite:interface>
+
+    <composite:implementation >
+        <h:form id="dlgMaterialViewForm">
+            <p:dialog id="dlgMaterialView"
+                      header="#{cc.attrs.agent.material.firstName}"
+                      styleClass="dlgMaterialView"
+                      widgetVar="dlg_MaterialView"
+                      modal="true" 
+                      width="600"
+                      height="600">
+
+                <b:container id="materialView" 
+                             styleClass="materialView borderless">
+                    <b:row>
+                        <b:column
+                            span="11"
+                            styleClass="dlgMaterialViewStructure">
+                            <mol:molecule id="molViewer"
+                                          rendered="#{cc.attrs.agent.hasStructure}"
+                                          value="#{cc.attrs.agent.material.molecule.structureModel}"
+                                          border="true" 
+                                          pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                          format="MDLV2000"
+                                          readonly="true"
+                                          widgetVar="dlg_MaterialView_molViewer"/>
+                        </b:column>
+                        <b:column
+                            span="1"
+                            styleClass="dlgMaterialViewHazards dlgMaterialViewBorderLess">
+                            <p:panelGrid>
+                                <ui:repeat
+                                    var="hazard"
+                                    value="#{cc.attrs.agent.getHazards()}">
+                                    <p:row>
+                                        <p:column>
+                                            <b:image name="#{cc.attrs.agent.getImageIconOf(hazard)}"
+                                                     styleClass="img-hazard"/>
+                                        </p:column>
+                                    </p:row>
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column span="6"
+                                  styleClass="dlgMaterialViewHeader">
+                            <h:outputText
+                                value="Alternative names"/>
+                        </b:column>
+                        <b:column span="6"
+                                  styleClass="dlgMaterialViewHeader">
+                            <b:column span="6">
+                                <h:outputText
+                                    value="Indices"/>
+                            </b:column>
+
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column
+
+                            span="6"
+                            styleClass="dlgMaterialViewNames dlgMaterialViewBorderLess">
+                            <p:panelGrid>
+                                <ui:repeat
+                                    var="name"
+                                    value="#{cc.attrs.agent.getNamesOfMaterial(3)}">
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText
+                                                value="#{name}"/>
+                                        </p:column>
+                                    </p:row>
+
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </b:column>
+                        <b:column
+                            span="6"
+                            styleClass="dlgMaterialViewIndex dlgMaterialViewBorderLess">
+                            <p:panelGrid>
+                                <ui:repeat
+                                    var="index"
+                                    value="#{cc.attrs.agent.getIndices()}">
+                                    <p:row>
+                                        <p:column
+                                            colspan="1">
+                                            <h:outputText
+                                                value="#{index[0]}"/>
+                                        </p:column>
+                                        <p:column
+                                            colspan="1">
+                                            <h:outputText
+                                                value="#{index[1]}"/>
+                                        </p:column>
+                                    </p:row>
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </b:column>
+                    </b:row>
+                </b:container>
+            </p:dialog>
+        </h:form>
+    </composite:implementation>
+</html>
+

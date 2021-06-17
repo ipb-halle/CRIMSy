@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,17 @@
  */
 package de.ipb_halle.lbac.search.relevance;
 
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Document;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.TermFrequency;
-import de.ipb_halle.lbac.entity.TermFrequencyList;
+import de.ipb_halle.lbac.file.TermFrequency;
+import de.ipb_halle.lbac.file.TermFrequencyList;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
-import org.junit.Assert;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -51,10 +48,8 @@ public class RelevanceCalculatorTest {
     @Test
     public void calculateRelevanceFactorsTest() {
         instance = new RelevanceCalculator(Arrays.asList("java"));
-        Map<String, Set<String>> normalizedTerms = new HashMap<>();
-        HashSet<String> term = new HashSet<>();
-        term.add("java");
-        normalizedTerms.put("en", term);
+        StemmedWordGroup normalizedTerms = new StemmedWordGroup();
+        normalizedTerms.addStemmedWord("java", new HashSet<>(Arrays.asList("java","jav")));
         instance.setSearchTerms(normalizedTerms);
         int totalDocsInFirstIteration = 10;
         double averageWordsInCollection = 55;
@@ -119,7 +114,7 @@ public class RelevanceCalculatorTest {
             n.setId(UUID.randomUUID());
             n.setInstitution(institut);
             Collection c = new Collection();
-            c.setId(UUID.randomUUID());
+            c.setId(100000);
             c.setName("TestColl" + i);
             d.setCollection(c);
             d.setCollectionId(c.getId());

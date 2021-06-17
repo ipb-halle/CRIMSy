@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
  */
 package de.ipb_halle.lbac.globals;
 
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 
 import java.io.Serializable;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -43,7 +44,7 @@ public class SessionHelper implements Serializable {
         try {
             return (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(CU_KEY);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(ExceptionUtils.getStackTrace(e));
             return null;
         }
     }
@@ -53,7 +54,7 @@ public class SessionHelper implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put(CU_KEY, user);
             return true;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(ExceptionUtils.getStackTrace(e));
             return false;
         }
     }

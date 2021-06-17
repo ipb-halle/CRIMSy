@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Funding</title>
+        <ui:include src="/WEB-INF/templates/head.xhtml" />
+
+        <h:outputStylesheet name="css/fontawsome/font-awesome.min.css" target="head"/>
+        <h:outputScript name="jsf.js" library="javax.faces" target="head"/>
+        <h:outputStylesheet name="css/lbac.css" position="first"/>
+
+        <style>
+            td { padding:20px; }
+        </style>
+
+    </h:head>
+    <h:body style="background-color:#ffffff;">
+        <center>
+            <a href="/ui/index.xhtml"><img src="#{resource['img/cloud_x130.png']}" alt="Logo" border="0" /></a>
+        </center>
+        <h1>Förderer</h1>
+        <p>
+        <table>
+        <tr><td><img src="#{resource['img/ipb_logo.png']}" height="100px" alt="Leibniz-Institut für Pflanzenbiochemie"/></td>
+        <td>Das Leibniz-Institut für Pflanzenbiochemie in Halle (Saale) trägt von Beginn an die Lohnkosten für einen Entwickler und finanziert den Großteil der für die Entwicklung benötigten Infrastruktur.</td></tr>
+        <tr><td><img src="#{resource['img/efre_logo.jpg']}" height="100px" alt="Europäischer Fonds für regionale Entwicklung (EFRE)"/></td>
+        <td>Seit November 2019 unterstützt der Europäische Fonds für regionale Entwicklung (EFRE) die Entwicklung des "Cloud Resource and Information Management System" im Rahmen des Projekts "ProCognito - Pflanzliche Wirkstoffe zum Erhalt der kognitiven Leistungsfähigkeit im Alter".</td></tr>
+        <tr><td><img src="#{resource['img/lfv_logo.png']}" height="100px" alt='Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie"' /></td>
+        <td>Das Projekt wurde 2016 als "Leibniz Bioactives Cloud" vom Leibniz-Forschungsverbund "Wirkstoffe und Biotechnologie" initiiert und bis 2020 aus Mitteln des Leibniz-Senatsausschuss Strategie (SAS) unterstützt.</td></tr>
+        </table>
+        </p>
+    </h:body>
+</html>
+

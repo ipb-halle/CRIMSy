@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,33 +17,20 @@
  */
 package de.ipb_halle.lbac.collections;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.cloud.solr.SolrAdminService;
+import static de.ipb_halle.lbac.base.TestBase.TESTCLOUD;
 import de.ipb_halle.lbac.entity.CloudNode;
 import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
-import de.ipb_halle.lbac.globals.KeyManager;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.collections.mock.CollectionWebClientMock;
 import de.ipb_halle.lbac.collections.mock.CollectionWebServiceMock;
 import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.search.SolrSearcher;
-import de.ipb_halle.lbac.search.document.DocumentSearchBean;
-import de.ipb_halle.lbac.search.termvector.SolrTermVectorSearch;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.service.MembershipService;
-import de.ipb_halle.lbac.service.NodeService;
-import de.ipb_halle.lbac.webservice.Updater;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
-import java.util.UUID;
 import javax.inject.Inject;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -66,28 +53,16 @@ public class CollectionOrchestratorTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return prepareDeployment("CollectionOrchestratorTest.war")
-                .addPackage(CollectionOrchestrator.class.getPackage())
-                .addPackage(GlobalAdmissionContext.class.getPackage())
-                .addPackage(NodeService.class.getPackage())
-                .addPackage(MembershipService.class.getPackage())
-                .addPackage(Logger.class.getPackage())
-                .addPackage(Updater.class.getPackage())
-                .addPackage(SolrAdminService.class.getPackage())
-                .addPackage(ACListService.class.getPackage())
+        WebArchive deployment = prepareDeployment("CollectionOrchestratorTest.war")
                 .addClass(Navigator.class)
-                .addClass(MembershipOrchestrator.class)
-                .addPackage(CollectionBean.class.getPackage())
                 .addClass(WebRequestAuthenticator.class)
                 .addClass(FileService.class)
                 .addClass(FileEntityService.class)
-                .addPackage(DocumentSearchBean.class.getPackage())
-                .addPackage(WordCloudBean.class.getPackage())
-                .addClass(SolrTermVectorSearch.class)
+                .addClass(CollectionOrchestrator.class)
+                .addClass(CollectionWebClient.class)
                 .addClass(TermVectorEntityService.class)
-                .addClass(CollectionWebServiceMock.class)
-                .addPackage(SolrSearcher.class.getPackage())
-                .addClass(KeyManager.class);
+                .addClass(CollectionWebServiceMock.class);
+        return UserBeanDeployment.add(deployment);
     }
 
     @Test
@@ -101,11 +76,6 @@ public class CollectionOrchestratorTest extends TestBase {
         CloudNode cn = new CloudNode(cloudService.loadByName(TESTCLOUD), remoteNode);
 
         cloudNodeService.save(cn);
-
-        // Mocks the CollectionWebClient 
-        collectionOrc.setCollectionWebClient(
-                new CollectionWebClientMock(DELAY_IN_MILLISEC, AMOUNT_OF_REMOTE_COLLS)
-        );
         // Mocks the CollectionWebClient 
         collectionOrc.setCollectionWebClient(
                 new CollectionWebClientMock(DELAY_IN_MILLISEC, AMOUNT_OF_REMOTE_COLLS)
@@ -118,16 +88,10 @@ public class CollectionOrchestratorTest extends TestBase {
 
         User u = createUser(
                 "test",
-                "testName",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testName");
         User u2 = createUser(
                 "test2",
-                "testName2",
-                nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testName2");
 
         createLocalCollections(
                 createAcList(u, true), nodeService.getLocalNode(),

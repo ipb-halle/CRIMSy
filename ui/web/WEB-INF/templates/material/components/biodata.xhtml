@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition>
+            <p:tab
+                title="Biodata"
+                disabled="#{!materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
+                <p:outputPanel
+                    styleClass="storagePanelClass"
+                    rendered="#{materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
+
+                    <b:container>
+                        <b:row>
+                            <b:column span="4">
+                                <p:tree   
+                                    style="width: 100%;height: 300px;overflow: auto"
+                                    value="#{materialBean.taxonomyController.treeController.taxonomyTree}"
+                                    var ="node"
+                                    dynamic="true"
+                                    selectionMode="single"
+                                    styleClass="taxonomyTree"
+                                    selection="#{materialBean.taxonomyController.selectedTaxonomy}">
+                                    <p:ajax event="select" update="@(.taxonomyInfos)" listener="#{materialBean.taxonomyController.onTaxonomySelect}" />
+                                     <p:ajax event="expand"  listener="#{materialBean.taxonomyController.onTaxonomyExpand}" />
+                                    <p:ajax event="collapse" listener="#{materialBean.taxonomyController.onTaxonomyCollapse}" />
+                                    <p:treeNode >
+                                        <h:outputText value="#{node.getFirstName()}"/>
+                                    </p:treeNode>
+                                </p:tree>
+                            </b:column>
+                            <b:column offset="1" span="4"  styleClass="taxonomyInfos">
+                                <b:row>
+                                    <b:column span="10">
+                                        <b:inputText
+                                            label="choosen Taxonomyentry"
+                                            disabled="true"
+                                            value="#{materialBean.taxonomyController.getSelectedTaxonomyName()}"/>
+                                    </b:column>
+                                </b:row>
+                                <b:row>
+                                    <b:column 
+                                        span="10"
+                                        rendered="#{materialBean.isTissueSelectionVisible()}">
+                                        <b:selectOneMenu
+                                            label="Select tissue">
+                                        </b:selectOneMenu>
+                                    </b:column>
+                                </b:row>
+                            </b:column>
+                        </b:row>
+                    </b:container>
+                </p:outputPanel>
+            </p:tab>
+        </ui:composition>
+    </h:body>
+
+</html>

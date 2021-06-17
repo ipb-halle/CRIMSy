@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,10 @@ public class HealthState {
     public State localNodeDbState = State.UNCHECKED;
     public State publicCollectionDbState = State.UNCHECKED;
     public State publicCollectionFileState = State.UNCHECKED;
-    public State publicCollectionSolrSyncState = State.UNCHECKED;
     public State publicCollectionFileSyncState = State.UNCHECKED;
-    public State publicCollectionSolrState = State.UNCHECKED;
+    public State rootTaxonomy = State.UNCHECKED;
 
     public Map<String, State> collectionFileSyncList = new HashMap<>();
-    public Map<String, State> collectionSolrSyncList = new HashMap<>();
 
     public enum State {
         UNCHECKED,

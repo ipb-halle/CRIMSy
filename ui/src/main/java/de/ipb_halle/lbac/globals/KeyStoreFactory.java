@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
@@ -85,7 +86,7 @@ public class KeyStoreFactory {
             this.SSL_PROTOCOL =  prop.getProperty("SecureWebClient.SSL_PROTOCOL");
 
         } catch(Exception e) {
-            logger.error("Could not initialise KeyStoreFactory", e);
+            logger.error("Could not initialise KeyStoreFactory", ExceptionUtils.getStackTrace(e));
         }
         return this;
     }
@@ -112,7 +113,7 @@ public class KeyStoreFactory {
             this.trustStore.put(cloudName, ts);
 
         } catch (Exception e) {
-            logger.error("Could not load keystores", e);
+            logger.error("Could not load keystores", ExceptionUtils.getStackTrace(e));
         }
 
     }

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,9 +48,11 @@ import javax.servlet.http.Part;
 public class HttpServletRequestMock implements HttpServletRequest {
 
     private final File file;
+    private String collectionName;
 
-    public HttpServletRequestMock(File f) {
+    public HttpServletRequestMock(File f, String colName) {
         this.file = f;
+        this.collectionName = colName;
 
     }
 
@@ -181,11 +183,6 @@ public class HttpServletRequestMock implements HttpServletRequest {
     }
 
     @Override
-    public boolean isRequestedSessionIdFromUrl() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -257,7 +254,7 @@ public class HttpServletRequestMock implements HttpServletRequest {
 
     @Override
     public String getParameter(String name) {
-        return "Coll1";
+        return collectionName;
     }
 
     @Override
@@ -340,6 +337,7 @@ public class HttpServletRequestMock implements HttpServletRequest {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public String getRealPath(String path) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -397,6 +395,12 @@ public class HttpServletRequestMock implements HttpServletRequest {
 
     @Override
     public DispatcherType getDispatcherType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public boolean isRequestedSessionIdFromUrl() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

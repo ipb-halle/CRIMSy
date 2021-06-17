@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <!--
   
-  Leibniz Bioactives Cloud
+  Cloud Resource & Information Management System (CRIMSy)
   Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
   
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <h:body>
     <ui:composition>
@@ -30,14 +31,15 @@
             <b:row styleClass="globalinfo">
                 <b:column span="4" offset="2">
                     <h:outputText value="LBAC-Version: #{versions.buildNumber} &lt;br /&gt;"
-                                  escape="false"/>
-                    <h:outputLink value="dsgvo.xhtml" target="_blank">Datenschutzerklärung</h:outputLink>
+                                  escape="false">
+                         <f:converter converterId="InputConverter" />
+                    </h:outputText><br/>
+                    <h:outputLink value="dsgvo.xhtml" target="_blank">#{msgs.footer_GDPR_link}</h:outputLink> /
+                    <h:outputLink value="funding.xhtml" target="_blank">#{msgs.footer_Funding_link}</h:outputLink>
                 </b:column>
                 <b:column span="4" offset="2">
-                    <h:outputText value="&#xA9; 2020 Leibniz-Institut für Pflanzenbiochemie  &lt;br /&gt;"
-                                  escape="false"/>
-                    <h:outputText value="Licensed under the ">
-                    </h:outputText>
+                    #{msgs.CopyrightNotice}<br/>
+                    #{msgs.LicenseNote}
                     <h:outputLink value="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">
                         Apache License, Version 2.0
                     </h:outputLink>

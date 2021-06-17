@@ -24,14 +24,23 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.ipb_halle</groupId>
-    <artifactId>lbac</artifactId>
+    <groupId>de.ipb-halle</groupId>
+    <artifactId>crimsy</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
 
     <modules>
+        <module>agency-api</module>
+        <module>agency</module>
+        <module>snowball</module>
+        <module>tx</module>
         <module>ui</module>
     </modules>
+
+    <properties>
+        <hibernate.version>5.3.20.Final</hibernate.version>
+    </properties>
+
     <build>
         <plugins>
             <!-- Copy the dependencies used by the server container into an extra folder -->
@@ -49,7 +58,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputDirectory>${project.build.directory}/../config/extralib/</outputDirectory>
+                    <outputDirectory>${project.basedir}/config/extralib/</outputDirectory>
                     <artifactItems>
                         <artifactItem>
                             <groupId>antlr</groupId>
@@ -67,6 +76,11 @@
                             <artifactId>dom4j</artifactId>
                             <version>1.6.1</version>
                         </artifactItem>
+                        <dependency>
+                            <groupId>org.apache.myfaces.core</groupId>
+                            <artifactId>myfaces-bundle</artifactId>
+                            <version>2.2.12</version>
+                        </dependency>
                         <artifactItem>
                             <groupId>org.hibernate.common</groupId>
                             <artifactId>hibernate-commons-annotations</artifactId>
@@ -75,17 +89,31 @@
                         <artifactItem>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-core</artifactId>
-                            <version>5.2.6.Final</version>
+                            <version>${hibernate.version}</version>
+                        </artifactItem>
+
+                        <!-- Integration for using Ehcache 2.x as a 
+                        Hibernate second-level-cache provider  -->
+                        <artifactItem>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-ehcache</artifactId>
+                            <version>${hibernate.version}</version>
+                        </artifactItem>
+
+                        <artifactItem>
+                            <groupId>javax.persistence</groupId>
+                            <artifactId>javax.persistence-api</artifactId>
+                            <version>2.2</version>
                         </artifactItem>
                         <artifactItem>
-                            <groupId>org.hibernate.javax.persistence</groupId>
-                            <artifactId>hibernate-jpa-2.1-api</artifactId>
-                            <version>1.0.0.Final</version>
-                        </artifactItem>   
+                            <groupId>net.bytebuddy</groupId>
+                            <artifactId>byte-buddy</artifactId>
+                            <version>1.8.17</version>
+                        </artifactItem>
                         <artifactItem>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-validator</artifactId>
-                            <version>5.2.4.Final</version>
+                            <version>5.3.6.Final</version>
                         </artifactItem>   
                         <artifactItem>
                             <groupId>org.javassist</groupId>
@@ -100,7 +128,7 @@
                         <artifactItem>
                             <groupId>org.postgresql</groupId>
                             <artifactId>postgresql</artifactId>
-                            <version>9.3-1102-jdbc4</version>
+                            <version>42.2.16</version>
                         </artifactItem>
                     </artifactItems>
                 </configuration>

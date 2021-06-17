@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<!--
+  
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:nwc="http://ipb-halle.de/nwc">
+
+    <composite:interface name="image"
+                         displayName="image"
+                         preferred="true"
+                         expert="false"
+                         shortDescription="view and edit images">
+        <composite:attribute name="controller" required="true" />
+        <composite:attribute name="image" required="true" />
+
+    </composite:interface>
+
+    <composite:implementation>
+
+        <b:container>
+
+            <b:inputTextarea value="#{cc.attrs.image.title}"
+                             label="#{msgs.expImage_title}"
+                             rows="2"
+                             style="resize:none"
+                             readonly="#{! cc.attrs.image.edit}" />
+
+            <h:panelGroup rendered="#{cc.attrs.image.edit}">
+
+                <h:outputScript library="js" name="imageEditor.js" target="head" />
+
+                <!-- Rendered when starting to edit a new or existing image record. There
+                     should be no validation errors at this stage.
+                     Snippet from https://stackoverflow.com/a/32527740
+                     This could also be done with BootsFace's fetchBeanInfo and the
+                     validationFailed JS variable. -->
+                <ui:fragment rendered="#{not facesContext.validationFailed}">
+                    <iframe id="miniPaint"
+                        style="width: 100%; height: 80vh; border: 0;"
+                        src="/plugins/miniPaint/index.html"
+                        onload="crimsyImageEditor.loadJson('miniPaint', $('.inputJsonImagePseudoClass').attr('id'));" />
+                </ui:fragment>
+                <!-- Rendered when validation has failed. -->
+                <ui:fragment rendered="#{facesContext.validationFailed}">
+                    <iframe id="miniPaint"
+                        style="width: 100%; height: 80vh; border: 0;"
+                        src="/plugins/miniPaint/index.html"
+                        onload="crimsyImageEditor.loadInstanceData('miniPaint');" />
+                </ui:fragment>
+
+                <nwc:inputFile id="inputJsonFileId"
+                               value="#{cc.attrs.controller.jsonFile}"
+                               style="display:none"
+                               styleClass="inputJsonFilePseudoClass"
+                               maxsize="#{cc.attrs.controller.maxUploadFileSize}"
+                               maxsizeMessage="#{msgs.expImage_maxsizeMessageImage}"
+                               converter="jsonSanitizingConverter" />
+                <!-- Beware: These IDs have a purpose! See https://showcase.omnifaces.org/components/inputFile,
+                     from which <nwc:inputFile> inherits. -->
+                <b:message id="messageInputJsonFileId" for="inputJsonFileId" />
+
+                <nwc:inputFile id="inputPreviewFileId"
+                               value="#{cc.attrs.image.preview}"
+                               style="display:none"
+                               styleClass="inputPreviewFilePseudoClass"
+                               maxsize="#{cc.attrs.controller.maxUploadFileSize}" 
+                               maxsizeMessage="#{msgs.expImage_maxsizeMessagePreview}" />
+                <b:message id="messageInputPreviewFileId" for="inputPreviewFileId" />
+
+                <h:inputHidden id="inputJsonImage"
+                               value="#{cc.attrs.controller.jsonImage}"
+                               pt:class="inputJsonImagePseudoClass"
+                               converter="jsonSanitizingConverter" />
+
+            </h:panelGroup>
+
+            <h:graphicImage id="previewImage"
+                            value="#{cc.attrs.image.preview}"
+                            alt="#{msgs.expImage_preview}"
+                            styleClass="img-responsive center-block"
+                            rendered="#{! cc.attrs.image.edit}" />
+
+        </b:container>
+
+    </composite:implementation>
+</html>

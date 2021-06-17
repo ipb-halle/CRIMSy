@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,19 @@
  */
 package de.ipb_halle.lbac.search.document;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Class for storing the amount of total docs and average words length of nodes
  *
  * @author fmauz
  */
-public class SearchStatistic {
+public class SearchStatistic implements Serializable {
 
     private final Logger LOGGER = LogManager.getLogger(SearchStatistic.class);
     private final Map<UUID, Integer[]> wordsInNode = new HashMap<>();

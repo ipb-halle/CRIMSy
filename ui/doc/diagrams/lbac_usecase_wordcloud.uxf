@@ -4,22 +4,22 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>896</x>
-      <y>455</y>
+      <x>777</x>
+      <y>567</y>
       <w>189</w>
       <h>84</h>
     </coordinates>
     <panel_attributes>WordCloudBean
 --
 Controller für alle Aktionen 
-aus dem GUI herraus</panel_attributes>
+aus dem GUI </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>448</x>
-      <y>469</y>
+      <x>329</x>
+      <y>581</y>
       <w>175</w>
       <h>147</h>
     </coordinates>
@@ -34,8 +34,8 @@ aus dem GUI herraus</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1071</x>
-      <y>294</y>
+      <x>952</x>
+      <y>406</y>
       <w>189</w>
       <h>84</h>
     </coordinates>
@@ -49,8 +49,8 @@ Dokumenten
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>973</x>
-      <y>329</y>
+      <x>854</x>
+      <y>441</y>
       <w>112</w>
       <h>140</h>
     </coordinates>
@@ -60,8 +60,8 @@ Dokumenten
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1428</x>
-      <y>294</y>
+      <x>1309</x>
+      <y>406</y>
       <w>168</w>
       <h>84</h>
     </coordinates>
@@ -75,8 +75,8 @@ einem Remoteknoten</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1253</x>
-      <y>322</y>
+      <x>1134</x>
+      <y>434</y>
       <w>189</w>
       <h>28</h>
     </coordinates>
@@ -87,8 +87,8 @@ REST</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1176</x>
-      <y>455</y>
+      <x>1057</x>
+      <y>567</y>
       <w>182</w>
       <h>84</h>
     </coordinates>
@@ -101,8 +101,8 @@ deren TermVektoren</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1218</x>
-      <y>371</y>
+      <x>1099</x>
+      <y>483</y>
       <w>119</w>
       <h>98</h>
     </coordinates>
@@ -113,8 +113,8 @@ put found documents in </panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1155</x>
-      <y>770</y>
+      <x>1036</x>
+      <y>882</y>
       <w>189</w>
       <h>70</h>
     </coordinates>
@@ -128,8 +128,8 @@ Suche von Dokumenten
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1218</x>
-      <y>532</y>
+      <x>1099</x>
+      <y>644</y>
       <w>119</w>
       <h>252</h>
     </coordinates>
@@ -155,8 +155,8 @@ put found documents in </panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>973</x>
-      <y>532</y>
+      <x>854</x>
+      <y>644</y>
       <w>196</w>
       <h>294</h>
     </coordinates>
@@ -166,8 +166,8 @@ put found documents in </panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1078</x>
-      <y>490</y>
+      <x>959</x>
+      <y>602</y>
       <w>112</w>
       <h>21</h>
     </coordinates>
@@ -177,8 +177,8 @@ put found documents in </panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>833</x>
-      <y>224</y>
+      <x>714</x>
+      <y>336</y>
       <w>175</w>
       <h>84</h>
     </coordinates>
@@ -193,8 +193,8 @@ innerhalb der  WordCloud.</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>938</x>
-      <y>301</y>
+      <x>819</x>
+      <y>413</y>
       <w>21</w>
       <h>168</h>
     </coordinates>
@@ -204,8 +204,8 @@ innerhalb der  WordCloud.</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1442</x>
-      <y>455</y>
+      <x>1323</x>
+      <y>567</y>
       <w>182</w>
       <h>84</h>
     </coordinates>
@@ -217,8 +217,8 @@ innerhalb der  WordCloud.</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1351</x>
-      <y>490</y>
+      <x>1232</x>
+      <y>602</y>
       <w>105</w>
       <h>21</h>
     </coordinates>
@@ -228,8 +228,8 @@ innerhalb der  WordCloud.</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1358</x>
-      <y>616</y>
+      <x>1239</x>
+      <y>728</y>
       <w>182</w>
       <h>84</h>
     </coordinates>
@@ -241,8 +241,8 @@ Wort mit Häufigkeit</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1449</x>
-      <y>532</y>
+      <x>1330</x>
+      <y>644</y>
       <w>77</w>
       <h>98</h>
     </coordinates>
@@ -252,8 +252,8 @@ Wort mit Häufigkeit</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1078</x>
-      <y>504</y>
+      <x>959</x>
+      <y>616</y>
       <w>294</w>
       <h>175</h>
     </coordinates>
@@ -264,8 +264,8 @@ shown words</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1442</x>
-      <y>273</y>
+      <x>1323</x>
+      <y>385</y>
       <w>168</w>
       <h>84</h>
     </coordinates>
@@ -276,8 +276,8 @@ shown words</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>175</x>
-      <y>147</y>
+      <x>56</x>
+      <y>259</y>
       <w>196</w>
       <h>70</h>
     </coordinates>
@@ -291,21 +291,21 @@ WordCloud Grob Architektur
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>616</x>
-      <y>490</y>
+      <x>497</x>
+      <y>602</y>
       <w>294</w>
       <h>35</h>
     </coordinates>
     <panel_attributes>lt=&lt;.&gt;
-http
+
 </panel_attributes>
     <additional_attributes>10.0;20.0;400.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLActor</id>
     <coordinates>
-      <x>231</x>
-      <y>490</y>
+      <x>112</x>
+      <y>602</y>
       <w>42</w>
       <h>84</h>
     </coordinates>
@@ -316,8 +316,8 @@ http
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>476</y>
+      <x>161</x>
+      <y>588</y>
       <w>182</w>
       <h>28</h>
     </coordinates>
@@ -328,8 +328,8 @@ start search</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>497</y>
+      <x>161</x>
+      <y>609</y>
       <w>182</w>
       <h>28</h>
     </coordinates>
@@ -340,8 +340,8 @@ add tag from cloud</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>518</y>
+      <x>161</x>
+      <y>630</y>
       <w>182</w>
       <h>28</h>
     </coordinates>
@@ -352,8 +352,8 @@ remove tag from cloud</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>280</x>
-      <y>539</y>
+      <x>161</x>
+      <y>651</y>
       <w>182</w>
       <h>28</h>
     </coordinates>
@@ -364,8 +364,8 @@ download document</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>217</x>
-      <y>483</y>
+      <x>98</x>
+      <y>595</y>
       <w>70</w>
       <h>77</h>
     </coordinates>
@@ -376,8 +376,8 @@ halign=left</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>441</x>
-      <y>315</y>
+      <x>322</x>
+      <y>427</y>
       <w>182</w>
       <h>84</h>
     </coordinates>
@@ -391,8 +391,8 @@ sichtbar macht und zufällig einfärbt</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>539</x>
-      <y>392</y>
+      <x>420</x>
+      <y>504</y>
       <w>21</w>
       <h>91</h>
     </coordinates>

@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,30 +18,29 @@
 package de.ipb_halle.lbac.forum.postings;
 
 import de.ipb_halle.lbac.entity.CloudNode;
-import de.ipb_halle.lbac.entity.Node;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.forum.Topic;
-import de.ipb_halle.lbac.forum.TopicsList;
-import de.ipb_halle.lbac.forum.topics.TopicsWebRequest;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
 import de.ipb_halle.lbac.webclient.LbacWebClient;
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
-import java.util.ArrayList;
+import java.io.Serializable;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
  * @author fmauz
  */
 public class PostingWebClient extends
-        LbacWebClient {
+        LbacWebClient implements Serializable {
 
     private final static String REST_PATH = getRestApiDefaultPath(PostingWebService.class);
     private Logger logger = LogManager.getLogger(PostingWebClient.class);
@@ -83,7 +82,7 @@ public class PostingWebClient extends
             }
         } catch (Exception e) {
             cn.fail();
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         this.cloudNodeService.save(cn);
     }

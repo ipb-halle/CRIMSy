@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ package de.ipb_halle.lbac.search.document;
  * instance of SearchRequest in the ui and to transmit it in xml serialized form
  * to the backend.
  */
-import de.ipb_halle.lbac.entity.Document;
 import de.ipb_halle.lbac.message.LocalUUIDConverter;
 import de.ipb_halle.lbac.webservice.WebRequest;
 
@@ -46,8 +45,7 @@ public class DocumentSearchRequest extends WebRequest implements Cloneable, Seri
      * collection to which this request addresses or which provided the result
      * data
      */
-    @JohnzonConverter(LocalUUIDConverter.class)
-    private UUID collectionId;
+    private Integer collectionId;
 
     /**
      * return limit elements at maximum
@@ -123,7 +121,7 @@ public class DocumentSearchRequest extends WebRequest implements Cloneable, Seri
         return req;
     }
 
-    public UUID getCollectionId() {
+    public Integer getCollectionId() {
         return this.collectionId;
     }
 
@@ -151,7 +149,7 @@ public class DocumentSearchRequest extends WebRequest implements Cloneable, Seri
         return this.totalResultCount;
     }
 
-    public void setCollectionId(UUID id) {
+    public void setCollectionId(Integer id) {
         this.collectionId = id;
     }
 

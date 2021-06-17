@@ -1,0 +1,16 @@
+{
+    "name":     "CRIMSy-Tests",
+    "version":  "0.0.1",
+    "description": "Cypress integration tests for CRIMSy.",
+    "main": "index.js",
+    "scripts": {
+        "cypress:run": "cypress run"
+    },
+    "keywords": [],
+    "author": "Frank Broda <fbroda@ipb-halle.de>",
+    "license": "Apache License 2.0",
+    "private": false,
+    "devDependencies": {
+        "cypress": "5.6.0"
+    }
+}

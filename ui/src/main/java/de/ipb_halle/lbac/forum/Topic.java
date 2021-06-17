@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,16 @@
  */
 package de.ipb_halle.lbac.forum;
 
-import de.ipb_halle.lbac.entity.ACList;
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.forum.topics.TopicCategory;
-import de.ipb_halle.lbac.entity.ACObject;
-import de.ipb_halle.lbac.entity.Cloud;
+import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.admission.User;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  *
@@ -44,7 +42,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
 
     private boolean editable;
 
-    private UUID id;
+    private Integer id;
 
     private String name;
 
@@ -56,7 +54,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
      * Default constructor
      */
     public Topic() {
-        id = UUID.randomUUID();
+
     }
 
     /**
@@ -66,7 +64,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
      * @param category
      */
     public Topic(String name, TopicCategory category) {
-        this.id = UUID.randomUUID();
+
         this.name = name;
         this.category = category;
     }
@@ -110,8 +108,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
                 .setCloudName(cloudName)
                 .setCategory(category)
                 .setId(id)
-                .setName(name)
-                .setNode(node.getId());
+                .setName(name);
 
     }
 
@@ -123,7 +120,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
         return category;
     }
 
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -163,7 +160,7 @@ public class Topic extends ACObject implements Serializable, Comparable<Topic>, 
         this.editable = editable;
     }
 
-    public void setId(UUID id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

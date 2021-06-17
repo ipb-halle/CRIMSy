@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,34 +18,28 @@
 package de.ipb_halle.lbac.search.wordcloud;
 
 import de.ipb_halle.lbac.base.TestBase;
-import de.ipb_halle.lbac.entity.ACList;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.FileObject;
-import de.ipb_halle.lbac.entity.User;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.admission.ACList;
+import de.ipb_halle.lbac.collections.Collection;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.KeyManager;
-import de.ipb_halle.lbac.search.SolrSearcher;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.service.CloudService;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.util.HexUtil;
-import de.ipb_halle.lbac.util.ssl.SecureWebClientBuilder;
+import de.ipb_halle.lbac.search.wordcloud.mock.WordCloudWebServiceMock;
 import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
-import java.util.Calendar;
 import java.util.List;
-import java.util.UUID;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,10 +78,10 @@ public class WordCloudWebServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class, "WordCloudWebServiceTest.war")
+
+        return prepareDeployment("WordCloudWebServiceTest.war")
                 .addClass(DocumentSearchService.class)
                 .addClass(FileEntityService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(NodeService.class)
                 .addClass(CloudService.class)
                 .addClass(CloudNodeService.class)
@@ -103,12 +97,9 @@ public class WordCloudWebServiceTest extends TestBase {
                 .addClass(WordCloudWebService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(FileEntityService.class)
-                .addClass(SolrSearcher.class)
                 .addClass(WebRequestAuthenticator.class)
-                .addAsWebInfResource("test-persistence.xml", "persistence.xml")
-                .addAsResource("init.sql", "init.sql")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-        return archive;
+                .addClass(WordCloudWebServiceMock.class);
+
     }
 
     @Before
@@ -123,9 +114,7 @@ public class WordCloudWebServiceTest extends TestBase {
 
         User user1 = createUser(
                 "testUser",
-                "testUser", nodeService.getLocalNode(),
-                memberService,
-                membershipService);
+                "testUser");
 
         ACList acl = createAcList(user1, true);
 

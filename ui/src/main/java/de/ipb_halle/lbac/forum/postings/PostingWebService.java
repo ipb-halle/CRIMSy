@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,14 @@ package de.ipb_halle.lbac.forum.postings;
 
 import de.ipb_halle.lbac.forum.ForumService;
 import de.ipb_halle.lbac.forum.Posting;
-import de.ipb_halle.lbac.service.MemberService;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.service.NodeService;
 import de.ipb_halle.lbac.webservice.service.LbacWebService;
 import de.ipb_halle.lbac.webservice.service.NotAuthentificatedException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -30,7 +34,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -52,16 +58,16 @@ public class PostingWebService extends LbacWebService {
     private NodeService nodeService;
 
     /**
-     * We do not save User objects although Users might not be known,
-     * as severe side effects may occur. Losing a posting is less 
-     * dangerous.
-     * 
+     * We do not save User objects although Users might not be known, as severe
+     * side effects may occur. Losing a posting is less dangerous.
+     *
      * @param request
-     * @return 
+     * @return
      */
     @POST
     @Produces(MediaType.APPLICATION_XML)
     public Response addPosting(PostingWebRequest request) {
+        Posting p = null;
         try {
             try {
                 checkAuthenticityOfRequest(request);
@@ -69,14 +75,34 @@ public class PostingWebService extends LbacWebService {
                 return Response.status(Response.Status.FORBIDDEN).build();
             }
             // add the last Posting of the list to the database
-            Posting p = request.getTopic().getPostings().get(request.getTopic().getPostings().size() - 1);
+            p = request.getTopic().getPostings().get(request.getTopic().getPostings().size() - 1);
             p.setTopic(request.getTopic());
-
-            forumService.addPostingToTopic(request.getTopic(), p.getText(), p.getOwner(), p.getCreated());
-
+            forumService.addPostingToTopic(request.getTopic(), p.getText(), getLocalUser(p), p.getCreated());
         } catch (Exception e) {
-            logger.error(e);
+            logError(p, e);
         }
         return Response.ok().build();
+    }
+
+    private User getLocalUser(Posting p) throws Exception {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put("name", p.getOwner().getName());
+        cmap.put("node_id", p.getOwner().getNode().getId());
+        List<User> localUser = memberService.loadUsers(cmap);
+        if (localUser.size() > 0) {
+            return localUser.get(0);
+        }
+        throw new Exception("Could not find local User");
+    }
+
+    private void logError(Posting p, Exception e) {
+        logger.error("Could not save posting ");
+        if (p != null) {
+            logger.error("  User: " + p.getOwner());
+            logger.error("  Text: " + p.getText());
+            logger.error("  Topic: " + p.getTopic());
+            logger.error("  TopicDate: " + p.getCreated());
+        }
+        logger.error(ExceptionUtils.getStackTrace(e));
     }
 }

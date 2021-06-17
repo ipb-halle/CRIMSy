@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Cloud Resource & Information Management System (CRIMSy)
+  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:crimsy="http://java.sun.com/jsf/composite/crimsy"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <h:body>
+        <!-- plugin modules -->
+        <crimsy:dlgMaterialEdit
+            id="ccDlgMaterialEdit" 
+            agent="#{experimentBean.materialAgent}" />
+
+        <crimsy:dlgMaterialView
+            id="ccDlgMaterialView"
+            agent="#{experimentBean.linkedDataAgent}" />
+        <crimsy:dlgItemView
+            id="ccDlgItemView"
+            agent="#{experimentBean.linkedDataAgent}" />
+
+        <crimsy:dlgItemEdit
+            id="ccDlgItemEdit"
+            agent="#{experimentBean.itemAgent}" />
+        <h:panelGroup
+            styleClass="linkCreationPanelGroup">
+            <crimsy:dlgLinkCreation
+                id="ccDlgLinkCreation"/>
+        </h:panelGroup>
+        <crimsy:acobjectModal
+            acobjectController="#{experimentBean.acObjectController}"
+            groupsAgent="#{groupAgent}"
+            updateTargetClass="shownExperiments"/>
+
+        <h:form>
+            <ui:insert name="expData">
+                <ui:include src="expData.xhtml" />
+            </ui:insert>
+        </h:form>
+
+        <ui:insert name="barChartPanel">
+            <ui:include src="dlgBarChart.xhtml" >
+                <ui:param name="chartController" value="#{experimentBean}" />
+            </ui:include>
+        </ui:insert>
+
+        <!-- content -->
+        <b:panel
+            id="experiments"
+            title="#{msgs.expExperiments}"
+            styleClass="shownExperiments">
+            <p:outputPanel deferred="false">
+                <b:row>
+                    <h:form id="experimentForm">
+                        <b:column id="experimentColumn" span="3">
+                            <p:tabMenu 
+                                id="experimentTabId"
+                                styleClass="ExpTabMenu"
+                                activeIndex="#{experimentBean.templateMode ? 0 : 1}">
+                                <p:menuitem value="#{msgs.expTemplates}" 
+                                            action="#{experimentBean.actionCancel()}" 
+                                            update="experimentForm expRecordsForm" 
+                                            process="@parent">
+                                    <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="True" />
+                                </p:menuitem>
+                                <p:menuitem value="#{msgs.expExperiments}" 
+                                            action="#{experimentBean.actionCancel()}" 
+                                            update="experimentForm expRecordsForm" 
+                                            process="@parent">
+                                    <f:setPropertyActionListener target="#{experimentBean.templateMode}" value="False" />
+                                </p:menuitem>
+                            </p:tabMenu>
+                        <b:row>
+                            <b:column span="9">
+                                <b:inputText
+                                    value="#{experimentBean.searchTerm}"/>
+                            </b:column>
+                            <b:column span="3">
+                                <b:commandButton
+                                    action="#{experimentBean.actionActualizeExperimentsList()}"
+                                    ajax="true"
+                                    value="#{msgs.expSearchBtn}" 
+                                    update="experimentForm"/>
+                            </b:column>
+                        </b:row>
+                                <ui:insert name="experimentList">
+                                    <ui:include src="experimentList.xhtml"/>
+                                </ui:insert>
+                            <p:panelGrid styleClass="borderlessButtonTable">
+                                <p:row>
+                                    <p:column
+                                        styleClass="addEditExperimentButton"
+                                         id="newExpButtonColumn">
+                                        <p:commandButton 
+                                            ajax="true"
+                                            styleClass="experimentActionButton"
+                                            value="#{experimentBean.getCreateNewExperimentButtonLabel()}" 
+                                            action="#{experimentBean.actionNewExperiment()}"
+                                            update="@(.expDataClass)"
+                                            disabled="#{experimentBean.isNewExpButtonDisabled()}"
+                                            oncomplete="PF('dlg_experimentData').show();"/>
+                                        <p:tooltip
+                                            position="top"
+                                            for="newExpButtonColumn"
+                                            value="#{experimentBean.getNewExpToolTip()}">
+                                        </p:tooltip>
+                                    </p:column>
+                                </p:row>
+                            </p:panelGrid>
+                        </b:column> 
+                    </h:form>
+
+                    <!-- This form has "multipart/form-data" as enctype because the image editor
+                         component needs to use file uploads. The autocomplete="off" is needed
+                         because Firefox caches hidden input fields (also related to the image
+                         editor), see https://stackoverflow.com/questions/9787135/firefox-caches-hidden-inputs -->
+                    <h:form id="expRecordsForm" enctype="multipart/form-data" pt:autocomplete="off">
+                        <b:column span="9">
+                            <b:panel collapsible="false" title="#{msgs.expExperimentRecords}">
+                                <ui:insert name="expRecords">
+                                    <ui:include src="expRecordList.xhtml" />
+                                </ui:insert>
+                            </b:panel>
+                        </b:column>
+                    </h:form>
+                </b:row> 
+            </p:outputPanel>
+        </b:panel>
+
+    </h:body>
+
+</html>

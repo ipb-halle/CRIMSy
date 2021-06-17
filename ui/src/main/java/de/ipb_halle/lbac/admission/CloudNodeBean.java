@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,14 +26,15 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Named("cloudNodeBean")
 @SessionScoped
 public class CloudNodeBean implements Serializable {
 
     /**
-     * This bean displays and manages known (cloud)nodes. 
+     * This bean displays and manages known (cloud)nodes.
      *
      */
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
@@ -44,7 +45,6 @@ public class CloudNodeBean implements Serializable {
 
     private transient Logger logger;
 
-
     /**
      * default constructor
      */
@@ -53,14 +53,14 @@ public class CloudNodeBean implements Serializable {
     }
 
     /**
-     * do nothing action 
+     * do nothing action
      */
     public void actionDoNothing(CloudNode cn) {
         // reserved for cool stuff coming ...
     }
 
     /**
-     * return a list of CloudNodes 
+     * return a list of CloudNodes
      *
      */
     public List<CloudNode> getCloudNodes() {

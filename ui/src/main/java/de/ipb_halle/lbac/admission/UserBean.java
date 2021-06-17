@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,13 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.announcement.membership.MembershipOrchestrator;
-import de.ipb_halle.lbac.entity.ACPermission;
-import de.ipb_halle.lbac.entity.Collection;
-import de.ipb_halle.lbac.entity.Group;
-import de.ipb_halle.lbac.entity.User;
+import de.ipb_halle.lbac.collections.Collection;
 import de.ipb_halle.lbac.globals.NavigationConstants;
 import de.ipb_halle.lbac.i18n.UIMessage;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.entity.InfoObject;
-import de.ipb_halle.lbac.service.ACListService;
-import de.ipb_halle.lbac.service.CollectionService;
+import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.service.InfoObjectService;
-import de.ipb_halle.lbac.service.MemberService;
-import de.ipb_halle.lbac.service.MembershipService;
 import de.ipb_halle.lbac.service.NodeService;
 
 import java.io.Serializable;
@@ -48,8 +41,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @SessionScoped
 @Named("userBean")
@@ -95,12 +90,19 @@ public class UserBean implements Serializable {
     @Inject
     private CollectionService collectionService;
 
+    @Inject
+    private UserPluginSettingsBean pluginSettings;
+
+    @Inject
+    private UserTimeZoneSettingsBean timeZoneSettings;
+
+    @Inject
     private Navigator navigator;
 
-    private String login;
+    private String login = "";
 
     @Size(max = 50)
-    private String oldPassword;
+    private String oldPassword = "";
 
     @Size(min = 8, max = 50)
     private String newPassword;
@@ -225,6 +227,7 @@ public class UserBean implements Serializable {
     public void actionLogout() {
         setCurrentAccount(this.globalAdmissionContext.getPublicAccount());
         navigator.initStartPage();
+        FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
     }
 
     /**
@@ -233,8 +236,13 @@ public class UserBean implements Serializable {
     public void actionModify() {
         if (!this.currentAccount.isPublicAccount()) {
             if (this.currentAccount.getSubSystemType() == AdmissionSubSystemType.LOCAL) {
-                this.currentAccount = this.memberService.save(this.currentAccount);
-                UIMessage.info(MESSAGE_BUNDLE, "admission_account_updated");
+                try {
+                    this.currentAccount = this.memberService.save(this.currentAccount);
+                    UIMessage.info(MESSAGE_BUNDLE, "admission_account_updated");
+                } catch (Exception e) {
+                    logger.error(ExceptionUtils.getStackTrace(e));
+                    UIMessage.error(MESSAGE_BUNDLE, "admission_account_updated_failed");
+                }
             }
         }
     }
@@ -301,6 +309,14 @@ public class UserBean implements Serializable {
         return this.nodeService;
     }
 
+    public UserPluginSettingsBean getPluginSettings() {
+        return pluginSettings;
+    }
+
+    public UserTimeZoneSettingsBean getTimeZoneSettings() {
+        return timeZoneSettings;
+    }
+
     public String getNewPassword() {
         return newPassword;
     }
@@ -352,6 +368,11 @@ public class UserBean implements Serializable {
         return false;
     }
 
+    public boolean isAdminAccount() {
+        return currentAccount != null
+                && currentAccount.getId().equals(globalAdmissionContext.getAdminAccount().getId());
+    }
+
     /**
      * Set the currently logged in account for this session. If no user is
      * currently logged in (session start or upon logout), this method will be
@@ -367,17 +388,13 @@ public class UserBean implements Serializable {
         this.currentAccount = u;
         this.permissionCache.clear();
         this.loginEvent.fire(new LoginEvent(u));
-        if (!u.equals(this.globalAdmissionContext.getPublicAccount())) { 
+        if (!u.equals(this.globalAdmissionContext.getPublicAccount())) {
             announceUser(u);
         }
     }
 
     public void setLogin(String l) {
         this.login = l;
-    }
-
-    public void setNavigator(Navigator n) {
-        this.navigator = n;
     }
 
     public void setNewPassword(String n) {
@@ -411,6 +428,14 @@ public class UserBean implements Serializable {
             }
         }
         return false;
+    }
+
+    public boolean isComponentAccessable(String s) {
+        if (s.equals("InhouseDB")) {
+            return !currentAccount.isPublicAccount();
+        } else {
+            return true;
+        }
     }
 
 }

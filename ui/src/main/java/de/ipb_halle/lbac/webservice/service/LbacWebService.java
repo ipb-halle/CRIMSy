@@ -1,6 +1,6 @@
 /*
- * Leibniz Bioactives Cloud
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Cloud Resource & Information Management System (CRIMSy)
+ * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,10 @@
 package de.ipb_halle.lbac.webservice.service;
 
 import de.ipb_halle.lbac.entity.CloudNode;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.CloudNodeService;
 import de.ipb_halle.lbac.webservice.WebRequest;
+import java.io.Serializable;
 import javax.inject.Inject;
 
 /**
@@ -28,7 +30,7 @@ import javax.inject.Inject;
  *
  * @author fmauz
  */
-public abstract class LbacWebService {
+public abstract class LbacWebService implements Serializable {
 
     @Inject
     protected WebRequestAuthenticator authenticator;
@@ -36,7 +38,7 @@ public abstract class LbacWebService {
     @Inject
     protected CloudNodeService cloudNodeService;
 
-    public void checkAuthenticityOfRequest(WebRequest webReq) throws NotAuthentificatedException {
+    public Node checkAuthenticityOfRequest(WebRequest webReq) throws NotAuthentificatedException {
         try {
             CloudNode cloudNode = this.cloudNodeService.loadCloudNode(webReq.getCloudName(), webReq.getNodeIdOfRequest());
 
@@ -45,6 +47,7 @@ public abstract class LbacWebService {
                     cloudNode)) {
                 throw new NotAuthentificatedException("Node of Webrequest ist not authentificated.");
             }
+            return cloudNode.getNode();
         } catch (Exception e) {
             if (webReq == null) {
                 throw new NotAuthentificatedException("Webrequest was null", e);
@@ -60,7 +63,4 @@ public abstract class LbacWebService {
         this.authenticator = authenticator;
     }
 
-    public void setCloudNodeService(CloudNodeService cns) {
-        this.cloudNodeService = cns;
-    }
 }
