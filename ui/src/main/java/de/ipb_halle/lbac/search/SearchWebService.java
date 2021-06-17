@@ -32,6 +32,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -74,11 +75,9 @@ public class SearchWebService extends LbacWebService {
             } catch (NotAuthentificatedException e2) {
                 response.setStatusCode("401:" + e2.getMessage());
             }
-            logger.info("Will send the response back" + response + "---> " + response.getAllFoundObjects().size());
-
             return Response.ok(response).build();
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return Response.serverError().build();
         }
     }

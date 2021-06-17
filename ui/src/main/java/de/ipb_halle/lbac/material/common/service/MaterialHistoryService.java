@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -185,9 +186,7 @@ public class MaterialHistoryService implements Serializable {
             loadTaxonomyHistory(materialId, history);
             loadBioMaterialHistory(materialId, history);
         } catch (Exception e) {
-            StackTraceElement t = e.getStackTrace()[0];
-            logger.info(t.getClassName() + ":" + t.getMethodName() + ":" + t.getLineNumber());
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return history;
     }
@@ -238,7 +237,7 @@ public class MaterialHistoryService implements Serializable {
                         loadMolecule(dbe.getMoleculeid_new())));
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 

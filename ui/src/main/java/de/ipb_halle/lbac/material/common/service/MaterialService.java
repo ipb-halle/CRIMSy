@@ -85,6 +85,7 @@ import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -255,7 +256,7 @@ public class MaterialService implements Serializable {
             }
             return result;
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return new SearchResultImpl(nodeService.getLocalNode());
         }
     }
@@ -421,7 +422,7 @@ public class MaterialService implements Serializable {
         } catch (Exception e) {
             StackTraceElement t = e.getStackTrace()[0];
             logger.info(t.getClassName() + ":" + t.getMethodName() + ":" + t.getLineNumber());
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return new MaterialHistory();
         }
     }

@@ -42,6 +42,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -162,7 +163,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
             materialEditBean.startMaterialEdit(m);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }

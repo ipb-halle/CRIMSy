@@ -70,10 +70,7 @@ public class MaterialAgent implements Serializable {
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     public void actionSetMaterial() {
-        this.logger.info("actionSetMaterial() materialId = {}", this.materialId);
         if (this.materialHolder != null) {
-
-            // do the actual work
             if (this.materialId != null) {
                 this.materialHolder.setMaterial(
                         this.materialService.loadMaterialById(this.materialId));

@@ -105,8 +105,8 @@ public class ZebraE2Driver extends AbstractPrintDriver {
         // make linewidth a multiple of 8 pixels
         int lineWidth = ((pixelWidth & 7) == 0) ? pixelWidth / 8 :  1 + (pixelWidth / 8); 
 
-        this.logger.info("transform(): width={}, lineWidth={}, height={}", pixelWidth, lineWidth, pixelHeight);
-        this.logger.info("transform(): offsetX={}, offsetY={}", offsetX, offsetY);
+//        this.logger.info("transform(): width={}, lineWidth={}, height={}", pixelWidth, lineWidth, pixelHeight);
+//        this.logger.info("transform(): offsetX={}, offsetY={}", offsetX, offsetY);
 
         append(String.format("GW%d,%d,%d,%d,",
             this.offsetX,

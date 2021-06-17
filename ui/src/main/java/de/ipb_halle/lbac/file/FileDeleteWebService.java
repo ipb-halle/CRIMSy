@@ -53,10 +53,7 @@ public class FileDeleteWebService extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-
         final HttpSession session = req.getSession();
-
-        this.logger.info("doDelete::start");
         final AsyncContext asyncContext = req.startAsync();
         resp.setContentType("text/html");
 

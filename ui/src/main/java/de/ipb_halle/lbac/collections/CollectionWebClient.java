@@ -40,6 +40,7 @@ import org.apache.logging.log4j.LogManager;
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.MediaType;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * CollectionWebClient
@@ -123,7 +124,7 @@ public class CollectionWebClient
         } catch (Exception e) {
             cn.fail();
             cloudNodeService.save(cn);
-            logger.error(e.getMessage());
+            logger.error(ExceptionUtils.getStackTrace(e));
             return new ArrayList<>();
         }
         return new ArrayList<>();

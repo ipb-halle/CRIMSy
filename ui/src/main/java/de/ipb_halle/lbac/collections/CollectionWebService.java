@@ -37,6 +37,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -72,7 +73,7 @@ public class CollectionWebService extends LbacWebService {
         try {
             checkAuthenticityOfRequest(request);
         } catch (NotAuthentificatedException e) {
-            logger.error("Error at athentificating request", e);
+            logger.error("Error at athentificating request", ExceptionUtils.getStackTrace(e));
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -95,7 +96,7 @@ public class CollectionWebService extends LbacWebService {
             result.setCollectionList(filteredColls);
             return Response.ok(result).build();
         } catch (Exception e) {
-            logger.error("Error at fetching local collections", e);
+            logger.error("Error at fetching local collections", ExceptionUtils.getStackTrace(e));
             return Response.serverError().build();
         }
     }

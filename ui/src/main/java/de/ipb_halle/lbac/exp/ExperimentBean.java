@@ -245,7 +245,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         try {
             this.expRecordController.actionCancel();
             experimentBeanInit();
-            this.logger.info("actionCancel() completed");
         } catch (Exception e) {
             this.logger.warn("actionCancel() caught an exception: ", (Throwable) e);
         }
@@ -424,10 +423,8 @@ public class ExperimentBean implements Serializable, ACObjectBean {
 
     private List<Experiment> getShownExperimentList() {
         if (templateMode) {
-            logger.info("Put experiment in Templates");
             return templates;
         } else {
-            logger.info("Put experiment in experiments");
             return experiments;
         }
     }
@@ -759,7 +756,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     public void setExpRecordIndex(int index) {
-        this.logger.info("setExpRecordIndex() index = {}", index);
         this.expRecordIndex = index;
     }
 

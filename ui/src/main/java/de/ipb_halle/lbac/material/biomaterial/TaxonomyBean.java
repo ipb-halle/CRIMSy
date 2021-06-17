@@ -30,6 +30,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.primefaces.model.TreeNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -116,7 +117,7 @@ public class TaxonomyBean implements Serializable {
                 treeController.disableTreeNodeEntries(taxonomyBeforeEdit);
                 levelController.setSelectedLevel(taxonomyToEdit.getLevel());
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(ExceptionUtils.getStackTrace(e));
             }
         }
     }
@@ -152,7 +153,7 @@ public class TaxonomyBean implements Serializable {
                 mode = Mode.SHOW;
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             taxonomyBeforeEdit = null;
             taxonomyToEdit = null;
             mode = Mode.SHOW;

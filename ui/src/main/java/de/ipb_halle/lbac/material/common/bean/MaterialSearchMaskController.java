@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -156,7 +157,7 @@ public class MaterialSearchMaskController implements Serializable {
                 values.molecule = molecule;
             }
         } catch (Exception e) {
-            logger.error("Could not parse molecule", e);
+            logger.error("Could not parse molecule", ExceptionUtils.getStackTrace(e));
         }
 
         return values;

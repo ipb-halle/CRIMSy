@@ -161,7 +161,6 @@ public class PrintBean implements Serializable {
      */
     public PrintBean() {
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.logger.info("PrintBean() default constructor");
     }
 
     public void actionDoNothing() {
@@ -169,11 +168,9 @@ public class PrintBean implements Serializable {
     }
 
     public void actionPrintLabel() {
-        this.logger.info("actionPrintLabel() called");
         if ((this.labelDataObject != null)
                 && (this.printerQueue != null) && (this.printerQueue.length() > 0)
                 && (this.labelId != null)) {
-            this.logger.info("actionPrintLabel() printerQueue={} labelId={}", this.printerQueue, this.labelId);
             try {
                 PrintDriver driver = PrintDriverFactory.buildPrintDriver(
                         this.printerService.loadById(this.printerQueue));
@@ -192,22 +189,21 @@ public class PrintBean implements Serializable {
     }
 
     public List<SelectItem> getLabels() {
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Object> cmap = new HashMap<>();
         String printerModel = getPrinterModel();
         if ((printerModel == null) || (printerModel.length() == 0)) {
-            this.logger.info("getLabels(): empty printer model");
-            return new ArrayList<SelectItem>();
+            return new ArrayList<>();
         }
         cmap.put(LabelService.PRINTER_MODEL, printerModel);
 
         String labelType = getLabelType();
         if (labelType == null) {
             this.logger.info("getLabels(): empty label type");
-            return new ArrayList<SelectItem>();
+            return new ArrayList<>();
         }
         cmap.put(LabelService.LABEL_TYPE, labelType);
 
-        List<SelectItem> items = new ArrayList<SelectItem>();
+        List<SelectItem> items = new ArrayList<>();
         for (Label l : this.labelService.load(cmap)) {
             items.add(new SelectItem(l.getId(), l.getName(), l.getDescription()));
         }
@@ -550,12 +546,12 @@ public class PrintBean implements Serializable {
      * set the id of the label configuration
      */
     public void setLabelDataObject(Object obj) {
-        this.logger.info("setLabelDataObject() {}", obj.getClass().getName());
         this.labelDataObject = obj;
     }
 
     /**
      * set the currently selected label
+     * @param labelId
      */
     public void setLabelId(Integer labelId) {
         this.logger.info("setLabelId() {}", labelId);
@@ -564,9 +560,9 @@ public class PrintBean implements Serializable {
 
     /**
      * set the currently selected printer
+     * @param printerQueue
      */
     public void setPrinterQueue(String printerQueue) {
-        this.logger.info("setPrinterQueue() {}", printerQueue);
         this.printerQueue = printerQueue;
     }
 

@@ -116,7 +116,6 @@ public class ItemAgent implements Serializable {
     }
 
     public void setItemId(Integer itemId) {
-        this.logger.info("setItemId() {}", itemId);
         this.itemId = itemId;
     }
 

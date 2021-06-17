@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.io.Serializable;
 import java.util.List;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -104,7 +105,7 @@ public class MaterialEditPermission implements Serializable{
         } catch (Exception e) {
             logger.info("Error in isVisible(): " + typeName);
             logger.info("Current MaterialType: " + bean.getCurrentMaterialType());
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return false;
     }
@@ -122,7 +123,7 @@ public class MaterialEditPermission implements Serializable{
                 }
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
     }
@@ -142,7 +143,7 @@ public class MaterialEditPermission implements Serializable{
                                     .getCurrentAccount()
                                     .getId());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return false;
         }
     }

@@ -33,6 +33,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -128,7 +129,7 @@ public class GlobalAdmissionContext implements Serializable {
             createInfoEntity("LDAP_ENABLE", "false", this.adminOnlyACL);
             createInfoEntity(CollectionBean.getCollectionsPermKey(), "don't care", this.adminOnlyACL);
         } catch (Exception e) {
-            logger.error("Error at initialisiing", e);
+            logger.error("Error at initialisiing", ExceptionUtils.getStackTrace(e));
         }
 
     }

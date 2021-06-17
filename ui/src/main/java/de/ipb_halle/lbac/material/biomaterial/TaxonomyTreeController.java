@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -213,7 +214,7 @@ public class TaxonomyTreeController implements Serializable {
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -239,7 +240,7 @@ public class TaxonomyTreeController implements Serializable {
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 

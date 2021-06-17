@@ -122,13 +122,11 @@ public class Assay extends ExpRecord implements DTO {
         double max = 0.0;
         double logMin = 1000.0;
         double logMax = -1000.0;
-        List<Double> values = new ArrayList<Double>();
-        List<Double> logValues = new ArrayList<Double>();
+        List<Double> values = new ArrayList<>();
+        List<Double> logValues = new ArrayList<>();
 
         for (LinkedData r : this.getAssayRecords()) {
             double v = ((SinglePointOutcome) r.getPayload()).getValue();
-            logger.info("Found unit " + ((SinglePointOutcome) r.getPayload()).getUnit());
-
             Unit u = Unit.getUnit(((SinglePointOutcome) r.getPayload()).getUnit());
             v *= u.getFactor();
 

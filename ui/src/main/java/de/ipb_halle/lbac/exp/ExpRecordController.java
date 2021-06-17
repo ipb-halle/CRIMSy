@@ -56,19 +56,15 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
         ExpRecord rec = getExpRecord();
         if (rec != null) {
             if (rec.getExpRecordId() == null) {
-                this.logger.info("actionCancel() remove record");
                 this.bean.getExpRecords().remove(rec.getIndex());
             } else {
-                this.logger.info("actionCancel() replace record");
                 int index = rec.getIndex();
                 rec = this.bean.loadExpRecordById(rec.getExpRecordId());
                 this.bean.getExpRecords().set(index, rec);
-                this.logger.info("actionCancel() replaced #{} at index {}", rec.getExpRecordId(), index);
             }
         }
         this.bean.reIndex();
         this.bean.cleanup();
-        this.logger.info("actionCancel() completed");
     }
 
     public void actionSaveRecord() {

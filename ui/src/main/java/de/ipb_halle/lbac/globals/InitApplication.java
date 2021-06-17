@@ -44,6 +44,7 @@ import org.apache.logging.log4j.LogManager;
 import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 @Singleton
 @Startup
@@ -88,7 +89,7 @@ public class InitApplication {
         try {
             healthCheck();
         } catch (Exception e) {
-            logger.error("Error at healthcheck", e);
+            logger.error("Error at healthcheck", ExceptionUtils.getStackTrace(e));
         }
         restCheck();
         initialiseKeyManager();
@@ -149,7 +150,7 @@ public class InitApplication {
                 keyManager.updatePublicKeyOfLocalNode();
             }
         } catch (Exception e) {
-            logger.error("Error at initialising keymanager", e);
+            logger.error("Error at initialising keymanager", ExceptionUtils.getStackTrace(e));
         }
     }
 }

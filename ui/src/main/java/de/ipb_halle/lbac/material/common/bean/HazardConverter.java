@@ -7,6 +7,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.omnifaces.util.Beans;
@@ -32,7 +33,7 @@ public class HazardConverter implements Converter {
         try {
             return Beans.getReference(HazardService.class).getHazardByName(string);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return null;
         }
     }

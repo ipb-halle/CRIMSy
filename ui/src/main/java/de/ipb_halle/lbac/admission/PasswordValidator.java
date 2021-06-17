@@ -89,8 +89,6 @@ public class PasswordValidator implements Validator, Serializable {
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        logger.info("start::validation::" + component.getId());
-
         String pw = value.toString().trim();
         if (pw.length() < 8) {
             throw new ValidatorException(

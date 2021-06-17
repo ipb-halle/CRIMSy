@@ -38,6 +38,7 @@ import java.io.InputStream;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -133,7 +134,7 @@ public class UploadToCol implements Runnable {
                 asyncContext.complete();
             }
         } catch (IOException e2) {
-            logger.error("Could not write response message", e2);
+            logger.error("Could not write response message", ExceptionUtils.getStackTrace(e2));
         }
     }
 

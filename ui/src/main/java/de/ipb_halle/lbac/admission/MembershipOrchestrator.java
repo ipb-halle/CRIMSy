@@ -32,6 +32,7 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -109,8 +110,8 @@ public class MembershipOrchestrator implements Serializable {
     }
 
     /**
-     * Returns an obfuscated set of groups for a given user. The returned 
-     * groups are located at the local node. Groups of subsystem type 
+     * Returns an obfuscated set of groups for a given user. The returned groups
+     * are located at the local node. Groups of subsystem type
      * <code>BUILTIN</code> and <code>LBAC_REMOTE</code> are excluded.
      *
      * @param u
@@ -132,7 +133,7 @@ public class MembershipOrchestrator implements Serializable {
                     }
                 }
             } catch (Exception e) {
-                LOGGER.error(e);
+                LOGGER.error(ExceptionUtils.getStackTrace(e));
             }
         }
         return groups;

@@ -42,6 +42,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 import org.primefaces.event.SelectEvent;
@@ -133,7 +134,7 @@ public class WordCloudBean implements Serializable {
             createWordCloud(wordTerms);
             
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -167,7 +168,7 @@ public class WordCloudBean implements Serializable {
 
             createWordCloud(remainingTerms);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 

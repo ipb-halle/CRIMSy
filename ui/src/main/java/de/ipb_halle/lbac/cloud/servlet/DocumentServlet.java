@@ -53,6 +53,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
@@ -97,7 +98,6 @@ public class DocumentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        this.logger.info("Enter Servlet for downloading file");
         processRequest(request, response);
     }
 
@@ -156,7 +156,6 @@ public class DocumentServlet extends HttpServlet {
 		 *   (e.g. system files via 'foo/../../../etc/passwd')
              */
             Path documentPath = Paths.get(doc.getPath());
-            this.logger.info(String.format("getDocumentStream() local file: %s", documentPath.toString()));
             return new FileInputStream(documentPath.toFile());
 
         }
@@ -175,7 +174,6 @@ public class DocumentServlet extends HttpServlet {
         /*
 		 * todo: HttpURLConnection needs to be disconnected or cloesed after use?
          */
-        this.logger.info("getRemoteDocumentStream(): " + urlString);
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -197,7 +195,6 @@ public class DocumentServlet extends HttpServlet {
      */
     private InputStream getSecureRemoteDocumentStream(Cloud cloud, String urlString)
             throws IOException {
-        this.logger.info("getSecureRemoteDocumentStream(): " + urlString);
         URL url = new URL(urlString);
         HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -205,7 +202,6 @@ public class DocumentServlet extends HttpServlet {
                 SecureWebClientBuilder
                         .getSSLSocketFactory(cloud));
         conn.connect();
-        this.logger.info("connect to: " + conn.getPeerPrincipal().getName());
 
         try {
             InputStream inputStream = conn.getInputStream();
@@ -213,7 +209,7 @@ public class DocumentServlet extends HttpServlet {
 
         } catch (Exception e) {
             logger.info("Response Code:" + conn.getResponseCode());
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
     }
@@ -304,7 +300,7 @@ public class DocumentServlet extends HttpServlet {
                 return;
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             throw new ServletException(e);
         }
 
