@@ -399,10 +399,10 @@ insert into storageconditions(id,name)values(10,'keepFrozen');
 insert into storageconditions(id,name)values(11,'storeUnderMinus40Degrees');
 insert into storageconditions(id,name)values(12,'storeUnderMinus80Degrees');
 
-insert into indextypes(id,name,javaclass)values(1,'name',null);
-insert into indextypes(id,name,javaclass)values(2,'GESTIS/ZVG',null);
-insert into indextypes(id,name,javaclass)values(3,'CAS/RM',null);
-insert into indextypes(id,name,javaclass)values(4,'Carl Roth Sicherheitsdatenblatt',null);
+insert into indextypes(name,javaclass)values('name',null);
+insert into indextypes(name,javaclass)values('GESTIS/ZVG',null);
+insert into indextypes(name,javaclass)values('CAS/RM',null);
+insert into indextypes(name,javaclass)values('Carl Roth Sicherheitsdatenblatt',null);
 
 insert into storageclasses(id,name)values(1,'1');
 insert into storageclasses(id,name)values(2,'2A');
