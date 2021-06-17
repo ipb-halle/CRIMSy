@@ -20,6 +20,7 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
@@ -41,8 +42,10 @@
                         update="
                         expRecordsForm
                         @(.expListEntry)
-                        @(.experimentActionButton)">
-                        <span class="fa fa-search" > #{experiment.code}</span>
+                        @(.experimentActionButton)"
+                        style="text-decoration: none;">
+                        <b:iconAwesome value="search" />
+                        <h:outputText value="&#160;#{experiment.code}" />
                     </p:commandLink>
                     <b:commandButton style="padding: 0 4px;"
                                      icon="glyphicon glyphicon-user"
@@ -61,7 +64,8 @@
                                      ajax="true"
                                      process="@this"
                                      disabled="#{!experimentBean.isExperimentEditable(experiment)}"
-                                     tooltip="#{msgs.expEdit_iconTooltip}"
+                                     tooltip="#{experimentBean.templateMode ? 
+                                         msgs.expAddNew_dialog_editTemplate : msgs.expEdit_iconTooltip}"
                                      update="@(.expDataClass)"
                                      type="button"
                                      action ="#{experimentBean.actionStartEditExperiment(experiment)}"
