@@ -55,7 +55,7 @@
                                         update="spinningIcon newDocumentsBadge searchPoll addDocumentButton"/>
 
                                 <b:inputText styleClass="searchRequest"
-                                             placeholder=" #{msgs.searchMgr_searchtext_placeholder}"
+                                             placeholder="#{msgs.searchMgr_searchtext_placeholder}"
                                              required="false" label=""
                                              value="#{searchBean.searchFilter.searchTerms}"
                                              labelColXs="0" labelColMd="0">
@@ -182,31 +182,31 @@
                             <b:column span="9" offset="1">
                                 <h:outputText
                                     styleClass="advancedSearchHeaderTitle"
-                                    value="Advanced Search"/>
+                                    value="#{msgs.searchMgr_advancedSearch_title}"/>
                             </b:column>
                         </b:row>
                         <b:row>
                             <b:column span="12">
                                 <p:tabView
                                     rendered="#{searchBean.getSearchFilter().isAdvancedSearch()}">
-                                    <p:tab title="Types">
+                                    <p:tab title="#{msgs.searchMgr_advancedSearch_types}">
                                         <b:row>
                                             <b:column span="1"
                                                       styleClass="advancedSearchHeader">
                                                 <h:outputText
-                                                    value="Typen"/>
+                                                    value="#{msgs.searchMgr_advancedSearch_types}"/>
                                             </b:column>
                                             <b:column span="1"
                                                       offset="4"
                                                       styleClass="advancedSearchHeader">
-                                                MaterialTypen
+                                                #{msgs.searchMgr_advancedSearch_material_types}
                                             </b:column>
                                         </b:row>
                                         <b:row>
                                             <b:column span="1"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
-                                                    label="Dokumente"
+                                                    label="#{msgs.search_category_DOCUMENT}"
                                                     ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.documents}"/>
                                             </b:column>
@@ -217,14 +217,14 @@
                                                 <b:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.structures}"
                                                     ajax="true"
-                                                    label="Strukturen"/>
+                                                    label="#{msgs.search_category_STRUCTURE}"/>
                                             </b:column>
                                         </b:row>
                                         <b:row>
                                             <b:column span="1"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
-                                                    label="Materialien"
+                                                    label="#{msgs.search_category_MATERIAL}"
                                                     ajax="true"
                                                     update="@(.materialTypeFilter)"
                                                     value="#{searchBean.getSearchFilter().typeFilter.materials}"/>
@@ -235,14 +235,14 @@
                                                 <b:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.biomaterial}"
                                                     ajax="true"
-                                                    label="Biomaterial"/>
+                                                    label="#{msgs.search_category_BIOMATERIAL}"/>
                                             </b:column>
                                         </b:row>
                                         <b:row>
                                             <b:column span="1"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
-                                                    label="Gebinde"
+                                                    label="#{msgs.search_category_ITEM}"
                                                     ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.items}"/>
                                             </b:column>
@@ -252,14 +252,14 @@
                                                 <b:selectBooleanCheckbox
                                                     value="#{searchBean.getSearchFilter().materialTypeFilter.sequences}"
                                                     ajax="true"
-                                                    label="Sequenzen"/>
+                                                    label="#{msgs.search_category_SEQUENCE}"/>
                                             </b:column>
                                         </b:row>
                                         <b:row>
                                             <b:column span="1"
                                                       styleClass="rightLabeledCbx">
                                                 <b:selectBooleanCheckbox
-                                                    label="Experimente"
+                                                    label="#{msgs.search_category_EXPERIMENT}"
                                                     ajax="true"
                                                     value="#{searchBean.getSearchFilter().typeFilter.experiments}"/>
                                             </b:column>
