@@ -191,6 +191,7 @@ public class RTF extends RtfListenerAdaptor {
         statement.setString(2, Compounds.TMP_MatId_MolId);
         ResultSet result = statement.executeQuery();
         if (! result.next()) {
+            System.out.printf("Material for mol_id=%d not found in table 'tmp_import'\n", mol_id);
             return;
         }
         int id = result.getInt(1);

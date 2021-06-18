@@ -172,21 +172,21 @@ public class Compounds {
         mat = (MaterialEntity) this.inhouseDB.getBuilder(mat.getClass().getName())
                 .insert(this.inhouseDB.getConnection(), mat);
 
+        StructureEntity struc = new StructureEntity();
         if (cleanMolecule(cdkMolecule)) {
             MoleculeEntity mol = new MoleculeEntity();
             saveMolString(mol, cdkMolecule);
             mol = (MoleculeEntity) this.inhouseDB.getBuilder(mol.getClass().getName())
                     .insert(this.inhouseDB.getConnection(), mol);
 
-            StructureEntity struc = new StructureEntity();
-            struc.setId(mat.getMaterialid());
             struc.setMolarmass(molMass);
             struc.setExactmolarmass(exactMass);
             struc.setSumformula(molFormula);
             struc.setMoleculeid(mol.getId());
-            this.inhouseDB.getBuilder(struc.getClass().getName())
-                    .insert(this.inhouseDB.getConnection(), struc);
         }
+        struc.setId(mat.getMaterialid());
+        this.inhouseDB.getBuilder(struc.getClass().getName())
+                .insert(this.inhouseDB.getConnection(), struc);
         saveMolProperties(cdkMolecule, mat.getMaterialid());
     }
     
