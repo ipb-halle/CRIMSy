@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.search.bean;
 
 import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -33,9 +35,11 @@ public class NetObjectPresenter {
 
     private User user;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private MessagePresenter messagePresenter;
 
-    public NetObjectPresenter(User user) {
+    public NetObjectPresenter(User user, MessagePresenter messagePresenter) {
         this.user = user;
+        this.messagePresenter = messagePresenter;
     }
 
     public String getName(NetObject no) {
@@ -63,7 +67,8 @@ public class NetObjectPresenter {
     }
 
     public String getObjectType(NetObject no) {
-        return no.getTypeToDisplay().getTypeName();
+        return messagePresenter.presentMessage(
+                "search_category_" + no.getTypeToDisplay().getTypeName());
     }
 
     public String getLink(NetObject no) throws UnsupportedEncodingException {

@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.exp.Experiment;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.navigation.Navigator;
@@ -118,7 +119,7 @@ public class SearchBean implements Serializable {
     public void setCurrentAccount(@Observes LoginEvent evt) {
         currentUser = evt.getCurrentAccount();
         searchFilter = new SearchFilter(currentUser);
-        this.netObjectPresenter=new NetObjectPresenter(currentUser);
+        this.netObjectPresenter = new NetObjectPresenter(currentUser, JsfMessagePresenter.getInstance());
     }
 
     public void actionAddFoundObjectsToShownObjects() {
@@ -224,7 +225,7 @@ public class SearchBean implements Serializable {
     }
 
     public void navigateToObject(NetObject no) {
-        if(currentUser.isPublicAccount()){
+        if (currentUser.isPublicAccount()) {
             return;
         }
         if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.MATERIAL) {
@@ -234,7 +235,7 @@ public class SearchBean implements Serializable {
             itemBean.actionStartItemEdit((Item) no.getSearchable());
         }
         if (no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.EXPERIMENT) {
-            Experiment experiment=(Experiment) no.getSearchable();
+            Experiment experiment = (Experiment) no.getSearchable();
             experimentBean.setExperiment(experiment);
             experimentBean.setSearchTerm(experiment.getCode());
             experimentBean.actionActualizeExperimentsList();

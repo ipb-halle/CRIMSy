@@ -135,7 +135,7 @@
                                 value="#{searchBean.shownObjects}"
                                 saveState="false">
                                 <b:dataTableColumn
-                                    label="Name">
+                                    label="#{msgs.searchMgr_resulttable_name}">
                                     <b:navLink
                                         href="#{searchBean.netObjectPresenter.getLink(searchable)}" 
                                         value="#{searchBean.netObjectPresenter.getName(searchable)}"
@@ -156,13 +156,13 @@
 
                                 </b:dataTableColumn>
                                 <b:dataTableColumn
-                                    label="Location"
+                                    label="#{msgs.searchMgr_resulttable_location}"
                                     value="#{searchBean.netObjectPresenter.getNodeName(searchable)}"/>
                                 <b:dataTableColumn
-                                    label="Type"
+                                    label="#{msgs.searchMgr_resulttable_type}"
                                     value="#{searchBean.netObjectPresenter.getObjectType(searchable)}"/>
                                 <b:dataTableColumn
-                                    label="Relevanz"
+                                    label="#{msgs.searchMgr_resulttable_relevance}"
                                     value="#{searchBean.netObjectPresenter.getObjectRelevance(searchable)}"/>
                             </b:dataTable>
 

@@ -33,6 +33,7 @@ import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchService;
@@ -65,7 +66,7 @@ public class NetObjectPresenterTest extends TestBase {
     public void setUp() {
         super.setUp();
         netObjects = netObjectFactory.createNetObjects();
-        presenter = new NetObjectPresenter(new User());
+        presenter = new NetObjectPresenter(new User(), new MessagePresenterMock());
     }
 
     @Test
