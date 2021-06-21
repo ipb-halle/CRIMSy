@@ -59,6 +59,7 @@ public class Samples {
     public final static String INPUT_EXTRACTS = "INPUT_EXTRACTS";
     public final static String PARENT_CONTAINER_ID = "PARENT_CONTAINER_ID";
     public final static String SAMPLE_ITEM_ID = "SampleId_ItemId";
+    public final static String SAMPLE_EXP_ID = "RefMolProc_ItemId";
     public final static String UNKNOWN_CONTAINER = "UNKNOWN_CONTAINER";
 
     private InhouseDB inhouseDB;
@@ -350,6 +351,10 @@ public class Samples {
         /* tmp reference */
         String sql = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
         this.inhouseDB.saveTriple(sql, sampleId, item.getId(), SAMPLE_ITEM_ID);
+
+        /* */
+        sql = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
+        this.inhouseDB.saveTriple(sql, molProcId, item.getId(), SAMPLE_EXP_ID);
 
     }
 }
