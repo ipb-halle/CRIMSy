@@ -250,6 +250,7 @@ public class ExperimentBeanTest extends TestBase {
         setExperimentProperties("test005_actionNewExperiment()", false, projects.get(0));
 
         experimentBean.actionSaveExperiment();
+        MessagePresenterMock mockedPresenter = (MessagePresenterMock) experimentBean.messagePresenter;
         int expId = experimentBean.getExperiment().getId();
         experimentBean.actionToggleExperiment(experimentBean.getExperiment());
         experimentBean.getExperiment();
@@ -324,6 +325,34 @@ public class ExperimentBeanTest extends TestBase {
         // cancel editing
         experimentBean.getExpRecordController().actionCancel();
         Assert.assertFalse(experimentBean.isExpRecordButtonsDisabled());
+    }
+
+    @Test
+    public void test009_actionSaveExpriment() {
+        creationTools.createAndSaveProject("ExperimentBeanTest-Test-Project");
+        experimentBean.actionNewExperiment();
+        List<Project> projects = experimentBean.getProjectController().getChoosableProjects();
+        Assert.assertEquals(1, projects.size());
+        setExperimentProperties("test009_actionSaveExpriment()", false, projects.get(0));
+
+        experimentBean.actionSaveExperiment();
+        MessagePresenterMock mockedPresenter = (MessagePresenterMock) experimentBean.messagePresenter;
+        Assert.assertEquals("exp_save_new_experiment", mockedPresenter.getLastInfoMessage());
+    }
+
+    @Test
+    public void test010_actionSaveTemplate() {
+        creationTools.createAndSaveProject("ExperimentBeanTest-Test-Project");
+        experimentBean.actionNewExperiment();
+        experimentBean.setTemplateMode(true);
+        List<Project> projects = experimentBean.getProjectController().getChoosableProjects();
+        Assert.assertEquals(1, projects.size());
+        setExperimentProperties("test010_actionSaveTemplate()", true, projects.get(0));
+
+        experimentBean.actionSaveExperiment();
+        MessagePresenterMock mockedPresenter = (MessagePresenterMock) experimentBean.messagePresenter;
+        Assert.assertEquals("exp_save_new_template", mockedPresenter.getLastInfoMessage());
+
     }
 
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {

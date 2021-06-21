@@ -404,14 +404,32 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         actionEditRecord(record);
     }
 
+    /**
+     * Saves an experiment or a template depending on the template flag and
+     * sends a message to the ui. The created experiment is add to the shown
+     * experiments list
+     *
+     * @return
+     */
     private Experiment saveNewExperiment() {
         this.experiment.setCode(
                 experimentCode.generateNewExperimentCode(
                         experimentService.getNextExperimentNumber(currentUser))
         );
         Experiment savedExp = this.experimentService.save(this.experiment);
-        messagePresenter.info("exp_save_new");
+        addCreationMessageToUI();
         return savedExp;
+    }
+
+    /**
+     * Sends a message to the ui which appears as a growl for the user
+     */
+    private void addCreationMessageToUI() {
+        if (templateMode) {
+            messagePresenter.info("exp_save_new_template");
+        } else {
+            messagePresenter.info("exp_save_new_experiment");
+        }
     }
 
     private Experiment saveEditedExperiment() {
