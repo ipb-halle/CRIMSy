@@ -251,9 +251,9 @@ public class ContainerServiceTest extends TestBase {
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
                 if (x == 0 && (y == 0)) {
-                    checkItem1(loadedItems[x][y], "Container 1-Item-1: ");
+                    Assert.assertEquals(1, loadedItems[x][y].getId(), 0);
                 } else if (x == 1 && (y == 2)) {
-                    checkItem2(loadedItems[x][y], "Container 1-Item-2: ");
+                    Assert.assertEquals(2, loadedItems[x][y].getId(), 0);
                 } else {
                     Assert.assertNull(loadedItems[x][y]);
                 }
@@ -264,7 +264,7 @@ public class ContainerServiceTest extends TestBase {
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 2; x++) {
                 if (x == 0 && (y == 1)) {
-                    checkItem3(loadedItems[x][y], "Container 2-Item-3: ");
+                    Assert.assertEquals(3, loadedItems[x][y].getId(), 0);
                 } else {
                     Assert.assertNull(loadedItems[x][y]);
                 }
@@ -487,61 +487,7 @@ public class ContainerServiceTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ContainerServiceTest.war");
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
-    }
-
-    private void checkItem1(Item i, String testDesc) {
-        Assert.assertNotNull(i);
-        Assert.assertEquals(testDesc + "ID must be 1", 1d, i.getId(), 0);
-        Assert.assertEquals(testDesc + "Amount must be 10", 10d, i.getAmount(), 0);
-        Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
-        Assert.assertNull(testDesc + "Project must be null", i.getProject());
-        Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be kg", "kg", i.getUnit().getUnit());
-        Assert.assertEquals(testDesc + "Purity must be 'unknown'", "unknown", i.getPurity());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Description must be item 1", "item 1", i.getDescription());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
-        Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
-        Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
-        Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
-    }
-
-    private void checkItem2(Item i, String testDesc) {
-        Assert.assertNotNull(i);
-        Assert.assertEquals(testDesc + "ID must be 2", 2d, i.getId(), 0);
-        Assert.assertEquals(testDesc + "Amount must be 5", 5d, i.getAmount(), 0);
-        Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
-        Assert.assertNull(testDesc + "Project must be null", i.getProject());
-        Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be g", "g", i.getUnit().getUnit());
-        Assert.assertEquals(testDesc + "Purity must be 'pure'", "pure", i.getPurity());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Description must be item 2", "item 2", i.getDescription());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
-        Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
-        Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
-        Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
-    }
-
-    private void checkItem3(Item i, String testDesc) {
-        Assert.assertNotNull(i);
-        Assert.assertEquals(testDesc + "ID must be 3", 3d, i.getId(), 0);
-        Assert.assertEquals(testDesc + "Amount must be 11", 11d, i.getAmount(), 0);
-        Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
-        Assert.assertNull(testDesc + "Project must be null", i.getProject());
-        Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be mg", "mg", i.getUnit().getUnit());
-        Assert.assertEquals(testDesc + "Purity must be 'xxx'", "xxx", i.getPurity());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Description must be item 3", "item 3", i.getDescription());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
-        Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
-        Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
-        Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
-    }
+    } 
 
     private void createMaterial(String userGroups, String ownerid, int projectid) {
         String sql = "INSERT INTO MATERIALS VALUES("
