@@ -25,7 +25,7 @@ import java.util.HashSet;
  */
 public class XmlSetWrapper {
 
-    private HashSet<String> values;
+    private HashSet<String> values=new HashSet<>();
 
     public HashSet<String> getValues() {
         return values;
