@@ -72,7 +72,7 @@
                                         </h:outputText>
                                         <p:tooltip for="materialNames"  position="right">
                                             <h:outputText 
-                                                 escape="false"
+                                                escape="false"
                                                 value="#{materialOverviewBean.getWrappedNames(material, 20)}" >
                                                 <f:converter converterId="RichTextConverter" />
                                             </h:outputText>
@@ -84,7 +84,7 @@
 
                                     <b:dataTableColumn
                                         label="#{msgs.materialOverview_tableheader_type}"
-                                        value="#{material.type}">
+                                        value="#{materialOverviewBean.getLocalizedMaterialType(material)}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         styleClass="div-container-hazard"

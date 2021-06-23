@@ -31,6 +31,8 @@ import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.util.resources.ResourceLocation;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private NamePresenter namePresenter;
     private MaterialSearchMaskController searchController;
     private MaterialTableController tableController;
+    private MessagePresenter messagePresenter;
 
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
@@ -111,6 +114,8 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
+        messagePresenter = JsfMessagePresenter.getInstance();
+
     }
 
     /**
@@ -247,5 +252,10 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public String getRadioactiveImageLocation() {
         return ResourceLocation.getHazardImageLocation(hazardService.getHazardById(16));
+    }
+
+    public String getLocalizedMaterialType(Material m) {
+        return messagePresenter.presentMessage(
+                "search_category_" + m.getType());
     }
 }
