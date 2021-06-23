@@ -178,7 +178,7 @@ public class LinkedDataAgent implements Serializable {
             return "";
         }
         if (linkedData.getItem().getContainer() != null) {
-            return linkedData.getItem().getContainer().getNameToDisplay() + " -> " + linkedData.getItem().getContainer().getLocation(true, false);
+            return linkedData.getItem().getNestedLocation();
         }
         return "";
     }
