@@ -323,13 +323,8 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
     public String getNestedLocation() {
         if (container == null) {
             return "";
-        }
-        String location = "";
-        for (Container c : nestedContainer) {
-            location += c.getLabel() + ".";
-        }
-
-        return location + container.getLabel();
+        }        
+        return container.getLocation(true, false)+"->"+container.getLabel();
     }
 
     public Item copy() {

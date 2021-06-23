@@ -222,7 +222,7 @@ public class Container implements DTO, Serializable, Searchable {
             locationString = containerHierarchy
                     .stream()
                     .map(r -> r.getLabel())
-                    .collect(Collectors.joining(" -> <br>"));
+                    .collect(Collectors.joining("-><br>"));
         }
         if (reverse) {
             Collections.reverse(containerHierarchy);
