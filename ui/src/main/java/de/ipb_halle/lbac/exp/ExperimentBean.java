@@ -298,10 +298,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
     }
 
-    public void actionLog() {
-        this.logger.info("actionLog()");
-    }
-
     public void actionStartEditExperiment(Experiment exp) {
         creationState = CreationState.EDIT;
         this.experiment = exp;
