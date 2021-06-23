@@ -54,11 +54,11 @@
                     </b:inputText>
                     <b:message for="@previous"/>
                     <b:inputText id="name" value="#{collectionBean.activeCollection.name}"
-                                 label="Name"
+                                 label="#{msgs.collMgr_modal_name_label}"
                                  renderLabel="true"
                                  rendered="true"
                                  disabled="#{collectionBean.editMode != 'CREATE'}"
-                                 placeholder="public"
+                                 placeholder="#{msgs.collMgr_modal_name_placeholder}"
                                  required="#{collectionBean.editMode == 'CREATE'}">
                         <f:validator validatorId="CollectionInputValidator"/>
                         <f:facet name="prepend">
@@ -69,11 +69,11 @@
 
                     <b:inputText id="description" 
                                  value="#{collectionBean.activeCollection.description}"
-                                 label="#{msgs.collMgr_modal_description}"
+                                 label="#{msgs.collMgr_modal_description_label}"
                                  renderLabel="true"
                                  rendered="true"
                                  disabled="#{collectionBean.editMode == 'DELETE' or collectionBean.editMode == 'CLEAR' or collectionBean.editMode == 'REINDEX' }"
-                                 placeholder="public collection @your place"
+                                 placeholder="#{msgs.collMgr_modal_description_placeholder}"
                                  required="#{collectionBean.editMode == 'CREATE' or collectionBean.editMode == 'UPDATE' }">
                         <f:facet name="prepend">
                             <b:iconAwesome name="fa-tag"/>
@@ -83,7 +83,7 @@
 
                     <b:inputText id="indexpath" 
                                  value="#{collectionBean.activeCollection.indexPath}"
-                                 label="#{msgs.collMgr_modal_indexpath}"
+                                 label="#{msgs.collMgr_modal_indexpath_label}"
                                  renderLabel="true"
                                  rendered="#{collectionBean.editMode != 'CREATE'}"
                                  disabled="true">
@@ -94,7 +94,7 @@
                     <b:message for="@previous"/>
                     <b:inputText id="storagepath"
                                  value="#{collectionBean.activeCollection.storagePath}"
-                                 label="#{msgs.collMgr_modal_filepath}"
+                                 label="#{msgs.collMgr_modal_filepath_label}"
                                  renderLabel="true"
                                  rendered="#{collectionBean.editMode != 'CREATE'}"
                                  disabled="true">
@@ -104,7 +104,7 @@
                     </b:inputText>
                     <b:message for="@previous"/>
                     <b:inputText id="institut" value="#{collectionBean.activeCollection.node.institution}"
-                                 label="#{msgs.collMgr_modal_institute}"
+                                 label="#{msgs.collMgr_modal_institute_label}"
                                  renderLabel="true"
                                  rendered="#{collectionBean.editMode == 'DELETE'}"
                                  required="false"
@@ -219,25 +219,25 @@
                             <th>#{msgs.collMgr_datatable_header_name}</th>
                             <th>#{msgs.collMgr_datatable_header_descr}</th>
                             <th>#{msgs.collMgr_datatable_header_owner}</th>
-                            <th>#{msgs.collMgr_datatable_header_solr}</th>
+                            <th>#{msgs.collMgr_datatable_header_numDocs}</th>
                             <th>#{msgs.collMgr_datatable_header_location}</th>
-                            <th style="min-width:68px">Tools</th>
+                            <th style="min-width:68px">#{msgs.collMgr_datatable_header_tools}</th>
                         </tr>
                     </f:facet>
                     <b:dataTableColumn order="asc">
                         <b:badge tooltip="id: #{collection.id}"
                                  style="margin-right:4px;background-color: #4e6aca;"
                                  value="i"/>
-                        #{collection.name}
+                        <h:outputText value="#{collection.name}" />
                     </b:dataTableColumn>
                     <b:dataTableColumn value="#{collection.description}"/>
                     <b:dataTableColumn value="#{collection.getOwner().getName()}"/>
                     <b:dataTableColumn>
-                        <b:badge tooltip="#{msgs.collMgr_tooltip_solrDocs}"
+                        <b:badge tooltip="#{msgs.collMgr_tooltip_numDocs}"
                                  rendered="#{collection.node.local}"
                                  style="margin-right:4px;background-color: #4e6aca;"
                                  value="#{collection.countDocs == -1 ? 'n.a.': collection.countDocs}"/>
-                        #{collection.indexPath}
+                        <h:outputText value="#{collection.indexPath}" />
                     </b:dataTableColumn>
                     <b:dataTableColumn value="#{collection.node.institution}"/>
                     <b:dataTableColumn>
