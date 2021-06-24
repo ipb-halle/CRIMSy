@@ -59,10 +59,10 @@
         </b:modal>
         <b:panelGrid colSpans="9,3" size="sm">
             <b:form id="ldapProperties" horizontal="true" method="post">
-                <b:panel title="LDAP Anbindung Parameter" collapsible="false" look="info">
+                <b:panel title="#{msgs.admission_ldap_panelTitle}" collapsible="false" look="info">
 
                     <b:selectBooleanCheckbox offsetMd="4" value="#{ldapProps.ldapEnabled}"
-                          caption="LDAP Authentifizierung aktivieren" ajax="true" update="@form"/>
+                          caption="#{msgs.admission_ldap_activate}" ajax="true" update="@form"/>
 
                     <ui:repeat id="ldapPropList" value="#{ldapProps.ldapProperties}" var="p" varStatus="status">
                         <b:inputText
@@ -91,9 +91,9 @@
                                          onclick="$('.modalcheckLDAP').modal();"
                                          disabled="#{!ldapProps.ldapEnabled}"
                                          style="margin-right:3px;"
-                                         value="Test LDAP Connect"/>
+                                         value="#{msgs.admission_ldap_test}"/>
                         <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
-                                         action="#{ldapProps.save}" value="Speichern"/>
+                                         action="#{ldapProps.save}" value="#{msgs.Save}"/>
                     </b:column>
                 </b:panel>
             </b:form>
