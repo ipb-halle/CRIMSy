@@ -39,10 +39,15 @@
                 <tmpl:fineUploaderMultiTemplate/>
             </h:outputScript>
 
-            <b:modal id="fileUpload" title="Dokument Upload" styleClass="modalFileUpload"
-                     closable="true" close-on-escape="false" backdrop="false">
+            <b:modal
+                id="fileUpload"
+                title="#{msgs.fileupload_modal_title}"
+                styleClass="modalFileUpload"
+                closable="true"
+                close-on-escape="false"
+                backdrop="false">
 
-                <div class="upload-collection-settings">Please select the collection to receive the documents: 
+                <div class="upload-collection-settings">#{msgs.fileupload_modal_uploadToCollectionText} 
                     <h:selectOneMenu styleClass="upload-collection">
                         <f:selectItems value="#{collectionBean.getOnlyLocalCollections()}" var="c"
                                        itemLabel="#{c.name}" itemValue="#{c.name}"/>
@@ -53,8 +58,8 @@
                 </h:panelGroup>
 
                 <f:facet name="footer">
-                    <b:button value="Clear" look="primary" onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');"/>
-                    <b:button value="Close" look="primary" dismiss="modal"/>
+                    <b:button value="#{msgs.fileupload_modal_button_clear}" look="primary" onclick="$('#fine-uploader-manual-trigger').fineUploader('clearStoredFiles');"/>
+                    <b:button value="#{msgs.fileupload_modal_button_close}" look="primary" dismiss="modal"/>
                 </f:facet>
             </b:modal>
 
