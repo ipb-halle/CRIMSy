@@ -30,7 +30,7 @@
 
 
     <h:body>
-       
+
         <ui:composition>
 
             <h:outputStylesheet name="fine-uploader/fine-uploader-new.css" position="last"/>
@@ -49,8 +49,10 @@
 
                 <div class="upload-collection-settings">#{msgs.fileupload_modal_uploadToCollectionText} 
                     <h:selectOneMenu styleClass="upload-collection">
-                        <f:selectItems value="#{collectionBean.getOnlyLocalCollections()}" var="c"
-                                       itemLabel="#{c.name}" itemValue="#{c.name}"/>
+                        <f:selectItems value="#{collectionBean.getCreatableLocalCollections()}"
+                                       var="c"
+                                       itemLabel="#{c.name}"
+                                       itemValue="#{c.name}"/>
                     </h:selectOneMenu>
                 </div>
 

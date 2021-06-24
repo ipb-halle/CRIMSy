@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.lbac.collections;
 
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
@@ -45,7 +47,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class CollectionBeanTest extends TestBase {
-
+    
     @Inject
     private CollectionService collectionService;
     @Inject
@@ -56,11 +58,9 @@ public class CollectionBeanTest extends TestBase {
     private ACListService acListService;
     @Inject
     private CollectionOrchestrator orchestrator;
-
+    
     private CollectionBean bean;
-
-    private User publicUser;
-
+    
     @Override
     public void setUp() {
         super.setUp();
@@ -72,12 +72,12 @@ public class CollectionBeanTest extends TestBase {
                 .setACListService(acListService)
                 .setTermVectorEntityService(termVectorEntityService)
                 .setMemberService(memberService);
-
+        
         bean.setCollectionOrchestrator(orchestrator);
         bean.setNodeService(nodeService);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
-
+    
     @Test
     public void test001_logIn() {
         LoginEvent logInEvent = new LoginEvent(publicUser);
@@ -87,7 +87,7 @@ public class CollectionBeanTest extends TestBase {
         bean.setCurrentAccount(publicUser);
         Assert.assertEquals(publicUser.getId(), bean.getCurrentAccount().getId());
     }
-
+    
     @Ignore("Due to some problems with the test database")
     @Test
     public void test002_actionCreate() {
@@ -96,14 +96,32 @@ public class CollectionBeanTest extends TestBase {
         bean.getActiveCollection().setDescription("Test");
         bean.getActiveCollection().setIndexPath("");
         bean.getActiveCollection().setName("Test-Collection");
-
+        
         bean.actionCreate();
-
+        
         Collection loadedCol = collectionService.loadById(bean.getActiveCollection().getId());
         Assert.assertNotNull(loadedCol);
-
     }
-
+    
+    @Test
+    public void test003_getCreatableLocalCollections() {        
+        Collection col = new Collection();
+        col.setName("ReadOnly");
+        col.setOwner(adminUser);
+        col.setACList(acListReadable);
+        
+        collectionService.save(col);
+        
+        LoginEvent logInEvent = new LoginEvent(publicUser);
+        bean.setCurrentAccount(logInEvent);
+        Assert.assertEquals(0, bean.getCreatableLocalCollections().size());
+        logInEvent = new LoginEvent(adminUser);
+        bean.setCurrentAccount(logInEvent);
+        Assert.assertEquals(1, bean.getCreatableLocalCollections().size());
+        
+        entityManagerService.doSqlUpdate("DELETE FROM collections WHERE id=" + col.getId());
+    }
+    
     @Deployment
     public static WebArchive createDeployment() {
         return prepareDeployment("CollectionBeanTest.war")
@@ -121,5 +139,5 @@ public class CollectionBeanTest extends TestBase {
                 .addClass(TermVectorEntityService.class)
                 .addClass(MembershipOrchestrator.class);
     }
-
+    
 }
