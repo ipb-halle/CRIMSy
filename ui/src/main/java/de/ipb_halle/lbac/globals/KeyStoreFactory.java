@@ -70,8 +70,8 @@ public class KeyStoreFactory {
      * Default Constructor
      */
     private KeyStoreFactory() {
-        this.keyStore = new HashMap<String, KeyStore> ();
-        this.trustStore = new HashMap<String, KeyStore> ();
+        this.keyStore = new HashMap<> ();
+        this.trustStore = new HashMap<> ();
         this.logger = LogManager.getLogger(this.getClass().getName());
         init();
     }
@@ -117,16 +117,12 @@ public class KeyStoreFactory {
         }
 
     }
-
-    public static KeyStoreFactory getInstance() {
-        if (KeyStoreFactory.instance == null) {
-            synchronized(KeyStoreFactory.class) {
-                if (KeyStoreFactory.instance == null) {
-                    KeyStoreFactory.instance = new KeyStoreFactory();
-                }
-            }
+    
+    public static KeyStoreFactory getInstance(){
+        if(instance==null){
+            instance=new KeyStoreFactory();
         }
-        return KeyStoreFactory.instance;
+        return instance;
     }
 
     public KeyStore getKeyStore(String cloudName) {
