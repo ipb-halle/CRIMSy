@@ -48,12 +48,12 @@
                 backdrop="false">
 
                 <div class="upload-collection-settings">#{msgs.fileupload_modal_uploadToCollectionText} 
-                    <h:selectOneMenu styleClass="upload-collection">
+                    <b:selectOneMenu styleClass="upload-collection" >
                         <f:selectItems value="#{collectionBean.getCreatableLocalCollections()}"
                                        var="c"
                                        itemLabel="#{c.name}"
                                        itemValue="#{c.name}"/>
-                    </h:selectOneMenu>
+                    </b:selectOneMenu>
                 </div>
 
                 <h:panelGroup layout="block" id="fine-uploader-manual-trigger">
