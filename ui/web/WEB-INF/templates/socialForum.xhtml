@@ -24,7 +24,9 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
         <b:form id="forumForm">
             <b:poll id="searchPoll"
@@ -127,17 +129,19 @@
                                             var="posting">
 
                                             <b:row>
-                                                <b:column span="8">
+                                                <b:column span="6">
                                                     <h:outputText
                                                         value="#{posting.getUserTag()}"
                                                         styleClass="userStyle"/> 
                                                 </b:column>
 
-                                                <b:column span="4">
-                                                    <h:outputText value="#{posting.getCreated()}">
-                                                        <f:convertDateTime
-                                                            pattern="dd-MM-yyyy HH:mm"
-                                                            timeZone="CET"/></h:outputText>
+                                                <b:column span="6">
+                                                    <h:outputFormat value="{0} ({1})">
+                                                        <o:param
+                                                            value="#{posting.created}"
+                                                            converter="org.ocpsoft.PrettyTimeConverter" />
+                                                        <o:param value="#{nwc:formatDateWithTimezone(posting.created)}" />
+                                                    </h:outputFormat>
                                                 </b:column>
                                             </b:row>
                                             <b:row>
