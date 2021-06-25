@@ -64,7 +64,6 @@ public class StorageInformationBuilderTest extends TestBase {
 
     @Before
     public void init() {
-        super.setUp();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = creationTools.createAndSaveProject("StorageClassControllerTest_project");

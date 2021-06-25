@@ -221,8 +221,7 @@ public class ContainerEditBeanTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
+    public void init() {
         entityManagerService.doSqlUpdate("DELETE FROM containers");
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         bean = new ContainerEditBeanMock()

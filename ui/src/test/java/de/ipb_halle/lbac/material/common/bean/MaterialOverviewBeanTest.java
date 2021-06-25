@@ -82,8 +82,7 @@ public class MaterialOverviewBeanTest extends TestBase {
     private IndexService indexService;
     
     @Before
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("h-statement", "p-statement", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);

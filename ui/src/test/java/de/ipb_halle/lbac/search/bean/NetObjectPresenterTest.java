@@ -62,9 +62,7 @@ public class NetObjectPresenterTest extends TestBase {
     private NetObjectPresenter presenter;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         netObjects = netObjectFactory.createNetObjects();
         presenter = new NetObjectPresenter(new User(), new MessagePresenterMock());
     }

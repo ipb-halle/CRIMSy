@@ -94,10 +94,7 @@ public class ContainerServiceTest extends TestBase {
     private ItemService itemService;
 
     @Before
-    @Override
-    public void setUp() {
-
-        super.setUp();
+    public void init() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));

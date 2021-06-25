@@ -67,8 +67,7 @@ public class ForumServiceTest extends TestBase {
     }
 
     @Before
-    public void setUp() {
-        super.setUp();
+    public void init() {
         entityManagerService.doSqlUpdate("DELETE FROM postings");
         entityManagerService.doSqlUpdate("DELETE FROM topics");
         entityManagerService.doSqlUpdate("DELETE FROM cloud_nodes WHERE id>1");

@@ -50,9 +50,7 @@ public class InputValidatorTest extends TestBase {
     private MessagePresenterMock messagePresenter;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         validator = new InputValidator(containerService);
         validator.setContainerService(containerService);
         messagePresenter = new MessagePresenterMock();

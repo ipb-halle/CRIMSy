@@ -103,9 +103,7 @@ public class ItemServiceTest extends TestBase {
             + "false,%d)";
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
         cleanItemsFromDb();

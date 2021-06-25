@@ -90,9 +90,7 @@ public class ItemOverviewBeanTest extends TestBase {
     protected ContainerCreator containerCreator;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         user = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         containerCreator = new ContainerCreator(entityManagerService, containerService);

@@ -38,6 +38,7 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,9 +62,8 @@ public class CollectionBeanTest extends TestBase {
     
     private CollectionBean bean;
     
-    @Override
-    public void setUp() {
-        super.setUp();
+    @Before
+    public void init() {
         bean = new CollectionBeanMock()
                 .setCollectionService(collectionService)
                 .setFileService(fileService)
@@ -88,7 +88,7 @@ public class CollectionBeanTest extends TestBase {
         Assert.assertEquals(publicUser.getId(), bean.getCurrentAccount().getId());
     }
     
-    @Ignore("Due to some problems with the test database")
+    //@Ignore("Due to some problems with the test database")
     @Test
     public void test002_actionCreate() {
         LoginEvent logInEvent = new LoginEvent(publicUser);

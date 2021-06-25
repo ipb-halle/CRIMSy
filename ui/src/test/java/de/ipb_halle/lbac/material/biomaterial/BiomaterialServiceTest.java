@@ -78,9 +78,7 @@ public class BiomaterialServiceTest extends TestBase {
     private CreationTools creationTools;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         // Initialisieng the userbean for ownership of material
         UserBeanMock userBean = new UserBeanMock();

@@ -90,9 +90,7 @@ public class SearchBeanTest extends TestBase {
     private SearchOrchestrator orchestrator;
     
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         netObjects = factory.createNetObjects();
         publicUser = context.getPublicAccount();
         documentCreator = new DocumentCreator(

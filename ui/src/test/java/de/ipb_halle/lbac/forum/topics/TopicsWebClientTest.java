@@ -62,8 +62,7 @@ public class TopicsWebClientTest extends TestBase {
     }
 
     @Before
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
     }

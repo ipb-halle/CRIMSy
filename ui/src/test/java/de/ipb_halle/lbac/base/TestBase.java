@@ -161,7 +161,7 @@ public class TestBase implements Serializable {
     }
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
 
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");

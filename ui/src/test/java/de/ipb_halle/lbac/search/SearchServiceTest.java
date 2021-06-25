@@ -139,9 +139,7 @@ public class SearchServiceTest extends TestBase {
     private Container room, cupboard, rack;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         localNode = nodeService.getLocalNode();
         cleanAllProjectsFromDb();
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();

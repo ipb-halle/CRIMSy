@@ -107,7 +107,6 @@ public class MaterialBeanTest extends TestBase {
 
     @Before
     public void init() {
-        super.setUp();
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         ACList publicReadAcl = GlobalAdmissionContext.getPublicReadACL();

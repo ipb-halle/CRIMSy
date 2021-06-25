@@ -43,9 +43,7 @@ public class FileUploadWebServiceTest extends TestBase {
     protected User publicUser;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
 
