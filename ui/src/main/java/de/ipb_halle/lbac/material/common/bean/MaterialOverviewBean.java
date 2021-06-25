@@ -240,6 +240,15 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         }
         return "";
     }
+    
+    public boolean hasHazard(Material m,int hazardId){
+         for (HazardType h : m.getHazards().getHazards().keySet()) {
+            if (h.getId() == hazardId) {
+                return true;
+            }
+        }
+         return false;
+    }
 
     public boolean isRadioactive(Material m) {
         for (HazardType ht : m.getHazards().getHazards().keySet()) {
