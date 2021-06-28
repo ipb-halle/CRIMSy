@@ -44,14 +44,14 @@
                         <b:container>
                             <b:row>
                                 <b:column>
-                                    <h:outputText value="Suchfilter"
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_title}"
                                                   styleClass="searchFilterHeader"/>
                                 </b:column>
                             </b:row>    
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="Materialname"
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_materialName}"
                                                   />
                                 </b:column>
                             </b:row>
@@ -67,7 +67,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="Gebindenummer"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_label}"/>
                                 </b:column>
                             </b:row>
                             <b:row
@@ -81,7 +81,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="User"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_user}"/>
                                 </b:column>
                             </b:row>
                             <b:row
@@ -96,7 +96,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="Project"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_project}"/>
                                 </b:column>
                             </b:row>
                             <b:row
@@ -111,7 +111,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="Standort"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_location}"/>
                                 </b:column>
                             </b:row>  
                             <b:row
@@ -127,7 +127,7 @@
                             <b:row
                                 styleClass="itemFilterRow">
                                 <b:column span="2">
-                                    <h:outputText value="Bemerkungen"/>
+                                    <h:outputText value="#{msgs.itemOverview_searchFilter_remarks}"/>
                                 </b:column>
                             </b:row>
                             <b:row
@@ -143,7 +143,7 @@
                                     styleClass="itemFilterButtonColumn">
                                     <b:commandButton 
                                         styleClass="itemFilterButton"
-                                        value="Clear"
+                                        value="#{msgs.itemOverview_searchFilter_clear}"
                                         ajax="true"
                                         update="itemForm"
                                         onclick="ajax:itemOverviewBean.actionClearSearchFilter();"/>
@@ -153,7 +153,7 @@
                                     styleClass="itemFilterButtonColumn itemFilterButtonRight">
                                     <b:commandButton 
                                         styleClass="itemFilterButton"
-                                        value="Search"
+                                        value="#{msgs.itemOverview_searchFilter_search}"
                                         update="itemForm"
                                         ajax="true"
                                         onclick="ajax:itemOverviewBean.actionApplySearchFilter();"/>
@@ -330,15 +330,6 @@
                     </b:column> 
                 </b:row>
             </b:container>
-
-
-
-
-
-
-
-
         </b:form>
     </h:body>
-
 </html>
