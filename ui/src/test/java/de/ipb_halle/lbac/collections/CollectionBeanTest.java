@@ -88,7 +88,7 @@ public class CollectionBeanTest extends TestBase {
         Assert.assertEquals(publicUser.getId(), bean.getCurrentAccount().getId());
     }
     
-    //@Ignore("Due to some problems with the test database")
+    @Ignore("Due to some problems with the test database")
     @Test
     public void test002_actionCreate() {
         LoginEvent logInEvent = new LoginEvent(publicUser);
