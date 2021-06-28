@@ -68,16 +68,18 @@ public class SecureWebClientBuilder {
          * @param session the session
          * @return this method will always return true
          */
+        @Override
         public boolean verify(String hostname, SSLSession session) {
+            
             return true;
         }
     }
 
     /**
-     * createCollection a webclient using the SSLContext of this class. basePath
-     * and localPath are just concatenated.
+     * createCollection a webclient using the SSLContext of this class.basePath
+ and localPath are just concatenated.
      *
-     * @param basePath a base URL (e.g. https://www.somewhere.invalid/ui)
+     * @param cloudNode
      * @param localPath an arbitrary suffix which is appended to the base URL
      * (e.g /rest/nodes)
      * @return a WebClient with dedicated SSLSocketFactory which is configured

@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.file;
 
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.collections.CollectionService;
 
 import java.util.HashMap;
@@ -32,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -48,43 +48,44 @@ public class FileDeleteWebService extends HttpServlet {
     @Inject
     private FileEntityService fileEntityService;
 
-    @Inject
-    private ACListService aclistService;
-
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
-        final HttpSession session = req.getSession();
-        final AsyncContext asyncContext = req.startAsync();
-        resp.setContentType("text/html");
-
-        //*** check session object for security ***
-        User user = (User) session.getAttribute("currentUser");
-        if (user == null) {
-            logger.warn("get user session object failed.");
-            resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-            return;
-        }
-
-        /**
-         * TODO: check DELETE access permission
-         */
         try {
-            Map<String, Object> cmap = new HashMap<String, Object>();
+            final HttpSession session = req.getSession();
+            final AsyncContext asyncContext = req.startAsync();
+            resp.setContentType("text/html");
 
-            //*** getting fileEntity ***
-            logger.info("file uuid: " + req.getPathInfo().substring(1));
-            cmap.put("id", req.getPathInfo().substring(1));
-            List<FileObject> fe = this.fileEntityService.load(cmap);
-
-            if ((fe != null) && (fe.size() > 0)) {
-                asyncContext.start(new FileDeleteExec(fe.get(0), fileEntityService, asyncContext));
-
-            } else {
-                this.logger.warn("doDelete(): could not obtain fileEntity");
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            //*** check session object for security ***
+            User user = (User) session.getAttribute("currentUser");
+            if (user == null) {
+                logger.warn("get user session object failed.");
+                resp.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                return;
             }
-        } catch (Exception e) {
-            this.logger.warn("doDelete() caught an exception: ", e);
+
+            /**
+             * TODO: check DELETE access permission
+             */
+            try {
+                Map<String, Object> cmap = new HashMap<>();
+
+                //*** getting fileEntity ***
+                logger.info("file uuid: " + req.getPathInfo().substring(1));
+                cmap.put("id", req.getPathInfo().substring(1));
+                List<FileObject> fe = this.fileEntityService.load(cmap);
+
+                if ((fe != null) && (fe.size() > 0)) {
+                    asyncContext.start(new FileDeleteExec(fe.get(0), fileEntityService, asyncContext));
+
+                } else {
+                    this.logger.warn("doDelete(): could not obtain fileEntity");
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                }
+            } catch (Exception e) {
+                this.logger.warn("doDelete() caught an exception: ", e);
+            }
+        } catch (IllegalStateException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 }

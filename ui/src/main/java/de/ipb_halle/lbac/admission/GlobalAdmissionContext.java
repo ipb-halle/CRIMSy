@@ -97,7 +97,7 @@ public class GlobalAdmissionContext implements Serializable {
     public GlobalAdmissionContext() {
         this.logger = LogManager.getLogger(this.getClass().getName());
         this.credentialHandler = new CredentialHandler();
-        this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo>();
+        this.intruderLockoutMap = new ConcurrentHashMap<>();
     }
 
     /**
