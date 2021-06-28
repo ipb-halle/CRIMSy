@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Class for storing the amount of total docs and average words length of nodes
@@ -31,7 +29,8 @@ import org.apache.logging.log4j.LogManager;
  */
 public class SearchStatistic implements Serializable {
 
-    private final Logger LOGGER = LogManager.getLogger(SearchStatistic.class);
+    private static final long serialVersionUID = 1L;
+
     private final Map<UUID, Integer[]> wordsInNode = new HashMap<>();
 
     /**
@@ -46,9 +45,8 @@ public class SearchStatistic implements Serializable {
             sumOfWords += entry[0];
             sumOfDocs += entry[1];
         }
-
-        for (UUID id : wordsInNode.keySet()) {
-            Integer[] entry = wordsInNode.get(id);
+        if (sumOfDocs == 0) {
+            return 0;
         }
         return (double) sumOfWords / (double) sumOfDocs;
     }
