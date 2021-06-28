@@ -156,10 +156,11 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNotNull(c0.getId());
         Assert.assertNotNull(c1.getId());
         Assert.assertNotNull(c2.getId());
-        Assert.assertEquals(3, (int) entityService.doSqlQuery("select * from containers").size());
+        
+        Assert.assertEquals(3,  entityService.doSqlQuery("select * from containers").size());
 
         List<Object> nestedContainer = entityService.doSqlQuery("select sourceid,targetid,nested from nested_containers order by sourceid,targetid");
-        Assert.assertEquals(3, (int) nestedContainer.size());
+        Assert.assertEquals(3, nestedContainer.size());
         int[] targetSources = new int[]{c1.getId(), c2.getId(), c2.getId()};
         int[] targetTargets = new int[]{c0.getId(), c0.getId(), c1.getId()};
         boolean[] targetNested = new boolean[]{false, true, false};
