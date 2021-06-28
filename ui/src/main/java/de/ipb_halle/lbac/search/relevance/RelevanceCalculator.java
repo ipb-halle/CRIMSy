@@ -33,6 +33,8 @@ import java.util.List;
  */
 public class RelevanceCalculator implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private StemmedWordGroup searchTerms;
     private final float k1 = 1.2f;
     private final float b = 0.75f;

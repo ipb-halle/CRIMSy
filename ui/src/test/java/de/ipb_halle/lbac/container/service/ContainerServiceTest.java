@@ -403,18 +403,18 @@ public class ContainerServiceTest extends TestBase {
         ArrayList<Object[]> i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
         Assert.assertEquals(5, i.size());
         // Container c1 is in c0
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[0]);
-        Assert.assertEquals(c0.getId(), (int) i.get(0)[1]);
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[0],0);
+        Assert.assertEquals(c0.getId(), (int) i.get(0)[1],0);
         // Container c2 is in c1 and indirect c0
-        Assert.assertEquals(c2.getId(), (int) i.get(1)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1]);
-        Assert.assertEquals(c2.getId(), (int) i.get(2)[0]);
-        Assert.assertEquals(c0.getId(), (int) i.get(2)[1]);
+        Assert.assertEquals(c2.getId(), (int) i.get(1)[0],0);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1],0);
+        Assert.assertEquals(c2.getId(), (int) i.get(2)[0],0);
+        Assert.assertEquals(c0.getId(), (int) i.get(2)[1],0);
         // Container c3 is in c1 and indirect in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(3)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(3)[1]);
-        Assert.assertEquals(c3.getId(), (int) i.get(4)[0]);
-        Assert.assertEquals(c0.getId(), (int) i.get(4)[1]);
+        Assert.assertEquals(c3.getId(), (int) i.get(3)[0],0);
+        Assert.assertEquals(c1.getId(), (int) i.get(3)[1],0);
+        Assert.assertEquals(c3.getId(), (int) i.get(4)[0],0);
+        Assert.assertEquals(c0.getId(), (int) i.get(4)[1],0);
 
         //remove the link between c0 and c1
         c1.setParentContainer(null);
@@ -422,11 +422,11 @@ public class ContainerServiceTest extends TestBase {
         i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
         Assert.assertEquals(2, i.size());
         // Container c2 is in c1 and no more in c0
-        Assert.assertEquals(c2.getId(), (int) i.get(0)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[1]);
+        Assert.assertEquals(c2.getId(), (int) i.get(0)[0],0);
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[1],0);
         // Container c3 is in c1 and no more in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(1)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1]);
+        Assert.assertEquals(c3.getId(), (int) i.get(1)[0],0);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1],0);
     }
 
     @Test
