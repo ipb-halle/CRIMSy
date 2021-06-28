@@ -40,32 +40,34 @@ import org.apache.logging.log4j.LogManager;
 @WebServlet(name = "FileUploadWebService", urlPatterns = {"/uploaddocs/*"}, asyncSupported = true)
 @MultipartConfig(maxFileSize = 1024 * 1024 * 500, maxRequestSize = 1024 * 1024 * 1000)
 public class FileUploadWebService extends HttpServlet {
-    
+
     private final static long serialVersionUID = 1L;
     private final static long UPLOAD_TIMEOUT = 30L * 60L * 1000L;
     private final String FILTER_DEFINITION = "fileParserFilterDefinition.json";
-    
+
     private final Logger logger = LogManager.getLogger(FileUploadWebService.class);
-    
+
     @Inject
     private CollectionService collectionService;
-    
+
     @Inject
     private FileEntityService fileEntityService;
-    
+
     @Inject
     private TermVectorEntityService termVectorEntityService;
-    
+
     @Inject
     private UserBean userBean;
-    
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        final AsyncContext asyncContext = req.startAsync();
+        AsyncContext asyncContext = null;
         try {
+            asyncContext = req.startAsync();
+
             //*** set timeout to 30 minutes
             asyncContext.setTimeout(UPLOAD_TIMEOUT);
-            
+
             asyncContext.start(new UploadToCol(
                     this.getClass().getResourceAsStream(FILTER_DEFINITION),
                     fileEntityService,
@@ -75,11 +77,13 @@ public class FileUploadWebService extends HttpServlet {
                     termVectorEntityService));
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
-            asyncContext.complete();
+            if (asyncContext != null) {
+                asyncContext.complete();
+            }
         }
-        
+
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         try {
