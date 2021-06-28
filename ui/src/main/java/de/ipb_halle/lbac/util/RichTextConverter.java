@@ -72,7 +72,7 @@ public class RichTextConverter implements Converter {
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
         // this.logger.info("getAsObject(): {}", string);
-        return policy.sanitize(string);
+        return string == null ? null : policy.sanitize(string);
     }
 
     @Override
