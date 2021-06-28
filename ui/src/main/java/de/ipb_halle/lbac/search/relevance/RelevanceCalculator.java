@@ -62,6 +62,9 @@ public class RelevanceCalculator implements Serializable {
             d.setRelevance(0);
             for (String word : searchTerms.getAllStemmedWords()) {
                 double docsWithHit = getDocAmountWithHit(docsToUpdate, word);
+                if(docsWithHit==0){
+                    continue;
+                }
                 double idf = Math.log10(1 + (totalDocuments / docsWithHit));
                 int fq = d.getTermFreqList().getFreqOf(word);
                 if (fq > 0) {
