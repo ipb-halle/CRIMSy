@@ -37,19 +37,20 @@ public class ChemistryParser {
         IAtomContainer cdkMolecule;
 
         ReaderFactory factory = new ReaderFactory();
-        ISimpleChemObjectReader reader = factory.createReader(
+        try (ISimpleChemObjectReader reader = factory.createReader(
                 new StringReader(
-                        moleculeString));
+                        moleculeString))) {
+            if (reader == null) {
+                IteratingSMILESReader ireader = new IteratingSMILESReader(
+                        new StringReader(moleculeString),
+                        DefaultChemObjectBuilder.getInstance());
 
-        if (reader == null) {
-            IteratingSMILESReader ireader = new IteratingSMILESReader(
-                    new StringReader(moleculeString),
-                    DefaultChemObjectBuilder.getInstance());
+                cdkMolecule = ireader.next();
+            } else {
+                cdkMolecule = reader.read(new AtomContainer());
+            }
 
-            cdkMolecule = ireader.next();
-        } else {
-            cdkMolecule = reader.read(new AtomContainer());
+            return cdkMolecule;
         }
-        return cdkMolecule;
     }
 }

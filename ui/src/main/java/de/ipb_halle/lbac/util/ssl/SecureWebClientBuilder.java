@@ -54,7 +54,7 @@ public class SecureWebClientBuilder {
      */
     private SecureWebClientBuilder() {
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.sslContext = new HashMap<String, SSLContext>();
+        this.sslContext = new HashMap<>();
     }
 
     /**
@@ -70,14 +70,14 @@ public class SecureWebClientBuilder {
          */
         @Override
         public boolean verify(String hostname, SSLSession session) {
-            
+
             return true;
         }
     }
 
     /**
      * createCollection a webclient using the SSLContext of this class.basePath
- and localPath are just concatenated.
+     * and localPath are just concatenated.
      *
      * @param cloudNode
      * @param localPath an arbitrary suffix which is appended to the base URL
@@ -87,7 +87,7 @@ public class SecureWebClientBuilder {
      */
     public static WebClient createWebClient(CloudNode cloudNode, String localPath) {
 
-        WebClient wc = WebClient.create(cloudNode.getNode().getBaseUrl()+localPath);
+        WebClient wc = WebClient.create(cloudNode.getNode().getBaseUrl() + localPath);
 
         ClientConfiguration cc = WebClient.getConfig(wc);
 
@@ -105,14 +105,9 @@ public class SecureWebClientBuilder {
     /**
      * @return returns the Singleton instance of this class
      */
-    private static SecureWebClientBuilder getInstance() {
-
+    private synchronized static SecureWebClientBuilder getInstance() {
         if (instance == null) {
-            synchronized (SecureWebClientBuilder.class) {
-                if (instance == null) {
-                    instance = new SecureWebClientBuilder();
-                }
-            }
+            instance = new SecureWebClientBuilder();
         }
         return instance;
     }
