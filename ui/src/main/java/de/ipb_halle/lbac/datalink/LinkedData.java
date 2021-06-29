@@ -130,7 +130,7 @@ public class LinkedData implements DTO {
 
     public String getItemLabel() {
         if (item != null) {
-            return item.getItemIdPlain();
+            return item.getLabel();
         }
         return "";
     }
