@@ -72,7 +72,9 @@ public class Validator {
     }
 
     private boolean containerWithPlaces(Container c) {
-        return c != null && c.getRows() > 0;
+        return c != null
+                && c.getRows() != null
+                && c.getRows() > 0;
     }
 
     public void setMessagePresenter(MessagePresenter messagePresenter) {
