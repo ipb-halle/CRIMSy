@@ -12,7 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tika.utils.ExceptionUtils;
 
-public class Messages {
+public abstract class Messages {
 
     private static final Logger logger = LogManager.getLogger("Messages");
 
