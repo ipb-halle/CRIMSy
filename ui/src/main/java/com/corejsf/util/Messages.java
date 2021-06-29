@@ -8,8 +8,13 @@ import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.tika.utils.ExceptionUtils;
 
 public class Messages {
+
+    private static final Logger logger = LogManager.getLogger("Messages");
 
     public static FacesMessage getMessage(String bundleName, String resourceId,
             Object[] params) {
@@ -50,7 +55,8 @@ public class Messages {
                 try {
                     resource = bundle.getString(resourceId);
                 } catch (MissingResourceException ex) {
-                    System.out.println("Messages.getString " + ex.getMessage());
+                    logger.error(ExceptionUtils.getStackTrace(ex));
+
                 }
             }
         }
@@ -61,7 +67,7 @@ public class Messages {
                 try {
                     resource = bundle.getString(resourceId);
                 } catch (MissingResourceException ex) {
-                    System.out.println("Messages.getString" + ex.getMessage());
+                    logger.error(ExceptionUtils.getStackTrace(ex));
                 }
             }
         }
