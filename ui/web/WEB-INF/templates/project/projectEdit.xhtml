@@ -35,13 +35,13 @@
             </ui:insert>
 
             <p:tabView>
-                <p:tab title="Projekt Rechte">
+                <p:tab title="#{msgs.projectEdit_projectRights_tabName}">
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/project/components/projectACLContainer.xhtml"/>
                     </ui:insert>
                 </p:tab>
                 <p:tab
-                    title="Schablone der Materialrechte ">
+                    title="#{msgs.projectEdit_materialRights_tabName}">
                     <ui:include src="/WEB-INF/templates/project/components/template_detailrights.xhtml">
                         <ui:param name="action" value="COMMON_INFORMATION"/>
                     </ui:include>
