@@ -67,7 +67,7 @@ public class AssayTest {
          assay.computeSinglePointBarChart();
     }
 
-    private BioMaterial createBioMaterial(String name) {
+    protected static BioMaterial createBioMaterial(String name) {
         return new BioMaterial(1, Arrays.asList(new MaterialName(name, "en", 0)), 0, new HazardInformation(), new StorageInformation(), null, null);
     }
 

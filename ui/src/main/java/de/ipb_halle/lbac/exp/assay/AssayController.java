@@ -113,10 +113,17 @@ public class AssayController extends ExpRecordController {
 
     @Override
     public boolean isDiagrammButtonVisible(Assay assay) {
+        if (!assay.getEdit()) {
+            return false;
+        }
         List<LinkedData> linkedData = assay.getLinkedData();
-        return linkedData.size() > 0 && !(linkedData.size() == 1
-                && linkedData.get(0).getMaterial() == null
-                && linkedData.get(0).getItem() == null);
+
+        // There needs to be at least one result. (n.b.: The first list element is the ASSAY_TARGET.)
+        if (linkedData.size() < 2) {
+            return false;
+        }
+
+        return (linkedData.get(0).getMaterial() != null) || (linkedData.get(0).getItem() != null);
     }
 
     @Override
