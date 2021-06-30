@@ -42,6 +42,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class AssayControllerTest extends TestBase {
 
+    // This implicitly tests ExpRecordController.isDiagrammButtonVisible(Assay).
     @Test
     public void test001_isDiagrammButtonVisible() {
         ExperimentBean bean = new ExperimentBean(
@@ -59,33 +60,22 @@ public class AssayControllerTest extends TestBase {
                 LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME,
                 42);
 
-        // Our assay is not in edit mode, thus the button is not visible.
+        // Assay has neither results nor a target material.
         assay = new Assay();
-        assay.setTarget(bioMaterial);
-        assay.getLinkedData().add(data);
-        Assert.assertFalse(assay.getEdit());
-        Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
-
-        // Assay is now in edit mode, but it has neither results nor a target material.
-        assay = new Assay();
-        assay.setEdit(true);
         Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
 
         // Add material to target, but no results.
         assay = new Assay();
-        assay.setEdit(true);
         assay.setTarget(bioMaterial);
         Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
 
         // Add a result record, but no material to the target.
         assay = new Assay();
-        assay.setEdit(true);
         assay.getLinkedData().add(data);
         Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
 
         // All conditions fulfilled, button is visible.
         assay = new Assay();
-        assay.setEdit(true);
         assay.setTarget(bioMaterial);
         assay.getLinkedData().add(data);
         Assert.assertTrue(controller.isDiagrammButtonVisible(assay));
