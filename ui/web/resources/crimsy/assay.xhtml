@@ -79,7 +79,8 @@
                                     <crimsy:materialView material="#{cc.attrs.assay.target}" />
                                     <p:commandLink title="#{msgs.expAssay_chooseTarget_tooltip}"
                                                    rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getAssayRecords().size() == 0)}"
-
+                                                   update="@(.dlgMaterialEdit)"
+                                                   action="#{cc.attrs.bean.expRecordController.clearDataFromAgents()}"
                                                    oncomplete="PF('dlg_materialEdit').show();"> 
                                         <span class="fa fa-cog"> </span>
                                     </p:commandLink>

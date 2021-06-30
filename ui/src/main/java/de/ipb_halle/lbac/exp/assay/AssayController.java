@@ -127,6 +127,7 @@ public class AssayController extends ExpRecordController {
     @Override
     public void setLinkedDataIndex(int index) {
         super.setLinkedDataIndex(index);
+        clearDataFromAgents();
         if (index < 0) {
             return;
         }
@@ -135,6 +136,11 @@ public class AssayController extends ExpRecordController {
                 .getLinkedData()
                 .get(index)
                 .getLinkedDataType());
+    }
+    
+    public void clearDataFromAgents(){
+        bean.getMaterialAgent().clearAgent();
+        bean.getItemAgent().clearAgent();
     }
 
     public void triggerAssayRecordEdit(LinkedData assayRecord) {

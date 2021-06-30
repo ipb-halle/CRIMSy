@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.exp.assay.Assay;
-import de.ipb_halle.lbac.exp.assay.AssayController;
 import de.ipb_halle.lbac.exp.assay.AssayService;
 import de.ipb_halle.lbac.exp.mocks.ExperimentBeanMock;
 import de.ipb_halle.lbac.exp.mocks.ItemAgentMock;
@@ -59,7 +58,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,6 +67,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class MaterialAgentTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     private User publicUser;
     private ACList publicReadAcl;
@@ -101,6 +101,17 @@ public class MaterialAgentTest extends TestBase {
     private Taxonomy taxo1;
     private Project project;
 
+    String benzene = "\n" + "Actelion Java MolfileCreator 1.0\n" + "\n"
+            + "  6  6  0  0  0  0  0  0  0  0999 V2000\n"
+            + "    5.9375  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    5.9375  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    7.2365  -12.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    8.5356  -11.5000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    8.5356  -10.0000   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n"
+            + "    7.2365   -9.2500   -0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0\n" + "  1  2  2  0  0  0  0\n"
+            + "  2  3  1  0  0  0  0\n" + "  3  4  2  0  0  0  0\n" + "  4  5  1  0  0  0  0\n"
+            + "  5  6  2  0  0  0  0\n" + "  6  1  1  0  0  0  0\n" + "M  END";
+
     @Before
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
@@ -109,8 +120,6 @@ public class MaterialAgentTest extends TestBase {
         createTaxonomyTreeInDB(publicReadAcl.getId(), publicUser.getId());
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-
-     
 
         materialAgent = new MaterialAgentMock();
         materialAgent.setGlobalAdmissionContext(context);
@@ -156,7 +165,7 @@ public class MaterialAgentTest extends TestBase {
     }
 
     @Test
-    public void testLoadMaterials() {
+    public void test001_actionTriggerMaterialSearch() {
         holder.setLinkedDataIndex(0);   // select the assay target record
         List<Material> materials = materialAgent.getMaterialList();
 
@@ -176,6 +185,32 @@ public class MaterialAgentTest extends TestBase {
         materialAgent.actionTriggerMaterialSearch();
         materials = materialAgent.getMaterialList();
         Assert.assertEquals("materials list size should be 5", 5, materials.size());
+
+        materialAgent.clearAgent();
+        materialAgent.setMoleculeSearch(benzene);
+        Assert.assertEquals(benzene, materialAgent.getMoleculeSearch());
+        materialAgent.actionTriggerMaterialSearch();
+        Assert.assertEquals(0, materialAgent.getMaterialList().size());
+
+        materialAgent.clearAgent();
+        materialAgent.setMaterialSearch("Cat");
+        Assert.assertEquals("Cat", materialAgent.getMaterialSearch());
+        materialAgent.actionTriggerMaterialSearch();
+        Assert.assertEquals(2, materialAgent.getMaterialList().size());
+
+    }
+
+    @Test
+    public void test002_actionSetMaterial() {
+
+        MaterialHolder materialHolder = materialAgent.getMaterialHolder();
+
+        holder.setLinkedDataIndex(0);   // select the assay target record
+        createBiomaterial(taxo1, project, "BioMat1", "Mouse Kidney");
+        materialAgent.actionTriggerMaterialSearch();
+        materialAgent.actionSetMaterial(materialAgent.getMaterialList().get(0));
+
+        Assert.assertEquals(materialAgent.getMaterialList().get(0).getId(), materialHolder.getMaterial().getId());
 
     }
 
@@ -210,7 +245,7 @@ public class MaterialAgentTest extends TestBase {
         Map<MaterialDetailType, ACList> rights = new HashMap<>();
         rights.put(MaterialDetailType.INDEX, publicReadAcl);
         biomaterial.getDetailRights().add(detailRight);
-        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), rights,publicUser);
+        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), rights, publicUser);
         return biomaterial;
 
     }
