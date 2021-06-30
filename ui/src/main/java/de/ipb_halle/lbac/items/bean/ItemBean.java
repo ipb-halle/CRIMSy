@@ -47,13 +47,10 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.cxf.jaxrs.utils.ExceptionUtils;
@@ -68,6 +65,8 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 @Named
 public class ItemBean implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     private ItemState state;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
