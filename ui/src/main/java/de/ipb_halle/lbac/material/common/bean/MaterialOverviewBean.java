@@ -126,6 +126,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         currentUser = evt.getCurrentAccount();
         tableController.setLastUser(currentUser);
         searchController.clearInputFields();
+        searchController.actionStartMaterialSearch();
 
     }
 

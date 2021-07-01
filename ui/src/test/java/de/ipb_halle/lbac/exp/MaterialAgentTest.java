@@ -74,14 +74,10 @@ public class MaterialAgentTest extends TestBase {
     private MaterialAgentMock materialAgent;
     private UserBeanMock userBean;
 
-    @Inject
-    private ProjectService projectService;
 
     @Inject
     private MaterialService materialService;
 
-    @Inject
-    private GlobalAdmissionContext context;
 
     @Inject
     private ExpRecordService expRecordService;
