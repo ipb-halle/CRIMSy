@@ -36,6 +36,10 @@
             <var>msgs</var>
         </resource-bundle>
     </application>
+    <converter>
+        <converter-for-class>java.lang.String</converter-for-class>
+        <converter-class>org.omnifaces.converter.TrimConverter</converter-class>
+    </converter>
     <factory>
         <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
     </factory>

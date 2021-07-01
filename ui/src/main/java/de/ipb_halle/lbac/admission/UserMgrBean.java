@@ -375,7 +375,7 @@ public class UserMgrBean implements Serializable {
      * whitespace!
      */
     public void setTempPassword(String p) {
-        this.tempPassword = p.trim();
+        this.tempPassword = p;
     }
 
     /**

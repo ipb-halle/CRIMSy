@@ -114,12 +114,15 @@
                         </b:inputText>
                         <b:message for="@previous"/>
 
-                        <b:inputSecret value="#{userMgrBean.tempPassword}"
-                                     styleClass="tstUserMgrPassword"
-                                     label="#{msgs.Password}"
-                                     renderLabel="true"
-                                     rendered="#{userMgrBean.mode == 'CREATE'}"
-                                     placeholder="#{msgs.userMgr_PasswordPlaceholder}" required="true">
+                        <b:inputSecret
+                            value="#{userMgrBean.tempPassword}"
+                            styleClass="tstUserMgrPassword"
+                            label="#{msgs.Password}"
+                            renderLabel="true"
+                            rendered="#{userMgrBean.mode == 'CREATE'}"
+                            placeholder="#{msgs.userMgr_PasswordPlaceholder}"
+                            required="true"
+                            converter="DummyConverter">
                             <f:validator validatorId="PasswordValidator" /> 
                             <f:facet name="prepend">
                                 <b:iconAwesome name="fa-key"/>
@@ -128,12 +131,15 @@
                         <b:message for="@previous"/>
 
                         <!-- value="" -->
-                        <b:inputSecret id="tempPasswordRepeat"
-                                     label="#{msgs.userMgr_Repeat}"
-                                     styleClass="tstUserMgrPasswordRepeat"
-                                     renderLabel="true"
-                                     rendered="#{userMgrBean.mode == 'CREATE'}"
-                                     placeholder="#{msgs.userMgr_RepeatPlaceholder}" required="true">
+                        <b:inputSecret
+                            id="tempPasswordRepeat"
+                            label="#{msgs.userMgr_Repeat}"
+                            styleClass="tstUserMgrPasswordRepeat"
+                            renderLabel="true"
+                            rendered="#{userMgrBean.mode == 'CREATE'}"
+                            placeholder="#{msgs.userMgr_RepeatPlaceholder}"
+                            required="true"
+                            converter="DummyConverter">
                             <f:facet name="prepend">
                                 <b:iconAwesome name="fa-key"/>
                             </f:facet>
@@ -189,10 +195,14 @@
                 <b:form id="frmModalPassword" rendered="#{((userMgrBean.mode == 'UPDATE') and (userMgrBean.user.getSubSystemType().toString() == 'LOCAL'))}">
                     <b:panel title="#{msgs.userMgr_ChangePassword}" collapsible="false" look="primary">
 
-                        <b:inputSecret value="#{userMgrBean.tempPassword}" label="#{msgs.userMgr_NewPassword}"
-                                       styleClass="tstUserMgrChgPasswd1"
-                                       placeholder="#{msgs.userMgr_NewPasswordPlaceholder}" renderLabel="true"
-                                       required="true">
+                        <b:inputSecret
+                            value="#{userMgrBean.tempPassword}"
+                            label="#{msgs.userMgr_NewPassword}"
+                            styleClass="tstUserMgrChgPasswd1"
+                            placeholder="#{msgs.userMgr_NewPasswordPlaceholder}"
+                            renderLabel="true"
+                            required="true"
+                            converter="DummyConverter">
                             <f:validator validatorId="PasswordValidator" />
                             <f:facet name="prepend">
                                 <b:iconAwesome name="fa-key"/>
@@ -200,12 +210,15 @@
                         </b:inputSecret>
                         <b:message for="@previous"/>
 
-                        <b:inputSecret id="tempPasswordRepeat" 
-                                       value="#{tempPasswordRepeat}"
-                                       styleClass="tstUserMgrChgPasswd2"
-                                       label="#{msgs.userMgr_Repeat}"
-                                       placeholder="#{msgs.userMgr_RepeatPlaceholder}" renderLabel="true"
-                                       required="true">
+                        <b:inputSecret
+                            id="tempPasswordRepeat" 
+                            value="#{tempPasswordRepeat}"
+                            styleClass="tstUserMgrChgPasswd2"
+                            label="#{msgs.userMgr_Repeat}"
+                            placeholder="#{msgs.userMgr_RepeatPlaceholder}"
+                            renderLabel="true"
+                            required="true"
+                            converter="DummyConverter">
                             <f:facet name="prepend">
                                 <b:iconAwesome name="fa-key"/>
                             </f:facet>

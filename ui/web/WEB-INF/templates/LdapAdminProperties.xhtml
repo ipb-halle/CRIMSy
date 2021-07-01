@@ -38,7 +38,11 @@
                         <b:focus rendered="true"/>
                     </b:inputText>
                     <b:message for="@previous"/>
-                    <b:inputSecret value="#{ldapTestBean.ldapPassword}" label="#{msgs.admission_loginForm_password}" required="true">
+                    <b:inputSecret
+                        value="#{ldapTestBean.ldapPassword}"
+                        label="#{msgs.admission_loginForm_password}"
+                        required="true"
+                        converter="DummyConverter">
                         <f:facet name="prepend">
                             <b:icon name="ok"/>
                         </f:facet>
@@ -76,11 +80,14 @@
                             </f:facet>
                         </b:inputText>
                         <b:inputSecret
-                                rendered="#{p.key == 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
-                                disabled="#{!ldapProps.ldapEnabled}"
-                                label="#{msgs[p.key]}:"
-                                title="#{msgs[p.key.concat('_detail')]}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{p.value}" colMd="7">
+                            rendered="#{p.key == 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
+                            disabled="#{!ldapProps.ldapEnabled}"
+                            label="#{msgs[p.key]}:"
+                            title="#{msgs[p.key.concat('_detail')]}"
+                            labelColMd="4" labelStyle="text-align:right;"
+                            value="#{p.value}"
+                            colMd="7"
+                            converter="DummyConverter">
                             <f:facet name="append">
                                 <b:iconAwesome name="key"/>
                             </f:facet>
