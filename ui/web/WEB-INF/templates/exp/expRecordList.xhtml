@@ -33,7 +33,7 @@
         <ui:repeat value="#{experimentBean.expRecordsWithNullRecord}" var="rec" varStatus="recStatus">
             <b:container class="experimentRecordContainer">
                 <b:row
-                    styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}">
+                    styleClass="#{experimentBean.getExpRecordStyle(rec, recStatus.even)}">
                     <b:column span="10">
                         <!-- Not rendered if this is the last record (= NullRecord) or this is a new record. -->
                     	<h:panelGroup rendered="#{!recStatus.last and !rec.newRecord}">
@@ -51,7 +51,7 @@
                             </h:outputFormat>
                         </h:panelGroup>
                         <!--
-            <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
+            <div class="#{experimentBean.getExpRecordStyle(rec, recStatus.even)}"
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
 
                     </b:column>
@@ -113,21 +113,21 @@
                                 value="#{msgs.expText}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"
-                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                                oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expAssay}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"
-                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                                oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expImage}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"
-                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                                oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
                         </b:dropMenu>
                     </b:column>
                     <br/>
@@ -137,7 +137,7 @@
                     <b:column>
                         <h:panelGroup id="recordDetails" 
                                       layout="block"
-                                      styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
+                                      styleClass="#{experimentBean.getExpRecordStyle(rec, recStatus.even)}" >
                             <crimsy:assay assay="#{rec}"
                                           bean="#{experimentBean}"
                                           rendered="#{rec.facelet eq 'ASSAY'}" />
@@ -175,6 +175,7 @@
                                     styleClass="rightAligned"
                                     value="#{msgs.Save}"
                                     onclick="#{experimentBean.saveButtonOnClick}"
+                                    oncomplete="#{scrollBean.scrollToCSS('expRecordLastSaved', -100)}"
                                     action="#{experimentBean.expRecordController.actionSaveRecord}"
                                     update="@form growlMsg @(.assayTargetRow)" />
                             </p:column>
