@@ -33,10 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tika.utils.ExceptionUtils;
+
 
 /**
  * Bean for interacting with the ui to present and manipulate a experiments

@@ -70,7 +70,6 @@ public class MaterialAgentTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
 
-    private User publicUser;
     private ACList publicReadAcl;
     private MaterialAgentMock materialAgent;
     private UserBeanMock userBean;
