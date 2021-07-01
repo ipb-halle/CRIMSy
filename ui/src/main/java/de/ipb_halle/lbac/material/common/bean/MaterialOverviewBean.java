@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
@@ -56,6 +57,8 @@ import org.apache.logging.log4j.Logger;
 @SessionScoped
 @Named
 public class MaterialOverviewBean implements Serializable, ACObjectBean {
+
+    private static final long serialVersionUID = 1L;
 
     private ACObjectController acObjectController;
     private User currentUser;
@@ -241,14 +244,14 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         }
         return "";
     }
-    
-    public boolean hasHazard(Material m,int hazardId){
-         for (HazardType h : m.getHazards().getHazards().keySet()) {
+
+    public boolean hasHazard(Material m, int hazardId) {
+        for (HazardType h : m.getHazards().getHazards().keySet()) {
             if (h.getId() == hazardId) {
                 return true;
             }
         }
-         return false;
+        return false;
     }
 
     public boolean isRadioactive(Material m) {
@@ -267,5 +270,16 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     public String getLocalizedMaterialType(Material m) {
         return messagePresenter.presentMessage(
                 "search_category_" + m.getType());
+    }
+
+    public boolean hasAccessRight(Material m, String accessRight) {
+        try {
+            ACPermission permission = ACPermission.valueOf(accessRight);
+            return materialService.getAcListService().isPermitted(permission, m, currentUser);
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            return false;
+        }
+
     }
 }

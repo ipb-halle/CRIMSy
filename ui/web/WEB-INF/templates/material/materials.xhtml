@@ -120,6 +120,7 @@
                                                          look="link"
                                                          type="submit"
                                                          ajax="false"
+                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permCREATE')}"
                                                          action="#{materialOverviewBean.actionCreateNewItem(material)}"
                                                          tooltip="#{msgs.materialOverview_actions_createItem}"
                                                          />
@@ -130,12 +131,12 @@
                                                          look="link"
                                                          ajax="true"
                                                          process="@this"
-                                                         tooltip="#{msgs.materialOverview_actions_changeRights}"
+                                                         tooltip="#{msgs.materialOverview_actions_changeRights}"                                                         
                                                          update="@(.acoEditModal)"
                                                          type="button"
                                                          action="#{materialOverviewBean.actionStartAclChange(material)}"
                                                          oncomplete="PF('dlgAcl').show();"
-                                                         disabled="false"/>
+                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permGRANT')}"/>
 
 
                                         <b:commandButton style="padding: 0 4px;"
@@ -144,6 +145,7 @@
                                                          type="button"
                                                          ajax="true"
                                                          update="@form"
+                                                         disabled="#{!materialOverviewBean.hasAccessRight(material,'permDELETE')}"
                                                          onclick="ajax:materialOverviewBean.actionDeactivateMaterial(material);"
                                                          tooltip="#{msgs.materialOverview_actions_deactivate}"
                                                          />
