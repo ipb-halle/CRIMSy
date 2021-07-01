@@ -40,7 +40,7 @@ public class ScrollBean {
         StringBuilder sb = new StringBuilder(256);
 
         sb.append("$('.").append(cssClass)
-                .append("').get()[0].scrollIntoView(true);");
+                .append("').get()[0]?.scrollIntoView(true);");
         if (offset != 0) {
             sb.append("window.scrollBy(0,").append(offset).append(");");
         }

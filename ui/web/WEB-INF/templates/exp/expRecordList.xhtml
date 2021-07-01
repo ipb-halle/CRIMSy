@@ -87,7 +87,8 @@
                                        disabled="#{experimentBean.expRecordButtonsDisabled}"
                                        rendered="#{experimentBean.areLinksAddable(rec)}"
                                        action="#{experimentBean.actionStartLinkCreation(rec)}"
-                                       oncomplete="PF('dlg_createLink').show();
+                                       oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}
+                                           PF('dlg_createLink').show();
                                            if (typeof dlg_createLink_panelMaterialEdit_molEditor !== 'undefined'
                                                    &amp;&amp; dlg_createLink_panelMaterialEdit_molEditor != null)
                                            {dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());}"
@@ -99,7 +100,8 @@
                                        styleClass="experimentRecordButton"
                                        rendered="#{rec.facelet != 'NULL'}"
                                        disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                       action="#{experimentBean.actionEditRecord(rec)}">
+                                       action="#{experimentBean.actionEditRecord(rec)}"
+                                       oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" >
                             <h:outputText styleClass="fa fa-pencil" />
                         </p:commandLink>
                         <b:dropMenu value="#{msgs.expRecord_newRecord_button}" 
@@ -175,7 +177,8 @@
                                     styleClass="rightAligned"
                                     value="#{msgs.Save}"
                                     onclick="#{experimentBean.saveButtonOnClick}"
-                                    oncomplete="#{scrollBean.scrollToCSS('expRecordLastSaved', -100)}"
+                                    oncomplete="if (OmniFaces.Ajax.data.validationFailed) { #{scrollBean.scrollToCSS('expRecordEdit', -100)} }
+                                                else { #{scrollBean.scrollToCSS('expRecordLastSaved', -100)} }"
                                     action="#{experimentBean.expRecordController.actionSaveRecord}"
                                     update="@form growlMsg @(.assayTargetRow)" />
                             </p:column>

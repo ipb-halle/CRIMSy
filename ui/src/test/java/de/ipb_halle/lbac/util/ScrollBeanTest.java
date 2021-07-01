@@ -28,11 +28,11 @@ public class ScrollBeanTest {
     @Test
     public void test001_scrollToCSS() {
         ScrollBean bean = new ScrollBean();
-        assertEquals("$('.myClass').get()[0].scrollIntoView(true);",
+        assertEquals("$('.myClass').get()[0]?.scrollIntoView(true);",
                 bean.scrollToCSS("myClass"));
-        assertEquals("$('.myClass').get()[0].scrollIntoView(true);",
+        assertEquals("$('.myClass').get()[0]?.scrollIntoView(true);",
                 bean.scrollToCSS("myClass", 0));
-        assertEquals("$('.myClass').get()[0].scrollIntoView(true);window.scrollBy(0,42);",
+        assertEquals("$('.myClass').get()[0]?.scrollIntoView(true);window.scrollBy(0,42);",
                 bean.scrollToCSS("myClass", 42));
     }
 }

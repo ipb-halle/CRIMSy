@@ -775,6 +775,7 @@ public class ExperimentBean implements Serializable, ACObjectBean {
      * @return
      */
     public ExpRecord saveExpRecord(ExpRecord record) {
+        lastSavedExpRecord = null;
         lastSavedExpRecord = this.expRecordService.save(record, currentUser);
         return lastSavedExpRecord;
     }
