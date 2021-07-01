@@ -250,7 +250,7 @@ public class ContainerEditBeanTest extends TestBase {
     }
 
     private void checkCleanState() {
-        Assert.assertEquals(5, bean.getContainerTypesWithRankGreaterZero().size());
+        Assert.assertEquals(6, bean.getContainerTypesWithRankGreaterZero().size());
         Assert.assertNull(bean.getContainerName());
         Assert.assertNull(bean.getContainerHeight());
         Assert.assertNull(bean.getContainerWidth());
