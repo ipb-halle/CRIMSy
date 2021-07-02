@@ -43,6 +43,7 @@ import org.apache.logging.log4j.LogManager;
 public class GroupMgrBean implements Serializable {
 
     private MessagePresenter messagePresenter;
+    private String oldGroupName;
 
     private enum MODE {
         CREATE, READ, UPDATE, DELETE
@@ -160,6 +161,11 @@ public class GroupMgrBean implements Serializable {
     }
 
     public void actionUpdate() {
+        if (mode == MODE.UPDATE) {
+            if (this.group.getName().equals(oldGroupName)) {
+                return;
+            }
+        }
         if (groupNameValidator.isGroupNameValide(this.group.getName())) {
             this.memberService.save(this.group);
             messagePresenter.info("groupMgr_group_edited");
@@ -319,6 +325,7 @@ public class GroupMgrBean implements Serializable {
      * set the currently selected group instance
      */
     public void setGroup(Group g) {
+        oldGroupName = g.getName();
         this.group = g;
     }
 
