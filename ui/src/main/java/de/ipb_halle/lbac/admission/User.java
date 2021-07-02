@@ -112,6 +112,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     @Override
     public void obfuscate() {
         super.obfuscate();
+        this.shortcut=null;
         this.password = null;
     }
 
