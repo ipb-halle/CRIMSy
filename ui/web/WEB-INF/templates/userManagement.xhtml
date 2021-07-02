@@ -78,12 +78,14 @@
                                      label="#{msgs.userMgr_Login}"
                                      disabled="#{userMgrBean.user.getSubSystemType().toString() != 'LOCAL'}"
                                      renderLabel="true"
-                                     placeholder="#{msgs.userMgr_LoginPlaceholder}" required="true">
+                                     placeholder="#{msgs.userMgr_LoginPlaceholder}"
+                                     required="true">
                             <f:validator validatorId="AccountValidator" /> 
                             <f:facet name="prepend">
                                 <b:icon name="star"/>
                             </f:facet>
                         </b:inputText>
+                        <b:message for="@previous"/>
                         <b:inputText id="shortcut"
                                      value="#{userMgrBean.user.shortcut}"
                                      styleClass="tstUserMgrLogin"
@@ -96,7 +98,6 @@
                                 <b:icon name="star"/>
                             </f:facet>
                         </b:inputText>
-                        
                         <b:message for="@previous"/>
                         <b:inputText id="email"
                                      value="#{userMgrBean.user.email}"
