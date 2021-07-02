@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
@@ -322,6 +321,43 @@ public class MemberServiceTest extends TestBase {
         );
 
         entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user.getId());
+    }
+
+    @Test
+    public void test010_searchShortcut() {
+        User user1 = new User();
+        user1.setNode(nodeService.getLocalNode());
+        user1.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user1.setShortcut("abc");
+        user1 = memberService.save(user1);
+
+        User user2 = new User();
+        user2.setNode(nodeService.getLocalNode());
+        user2.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user2.setShortcut("abcd");
+        user2 = memberService.save(user2);
+
+        User user3 = new User();
+        user3.setNode(nodeService.getLocalNode());
+        user3.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user3.setShortcut("");
+        user3 = memberService.save(user3);
+
+
+        Map<String, Object> cmap = new HashMap<String, Object>();
+        cmap.put(MemberService.PARAM_SHORTCUT, "aBc");
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LOCAL);
+        List<User> users = memberService.loadUsers(cmap);
+
+        assertNotNull(users);
+        // only finds exact matches
+        assertEquals(1, users.size());
+        assertEquals(user1, users.get(0));
+        assertEquals("ABC", users.get(0).getShortcut());
+
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user1.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user2.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user3.getId());
     }
 
     private Group loadGroupByName(String name) {
