@@ -265,7 +265,7 @@ public class MemberServiceTest extends TestBase {
         String name = "test008_name";
         String pw = "test008_pw";
         String phone = "test008_phone";
-        String shortCut = "TEST008_SHORTCUT";
+        String shortCut = "TESTSHORTCUT";
         User user = new User();
         user.setEmail(email);
         user.setLogin(logIn);
@@ -300,27 +300,56 @@ public class MemberServiceTest extends TestBase {
     }
 
     @Test
-    public void test009_duplicateShortcut() {
-        User user = new User();
-        user.setNode(nodeService.getLocalNode());
-        user.setSubSystemType(AdmissionSubSystemType.LOCAL);
+    public void test009_shortcuts() {
+        User user1 = new User();
+        user1.setNode(nodeService.getLocalNode());
+        user1.setSubSystemType(AdmissionSubSystemType.LOCAL);
 
-        user.setShortcut("ABC");
-        user = memberService.save(user);
+        user1.setShortcut("ABC");
+        user1 = memberService.save(user1);
 
-        User anotherUser = new User();
-        anotherUser.setNode(nodeService.getLocalNode());
-        anotherUser.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        anotherUser.setShortcut("abc");
+        User user2 = new User();
+        user2.setNode(nodeService.getLocalNode());
+        user2.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user2.setShortcut("abc");
 
+        // duplicate shortcut -> unique constraint violation
         Assert.assertThrows(
                 EJBException.class,
                 () -> {
-                    memberService.save(anotherUser);
+                    memberService.save(user2);
                 }
         );
 
-        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user.getId());
+        User user3 = new User();
+        user3.setNode(nodeService.getLocalNode());
+        user3.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user3.setShortcut("A2C");
+
+        // does not match the only-letters regexp constraint
+        Assert.assertThrows(
+                EJBException.class,
+                () -> {
+                    memberService.save(user3);
+                }
+        );
+
+        User user4 = new User();
+        user4.setNode(nodeService.getLocalNode());
+        user4.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user4.setShortcut("");
+        User user5 = new User();
+        user5.setNode(nodeService.getLocalNode());
+        user5.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user5.setShortcut("");
+
+        // empty shortcut becomes NULL and has no constraint
+        memberService.save(user4);
+        memberService.save(user5);
+
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user1.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user4.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user5.getId());
     }
 
     @Test

@@ -57,6 +57,12 @@ public class ShortcutValidatorTest extends TestBase {
         validator.validate(fc, comp, null);
         validator.validate(fc, comp, "");
 
+        // Wrong patterns
+        assertThrows(ValidatorException.class,
+                () -> validator.validate(fc, comp, "A2B"));
+        assertThrows(ValidatorException.class,
+                () -> validator.validate(fc, comp, "A B"));
+
         // No relevant user in database, so this should work.
         validator.validate(fc, comp, "ghi");
 

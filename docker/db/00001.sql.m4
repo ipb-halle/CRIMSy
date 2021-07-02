@@ -157,7 +157,7 @@ CREATE TABLE usersGroups (
     email               VARCHAR,
     password            VARCHAR,
     phone               VARCHAR,
-    shortcut            VARCHAR CHECK (upper(shortcut) = shortcut) UNIQUE
+    shortcut            VARCHAR CHECK (shortcut ~ '^[A-Z]+$') UNIQUE
 );
 
 CREATE TABLE memberships (

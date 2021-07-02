@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -39,6 +40,12 @@ import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("ShortcutValidator")
 public class ShortcutValidator implements Validator,Serializable {
+    /*
+     * This pattern checks for alphabetic characters. Lower case is allowed in
+     * the input, but the shortcut will become upper case during persistence.
+     */
+    private static final Pattern pattern = Pattern.compile("^[A-Za-z]+$");
+
     private MessagePresenter presenter;
 
     @Inject
@@ -75,10 +82,6 @@ public class ShortcutValidator implements Validator,Serializable {
      * @throws ValidatorException upon duplicate shortcuts or on internal failure
      */
     private void checkDuplicateShortcut(String shortcut) throws ValidatorException {
-        if (shortcut.isEmpty()) {
-            return;
-        }
-
         Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(MemberService.PARAM_SHORTCUT, shortcut);
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
@@ -107,15 +110,32 @@ public class ShortcutValidator implements Validator,Serializable {
                                 "Database access failed.")));
     }
 
+    private void checkPattern(String shortcut) throws ValidatorException {
+        if (pattern.matcher(shortcut).matches()) {
+            return;
+        }
+
+        throw new ValidatorException(
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        presenter.presentMessage("admission_shortcut_wrongpattern"),
+                        presenter.presentMessage("admission_shortcut_wrongpattern_detail",
+                                "Database access failed.")));
+    }
+
     /**
      * This method checks for duplicate shortcuts.
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         Object tmpValue = value != null ? value : "";
+        String shortcut = tmpValue.toString();
 
         // logger.info("start::validation::" + component.getId() + " --> " + tmpValue.toString());
-        checkDuplicateShortcut(tmpValue.toString());
+        if (shortcut.isEmpty()) {
+            return;
+        }
+        checkPattern(shortcut);
+        checkDuplicateShortcut(shortcut);
         // logger.info("Finished  validation.");
     }
 }
