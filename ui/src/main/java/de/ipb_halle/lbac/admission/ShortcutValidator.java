@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-@FacesValidator("AccountValidator")
-public class AccountValidator implements Validator,Serializable {
+@FacesValidator("ShortcutValidator")
+public class ShortcutValidator implements Validator,Serializable {
     private MessagePresenter presenter;
 
     @Inject
@@ -52,7 +52,7 @@ public class AccountValidator implements Validator,Serializable {
     /**
      * default constructor
      */
-    public AccountValidator() {
+    public ShortcutValidator() {
         logger = LogManager.getLogger(this.getClass().getName());
         presenter = JsfMessagePresenter.getInstance();
     }
@@ -60,7 +60,7 @@ public class AccountValidator implements Validator,Serializable {
     /**
      * test constructor
      */
-    protected AccountValidator(MemberService memberService,
+    protected ShortcutValidator(MemberService memberService,
             UserMgrBean userMgrBean, MessagePresenter presenter) {
         this.memberService = memberService;
         this.userMgrBean = userMgrBean;
@@ -68,32 +68,35 @@ public class AccountValidator implements Validator,Serializable {
     }
 
     /**
-     * Checks for duplicate accounts. Only local (i.e. LOCAL and LDAP) subsystems
-     * will be checked. Duplicate accounts for different institutions must be
-     * allowed (e.g. jdoe@example.com and jdoe@somewhere.com).
+     * Checks for duplicate shortcuts. Only local (i.e. LOCAL and LDAP) subsystems
+     * will be checked. Empty shortcuts are always allowed.
      *
-     * @param login the user login to be checked
-     * @throws ValidatorException upon duplicate accounts or on internal failure
+     * @param shortcut the shortcut to be checked
+     * @throws ValidatorException upon duplicate shortcuts or on internal failure
      */
-    private void checkDuplicateAccount(String login) throws ValidatorException {
+    private void checkDuplicateShortcut(String shortcut) throws ValidatorException {
+        if (shortcut.isEmpty()) {
+            return;
+        }
+
         Map<String, Object> cmap = new HashMap<String, Object>();
-        cmap.put(MemberService.PARAM_LOGIN, login);
-        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, 
+        cmap.put(MemberService.PARAM_SHORTCUT, shortcut);
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE,
                 new AdmissionSubSystemType[]{AdmissionSubSystemType.LOCAL, AdmissionSubSystemType.LDAP});
 
         List<User> list = this.memberService.loadUsers(cmap);
         if (list != null) {
             if ((list.size() == 1) && list.get(0).equals(this.userMgrBean.getUser())) {
-                // login exists but belongs to the currently managed user 
+                // shortcut exists but belongs to the currently managed user 
                 return;
             }
             if (list.size() > 0) {
                 throw new ValidatorException(
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 presenter.presentMessage(
-                                        "admission_non_unique_user"),
+                                        "admission_non_unique_shortcut"),
                                 presenter.presentMessage(
-                                        "admission_non_unique_user_detail")));
+                                        "admission_non_unique_shortcut_detail")));
             }
             return;
         }
@@ -105,14 +108,14 @@ public class AccountValidator implements Validator,Serializable {
     }
 
     /**
-     * This method checks for duplicate accounts.
+     * This method checks for duplicate shortcuts.
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         Object tmpValue = value != null ? value : "";
 
         // logger.info("start::validation::" + component.getId() + " --> " + tmpValue.toString());
-        checkDuplicateAccount(tmpValue.toString());
+        checkDuplicateShortcut(tmpValue.toString());
         // logger.info("Finished  validation.");
     }
 }
