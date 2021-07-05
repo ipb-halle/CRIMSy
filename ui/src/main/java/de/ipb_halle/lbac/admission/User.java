@@ -65,7 +65,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         u.setPhone(this.phone);
         u.setLogin(this.login);
         u.setPassword(this.password);
-        u.setShortCut(shortcut.isEmpty() ? null : shortcut);
+        u.setShortCut(shortcut != null && shortcut.isEmpty() ? null : shortcut);
         return u;
     }
 
