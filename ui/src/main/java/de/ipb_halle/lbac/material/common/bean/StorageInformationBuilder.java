@@ -147,7 +147,7 @@ public class StorageInformationBuilder {
                         messagePresenter.presentMessage(
                                 "materialCreation_storageclass_" + sc.getName()));
             } catch (Exception e) {
-                logger.info("Error in getting names for storageClass "+sc.name);
+                logger.error("Error in getting names for storageClass " + sc.name);
             }
         }
         return classes;

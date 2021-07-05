@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -114,7 +115,7 @@ public class MaterialComparator implements Serializable {
                         (BioMaterial) originalMat,
                         (BioMaterial) editedMat);
             } catch (Exception e) {
-                logger.info("Error at calculating bio diffs");
+                logger.error("Error at calculating bio diffs "+ExceptionUtils.getStackTrace(e));
             }
         }
 

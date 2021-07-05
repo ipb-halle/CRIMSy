@@ -91,7 +91,7 @@ public class TaxonomyNameController implements Serializable {
                 return new ArrayList<>();
             }
         } catch (Exception e) {
-            logger.info("Error at fetching names");
+            logger.error("Error at fetching names");
             return new ArrayList<>();
         }
     }

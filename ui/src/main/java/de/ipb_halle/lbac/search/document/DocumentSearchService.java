@@ -183,7 +183,6 @@ public class DocumentSearchService {
         List<Searchable> foundDocs = new ArrayList<>();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         if (!hasWordRoots(request)) {
-            logger.info("The request has no worrdroots");
             return result;
         }
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
