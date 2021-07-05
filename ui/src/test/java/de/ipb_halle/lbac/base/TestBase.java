@@ -358,25 +358,7 @@ public class TestBase implements Serializable {
         termVectorEntityService.deleteTermVectors();
         for (Collection c : colls) {
             fileEntityService.delete(c);
-        }
-
-        List<Group> groups = memberService.loadGroups(new HashMap<>());
-
-        groups.stream().map((g) -> {
-            return g;
-        }).filter((g) -> (!g.getName().equals("Public Group") && !g.getName().equals("Admin Group"))).forEachOrdered((g) -> {
-            //  memberService.deleteGroup(g.getId());
-        });
-        try {
-            List<User> users = memberService.loadUsers(new HashMap<>());
-            users.stream().map((u) -> {
-                return u;
-            }).filter((u) -> (!u.getName().equals("Public Account") && !u.getName().equals("Admin") && !u.getId().equals(GlobalAdmissionContext.OWNER_ACCOUNT_ID))).forEachOrdered((u) -> {
-                // memberService.deleteUser(u.getId());
-            });
-        } catch (Exception e) {
-
-        }
+        }   
     }
 
     public void resetCollectionsInDb(CollectionService collectionService) {
