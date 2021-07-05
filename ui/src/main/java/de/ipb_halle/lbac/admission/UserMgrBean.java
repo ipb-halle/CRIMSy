@@ -371,8 +371,7 @@ public class UserMgrBean implements Serializable {
     /**
      * set the temporary cleartext password for current account.
      *
-     * @param p the cleartext temporary password. NOTE: this method trims
-     * whitespace!
+     * @param p the cleartext temporary password.
      */
     public void setTempPassword(String p) {
         this.tempPassword = p;

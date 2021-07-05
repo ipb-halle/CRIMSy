@@ -363,7 +363,7 @@ public class ItemBean implements Serializable {
     }
     
     public void actionChangeContainer(Container c) {
-        c.setItems(containerService.loadItemsOfContainer(c));
+        c.setItems(containerService.loadItemIdsOfContainer(c));
         containerController = new ContainerController(this, c);
         containerInfoPresenter = new ContainerInfoPresenter(c);
         this.containerName = c.getLabel();
