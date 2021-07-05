@@ -179,10 +179,11 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         entityManagerService.doSqlUpdate("DELETE FROM files");
-
+        context.setLBAC_PROPERTIES_PATH("target/test-classes/keystore/lbac_properties.xml");
+        context.createAdminAccount();
         cleanExperimentsFromDB();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        adminUser = memberService.loadUserById(GlobalAdmissionContext.ADMIN_ACCOUNT_ID);
+        adminUser = memberService.loadLocalAdminUser();
         creationTools = new CreationTools("", "", "", memberService, projectService);
     }
 
@@ -366,12 +367,16 @@ public class TestBase implements Serializable {
         }).filter((g) -> (!g.getName().equals("Public Group") && !g.getName().equals("Admin Group"))).forEachOrdered((g) -> {
             //  memberService.deleteGroup(g.getId());
         });
-        List<User> users = memberService.loadUsers(new HashMap<>());
-        users.stream().map((u) -> {
-            return u;
-        }).filter((u) -> (!u.getName().equals("Public Account") && !u.getName().equals("Admin") && !u.getId().equals(GlobalAdmissionContext.OWNER_ACCOUNT_ID))).forEachOrdered((u) -> {
-            // memberService.deleteUser(u.getId());
-        });
+        try {
+            List<User> users = memberService.loadUsers(new HashMap<>());
+            users.stream().map((u) -> {
+                return u;
+            }).filter((u) -> (!u.getName().equals("Public Account") && !u.getName().equals("Admin") && !u.getId().equals(GlobalAdmissionContext.OWNER_ACCOUNT_ID))).forEachOrdered((u) -> {
+                // memberService.deleteUser(u.getId());
+            });
+        } catch (Exception e) {
+
+        }
     }
 
     public void resetCollectionsInDb(CollectionService collectionService) {
