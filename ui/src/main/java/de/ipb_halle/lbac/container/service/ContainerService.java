@@ -109,7 +109,7 @@ public class ContainerService implements Serializable {
      */
     public Container loadContainerById(int id) {
         Container container = loadContainerWithoutItemsById(id);
-        container.setItems(loadItemsOfContainer(container));
+        container.setItems(loadItemIdsOfContainer(container));
         return container;
     }
 
@@ -202,13 +202,13 @@ public class ContainerService implements Serializable {
     }
 
     /**
-     * Loads all items which are placed in a container.
+     * Loads all ids of the items which are placed in a container. 
      *
      * @param c
      * @return
      */
     @SuppressWarnings("unchecked")
-    public Item[][] loadItemsOfContainer(Container c) {
+    public Item[][] loadItemIdsOfContainer(Container c) {
         Item[][] items = c.createEmptyItemArray();
         if (items == null) {
             return null;
@@ -221,7 +221,6 @@ public class ContainerService implements Serializable {
             Integer itemid = (Integer) entity[0];
             Integer x = (Integer) entity[1];
             Integer y = (Integer) entity[2];
-//          Item i = itemService.loadItemByIdWithoutContainer(itemid);
             Item i = new Item();
             i.setId(itemid);
             i.setContainer(c);

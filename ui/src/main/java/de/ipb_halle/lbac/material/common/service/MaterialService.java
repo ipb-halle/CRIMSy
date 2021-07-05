@@ -418,8 +418,6 @@ public class MaterialService implements Serializable {
         try {
             return materialHistoryService.loadHistoryOfMaterial(materialId);
         } catch (Exception e) {
-            StackTraceElement t = e.getStackTrace()[0];
-            logger.info(t.getClassName() + ":" + t.getMethodName() + ":" + t.getLineNumber());
             logger.error(ExceptionUtils.getStackTrace(e));
             return new MaterialHistory();
         }

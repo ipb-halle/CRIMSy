@@ -112,8 +112,8 @@ public class MaterialEditPermission implements Serializable {
                     || bean.getMode() == MaterialBean.Mode.CREATE);
 
         } catch (Exception e) {
-            logger.info("Error in isVisible(): " + typeName);
-            logger.info("Current MaterialType: " + bean.getCurrentMaterialType());
+            logger.error("Error in isVisible(): " + typeName);
+            logger.error("Current MaterialType: " + bean.getCurrentMaterialType());
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return false;

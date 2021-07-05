@@ -149,7 +149,7 @@ public class MaterialEditSaver implements Serializable {
 
             }
         } catch (Exception e) {
-            logger.info("Error in saveing edited taxonomy: " + ExceptionUtils.getStackTrace(e));
+            logger.error("Error in saveing edited taxonomy: " + ExceptionUtils.getStackTrace(e));
         }
     }
 

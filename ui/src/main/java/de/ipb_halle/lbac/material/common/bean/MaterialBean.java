@@ -253,7 +253,7 @@ public class MaterialBean implements Serializable {
                 return materialEditState.getCurrentProject().getProjectType().getMaterialTypes();
             }
         } catch (Exception e) {
-            logger.info("Error in getMaterialTypes(): " + materialEditState.getCurrentProject().getName());
+            logger.error("Error in getMaterialTypes(): " + materialEditState.getCurrentProject().getName());
             logger.error(ExceptionUtils.getStackTrace(e));
         }
         return new ArrayList<>();
@@ -289,8 +289,8 @@ public class MaterialBean implements Serializable {
             this.materialEditState.setCurrentProject(currentProject);
             currentMaterialType = currentProject.getProjectType().getMaterialTypes().get(0);
         } catch (Exception e) {
-            logger.info("Error in setCurrentProject(): " + currentProject.getName());
-            logger.warn(e);
+            logger.error("Error in setCurrentProject(): " + currentProject.getName());
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
 
     }
@@ -399,7 +399,7 @@ public class MaterialBean implements Serializable {
         try {
             biomaterial.setTaxonomy((Taxonomy) taxonomyController.getSelectedTaxonomy().getData());
         } catch (Exception e) {
-            logger.info("Could not set taxonomy to biomaterial: " + ExceptionUtils.getStackTrace(e));
+            logger.error("Could not set taxonomy to biomaterial: " + ExceptionUtils.getStackTrace(e));
         }
     }
 

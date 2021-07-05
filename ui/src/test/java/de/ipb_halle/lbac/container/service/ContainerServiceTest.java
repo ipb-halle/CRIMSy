@@ -156,8 +156,8 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNotNull(c0.getId());
         Assert.assertNotNull(c1.getId());
         Assert.assertNotNull(c2.getId());
-        
-        Assert.assertEquals(3,  entityService.doSqlQuery("select * from containers").size());
+
+        Assert.assertEquals(3, entityService.doSqlQuery("select * from containers").size());
 
         List<Object> nestedContainer = entityService.doSqlQuery("select sourceid,targetid,nested from nested_containers order by sourceid,targetid");
         Assert.assertEquals(3, nestedContainer.size());
@@ -245,7 +245,7 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertEquals("Three items must be in container one and two", 3, o.size());
 
         //Check container one
-        Item[][] loadedItems = instance.loadItemsOfContainer(c0);
+        Item[][] loadedItems = instance.loadItemIdsOfContainer(c0);
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
                 if (x == 0 && (y == 0)) {
@@ -258,7 +258,7 @@ public class ContainerServiceTest extends TestBase {
             }
         }
         //Check container two
-        loadedItems = instance.loadItemsOfContainer(c1);
+        loadedItems = instance.loadItemIdsOfContainer(c1);
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 2; x++) {
                 if (x == 0 && (y == 1)) {
@@ -404,18 +404,18 @@ public class ContainerServiceTest extends TestBase {
         ArrayList<Object[]> i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
         Assert.assertEquals(5, i.size());
         // Container c1 is in c0
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[0],0);
-        Assert.assertEquals(c0.getId(), (int) i.get(0)[1],0);
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[0], 0);
+        Assert.assertEquals(c0.getId(), (int) i.get(0)[1], 0);
         // Container c2 is in c1 and indirect c0
-        Assert.assertEquals(c2.getId(), (int) i.get(1)[0],0);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1],0);
-        Assert.assertEquals(c2.getId(), (int) i.get(2)[0],0);
-        Assert.assertEquals(c0.getId(), (int) i.get(2)[1],0);
+        Assert.assertEquals(c2.getId(), (int) i.get(1)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1], 0);
+        Assert.assertEquals(c2.getId(), (int) i.get(2)[0], 0);
+        Assert.assertEquals(c0.getId(), (int) i.get(2)[1], 0);
         // Container c3 is in c1 and indirect in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(3)[0],0);
-        Assert.assertEquals(c1.getId(), (int) i.get(3)[1],0);
-        Assert.assertEquals(c3.getId(), (int) i.get(4)[0],0);
-        Assert.assertEquals(c0.getId(), (int) i.get(4)[1],0);
+        Assert.assertEquals(c3.getId(), (int) i.get(3)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(3)[1], 0);
+        Assert.assertEquals(c3.getId(), (int) i.get(4)[0], 0);
+        Assert.assertEquals(c0.getId(), (int) i.get(4)[1], 0);
 
         //remove the link between c0 and c1
         c1.setParentContainer(null);
@@ -423,11 +423,11 @@ public class ContainerServiceTest extends TestBase {
         i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
         Assert.assertEquals(2, i.size());
         // Container c2 is in c1 and no more in c0
-        Assert.assertEquals(c2.getId(), (int) i.get(0)[0],0);
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[1],0);
+        Assert.assertEquals(c2.getId(), (int) i.get(0)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[1], 0);
         // Container c3 is in c1 and no more in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(1)[0],0);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1],0);
+        Assert.assertEquals(c3.getId(), (int) i.get(1)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1], 0);
     }
 
     @Test
@@ -485,7 +485,7 @@ public class ContainerServiceTest extends TestBase {
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ContainerServiceTest.war");
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
-    } 
+    }
 
     private void createMaterial(String userGroups, String ownerid, int projectid) {
         String sql = "INSERT INTO MATERIALS VALUES("

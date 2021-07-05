@@ -26,8 +26,10 @@ import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 
 /**
  *
@@ -62,7 +64,7 @@ public class Tissue extends Material {
                     getCopiedNames(),
                     taxonomy == null ? null : taxonomy.copyMaterial());
         } catch (Exception e) {
-            logger.info("Error at copiing tissue");
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
     }
