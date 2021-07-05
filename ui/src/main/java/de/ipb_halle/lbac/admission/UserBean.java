@@ -417,7 +417,7 @@ public class UserBean implements Serializable {
      * @return
      */
     public boolean hasUploadPermission() {
-        if (currentAccount.getId().toString().equals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)) {
+        if (currentAccount.getId().equals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)) {
             return false;
         }
         List<Collection> colls = collectionService.load(null);

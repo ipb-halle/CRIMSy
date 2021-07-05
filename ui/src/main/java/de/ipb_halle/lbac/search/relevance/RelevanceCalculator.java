@@ -21,10 +21,7 @@ import de.ipb_halle.lbac.search.SearchQueryStemmer;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
 /**
  * Implementation of the Okapi BM25 Ranking
@@ -36,14 +33,14 @@ import org.apache.logging.log4j.LogManager;
  */
 public class RelevanceCalculator implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private StemmedWordGroup searchTerms;
-    private final Logger logger;
     private final float k1 = 1.2f;
     private final float b = 0.75f;
     private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
 
     public RelevanceCalculator(List<String> originalTerms) {
-        this.logger = LogManager.getLogger(this.getClass().getName());
         searchTerms = searchQueryStemmer.stemmQuery(String.join(" ", originalTerms));
     }
 
@@ -65,10 +62,16 @@ public class RelevanceCalculator implements Serializable {
             d.setRelevance(0);
             for (String word : searchTerms.getAllStemmedWords()) {
                 double docsWithHit = getDocAmountWithHit(docsToUpdate, word);
+                if(docsWithHit==0){
+                    continue;
+                }
                 double idf = Math.log10(1 + (totalDocuments / docsWithHit));
                 int fq = d.getTermFreqList().getFreqOf(word);
                 if (fq > 0) {
-                    double nf = (double) (d.getWordCount() / averageDocLength);
+                    if(averageDocLength==0){
+                        continue;
+                    }
+                    double nf =  (d.getWordCount() / averageDocLength);
                     double rh = (fq * (k1 + 1)) / (fq + k1 * (1 - b + b * (nf)));
                     d.setRelevance(d.getRelevance() + (idf * rh));
                 }
@@ -91,7 +94,6 @@ public class RelevanceCalculator implements Serializable {
                 docs++;
             }
         }
-
         return docs;
     }
 

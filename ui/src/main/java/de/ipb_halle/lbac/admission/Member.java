@@ -20,6 +20,7 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.entity.Obfuscatable;
+import java.io.Serializable;
 
 import java.util.Date;
 
@@ -30,7 +31,9 @@ import java.util.Date;
  * updates and (b) remove objects which have disappeared (been removed) on the
  * source node.
  */
-public abstract class Member implements Obfuscatable, DTO {
+public abstract class Member implements Obfuscatable, DTO,Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Integer id;
 

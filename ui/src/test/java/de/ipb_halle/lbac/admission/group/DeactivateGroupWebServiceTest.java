@@ -91,9 +91,7 @@ public class DeactivateGroupWebServiceTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
         publicUser = memberService.loadUserById((GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));

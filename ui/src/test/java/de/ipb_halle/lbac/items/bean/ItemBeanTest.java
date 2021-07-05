@@ -87,9 +87,7 @@ public class ItemBeanTest extends TestBase {
     protected ItemOverviewBean itemOverviewBean;
     
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = creationTools.createProject();
         structure = creationTools.createStructure(project);

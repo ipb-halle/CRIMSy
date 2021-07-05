@@ -48,8 +48,13 @@ public class SearchRequestImpl implements SearchRequest {
         for (String s : values) {
             valueSet.add(s);
         }
-        XmlSetWrapper wrapper = new XmlSetWrapper();
-        wrapper.setValues(valueSet);
+        XmlSetWrapper wrapper;
+        if (!searchValues.containsKey(cat)) {
+            wrapper = new XmlSetWrapper();
+        } else {
+            wrapper = searchValues.get(cat);
+        }
+        wrapper.getValues().addAll(valueSet);
         searchValues.put(cat, wrapper);
         return this;
     }

@@ -55,7 +55,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * Servlet to deliver Documents to local and remote destinations.
@@ -92,13 +93,16 @@ public class DocumentServlet extends HttpServlet {
      *
      * @param request the HttpServletRequest for to process
      * @param response the HttpServletResponse to fill with content
-     * @throws ServletException @see processRequest
-     * @throws IOException @see processRequest
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            processRequest(request, response);
+        } catch (IOException | ServletException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            response.setStatus(500);
+        }
+
     }
 
     /**
@@ -107,13 +111,15 @@ public class DocumentServlet extends HttpServlet {
      *
      * @param request the HttpServletRequest for to process
      * @param response the HttpServletResponse to fill with content
-     * @throws ServletException @see processRequest
-     * @throws IOException @see processRequest
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            processRequest(request, response);
+        } catch (IOException | ServletException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            response.setStatus(500);
+        }
     }
 
     /**
@@ -257,7 +263,7 @@ public class DocumentServlet extends HttpServlet {
 
         UUID nodeId = UUID.fromString(request.getParameterMap().get("nodeId")[0]);
 
-        Integer collectionId =Integer.valueOf(request.getParameterMap().get("collectionId")[0]);
+        Integer collectionId = Integer.valueOf(request.getParameterMap().get("collectionId")[0]);
 
         String path = request.getParameterMap().get("path")[0];
         if (path == null) {

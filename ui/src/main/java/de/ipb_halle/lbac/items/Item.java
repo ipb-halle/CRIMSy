@@ -94,7 +94,7 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         this.container = con;
         this.containerSize = entity.getContainersize();
         this.expiry_date = entity.getExpiry_date();
-        this.label=entity.getLabel();
+        this.label = entity.getLabel();
         if (entity.getContainertype() != null) {
             this.containerType = new ContainerType(entity.getContainertype(), 0, true, false);
         }
@@ -324,12 +324,11 @@ public class Item extends ACObject implements DTO, Serializable, Searchable {
         if (container == null) {
             return "";
         }
-        String location = "";
-        for (Container c : nestedContainer) {
-            location += c.getLabel() + ".";
+        if (container.getLocation(true, false).isEmpty()) {
+            return container.getLabel();
+        } else {
+            return container.getLocation(true, false) + "->" + container.getLabel();
         }
-
-        return location + container.getLabel();
     }
 
     public Item copy() {

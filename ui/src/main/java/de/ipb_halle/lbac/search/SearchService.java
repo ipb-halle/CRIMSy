@@ -28,14 +28,12 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.lang.Condition;
+import de.ipb_halle.lbac.search.document.StemmedWordGroup;
 import de.ipb_halle.lbac.service.NodeService;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import de.ipb_halle.lbac.search.lang.Attribute;
-import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.ConditionValueFetcher;
 import de.ipb_halle.lbac.search.lang.Operator;
 import de.ipb_halle.lbac.search.lang.Value;
@@ -72,6 +70,8 @@ public class SearchService {
     private MemberService memberService;
     @Inject
     private NodeService nodeService;
+
+    private SearchQueryStemmer searchQueryStemmer = new SearchQueryStemmer();
 
     private int AUGMENT_DOC_REQUEST_MAX_MATERIALS = 5;
     private int AUGMENT_DOC_REQUEST_MAX_NAMES_PER_MATERIALS = 5;
@@ -133,12 +133,16 @@ public class SearchService {
             SearchResult result) {
         if (request.getSearchTarget() == SearchTarget.DOCUMENT) {
             Set<String> materialNames = getNamesOfMaterials(result);
-            for(String name:materialNames){
-                 request.addSearchCategory(SearchCategory.WORDROOT, name);
+
+            for (String name : materialNames) {
+                StemmedWordGroup swg = searchQueryStemmer.stemmQuery(name);
+                for (String stemmedName : swg.getAllStemmedWords()) {
+                    request.addSearchCategory(SearchCategory.WORDROOT, stemmedName);
+                }
             }
         }
     }
-    
+
     private Set<String> getNamesOfMaterials(SearchResult result) {
         Set<String> newNames = new HashSet<>();
         List<Structure> structures = result.getAllFoundObjects(Structure.class, result.getNode());

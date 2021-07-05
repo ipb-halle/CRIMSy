@@ -86,7 +86,7 @@ CREATE TABLE usersGroups (
     email               VARCHAR,
     password            VARCHAR,
     phone               VARCHAR,
-    shortcut            VARCHAR UNIQUE CHECK (upper(shortcut) = shortcut)
+    shortcut            VARCHAR UNIQUE CHECK (shortcut ~ '^[A-Z]+$')
 );
 
 
@@ -612,6 +612,7 @@ CREATE TABLE item_positions_history(
 insert into containertypes(name,description,rank,transportable,unique_name)values('ROOM',null,100,false,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('CUPBOARD',null,90,false,false);
 insert into containertypes(name,description,rank,transportable,unique_name)values('FREEZER',null,90,false,false);
+insert into containertypes(name,description,rank,transportable,unique_name)values('FRIDGE',null,90,false,false);
 insert into containertypes(name,description,rank,transportable,unique_name)values('TRAY',null,60,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('WELLPLATE',null,50,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('GLASS_BOTTLE',null,0,true,true);

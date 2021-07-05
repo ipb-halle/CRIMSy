@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.collections.CollectionService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.collections.CollectionBean;
 import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
@@ -266,7 +265,7 @@ public class MemberServiceTest extends TestBase {
         String name = "test008_name";
         String pw = "test008_pw";
         String phone = "test008_phone";
-        String shortCut = "TEST008_SHORTCUT";
+        String shortCut = "TESTSHORTCUT";
         User user = new User();
         user.setEmail(email);
         user.setLogin(logIn);
@@ -301,27 +300,93 @@ public class MemberServiceTest extends TestBase {
     }
 
     @Test
-    public void test009_duplicateShortcut() {
-        User user = new User();
-        user.setNode(nodeService.getLocalNode());
-        user.setSubSystemType(AdmissionSubSystemType.LOCAL);
+    public void test009_shortcuts() {
+        User user1 = new User();
+        user1.setNode(nodeService.getLocalNode());
+        user1.setSubSystemType(AdmissionSubSystemType.LOCAL);
 
-        user.setShortcut("ABC");
-        user = memberService.save(user);
+        user1.setShortcut("ABC");
+        user1 = memberService.save(user1);
 
-        User anotherUser = new User();
-        anotherUser.setNode(nodeService.getLocalNode());
-        anotherUser.setSubSystemType(AdmissionSubSystemType.LOCAL);
-        anotherUser.setShortcut("abc");
+        User user2 = new User();
+        user2.setNode(nodeService.getLocalNode());
+        user2.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user2.setShortcut("abc");
 
+        // duplicate shortcut -> unique constraint violation
         Assert.assertThrows(
                 EJBException.class,
                 () -> {
-                    memberService.save(anotherUser);
+                    memberService.save(user2);
                 }
         );
 
-        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user.getId());
+        User user3 = new User();
+        user3.setNode(nodeService.getLocalNode());
+        user3.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user3.setShortcut("A2C");
+
+        // does not match the only-letters regexp constraint
+        Assert.assertThrows(
+                EJBException.class,
+                () -> {
+                    memberService.save(user3);
+                }
+        );
+
+        User user4 = new User();
+        user4.setNode(nodeService.getLocalNode());
+        user4.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user4.setShortcut("");
+        User user5 = new User();
+        user5.setNode(nodeService.getLocalNode());
+        user5.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user5.setShortcut("");
+
+        // empty shortcut becomes NULL and has no constraint
+        memberService.save(user4);
+        memberService.save(user5);
+
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user1.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user4.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user5.getId());
+    }
+
+    @Test
+    public void test010_searchShortcut() {
+        User user1 = new User();
+        user1.setNode(nodeService.getLocalNode());
+        user1.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user1.setShortcut("abc");
+        user1 = memberService.save(user1);
+
+        User user2 = new User();
+        user2.setNode(nodeService.getLocalNode());
+        user2.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user2.setShortcut("abcd");
+        user2 = memberService.save(user2);
+
+        User user3 = new User();
+        user3.setNode(nodeService.getLocalNode());
+        user3.setSubSystemType(AdmissionSubSystemType.LOCAL);
+        user3.setShortcut("");
+        user3 = memberService.save(user3);
+
+
+        Map<String, Object> cmap = new HashMap<String, Object>();
+        cmap.put(MemberService.PARAM_SHORTCUT, "aBc");
+        cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LOCAL);
+        List<User> users = memberService.loadUsers(cmap);
+
+        assertNotNull(users);
+        // only finds exact matches
+        assertEquals(1, users.size());
+        assertEquals(user1, users.get(0));
+        assertEquals("ABC", users.get(0).getShortcut());
+
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user1.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user2.getId());
+        entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user3.getId());
     }
 
     private Group loadGroupByName(String name) {

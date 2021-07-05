@@ -63,9 +63,7 @@ public class KeyManagerTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeKeyStoreFactory();
 
     }

@@ -59,7 +59,7 @@ public class InputConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
-        return policy.sanitize(string);
+        return string == null ? null : policy.sanitize(string).trim();
     }
 
     @Override

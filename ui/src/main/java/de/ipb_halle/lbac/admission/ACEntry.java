@@ -28,9 +28,9 @@ import java.util.List;
  * access control list (ACList). It will be automatically cleaned up, when a
  * ACList gets deleted.
  */
-public class ACEntry implements DTO, Serializable, Obfuscatable {
+public class ACEntry implements DTO<ACEntryEntity>, Serializable, Obfuscatable {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     private ACList aclist;
 
@@ -86,8 +86,6 @@ public class ACEntry implements DTO, Serializable, Obfuscatable {
         this.aclist = aclist;
         this.member = member;
     }
-    
-    
 
     /**
      * Constructor
@@ -134,7 +132,7 @@ public class ACEntry implements DTO, Serializable, Obfuscatable {
      */
     @Override
     public boolean equals(Object o) {
-        if ((o != null) && (o instanceof ACEntry)) {
+        if (o instanceof ACEntry) {
             ACEntry ae = (ACEntry) o;
             if ((getACListId() != null) && getACListId().equals(ae.getACListId())
                     && (getMemberId() != null) && getMemberId().equals(ae.getMemberId())) {
@@ -258,13 +256,16 @@ public class ACEntry implements DTO, Serializable, Obfuscatable {
     /**
      * wipe any sensitive information
      */
+    @Override
     public void obfuscate() {
         this.member.obfuscate();
     }
 
     /**
-     * permCode is computed to quickly compare two ACLists. The permCode is
+     * permCode is computed to quickly compare two ACLists.The permCode is
      * independent of the aclist_id.
+     *
+     * @return
      */
     public int permCode() {
         return getPerm() + getMemberId().hashCode();
@@ -272,16 +273,17 @@ public class ACEntry implements DTO, Serializable, Obfuscatable {
 
     /**
      * permEquals returns true if the ACEntry have the same Member and
-     * permissions are set identical. This is needed for comparing two ACList
-     * objects. The aclist_id is ignored in this comparison.
+     * permissions are set identical.This is needed for comparing two ACList
+     * objects.The aclist_id is ignored in this comparison.
+     *
+     * @param ae
+     * @return
      */
     public boolean permEquals(ACEntry ae) {
-        if ((ae != null)
+        return ((ae != null)
                 && (ae.getPerm() == getPerm())
-                && ae.getMemberId().equals(getMemberId())) {
-            return true;
-        }
-        return false;
+                && ae.getMemberId().equals(getMemberId()));
+
     }
 
     /**
@@ -380,14 +382,6 @@ public class ACEntry implements DTO, Serializable, Obfuscatable {
         sb.append(this.permGRANT ? "GRANT " : "");
         sb.append(this.permSUPER ? "SUPER" : "");
         return sb.toString();
-    }
-
-    public ACList getAclist() {
-        return aclist;
-    }
-
-    public void setAclist(ACList aclist) {
-        this.aclist = aclist;
     }
 
     public ACPermission[] getAcPermissionArray() {

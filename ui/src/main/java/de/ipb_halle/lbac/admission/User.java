@@ -65,7 +65,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
         u.setPhone(this.phone);
         u.setLogin(this.login);
         u.setPassword(this.password);
-        u.setShortCut(shortcut);
+        u.setShortCut(shortcut == "" ? null : shortcut);
         return u;
     }
 
@@ -112,6 +112,7 @@ public class User extends Member implements Serializable, Obfuscatable, DTO, Sea
     @Override
     public void obfuscate() {
         super.obfuscate();
+        this.shortcut=null;
         this.password = null;
     }
 

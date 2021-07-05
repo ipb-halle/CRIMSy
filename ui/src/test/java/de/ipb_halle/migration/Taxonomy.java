@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity;
@@ -56,6 +57,11 @@ import java.util.Set;
  */
 public class Taxonomy {
     
+    public final static String BIOMATERIAL_NAME_QUERY = "BIOMATERIAL_NAME_QUERY";
+    public final static String BIOMATERIAL_MATERIAL_TYPE_ID = "BIOMATERIAL_MATERIAL_TYPE_ID";
+    public final static String BIOMATERIAL_ORGANISM_INDEX = "BIOMATERIAL_ORGANISM_INDEX";
+    public final static String BIOMATERIAL_UNKNOWN_MATERIAL = "BIOMATERIAL_UNKNOWN_MATERIAL";
+
     public final static String INPUT_TAXONOMY_CLASSES = "INPUT_TAXONOMY_CLASSES";
     public final static String INPUT_TAXONOMY_FAMILIES = "INPUT_TAXONOMY_FAMILIES";
     public final static String INPUT_TAXONOMY_SPECIES = "INPUT_TAXONOMY_SPECIES";
@@ -90,6 +96,8 @@ public class Taxonomy {
     }
     
     private void addInsertBuilders() {
+        this.inhouseDB.addInsertBuilder(BioMaterialEntity.class.getName(),
+                new SqlInsertBuilder(new EntityGraph(BioMaterialEntity.class)));
         this.inhouseDB.addInsertBuilder(TaxonomyEntity.class.getName(),
                 new SqlInsertBuilder(new EntityGraph(TaxonomyEntity.class)));
     }
@@ -303,12 +311,44 @@ public class Taxonomy {
     }
 
     private void saveOrganism(int orgId, int speciesId, int strainId, String remarks) throws Exception {
-        String sql = "INSERT INTO tmp_import (old_id, new_id, type) SELECT ? AS old_id, new_id, 'organismId' AS type FROM tmp_import WHERE old_id=? AND type=?";
-        if (strainId > 0) {
-            this.inhouseDB.saveTriple(sql, orgId, strainId, TAXONOMY_STRAIN_REF);
+        String refType = (strainId > 0) ? TAXONOMY_STRAIN_REF : TAXONOMY_SPECIES_REF; 
+        int refId = (strainId > 0) ? strainId : speciesId;
+        String sql = "SELECT new_id FROM tmp_import WHERE old_id=? AND type=?";
+        int taxoId = this.inhouseDB.loadRefId(sql, refId, refType);
+        if (taxoId != 0) {
+
+            MaterialEntity mat = new MaterialEntity();
+            mat.setACList(this.inhouseDB.getACList());
+            mat.setCtime(new Date());
+            mat.setMaterialtypeid(this.inhouseDB.getConfigInt(BIOMATERIAL_MATERIAL_TYPE_ID));
+            mat.setOwner(this.inhouseDB.getOwner());
+            mat.setProjectid(this.inhouseDB.getProject());
+
+            mat = (MaterialEntity) this.inhouseDB.getBuilder(mat.getClass().getName())
+                    .insert(this.inhouseDB.getConnection(), mat);
+
+            BioMaterialEntity bio = new BioMaterialEntity();
+            bio.setId(mat.getMaterialid());
+            bio.setTaxoid(taxoId);
+            // no tissue
+
+            bio = (BioMaterialEntity) this.inhouseDB.getBuilder(bio.getClass().getName())
+                    .insert(this.inhouseDB.getConnection(), bio);
+
+            sql = this.inhouseDB.getConfigString(BIOMATERIAL_NAME_QUERY);
+            this.inhouseDB.saveTriple(sql, mat.getMaterialid(), taxoId, "DUMMY");
+
+            sql = "INSERT INTO material_indices (materialid, typeid, value) VALUES (?,?,?)";
+            this.inhouseDB.saveTriple(sql, mat.getMaterialid(), 
+                this.inhouseDB.getMaterialIndexType(this.inhouseDB.getConfigString(BIOMATERIAL_ORGANISM_INDEX)),
+                Integer.toString(orgId));
+
+            refId = mat.getMaterialid();
         } else {
-            this.inhouseDB.saveTriple(sql, orgId, speciesId, TAXONOMY_SPECIES_REF);
+            refId = this.inhouseDB.getConfigInt(BIOMATERIAL_UNKNOWN_MATERIAL);
         }
+        sql = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
+        this.inhouseDB.saveTriple(sql, orgId, refId, ORGANISM_ID_REF);
     }
 
     private void saveName(String name, int id, int rank) throws Exception {

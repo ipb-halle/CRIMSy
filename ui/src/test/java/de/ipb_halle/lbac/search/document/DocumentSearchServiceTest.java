@@ -75,9 +75,7 @@ public class DocumentSearchServiceTest extends TestBase {
     private DocumentCreator documentCreator;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         Files.delete(Paths.get("target/test-classes/collections").toFile());
         entityManagerService.doSqlUpdate("DELETE FROM collections");
         entityManagerService.doSqlUpdate("DELETE from unstemmed_words");

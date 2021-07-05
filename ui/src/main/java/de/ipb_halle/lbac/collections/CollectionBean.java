@@ -97,8 +97,6 @@ public class CollectionBean implements Serializable, ACObjectBean {
     private ACObjectController acObjectController;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-   
-
     @Inject
     protected MemberService memberService;
 
@@ -312,6 +310,23 @@ public class CollectionBean implements Serializable, ACObjectBean {
             }
         }
         return collsToShow;
+    }
+
+    /**
+     * Gets all local, readable collections and returns only those in which the
+     * current user has the CREATE privilege
+     *
+     * @return Local collections in which the current user has READ and CREATE
+     * privilege
+     */
+    public List<Collection> getCreatableLocalCollections() {
+        List<Collection> writableCollections = new ArrayList<>();
+        for (Collection c : getOnlyLocalCollections()) {
+            if (acListService.isPermitted(ACPermission.permCREATE, c, currentAccount)) {
+                writableCollections.add(c);
+            }
+        }
+        return writableCollections;
     }
 
     public String getMode() {

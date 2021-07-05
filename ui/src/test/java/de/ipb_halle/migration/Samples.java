@@ -59,6 +59,7 @@ public class Samples {
     public final static String INPUT_EXTRACTS = "INPUT_EXTRACTS";
     public final static String PARENT_CONTAINER_ID = "PARENT_CONTAINER_ID";
     public final static String SAMPLE_ITEM_ID = "SampleId_ItemId";
+    public final static String SAMPLE_EXP_ID = "RefMolProc_ItemId";
     public final static String UNKNOWN_CONTAINER = "UNKNOWN_CONTAINER";
 
     private InhouseDB inhouseDB;
@@ -92,7 +93,8 @@ public class Samples {
             container.setRows(dimension[0]);
             container.setColumns(dimension[1]);
             container.setType(CONTAINERTYPE_TRAY);
-            container.setZeroBased(true);
+            container.setZeroBased(dimension[2] == 1);
+            container.setSwapDimensions(dimension[3] == 1);
         } else {
             container.setType(CONTAINERTYPE_OTHER);
         }
@@ -233,12 +235,14 @@ public class Samples {
          * The pattern given below should capture container prefixes 
          * like TS, TM, TL, TH, MTP, ...
          */
-        String pattern = "^([A-Za-z]+)\\.([0-9]+);([0-9]+)$";
+        String pattern = "^([A-Za-z]+)\\.([0-9]+);([0-9]+);([01]);([01])$";
         String[] format = inhouseDB.getConfigString(CONTAINER_DIMENSIONS).split("/");
         for (String f : format) {
-            int[] dim = new int[2];
-            dim[0] = Integer.parseInt(f.replaceAll(pattern, "$2"));
-            dim[1] = Integer.parseInt(f.replaceAll(pattern, "$3"));
+            int[] dim = new int[4];
+            dim[0] = Integer.parseInt(f.replaceAll(pattern, "$2")); // rows (letters by default)
+            dim[1] = Integer.parseInt(f.replaceAll(pattern, "$3")); // columns
+            dim[2] = Integer.parseInt(f.replaceAll(pattern, "$4")); // 1 = zerobased
+            dim[3] = Integer.parseInt(f.replaceAll(pattern, "$5")); // 1 = swap labels (make letters for columns)
 
             this.dimensions.put(f.replaceAll(pattern, "$1"), dim);
         }
@@ -330,18 +334,27 @@ public class Samples {
 
         /* item position */
         if (row >= 0) {
-            ItemPositionEntity pos = new ItemPositionEntity();
-            pos.setItemId(item.getId());
-            pos.setContainerId(container.getId());
-            pos.setItemRow(row);
-            pos.setItemCol(column);
-            this.inhouseDB.getBuilder(pos.getClass().getName())
-                    .insert(this.inhouseDB.getConnection(), pos);
+            try {
+                ItemPositionEntity pos = new ItemPositionEntity();
+                pos.setItemId(item.getId());
+                pos.setContainerId(container.getId());
+                pos.setItemRow(row);
+                pos.setItemCol(column);
+                this.inhouseDB.getBuilder(pos.getClass().getName())
+                        .insert(this.inhouseDB.getConnection(), pos);
+            } catch(Exception e) {
+                System.out.printf("Saving of item position failed: SampleId: %d, Container %s (%d), row: %d col: %d\n", 
+                    sampleId, container.getLabel(), container.getId(), row, column);
+            }
         }
 
         /* tmp reference */
         String sql = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
         this.inhouseDB.saveTriple(sql, sampleId, item.getId(), SAMPLE_ITEM_ID);
+
+        /* */
+        sql = "INSERT INTO tmp_import (old_id, new_id, type) VALUES (?, ?, ?)";
+        this.inhouseDB.saveTriple(sql, molProcId, item.getId(), SAMPLE_EXP_ID);
 
     }
 }

@@ -121,7 +121,9 @@ public class MaterialIndexBean implements Serializable {
             }
         }
         if (!alreadyIn) {
-
+            if(!indexCategoriesReversed.containsKey(indexCatergory)){
+                return;
+            }
             IndexEntry ie = new IndexEntry(indexCategoriesReversed.get(indexCatergory), indexValue, null);
             indices.add(ie);
         }

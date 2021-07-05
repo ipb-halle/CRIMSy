@@ -72,9 +72,7 @@ public class LabelServiceTest extends TestBase {
     private int itemId;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = context.getPublicAccount();
         publicACList = GlobalAdmissionContext.getPublicReadACL();

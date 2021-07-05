@@ -51,7 +51,7 @@
                         <b:row>
                             <b:column span="7"
                                       styleClass="assayRemarkLabel">
-                                <h:outputText value="Remarks:" />
+                                <h:outputText value="#{msgs.expAssay_remarks}:" />
                             </b:column>
                         </b:row>
                         <b:row>
@@ -72,14 +72,15 @@
                     <b:container>
                         <b:row>
                             <b:column span="2">
-                                <h:outputText value="Target:" />
+                                <h:outputText value="#{msgs.expAssay_target}:" />
                             </b:column>
                             <b:column span="2">
                                 <h:panelGroup>
                                     <crimsy:materialView material="#{cc.attrs.assay.target}" />
-                                    <p:commandLink title="Action"
+                                    <p:commandLink title="#{msgs.expAssay_chooseTarget_tooltip}"
                                                    rendered="#{cc.attrs.assay.edit and (cc.attrs.assay.getAssayRecords().size() == 0)}"
-
+                                                   update="@(.dlgMaterialEdit)"
+                                                   action="#{cc.attrs.bean.expRecordController.clearDataFromAgents()}"
                                                    oncomplete="PF('dlg_materialEdit').show();"> 
                                         <span class="fa fa-cog"> </span>
                                     </p:commandLink>
@@ -89,7 +90,7 @@
                         <b:row
                             styleClass="assayUnitRow">
                             <b:column span="2">
-                                <h:outputText value="Standard units:" />
+                                <h:outputText value="#{msgs.expAssay_standardUnits}:" />
                             </b:column>
                             <b:column span="2">
                                 <h:panelGroup>
@@ -106,7 +107,7 @@
                         <b:row
                             styleClass="assayOutcomeRow">
                             <b:column span="2">
-                                <h:outputText value="Outcome Type:" />
+                                <h:outputText value="#{msgs.expAssay_outcomeType}:" />
                             </b:column>
                             <b:column span="2">
                                 <p:selectOneMenu 
@@ -128,11 +129,11 @@
             paginated="false"
             saveState="false">
             <b:dataTableColumn
-                label="Material"
+                label="#{msgs.expAssay_column_material_label}"
                 orderable="false">
                 <h:outputText
                     value="#{assayRecord.getMaterialName()}"/>
-                <p:commandLink title="Edit material"
+                <p:commandLink title="#{msgs.expAssay_assignMaterial_tooltip}"
                                ajax="true"
                                rendered="#{cc.attrs.assay.edit}"
                                action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
@@ -144,10 +145,10 @@
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
-                label="Item">
+                label="#{msgs.expAssay_column_item_label}">
                 <h:outputText
                     value="#{assayRecord.getItemLabel()}"/>
-                <p:commandLink title="Action"
+                <p:commandLink title="#{msgs.expAssay_assignItem_tooltip}"
                                rendered="#{cc.attrs.assay.edit}"
                                ajax="true"
                                action="#{cc.attrs.bean.expRecordController.setLinkedDataIndex(assayRecord.index)}"
@@ -159,14 +160,14 @@
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
-                label="Value">
+                label="#{msgs.expAssay_column_value_label}">
                 <h:inputText 
                     disabled="#{!assayRecord.edit}"
                     value="#{assayRecord.payload.value}"/>
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
-                label="Unit">
+                label="#{msgs.expAssay_column_unit_label}">
                 <p:selectOneMenu 
                     disabled="#{!assayRecord.edit}"
                     value="#{assayRecord.payload.unit}" >
@@ -175,8 +176,8 @@
             </b:dataTableColumn>
             <b:dataTableColumn
                 orderable="false"
-                label="Actions">
-                <p:commandLink title="Edit"
+                label="#{msgs.expAssay_column_actions_label}">
+                <p:commandLink title="#{msgs.expAssay_edit_tooltip}"
                                rendered ="#{cc.attrs.assay.edit}"
                                ajax="true"
                                action="#{cc.attrs.bean.expRecordController.triggerAssayRecordEdit(assayRecord)}"
@@ -184,7 +185,7 @@
                                disabled="#{assayRecord.edit}">
                     <span class="fa fa-pencil"/>
                 </p:commandLink>
-                <p:commandLink title="Delete"
+                <p:commandLink title="#{msgs.expAssay_delete_tooltip}"
                                rendered ="#{cc.attrs.assay.edit}"
                                ajax="true"
                                action="#{cc.attrs.bean.expRecordController.actionDeleteRecord(assayRecord)}"
@@ -208,6 +209,7 @@
                 </b:column>
                 <b:column span="1" offset="1">
                     <b:commandButton
+                        rendered="#{cc.attrs.assay.edit}"
                         update="@form"
                         ajax="true"
                         process="@form"

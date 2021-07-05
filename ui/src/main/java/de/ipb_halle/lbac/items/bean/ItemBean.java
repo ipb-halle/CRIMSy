@@ -47,15 +47,13 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseId;
 import javax.faces.event.ValueChangeEvent;
-import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.event.SelectEvent;
@@ -68,37 +66,39 @@ import org.primefaces.event.SelectEvent;
 @Named
 public class ItemBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     private ItemState state;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
     private HistoryOperation historyOperation;
     private boolean customLabel;
-
+    
     @Inject
     protected PrintBean printBean;
-
+    
     @Inject
     protected ItemOverviewBean itemOverviewBean;
-
+    
     @Inject
     protected ProjectService projectService;
-
+    
     @Inject
     protected ContainerService containerService;
     @Inject
     protected ContainerPositionService containerPositionService;
-
+    
     @Inject
     protected Navigator navigator;
-
+    
     @Inject
     protected ItemService itemService;
-
+    
     @Inject
     protected LabelService labelService;
-
+    
     private ContainerController containerController;
     private ContainerInfoPresenter containerInfoPresenter;
-
+    
     private List<Project> projects = new ArrayList<>();
     private List<Container> containers = new ArrayList<>();
     private List<Solvent> availableSolvents = new ArrayList<>();
@@ -106,28 +106,28 @@ public class ItemBean implements Serializable {
     private List<Unit> availableAmountUnits = new ArrayList<>();
     private List<Unit> availableConcentrationUnits = new ArrayList<>();
     private List<ContainerType> availableContainerTypes = new ArrayList<>();
-
+    
     private boolean commercialMaterial;
     private Validator validator;
-
+    
     @Inject
     protected UserBean userBean;
 
     //Solvent infos
     private boolean solved;
     private boolean directContainer;
-
+    
     private String containerName;
     protected Mode mode;
     private String customLabelValue;
     private ContainerPresenter containerPresenter;
-
+    
     protected MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
-
+    
     public enum Mode {
         CREATE, EDIT, HISTORY
     }
-
+    
     @PostConstruct
     public void init() {
         validator = new Validator(containerPositionService, labelService);
@@ -138,7 +138,7 @@ public class ItemBean implements Serializable {
         availableContainerTypes = containerService.loadContainerTypes();
         filterLocalizeAndSortAvailableContainerTypes();
     }
-
+    
     public void actionApplyNextPositiveDifference() {
         /*
          * This is double-safety: The commandButton is disabled in the UI when
@@ -147,7 +147,7 @@ public class ItemBean implements Serializable {
         if (mode == Mode.CREATE) {
             return;
         }
-
+        
         historyOperation.applyNextPositiveDifference();
 
         /*
@@ -159,15 +159,15 @@ public class ItemBean implements Serializable {
             mode = Mode.EDIT;
         }
     }
-
+    
     public ContainerController getContainerController() {
         return containerController;
     }
-
+    
     public void setContainerController(ContainerController containerController) {
         this.containerController = containerController;
     }
-
+    
     public void actionApplyNextNegativeDifference() {
         /*
          * This is double-safety: The commandButton is disabled in the UI when
@@ -176,7 +176,7 @@ public class ItemBean implements Serializable {
         if (mode == Mode.CREATE) {
             return;
         }
-
+        
         historyOperation.applyNextNegativeDifference();
 
         /*
@@ -214,11 +214,11 @@ public class ItemBean implements Serializable {
     public boolean getLabelPrintingEnabled() {
         return (state.getEditedItem().getId() != null);
     }
-
+    
     public PrintBean getPrintBean() {
         return this.printBean;
     }
-
+    
     public void actionSave() {
         try {
             /*
@@ -234,6 +234,7 @@ public class ItemBean implements Serializable {
                 state.getEditedItem().setSolvent(null);
             }
             state.getEditedItem().setContainer(containerController.getContainer());
+            
             if (validator.itemValideToSave(state.getEditedItem(), containerController, customLabel, customLabelValue)) {
                 if (isCreateMode()) {
                     saveNewItem();
@@ -252,9 +253,10 @@ public class ItemBean implements Serializable {
             }
         } catch (Exception e) {
             messagePresenter.error("itemEdit_save_failed");
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
-
+    
     private void saveNewItem() {
         state.getEditedItem().setACList(state.getEditedItem().getMaterial().getACList());
         state.getEditedItem().setOwner(userBean.getCurrentAccount());
@@ -268,31 +270,31 @@ public class ItemBean implements Serializable {
             containerPositionService.saveItemInContainer(state.getEditedItem().getId(), containerController.getContainer().getId(), positions[0], positions[1]);
         }
     }
-
+    
     public boolean isCreateMode() {
         return mode == Mode.CREATE;
     }
-
+    
     public boolean isEditMode() {
         return mode == Mode.EDIT;
     }
-
+    
     public boolean isHistoryMode() {
         return mode == Mode.HISTORY;
     }
-
+    
     public boolean isCustomLabelDisabled() {
         return !isCreateMode();
     }
-
+    
     public boolean isLabelVisible() {
         return customLabel || isEditMode();
     }
-
+    
     public boolean isSolventRowVisisble() {
         return solved;
     }
-
+    
     public void actionStartItemEdit(Item i) {
         if (i.getContainer() != null) {
             i.setContainer(containerService.loadContainerById(i.getContainer().getId()));
@@ -307,7 +309,7 @@ public class ItemBean implements Serializable {
         customLabel = false;
         initData();
     }
-
+    
     private void initData() {
         projects = loadReadableProjects(userBean.getCurrentAccount());
         containers = containerService.loadContainersWithoutItems(userBean.getCurrentAccount());
@@ -315,15 +317,15 @@ public class ItemBean implements Serializable {
         this.containerPresenter = new ContainerPresenter(this, containerName, containerService, containers);
         this.containerInfoPresenter = new ContainerInfoPresenter(containerController.getContainer());
     }
-
+    
     public void setContainerInfoPresenter(ContainerInfoPresenter containerInfoPresenter) {
         this.containerInfoPresenter = containerInfoPresenter;
     }
-
+    
     public ContainerInfoPresenter getContainerInfoPresenter() {
         return containerInfoPresenter;
     }
-
+    
     public void actionStartItemCreation(Material m) {
         mode = Mode.CREATE;
         state = new ItemState();
@@ -336,46 +338,47 @@ public class ItemBean implements Serializable {
         customLabelValue = "";
         initData();
     }
-
+    
     private List<Project> loadReadableProjects(User user) {
         ProjectSearchRequestBuilder builder = new ProjectSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
         builder.setDeactivated(false);
         SearchResult response = projectService.loadProjects(builder.build());
         return response.getAllFoundObjects(Project.class, response.getNode());
     }
-
+    
     public ContainerPresenter getContainerPresenter() {
         return containerPresenter;
     }
-
+    
     public List<ContainerType> getAvailableContainerTypes() {
         return availableContainerTypes;
     }
-
+    
     public boolean isCommercialMaterial() {
         return commercialMaterial;
     }
-
+    
     public void setCommercialMaterial(boolean commercialMaterial) {
         this.commercialMaterial = commercialMaterial;
     }
-
+    
     public void actionChangeContainer(Container c) {
+        c.setItems(containerService.loadItemsOfContainer(c));
         containerController = new ContainerController(this, c);
         containerInfoPresenter = new ContainerInfoPresenter(c);
         this.containerName = c.getLabel();
-
+        
     }
-
+    
     public void onItemSelect(SelectEvent event) {
         containerName = (String) event.getObject();
         int containerId = Integer.parseInt(containerName.split("-")[0]);
         containerService.loadContainerById(containerId);
         Container c = containerService.loadContainerById(containerId);
         actionChangeContainer(c);
-
+        
     }
-
+    
     public List<String> nameSuggestions(String enteredValue) {
         List<String> matches = new ArrayList<>();
         List<String> names = new ArrayList<>();
@@ -389,59 +392,59 @@ public class ItemBean implements Serializable {
         }
         return matches;
     }
-
+    
     public String getMaterialName() {
         return state.getEditedItem().getMaterial().getFirstName();
     }
-
+    
     public List<Project> getProjects() {
         return projects;
     }
-
+    
     public Container getContainer() {
         return containerController.getContainer();
     }
-
+    
     public void setContainer(Container container) {
         containerController = new ContainerController(this, container);
     }
-
+    
     public List<Container> getContainers() {
         return containers;
     }
-
+    
     public void setContainerName(String containerName) {
         this.containerName = containerName;
     }
-
+    
     public List<Unit> getAvailableAmountUnits() {
         return availableAmountUnits;
     }
-
+    
     public List<Unit> getAvailableConcentrationUnits() {
         return availableConcentrationUnits;
     }
-
+    
     public List<Solvent> getAvailableSolvents() {
         return availableSolvents;
     }
-
+    
     public List<String> getAvailablePurities() {
         return availablePurities;
     }
-
+    
     public ItemState getState() {
         return state;
     }
-
+    
     public Boolean getSolved() {
         return solved;
     }
-
+    
     public void setSolved(Boolean solved) {
         this.solved = solved;
     }
-
+    
     private List<String> loadPurities() {
         List<String> purities = new ArrayList<>();
         purities.add("unbekannt");
@@ -453,20 +456,20 @@ public class ItemBean implements Serializable {
         purities.add("> 99.9 %");
         return purities;
     }
-
+    
     private List<Solvent> loadAndI18nSolvents() {
         List<Solvent> solvents = itemService.loadSolvents();
         // TO TO: i18n solvents
         return solvents;
     }
-
+    
     private List<Unit> loadAmountUnits() {
         return Unit.getUnitsOfQuality(
                 Quality.MASS,
                 Quality.VOLUME,
                 Quality.PIECES);
     }
-
+    
     private List<Unit> loadConcentrationUnits() {
         return Unit.getUnitsOfQuality(
                 Quality.MOLAR_CONCENTRATION,
@@ -486,7 +489,7 @@ public class ItemBean implements Serializable {
                 availableContainerTypes.remove(i);
             } else {
                 type.setLocalizedName(messagePresenter.presentMessage("container_type_" + type.getName()));
-
+                
                 if ((type.getLocalizedName() == null) || type.getLocalizedName().isEmpty()) {
                     logger.error("Could not set localized containerTypeName for " + type.getName());
 
@@ -495,7 +498,7 @@ public class ItemBean implements Serializable {
                 }
             }
         }
-
+        
         availableContainerTypes.sort(Comparator.comparing(ContainerType::getLocalizedName));
     }
 
@@ -504,7 +507,7 @@ public class ItemBean implements Serializable {
      * transforms the amount and (if necessary) the container size of the
      * currently edited item to the new unit if the new and old unit qualities
      * match.
-     * 
+     *
      * @param event
      */
     public void amountUnitChanged(ValueChangeEvent event) {
@@ -518,21 +521,21 @@ public class ItemBean implements Serializable {
             event.queue();
             return;
         }
-
+        
         Unit oldUnit = (Unit) event.getOldValue();
         Unit newUnit = (Unit) event.getNewValue();
-
+        
         if (oldUnit == null) {
             return;
         }
-
+        
         if (oldUnit.getQuality() == newUnit.getQuality()) {
             Item item = getState().getEditedItem();
-
+            
             if (item.getAmount() != null) {
                 item.setAmount(item.getAmount() * oldUnit.transform(newUnit));
             }
-
+            
             if (isDirectContainer() && (item.getContainerSize() != null)) {
                 item.setContainerSize(item.getContainerSize() * oldUnit.transform(newUnit));
             }
@@ -543,7 +546,7 @@ public class ItemBean implements Serializable {
      * This method should be triggered when the concentration unit changes. It
      * transforms the concentration of the currently edited item to the new unit
      * if the new and old unit qualities match.
-     * 
+     *
      * @param event
      */
     public void concentrationUnitChanged(ValueChangeEvent event) {
@@ -557,19 +560,19 @@ public class ItemBean implements Serializable {
             event.queue();
             return;
         }
-
+        
         Item item = getState().getEditedItem();
         if (item.getConcentration() == null) {
             return;
         }
-
+        
         Unit oldUnit = (Unit) event.getOldValue();
         Unit newUnit = (Unit) event.getNewValue();
-
+        
         if (oldUnit == null) {
             return;
         }
-
+        
         if ((oldUnit.getQuality() == newUnit.getQuality()) && getSolved()) {
             item.setConcentration(
                     item.getConcentration() * oldUnit.transform(newUnit));
@@ -585,7 +588,7 @@ public class ItemBean implements Serializable {
         Item item = getState().getEditedItem();
         if (getSolved()) {
             item.setConcentrationUnit(availableConcentrationUnits.get(0));
-
+            
             if (!availableSolvents.isEmpty()) {
                 item.setSolvent(availableSolvents.get(0));
             }
@@ -595,35 +598,35 @@ public class ItemBean implements Serializable {
             item.setSolvent(null);
         }
     }
-
+    
     public boolean isUnitEditable() {
         return isCreateMode();
     }
-
+    
     public boolean isDirectContainer() {
         return directContainer;
     }
-
+    
     public void setDirectContainer(boolean directContainer) {
         this.directContainer = directContainer;
     }
-
+    
     public boolean isCustomLabel() {
         return customLabel;
     }
-
+    
     public void setCustomLabel(boolean customLabel) {
         this.customLabel = customLabel;
     }
-
+    
     public String getCustomLabelValue() {
         return customLabelValue;
     }
-
+    
     public void setCustomLabelValue(String customLabelValue) {
         this.customLabelValue = customLabelValue;
     }
-
+    
     public void setState(ItemState state) {
         this.state = state;
     }
@@ -632,7 +635,7 @@ public class ItemBean implements Serializable {
      * Cross-field validator that checks if the amount is less than or equal the
      * container size. See https://github.com/omnifaces/omnifaces/issues/411 for
      * details on how to use o:validateMultiple with disabled target components.
-     * 
+     *
      * @param context
      * @param components components to be validated
      * @param values the components' submitted values
@@ -652,7 +655,7 @@ public class ItemBean implements Serializable {
         if (values.size() != 2) {
             return false;
         }
-
+        
         Object val1 = values.get(0);
         Object val2 = values.get(1);
 
@@ -675,7 +678,7 @@ public class ItemBean implements Serializable {
         }
         double amount = ((Number) val1).doubleValue();
         double containerSize = ((Number) val2).doubleValue();
-
+        
         return amount <= containerSize;
     }
 }

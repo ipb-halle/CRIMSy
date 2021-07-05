@@ -33,6 +33,8 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class IndexService implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @PersistenceContext(name = "de.ipb_halle.lbac")
     private EntityManager em;
 

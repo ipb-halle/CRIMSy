@@ -52,22 +52,24 @@
                         <b:column 
                             span="2"
                             styleClass="dlgItemViewHeader dlgItemViewText">
-                            Menge
+                            <h:outputText value="#{msgs.dlgItemView_itemAmount}" />
                         </b:column>    
                         <b:column 
                             styleClass="dlgItemViewText"
                             span="4">
-                            #{cc.attrs.agent.getAmountOfItem()}
-                        </b:column>    
+                            <h:outputText value="#{cc.attrs.agent.getAmountOfItem()}" />
+                        </b:column>
+                    </b:row>
+                    <b:row>    
                         <b:column
                             styleClass="dlgItemViewHeader dlgItemViewText"
                             span="2">
-                            Nummer
+                            <h:outputText value="#{msgs.dlgItemView_itemLabel}" />
                         </b:column>    
                         <b:column 
                             styleClass="dlgItemViewText"
                             span="4">
-                            #{cc.attrs.agent.getItemLabel()}
+                            <h:outputText value="#{cc.attrs.agent.getItemLabel()}" />
                         </b:column>
                     </b:row>
                     <b:row>
@@ -87,8 +89,8 @@
                     <b:row>
                         <b:column
                             span="2"
-                             styleClass="dlgItemViewHeader dlgItemViewText">
-                            Standort
+                            styleClass="dlgItemViewHeader dlgItemViewText">
+                            <h:outputText value="#{msgs.dlgItemView_itemPosition}" />
                         </b:column>    
                         <b:column
                             styleClass="dlgItemViewText"
@@ -96,14 +98,9 @@
                             <h:outputText
                                 escape="false"
                                 value="#{cc.attrs.agent. getLocationOfItem() }"/>           
-
                         </b:column>    
-
                     </b:row>
                 </b:container>
-
-
-
             </p:dialog>
         </h:form>
     </composite:implementation>

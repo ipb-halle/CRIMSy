@@ -96,24 +96,24 @@
                                              var="item" >
                                     <p:column  width="60%">
                                         <f:facet name="header">
-                                            #{msgs.itemAgent_label}
+                                            <h:outputText value="#{msgs.itemAgent_label}" />
                                         </f:facet>
-                                        #{item.label}
+                                        <h:outputText value="#{item.label}" />
                                     </p:column>
                                     <p:column  width="20%">
                                         <f:facet name="header">
-                                            #{msgs.itemAgent_table_quantity}
+                                            <h:outputText value="#{msgs.itemAgent_table_quantity}" />
                                         </f:facet>
-                                        #{cc.attrs.agent.getAmount(item)}
+                                        <h:outputText value="#{cc.attrs.agent.getAmount(item)}" />
                                     </p:column>
                                     <p:column  width="20%">
                                         <f:facet name="header">
-                                            #{msgs.itemAgent_table_action}
+                                            <h:outputText value="#{msgs.itemAgent_table_action}" />
                                         </f:facet>
                                         <p:commandButton
                                             ajax="true"
                                             action="#{cc.attrs.agent.actionSetItem(item)}"
-                                            value=" #{msgs.itemAgent_table_insert}"
+                                            value="#{msgs.itemAgent_table_insert}"
                                             update="@(.assayRecordTable)"
                                             oncomplete="PF('dlg_itemEdit').hide();"/>
                                     </p:column>

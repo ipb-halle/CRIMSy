@@ -91,9 +91,7 @@ public class ExpRecordServiceTest extends TestBase {
     private ACList nothingAcl;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         publicUser = memberService
                 .loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         publicReadAcl = GlobalAdmissionContext.getPublicReadACL();

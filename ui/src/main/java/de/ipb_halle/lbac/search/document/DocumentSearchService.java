@@ -133,6 +133,7 @@ public class DocumentSearchService {
             int limit,
             int offSet,
             String uriOfPublicColl) throws Exception {
+
         this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
         searchQueryStemmer = new SearchQueryStemmer();
@@ -182,6 +183,7 @@ public class DocumentSearchService {
         List<Searchable> foundDocs = new ArrayList<>();
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         if (!hasWordRoots(request)) {
+            logger.info("The request has no worrdroots");
             return result;
         }
         SqlBuilder sqlBuilder = new SqlBuilder(createEntityGraph());
@@ -220,6 +222,7 @@ public class DocumentSearchService {
 
     private boolean hasWordRoots(SearchRequest request) {
         return request.getSearchValues().get(SearchCategory.WORDROOT) != null
+                && request.getSearchValues().get(SearchCategory.WORDROOT).getValues() != null
                 && !request.getSearchValues().get(SearchCategory.WORDROOT).getValues().isEmpty();
 
     }

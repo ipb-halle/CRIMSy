@@ -22,26 +22,29 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <b:modal
+            <p:dialog 
                 id="containerModalId"
                 styleClass="containerModal"
-                backdrop="false"
-                close-on-escape="false"
+                widgetVar="dlgcontainerSearch"
+                modal="true" 
                 closable="true"
-                title="#{msgs.container_dialog_title}"
-                size="modal-lg">
+                header="#{msgs.container_dialog_title}"
+                >
+                
                 <b:dataTable
                     value="#{containerModalBean.container}"
                     select="true"
                     update="growlMsg @(.containerPseudoClass)"
                     onselect="ajax:itemBean.actionChangeContainer(container);"
-                    oncomplete="$('.containerModal').modal('hide')"
+                    oncomplete="PF('dlgcontainerSearch').hide();"
                     var ="container"
                     saveState="false">
-                    <b:dataTableColumn value="#{container.id}" />
+                    <b:dataTableColumn
+                        value="#{container.id}" />
                     <b:dataTableColumn
                         value="#{container.label}" 
                         label="#{msgs.container_dialog_label}"/>
@@ -58,7 +61,8 @@
                         value="#{containerModalBean.getDimensionString(container)}"
                         label="#{msgs.container_dialog_size}"/>
                 </b:dataTable>
-            </b:modal>
+                
+            </p:dialog>
         </ui:composition>
     </h:body>
 </html>

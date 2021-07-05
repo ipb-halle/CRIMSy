@@ -55,6 +55,7 @@ public class MemberService implements Serializable {
     public final static String PARAM_SUBSYSTEM_DATA = "subSystemData";
     public final static String PARAM_NAME = "name";
     public final static String PARAM_LOGIN = "login";
+    public final static String PARAM_SHORTCUT = "shortCut";
     private final String ADMIN_GROUP_NAME = "Admin Group";
 
     private static final long serialVersionUID = 1L;
@@ -234,6 +235,9 @@ public class MemberService implements Serializable {
         }
         if (cmap.get(PARAM_LOGIN) != null) {
             predicates.add(builder.equal(userRoot.get(PARAM_LOGIN), cmap.get(PARAM_LOGIN)));
+        }
+        if (cmap.get(PARAM_SHORTCUT) != null) {
+            predicates.add(builder.equal(userRoot.get(PARAM_SHORTCUT), ((String) cmap.get(PARAM_SHORTCUT)).toUpperCase()));
         }
         if (cmap.get(PARAM_NODE_ID) != null) {
             predicates.add(builder.equal(userRoot.get("node"), cmap.get(PARAM_NODE_ID)));

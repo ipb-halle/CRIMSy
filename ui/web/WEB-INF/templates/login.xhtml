@@ -48,11 +48,13 @@
                             <b:focus rendered="true"/>
                         </b:inputText>
                         <b:message for="@previous"/>
-                        <b:inputSecret id="loginPasswd"
-                                        styleClass="tstLoginPassword"
-                                        value="#{userBean.oldPassword}" 
-                                        label="#{msgs.admission_loginForm_password}" 
-                                        required="true">
+                        <b:inputSecret 
+                            id="loginPasswd"
+                            styleClass="tstLoginPassword"
+                            value="#{userBean.oldPassword}" 
+                            label="#{msgs.admission_loginForm_password}" 
+                            required="true"
+                            converter="DummyConverter">
                             <f:facet name="prepend">
                                 <b:icon name="ok"/>
                             </f:facet>

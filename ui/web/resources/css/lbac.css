@@ -159,7 +159,7 @@ select.selCollection {
 }
 
 .upload-collection { 
-    max-width: 100px;
+    width: 500px;
     overflow: hidden;
 }
 
@@ -605,3 +605,4 @@ body.waiting * {
 .borderlessButtonTable tr{
      border-width: 0px !important;
 }
+

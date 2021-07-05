@@ -54,6 +54,16 @@
                     <h:outputText
                         value="#{materialOverviewBean.getHazardRemark(material, 11)}"/>
                 </b:row>
+                <b:row>
+                    <h:outputText
+                        rendered="#{materialOverviewBean.hasHazard(material, 18)}"
+                        value="#{msgs.materialOverview_hazard_warning}"/>
+                </b:row>
+                                <b:row>
+                    <h:outputText
+                        rendered="#{materialOverviewBean.hasHazard(material, 19)}"
+                        value="#{msgs.materialOverview_hazard_danger}"/>
+                </b:row>
             </b:container>
         </ui:composition>
     </h:body>

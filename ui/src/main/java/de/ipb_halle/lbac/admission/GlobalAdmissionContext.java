@@ -55,7 +55,7 @@ public class GlobalAdmissionContext implements Serializable {
     public final static Integer PUBLIC_ACCOUNT_ID = 2;
     public final static Integer OWNER_ACCOUNT_ID = 3;
     public final static Integer ADMIN_GROUP_ID = 4;
-    private final static Integer ADMIN_ACCOUNT_ID = 5;
+    public final static Integer ADMIN_ACCOUNT_ID = 5;
     public static final String NAME_OF_DEACTIVATED_USER = "deactivated";
 
     private CredentialHandler credentialHandler;
@@ -97,7 +97,7 @@ public class GlobalAdmissionContext implements Serializable {
     public GlobalAdmissionContext() {
         this.logger = LogManager.getLogger(this.getClass().getName());
         this.credentialHandler = new CredentialHandler();
-        this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo>();
+        this.intruderLockoutMap = new ConcurrentHashMap<>();
     }
 
     /**

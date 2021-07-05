@@ -130,5 +130,10 @@ public class ItemAgent implements Serializable {
             return String.format("%f  %s", item.getAmount(), item.getUnit().getUnit());
         }
     }
+    
+    public void clearAgent(){
+        this.chooseableItems.clear();
+        this.itemSearch="";
+    }
 
 }

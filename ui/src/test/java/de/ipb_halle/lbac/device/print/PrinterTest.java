@@ -83,8 +83,7 @@ public class PrinterTest extends TestBase {
     }
 
     @Before
-    public void setUp() {
-        super.setUp();
+    public void init() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(this.globalAdmissionContext.getPublicAccount());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);

@@ -27,8 +27,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.faces.context.FacesContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.omnifaces.util.Ajax;
 
 /**
  * interface for experiment record controllers
@@ -74,6 +78,10 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
                 for (ExpRecord.ValidationError error : rec.getErrors()) {
                     messagePresenter.error(errorMessages.get(error));
                 }
+                if (FacesContext.getCurrentInstance() != null) {
+                    // sets the JavaScript variable OmniFaces.Ajax.data.validationFailed 
+                    Ajax.data("validationFailed", true);
+                }
                 return;
             }
             if (rec == null) {
@@ -84,7 +92,10 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
             this.bean.cleanup();
             this.bean.reIndex();
             messagePresenter.info("expAddRecord_add_success");
-
+            if (FacesContext.getCurrentInstance() != null) {
+                // sets the JavaScript variable OmniFaces.Ajax.data.validationFailed 
+                Ajax.data("validationFailed", false);
+            }
         } catch (Exception e) {
             messagePresenter.error("expAddRecord_error");
             this.logger.warn("actionSaveRecord() caught an exception: ", (Throwable) e);
@@ -141,7 +152,14 @@ public abstract class ExpRecordController implements ItemHolder, MaterialHolder 
     public abstract ExpRecord getNewRecord();
 
     public boolean isDiagrammButtonVisible(Assay assay) {
-        return false;
+        List<LinkedData> linkedData = assay.getLinkedData();
+
+        // There needs to be at least one result. (n.b.: The first list element is the ASSAY_TARGET.)
+        if (linkedData.size() < 2) {
+            return false;
+        }
+
+        return (linkedData.get(0).getMaterial() != null) || (linkedData.get(0).getItem() != null);
     }
 
     public void setItem(Item item) {

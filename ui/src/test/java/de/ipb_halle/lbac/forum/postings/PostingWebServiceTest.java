@@ -70,9 +70,7 @@ public class PostingWebServiceTest
     PostingWebService postingWebService;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
     }

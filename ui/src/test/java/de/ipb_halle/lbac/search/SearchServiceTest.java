@@ -139,9 +139,7 @@ public class SearchServiceTest extends TestBase {
     private Container room, cupboard, rack;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         localNode = nodeService.getLocalNode();
         cleanAllProjectsFromDb();
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
@@ -226,6 +224,7 @@ public class SearchServiceTest extends TestBase {
         request.addSearchCategory(SearchCategory.DEACTIVATED, "deactivated");
         Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
+        request = builder.build();
         request.addSearchCategory(SearchCategory.DEACTIVATED, "activated");
         Assert.assertEquals(4, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
@@ -348,7 +347,7 @@ public class SearchServiceTest extends TestBase {
         createExp4_notReadableItem();
 
         ExperimentSearchRequestBuilder builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
-        builder.setMaterialName("Testmaterial-001");      
+        builder.setMaterialName("Testmaterial-001");
         SearchRequest request = builder.build();
         List<Experiment> results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects(Experiment.class, localNode);
         List<Integer> ids = results.stream()
@@ -422,7 +421,7 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(docRequestBuilder.build(),
                         matRequestbuilder.build()), localNode);
 
-        Assert.assertEquals(1, result.getAllFoundObjects().size());
+        Assert.assertEquals(2, result.getAllFoundObjects().size());
 
         result = searchService.search(
                 Arrays.asList(docRequestBuilder.build()),

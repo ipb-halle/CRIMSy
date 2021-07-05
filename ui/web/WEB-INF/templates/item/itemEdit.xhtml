@@ -100,7 +100,9 @@
                     </b:container>
                 </b:panel>
                 <b:messages />
-                <p:tabView styleClass="itemEditTabView">
+                <p:tabView
+                    id="itemTabViewId"
+                    styleClass="itemEditTabView">
                     <p:tab title="#{msgs.itemEdit_itemPanel_title_basicInformation}">
                         <b:container>
 
@@ -282,7 +284,7 @@
                                     span="2" 
                                     styleClass="customLabelText">
                                     <b:inputText
-                                        label="Label"
+                                        label="#{msgs.itemEdit_itemPanel_label}"
                                         disabled="#{itemBean.isCustomLabelDisabled()}"
                                         rendered="#{itemBean.isLabelVisible()}"
                                         value="#{itemBean.customLabelValue}">
@@ -336,7 +338,7 @@
                                                     styleClass="itemEditLocationHeader"
                                                     span="2">
                                                     <h:outputText
-                                                        value="Aktueller Standort"/>
+                                                        value="#{msgs.itemEdit_containerPanel_current_location}"/>
                                                 </b:column>
                                                 <b:column span="1">
                                                     <b:commandButton
@@ -396,7 +398,7 @@
                                                     span="3"
                                                     styleClass="itemEditLocationHeader">
                                                     <h:outputText
-                                                        value="Standortsuche"/>
+                                                        value="#{msgs.itemEdit_containerPanel_locationSearch}"/>
                                                 </b:column>
                                             </b:row>
                                             <b:row>
@@ -422,8 +424,8 @@
                                                     <b:commandButton
                                                         styleClass="itemEditcontainerAdvancedSearch"
                                                         ajax="true"
-                                                        oncomplete="$('.containerModal').modal()"
-                                                        value="erweiterte Suche"/>
+                                                        oncomplete="PF('dlgcontainerSearch').show();"
+                                                        value="#{msgs.itemEdit_containerPanel_extendedLocationSearch}"/>
                                                 </b:column>
                                             </b:row>
                                         </b:container>

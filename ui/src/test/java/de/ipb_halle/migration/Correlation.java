@@ -70,8 +70,8 @@ public class Correlation {
     }
 
     private void createLinkedData() throws Exception {
-        for(String sql : new String[] { MOLPROC_QUERY, MOLPROC_UPDATE, ORGPROC_QUERY, ORGPROC_UPDATE} )  {
-            sql = this.inhouseDB.getConfigString(MOLPROC_QUERY);
+        for(String key : new String[] { MOLPROC_QUERY, MOLPROC_UPDATE, ORGPROC_QUERY, ORGPROC_UPDATE} )  {
+            String sql = this.inhouseDB.getConfigString(key);
             this.inhouseDB.getConnection().prepareStatement(sql).execute();
         }
     }

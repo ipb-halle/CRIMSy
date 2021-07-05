@@ -48,6 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -124,6 +126,13 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     private String searchTerm;
     private final Integer MAX_EXPERIMENTS_TO_LOAD = 50;
     private ExperimentCode experimentCode;
+
+    private ExpRecord lastSavedExpRecord = null;
+
+    protected static final String expRecordEditCssClass = "expRecordEdit";
+    protected static final String expRecordEvenCssClass = "expRecordEven";
+    protected static final String expRecordOddCssClass = "expRecordOdd";
+    protected static final String expRecordLastSavedCssClass = "expRecordLastSaved";
 
     public enum CreationState {
         CREATE,
@@ -298,10 +307,6 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         }
     }
 
-    public void actionLog() {
-        this.logger.info("actionLog()");
-    }
-
     public void actionStartEditExperiment(Experiment exp) {
         creationState = CreationState.EDIT;
         this.experiment = exp;
@@ -404,14 +409,32 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         actionEditRecord(record);
     }
 
+    /**
+     * Saves an experiment or a template depending on the template flag and
+     * sends a message to the ui. The created experiment is add to the shown
+     * experiments list
+     *
+     * @return
+     */
     private Experiment saveNewExperiment() {
         this.experiment.setCode(
                 experimentCode.generateNewExperimentCode(
                         experimentService.getNextExperimentNumber(currentUser))
         );
         Experiment savedExp = this.experimentService.save(this.experiment);
-        messagePresenter.info("exp_save_new");
+        addCreationMessageToUI();
         return savedExp;
+    }
+
+    /**
+     * Sends a message to the ui which appears as a growl for the user
+     */
+    private void addCreationMessageToUI() {
+        if (templateMode) {
+            messagePresenter.info("exp_save_new_template");
+        } else {
+            messagePresenter.info("exp_save_new_experiment");
+        }
     }
 
     private Experiment saveEditedExperiment() {
@@ -611,14 +634,26 @@ public class ExperimentBean implements Serializable, ACObjectBean {
         return this.expRecords;
     }
 
-    public String getExpRecordStyle(boolean edit, boolean even) {
-        if (edit) {
-            return "expRecordEdit";
+    public String getExpRecordStyle(ExpRecord record, boolean even) {
+        StringJoiner sj = new StringJoiner(" ");
+
+        if (record.getEdit()) {
+            sj.add(expRecordEditCssClass);
         }
+
         if (even) {
-            return "expRecordEven";
+            sj.add(expRecordEvenCssClass);
+        } else {
+            sj.add(expRecordOddCssClass);
         }
-        return "expRecordOdd";
+
+        if ((lastSavedExpRecord != null) && (record.getExpRecordId() != null)
+                && (record.getExpRecordId()
+                        .equals(lastSavedExpRecord.getExpRecordId()))) {
+            sj.add(expRecordLastSavedCssClass);
+        }
+
+        return sj.toString();
     }
 
     public ItemAgent getItemAgent() {
@@ -733,13 +768,16 @@ public class ExperimentBean implements Serializable, ACObjectBean {
     }
 
     /**
-     * save experiment record; to be called by ExpRecordController
+     * Saves an experiment record and caches it as last saved record. To be
+     * called by ExpRecordController.
      *
      * @param record
      * @return
      */
     public ExpRecord saveExpRecord(ExpRecord record) {
-        return this.expRecordService.save(record, currentUser);
+        lastSavedExpRecord = null;
+        lastSavedExpRecord = this.expRecordService.save(record, currentUser);
+        return lastSavedExpRecord;
     }
 
     /**

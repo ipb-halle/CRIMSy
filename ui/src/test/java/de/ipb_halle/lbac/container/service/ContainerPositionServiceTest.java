@@ -91,8 +91,7 @@ public class ContainerPositionServiceTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
+    public void init() {
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = creationTools.createProject();

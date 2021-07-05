@@ -67,11 +67,13 @@ public class EmailAddressValidator implements Validator, Serializable {
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        matcher = pattern.matcher(value.toString());
+        Object tmpValue = value != null ? value : "";
+
+        matcher = pattern.matcher(tmpValue.toString());
         if (!matcher.matches()) {
             throw new ValidatorException(
                     UIMessage.getErrorMessage(MESSAGE_BUNDLE, "admission_invalid_email", null));
         }
-        // this.logger.info("Finished email address validation --> " + value.toString());
+        // this.logger.info("Finished email address validation --> " + tmpValue.toString());
     }
 }

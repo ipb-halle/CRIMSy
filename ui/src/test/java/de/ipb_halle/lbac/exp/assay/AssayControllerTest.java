@@ -17,15 +17,16 @@
  */
 package de.ipb_halle.lbac.exp.assay;
 
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.datalink.LinkedData;
+import de.ipb_halle.lbac.datalink.LinkedDataType;
 import de.ipb_halle.lbac.exp.ExperimentBean;
 import de.ipb_halle.lbac.exp.ExperimentDeployment;
 import de.ipb_halle.lbac.exp.ItemAgent;
 import de.ipb_halle.lbac.exp.MaterialAgent;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -41,9 +42,9 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class AssayControllerTest extends TestBase {
 
+    // This implicitly tests ExpRecordController.isDiagrammButtonVisible(Assay).
     @Test
     public void test001_isDiagrammButtonVisible() {
-
         ExperimentBean bean = new ExperimentBean(
                 new ItemAgent(),
                 new MaterialAgent(),
@@ -53,8 +54,31 @@ public class AssayControllerTest extends TestBase {
 
         bean.init();
         AssayController controller = new AssayController(bean);
-        Assay assay = new Assay();
+        Assay assay;
+        BioMaterial bioMaterial = AssayTest.createBioMaterial("Arabidopsis leaf");
+        LinkedData data = new LinkedData(null,
+                LinkedDataType.ASSAY_SINGLE_POINT_OUTCOME,
+                42);
+
+        // Assay has neither results nor a target material.
+        assay = new Assay();
         Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
+
+        // Add material to target, but no results.
+        assay = new Assay();
+        assay.setTarget(bioMaterial);
+        Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
+
+        // Add a result record, but no material to the target.
+        assay = new Assay();
+        assay.getLinkedData().add(data);
+        Assert.assertFalse(controller.isDiagrammButtonVisible(assay));
+
+        // All conditions fulfilled, button is visible.
+        assay = new Assay();
+        assay.setTarget(bioMaterial);
+        assay.getLinkedData().add(data);
+        Assert.assertTrue(controller.isDiagrammButtonVisible(assay));
     }
 
     @Deployment

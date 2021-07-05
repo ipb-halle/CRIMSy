@@ -70,8 +70,7 @@ public class TaxonomyRenderControllerTest extends TestBase {
     private SimpleDateFormat SDF = new SimpleDateFormat(" yyyy-MM-dd HH:mm");
 
     @Before
-    @Override
-    public void setUp() {
+    public void init() {
         user_1 = new User();
         user_1.setName("user_1");
         user_2 = new User();
@@ -85,9 +84,7 @@ public class TaxonomyRenderControllerTest extends TestBase {
         MaterialDifference diff = new TaxonomyDifference();
         diff.initialise(1, user_1.getId(), creationDate1);
         taxonomy_2.getHistory().addDifference(diff);
-    }
 
-    private void init() {
         taxonomyBean = new TaxonomyBeanMock();
         TreeNode treeNode = new DefaultTreeNode(taxonomy_1, null);
         taxonomyBean.setSelectedTaxonomy(treeNode);
@@ -98,7 +95,6 @@ public class TaxonomyRenderControllerTest extends TestBase {
 
     @Test
     public void test001_testInfoInShowMode() {
-        init();
         taxonomyBean.setMode(TaxonomyBean.Mode.SHOW);
         Assert.assertEquals(
                 "taxonomy_label_detail",
@@ -128,7 +124,6 @@ public class TaxonomyRenderControllerTest extends TestBase {
 
     @Test
     public void test002_testInfoInEditMode() {
-        init();
         taxonomyBean.setMode(TaxonomyBean.Mode.EDIT);
         Assert.assertEquals("taxonomy_label_edit", taxonomyBean.getRenderController().getInfoHeader());
         Assert.assertEquals(
@@ -149,7 +144,6 @@ public class TaxonomyRenderControllerTest extends TestBase {
 
     @Test
     public void test003_testInfoInHistoryMode() {
-        init();
         taxonomyBean.setMode(TaxonomyBean.Mode.HISTORY);
         Assert.assertEquals("taxonomy_label_detail", taxonomyBean.getRenderController().getInfoHeader());
         Assert.assertEquals(
@@ -169,7 +163,6 @@ public class TaxonomyRenderControllerTest extends TestBase {
 
     @Test
     public void test004_testInfoInCreationMode() {
-        init();
         taxonomyBean.setMode(TaxonomyBean.Mode.CREATE);
         Assert.assertEquals("taxonomy_label_new", taxonomyBean.getRenderController().getInfoHeader());
         Assert.assertTrue(

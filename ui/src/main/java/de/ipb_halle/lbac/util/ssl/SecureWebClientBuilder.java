@@ -41,10 +41,10 @@ import org.apache.logging.log4j.LogManager;
  * pattern, but methods of interest are provided as static methods.
  */
 public class SecureWebClientBuilder {
-
+    
     private static final Integer CONNECTION_TIMEOUT_IN_MS = 10 * 1000;
     private static final Integer READ_TIMEOUT_IN_MS = 30 * 1000;
-
+    
     private static SecureWebClientBuilder instance;
     private Map<String, SSLContext> sslContext;
     private Logger logger;
@@ -54,47 +54,31 @@ public class SecureWebClientBuilder {
      */
     private SecureWebClientBuilder() {
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.sslContext = new HashMap<String, SSLContext>();
+        this.sslContext = new HashMap<>();
     }
 
     /**
-     * embedded HostnameVerifier class which will return true for all
-     * verifications.
-     */
-    public class HV implements HostnameVerifier {
-
-        /**
-         * @param hostname the hostname
-         * @param session the session
-         * @return this method will always return true
-         */
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    }
-
-    /**
-     * createCollection a webclient using the SSLContext of this class. basePath
+     * createCollection a webclient using the SSLContext of this class.basePath
      * and localPath are just concatenated.
      *
-     * @param basePath a base URL (e.g. https://www.somewhere.invalid/ui)
+     * @param cloudNode
      * @param localPath an arbitrary suffix which is appended to the base URL
      * (e.g /rest/nodes)
      * @return a WebClient with dedicated SSLSocketFactory which is configured
      * to mutual certificate based authentication
      */
     public static WebClient createWebClient(CloudNode cloudNode, String localPath) {
-
-        WebClient wc = WebClient.create(cloudNode.getNode().getBaseUrl()+localPath);
-
+        
+        WebClient wc = WebClient.create(cloudNode.getNode().getBaseUrl() + localPath);
+        
         ClientConfiguration cc = WebClient.getConfig(wc);
-
+        
         HTTPConduit hc = cc.getHttpConduit();
         TLSClientParameters tcp = new TLSClientParameters();
         tcp.setSSLSocketFactory(
                 SecureWebClientBuilder.getSSLSocketFactory(cloudNode.getCloud()));
         hc.setTlsClientParameters(tcp);
-
+        
         hc.getClient().setConnectionTimeout(CONNECTION_TIMEOUT_IN_MS);
         hc.getClient().setReceiveTimeout(READ_TIMEOUT_IN_MS);
         return wc;
@@ -103,14 +87,9 @@ public class SecureWebClientBuilder {
     /**
      * @return returns the Singleton instance of this class
      */
-    private static SecureWebClientBuilder getInstance() {
-
+    private synchronized static SecureWebClientBuilder getInstance() {
         if (instance == null) {
-            synchronized (SecureWebClientBuilder.class) {
-                if (instance == null) {
-                    instance = new SecureWebClientBuilder();
-                }
-            }
+            instance = new SecureWebClientBuilder();
         }
         return instance;
     }
@@ -132,7 +111,7 @@ public class SecureWebClientBuilder {
                     ctx = instance.init(cloudName);
                 }
             }
-
+            
         }
         return ctx.getSocketFactory();
     }
@@ -142,10 +121,10 @@ public class SecureWebClientBuilder {
      */
     private SSLContext init(String cloudName) {
         try {
-
+            
             KeyStore ks = KeyStoreFactory.getInstance().getKeyStore(cloudName);
             KeyStore ts = KeyStoreFactory.getInstance().getTrustStore(cloudName);
-
+            
             final KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory
                     .getDefaultAlgorithm());
             kmf.init(ks, KeyStoreFactory.getInstance().getKeyPass());
@@ -160,7 +139,7 @@ public class SecureWebClientBuilder {
                     new java.security.SecureRandom());
             this.sslContext.put(cloudName, ctx);
             return ctx;
-
+            
         } catch (Exception e) {
             this.logger.warn("init() caught an exception: ", e);
         }
@@ -182,5 +161,5 @@ public class SecureWebClientBuilder {
             }
         }
     }
-
+    
 }

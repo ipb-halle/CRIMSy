@@ -221,7 +221,9 @@ public class ContainerService implements Serializable {
             Integer itemid = (Integer) entity[0];
             Integer x = (Integer) entity[1];
             Integer y = (Integer) entity[2];
-            Item i = itemService.loadItemByIdWithoutContainer(itemid);
+//          Item i = itemService.loadItemByIdWithoutContainer(itemid);
+            Item i = new Item();
+            i.setId(itemid);
             i.setContainer(c);
             items[y][x] = i;
 

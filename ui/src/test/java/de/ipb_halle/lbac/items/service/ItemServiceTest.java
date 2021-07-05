@@ -103,9 +103,7 @@ public class ItemServiceTest extends TestBase {
             + "false,%d)";
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
         cleanItemsFromDb();
@@ -171,7 +169,6 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
-
         //Load item by label
         builder = new ItemSearchRequestBuilder(owner, 0, 25);
         builder.setLabel(item.getLabel());

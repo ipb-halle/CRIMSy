@@ -103,8 +103,7 @@ public class WordCloudWebServiceTest extends TestBase {
     }
 
     @Before
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
     }

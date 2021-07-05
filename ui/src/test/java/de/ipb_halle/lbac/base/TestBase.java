@@ -127,12 +127,13 @@ public class TestBase implements Serializable {
 
     @Inject
     protected GlobalAdmissionContext context;
-    
+
     @Inject
     protected ProjectService projectService;
 
     protected ACList acListReadable, acListNonReadable;
     protected User publicUser;
+    protected User adminUser;
 
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
@@ -160,7 +161,7 @@ public class TestBase implements Serializable {
     }
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
 
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
@@ -180,8 +181,9 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM files");
 
         cleanExperimentsFromDB();
-        publicUser=memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        creationTools=new CreationTools("", "", "", memberService, projectService);
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        adminUser = memberService.loadUserById(GlobalAdmissionContext.ADMIN_ACCOUNT_ID);
+        creationTools = new CreationTools("", "", "", memberService, projectService);
     }
 
     protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {
@@ -341,7 +343,7 @@ public class TestBase implements Serializable {
         createTaxanomy(12, "Hörnlinge ", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(13, "Gallerttränen", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(14, "Bakterien", 2, userGroups, ownerId, 1);
-        createTaxanomy(15, "Escherichia", 7, userGroups, ownerId, 1,14);
+        createTaxanomy(15, "Escherichia", 7, userGroups, ownerId, 1, 14);
         createTaxanomy(16, "Pflanzen", 2, userGroups, ownerId, 1);
         createTaxanomy(17, "Seerosenartige", 5, userGroups, ownerId, 1, 16);
         createTaxanomy(18, "Seerosengewächse", 6, userGroups, ownerId, 1, 16, 17);

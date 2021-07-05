@@ -70,21 +70,9 @@
             delay="10000"
             escape="true"/>
 
-        <b:modal id="modalError" title="Fehler" styleClass="modalError">
-            <b:column id="modalErrorBody" styleClass="modalErrorBody"> a error message</b:column>
-            <f:facet name="footer">
-                <b:button value="Schliessen" dismiss="modal"/>
-            </f:facet>
-        </b:modal>
-
         <ui:insert name="navigation">
             <ui:include src="/WEB-INF/templates/navigation.xhtml"/>
         </ui:insert>
-
-        <h:form id="debug">
-            <p:commandButton value="Log" action="#{experimentBean.actionLog}" ajax="false" />
-            <ui:debug hotkey="e" />
-        </h:form>
 
         <b:container class="simplesearch">
                 <ui:insert name="content">
