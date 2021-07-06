@@ -21,9 +21,10 @@
 # 
 #==========================================================
 #
-LBAC_EXPECTED_CONFIG_VERSION=5
+LBAC_EXPECTED_CONFIG_VERSION=6
 LBAC_CONFIG=etc/config.sh
 
+LBAC_ADMIN_PWFILE=admin.passwd
 LBAC_DB_PWFILE=db.passwd
 
 LBAC_SSL_KEYFILE=lbac_cert.key
@@ -104,6 +105,8 @@ function createProperties {
 <entry key="SecureWebClient.SSL_PROTOCOL">TLSv1.2</entry>
 <!-- key alias -->
 <entry key="LBAC_INTERNET_FQHN">$LBAC_INTERNET_FQHN</entry>
+<!-- default admin password -->
+<entry key="DEFAULT_ADMIN_PASSWORD">`cat $LBAC_DATASTORE/etc/$LBAC_ADMIN_PWFILE`</entry>
 </properties>
 EOF
 

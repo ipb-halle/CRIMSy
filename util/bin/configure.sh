@@ -33,10 +33,11 @@ CLOUD_NAME="CLOUDCONFIG_CLOUD_NAME"
 
 #
 LBAC_CONFIG=config.sh
-LBAC_CONFIG_VERSION=5
-LBAC_CURRENT_CONFIG_VERSION=5
+LBAC_CONFIG_VERSION=6
+LBAC_CURRENT_CONFIG_VERSION=6
 LBAC_INSTALLER=bin/install.sh
 
+LBAC_ADMIN_PWFILE=admin.passwd
 LBAC_DB_PWFILE=db.passwd
 LBAC_SSL_DEVCERT=devcert.pem
 LBAC_SSL_CHAIN=chain.txt
@@ -224,7 +225,7 @@ function dialog_ADMIN_EMAIL {
 			# alles Ok.
 			LBAC_MANAGER_EMAIL=`cat $TMP_RESULT`
 			echo "LBAC_MANAGER_EMAIL=\"$LBAC_MANAGER_EMAIL\"" >> $TMP_CONFIG
-			NEXT_FORM=DIALOG_INTRANET_FQHN 
+			NEXT_FORM=DIALOG_ADMIN_PASSWD 
 			;;
 		1)
 			# Cancel
@@ -237,6 +238,21 @@ function dialog_ADMIN_EMAIL {
 	esac
 }
 
+function dialog_ADMIN_PASSWD {
+        dialog --backtitle "$CLOUD_NAME" \
+          --cancel-label "Abbrechen" \
+          --inputbox "Bitte legen Sie das initiale Passwort des Admin-Accounts fest" \
+          15 72 `cat $LBAC_DATASTORE/etc/$LBAC_ADMIN_PWFILE` 2>$TMP_RESULT
+        case $? in
+                0)
+                        cat $TMP_RESULT > $LBAC_DATASTORE/etc/$LBAC_ADMIN_PWFILE
+                        NEXT_FORM=DIALOG_INTRANET_FQHN
+                        ;;
+                *)
+                        NEXT_FORM=DIALOG_ABORT
+                        ;;
+        esac
+}
 
 function dialog_INTRANET_FQHN {
 	dialog --colors --backtitle "$CLOUD_NAME" \
@@ -821,6 +837,9 @@ function runDialogs {
 	DIALOG_ADMIN_EMAIL)
 		dialog_ADMIN_EMAIL
 		;;
+        DIALOG_ADMIN_PASSWD)
+                dialog_ADMIN_PASSWD
+                ;;
 	DIALOG_CERT_REQUEST)
 		dialog_CERT_REQUEST
 		;;
