@@ -17,8 +17,8 @@
  */
 package de.ipb_halle.lbac.cloud.servlet;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
-
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.Cookie;
@@ -59,7 +59,7 @@ public class SessionTimeoutCookieFilter implements Filter {
         httpServletResponse.addCookie(cookie);
 
         cookie = new Cookie("sessionExpiry", "" + expiryTime);
-
+        cookie.setHttpOnly(true);
         cookie.setPath("/");
         httpServletResponse.addCookie(cookie);
         chain.doFilter(request, response);
