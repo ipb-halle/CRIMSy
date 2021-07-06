@@ -19,9 +19,11 @@ package de.ipb_halle.lbac.admission;
 
 import de.ipb_halle.lbac.util.HexUtil;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
 
@@ -39,8 +41,9 @@ public class CredentialHandler implements Serializable {
     private final static int DEFAULT_ITERATIONS = 2;
     private final static int DEFAULT_SALT_LENGTH = 8;
 
-    private static Random random = new Random(new Date().getTime());
+    private static Random random = new SecureRandom(getRandomByteArray());
     private static Charset charset = Charset.forName("UTF-8");
+    private static final long serialVersionUID = 1L;
     private String digestAlgorithm;
     private int iterations;
     private int saltLength;
@@ -180,5 +183,11 @@ public class CredentialHandler implements Serializable {
     public CredentialHandler setSaltLength(int i) {
         this.saltLength = i;
         return this;
+    }
+    
+    private static byte[] getRandomByteArray(){
+        ByteBuffer buffer=ByteBuffer.allocate(Long.BYTES);
+        buffer.putLong(new Date().getTime());
+        return buffer.array();
     }
 }
