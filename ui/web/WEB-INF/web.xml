@@ -108,10 +108,10 @@
     </context-param>
 
     <!-- This solves a nasty bug, where MyFaces' FacesConfigurator.purgeConfiguration() 
-         fails due to an IllegalArgumentException. This setting simply stops
-         the frequent refresh of the configuration files in WEB-INF. It does
-         not interfere with our typical deployment mechanism that overwrites
-         ui.war. -->
+    fails due to an IllegalArgumentException. This setting simply stops
+    the frequent refresh of the configuration files in WEB-INF. It does
+    not interfere with our typical deployment mechanism that overwrites
+    ui.war. -->
     <context-param>
         <param-name>org.apache.myfaces.CONFIG_REFRESH_PERIOD</param-name>
         <param-value>0</param-value>
@@ -219,6 +219,10 @@
         <param-name>de.ipb_halle.molecularfaces.MOLPAINTJS_URL</param-name>
         <param-value>/plugins/molpaintjs/molpaint.js</param-value>
     </context-param>
+    <context-param>
+        <param-name>org.apache.myfaces.FLASH_SCOPE_DISABLED</param-name>
+        <param-value>true</param-value>
+    </context-param>
     <!--<context-param>
         <param-name>de.ipb_halle.molecularfaces.MARVINJS_BASE_URL</param-name>
         <param-value>/plugins/marvinjs</param-value>
@@ -230,9 +234,9 @@
 
     <!-- Plugin types from MolecularFaces that are available for users. -->
     <!-- Available molecular structure plugin types: This needs to be a 
-         comma-separated list of item names from the enum class 
-         de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType.
-         The first entry is taken as default plugin type. -->
+    comma-separated list of item names from the enum class 
+    de.ipb_halle.molecularfaces.component.molplugin.MolPluginCore.PluginType.
+    The first entry is taken as default plugin type. -->
     <context-param>
         <param-name>de.ipb_halle.lbac.AvailableMolPluginTypes</param-name>
         <param-value>OpenChemLibJS,MolPaintJS</param-value>
@@ -240,8 +244,8 @@
 
     <!-- maximum upload file size for images in experimental records -->
     <context-param>
-    	<param-name>de.ipb_halle.lbac.exp.images.MaxUploadFileSize</param-name>
-    	<param-value>10485760</param-value><!-- 10 MiB -->
+        <param-name>de.ipb_halle.lbac.exp.images.MaxUploadFileSize</param-name>
+        <param-value>10485760</param-value><!-- 10 MiB -->
     </context-param>
 
     <!-- Document Servlet -->
