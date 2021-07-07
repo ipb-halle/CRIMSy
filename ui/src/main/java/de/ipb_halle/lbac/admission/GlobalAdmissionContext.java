@@ -195,10 +195,9 @@ public class GlobalAdmissionContext implements Serializable {
      */
     public void createAdminAccount() {
         try {
-
             User u = this.memberService.loadLocalAdminUser();
             if (u == null) {
-                logger.warn("No admin accoutn found!");
+                logger.warn("No admin account found!");
                 u = new User();
                 u.setLogin("admin");
                 u.setName("Admin");
