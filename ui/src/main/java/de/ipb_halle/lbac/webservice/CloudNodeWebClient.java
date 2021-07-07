@@ -52,12 +52,12 @@ import static de.ipb_halle.lbac.webservice.RestApiHelper.getRestApiDefaultPath;
 @Singleton
 @DependsOn({"Updater", "CloudService", "CloudNodeService", "NodeService"})
 public class CloudNodeWebClient implements IUpdateWebClient {
-    
+
     private final static String REST_PATH = getRestApiDefaultPath(CloudNodeWebService.class);
-    
+
     @Inject
     private NodeService nodeService;
-    
+
     @Inject
     private CloudService cloudService;
 
@@ -66,16 +66,16 @@ public class CloudNodeWebClient implements IUpdateWebClient {
 
     @Inject
     private Updater updater;
-    
+
     private Logger logger;
-    
+
     public CloudNodeWebClient() {
         logger = LogManager.getLogger(this.getClass().getName());
     }
-    
+
     @PostConstruct
     public void CloudNodeWebClientInit() {
-        if (this.cloudService == null) {            
+        if (this.cloudService == null) {
             this.logger.error("Injection of CloudService failed!");
         }
         if (this.cloudNodeService == null) {
@@ -88,7 +88,7 @@ public class CloudNodeWebClient implements IUpdateWebClient {
             this.logger.error("Injection of Updater failed!");
         } else {
             this.updater.register(this);
-            
+
             this.update();
         }
     }
@@ -105,18 +105,18 @@ public class CloudNodeWebClient implements IUpdateWebClient {
     @SuppressWarnings("unchecked")
     private void query(Node masterNode, Node localNode, Cloud cloud) throws Exception {
         // the CloudNode object does not need to be persisted
-        CloudNode localCloudNode = this.cloudNodeService.loadCloudNode(cloud,  localNode);
+        CloudNode localCloudNode = this.cloudNodeService.loadCloudNode(cloud, localNode);
         CloudNode masterCloudNode = this.cloudNodeService.loadCloudNode(cloud, masterNode);
         WebClient wc = SecureWebClientBuilder.createWebClient(masterCloudNode, REST_PATH);
-        
+
         CloudNodeMessage msg = new CloudNodeMessage(cloud.getName(), localNode, localCloudNode.getPublicKey());
-/*
+        /*
         JAXBContext jc = JAXBContext.newInstance( new Class[] { Cloud.class, Node.class, CloudNode.class, CloudNodeMessage.class }, null); 
         Marshaller m = jc.createMarshaller();
         ByteArrayOutputStream bao = new ByteArrayOutputStream();
         m.marshal(msg, bao);
         this.logger.info(String.format("============ XML Marshal =================\n%s\n=======================", bao.toString()));
-*/
+         */
         wc.accept(MediaType.APPLICATION_XML);
         wc.type(MediaType.APPLICATION_XML);
 
@@ -130,6 +130,7 @@ public class CloudNodeWebClient implements IUpdateWebClient {
 
     /**
      * persist the content of a CloudNodeMessage reply object
+     *
      * @param msg the CloudNodeMessage reply object from the master node
      * @param cloud the cloud object
      */
@@ -142,7 +143,7 @@ public class CloudNodeWebClient implements IUpdateWebClient {
              * do not update the local node 
              * do not allow another node with local == true
              */
-            if (! localNode.equals(n)) {
+            if (!localNode.equals(n)) {
                 int rank = cn.getRank();
                 String pubkey = cn.getPublicKey();
                 n.setLocal(Boolean.FALSE);
@@ -158,32 +159,39 @@ public class CloudNodeWebClient implements IUpdateWebClient {
     }
 
     /**
-     * query the list of clouds and for each cloud request an update 
-     * from the master node of the respective cloud.
+     * query the list of clouds and for each cloud request an update from the
+     * master node of the respective cloud.
      */
     @Override
     public void update() {
+        Node masterNode = null;
         try {
             Node localNode = nodeService.getLocalNode();
 
             List<Cloud> cloudList = cloudService.load();
             ListIterator<Cloud> li = cloudList.listIterator();
+
             while (li.hasNext()) {
                 Cloud cloud = li.next();
-                Node masterNode = cloudNodeService.loadMasterNode(cloud);
-/*
+                masterNode = cloudNodeService.loadMasterNode(cloud);
+                /*
                 this.logger.info("update() processing cloud " + cloud.getName());
                 this.logger.info("update()   master node " + masterNode.getId().toString());
                 this.logger.info("update()    local node " + localNode.getId().toString());
-*/
+                 */
                 // skip update for master node!
-                if (! masterNode.equals(localNode)) {
-                    
+                if (!masterNode.equals(localNode)) {
+
                     query(masterNode, localNode, cloud);
                 }
+
             }
         } catch (Exception e) {
-                this.logger.warn("update() caught an exception:", e);
+            if (masterNode != null) {
+                this.logger.warn("Could not update node information of " + masterNode.getInstitution());
+            } else {
+                this.logger.error("Error at update node information");
+            }
         }
     }
 }

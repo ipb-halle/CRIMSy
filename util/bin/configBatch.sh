@@ -21,7 +21,7 @@
 #==========================================================
 #
 # This script generates a node configuration in batch mode 
-# which is necessary for integration testing (Selenium).
+# which is necessary for integration testing (Selenium / Cypress).
 # The script operates the original configure.sh script for 
 # the current (PRIMARY) cloud.
 #
@@ -75,6 +75,9 @@ function createConfiguration {
     echo "LBAC_PROXY_HSTS=\"OFF\"" >> $TMP_CONFIG
     echo "LBAC_INIT_TYPE=\"SYSTEMD\"" >> $TMP_CONFIG
     echo "LBAC_DOCKER_EXCLUSIVE=\"OFF\"" >> $TMP_CONFIG
+
+    # set default admin password (not for production use!)
+    echo -n "admin" > "$LBAC_DATASTORE/etc/$LBAC_ADMIN_PWFILE"
 
     getTestData
     LBAC_INTRANET_FQHN=`hostname -f`

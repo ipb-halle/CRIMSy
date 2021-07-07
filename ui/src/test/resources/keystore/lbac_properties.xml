@@ -18,5 +18,6 @@
 <entry key="SecureWebClient.TRUSTSTORE_PASSWORD">abcdef</entry>
 <entry key="SecureWebClient.SSL_PROTOCOL">TLSv1.2</entry>
 <entry key="LBAC_INTERNET_FQHN">test</entry>
+<entry key="DEFAULT_ADMIN_PASSWORD">admin</entry>
 
 </properties>

@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.collections.CollectionOrchestrator;
 import de.ipb_halle.lbac.collections.CollectionSearchState;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.collections.CollectionWebClient;
+import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.service.FileService;
@@ -372,7 +373,6 @@ public class MemberServiceTest extends TestBase {
         user3.setShortcut("");
         user3 = memberService.save(user3);
 
-
         Map<String, Object> cmap = new HashMap<String, Object>();
         cmap.put(MemberService.PARAM_SHORTCUT, "aBc");
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LOCAL);
@@ -387,6 +387,26 @@ public class MemberServiceTest extends TestBase {
         entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user1.getId());
         entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user2.getId());
         entityManagerService.doSqlUpdate("DELETE from usersgroups WHERE id=" + user3.getId());
+    }
+
+    @Test
+    public void test011_loadLocalAdminUser() {
+
+        User remoteAdmin = new User();
+        Node foreignNode = createNode(nodeService, "");
+        foreignNode = nodeService.save(foreignNode);
+        remoteAdmin.setNode(foreignNode);
+        remoteAdmin.setName("Admin");
+        remoteAdmin.setSubSystemType(AdmissionSubSystemType.LBAC_REMOTE);
+
+        memberService.save(remoteAdmin);
+
+        User u = memberService.loadLocalAdminUser();
+        Assert.assertNotNull(u);
+        Assert.assertEquals("Admin", u.getName());
+
+        entityManagerService.doSqlUpdate("DELETE from usersgroups where id=" + remoteAdmin.getId());
+        entityManagerService.doSqlUpdate("DELETE from nodes where id='" + foreignNode.getId()+"'");
     }
 
     private Group loadGroupByName(String name) {

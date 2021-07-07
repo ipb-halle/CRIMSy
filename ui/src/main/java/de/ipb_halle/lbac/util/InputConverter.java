@@ -23,6 +23,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.owasp.html.Encoding;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
@@ -59,12 +60,12 @@ public class InputConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
-        return string == null ? null : policy.sanitize(string).trim();
+        return string == null ? null : Encoding.decodeHtml(policy.sanitize(string).trim());
     }
 
     @Override
     public String getAsString(FacesContext fc, UIComponent uic, Object o) {
-        return o == null ? "" : policy.sanitize(o.toString());
+        return o == null ? "" : Encoding.decodeHtml(policy.sanitize(o.toString()));
     }
 
 }

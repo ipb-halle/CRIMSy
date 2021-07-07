@@ -38,6 +38,8 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
  */
 @RunWith(Arquillian.class)
 public class AccountValidatorTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
     private FacesContext fc = null;
     private UIComponent comp = null;
     private MessagePresenterMock presenterMock = new MessagePresenterMock();

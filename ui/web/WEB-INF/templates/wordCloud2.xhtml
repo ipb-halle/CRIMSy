@@ -26,9 +26,9 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
 
-
-    <h:body onload="colorCloudTerms()">
+    <h:body>
         <ui:composition>
+            <h:outputScript target="body">colorCloudTerms();</h:outputScript>
             <b:form id="socialForumFormId">
                 <b:container id="wordCloudPage">
                     <b:row>
