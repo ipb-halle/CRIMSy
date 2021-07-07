@@ -111,7 +111,7 @@ public class MemberService implements Serializable {
 
     public User loadLocalAdminUser() {
         Map<String, Object> cmap = new HashMap<>();
-        cmap.put(PARAM_NAME, "Admin");
+        cmap.put(PARAM_LOGIN, "admin");
         cmap.put(PARAM_NODE_ID, nodeService.getLocalNodeId());
         List<User> users = loadUsers(cmap);
         if (users.isEmpty()) {
