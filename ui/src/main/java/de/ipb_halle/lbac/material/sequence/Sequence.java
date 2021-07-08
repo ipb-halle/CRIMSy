@@ -45,10 +45,6 @@ public class Sequence extends Material {
 
     }
 
-    @Override
-    public String getNumber() {
-        return "";
-    }
 
     @Override
     public Material copyMaterial() {

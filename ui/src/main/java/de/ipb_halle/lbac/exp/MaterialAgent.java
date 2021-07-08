@@ -120,7 +120,7 @@ public class MaterialAgent implements Serializable {
         }
         if (this.materialHolder != null) {
             try {
-                SearchResult result = this.materialService.getReadableMaterials(
+                SearchResult result = this.materialService.loadReadableMaterials(
                         createSearchRequest());
                 choosableMaterials = extractMaterialsFromResult(result);
             } catch (Exception e) {

@@ -78,14 +78,6 @@ public class Structure extends Material {
                 new HazardInformation(),
                 new StorageInformation(),
                 null);
-
-    }
-
-    @Override
-    public String getNumber() {
-        String back = "";
-
-        return back;
     }
 
     public String getSumFormula() {
@@ -131,6 +123,7 @@ public class Structure extends Material {
 
     public static Structure createInstanceFromDB(
             MaterialEntity mE,
+
             HazardInformation hazardInfos,
             StorageInformation storageInfos,
             List<MaterialIndexEntryEntity> indices,
@@ -148,13 +141,6 @@ public class Structure extends Material {
         List<MaterialName> names = new ArrayList<>();
         List<IndexEntry> inices = new ArrayList<>();
 
-        for (MaterialIndexEntryEntity mie : indices) {
-            if (mie.getTypeid() > 1) {
-                inices.add(new IndexEntry(mie.getTypeid(), mie.getValue(), mie.getLanguage()));
-            } else {
-                names.add(new MaterialName(mie.getValue(), mie.getLanguage(), mie.getRank()));
-            }
-        }
         Structure s = new Structure(
                 sumFormula,
                 molarMass,
@@ -162,8 +148,8 @@ public class Structure extends Material {
                 mE.getMaterialid(),
                 names,
                 mE.getProjectid(),
-                hazardInfos,
-                storageInfos,
+                null,
+                null,
                 new Molecule(stuctureModel, moleculeId)
         );
         s.setId(mE.getMaterialid());
