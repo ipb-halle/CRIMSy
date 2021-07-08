@@ -72,7 +72,8 @@ public class SessionScopeTest {
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsResource("javax.enterprise.inject.spi.Extension",
-                        "META-INF/services/javax.enterprise.inject.spi.Extension");
+                        "META-INF/services/javax.enterprise.inject.spi.Extension")
+                .addClass(ApplicationScopedBean.class);
     }
 
     @Test
@@ -119,5 +120,10 @@ public class SessionScopeTest {
 
         // The previous state was reset.
         assertEquals(0, bean2.getBean().getCount());
+    }
+
+    @Test
+    public void test003_injectOtherScopes() {
+        assertEquals("Hi!", bean2.getApplicationScopedBean().getMessage());
     }
 }

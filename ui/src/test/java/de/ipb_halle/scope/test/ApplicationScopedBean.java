@@ -17,45 +17,21 @@
  */
 package de.ipb_halle.scope.test;
 
-import java.io.Serializable;
-
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 @Named
-@SessionScoped
-public class Bean implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    private String hello;
-
-    @Inject
-    private OtherBean bean;
-
-    @Inject
-    private ApplicationScopedBean applicationScopedBean;
-
+@ApplicationScoped
+public class ApplicationScopedBean {
+    private String message;
+    
     @PostConstruct
     public void init() {
-        hello = "Hello World!";
+        message = "Hi!";
     }
-
-    @PreDestroy
-    public void done() {
-    }
-
-    public String getHello() {
-        return hello;
-    }
-
-    public OtherBean getBean() {
-        return bean;
-    }
-
-    public ApplicationScopedBean getApplicationScopedBean() {
-        return applicationScopedBean;
+    
+    public String getMessage() {
+        return message;
     }
 }
