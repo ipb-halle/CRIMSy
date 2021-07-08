@@ -475,7 +475,7 @@ public class MaterialService implements Serializable {
                 throw new IllegalArgumentException("Unsupported MaterialType");
         }
         material.setACList(aclService.loadById(entity.getACList()));
-        material.setStorageInformation(loadStorageClassInformation(id));
+        material.setStorageInformation(loadStorageClassInformation(entity.getMaterialid()));
         material.setOwner(memberService.loadUserById(entity.getOwner()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
         material.setNames(loadMaterialNamesById(material.getId()));
@@ -815,8 +815,5 @@ public class MaterialService implements Serializable {
 
     public EntityManager getEm() {
         return em;
-    }
-     public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {
-        this.editedMaterialSaver = editedMaterialSaver;
     }
 }
