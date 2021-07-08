@@ -20,7 +20,8 @@ limitations under the License.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:body>
         <ui:composition>
             <ui:insert> 
@@ -49,8 +50,9 @@ limitations under the License.
                                 @(.topLevelRowForm)
                                 @(.containerEditFormStyle)
                                 @(.containerEditModal)"
-                                oncomplete="PF('dlgcontainerEdit').show();"
-                                />
+                                oncomplete="PF('dlgcontainerEdit').show();">
+                                <f:actionListener type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+                            </b:commandButton>
                         </b:form>
                     </b:column>
                 </b:row>

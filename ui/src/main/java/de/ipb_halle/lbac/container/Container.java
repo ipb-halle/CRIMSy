@@ -26,10 +26,8 @@ import de.ipb_halle.lbac.search.Searchable;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -133,7 +131,7 @@ public class Container implements DTO, Serializable, Searchable {
         items = createEmptyItemArray();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -222,7 +220,7 @@ public class Container implements DTO, Serializable, Searchable {
             locationString = containerHierarchy
                     .stream()
                     .map(r -> r.getLabel())
-                    .collect(Collectors.joining(" -> <br>"));
+                    .collect(Collectors.joining("-><br>"));
         }
         if (reverse) {
             Collections.reverse(containerHierarchy);

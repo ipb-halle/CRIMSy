@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.container.mock;
 
 import de.ipb_halle.lbac.container.bean.EditInputValidator;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 
 /**
  *
@@ -28,7 +29,7 @@ public class EditInputValidatorMock extends EditInputValidator {
 
     public EditInputValidatorMock(ContainerService containerService, String originalLabel) {
         super(containerService, originalLabel);
-        this.errorMessagePresenter = new ErrorMessagePresenterMock();
+        this.errorMessagePresenter = new MessagePresenterMock();
     }
 
 }

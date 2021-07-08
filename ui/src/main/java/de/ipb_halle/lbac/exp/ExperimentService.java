@@ -101,7 +101,7 @@ public class ExperimentService implements Serializable {
         SqlBuilder sqlBuilder = new SqlBuilder(graph);
         ExperimentSearchConditionBuilder conBuilder = new ExperimentSearchConditionBuilder(graph, "experiments");
         Condition con = conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
-        String sql = sqlBuilder.query(con,createOrderList());
+        String sql = sqlBuilder.query(con, createOrderList());
         Query q = em.createNativeQuery(sql, ExperimentEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
@@ -109,6 +109,7 @@ public class ExperimentService implements Serializable {
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
 
+        @SuppressWarnings("unchecked")
         List<ExperimentEntity> entities = q.getResultList();
 
         for (ExperimentEntity e : entities) {
@@ -128,7 +129,7 @@ public class ExperimentService implements Serializable {
         }
         return null;
     }
-    
+
     private List<DbField> createOrderList() {
         DbField labelField = new DbField()
                 .setColumnName("experimentid")
@@ -181,8 +182,8 @@ public class ExperimentService implements Serializable {
     }
 
     public Integer getNextExperimentNumber(User user) {
-        ExperimentSearchRequestBuilder builder =
-                new ExperimentSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
+        ExperimentSearchRequestBuilder builder
+                = new ExperimentSearchRequestBuilder(user, 0, Integer.MAX_VALUE);
         builder.setCode(user.getShortcut());
         SearchResult result = load(builder.build());
         return result.getAllFoundObjects().size() + 1;

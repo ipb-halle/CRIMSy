@@ -29,7 +29,7 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -91,8 +91,7 @@ public class ContainerPositionServiceTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
+    public void init() {
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = creationTools.createProject();
@@ -130,7 +129,7 @@ public class ContainerPositionServiceTest extends TestBase {
     }
 
     private Item createItem() {
-        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
+        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
         item.setACList(globalContext.getAdminOnlyACL());

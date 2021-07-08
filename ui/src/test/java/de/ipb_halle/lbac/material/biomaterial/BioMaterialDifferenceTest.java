@@ -8,7 +8,7 @@ package de.ipb_halle.lbac.material.biomaterial;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.util.ArrayList;
@@ -122,7 +122,7 @@ public class BioMaterialDifferenceTest {
     }
 
     private Taxonomy createTaxonomy(int id) {
-        Taxonomy taxo = new Taxonomy(id, new ArrayList<>(), new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), user, new Date());
+        Taxonomy taxo = new Taxonomy(id, new ArrayList<>(), new HazardInformation(), new StorageInformation(), new ArrayList<>(), user, new Date());
         taxo.setLevel(new TaxonomyLevel(999, "taxoLevel", 1));
         taxo.setACList(new ACList());
         return taxo;
@@ -135,7 +135,7 @@ public class BioMaterialDifferenceTest {
     }
 
     private BioMaterial createBioMaterial(int id, Taxonomy taxo, Tissue tissue) {
-        BioMaterial biomaterial = new BioMaterial(id, new ArrayList<>(), 0, new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        BioMaterial biomaterial = new BioMaterial(id, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), taxo, tissue);
         biomaterial.setACList(new ACList());
         biomaterial.setOwner(user);
 

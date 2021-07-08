@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,7 +109,7 @@ public class MaterialHistoryService implements Serializable {
             + "typeid_new,"
             + "remarks_old,"
             + "remarks_new"
-            + " FROM hazards_materials_hist"
+            + " FROM material_hazards_hist"
             + " WHERE materialid=:mid";
 
     private final String SQL_GET_TAXONOMY_HISTORY
@@ -185,9 +186,7 @@ public class MaterialHistoryService implements Serializable {
             loadTaxonomyHistory(materialId, history);
             loadBioMaterialHistory(materialId, history);
         } catch (Exception e) {
-            StackTraceElement t = e.getStackTrace()[0];
-            logger.info(t.getClassName() + ":" + t.getMethodName() + ":" + t.getLineNumber());
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return history;
     }
@@ -209,6 +208,7 @@ public class MaterialHistoryService implements Serializable {
     }
 
     public void loadBioMaterialHistory(int materialId, MaterialHistory history) {
+        @SuppressWarnings("unchecked")
         List<BioMaterialHistoryEntity> dbEntities = materialService.
                 getEm().
                 createNativeQuery(SQL_GET_BIOMATERIAL_HISTORY, BioMaterialHistoryEntity.class)
@@ -237,7 +237,7 @@ public class MaterialHistoryService implements Serializable {
                         loadMolecule(dbe.getMoleculeid_new())));
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -301,8 +301,17 @@ public class MaterialHistoryService implements Serializable {
                 .createNativeQuery(SQL_GET_HAZARD_HISTORY, HazardsMaterialHistEntity.class)
                 .setParameter("mid", materialId)
                 .getResultList();
+        Map<Date, List<HazardsMaterialHistEntity>> entitiesByDate = new HashMap<>();
         if (dbEntities.size() > 0) {
-            history.addDifference(new MaterialHazardDifference(dbEntities));
+            for (HazardsMaterialHistEntity dbe : dbEntities) {
+                if (!entitiesByDate.containsKey(dbe.getmDate())) {
+                    entitiesByDate.put(dbe.getmDate(), new ArrayList<>());
+                }
+                entitiesByDate.get(dbe.getmDate()).add(dbe);
+            }
+            for (Date d : entitiesByDate.keySet()) {
+                history.addDifference(new MaterialHazardDifference(entitiesByDate.get(d)));
+            }
         }
     }
 

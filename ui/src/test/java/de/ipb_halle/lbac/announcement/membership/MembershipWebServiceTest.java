@@ -102,8 +102,7 @@ public class MembershipWebServiceTest extends TestBase {
     }
 
     @Before
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
     }

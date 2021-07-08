@@ -20,8 +20,6 @@ package de.ipb_halle.lbac.file;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.collections.CollectionService;
-import java.io.File;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.inject.Inject;
@@ -34,6 +32,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +43,6 @@ public class FileUploadWebService extends HttpServlet {
 
     private final static long serialVersionUID = 1L;
     private final static long UPLOAD_TIMEOUT = 30L * 60L * 1000L;
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
     private final String FILTER_DEFINITION = "fileParserFilterDefinition.json";
 
     private final Logger logger = LogManager.getLogger(FileUploadWebService.class);
@@ -63,11 +61,13 @@ public class FileUploadWebService extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        final AsyncContext asyncContext = req.startAsync();
+        AsyncContext asyncContext = null;
         try {
+            asyncContext = req.startAsync();
+
             //*** set timeout to 30 minutes
             asyncContext.setTimeout(UPLOAD_TIMEOUT);
-            
+
             asyncContext.start(new UploadToCol(
                     this.getClass().getResourceAsStream(FILTER_DEFINITION),
                     fileEntityService,
@@ -76,18 +76,24 @@ public class FileUploadWebService extends HttpServlet {
                     collectionService,
                     termVectorEntityService));
         } catch (Exception e) {
-            logger.error(e);
-            asyncContext.complete();
+            logger.error(ExceptionUtils.getStackTrace(e));
+            if (asyncContext != null) {
+                asyncContext.complete();
+            }
         }
 
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        final PrintWriter out = resp.getWriter();
-        JsonObject json = Json.createObjectBuilder()
-                .add("error", "get request not implemented.")
-                .build();
-        out.write(json.toString());
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            final PrintWriter out = resp.getWriter();
+            JsonObject json = Json.createObjectBuilder()
+                    .add("error", "get request not implemented.")
+                    .build();
+            out.write(json.toString());
+        } catch (IOException e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
     }
 }

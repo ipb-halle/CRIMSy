@@ -29,7 +29,9 @@ import de.ipb_halle.lbac.container.service.ContainerNestingService;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.items.Item;
+import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
@@ -54,6 +56,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class LabelServiceTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private ItemService itemService;
 
@@ -68,9 +72,7 @@ public class LabelServiceTest extends TestBase {
     private int itemId;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = context.getPublicAccount();
         publicACList = GlobalAdmissionContext.getPublicReadACL();
@@ -122,19 +124,7 @@ public class LabelServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("LabelServiceTest.war")
-                .addClass(EntityManagerService.class)
-                .addClass(ProjectService.class)
-                .addClass(MaterialService.class)
-                .addClass(ContainerService.class)
-                .addClass(ArticleService.class)
-                .addClass(TaxonomyService.class)
-                .addClass(LabelService.class)
-                .addClass(TissueService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(ContainerNestingService.class)
-                .addClass(ContainerPositionService.class)
-                .addClass(ItemService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("LabelServiceTest.war");
+        return ItemDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

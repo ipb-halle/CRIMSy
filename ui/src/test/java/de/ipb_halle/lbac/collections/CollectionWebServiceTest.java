@@ -89,9 +89,7 @@ public class CollectionWebServiceTest
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeKeyStoreFactory();
     }
 

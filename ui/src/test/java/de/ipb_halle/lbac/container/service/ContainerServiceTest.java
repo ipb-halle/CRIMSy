@@ -34,7 +34,13 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,12 +87,17 @@ public class ContainerServiceTest extends TestBase {
     @Inject
     private ContainerPositionService positionService;
 
+    @Inject
+    private MaterialService materialService;
+
+    @Inject
+    private ItemService itemService;
+
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
@@ -145,10 +156,11 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertNotNull(c0.getId());
         Assert.assertNotNull(c1.getId());
         Assert.assertNotNull(c2.getId());
-        Assert.assertEquals(3, (int) entityService.doSqlQuery("select * from containers").size());
+
+        Assert.assertEquals(3, entityService.doSqlQuery("select * from containers").size());
 
         List<Object> nestedContainer = entityService.doSqlQuery("select sourceid,targetid,nested from nested_containers order by sourceid,targetid");
-        Assert.assertEquals(3, (int) nestedContainer.size());
+        Assert.assertEquals(3, nestedContainer.size());
         int[] targetSources = new int[]{c1.getId(), c2.getId(), c2.getId()};
         int[] targetTargets = new int[]{c0.getId(), c0.getId(), c1.getId()};
         boolean[] targetNested = new boolean[]{false, true, false};
@@ -189,7 +201,7 @@ public class ContainerServiceTest extends TestBase {
         c4.setType(new ContainerType("CARTON", 190, true, false));
         instance.saveContainer(c4);
 
-        List<Container> result = instance.loadContainers(publicUser);
+        List<Container> result = instance.loadContainersWithoutItems(publicUser);
         Assert.assertEquals("Three containers must be found", 3, result.size());
         Assert.assertNull("testcase 002: First container must have no parent", result.get(0).getParentContainer());
         Assert.assertNotNull("testcase 002: Second container must have a parent", result.get(1).getParentContainer());
@@ -233,24 +245,24 @@ public class ContainerServiceTest extends TestBase {
         Assert.assertEquals("Three items must be in container one and two", 3, o.size());
 
         //Check container one
-        Item[][] loadedItems = instance.loadItemsOfContainer(c0);
+        Item[][] loadedItems = instance.loadItemIdsOfContainer(c0);
         for (int y = 0; y < 3; y++) {
             for (int x = 0; x < 3; x++) {
                 if (x == 0 && (y == 0)) {
-                    checkItem1(loadedItems[x][y], "Container 1-Item-1: ");
+                    Assert.assertEquals(1, loadedItems[x][y].getId(), 0);
                 } else if (x == 1 && (y == 2)) {
-                    checkItem2(loadedItems[x][y], "Container 1-Item-2: ");
+                    Assert.assertEquals(2, loadedItems[x][y].getId(), 0);
                 } else {
                     Assert.assertNull(loadedItems[x][y]);
                 }
             }
         }
         //Check container two
-        loadedItems = instance.loadItemsOfContainer(c1);
+        loadedItems = instance.loadItemIdsOfContainer(c1);
         for (int y = 0; y < 2; y++) {
             for (int x = 0; x < 2; x++) {
                 if (x == 0 && (y == 1)) {
-                    checkItem3(loadedItems[x][y], "Container 2-Item-3: ");
+                    Assert.assertEquals(3, loadedItems[x][y].getId(), 0);
                 } else {
                     Assert.assertNull(loadedItems[x][y]);
                 }
@@ -298,30 +310,30 @@ public class ContainerServiceTest extends TestBase {
 
         List<Object> en = entityManagerService.doSqlQuery("SELECT * from containers");
 
-        List<Container> loadedContainer = instance.loadContainers(testUser);
+        List<Container> loadedContainer = instance.loadContainersWithoutItems(testUser);
 
         entityManagerService.doSqlUpdate("UPDATE  containers SET deactivated=false");
         Assert.assertEquals(2, loadedContainer.size());
         Map<String, Object> cmap = new HashMap<>();
         cmap.put("id", c0.getId());
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(1, loadedContainer.size());
 
         cmap.clear();
         cmap.put("project", "Container Test Project");
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(0, loadedContainer.size());
-        loadedContainer = instance.loadContainers(user, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(user, cmap);
         Assert.assertEquals(1, loadedContainer.size());
 
         cmap.clear();
         cmap.put("label", "R302");
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(1, loadedContainer.size());
 
         cmap.clear();
         cmap.put("location", "R302");
-        loadedContainer = instance.loadContainers(testUser, cmap);
+        loadedContainer = instance.loadContainersWithoutItems(testUser, cmap);
         Assert.assertEquals(2, loadedContainer.size());
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
@@ -392,18 +404,18 @@ public class ContainerServiceTest extends TestBase {
         ArrayList<Object[]> i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
         Assert.assertEquals(5, i.size());
         // Container c1 is in c0
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[0]);
-        Assert.assertEquals(c0.getId(), (int) i.get(0)[1]);
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[0], 0);
+        Assert.assertEquals(c0.getId(), (int) i.get(0)[1], 0);
         // Container c2 is in c1 and indirect c0
-        Assert.assertEquals(c2.getId(), (int) i.get(1)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1]);
-        Assert.assertEquals(c2.getId(), (int) i.get(2)[0]);
-        Assert.assertEquals(c0.getId(), (int) i.get(2)[1]);
+        Assert.assertEquals(c2.getId(), (int) i.get(1)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1], 0);
+        Assert.assertEquals(c2.getId(), (int) i.get(2)[0], 0);
+        Assert.assertEquals(c0.getId(), (int) i.get(2)[1], 0);
         // Container c3 is in c1 and indirect in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(3)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(3)[1]);
-        Assert.assertEquals(c3.getId(), (int) i.get(4)[0]);
-        Assert.assertEquals(c0.getId(), (int) i.get(4)[1]);
+        Assert.assertEquals(c3.getId(), (int) i.get(3)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(3)[1], 0);
+        Assert.assertEquals(c3.getId(), (int) i.get(4)[0], 0);
+        Assert.assertEquals(c0.getId(), (int) i.get(4)[1], 0);
 
         //remove the link between c0 and c1
         c1.setParentContainer(null);
@@ -411,71 +423,68 @@ public class ContainerServiceTest extends TestBase {
         i = (ArrayList) entityManagerService.doSqlQuery(CHECK_SQL);
         Assert.assertEquals(2, i.size());
         // Container c2 is in c1 and no more in c0
-        Assert.assertEquals(c2.getId(), (int) i.get(0)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(0)[1]);
+        Assert.assertEquals(c2.getId(), (int) i.get(0)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(0)[1], 0);
         // Container c3 is in c1 and no more in c0
-        Assert.assertEquals(c3.getId(), (int) i.get(1)[0]);
-        Assert.assertEquals(c1.getId(), (int) i.get(1)[1]);
+        Assert.assertEquals(c3.getId(), (int) i.get(1)[0], 0);
+        Assert.assertEquals(c1.getId(), (int) i.get(1)[1], 0);
+    }
+
+    @Test
+    public void test010_loadContainersWithManyItems() {
+        Project project = creationTools.createAndSaveProject("ContainerServiceTest_test010_loadContainersWithManyItems_project");
+        instance.saveContainer(c0);
+
+        for (int i = 0; i < 4; i++) {
+            Container wellPlate = createWellPlate(String.format("wp%d", i + 1));
+            instance.saveContainer(wellPlate);
+            for (int j = 0; j < 70; j++) {
+                Structure s = creationTools.createStructure(project);
+                s.setMolecule(null);
+                materialService.saveMaterialToDB(s, project.getACList().getId(), new HashMap(), publicUser);
+                Item item = createAndSaveItem(wellPlate, project, s);
+                positionService.saveItemInContainer(item.getId(), wellPlate.getId(), i % 8, (i / 8));
+            }
+        }
+
+        List<Container> loadedContainers = instance.loadContainersWithoutItems(publicUser);
+        Assert.assertEquals(5, loadedContainers.size());
+    }
+
+    private Item createAndSaveItem(Container c, Project p, Structure s) {
+        Item item = new Item();
+        item.setACList(p.getACList());
+        item.setOwner(publicUser);
+        item.setAmount(0d);
+        item.setConcentration(0d);
+        item.setConcentrationUnit(Unit.getUnit("%"));
+        item.setContainer(c);
+        item.setMaterial(s);
+        item.setProject(p);
+        item.setUnit(Unit.getUnit("g"));
+        item.setcTime(new Date());
+        itemService.saveItem(item);
+        return item;
+
+    }
+
+    private Container createWellPlate(String name) {
+        Container wellPlate = new Container();
+        wellPlate.setBarCode(name);
+        wellPlate.setColumns(12);
+        wellPlate.setRows(8);
+        wellPlate.setFireArea(c0.getFireArea());
+        wellPlate.setGmoSafetyLevel(c0.getGmoSafetyLevel());
+        wellPlate.setLabel(name);
+        wellPlate.setParentContainer(c0);
+        wellPlate.setType(new ContainerType("WELLPLATE", 90, true, false));
+        return wellPlate;
     }
 
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ContainerServiceTest.war");
         return ItemDeployment.add(UserBeanDeployment.add(deployment));
-    }
-
-    private void checkItem1(Item i, String testDesc) {
-        Assert.assertNotNull(i);
-        Assert.assertEquals(testDesc + "ID must be 1", 1d, i.getId(), 0);
-        Assert.assertEquals(testDesc + "Amount must be 10", 10d, i.getAmount(), 0);
-        Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
-        Assert.assertNull(testDesc + "Project must be null", i.getProject());
-        Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be kg", "kg", i.getUnit().getUnit());
-        Assert.assertEquals(testDesc + "Purity must be 'unknown'", "unknown", i.getPurity());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Description must be item 1", "item 1", i.getDescription());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
-        Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
-        Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
-        Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
-    }
-
-    private void checkItem2(Item i, String testDesc) {
-        Assert.assertNotNull(i);
-        Assert.assertEquals(testDesc + "ID must be 2", 2d, i.getId(), 0);
-        Assert.assertEquals(testDesc + "Amount must be 5", 5d, i.getAmount(), 0);
-        Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
-        Assert.assertNull(testDesc + "Project must be null", i.getProject());
-        Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be g", "g", i.getUnit().getUnit());
-        Assert.assertEquals(testDesc + "Purity must be 'pure'", "pure", i.getPurity());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Description must be item 2", "item 2", i.getDescription());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
-        Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
-        Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
-        Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
-    }
-
-    private void checkItem3(Item i, String testDesc) {
-        Assert.assertNotNull(i);
-        Assert.assertEquals(testDesc + "ID must be 3", 3d, i.getId(), 0);
-        Assert.assertEquals(testDesc + "Amount must be 11", 11d, i.getAmount(), 0);
-        Assert.assertNull(testDesc + "Artice must be null", i.getArticle());
-        Assert.assertNull(testDesc + "Project must be null", i.getProject());
-        Assert.assertEquals(testDesc + "Concenttration must be zero", 0d, i.getConcentration(), 0);
-        Assert.assertEquals(testDesc + "Unit must be mg", "mg", i.getUnit().getUnit());
-        Assert.assertEquals(testDesc + "Purity must be 'xxx'", "xxx", i.getPurity());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Description must be item 3", "item 3", i.getDescription());
-        Assert.assertNull(testDesc + "Solvent must be null", i.getSolvent());
-        Assert.assertEquals(testDesc + "Owner must be PUBLIC USER", GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, i.getOwner().getId());
-        Assert.assertNull(testDesc + "Direct containersize must be null", i.getContainerSize());
-        Assert.assertNull(testDesc + "Direct containertype must be null", i.getContainerType());
-        Assert.assertNotNull(testDesc + "Creationtime must be not null", i.getcTime());
     }
 
     private void createMaterial(String userGroups, String ownerid, int projectid) {

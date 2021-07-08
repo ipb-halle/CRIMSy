@@ -83,9 +83,7 @@ public class CollectionWebClientTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
     }

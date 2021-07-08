@@ -146,7 +146,6 @@ public class UserMgrBean implements Serializable {
      * create a new user
      */
     public void actionCreate() {
-        this.logger.info("actionCreate(): creating Account");
         this.user.setPassword(this.credentialHandler.computeDigest(this.tempPassword));
         boolean userSaved = saveUser();
         if (!userSaved) {
@@ -159,7 +158,6 @@ public class UserMgrBean implements Serializable {
         this.membershipService.addMembership(publicGroup, user);
         initUser();
         this.mode = MODE.READ;
-        this.logger.info("actionCreate() finished.");
     }
 
     private boolean saveUser() {
@@ -373,11 +371,10 @@ public class UserMgrBean implements Serializable {
     /**
      * set the temporary cleartext password for current account.
      *
-     * @param p the cleartext temporary password. NOTE: this method trims
-     * whitespace!
+     * @param p the cleartext temporary password.
      */
     public void setTempPassword(String p) {
-        this.tempPassword = p.trim();
+        this.tempPassword = p;
     }
 
     /**

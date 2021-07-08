@@ -60,9 +60,7 @@ public class ProjectServiceTest extends TestBase {
     private User publicUser;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         cleanAllProjectsFromDb();
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }

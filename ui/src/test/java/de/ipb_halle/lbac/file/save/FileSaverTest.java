@@ -65,9 +65,7 @@ public class FileSaverTest extends TestBase {
     private Collection col;
     
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
     

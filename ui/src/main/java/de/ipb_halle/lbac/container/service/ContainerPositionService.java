@@ -151,7 +151,7 @@ public class ContainerPositionService {
         }
         for (int[] pos : positions) {
             Integer itemAtPlace = getItemIdAtPosition(c.getId(), pos[0], pos[1]);
-            if (itemAtPlace != null && itemAtPlace != i.getId()) {
+            if (itemAtPlace != null && !itemAtPlace.equals(i.getId())) {
                 return false;
             }
         }

@@ -30,6 +30,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.primefaces.model.TreeNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -94,7 +95,7 @@ public class TaxonomyBean implements Serializable {
         currentUser = evt.getCurrentAccount();
         levelController.setLevels(taxonomyService.loadTaxonomyLevel());
         levelController.setSelectedLevel(levelController.getRootLevel());
-        
+
         treeController.initialise();
         selectedTaxonomy = treeController.getTaxonomyTree().getChildren().get(0);
         initHistoryDate();
@@ -116,7 +117,7 @@ public class TaxonomyBean implements Serializable {
                 treeController.disableTreeNodeEntries(taxonomyBeforeEdit);
                 levelController.setSelectedLevel(taxonomyToEdit.getLevel());
             } catch (Exception e) {
-                logger.error(e);
+                logger.error(ExceptionUtils.getStackTrace(e));
             }
         }
     }
@@ -152,7 +153,7 @@ public class TaxonomyBean implements Serializable {
                 mode = Mode.SHOW;
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             taxonomyBeforeEdit = null;
             taxonomyToEdit = null;
             mode = Mode.SHOW;
@@ -273,7 +274,11 @@ public class TaxonomyBean implements Serializable {
             taxonomyToCreate.getTaxHierachy().add(parent);
             taxonomyToCreate.getTaxHierachy().addAll(parent.getTaxHierachy());
         }
-        materialService.saveMaterialToDB(taxonomyToCreate, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(
+                taxonomyToCreate,
+                GlobalAdmissionContext.getPublicReadACL().getId(),
+                new HashMap<>(),
+                currentUser);
         return taxonomyToCreate;
     }
 

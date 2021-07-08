@@ -40,6 +40,7 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
 
 /**
@@ -69,8 +70,8 @@ public class KeyStoreFactory {
      * Default Constructor
      */
     private KeyStoreFactory() {
-        this.keyStore = new HashMap<String, KeyStore> ();
-        this.trustStore = new HashMap<String, KeyStore> ();
+        this.keyStore = new HashMap<> ();
+        this.trustStore = new HashMap<> ();
         this.logger = LogManager.getLogger(this.getClass().getName());
         init();
     }
@@ -85,7 +86,7 @@ public class KeyStoreFactory {
             this.SSL_PROTOCOL =  prop.getProperty("SecureWebClient.SSL_PROTOCOL");
 
         } catch(Exception e) {
-            logger.error("Could not initialise KeyStoreFactory", e);
+            logger.error("Could not initialise KeyStoreFactory", ExceptionUtils.getStackTrace(e));
         }
         return this;
     }
@@ -112,20 +113,16 @@ public class KeyStoreFactory {
             this.trustStore.put(cloudName, ts);
 
         } catch (Exception e) {
-            logger.error("Could not load keystores", e);
+            logger.error("Could not load keystores", ExceptionUtils.getStackTrace(e));
         }
 
     }
-
-    public static KeyStoreFactory getInstance() {
-        if (KeyStoreFactory.instance == null) {
-            synchronized(KeyStoreFactory.class) {
-                if (KeyStoreFactory.instance == null) {
-                    KeyStoreFactory.instance = new KeyStoreFactory();
-                }
-            }
+    
+    public static KeyStoreFactory getInstance(){
+        if(instance==null){
+            instance=new KeyStoreFactory();
         }
-        return KeyStoreFactory.instance;
+        return instance;
     }
 
     public KeyStore getKeyStore(String cloudName) {

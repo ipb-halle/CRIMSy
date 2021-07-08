@@ -28,7 +28,7 @@
     <h:body>
         <ui:composition>
             <p:tab
-                title="Biodata"
+                title="#{msgs.materialCreation_panelBiodata_name}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('TAXONOMY')}">
                 <p:outputPanel
                     styleClass="storagePanelClass"
@@ -57,7 +57,7 @@
                                 <b:row>
                                     <b:column span="10">
                                         <b:inputText
-                                            label="choosen Taxonomyentry"
+                                            label="#{msgs.materialCreation_panelBiodata_chosenTaxonomyEntry}"
                                             disabled="true"
                                             value="#{materialBean.taxonomyController.getSelectedTaxonomyName()}"/>
                                     </b:column>
@@ -67,7 +67,7 @@
                                         span="10"
                                         rendered="#{materialBean.isTissueSelectionVisible()}">
                                         <b:selectOneMenu
-                                            label="Select tissue">
+                                            label="#{msgs.materialCreation_panelBiodata_selectTissue}">
                                         </b:selectOneMenu>
                                     </b:column>
                                 </b:row>

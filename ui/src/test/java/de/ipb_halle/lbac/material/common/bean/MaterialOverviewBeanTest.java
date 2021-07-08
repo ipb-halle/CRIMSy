@@ -18,7 +18,6 @@
 package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
@@ -33,11 +32,15 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.mocks.MaterialOverviewBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.ProjectType;
 import java.util.HashMap;
+import java.util.List;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -70,36 +73,39 @@ public class MaterialOverviewBeanTest extends TestBase {
     User customUser;
     ACList acl;
     Material material;
-    UserBeanMock userBean;
     Project project;
+
+    @Inject
+    private HazardService hazardService;
 
     @Inject
     private IndexService indexService;
 
     @Before
-    public void setUp() {
-        super.setUp();
-        creationTools = new CreationTools("", "", "", memberService, projectService);
+    public void init() {
+        creationTools = new CreationTools("h-statement", "p-statement", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        User ownerAccount = memberService.loadUserById(GlobalAdmissionContext.OWNER_ACCOUNT_ID);
         acl = new ACList();
         customUser = createUser("testUser", "testUser");
         acl.addACE(customUser, new ACPermission[]{ACPermission.permEDIT});
+        acl.addACE(ownerAccount, ACPermission.values());
         acl = aclistService.save(acl);
         project.setOwner(publicUser);
         project.setACList(acl);
         projectService.saveProjectToDb(project);
 
-        userBean = new UserBeanMock();
-        userBean.setCurrentAccount(publicUser);
-
         material = creationTools.createStructure(project);
         Structure s = (Structure) material;
         s.getMolecule().setStructureModel(null);
         material.setOwner(publicUser);
-        materialService.setUserBean(userBean);
+        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
 
-        materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>());
+        instance = new MaterialOverviewBeanMock();
+        instance.hazardService = hazardService;
+        instance.materialService = materialService;
+        instance.init();
     }
 
     @After
@@ -118,11 +124,72 @@ public class MaterialOverviewBeanTest extends TestBase {
         Assert.assertEquals("Test-Struktur<br>Test-Structure", instance.getWrappedNames(m, 2));
     }
 
+    @Test
+    public void test002_isRadioactive() {
+        Material m = materialService.loadMaterialById(material.getId());
+
+        Assert.assertFalse(instance.isRadioactive(m));
+        m.getHazards().getHazards().put(new HazardType(16, false, "R1", 3), null);
+
+        Assert.assertEquals("img/hazards/R1.png", instance.getRadioactiveImageLocation());
+        Assert.assertTrue(instance.isRadioactive(m));
+    }
+
+    @Test
+    public void test003_getImageLocationOfHazards() {
+        Material m = materialService.loadMaterialById(material.getId());
+
+        Assert.assertEquals(2, instance.getImageLocationOfHazards(m).size());
+        Assert.assertTrue(instance.getImageLocationOfHazards(m).contains("img/hazards/GHS02.png"));
+        Assert.assertTrue(instance.getImageLocationOfHazards(m).contains("img/hazards/GHS08.png"));
+    }
+
+    @Test
+    public void test004_getHazardsRemark() {
+        Material m = materialService.loadMaterialById(material.getId());
+        Assert.assertEquals("h-statement", instance.getHazardRemark(m, 10));
+        Assert.assertEquals("p-statement", instance.getHazardRemark(m, 11));
+        Assert.assertNull(instance.getHazardRemark(m, 2));
+        Assert.assertNull(instance.getHazardRemark(m, 8));
+        //What happens if request for not existing hazard
+        Assert.assertEquals("", instance.getHazardRemark(m, 1));
+    }
+
+    @Test
+    public void test005_deactivateMaterial() {
+        Material m = materialService.loadMaterialById(material.getId());
+        instance.setCurrentAccount(new LoginEvent(publicUser));
+        instance.actionDeactivateMaterial(m);
+        List o = (List) entityManagerService.doSqlQuery("SELECT deactivated FROM materials WHERE materialid=" + m.getId());
+        Assert.assertTrue(((Boolean) o.get(0)));
+
+        entityManagerService.doSqlUpdate("UPDATE materials SET deactivated='false' WHERE materialid=" + m.getId());
+    }
+
+    @Test
+    public void test006_hasAccessRight() {
+        Material m = materialService.loadMaterialById(material.getId());
+        instance.setCurrentAccount(new LoginEvent(publicUser));
+
+        Assert.assertFalse(instance.hasAccessRight(m, "no valide right"));
+        // Owner account
+        Assert.assertTrue(instance.hasAccessRight(m, ACPermission.permDELETE.toString()));
+        Assert.assertTrue(instance.hasAccessRight(m, ACPermission.permEDIT.toString()));
+        Assert.assertTrue(instance.hasAccessRight(m, ACPermission.permGRANT.toString()));
+        Assert.assertTrue(instance.hasAccessRight(m, ACPermission.permREAD.toString()));
+        // another user
+        instance.setCurrentAccount(new LoginEvent(customUser));
+        Assert.assertFalse(instance.hasAccessRight(m, ACPermission.permDELETE.toString()));
+        Assert.assertTrue(instance.hasAccessRight(m, ACPermission.permEDIT.toString()));
+        Assert.assertFalse(instance.hasAccessRight(m, ACPermission.permGRANT.toString()));
+        Assert.assertFalse(instance.hasAccessRight(m, ACPermission.permREAD.toString()));
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialOverviewBeanTest.war")
-                .addClass(IndexService.class);
+                        .addClass(IndexService.class);
         deployment = UserBeanDeployment.add(deployment);
         deployment = ItemDeployment.add(deployment);
         return PrintBeanDeployment.add(deployment);

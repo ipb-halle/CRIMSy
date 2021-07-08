@@ -22,7 +22,8 @@ import java.time.DateTimeException;
 import java.time.ZoneId;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +38,7 @@ import de.ipb_halle.lbac.util.pref.PreferenceType;
  *
  * @author flange
  */
-@Dependent
+@SessionScoped
 public class UserTimeZoneSettingsBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -55,6 +56,8 @@ public class UserTimeZoneSettingsBean implements Serializable {
 
     @Inject
     private UserBean userBean;
+
+    private String pref = null;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -86,21 +89,40 @@ public class UserTimeZoneSettingsBean implements Serializable {
     }
 
     /**
+     * Resets the preference upon login of a user. The next call to
+     * {@link #getPreferredTimeZone()} will reload the preference from the
+     * database.
+     * 
+     * @param evt
+     */
+    public void onLogin(@Observes LoginEvent evt) {
+        pref = null;
+    }
+
+    /**
      * Returns the preferred time zone or the default time zone if a preference
      * does not exist.
      * 
      * @return valid time zone id according to {@link ZoneId#getId()}
      */
     public String getPreferredTimeZone() {
+        if (pref == null) {
+            loadPreferredTimeZone();
+        }
+
+        return pref;
+    }
+
+    private void loadPreferredTimeZone() {
         String prefFromDB = preferenceService.getPreferenceValue(
                 userBean.getCurrentAccount(), TIMEZONE_PREFERENCE_KEY,
                 timeZonesBean.getDefaultTimeZone());
 
         // Check if the zone is valid and do transformations if necessary.
         try {
-            return ZoneId.of(prefFromDB).getId();
+            pref = ZoneId.of(prefFromDB).getId();
         } catch (DateTimeException e) {
-            return timeZonesBean.getDefaultTimeZone();
+            pref = timeZonesBean.getDefaultTimeZone();
         }
     }
 
@@ -114,6 +136,7 @@ public class UserTimeZoneSettingsBean implements Serializable {
         if (isValidTimeZoneId(timeZone)) {
             preferenceService.setPreference(userBean.getCurrentAccount(),
                     TIMEZONE_PREFERENCE_KEY, timeZone);
+            pref = timeZone;
             return true;
         } else {
             logger.warn("Could not set the time zone '" + timeZone

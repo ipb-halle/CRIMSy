@@ -57,6 +57,7 @@
                                           value="#{cc.attrs.agent.material.molecule.structureModel}"
                                           border="true" 
                                           pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                          format="MDLV2000"
                                           readonly="true"
                                           widgetVar="dlg_MaterialView_molViewer"/>
                         </b:column>
@@ -69,7 +70,7 @@
                                     value="#{cc.attrs.agent.getHazards()}">
                                     <p:row>
                                         <p:column>
-                                            <b:image value="#{cc.attrs.agent.getImageIconOf(hazard)}"
+                                            <b:image name="#{cc.attrs.agent.getImageIconOf(hazard)}"
                                                      styleClass="img-hazard"/>
                                         </p:column>
                                     </p:row>
@@ -81,13 +82,13 @@
                         <b:column span="6"
                                   styleClass="dlgMaterialViewHeader">
                             <h:outputText
-                                value="Alternative names"/>
+                                value="#{msgs.dlgMaterialView_alternativeNames}"/>
                         </b:column>
                         <b:column span="6"
                                   styleClass="dlgMaterialViewHeader">
                             <b:column span="6">
                                 <h:outputText
-                                    value="Indices"/>
+                                    value="#{msgs.dlgMaterialView_indices}" />
                             </b:column>
 
                         </b:column>

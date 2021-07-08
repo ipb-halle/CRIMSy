@@ -89,9 +89,9 @@ public class PasswordValidator implements Validator, Serializable {
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        logger.info("start::validation::" + component.getId());
+        Object tmpValue = value != null ? value : "";
 
-        String pw = value.toString().trim();
+        String pw = tmpValue.toString();
         if (pw.length() < 8) {
             throw new ValidatorException(
                     UIMessage.getErrorMessage(MESSAGE_BUNDLE, "PASSWORD_ERROR_TOO_SHORT", null));

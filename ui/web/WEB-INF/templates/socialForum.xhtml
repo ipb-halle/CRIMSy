@@ -24,7 +24,9 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:nwc="http://ipb-halle.de/nwc">
     <h:body>
         <b:form id="forumForm">
             <b:poll id="searchPoll"
@@ -40,7 +42,7 @@
                             <b:row id="lbac_logo">
                                 <b:column span="4"></b:column>
                                 <b:column span="8">
-                                    <b:image value="/resources/img/cloudlogo-forum.svg"
+                                    <b:image name="img/cloudlogo-forum.svg"
                                              id="forum-cloudlogo"
                                              styleClass="img-responsive"/>
                                 </b:column>
@@ -57,7 +59,8 @@
                                         value="#{forumBean.allReadableTopics}"
                                         var="topic"
                                         styleClass="forumTopicTable"
-                                        id="topicTable">
+                                        id="topicTable"
+                                        saveState="false">
                                         <b:dataTableColumn styleClass="forumTopicTableRow">
                                             <h:commandLink 
                                                 onclick="return;"
@@ -74,9 +77,11 @@
                                                      style="margin:0 2px;"
                                                      iconAwesome="fa-plus-circle"
                                                      rendered="#{forumBean.isCreationOfNewTopicAllowed()}"
-                                                     value="new Topic"
+                                                     value="#{msgs.forum_newTopic}"
                                                      look="primary"
                                                      ajax="true"
+                                                     process="@this"
+                                                     update="modalNewTopic"
                                                      type="button"
                                                      oncomplete="$('.modalNewTopicClass').modal()"/>
                                 </b:column>
@@ -126,17 +131,19 @@
                                             var="posting">
 
                                             <b:row>
-                                                <b:column span="8">
+                                                <b:column span="6">
                                                     <h:outputText
                                                         value="#{posting.getUserTag()}"
                                                         styleClass="userStyle"/> 
                                                 </b:column>
 
-                                                <b:column span="4">
-                                                    <h:outputText value="#{posting.getCreated()}">
-                                                        <f:convertDateTime
-                                                            pattern="dd-MM-yyyy HH:mm"
-                                                            timeZone="CET"/></h:outputText>
+                                                <b:column span="6">
+                                                    <h:outputFormat value="{0} ({1})">
+                                                        <o:param
+                                                            value="#{posting.created}"
+                                                            converter="org.ocpsoft.PrettyTimeConverter" />
+                                                        <o:param value="#{nwc:formatDateWithTimezone(posting.created)}" />
+                                                    </h:outputFormat>
                                                 </b:column>
                                             </b:row>
                                             <b:row>
@@ -196,13 +203,16 @@
                     </b:column>
                 </b:row>
             </b:container>
-            <b:modal 
-                id="modalNewTopic"
-                styleClass="modalNewTopicClass"
-                backdrop="false"
-                close-on-escape="false"
-                title="#{msgs.forum_modalNewTopic_Header}">
+        </b:form>
+        <b:modal 
+            id="modalNewTopic"
+            styleClass="modalNewTopicClass"
+            backdrop="false"
+            close-on-escape="false"
+            title="#{msgs.forum_modalNewTopic_Header}">
 
+            <b:form id="modalNewTopicFormId">
+                <b:fetchBeanInfos/>
 
                 <b:selectOneMenu
                     label="#{msgs.forum_modalCloudLabel}"
@@ -211,10 +221,12 @@
                     <f:selectItems value="#{forumBean.availableClouds}"/>
                 </b:selectOneMenu>
 
-                <b:inputText  value="#{forumBean.newTopicName}"
-                              renderLabel="true"
-                              placeholder="#{msgs.forum_modalNewTopic_PlaceHolder}"
-                              required="false">
+                <b:inputText
+                    value="#{forumBean.newTopicName}"
+                    renderLabel="true"
+                    label="#{msgs.forum_modalNewTopic_NameLabel}"
+                    placeholder="#{msgs.forum_modalNewTopic_PlaceHolder}"
+                    required="true">
                     <f:facet name="prepend">
                         <b:iconAwesome name="files-o"/>
                     </f:facet>
@@ -222,16 +234,17 @@
                 <b:message for="@previous"/>
                 <b:row styleClass="modal-footer">
                     <b:button value="#{msgs.forum_modalNewTopic_Cancel}" dismiss="modal"/>
-                    <b:commandButton value="#{msgs.forum_modalNewTopic_Create}"
-                                     update="forumcontainer"
-                                     type="submit"
-                                     ajax="true"
-                                     onclick="ajax:forumBean.createNewTopic();"
-                                     oncomplete="$('.modalNewTopicClass').modal('hide');" 
-                                     look="primary"/>
+                    <b:commandButton
+                        value="#{msgs.forum_modalNewTopic_Create}"
+                        update="modalNewTopicFormId forumForm"
+                        type="submit"
+                        ajax="true"
+                        onclick="ajax:forumBean.createNewTopic();"
+                        oncomplete="if (!validationFailed){ $('.modalNewTopicClass').modal('hide')}; return false;" 
+                        look="primary"/>
                 </b:row>
-            </b:modal>
-        </b:form>
+            </b:form>
+        </b:modal>
     </h:body>
 
 </html>

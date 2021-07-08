@@ -116,10 +116,7 @@ public class ProjectBeanTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
-
+    public void init() {
         this.publicUser = context.getPublicAccount();
         instance = new ProjectBean();
         instance.setProjectService(projectService);

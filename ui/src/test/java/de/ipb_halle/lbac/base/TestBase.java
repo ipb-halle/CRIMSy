@@ -41,6 +41,7 @@ import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.NodeService;
 import java.io.Serializable;
 import java.net.URL;
@@ -127,7 +128,12 @@ public class TestBase implements Serializable {
     @Inject
     protected GlobalAdmissionContext context;
 
+    @Inject
+    protected ProjectService projectService;
+
     protected ACList acListReadable, acListNonReadable;
+    protected User publicUser;
+    protected User adminUser;
 
     public static WebArchive prepareDeployment(String archiveName) {
         WebArchive archive = ShrinkWrap.create(WebArchive.class, archiveName)
@@ -146,6 +152,7 @@ public class TestBase implements Serializable {
                 .addClass(FileService.class)
                 .addClass(TermVectorEntityService.class)
                 .addClass(CollectionService.class)
+                .addClass(ProjectService.class)
                 .addClass(KeyStoreFactory.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsResource("init.sql", "init.sql")
@@ -154,7 +161,7 @@ public class TestBase implements Serializable {
     }
 
     @Before
-    public void setUp() {
+    public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
 
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
@@ -172,8 +179,12 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM unstemmed_words");
         entityManagerService.doSqlUpdate("DELETE FROM termvectors");
         entityManagerService.doSqlUpdate("DELETE FROM files");
-
+        context.setLBAC_PROPERTIES_PATH("target/test-classes/keystore/lbac_properties.xml");
+        context.createAdminAccount();
         cleanExperimentsFromDB();
+        publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
+        adminUser = memberService.loadLocalAdminUser();
+        creationTools = new CreationTools("", "", "", memberService, projectService);
     }
 
     protected void createTaxanomy(int id, String name, int level, Integer userGroups, Integer ownerId, Integer... parents) {
@@ -333,7 +344,7 @@ public class TestBase implements Serializable {
         createTaxanomy(12, "Hörnlinge ", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(13, "Gallerttränen", 7, userGroups, ownerId, 1, 2, 8, 11);
         createTaxanomy(14, "Bakterien", 2, userGroups, ownerId, 1);
-        createTaxanomy(15, "Escherichia", 7, userGroups, ownerId, 1,14);
+        createTaxanomy(15, "Escherichia", 7, userGroups, ownerId, 1, 14);
         createTaxanomy(16, "Pflanzen", 2, userGroups, ownerId, 1);
         createTaxanomy(17, "Seerosenartige", 5, userGroups, ownerId, 1, 16);
         createTaxanomy(18, "Seerosengewächse", 6, userGroups, ownerId, 1, 16, 17);
@@ -347,21 +358,7 @@ public class TestBase implements Serializable {
         termVectorEntityService.deleteTermVectors();
         for (Collection c : colls) {
             fileEntityService.delete(c);
-        }
-
-        List<Group> groups = memberService.loadGroups(new HashMap<>());
-
-        groups.stream().map((g) -> {
-            return g;
-        }).filter((g) -> (!g.getName().equals("Public Group") && !g.getName().equals("Admin Group"))).forEachOrdered((g) -> {
-            //  memberService.deleteGroup(g.getId());
-        });
-        List<User> users = memberService.loadUsers(new HashMap<>());
-        users.stream().map((u) -> {
-            return u;
-        }).filter((u) -> (!u.getName().equals("Public Account") && !u.getName().equals("Admin") && !u.getId().equals(GlobalAdmissionContext.OWNER_ACCOUNT_ID))).forEachOrdered((u) -> {
-            // memberService.deleteUser(u.getId());
-        });
+        }   
     }
 
     public void resetCollectionsInDb(CollectionService collectionService) {
@@ -440,19 +437,19 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
 
         entityManagerService.doSqlUpdate("delete from storagesconditions_storages_hist");
-        entityManagerService.doSqlUpdate("delete from hazards_materials_hist");
+        entityManagerService.doSqlUpdate("delete from material_hazards_hist");
         entityManagerService.doSqlUpdate("delete from storages_hist");
         entityManagerService.doSqlUpdate("delete from material_indices_hist");
-        entityManagerService.doSqlUpdate("delete from storageconditions_storages");
+        entityManagerService.doSqlUpdate("delete from storageconditions_material");
         entityManagerService.doSqlUpdate("delete from storages");
         entityManagerService.doSqlUpdate("delete from structures_hist");
         entityManagerService.doSqlUpdate("delete from materials_hist");
         entityManagerService.doSqlUpdate("delete from material_indices");
         entityManagerService.doSqlUpdate("delete from materialdetailrights");
         entityManagerService.doSqlUpdate("delete from structures");
-        entityManagerService.doSqlUpdate("delete from storageconditions_storages");
+        entityManagerService.doSqlUpdate("delete from storageconditions_material");
         entityManagerService.doSqlUpdate("delete from storages");
-        entityManagerService.doSqlUpdate("delete from hazards_materials");
+        entityManagerService.doSqlUpdate("delete from material_hazards");
         entityManagerService.doSqlUpdate("delete from materials");
     }
 

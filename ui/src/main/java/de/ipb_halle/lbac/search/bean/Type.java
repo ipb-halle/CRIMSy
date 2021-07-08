@@ -51,7 +51,7 @@ public class Type {
 
     public String getTypeName() {
         if (generalType == SearchTarget.MATERIAL) {
-            return generalType.toString() + "-" + materialType.toString();
+            return materialType.toString();
         } else {
             return generalType.toString();
         }

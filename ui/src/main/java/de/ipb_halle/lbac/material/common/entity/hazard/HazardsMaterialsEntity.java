@@ -28,7 +28,7 @@ import javax.persistence.Table;
  * @author fmauz
  */
 @Entity
-@Table(name = "hazards_materials")
+@Table(name = "material_hazards")
 public class HazardsMaterialsEntity implements Serializable {
 
     @EmbeddedId

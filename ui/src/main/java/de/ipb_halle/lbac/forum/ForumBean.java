@@ -36,6 +36,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -127,7 +128,7 @@ public class ForumBean implements Serializable {
                     vFilter.filter(postingText),
                     currentUser, creationDate);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         postingText = "";
     }
@@ -143,7 +144,7 @@ public class ForumBean implements Serializable {
                     currentUser,
                     cloudOfTopic);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         newTopicName = "";
         refreshForumState();

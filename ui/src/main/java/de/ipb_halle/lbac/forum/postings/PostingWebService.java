@@ -34,6 +34,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -100,8 +101,8 @@ public class PostingWebService extends LbacWebService {
             logger.error("  User: " + p.getOwner());
             logger.error("  Text: " + p.getText());
             logger.error("  Topic: " + p.getTopic());
-            logger.error("  Topic: " + p.getCreated());
+            logger.error("  TopicDate: " + p.getCreated());
         }
-        logger.error(e);
+        logger.error(ExceptionUtils.getStackTrace(e));
     }
 }

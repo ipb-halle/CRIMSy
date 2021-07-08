@@ -60,6 +60,7 @@ import de.ipb_halle.lbac.search.lang.Value;
 import de.ipb_halle.lbac.service.NodeService;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -125,6 +126,7 @@ public class ItemService {
     }
 
     public SearchResult loadItems(SearchRequest request) {
+
         SearchResult result = new SearchResultImpl(nodeService.getLocalNode());
         ItemEntityGraphBuilder graphBuilder = new ItemEntityGraphBuilder();
         EntityGraph itemGraph = graphBuilder.buildEntityGraph(true);
@@ -139,7 +141,7 @@ public class ItemService {
         Query q = createQueryWithParams(sqlBuilder, sql, ItemEntity.class);
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
-
+        @SuppressWarnings("unchecked")
         List<ItemEntity> entities = q.getResultList();
         for (ItemEntity ie : entities) {
             Item item = createItemFromEntity(ie, request.getUser());
@@ -155,7 +157,7 @@ public class ItemService {
         EntityGraph itemGraph = graphBuilder.buildEntityGraph(true);
         SqlCountBuilder countBuilder = new SqlCountBuilder(
                 itemGraph,
-                new Attribute("items", AttributeType.BARCODE));
+                new Attribute("items", AttributeType.ID));
 
         ItemSearchConditionBuilder conditionBuilder = new ItemSearchConditionBuilder(itemGraph, "items");
         Condition condition = conditionBuilder.convertRequestToCondition(request, ACPermission.permREAD);
@@ -189,12 +191,12 @@ public class ItemService {
         }
         Item item = new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
-                entity.getContainerid() == null ? null : containerService.loadContainerById(entity.getContainerid()),
+                entity.getContainerid() == null ? null : containerService.loadContainerWithoutItemsById(entity.getContainerid()),
                 m,
                 memberService.loadUserById(entity.getOwner()),
                 entity.getProjectid() == null ? null : projectService.loadProjectById(entity.getProjectid()),
                 entity.getSolventid() == null ? null : loadSolventById(entity.getSolventid()),
-                containerService.loadNestedContainer(entity.getContainerid()),
+                entity.getContainerid() == null ? new ArrayList<>() : Arrays.asList(containerService.loadContainerWithoutItemsById(entity.getContainerid())),
                 aclistService.loadById(entity.getACList())
         );
         return item;
@@ -217,6 +219,7 @@ public class ItemService {
 
     public Item loadItemByIdWithoutContainer(int id) {
         ItemEntity entity = this.em.find(ItemEntity.class, id);
+
         return new Item(entity,
                 entity.getArticleid() == null ? null : articleService.loadArticleById(entity.getArticleid()),
                 null,
@@ -239,16 +242,17 @@ public class ItemService {
         String solventName = (String) q.getSingleResult();
         return new Solvent(id, solventName, solventName);
     }
-    
-    public List<Solvent> loadSolvents(){
-        List<Solvent> solvents=new ArrayList<>();
+
+    @SuppressWarnings("unchecked")
+    public List<Solvent> loadSolvents() {
+        List<Solvent> solvents = new ArrayList<>();
         Query q = em.createNativeQuery("SELECT id,name FROM solvents");
-        for(Object[] o:(List<Object[]>)q.getResultList()){
-            int id=(int)o[0];
-            String name=(String)o[1];
+        for (Object[] o : (List<Object[]>) q.getResultList()) {
+            int id = (int) o[0];
+            String name = (String) o[1];
             solvents.add(new Solvent(id, name, name));
         }
-        
+
         return solvents;
     }
 

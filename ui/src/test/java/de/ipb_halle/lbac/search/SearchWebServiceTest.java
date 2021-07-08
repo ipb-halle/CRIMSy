@@ -82,9 +82,7 @@ public class SearchWebServiceTest extends TestBase {
     private Project project;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeKeyStoreFactory();
         try {
             CloudNode cn = cloudNodeService.loadCloudNode(TESTCLOUD, TEST_NODE_ID);

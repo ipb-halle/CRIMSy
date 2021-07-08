@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,8 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.items.bean;
+package de.ipb_halle.lbac.util;
 
-import de.ipb_halle.lbac.util.Unit;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
@@ -25,22 +24,21 @@ import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
 /**
- *
- * @author fmauz
+ * This converter does not perform any conversions.
+ * 
+ * @author flange
  */
-@FacesConverter(value = "unitConverter")
-public class UnitConverter implements Converter {
-
+@FacesConverter("DummyConverter")
+public class DummyConverter implements Converter {
     @Override
-    public Unit getAsObject(FacesContext fc, UIComponent uic, String string) throws ConverterException {
-        return Unit.getUnit(string);
-
+    public Object getAsObject(FacesContext context, UIComponent component,
+            String value) throws ConverterException {
+        return value;
     }
 
     @Override
-    public String getAsString(FacesContext fc, UIComponent uic, Object o) throws ConverterException {
-        Unit unit = (Unit) o;
-        return unit.getUnit();
+    public String getAsString(FacesContext context, UIComponent component,
+            Object value) throws ConverterException {
+        return value == null ? "" : (String) value;
     }
-
 }

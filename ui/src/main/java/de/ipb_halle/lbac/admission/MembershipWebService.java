@@ -52,6 +52,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -116,11 +117,11 @@ public class MembershipWebService extends LbacWebService {
 
         Boolean result = Boolean.FALSE;
         User user = request.getUser();
-        if (! node.equals(user.getNode())) {
+        if (!node.equals(user.getNode())) {
             this.logger.warn("handleUser(): node of origin and user node do not match");
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
-        
+
         // do not allow to update the local node
         // and make sure the user originates from the node given in the request
         if ((node != null)
@@ -194,7 +195,7 @@ public class MembershipWebService extends LbacWebService {
                 }
 
             } catch (Exception e) {
-                this.logger.error(e.getMessage());
+                this.logger.error(ExceptionUtils.getStackTrace(e));
             }
 
         }
@@ -231,7 +232,7 @@ public class MembershipWebService extends LbacWebService {
             nonLocalGroupMemberships.values().forEach(m -> this.membershipService.removeMembership(m));
             return true;
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return false;
         }
     }

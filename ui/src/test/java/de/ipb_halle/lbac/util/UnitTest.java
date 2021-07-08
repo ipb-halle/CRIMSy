@@ -51,7 +51,7 @@ public class UnitTest {
         Assert.assertEquals(4,units.size());
         
         units=Unit.getUnitsOfQuality(Quality.MASS,Quality.VOLUME,Quality.PIECES);
-        Assert.assertEquals(12,units.size());
+        Assert.assertEquals(9,units.size());
     }
 
 }

@@ -86,7 +86,7 @@ CREATE TABLE usersGroups (
     email               VARCHAR,
     password            VARCHAR,
     phone               VARCHAR,
-    shortcut            VARCHAR UNIQUE
+    shortcut            VARCHAR UNIQUE CHECK (shortcut ~ '^[A-Z]+$')
 );
 
 
@@ -352,9 +352,11 @@ CREATE TABLE structures_hist (
 
 CREATE TABLE  hazards (
         id INTEGER PRIMARY KEY,
-        name VARCHAR NOT NULL);
+        name VARCHAR NOT NULL,
+        category INTEGER NOT NULL,
+        has_remarks BOOLEAN NOT NULL DEFAULT false);
 
-CREATE TABLE  hazards_materials (
+CREATE TABLE  material_hazards (
         typeid INTEGER NOT NULL REFERENCES hazards(id),
         materialid INTEGER NOT NULL REFERENCES materials(materialid),
         remarks VARCHAR,
@@ -378,9 +380,9 @@ CREATE TABLE  storages (
 );
 
 
-CREATE TABLE  storageconditions_storages (
+CREATE TABLE  storageconditions_material (
         conditionId INTEGER NOT NULL REFERENCES storageconditions(id),
-        materialid INTEGER NOT NULL REFERENCES storages(materialid),
+        materialid INTEGER NOT NULL REFERENCES materials(materialid),
         PRIMARY KEY (conditionId,materialid)
 );
 
@@ -397,10 +399,10 @@ insert into storageconditions(id,name)values(10,'keepFrozen');
 insert into storageconditions(id,name)values(11,'storeUnderMinus40Degrees');
 insert into storageconditions(id,name)values(12,'storeUnderMinus80Degrees');
 
-insert into indextypes(id,name,javaclass)values(1,'name',null);
-insert into indextypes(id,name,javaclass)values(2,'GESTIS/ZVG',null);
-insert into indextypes(id,name,javaclass)values(3,'CAS/RM',null);
-insert into indextypes(id,name,javaclass)values(4,'Carl Roth Sicherheitsdatenblatt',null);
+insert into indextypes(name,javaclass)values('name',null);
+insert into indextypes(name,javaclass)values('GESTIS/ZVG',null);
+insert into indextypes(name,javaclass)values('CAS/RM',null);
+insert into indextypes(name,javaclass)values('Carl Roth Sicherheitsdatenblatt',null);
 
 insert into storageclasses(id,name)values(1,'1');
 insert into storageclasses(id,name)values(2,'2A');
@@ -426,19 +428,26 @@ insert into storageclasses(id,name)values(21,'11');
 insert into storageclasses(id,name)values(22,'12');
 insert into storageclasses(id,name)values(23,'13');
 
-insert into hazards(id,name)values(1,'explosive');
-insert into hazards(id,name)values(2,'highlyFlammable');
-insert into hazards(id,name)values(3,'oxidizing');
-insert into hazards(id,name)values(4,'compressedGas');
-insert into hazards(id,name)values(5,'corrosive');
-insert into hazards(id,name)values(6,'poisonous');
-insert into hazards(id,name)values(7,'irritant');
-insert into hazards(id,name)values(8,'unhealthy');
-insert into hazards(id,name)values(9,'environmentallyHazardous');
-insert into hazards(id,name)values(10,'danger');
-insert into hazards(id,name)values(11,'attention');
-insert into hazards(id,name)values(12,'hazardStatements');
-insert into hazards(id,name)values(13,'precautionaryStatements');
+insert into hazards(id,name,category,has_remarks)values(1,'GHS01',1,false);
+insert into hazards(id,name,category,has_remarks)values(2,'GHS02',1,false);
+insert into hazards(id,name,category,has_remarks)values(3,'GHS03',1,false);
+insert into hazards(id,name,category,has_remarks)values(4,'GHS04',1,false);
+insert into hazards(id,name,category,has_remarks)values(5,'GHS05',1,false);
+insert into hazards(id,name,category,has_remarks)values(6,'GHS06',1,false);
+insert into hazards(id,name,category,has_remarks)values(7,'GHS07',1,false);
+insert into hazards(id,name,category,has_remarks)values(8,'GHS08',1,false);
+insert into hazards(id,name,category,has_remarks)values(9,'GHS09',1,false);
+insert into hazards(id,name,category,has_remarks)values(10,'HS',2,true);
+insert into hazards(id,name,category,has_remarks)values(11,'PS',2,true);
+insert into hazards(id,name,category,has_remarks)values(12,'S1',3,false);
+insert into hazards(id,name,category,has_remarks)values(13,'S2',3,false);
+insert into hazards(id,name,category,has_remarks)values(14,'S3',3,false);
+insert into hazards(id,name,category,has_remarks)values(15,'S4',3,false);
+insert into hazards(id,name,category,has_remarks)values(16,'R1',4,false);
+insert into hazards(id,name,category,has_remarks)values(17,'C1',5,true);
+insert into hazards(id,name,category,has_remarks)values(18,'GHS10',1,false);
+insert into hazards(id,name,category,has_remarks)values(19,'GHS11',1,false);
+insert into hazards(id,name,category,has_remarks)values(20,'GMO',6,false);
 
 CREATE TABLE  materials_hist (
         materialid INTEGER NOT NULL REFERENCES materials(materialid),
@@ -468,7 +477,7 @@ CREATE TABLE  material_indices_hist (
     language_old VARCHAR,
     language_new VARCHAR);
 
-CREATE TABLE  hazards_materials_hist (
+CREATE TABLE  material_hazards_hist (
     id SERIAL NOT NULL PRIMARY KEY,
     materialid INTEGER NOT NULL REFERENCES materials(materialid),
     mdate TIMESTAMP NOT NULL,
@@ -551,7 +560,9 @@ CREATE TABLE items(
     aclist_id INTEGER NOT NULL,
     expiry_date TIMESTAMP,
     ctime TIMESTAMP  NOT NULL DEFAULT now(),
-    label VARCHAR);
+    label VARCHAR,
+    parent_id INTEGER REFERENCES items(id)
+ );
 
 CREATE TABLE item_positions(
     id SERIAL NOT NULL PRIMARY KEY,
@@ -601,13 +612,14 @@ CREATE TABLE item_positions_history(
 insert into containertypes(name,description,rank,transportable,unique_name)values('ROOM',null,100,false,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('CUPBOARD',null,90,false,false);
 insert into containertypes(name,description,rank,transportable,unique_name)values('FREEZER',null,90,false,false);
+insert into containertypes(name,description,rank,transportable,unique_name)values('FRIDGE',null,90,false,false);
 insert into containertypes(name,description,rank,transportable,unique_name)values('TRAY',null,60,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('WELLPLATE',null,50,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_FLASK',null,0,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_FLASK',null,0,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_VIAL',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLASS_BOTTLE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_BOTTLE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLASS_VIAL',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_VIAL',null,0,true,true);
-insert into containertypes(name,description,rank,transportable,unique_name)values('GLAS_AMPOULE',null,0,true,true);
+insert into containertypes(name,description,rank,transportable,unique_name)values('GLASS_AMPOULE',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_AMPOULE',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('STEEL_BARREL',null,0,true,true);
 insert into containertypes(name,description,rank,transportable,unique_name)values('PLASTIC_BARREL',null,0,true,true);

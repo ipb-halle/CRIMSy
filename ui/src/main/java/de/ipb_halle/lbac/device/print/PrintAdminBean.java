@@ -135,13 +135,11 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
     }
 
     public void actionDelete(Printer printer) {
-        this.logger.info("actionDelete(): {}", printer.getQueue());
         printerService.delete(printer);
         printAdminBeanInit();
     }
 
     public void actionDelete(Label label) {
-        this.logger.info("actionDelete(): {}", label.getId());
         labelService.delete(label);
         printAdminBeanInit();
     }
@@ -198,7 +196,6 @@ public class PrintAdminBean implements ACObjectBean, Serializable {
                     AdmissionSubSystemType.LDAP });
 
             List<Group> ml = memberService.loadGroups(cmap);
-            this.logger.info("actionStartAclChange(): queue={} #grouplist={}", this.printer.getQueue(), ml.size());
             this.acObjectController = new ACObjectController(
                     this.printer,
                     ml,

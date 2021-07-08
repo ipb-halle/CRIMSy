@@ -112,14 +112,6 @@ public class AssayController extends ExpRecordController {
     }
 
     @Override
-    public boolean isDiagrammButtonVisible(Assay assay) {
-        List<LinkedData> linkedData = assay.getLinkedData();
-        return linkedData.size() > 0 && !(linkedData.size() == 1
-                && linkedData.get(0).getMaterial() == null
-                && linkedData.get(0).getItem() == null);
-    }
-
-    @Override
     public ExpRecord getNewRecord() {
         ExpRecord rec = new Assay();
         rec.setEdit(true);
@@ -135,6 +127,7 @@ public class AssayController extends ExpRecordController {
     @Override
     public void setLinkedDataIndex(int index) {
         super.setLinkedDataIndex(index);
+        clearDataFromAgents();
         if (index < 0) {
             return;
         }
@@ -143,6 +136,11 @@ public class AssayController extends ExpRecordController {
                 .getLinkedData()
                 .get(index)
                 .getLinkedDataType());
+    }
+    
+    public void clearDataFromAgents(){
+        bean.getMaterialAgent().clearAgent();
+        bean.getItemAgent().clearAgent();
     }
 
     public void triggerAssayRecordEdit(LinkedData assayRecord) {

@@ -23,12 +23,12 @@ import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.util.InputConverter;
-import de.ipb_halle.lbac.material.common.Hazard;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
@@ -55,7 +55,7 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
     protected Integer projectId;
     protected Date creationTime;
     protected HazardInformation hazards;
-    protected StorageClassInformation storageInformation;
+    protected StorageInformation storageInformation;
     protected List<IndexEntry> indices = new ArrayList<>();
     protected List<MaterialDetailRight> detailRights = new ArrayList<>();
     protected MaterialHistory history = new MaterialHistory();
@@ -66,7 +66,7 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
             List<MaterialName> names,
             Integer projectId,
             HazardInformation hazards,
-            StorageClassInformation storageInformation) {
+            StorageInformation storageInformation) {
         this.id = id;
         this.names = names;
         this.projectId = projectId;
@@ -121,11 +121,11 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
         this.hazards = hazards;
     }
 
-    public StorageClassInformation getStorageInformation() {
+    public StorageInformation getStorageInformation() {
         return storageInformation;
     }
 
-    public void setStorageInformation(StorageClassInformation storageInformation) {
+    public void setStorageInformation(StorageInformation storageInformation) {
         this.storageInformation = storageInformation;
     }
 
@@ -141,11 +141,10 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
             logger.info("  " + mn.getTypeId() + " -> " + mn.getValue());
         }
         logger.info("----- Hazards ------");
-        for (Hazard h : hazards.getHazards()) {
-            logger.info("  " + h.getTypeId() + ": " + h.name());
+        for (HazardType h : hazards.getHazards().keySet()) {
+            logger.info("  " + h.getName() + ": " + hazards.getHazards().get(h));
         }
-        logger.info("  H-Statements " + hazards.getHazardStatements());
-        logger.info("  P-Statements " + hazards.getPrecautionaryStatements());
+
         logger.info("----- StorageInformation ------");
         logger.info("  StorageClass: " + storageInformation.getStorageClass().getName());
         logger.info("  Remarks: " + storageInformation.getRemarks());
@@ -161,11 +160,15 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
         } catch (Exception e) {
             // ignore
         }
-        return "Name not set: MaterialId " + Integer.toString(id);
+        return "Material " + Integer.toString(id);
     }
 
     public String getFirstName() {
-        return names.get(0).getValue();
+        if (!names.isEmpty()) {
+            return names.get(0).getValue();
+        } else {
+            return Integer.toString(id);
+        }
     }
 
     public List<IndexEntry> getIndices() {

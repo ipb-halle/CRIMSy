@@ -41,6 +41,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -237,10 +238,11 @@ public class UserBean implements Serializable {
             if (this.currentAccount.getSubSystemType() == AdmissionSubSystemType.LOCAL) {
                 try {
                     this.currentAccount = this.memberService.save(this.currentAccount);
+                    UIMessage.info(MESSAGE_BUNDLE, "admission_account_updated");
                 } catch (Exception e) {
-                    logger.error(e);
+                    logger.error(ExceptionUtils.getStackTrace(e));
+                    UIMessage.error(MESSAGE_BUNDLE, "admission_account_updated_failed");
                 }
-                UIMessage.info(MESSAGE_BUNDLE, "admission_account_updated");
             }
         }
     }
@@ -415,7 +417,7 @@ public class UserBean implements Serializable {
      * @return
      */
     public boolean hasUploadPermission() {
-        if (currentAccount.getId().toString().equals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)) {
+        if (currentAccount.getId().equals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID)) {
             return false;
         }
         List<Collection> colls = collectionService.load(null);
@@ -429,7 +431,11 @@ public class UserBean implements Serializable {
     }
 
     public boolean isComponentAccessable(String s) {
-        return true;
+        if (s.equals("InhouseDB")) {
+            return !currentAccount.isPublicAccount();
+        } else {
+            return true;
+        }
     }
 
 }

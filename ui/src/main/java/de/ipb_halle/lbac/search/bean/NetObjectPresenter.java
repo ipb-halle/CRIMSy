@@ -17,11 +17,15 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.search.document.Document;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchTarget;
-import de.ipb_halle.lbac.service.NodeService;
 import java.io.UnsupportedEncodingException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -29,7 +33,14 @@ import java.io.UnsupportedEncodingException;
  */
 public class NetObjectPresenter {
 
-    private NodeService nodeService;
+    private User user;
+    private Logger logger = LogManager.getLogger(this.getClass().getName());
+    private MessagePresenter messagePresenter;
+
+    public NetObjectPresenter(User user, MessagePresenter messagePresenter) {
+        this.user = user;
+        this.messagePresenter = messagePresenter;
+    }
 
     public String getName(NetObject no) {
         return no.getNameToDisplay();
@@ -46,17 +57,18 @@ public class NetObjectPresenter {
     public boolean isInternalLinkVisible(NetObject no) {
         boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
         boolean local = no.getNode().getLocal();
-        return noDoc&&local;
+        return noDoc && local && !user.isPublicAccount();
     }
 
     public boolean isExternalLinkVisible(NetObject no) {
         boolean noDoc = !(no.getSearchable().getTypeToDisplay().getGeneralType() == SearchTarget.DOCUMENT);
         boolean local = no.getNode().getLocal();
-        return noDoc&&!local;
+        return noDoc && (!local || user.isPublicAccount());
     }
 
     public String getObjectType(NetObject no) {
-        return no.getTypeToDisplay().getTypeName();
+        return messagePresenter.presentMessage(
+                "search_category_" + no.getTypeToDisplay().getTypeName());
     }
 
     public String getLink(NetObject no) throws UnsupportedEncodingException {

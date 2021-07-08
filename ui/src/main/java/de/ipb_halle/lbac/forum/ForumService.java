@@ -44,6 +44,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -117,7 +118,7 @@ public class ForumService implements Serializable {
             }
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return new ArrayList<>();
         }
         return readableTopics;
@@ -153,7 +154,7 @@ public class ForumService implements Serializable {
                 client.announcePostingToRemoteNode(t, u, cn);
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return t;
     }

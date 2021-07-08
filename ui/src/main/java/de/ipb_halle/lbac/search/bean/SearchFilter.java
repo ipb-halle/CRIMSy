@@ -74,11 +74,12 @@ public class SearchFilter {
             return new ArrayList<>();
         }
 
-        return Arrays.asList(
-                createExperimentRequest(),
+        List<SearchRequest> requests = new ArrayList<>(Arrays.asList(
                 createMaterialSearchRequest(),
                 createDocumentRequest(),
-                createItemRequest());
+                createItemRequest()));
+        requests.addAll(createExperimentRequests());
+        return requests;
     }
 
     private List<SearchRequest> createRequestsForAdvancedSearch() {
@@ -93,7 +94,7 @@ public class SearchFilter {
             requests.add(createItemRequest());
         }
         if (shouldExpBeSearched()) {
-            requests.add(createExperimentRequest());
+            requests.addAll(createExperimentRequests());
         }
         if (typeFilter.isProjects()) {
 
@@ -173,11 +174,24 @@ public class SearchFilter {
 
     }
 
-    private SearchRequest createExperimentRequest() {
+    /**
+     * Due to the fact that the search criteria for textRecord contents and
+     * material names are AND combined in the SQL Builder, 2 separate requests
+     * are sent which contain the text query and the search for the material
+     * names in seperate requests.
+     *
+     * @return
+     */
+    private List<SearchRequest> createExperimentRequests() {
+        List<SearchRequest> requestList = new ArrayList<>();
         ExperimentSearchRequestBuilder expBuilder = new ExperimentSearchRequestBuilder(user, 0, maxresults);
-        expBuilder.setText(searchTerms);
         expBuilder.setStructure(structureString);
-        return expBuilder.build();
+        expBuilder.setMaterialName(searchTerms);
+        requestList.add(expBuilder.build());
+        expBuilder.setText(searchTerms);
+        expBuilder.setMaterialName("");
+        requestList.add(expBuilder.build());
+        return requestList;
     }
 
     public String getSearchTerms() {

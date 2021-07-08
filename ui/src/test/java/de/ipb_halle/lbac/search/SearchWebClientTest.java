@@ -71,9 +71,7 @@ public class SearchWebClientTest extends TestBase {
     private User publicUser;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
 

@@ -26,10 +26,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateless;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * implements functions for file handling in a repository
@@ -106,7 +108,7 @@ public class FileService implements Serializable {
                 Files.createDirectories(rootPath);
                 return true;
             } catch (IOException e) {
-                logger.error("create dir " + rootPath + " failed.",e);
+                logger.error("create dir " + rootPath + " failed.", e);
                 return false;
             }
         }
@@ -123,10 +125,12 @@ public class FileService implements Serializable {
         if (dirPath != null && dirPath.length() > 0) {
             try {
                 Path rootPath = Paths.get(this.uploadRootPath, dirPath);
-                Files.walk(rootPath)
-                        .sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
+                try (Stream<Path> walk = Files.walk(rootPath)) {
+                    walk
+                            .sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                }
                 return true;
             } catch (IOException e) {
                 logger.error("deleting dir " + dirPath + " failed.");
@@ -196,12 +200,13 @@ public class FileService implements Serializable {
         if (dirPath != null && dirPath.length() > 0) {
             try {
                 Path rootPath = Paths.get(dirPath);
-                return Files.walk(rootPath)
-                        .parallel()
-                        .filter(p -> !p.toFile().isDirectory())
-                        .count();
+                try (Stream<Path> walk = Files.walk(rootPath)) {
+                    return walk.parallel()
+                            .filter(p -> !p.toFile().isDirectory())
+                            .count();
+                }
             } catch (IOException e) {
-               logger.error("count files in dir " + dirPath + " failed.",e);
+                logger.error("count files in dir " + dirPath + " failed.", e);
                 return -1L;
             }
         }

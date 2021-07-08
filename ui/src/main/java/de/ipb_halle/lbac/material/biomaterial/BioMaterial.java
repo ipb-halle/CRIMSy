@@ -20,10 +20,11 @@ package de.ipb_halle.lbac.material.biomaterial;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
@@ -44,13 +45,14 @@ public class BioMaterial extends Material {
             List<MaterialName> names,
             int projectId,
             HazardInformation hazards,
-            StorageClassInformation storageInfos,
+            StorageInformation storageInfos,
             Taxonomy taxonomy,
             Tissue tissue) {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.BIOMATERIAL;
         this.tissue = tissue;
         this.taxonomy = taxonomy;
+        this.creationTime = new Date();
     }
 
     @Override
@@ -65,6 +67,7 @@ public class BioMaterial extends Material {
                 tissue == null ? null : tissue.copyMaterial());
         b.setACList(getACList());
         b.setOwner(getOwner());
+        b.setCreationTime(creationTime);
         b.setHistory(history);
         return b;
     }

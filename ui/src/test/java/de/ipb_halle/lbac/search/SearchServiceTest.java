@@ -49,11 +49,20 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
+import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.lbac.material.structure.Structure;
+
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageClassInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -86,6 +95,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -104,6 +114,7 @@ public class SearchServiceTest extends TestBase {
     private int materialid1, materialid2, notReadableMaterialId;
     private int itemid1, itemid2, itemid3, itemid4;
     private int expid1, expid2, expid3, expid4;
+    private BioMaterial bioMaterial;
 
     @Inject
     private SearchService searchService;
@@ -127,16 +138,15 @@ public class SearchServiceTest extends TestBase {
     private MaterialService materialService;
 
     @Inject
-    private GlobalAdmissionContext context;
+    private TaxonomyService taxonomyService;
+
     private Node localNode;
     private int publicAclId;
 
     private Container room, cupboard, rack;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         localNode = nodeService.getLocalNode();
         cleanAllProjectsFromDb();
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
@@ -225,8 +235,9 @@ public class SearchServiceTest extends TestBase {
         request.addSearchCategory(SearchCategory.DEACTIVATED, "deactivated");
         Assert.assertEquals(0, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
+        request = builder.build();
         request.addSearchCategory(SearchCategory.DEACTIVATED, "activated");
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertEquals(4, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setIndex("-002");
@@ -251,7 +262,7 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setProjectName("Project-01");
         request = builder.build();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertEquals(3, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CCOCC");
@@ -266,7 +277,7 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName(publicUser.getName());
         request = builder.build();
-        Assert.assertEquals(2, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertEquals(4, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.addMaterialType(MaterialType.STRUCTURE);
@@ -401,6 +412,13 @@ public class SearchServiceTest extends TestBase {
         Assert.assertEquals(itemid2, records.get(0).getLinkedData().get(1).getItem().getId(), 0);
         Assert.assertEquals(materialid2, records.get(0).getLinkedData().get(1).getMaterial().getId());
 
+        createExp5_withBioAssay();
+        builder = new ExperimentSearchRequestBuilder(publicUser, 0, 25);
+        builder.setMaterialName("BioMaterial001");
+        request = builder.build();
+        results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects(Experiment.class, localNode);
+        Assert.assertEquals(1, results.size());
+
     }
 
     @Test
@@ -414,7 +432,7 @@ public class SearchServiceTest extends TestBase {
         SearchRequest projectRequest = projectBuilder.build();
 
         SearchResult response = searchService.search(Arrays.asList(itemRequest, materialRequest, projectRequest), localNode);
-        Assert.assertEquals(8, response.getAllFoundObjects().size());
+        Assert.assertEquals(10, response.getAllFoundObjects().size());
     }
 
     @Test
@@ -435,13 +453,41 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(docRequestBuilder.build(),
                         matRequestbuilder.build()), localNode);
 
-        Assert.assertEquals(1, result.getAllFoundObjects().size());
+        Assert.assertEquals(2, result.getAllFoundObjects().size());
 
         result = searchService.search(
                 Arrays.asList(docRequestBuilder.build()),
                 localNode);
         Assert.assertEquals(0, result.getAllFoundObjects().size());
         deleteDocuments();
+    }
+
+    @Ignore("Test deactivated for the time being until materialcomposition can be created ")
+    @Test
+    public void test011_searchForStructureInCompositionByTaxonomy() {
+        cleanItemsFromDb();
+        cleanMaterialsFromDB();
+        createTaxonomyTreeInDB(publicAclId, publicUser.getId());
+        creationTools = new CreationTools("", "", "", memberService, projectService);
+
+        BioMaterial bio = creationTools.createBioMaterial(project1, "BioMat-001", taxonomyService.loadTaxonomyById(4), null);
+        Structure structure = creationTools.createStructure(project1);
+        structure.setMolecule(null);
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
+        materialService.saveMaterialToDB(structure, publicAclId, new HashMap<>(), publicUser);
+
+        MaterialComposition composition = new MaterialComposition(expid1, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation());
+        composition.addComponent(bio, 0);
+        composition.addComponent(structure, 1);
+        materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);
+
+        MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.addMaterialType(MaterialType.BIOMATERIAL);
+        matRequestbuilder.setMaterialName("Champignion");
+
+        SearchResult result = searchService.search(Arrays.asList(matRequestbuilder.build()), localNode);
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+
     }
 
     private void uploadDocuments() {
@@ -502,6 +548,9 @@ public class SearchServiceTest extends TestBase {
                 context.getNoAccessACL().getId(),
                 project1.getId(),
                 "Testmaterial-003-notReadable");
+        createTaxanomy(1000, "Life", 1, publicAclId, publicUser.getId());
+        bioMaterial = creationTools.createBioMaterial(project1, "BioMaterial001", taxonomyService.loadRootTaxonomy(), null);
+        materialService.saveMaterialToDB(bioMaterial, publicAclId, new HashMap<>(), publicUser.getId());
     }
 
     private void createItems() {
@@ -654,6 +703,24 @@ public class SearchServiceTest extends TestBase {
         assayRecord.setItem(itemService.loadItemById(itemid4)); // automatically sets material
         assay.getLinkedData().add(assayRecord);
         expRecordService.save(assay, publicUser);
+    }
+
+    private void createExp5_withBioAssay() {
+        Experiment exp = new Experiment(
+                null,
+                "SearchServiceTest:exp5",
+                "SearchServiceTest:exp5_descr",
+                false,
+                GlobalAdmissionContext.getPublicReadACL(),
+                publicUser,
+                new Date());
+        exp = experimentService.save(exp);
+        expid4 = exp.getExperimentId();
+        Assay assay = new Assay();
+        assay.setExperiment(exp);
+        assay.setTarget(bioMaterial);
+        expRecordService.save(assay, publicUser);
+
     }
 
     private Map<String, Object> createExperimentCMap(int id) {

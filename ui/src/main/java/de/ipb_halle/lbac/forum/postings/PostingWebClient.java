@@ -30,6 +30,7 @@ import java.io.Serializable;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -81,7 +82,7 @@ public class PostingWebClient extends
             }
         } catch (Exception e) {
             cn.fail();
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         this.cloudNodeService.save(cn);
     }

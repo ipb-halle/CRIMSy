@@ -20,27 +20,9 @@ package de.ipb_halle.lbac.material.common;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.material.common.service.MaterialHistoryService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionOrchestrator;
-import de.ipb_halle.lbac.collections.CollectionWebClient;
-import de.ipb_halle.lbac.file.FileEntityService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
-import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
-import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.collections.CollectionService;
-import de.ipb_halle.lbac.service.FileService;
-import de.ipb_halle.lbac.webservice.Updater;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -55,6 +37,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class MaterialHistoryServiceTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private MaterialService materialService;
 
@@ -66,28 +50,8 @@ public class MaterialHistoryServiceTest extends TestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("MaterialHistoryServiceTest.war")
-                .addClass(ACListService.class)
-                .addClass(CollectionBean.class)
-                .addClass(CollectionService.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
-                .addClass(CollectionOrchestrator.class)
-                .addClass(EntityManagerService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchService.class)
-                .addClass(ProjectService.class)
-                .addClass(CollectionWebClient.class)
-                .addClass(Updater.class)
-                .addClass(Navigator.class)
-                .addClass(WordCloudBean.class)
-                .addClass(WordCloudWebClient.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TissueService.class)
-                .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(MaterialService.class);
-            return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("MaterialHistoryServiceTest.war");
+            return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 
 

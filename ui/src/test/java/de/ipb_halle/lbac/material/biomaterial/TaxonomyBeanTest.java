@@ -78,7 +78,6 @@ public class TaxonomyBeanTest extends TestBase {
 
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        materialService.setUserBean(userBean);
         materialService.setEditedMaterialSaver(new MaterialEditSaver(materialService, taxoNestingService));
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
         bean.setMaterialService(materialService);

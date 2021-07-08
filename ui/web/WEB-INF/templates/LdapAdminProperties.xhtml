@@ -38,7 +38,11 @@
                         <b:focus rendered="true"/>
                     </b:inputText>
                     <b:message for="@previous"/>
-                    <b:inputSecret value="#{ldapTestBean.ldapPassword}" label="#{admission_loginForm_password}" required="true">
+                    <b:inputSecret
+                        value="#{ldapTestBean.ldapPassword}"
+                        label="#{msgs.admission_loginForm_password}"
+                        required="true"
+                        converter="DummyConverter">
                         <f:facet name="prepend">
                             <b:icon name="ok"/>
                         </f:facet>
@@ -59,10 +63,10 @@
         </b:modal>
         <b:panelGrid colSpans="9,3" size="sm">
             <b:form id="ldapProperties" horizontal="true" method="post">
-                <b:panel title="LDAP Anbindung Parameter" collapsible="false" look="info">
+                <b:panel title="#{msgs.admission_ldap_panelTitle}" collapsible="false" look="info">
 
                     <b:selectBooleanCheckbox offsetMd="4" value="#{ldapProps.ldapEnabled}"
-                          caption="LDAP Authentifizierung aktivieren" ajax="true" update="@form"/>
+                          caption="#{msgs.admission_ldap_activate}" ajax="true" update="@form"/>
 
                     <ui:repeat id="ldapPropList" value="#{ldapProps.ldapProperties}" var="p" varStatus="status">
                         <b:inputText
@@ -76,11 +80,14 @@
                             </f:facet>
                         </b:inputText>
                         <b:inputSecret
-                                rendered="#{p.key == 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
-                                disabled="#{!ldapProps.ldapEnabled}"
-                                label="#{msgs[p.key]}:"
-                                title="#{msgs[p.key.concat('_detail')]}"
-                                labelColMd="4" labelStyle="text-align:right;" value="#{p.value}" colMd="7">
+                            rendered="#{p.key == 'LDAP_CONTEXT_SECURITY_CREDENTIALS'}"
+                            disabled="#{!ldapProps.ldapEnabled}"
+                            label="#{msgs[p.key]}:"
+                            title="#{msgs[p.key.concat('_detail')]}"
+                            labelColMd="4" labelStyle="text-align:right;"
+                            value="#{p.value}"
+                            colMd="7"
+                            converter="DummyConverter">
                             <f:facet name="append">
                                 <b:iconAwesome name="key"/>
                             </f:facet>
@@ -91,9 +98,9 @@
                                          onclick="$('.modalcheckLDAP').modal();"
                                          disabled="#{!ldapProps.ldapEnabled}"
                                          style="margin-right:3px;"
-                                         value="Test LDAP Connect"/>
+                                         value="#{msgs.admission_ldap_test}"/>
                         <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
-                                         action="#{ldapProps.save}" value="Speichern"/>
+                                         action="#{ldapProps.save}" value="#{msgs.Save}"/>
                     </b:column>
                 </b:panel>
             </b:form>

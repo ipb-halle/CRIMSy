@@ -17,13 +17,16 @@
  */
 package de.ipb_halle.lbac.admission;
 
-import de.ipb_halle.lbac.i18n.UIMessage;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
+
 import java.io.Serializable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.FacesValidator;
@@ -36,8 +39,7 @@ import org.apache.logging.log4j.LogManager;
 
 @FacesValidator("AccountValidator")
 public class AccountValidator implements Validator,Serializable {
-
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private MessagePresenter presenter;
 
     @Inject
     private MemberService memberService;
@@ -52,15 +54,25 @@ public class AccountValidator implements Validator,Serializable {
      */
     public AccountValidator() {
         logger = LogManager.getLogger(this.getClass().getName());
+        presenter = JsfMessagePresenter.getInstance();
     }
 
     /**
-     * check for duplicate accounts. Only local (i.e. LOCAL and LDAP) subsystems
+     * test constructor
+     */
+    protected AccountValidator(MemberService memberService,
+            UserMgrBean userMgrBean, MessagePresenter presenter) {
+        this.memberService = memberService;
+        this.userMgrBean = userMgrBean;
+        this.presenter = presenter;
+    }
+
+    /**
+     * Checks for duplicate accounts. Only local (i.e. LOCAL and LDAP) subsystems
      * will be checked. Duplicate accounts for different institutions must be
      * allowed (e.g. jdoe@example.com and jdoe@somewhere.com).
      *
-     * @param login the user login
-     * @param id the user id of the currently processed user
+     * @param login the user login to be checked
      * @throws ValidatorException upon duplicate accounts or on internal failure
      */
     private void checkDuplicateAccount(String login) throws ValidatorException {
@@ -77,21 +89,30 @@ public class AccountValidator implements Validator,Serializable {
             }
             if (list.size() > 0) {
                 throw new ValidatorException(
-                        UIMessage.getErrorMessage(MESSAGE_BUNDLE, "admission_non_unique_user", null));
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                presenter.presentMessage(
+                                        "admission_non_unique_user"),
+                                presenter.presentMessage(
+                                        "admission_non_unique_user_detail")));
             }
             return;
         }
         throw new ValidatorException(
-                UIMessage.getErrorMessage(MESSAGE_BUNDLE, "admission_error", new Object[]{"Database access failed."}));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        presenter.presentMessage("admission_error"),
+                        presenter.presentMessage("admission_error_detail",
+                                "Database access failed.")));
     }
 
     /**
-     * this method checks for duplicate accounts
+     * This method checks for duplicate accounts.
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        // logger.info("start::validation::" + component.getId() + " --> " + value.toString());
-        checkDuplicateAccount(value.toString());
+        Object tmpValue = value != null ? value : "";
+
+        // logger.info("start::validation::" + component.getId() + " --> " + tmpValue.toString());
+        checkDuplicateAccount(tmpValue.toString());
         // logger.info("Finished  validation.");
     }
 }

@@ -33,7 +33,7 @@
         <ui:repeat value="#{experimentBean.expRecordsWithNullRecord}" var="rec" varStatus="recStatus">
             <b:container class="experimentRecordContainer">
                 <b:row
-                    styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}">
+                    styleClass="#{experimentBean.getExpRecordStyle(rec, recStatus.even)}">
                     <b:column span="10">
                         <!-- Not rendered if this is the last record (= NullRecord) or this is a new record. -->
                     	<h:panelGroup rendered="#{!recStatus.last and !rec.newRecord}">
@@ -51,7 +51,7 @@
                             </h:outputFormat>
                         </h:panelGroup>
                         <!--
-            <div class="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}"
+            <div class="#{experimentBean.getExpRecordStyle(rec, recStatus.even)}"
                  title="#{rec.expRecordDetails}" >#{rec.expRecordInfo} -->
 
                     </b:column>
@@ -80,14 +80,15 @@
                             <f:setPropertyActionListener target="#{experimentBean.expRecordIndex}" value="#{rec.index}" />
                             <h:outputText styleClass="fa fa-angle-down" />
                         </p:commandLink>
-                        <p:commandLink title="Link erstellen" 
+                        <p:commandLink title="#{msgs.expRecord_addLink_button}" 
                                        styleClass="experimentRecordButton"
                                        process="@this"
                                        update="ccDlgLinkCreation:dlgLinkCreationForm @(.experimentRecordContainer)"
                                        disabled="#{experimentBean.expRecordButtonsDisabled}"
                                        rendered="#{experimentBean.areLinksAddable(rec)}"
                                        action="#{experimentBean.actionStartLinkCreation(rec)}"
-                                       oncomplete="PF('dlg_createLink').show();
+                                       oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}
+                                           PF('dlg_createLink').show();
                                            if (typeof dlg_createLink_panelMaterialEdit_molEditor !== 'undefined'
                                                    &amp;&amp; dlg_createLink_panelMaterialEdit_molEditor != null)
                                            {dlg_createLink_panelMaterialEdit_molEditor.then(e => e.init());}"
@@ -99,35 +100,36 @@
                                        styleClass="experimentRecordButton"
                                        rendered="#{rec.facelet != 'NULL'}"
                                        disabled="#{experimentBean.expRecordButtonsDisabled}"
-                                       action="#{experimentBean.actionEditRecord(rec)}">
+                                       action="#{experimentBean.actionEditRecord(rec)}"
+                                       oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" >
                             <h:outputText styleClass="fa fa-pencil" />
                         </p:commandLink>
-                        <b:dropMenu value="New" 
+                        <b:dropMenu value="#{msgs.expRecord_newRecord_button}" 
                                     styleClass="experimentRecordButton experimentRecordButtonAdd"
                                     icon-awesome="fa-plus"
                                     iconAlign="left">
-                            <b:navLink header="Please select recordtype"/>
+                            <b:navLink header="#{msgs.expRecord_newRecord_selectType}"/>
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expText}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('TEXT',rec.index)}"
-                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                                oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expAssay}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('ASSAY',rec.index)}"
-                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                                oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
                             <b:navCommandLink 
                                 ajax="true"
                                 update="@form growlMsg @(.assayTargetRow)"
                                 value="#{msgs.expImage}"
                                 disabled="#{experimentBean.expRecordButtonsDisabled}"
                                 actionListener="#{experimentBean.actionNewExperimentRecord('IMAGE',rec.index)}"
-                                oncomplete="$('.expRecordEdit').get()[0].scrollIntoView(true); window.scrollBy(0,-100);" />
+                                oncomplete="#{scrollBean.scrollToCSS('expRecordEdit', -100)}" />
                         </b:dropMenu>
                     </b:column>
                     <br/>
@@ -137,7 +139,7 @@
                     <b:column>
                         <h:panelGroup id="recordDetails" 
                                       layout="block"
-                                      styleClass="#{experimentBean.getExpRecordStyle(rec.edit, recStatus.even)}" >
+                                      styleClass="#{experimentBean.getExpRecordStyle(rec, recStatus.even)}" >
                             <crimsy:assay assay="#{rec}"
                                           bean="#{experimentBean}"
                                           rendered="#{rec.facelet eq 'ASSAY'}" />
@@ -175,6 +177,8 @@
                                     styleClass="rightAligned"
                                     value="#{msgs.Save}"
                                     onclick="#{experimentBean.saveButtonOnClick}"
+                                    oncomplete="if (OmniFaces.Ajax.data.validationFailed) { #{scrollBean.scrollToCSS('expRecordEdit', -100)} }
+                                                else { #{scrollBean.scrollToCSS('expRecordLastSaved', -100)} }"
                                     action="#{experimentBean.expRecordController.actionSaveRecord}"
                                     update="@form growlMsg @(.assayTargetRow)" />
                             </p:column>

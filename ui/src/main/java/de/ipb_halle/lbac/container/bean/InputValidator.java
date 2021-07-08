@@ -19,9 +19,12 @@ package de.ipb_halle.lbac.container.bean;
 
 import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.container.service.ContainerService;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 /**
  * Checks input values of a container for validity
  *
@@ -29,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class InputValidator implements Serializable {
 
-    protected ErrorMessagePresenter errorMessagePresenter = new ErrorMessagePresenter();
+    protected MessagePresenter errorMessagePresenter = JsfMessagePresenter.getInstance();
     protected Integer height;
     protected final int MAX_WIDTH = 1000;
     protected final int MAX_HEIGHT = 1000;
@@ -74,25 +77,25 @@ public class InputValidator implements Serializable {
         this.parentContainer = containerLocation;
         boolean valide = isLabelValide();
         if (!valide) {
-            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_NAME_INVALIDE);
+            errorMessagePresenter.error(ERROR_MESSAGE_NAME_INVALIDE);
         }
 
         if (!isProjectValide()) {
-            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_PROJECT_INVALIDE);
+            errorMessagePresenter.error(ERROR_MESSAGE_PROJECT_INVALIDE);
         }
         valide = valide && isProjectValide();
 
         if (!isLocationAvailable()) {
-            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_INVALIDE);
+            errorMessagePresenter.error(ERROR_MESSAGE_LOCATION_INVALIDE);
         }
         valide = valide && isLocationAvailable();
 
         if (!isLocationBiggerThan()) {
-            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_LOCATION_TO_SMALL);
+            errorMessagePresenter.error(ERROR_MESSAGE_LOCATION_TO_SMALL);
         }
         valide = valide && isLocationBiggerThan();
         if (!isDimensionsValide()) {
-            errorMessagePresenter.presentErrorMessage(ERROR_MESSAGE_DIMENSION_INVALIDE);
+            errorMessagePresenter.error(ERROR_MESSAGE_DIMENSION_INVALIDE);
         }
         valide = valide && isDimensionsValide();
 
@@ -176,15 +179,11 @@ public class InputValidator implements Serializable {
         return valide;
     }
 
-    public ErrorMessagePresenter getErrorMessagePresenter() {
-        return errorMessagePresenter;
-    }
-
     public void setContainerService(ContainerService containerService) {
         this.containerService = containerService;
     }
 
-    public void setErrorMessagePresenter(ErrorMessagePresenter errorMessagePresenter) {
+    public void setErrorMessagePresenter(MessagePresenter errorMessagePresenter) {
         this.errorMessagePresenter = errorMessagePresenter;
     }
 

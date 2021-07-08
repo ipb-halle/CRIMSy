@@ -43,6 +43,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 //import javax.naming.Context;
 import org.apache.logging.log4j.Logger;
@@ -134,7 +135,7 @@ public class CollectionService {
             }
 
         } catch (Exception e) {
-            logger.error(String.format("Exception in checkPublicCollectionInDb: %s", e.getMessage()));
+            logger.error(String.format("Exception in checkPublicCollectionInDb: %s", ExceptionUtils.getStackTrace(e)));
             return null;
         }
     }

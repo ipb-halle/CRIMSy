@@ -73,9 +73,7 @@ public class ProjectEditBeanTest extends TestBase {
     private ProjectEditBean projectEditBean;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         this.publicUser = context.getPublicAccount();
         group1 = createGroup("test02_removeAceFromProjectACL_group_1",
                 nodeService.getLocalNode(),

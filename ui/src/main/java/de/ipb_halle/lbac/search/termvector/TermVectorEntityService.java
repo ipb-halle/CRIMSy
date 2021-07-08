@@ -41,6 +41,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -137,10 +138,7 @@ public class TermVectorEntityService implements Serializable {
             return getMostFrequentTerms(list, maxResult, results);
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            for (StackTraceElement el : e.getStackTrace()) {
-                logger.error(el);
-            }
+            logger.error(ExceptionUtils.getStackTrace(e));
             return new HashMap<>();
         }
     }

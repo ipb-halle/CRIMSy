@@ -164,18 +164,18 @@ public class MaterialHazardDifference implements MaterialDifference {
         return remarksOld.size();
     }
     
-    public void addHazardRemovement(Integer typeId) {
+    public void addHazardRemovement(Integer typeId,String oldRemarks) {
         typeIdsOld.add(typeId);
         typeIdsNew.add(null);
-        remarksOld.add(null);
+        remarksOld.add(oldRemarks);
         remarksNew.add(null);
     }
     
-    public void addHazardExpansion(Integer typeId) {
+    public void addHazardExpansion(Integer typeId,String newRemarks) {
         typeIdsOld.add(null);
         typeIdsNew.add(typeId);
         remarksOld.add(null);
-        remarksNew.add(null);
+        remarksNew.add(newRemarks);
     }
 
     @Override

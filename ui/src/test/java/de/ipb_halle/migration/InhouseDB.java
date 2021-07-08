@@ -122,7 +122,6 @@ public class InhouseDB {
         this.connection = DriverManager.getConnection(getConfigString(DATABASE_URL));
         this.builderMap = new HashMap<> ();
         this.materialIndexTypes = new HashMap<> ();
-        addMaterialIndexTypes();
     }
     
     public void addInsertBuilder(String name, SqlInsertBuilder builder) {
@@ -197,13 +196,15 @@ public class InhouseDB {
         Experiments experiments = new Experiments(this);
         Correlation correlation = new Correlation(this);
         Samples samples = new Samples(this);
-/*
+
         runInitial();
+        addMaterialIndexTypes();
+
         compounds.importData();
         taxonomy.importData();
         experiments.importData();
         correlation.importData();
-*/
+
         samples.importData();
     }
 

@@ -20,47 +20,33 @@ package de.ipb_halle.lbac.material.common;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.EntityManagerService;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.collections.CollectionBean;
-import de.ipb_halle.lbac.collections.CollectionOrchestrator;
-import de.ipb_halle.lbac.collections.CollectionWebClient;
 import de.ipb_halle.lbac.admission.User;
-import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
-import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyLevel;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.document.DocumentSearchService;
-import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudBean;
-import de.ipb_halle.lbac.search.wordcloud.WordCloudWebClient;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.collections.CollectionService;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.bean.MaterialEditSaver;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.search.SearchResult;
-import de.ipb_halle.lbac.service.FileService;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
-import de.ipb_halle.lbac.webservice.Updater;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -118,8 +104,7 @@ public class MaterialServiceTest extends TestBase {
     public void test001_saveStructure() {
         // Initialisieng the userbean for ownership of material
         UserBeanMock userBean = new UserBeanMock();
-        userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        instance.setUserBean(userBean);
+        userBean.setCurrentAccount(publicUser);
 
         //Preparing project and material
         Project p = creationTools.createProject();
@@ -129,7 +114,7 @@ public class MaterialServiceTest extends TestBase {
         m = calc.calculate(m);
         Integer idOfMatGeneralRights = p.getUserGroups().getId();
 
-        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates());
+        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates(), publicUser);
 
         String ownerId = userBean.getCurrentAccount().getId().toString();
         List materials = entityManagerService.doSqlQuery(
@@ -158,18 +143,18 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("expected roughly 74", 74.0, (double) structure[2], 0.2);
 
         //Checking the hazard information
-        List hazards = entityManagerService.doSqlQuery("select typeid,remarks from hazards_materials where materialid=" + m.getId() + " order by typeid asc");
+        List hazards = entityManagerService.doSqlQuery("select typeid,remarks from material_hazards where materialid=" + m.getId() + " order by typeid asc");
         Assert.assertEquals(4, hazards.size());
 
         Object[] h1 = (Object[]) hazards.get(0);
         Object[] h2 = (Object[]) hazards.get(1);
         Object[] h3 = (Object[]) hazards.get(2);
         Object[] h4 = (Object[]) hazards.get(3);
-        Assert.assertEquals("ID of first hazard must be 7 (Irritant)", 7, (int) h1[0]);
-        Assert.assertEquals("ID of first hazard must be 11 (attention)", 11, (int) h2[0]);
-        Assert.assertEquals("ID of first hazard must be 12 (HazardStatement)", 12, (int) h3[0]);
+        Assert.assertEquals("ID of first hazard must be 2 (Flammable)", 2, (int) h1[0]);
+        Assert.assertEquals("ID of first hazard must be 8 (Health hazard)", 8, (int) h2[0]);
+        Assert.assertEquals("ID of first hazard must be 10 (HazardStatement)", 10, (int) h3[0]);
         Assert.assertEquals("Text of HazardStatement not valide", hazardStatement, h3[1]);
-        Assert.assertEquals("ID of first hazard must be 13 (PrecautionaryStatement)", 13, (int) h4[0]);
+        Assert.assertEquals("ID of first hazard must be 11 (PrecautionaryStatement)", 11, (int) h4[0]);
         Assert.assertEquals("Text of PrecautionaryStatement not valide", precautionaryStatement, h4[1]);
 
         //Checking the storage information
@@ -183,7 +168,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("Remark of storage not valide", storageClassRemark, s[1]);
         List storageProperties = entityManagerService.doSqlQuery(
                 "select conditionid"
-                + " from storageconditions_storages"
+                + " from storageconditions_material"
                 + " where materialid=" + m.getId()
                 + " order by conditionid");
 
@@ -230,21 +215,20 @@ public class MaterialServiceTest extends TestBase {
 
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-        instance.setUserBean(userBean);
 
         Structure structure = creationTools.createStructure(p);
 
         //Set initial storage parameter
         structure.getStorageInformation().setStorageClass(new StorageClass(1, "storage class 1"));
-        structure.getStorageInformation().setAcidSensitive(true);
+        structure.getStorageInformation().getStorageConditions().add(StorageCondition.acidSensitive);
         //set initial indices & names
         structure.getNames().add(new MaterialName("name1_before_edit", "en", 0));
         structure.getNames().add(new MaterialName("name2_before_edit", "de", 1));
         structure.getIndices().add(new IndexEntry(1, "index of type 1", null));
         structure.getIndices().add(new IndexEntry(2, "index of type 2", null));
         //set initial hazard information
-        structure.getHazards().setDanger(true);
-        structure.getHazards().setHighlyFlammable(true);
+        structure.getHazards().getHazards().put(new HazardType(2, false, "GHS02", 1), null);
+        structure.getHazards().getHazards().put(new HazardType(8, false, "GHS08", 1), null);
         //set initial structure information
         structure.setSumFormula("H2O");
         structure.setAverageMolarMass(10d);
@@ -252,22 +236,22 @@ public class MaterialServiceTest extends TestBase {
         structure.setMolecule(new Molecule("molecule-model", 0));
 
         //Save the material to the db
-        instance.saveMaterialToDB(structure, p.getUserGroups().getId(), p.getDetailTemplates());
+        instance.saveMaterialToDB(structure, p.getUserGroups().getId(), p.getDetailTemplates(), publicUser);
 
         //Create a second material
         Structure editedMaterial = (Structure) structure.copyMaterial();
         //Change the storage parameter
         editedMaterial.getStorageInformation().setStorageClass(new StorageClass(2, "storage class 2"));
-        editedMaterial.getStorageInformation().setKeepCool(false);
-        editedMaterial.getStorageInformation().setAwayFromOxidants(true);
+        editedMaterial.getStorageInformation().getStorageConditions().remove(StorageCondition.keepCool);
+        editedMaterial.getStorageInformation().getStorageConditions().add(StorageCondition.awayFromOxidants);
         //Change indices & names
         editedMaterial.getNames().clear();
         editedMaterial.getNames().add(new MaterialName("name2_after_edit", "de", 0));
         editedMaterial.getNames().add(new MaterialName("name1_after_edit", "en", 1));
         editedMaterial.getIndices().remove(1);
         //Change initial hazard information
-        editedMaterial.getHazards().setExplosive(true);
-        editedMaterial.getHazards().setHighlyFlammable(false);
+        editedMaterial.getHazards().getHazards().put(new HazardType(1, false, "GHS01", 1), null);
+        editedMaterial.getHazards().getHazards().put(new HazardType(2, false, "GHS02", 1), null);
         //Change  structure information
         editedMaterial.setSumFormula("H3O");
         editedMaterial.setAverageMolarMass(11d);
@@ -303,7 +287,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertNull(storageDiff.getStorageConditionsOld().get(awayFromOxydantsIndex));
 
         Material secondEditedMaterial = editedMaterial.copyMaterial();
-        secondEditedMaterial.getStorageInformation().setKeepFrozen(false);
+        secondEditedMaterial.getStorageInformation().getStorageConditions().remove(StorageCondition.keepFrozen);
         instance.saveEditedMaterial(
                 secondEditedMaterial,
                 editedMaterial,
@@ -342,69 +326,72 @@ public class MaterialServiceTest extends TestBase {
         User user = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(user);
-        instance.setUserBean(userBean);
 
         Structure m = creationTools.createStructure(p);
         m.setHazards(new HazardInformation());
-        m.getHazards().setIrritant(true);
-        m.getHazards().setAttention(true);
-        m.getHazards().setHazardStatements("H-Statement before Edit");
+        m.getHazards().getHazards().put(new HazardType(2, false, "GHS02", 1), null);
+        m.getHazards().getHazards().put(new HazardType(8, false, "GHS08", 1), null);
+        m.getHazards().getHazards().put(new HazardType(11, true, "PS", 2), "P-Statement before Edit");
 
-        instance.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates());
+        instance.saveMaterialToDB(m, p.getUserGroups().getId(), p.getDetailTemplates(), publicUser);
 
         //Create a second material
         Structure editedMaterial = (Structure) m.copyMaterial();
-        editedMaterial.getHazards().setHazardStatements("H-Statement after Edit");
-        editedMaterial.getHazards().setPrecautionaryStatements("P-Statement after Edit");
-        editedMaterial.getHazards().setIrritant(false);
-        editedMaterial.getHazards().setPoisonous(true);
+        editedMaterial.getHazards().getHazards().put(new HazardType(10, true, "HS", 2), "H-Statement after Edit");
+        editedMaterial.getHazards().getHazards().put(new HazardType(11, true, "PS", 2), "P-Statement after Edit");
+        editedMaterial.getHazards().getHazards().put(new HazardType(6, false, "GHS06", 1), null);
+        editedMaterial.getHazards().getHazards().remove(new HazardType(8, false, "GHS08", 1), null);
 
         instance.saveEditedMaterial(
                 editedMaterial, m, p.getUserGroups().getId(),
                 user.getId()
         );
-        List hazardHists = entityManagerService.doSqlQuery("select materialid,typeid_old,typeid_new ,remarks_old,remarks_new from hazards_materials_hist order by typeid_old,typeid_new");
+        List hazardHists = entityManagerService.doSqlQuery(
+                "SELECT materialid,typeid_old,typeid_new ,remarks_old,remarks_new "
+                + "FROM material_hazards_hist "
+                + "ORDER BY typeid_old,typeid_new");
         Assert.assertEquals(4, hazardHists.size());
 
+        // Add poisonous hazard (GHS06)
         Object[] poisonousEntry = (Object[]) hazardHists.get(0);
         Assert.assertEquals("Testcase 3.1 - materialId of historyentry must be 1", editedMaterial.getId(), poisonousEntry[0]);
         Assert.assertNull("Testcase 3.1 - old typeid of poisonous must be null, poisonous was added", poisonousEntry[1]);
-        Assert.assertEquals("Testcase 3.1 - new typeid of poisonous must be 6, poisonous was added", Hazard.poisonous.getTypeId(), poisonousEntry[2]);
+        Assert.assertEquals("Testcase 3.1 - new typeid of poisonous must be 6, poisonous was added", 6, poisonousEntry[2]);
         Assert.assertNull("Testcase 3.1 - no remarks expected", poisonousEntry[3]);
         Assert.assertNull("Testcase 3.1 - no remarks expected", poisonousEntry[4]);
+        // Add a new h-statement 
+        Object[] hStatementsEntry = (Object[]) hazardHists.get(1);
+        Assert.assertEquals("Testcase 3.2 - materialId of historyentry must be 1", editedMaterial.getId(), hStatementsEntry[0]);
+        Assert.assertNull("Testcase 3.2 - old typeid  must be null, h-statement  was added", hStatementsEntry[1]);
+        Assert.assertEquals("Testcase 3.2 - new typeid  must be 10, h-statement was added", 10, hStatementsEntry[2]);
+        Assert.assertNull("Testcase 3.2 - no remarks expected", hStatementsEntry[3]);
+        Assert.assertEquals("Testcase 3.2 - no remarks expected", "H-Statement after Edit", hStatementsEntry[4]);
+        // Remove of unhealthy hazard (GHS08)
+        Object[] harmfullEntry = (Object[]) hazardHists.get(2);
+        Assert.assertEquals("Testcase 3.3 - materialId of historyentry must be 1", editedMaterial.getId(), harmfullEntry[0]);
+        Assert.assertEquals("Testcase 3.3 - old typeid of harmfull must be 8, irritant was removed", 8, harmfullEntry[1]);
+        Assert.assertNull("Testcase 3.3 - new typeid of irritant must be null,irritant was removed", harmfullEntry[2]);
+        Assert.assertNull("Testcase 3.3 - no remarks expected", harmfullEntry[3]);
+        Assert.assertNull("Testcase 3.3 - no remarks expected", harmfullEntry[4]);
+        // Change remarks on p-Statements
+        Object[] pStatementsEntry = (Object[]) hazardHists.get(3);
+        Assert.assertEquals("Testcase 3.3 - materialId of historyentry must be 1", editedMaterial.getId(), pStatementsEntry[0]);
+        Assert.assertEquals("Testcase 3.3 - old typeid of hazardStatementsEntry must be 12", 11, pStatementsEntry[1]);
+        Assert.assertEquals("Testcase 3.3 - new typeid of hazardStatementsEntry must be 12", 11, pStatementsEntry[2]);
+        Assert.assertEquals("Testcase 3.3 - old remarks of hazardStatementsEntry must be 'P-Statement before Edit'", "P-Statement before Edit", pStatementsEntry[3]);
+        Assert.assertEquals("Testcase 3.3 - new remarks of hazardStatementsEntry must be 'P-Statement after Edit'", "P-Statement after Edit", pStatementsEntry[4]);
 
-        Object[] irritantEntry = (Object[]) hazardHists.get(2);
-        Assert.assertEquals("Testcase 3.2 - materialId of historyentry must be 1", editedMaterial.getId(), irritantEntry[0]);
-        Assert.assertEquals("Testcase 3.2 - old typeid of irritant must be 7, irritant was removed", Hazard.irritant.getTypeId(), irritantEntry[1]);
-        Assert.assertNull("Testcase 3.2 - new typeid of irritant must be null,irritant was removed", irritantEntry[2]);
-        Assert.assertNull("Testcase 3.2 - no remarks expected", irritantEntry[3]);
-        Assert.assertNull("Testcase 3.2 - no remarks expected", irritantEntry[4]);
-
-        Object[] hazardStatementsEntry = (Object[]) hazardHists.get(3);
-        Assert.assertEquals("Testcase 3.3 - materialId of historyentry must be 1", editedMaterial.getId(), hazardStatementsEntry[0]);
-        Assert.assertEquals("Testcase 3.3 - old typeid of hazardStatementsEntry must be 12", HazardInformation.HAZARD_STATEMENT, hazardStatementsEntry[1]);
-        Assert.assertEquals("Testcase 3.3 - new typeid of hazardStatementsEntry must be 12", HazardInformation.HAZARD_STATEMENT, hazardStatementsEntry[2]);
-        Assert.assertEquals("Testcase 3.3 - old remarks of hazardStatementsEntry must be 'H-Statement before Edit'", "H-Statement before Edit", hazardStatementsEntry[3]);
-        Assert.assertEquals("Testcase 3.3 - new remarks of hazardStatementsEntry must be 'H-Statement after Edit'", "H-Statement after Edit", hazardStatementsEntry[4]);
-
-        Object[] precautionaryStatementsEntry = (Object[]) hazardHists.get(1);
-        Assert.assertEquals("Testcase 3.4 - materialId of historyentry must be 1", editedMaterial.getId(), precautionaryStatementsEntry[0]);
-        Assert.assertNull("Testcase 3.4 - old typeid of precautionaryStatementsEntry must be null", precautionaryStatementsEntry[1]);
-        Assert.assertEquals("Testcase 3.4 - new typeid of precautionaryStatementsEntry must be 13", HazardInformation.PRECAUTIONARY_STATEMENT, precautionaryStatementsEntry[2]);
-        Assert.assertNull("Testcase 3.4 - old remarks of precautionaryStatementsEntry must be null", precautionaryStatementsEntry[3]);
-        Assert.assertEquals("Testcase 3.4 - new remarks of precautionaryStatementsEntry must be 'P-Statement after Edit'", "P-Statement after Edit", precautionaryStatementsEntry[4]);
     }
 
     @Test
     public void test004_getSimilarMaterialNames() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        instance.setUserBean(userBean);
 
         Project p = creationTools.createProject();
         Structure m = creationTools.createStructure(p);
         Integer idOfMatGeneralRights = p.getUserGroups().getId();
-        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates());
+        instance.saveMaterialToDB(m, idOfMatGeneralRights, p.getDetailTemplates(), publicUser);
 
         List<String> nameSuggestions = instance.getSimilarMaterialNames("Test-Str", userBean.getCurrentAccount());
         Assert.assertEquals(2, nameSuggestions.size());
@@ -416,7 +403,6 @@ public class MaterialServiceTest extends TestBase {
     public void test005_saveTaxonomy() {
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
-        instance.setUserBean(userBean);
 
         creationTools = new CreationTools("", "", "", memberService, projectService);
         Project p = creationTools.createProject();
@@ -427,24 +413,24 @@ public class MaterialServiceTest extends TestBase {
         names.add(new MaterialName("Rose", "de", 2));
         names.add(new MaterialName("Rosa ", "la", 3));
 
-        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t = new Taxonomy(0, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
         t.setLevel(levels.get(0));
-        instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>());
+        instance.saveMaterialToDB(t, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("red rose", "en", 1));
-        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t2 = new Taxonomy(1, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), publicUser, new Date());
         t2.getTaxHierachy().add(t);
         t2.setLevel(levels.get(1));
-        instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>());
+        instance.saveMaterialToDB(t2, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         names = new ArrayList<>();
         names.add(new MaterialName("small red rose", "en", 1));
-        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID), new Date());
+        Taxonomy t3 = new Taxonomy(2, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), publicUser, new Date());
         t3.getTaxHierachy().add(t);
         t3.getTaxHierachy().add(t2);
         t3.setLevel(levels.get(2));
-        instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>());
+        instance.saveMaterialToDB(t3, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         List<Integer> results = (List) entityManagerService.doSqlQuery("SELECT parentid FROM effective_taxonomy WHERE taxoid=0");
         Assert.assertTrue(results.isEmpty());
@@ -467,19 +453,18 @@ public class MaterialServiceTest extends TestBase {
         userBean.setCurrentAccount(testUser);
         membershipService.addMembership(memberService.loadGroupById(GlobalAdmissionContext.PUBLIC_GROUP_ID), testUser);
 
-        instance.setUserBean(userBean);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Project project2 = creationTools.createAndSaveProject("administration-test-project");
 
         //Create a structure
         Structure struture1 = creationTools.createStructure(project1);
-        StorageClassInformation si = new StorageClassInformation(instance.loadStorageClasses());
+        StorageInformation si = new StorageInformation();
         si.setRemarks("test remarks");
-        si.setStorageClass(si.getPossibleStorageClassById(1));
+        si.setStorageClass(instance.loadStorageClasses().get(0));
         struture1.setStorageInformation(si);
 
-        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), testUser);
 
         //Create a structure which is not readable
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
@@ -490,7 +475,7 @@ public class MaterialServiceTest extends TestBase {
         structure2.getNames().clear();
         structure2.getNames().add(new MaterialName("structure2", "de", 1));
         structure2.getIndices().clear();
-        instance.saveMaterialToDB(structure2, noRightsAcl.getId(), project1.getDetailTemplates());
+        instance.saveMaterialToDB(structure2, noRightsAcl.getId(), project1.getDetailTemplates(), publicUser);
         userBean.setCurrentAccount(testUser);
         //Create a biomaterial
 
@@ -614,6 +599,29 @@ public class MaterialServiceTest extends TestBase {
     }
 
     @Test
+    public void test009_saveConsumable() {
+        UserBeanMock userBean = new UserBeanMock();
+        userBean.setCurrentAccount(publicUser);
+        creationTools = new CreationTools("", "", "", memberService, projectService);
+        Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
+
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("test009_saveConsumable_consumable_name_de", "de", 1));
+        names.add(new MaterialName("test009_saveConsumable_consumable_name_en", "en", 1));
+        Consumable co = new Consumable(0, names, project1.getId(), new HazardInformation(), new StorageInformation());
+    }
+
+    @Test
+    public void test010_saveLoadMaterialWithoutStorageClass() {
+        Project p = creationTools.createAndSaveProject("biochemical-test-project");
+        Structure struc = creationTools.createStructure(p);
+        struc.getStorageInformation().setStorageClass(null);
+        instance.saveMaterialToDB(struc, p.getUserGroups().getId(), new HashMap<>(), publicUser);
+
+        Material loadedMat = instance.loadMaterialById(struc.getId());
+        Assert.assertNull(loadedMat.getStorageInformation().getStorageClass());      
+    }
+    @Test
     public void test009_saveLoadMaterialComposition() {
         UserBeanMock userBean = new UserBeanMock();
 
@@ -652,34 +660,11 @@ public class MaterialServiceTest extends TestBase {
 
         Assert.assertEquals(1, loadedComposition.getIndices().size());
         composition.getId();
-
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("MaterialServiceTest.war")
-                .addClass(UserBeanMock.class)
-                .addClass(ACListService.class)
-                .addClass(CollectionBean.class)
-                .addClass(CollectionService.class)
-                .addClass(FileService.class)
-                .addClass(FileEntityService.class)
-                .addClass(CollectionOrchestrator.class)
-                .addClass(EntityManagerService.class)
-                .addClass(TermVectorEntityService.class)
-                .addClass(DocumentSearchService.class)
-                .addClass(ACListService.class)
-                .addClass(ProjectService.class)
-                .addClass(CollectionWebClient.class)
-                .addClass(Updater.class)
-                .addClass(Navigator.class)
-                .addClass(TaxonomyService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(TissueService.class)
-                .addClass(WordCloudBean.class)
-                .addClass(WordCloudWebClient.class)
-                .addClass(MaterialIndexHistoryEntity.class)
-                .addClass(MaterialService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("MaterialServiceTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

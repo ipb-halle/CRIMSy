@@ -28,14 +28,14 @@ limitations under the License.
             <b:container>
                 <b:row>
                     <b:column>
-                        <h:outputText value="Suchfilter"
+                        <h:outputText value="#{msgs.materialOverview_searchFilter_title}"
                                       styleClass="materialFilterHeader"/>
                     </b:column>
                 </b:row>    
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Name"
+                        <h:outputText value="#{msgs.materialOverview_searchFilter_name}"
                                       />
                     </b:column>
                 </b:row>
@@ -67,7 +67,7 @@ limitations under the License.
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Nutzer"
+                        <h:outputText value="#{msgs.materialOverview_searchFilter_user}"
                                       />
                     </b:column>
                 </b:row>
@@ -84,7 +84,7 @@ limitations under the License.
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Projekt"
+                        <h:outputText value="#{msgs.materialOverview_searchFilter_project}"
                                       />
                     </b:column>
                 </b:row>
@@ -102,7 +102,7 @@ limitations under the License.
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
-                        <h:outputText value="Index (GESTIS,CAS,...)"/>
+                        <h:outputText value="#{msgs.materialOverview_searchFilter_index}"/>
                     </b:column>
                 </b:row>
                 <b:row
@@ -116,7 +116,7 @@ limitations under the License.
                 <b:row
                     styleClass="materialFilterRow">
                     <b:column span="2">
-                        <h:outputText value="MaterialTyp"
+                        <h:outputText value="#{msgs.materialOverview_searchFilter_materialType}"
                                       />
                     </b:column>
                 </b:row>
@@ -151,6 +151,7 @@ limitations under the License.
                         <mol:molecule id="molEditor"
                                       value="#{materialOverviewBean.searchController.molecule}" 
                                       pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                      format="MDLV2000"
                                       border="true"
                                       readonly="false"/>
                     </b:column>
@@ -165,7 +166,7 @@ limitations under the License.
                         styleClass="materialFilterButtonColumn">
                         <b:commandButton 
                             styleClass="materialFilterButton"
-                            value="Clear"
+                            value="#{msgs.materialOverview_searchFilter_clear}"
                             ajax="true"
                             update="materialForm materialSearchMaskForm @(.materialOverviewTableContainer)"
                             onclick="ajax:materialOverviewBean.searchController.actionClearSearchFilter();"/>
@@ -175,7 +176,7 @@ limitations under the License.
                         styleClass="materialFilterButtonColumn materialFilterButtonRight">
                         <b:commandButton 
                             styleClass="materialFilterButton"
-                            value="Search"
+                            value="#{msgs.materialOverview_searchFilter_search}"
                             ajax="true"
                             update="materialForm materialSearchMaskForm @(.materialOverviewTableContainer)"
                             action="#{materialOverviewBean.searchController.actionStartMaterialSearch()}"/>

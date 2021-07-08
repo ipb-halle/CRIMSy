@@ -70,8 +70,7 @@ public class MembershipWebClientTest extends TestBase {
     KeyManager keymanager;
     
     @Before
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeBaseUrl();
         initializeKeyStoreFactory();
     }

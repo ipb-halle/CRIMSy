@@ -179,6 +179,7 @@ public class Experiments {
         sb.append("<br/>");
         sb.append("<b>Remarks:</b> ");
         sb.append(remarks);
+        sb.append("<br/>");
         sb.append("<b>Linked compounds:</b> ##LINKED_COMPOUNDS##<br/>");
         sb.append("<b>Linked samples:</b> ##LINKED_SAMPLES##<br/>");
         sb.append("<b>Linked organisms:</b> ##LINKED_ORGANISMS##<br/>");

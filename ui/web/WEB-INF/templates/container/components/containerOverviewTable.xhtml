@@ -25,10 +25,11 @@ limitations under the License.
         <b:form id="containerTableId">
             <b:dataTable
                 styleClass="containerDataTable"
-                paginated="false"
+                paginated="true"
                 value="#{containerOverviewBean.readableContainer}"
                 searching="false"
-                var="container">
+                var="container"
+                saveState="false">
 
                 <b:dataTableColumn
                     label="#{msgs.container_table_title_id}">
@@ -85,7 +86,7 @@ limitations under the License.
                                      oncomplete="PF('dlgcontainerEdit').show();"
                                      />
                     <b:commandButton style="padding: 0 4px;"
-                                     icon="trash"
+                                     icon="ban-circle"
                                      look="link"
                                      type="submit"
                                      ajax="true"

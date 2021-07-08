@@ -27,6 +27,8 @@ import java.util.Objects;
  */
 public class IndexEntry  implements Serializable{
 
+    private static final long serialVersionUID = 1L;
+
     protected String value;
     protected int typeId;
     protected String language;

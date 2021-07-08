@@ -29,7 +29,6 @@ import de.ipb_halle.lbac.base.ItemCreator;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.exp.assay.Assay;
-import de.ipb_halle.lbac.exp.search.ExperimentSearchConditionBuilder;
 import de.ipb_halle.lbac.exp.search.ExperimentSearchRequestBuilder;
 import de.ipb_halle.lbac.exp.text.Text;
 import de.ipb_halle.lbac.items.Item;
@@ -39,7 +38,6 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,7 +50,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -97,9 +94,7 @@ public class ExperimentServiceTest extends TestBase {
     private ACList nothingAcl;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
         nothingAcl = new ACList();

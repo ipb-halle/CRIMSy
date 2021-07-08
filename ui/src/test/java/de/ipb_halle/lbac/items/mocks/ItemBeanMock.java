@@ -21,11 +21,10 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.container.service.ContainerPositionService;
 import de.ipb_halle.lbac.container.service.ContainerService;
 import de.ipb_halle.lbac.device.print.PrintBean;
-import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
-import de.ipb_halle.lbac.items.bean.ItemState;
 import de.ipb_halle.lbac.items.service.ItemService;
+import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
 
@@ -67,4 +66,7 @@ public class ItemBeanMock extends ItemBean {
         this.userBean = u;
     }
 
+    public void setMessagePresenter(MessagePresenter messagePresenter) {
+        this.messagePresenter = messagePresenter;
+    }
 }

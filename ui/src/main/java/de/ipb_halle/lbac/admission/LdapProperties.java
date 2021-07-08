@@ -176,7 +176,6 @@ public class LdapProperties implements Serializable {
         ListIterator<InfoObject> iter = this.ldapProperties.listIterator();
         while (iter.hasNext()) {
             ie = iter.next();
-            this.logger.info(String.format("save(): %s -> %s", ie.getKey(), ie.getValue()));
             infoObjectService.save((InfoObject) ie
                     .setOwner(this.globalAdmissionContext.getAdminAccount())
                     .setACList(this.globalAdmissionContext.getAdminOnlyACL()));

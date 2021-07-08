@@ -25,7 +25,6 @@ import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import static org.junit.Assert.assertEquals;
 
 import de.ipb_halle.lbac.exp.assay.AssayController;
@@ -44,9 +43,15 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
+
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -88,9 +93,7 @@ public class ExperimentBeanTest extends TestBase {
     private ACList publicReadAcl;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
@@ -142,10 +145,65 @@ public class ExperimentBeanTest extends TestBase {
     @Test
     public void test002_getExpRecordStyle() {
         experimentBean.experimentBeanInit();
-        Assert.assertEquals("expRecordOdd", experimentBean.getExpRecordStyle(false, false));
-        Assert.assertEquals("expRecordEdit", experimentBean.getExpRecordStyle(true, false));
-        Assert.assertEquals("expRecordEven", experimentBean.getExpRecordStyle(false, true));
-        Assert.assertEquals("expRecordEdit", experimentBean.getExpRecordStyle(true, true));
+        Experiment exp1 = createAndSaveExperiment("EXP-1", "EXP-1-DESC",
+                publicReadAcl, publicUser, false);
+        ExpRecord record = createTextrecord(exp1, "Overview");
+        Set<String> expectedStrings;
+
+        /*
+         * record is not yet saved
+         */
+        record.setEdit(false);
+        Assert.assertEquals(ExperimentBean.expRecordOddCssClass,
+                experimentBean.getExpRecordStyle(record, false));
+        Assert.assertEquals(ExperimentBean.expRecordEvenCssClass,
+                experimentBean.getExpRecordStyle(record, true));
+
+        record.setEdit(true);
+        expectedStrings = new HashSet<>();
+        Collections.addAll(expectedStrings, ExperimentBean.expRecordOddCssClass,
+                ExperimentBean.expRecordEditCssClass);
+        Assert.assertEquals(expectedStrings, new HashSet<>(Arrays.asList(
+                experimentBean.getExpRecordStyle(record, false).split(" "))));
+        expectedStrings = new HashSet<>();
+        Collections.addAll(expectedStrings,
+                ExperimentBean.expRecordEvenCssClass,
+                ExperimentBean.expRecordEditCssClass);
+        Assert.assertEquals(expectedStrings, new HashSet<>(Arrays.asList(
+                experimentBean.getExpRecordStyle(record, true).split(" "))));
+
+        /*
+         * record becomes lastSavedRecord
+         */
+        experimentBean.saveExpRecord(record);
+
+        record.setEdit(false);
+        expectedStrings = new HashSet<>();
+        Collections.addAll(expectedStrings, ExperimentBean.expRecordOddCssClass,
+                ExperimentBean.expRecordLastSavedCssClass);
+        Assert.assertEquals(expectedStrings, new HashSet<>(Arrays.asList(
+                experimentBean.getExpRecordStyle(record, false).split(" "))));
+        expectedStrings = new HashSet<>();
+        Collections.addAll(expectedStrings,
+                ExperimentBean.expRecordEvenCssClass,
+                ExperimentBean.expRecordLastSavedCssClass);
+        Assert.assertEquals(expectedStrings, new HashSet<>(Arrays.asList(
+                experimentBean.getExpRecordStyle(record, true).split(" "))));
+
+        record.setEdit(true);
+        expectedStrings = new HashSet<>();
+        Collections.addAll(expectedStrings, ExperimentBean.expRecordOddCssClass,
+                ExperimentBean.expRecordEditCssClass,
+                ExperimentBean.expRecordLastSavedCssClass);
+        Assert.assertEquals(expectedStrings, new HashSet<>(Arrays.asList(
+                experimentBean.getExpRecordStyle(record, false).split(" "))));
+        expectedStrings = new HashSet<>();
+        Collections.addAll(expectedStrings,
+                ExperimentBean.expRecordEvenCssClass,
+                ExperimentBean.expRecordEditCssClass,
+                ExperimentBean.expRecordLastSavedCssClass);
+        Assert.assertEquals(expectedStrings, new HashSet<>(Arrays.asList(
+                experimentBean.getExpRecordStyle(record, true).split(" "))));
     }
 
     @Test
@@ -250,6 +308,7 @@ public class ExperimentBeanTest extends TestBase {
         setExperimentProperties("test005_actionNewExperiment()", false, projects.get(0));
 
         experimentBean.actionSaveExperiment();
+        MessagePresenterMock mockedPresenter = (MessagePresenterMock) experimentBean.messagePresenter;
         int expId = experimentBean.getExperiment().getId();
         experimentBean.actionToggleExperiment(experimentBean.getExperiment());
         experimentBean.getExperiment();
@@ -324,6 +383,34 @@ public class ExperimentBeanTest extends TestBase {
         // cancel editing
         experimentBean.getExpRecordController().actionCancel();
         Assert.assertFalse(experimentBean.isExpRecordButtonsDisabled());
+    }
+
+    @Test
+    public void test009_actionSaveExpriment() {
+        creationTools.createAndSaveProject("ExperimentBeanTest-Test-Project");
+        experimentBean.actionNewExperiment();
+        List<Project> projects = experimentBean.getProjectController().getChoosableProjects();
+        Assert.assertEquals(1, projects.size());
+        setExperimentProperties("test009_actionSaveExpriment()", false, projects.get(0));
+
+        experimentBean.actionSaveExperiment();
+        MessagePresenterMock mockedPresenter = (MessagePresenterMock) experimentBean.messagePresenter;
+        Assert.assertEquals("exp_save_new_experiment", mockedPresenter.getLastInfoMessage());
+    }
+
+    @Test
+    public void test010_actionSaveTemplate() {
+        creationTools.createAndSaveProject("ExperimentBeanTest-Test-Project");
+        experimentBean.actionNewExperiment();
+        experimentBean.setTemplateMode(true);
+        List<Project> projects = experimentBean.getProjectController().getChoosableProjects();
+        Assert.assertEquals(1, projects.size());
+        setExperimentProperties("test010_actionSaveTemplate()", true, projects.get(0));
+
+        experimentBean.actionSaveExperiment();
+        MessagePresenterMock mockedPresenter = (MessagePresenterMock) experimentBean.messagePresenter;
+        Assert.assertEquals("exp_save_new_template", mockedPresenter.getLastInfoMessage());
+
     }
 
     private ACEntry getACEntryByName(String name, Collection<ACEntry> aces) {

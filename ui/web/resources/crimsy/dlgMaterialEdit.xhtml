@@ -90,6 +90,7 @@
                                                       value="#{cc.attrs.agent.moleculeSearch}"
                                                       border="true"
                                                       pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                      format="MDLV2000"
                                                       readonly="false"
                                                       widgetVar="dlg_materialEdit_molEditor"/>
                                     </p:column>
@@ -109,20 +110,21 @@
                                     value=" #{msgs.materialAgent_table_availableMaterials}" />
                                 <p:dataTable id="materialTable" 
                                              value="#{cc.attrs.agent.getMaterialList()}" 
+                                             styleClass="dlgMaterialEditDataTable"
                                              var="material" >
                                     <p:column 
                                         id="col0"
                                         width="80%">
                                         <f:facet name="header">
-                                            #{msgs.materialAgent_table_name}
+                                            <h:outputText value="#{msgs.materialAgent_table_name}" />
                                         </f:facet>
-                                        #{material.firstName}
+                                        <h:outputText value="#{material.firstName}" />
                                     </p:column>
                                     <p:column 
                                         id="col1"
                                         width="20%">
                                         <f:facet name="header">
-                                            #{msgs.materialAgent_table_action}
+                                            <h:outputText value="#{msgs.materialAgent_table_action}" />
                                         </f:facet>
                                         <p:commandButton
                                             action="#{cc.attrs.agent.actionSetMaterial(material)}"

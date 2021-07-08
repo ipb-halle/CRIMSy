@@ -22,34 +22,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
 >
 <h:head>
     <title>LBAC</title>
-    <!-- CSP Header -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-    <meta http-equiv="X-WebKit-CSP" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: ; "/>
-    <!-- -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <link rel="apple-touch-startup-image" href="resources/img/systemIcons/apple-icon-180x180.png"/>
-    <link rel="apple-touch-icon" sizes="57x57" href="resources/img/systemIcons/apple-icon-57x57.png"/>
-    <link rel="apple-touch-icon" sizes="60x60" href="resources/img/systemIcons/apple-icon-60x60.png"/>
-    <link rel="apple-touch-icon" sizes="72x72" href="resources/img/systemIcons/apple-icon-72x72.png"/>
-    <link rel="apple-touch-icon" sizes="76x76" href="resources/img/systemIcons/apple-icon-76x76.png"/>
-    <link rel="apple-touch-icon" sizes="114x114" href="resources/img/systemIcons/apple-icon-114x114.png"/>
-    <link rel="apple-touch-icon" sizes="120x120" href="resources/img/systemIcons/apple-icon-120x120.png"/>
-    <link rel="apple-touch-icon" sizes="144x144" href="resources/img/systemIcons/apple-icon-144x144.png"/>
-    <link rel="apple-touch-icon" sizes="152x152" href="resources/img/systemIcons/apple-icon-152x152.png"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="resources/img/systemIcons/apple-icon-180x180.png"/>
-    <link rel="icon" type="image/png" sizes="192x192" href="resources/img/systemIcons/android-icon-192x192.png"/>
-    <link rel="icon" type="image/png" sizes="32x32" href="resources/img/systemIcons/avicon-32x32.png"/>
-    <link rel="icon" type="image/png" sizes="96x96" href="resources/img/systemIcons/avicon-96x96.png"/>
-    <link rel="icon" type="image/png" sizes="16x16" href="resources/img/systemIcons/favicon-16x16.png"/>
-    <link rel="manifest" href="resources/img/systemIcons/manifest.json"/>
-    <meta name="msapplication-TileColor" content="#ffffff"/>
-    <meta name="msapplication-TileImage" content="resources/img/systemIcons/ms-icon-144x144.png"/>
-    <meta name="theme-color" content="#ffffff"/>
+    <ui:include src="/WEB-INF/templates/head.xhtml" />
     <meta http-equiv="refresh" content="3;url=#{request.contextPath}/index.xhtml"/>
 </h:head>
 <h:body>
@@ -59,10 +36,9 @@
         <p/>
         <p/>
 
-        <h2>Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.</h2>
-        <h2>Your session is timed out. Please login again.</h2>
+        <h2>#{msgs.errorPage_sessionExpired_message}</h2>
         <p>
-            <b:navLink href="/ui/index.xhtml" value="Back to index.html"/>
+            <b:navLink href="/ui/index.xhtml" value="#{msgs.errorPage_backToIndex}"/>
         </p>
     </b:container>
 </h:body>

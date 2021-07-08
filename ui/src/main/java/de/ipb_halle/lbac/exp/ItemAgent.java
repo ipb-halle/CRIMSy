@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.exp;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.items.Item;
-import de.ipb_halle.lbac.items.search.ItemSearchConditionBuilder;
+import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.items.service.ItemService;
 import de.ipb_halle.lbac.search.SearchResult;
 
@@ -85,22 +85,22 @@ public class ItemAgent implements Serializable {
     }
 
     public void actionTriggerItemSearch() {
-//        chooseableItems = new ArrayList<>();
-//        if ((this.itemHolder != null)
-//                && (this.itemSearch != null)
-//                && (!this.itemSearch.isEmpty())) {
-//            try {
-//                ItemSearchConditionBuilder builder = new ItemSearchConditionBuilder(INSERT ItemEntityGraphBuilder HERE!);
-//                builder.addLabel(itemSearch);
-//                SearchResult result = itemService.loadItems(builder.buildSearchRequest());
-//                chooseableItems = result.getAllFoundObjects(Item.class, result.getNode());
-//            } catch (NumberFormatException nfe) {
-//                // ignore and return an empty list
-//                chooseableItems = new ArrayList<>();
-//            } catch (Exception e) {
-//                this.logger.warn("getItemList() caught an exception: ", (Throwable) e);
-//            }
-//        }
+        chooseableItems = new ArrayList<>();
+        if ((this.itemHolder != null)
+                && (this.itemSearch != null)
+                && (!this.itemSearch.isEmpty())) {
+            try {
+                ItemSearchRequestBuilder builder = new ItemSearchRequestBuilder(userBean.getCurrentAccount(), 0, 25);
+                builder.setLabel(itemSearch);
+                SearchResult result = itemService.loadItems(builder.build());
+                chooseableItems = result.getAllFoundObjects(Item.class, result.getNode());
+            } catch (NumberFormatException nfe) {
+                // ignore and return an empty list
+                chooseableItems = new ArrayList<>();
+            } catch (Exception e) {
+                this.logger.warn("getItemList() caught an exception: ", (Throwable) e);
+            }
+        }
     }
 
     public Integer getItemId() {
@@ -116,7 +116,6 @@ public class ItemAgent implements Serializable {
     }
 
     public void setItemId(Integer itemId) {
-        this.logger.info("setItemId() {}", itemId);
         this.itemId = itemId;
     }
 
@@ -130,6 +129,11 @@ public class ItemAgent implements Serializable {
         } else {
             return String.format("%f  %s", item.getAmount(), item.getUnit().getUnit());
         }
+    }
+    
+    public void clearAgent(){
+        this.chooseableItems.clear();
+        this.itemSearch="";
     }
 
 }

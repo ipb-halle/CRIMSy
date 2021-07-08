@@ -23,9 +23,14 @@ import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.Node;
 import de.ipb_halle.lbac.service.InfoObjectService;
 import de.ipb_halle.lbac.service.NodeService;
+import java.io.File;
 
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Date;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.UUID;
 
@@ -33,6 +38,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -46,15 +52,13 @@ public class GlobalAdmissionContext implements Serializable {
      * accounts, groups, ACLists etc.
      */
     private static final long serialVersionUID = 1L;
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-    private final static String ADMIN_DEFAULT_PASSWORD = "admin";
     public final static String PUBLIC_NODE_ID = "1e0f832b-3d9e-4ebb-9e68-5a9fc2d9bee8";
+    protected String LBAC_PROPERTIES_PATH = "/install/etc/lbac_properties.xml";
 
     public final static Integer PUBLIC_GROUP_ID = 1;
     public final static Integer PUBLIC_ACCOUNT_ID = 2;
     public final static Integer OWNER_ACCOUNT_ID = 3;
     public final static Integer ADMIN_GROUP_ID = 4;
-    private final static Integer ADMIN_ACCOUNT_ID = 5;
     public static final String NAME_OF_DEACTIVATED_USER = "deactivated";
 
     private CredentialHandler credentialHandler;
@@ -96,7 +100,7 @@ public class GlobalAdmissionContext implements Serializable {
     public GlobalAdmissionContext() {
         this.logger = LogManager.getLogger(this.getClass().getName());
         this.credentialHandler = new CredentialHandler();
-        this.intruderLockoutMap = new ConcurrentHashMap<String, LockoutInfo>();
+        this.intruderLockoutMap = new ConcurrentHashMap<>();
     }
 
     /**
@@ -128,7 +132,7 @@ public class GlobalAdmissionContext implements Serializable {
             createInfoEntity("LDAP_ENABLE", "false", this.adminOnlyACL);
             createInfoEntity(CollectionBean.getCollectionsPermKey(), "don't care", this.adminOnlyACL);
         } catch (Exception e) {
-            logger.error("Error at initialisiing", e);
+            logger.error("Error at initialisiing", ExceptionUtils.getStackTrace(e));
         }
 
     }
@@ -189,22 +193,31 @@ public class GlobalAdmissionContext implements Serializable {
     /**
      * create the admin account
      */
-    private void createAdminAccount() {
-        User u = this.memberService.loadUserById(ADMIN_ACCOUNT_ID);
-        if (u == null) {
-            u = new User();
-            u.setId(ADMIN_ACCOUNT_ID);
-            u.setLogin("admin");
-            u.setName("Admin");
-            u.setNode(this.nodeService.getLocalNode());
-            u.setPassword(this.credentialHandler.computeDigest(ADMIN_DEFAULT_PASSWORD));
-            u.setSubSystemType(AdmissionSubSystemType.LOCAL);
-            this.memberService.save(u);
+    public void createAdminAccount() {
+        try {
+            User u = this.memberService.loadLocalAdminUser();
+            if (u == null) {
+                logger.warn("No admin account found!");
+                u = new User();
+                u.setLogin("admin");
+                u.setName("Admin");
+                u.setNode(this.nodeService.getLocalNode());
+                Properties prop = new Properties();
+                prop.loadFromXML(Files.newInputStream(Paths.get(LBAC_PROPERTIES_PATH), StandardOpenOption.READ));
+                u.setPassword(this.credentialHandler.computeDigest(prop.getProperty("DEFAULT_ADMIN_PASSWORD")));
+                u.setSubSystemType(AdmissionSubSystemType.LOCAL);
+                u = this.memberService.save(u);
+
+                logger.warn("Admin account successfully created");
+            }
+            this.membershipService.addMembership(u, u);
+            this.membershipService.addMembership(this.adminGroup, u);
+            this.membershipService.addMembership(this.publicGroup, u);
+            this.adminAccount = u;
+        } catch (Exception e) {
+            logger.error("Unable to restore admin account");
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
-        this.membershipService.addMembership(u, u);
-        this.membershipService.addMembership(this.adminGroup, u);
-        this.membershipService.addMembership(this.publicGroup, u);
-        this.adminAccount = u;
     }
 
     /**
@@ -424,4 +437,9 @@ public class GlobalAdmissionContext implements Serializable {
             loi.unlock();
         }
     }
+
+    public void setLBAC_PROPERTIES_PATH(String LBAC_PROPERTIES_PATH) {
+        this.LBAC_PROPERTIES_PATH = LBAC_PROPERTIES_PATH;
+    }
+
 }

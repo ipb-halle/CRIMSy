@@ -20,15 +20,21 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.admission.ACObjectBean;
 import de.ipb_halle.lbac.admission.LoginEvent;
 import de.ipb_halle.lbac.admission.ACObject;
+import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.globals.ACObjectController;
 import de.ipb_halle.lbac.items.bean.ItemBean;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.ProjectService;
+import de.ipb_halle.lbac.util.resources.ResourceLocation;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
+import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.HazardType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +45,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,6 +58,8 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
+    private static final long serialVersionUID = 1L;
+
     private ACObjectController acObjectController;
     private User currentUser;
     private Logger logger = LogManager.getLogger(this.getClass().getName());
@@ -59,9 +68,13 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private NamePresenter namePresenter;
     private MaterialSearchMaskController searchController;
     private MaterialTableController tableController;
+    private MessagePresenter messagePresenter;
 
     private final String NAVIGATION_ITEM_EDIT = "item/itemEdit";
     private final String NAVIGATION_MATERIAL_EDIT = "material/materialsEdit";
+    private final int HAZARD_RADIACTIVE_ID = 16;
+    private final int HAZARD_ATTENTION_ID = 18;
+    private final int HAZARD_DANGER_ID = 19;
 
     @Inject
     private ItemBean itemBean;
@@ -70,7 +83,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     private MaterialBean materialEditBean;
 
     @Inject
-    private MaterialService materialService;
+    protected MaterialService materialService;
 
     @Inject
     private MemberService memberService;
@@ -80,6 +93,9 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    protected HazardService hazardService;
 
     /**
      * Creates the tablecontroller and the controller for managing the search
@@ -101,6 +117,8 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
                         MaterialType.SEQUENCE,
                         MaterialType.STRUCTURE));
         namePresenter = new NamePresenter();
+        messagePresenter = JsfMessagePresenter.getInstance();
+
     }
 
     /**
@@ -111,6 +129,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         currentUser = evt.getCurrentAccount();
         tableController.setLastUser(currentUser);
         searchController.clearInputFields();
+        searchController.actionStartMaterialSearch();
 
     }
 
@@ -153,7 +172,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
             materialEditBean.startMaterialEdit(m);
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
@@ -205,4 +224,62 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         return acObjectController;
     }
 
+    public List<String> getImageLocationOfHazards(Material m) {
+        List<String> locations = new ArrayList<>();
+        for (HazardType ht : m.getHazards().getHazards().keySet()) {
+            if (ht.getCategory() == HazardType.Category.GHS) {
+                if (ht.getId() != HAZARD_ATTENTION_ID && ht.getId() != HAZARD_DANGER_ID) {
+                    locations.add(ResourceLocation.getHazardImageLocation(ht.getName()));
+                }
+            }
+        }
+        return locations;
+    }
+
+    public String getHazardRemark(Material m, int hazardId) {
+        for (HazardType h : m.getHazards().getHazards().keySet()) {
+            if (h.getId() == hazardId) {
+                return m.getHazards().getHazards().get(h);
+            }
+        }
+        return "";
+    }
+
+    public boolean hasHazard(Material m, int hazardId) {
+        for (HazardType h : m.getHazards().getHazards().keySet()) {
+            if (h.getId() == hazardId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isRadioactive(Material m) {
+        for (HazardType ht : m.getHazards().getHazards().keySet()) {
+            if (ht.getId() == HAZARD_RADIACTIVE_ID) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getRadioactiveImageLocation() {
+        return ResourceLocation.getHazardImageLocation(hazardService.getHazardById(16));
+    }
+
+    public String getLocalizedMaterialType(Material m) {
+        return messagePresenter.presentMessage(
+                "search_category_" + m.getType());
+    }
+
+    public boolean hasAccessRight(Material m, String accessRight) {
+        try {
+            ACPermission permission = ACPermission.valueOf(accessRight);
+            return materialService.getAcListService().isPermitted(permission, m, currentUser);
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            return false;
+        }
+
+    }
 }

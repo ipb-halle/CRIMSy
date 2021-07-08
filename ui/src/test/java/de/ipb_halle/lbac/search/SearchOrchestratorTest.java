@@ -75,9 +75,7 @@ public class SearchOrchestratorTest extends TestBase {
     private Node node;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         cleanAllProjectsFromDb();
         entityManagerService.doSqlUpdate("DELETE FROM nodes WHERE local=false AND publicnode=false");
 

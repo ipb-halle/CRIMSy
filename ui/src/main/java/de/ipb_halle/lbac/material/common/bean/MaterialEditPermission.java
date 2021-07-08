@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.io.Serializable;
 import java.util.List;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author fmauz
  */
-public class MaterialEditPermission implements Serializable{
+public class MaterialEditPermission implements Serializable {
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -68,8 +69,17 @@ public class MaterialEditPermission implements Serializable{
         return !bean.isAutoCalcFormularAndMasses() && bean.getMode() != MaterialBean.Mode.HISTORY;
     }
 
+    /**
+     * To keep it simple in the first run, only the acl of the material is used
+     * for checking rights on sub components
+     *
+     * @param type
+     * @param permission
+     * @return
+     */
     private boolean isOwnerOrPermitted(MaterialDetailType type, ACPermission permission) {
-        ACList aclist = bean.getMaterialEditState().getMaterialToEdit().getDetailRight(type);
+        //ACList aclist = bean.getMaterialEditState().getMaterialToEdit().getDetailRight(type);
+        ACList aclist = bean.getMaterialEditState().getMaterialToEdit().getACList();
         boolean userHasEditRight = aclist != null && bean.getAcListService().isPermitted(permission, aclist, bean.getUserBean().getCurrentAccount());
         boolean userIsOwner = bean.getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(bean.getUserBean().getCurrentAccount().getId());
         return userIsOwner || userHasEditRight;
@@ -102,9 +112,9 @@ public class MaterialEditPermission implements Serializable{
                     || bean.getMode() == MaterialBean.Mode.CREATE);
 
         } catch (Exception e) {
-            logger.info("Error in isVisible(): " + typeName);
-            logger.info("Current MaterialType: " + bean.getCurrentMaterialType());
-            logger.error(e);
+            logger.error("Error in isVisible(): " + typeName);
+            logger.error("Current MaterialType: " + bean.getCurrentMaterialType());
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return false;
     }
@@ -122,7 +132,7 @@ public class MaterialEditPermission implements Serializable{
                 }
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
     }
@@ -142,7 +152,7 @@ public class MaterialEditPermission implements Serializable{
                                     .getCurrentAccount()
                                     .getId());
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
             return false;
         }
     }

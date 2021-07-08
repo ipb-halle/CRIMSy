@@ -35,14 +35,14 @@
             <base-name>de.ipb_halle.lbac.i18n.messages</base-name>
             <var>msgs</var>
         </resource-bundle>
-        <!-- map external javascript ressources  -->
-        <!-- see: http://showcase.omnifaces.org/resourcehandlers/UnmappedResourceHandler -->
-        <resource-handler>org.omnifaces.resourcehandler.UnmappedResourceHandler</resource-handler>
-
     </application>
-<factory>
-    <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
-</factory>
+    <converter>
+        <converter-for-class>java.lang.String</converter-for-class>
+        <converter-class>org.omnifaces.converter.TrimConverter</converter-class>
+    </converter>
+    <factory>
+        <exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
+    </factory>
     <!--  managed beans  -->
     <!--<managed-bean>
         <managed-bean-name>Navigator</managed-bean-name>

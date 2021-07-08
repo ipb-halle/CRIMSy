@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.search.bean;
 
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
@@ -32,6 +33,7 @@ import de.ipb_halle.lbac.items.service.ArticleService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.search.NetObject;
 import de.ipb_halle.lbac.search.SearchService;
@@ -44,7 +46,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,13 +59,12 @@ public class NetObjectPresenterTest extends TestBase {
     private List<NetObject> netObjects;
 
     private NetObjectFactory netObjectFactory = new NetObjectFactory();
-    private NetObjectPresenter presenter = new NetObjectPresenter();
+    private NetObjectPresenter presenter;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         netObjects = netObjectFactory.createNetObjects();
+        presenter = new NetObjectPresenter(new User(), new MessagePresenterMock());
     }
 
     @Test

@@ -25,10 +25,11 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
@@ -45,7 +46,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,6 +55,8 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class BiomaterialServiceTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
 
     Project project;
     User owner;
@@ -76,16 +78,13 @@ public class BiomaterialServiceTest extends TestBase {
     private CreationTools creationTools;
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
         // Initialisieng the userbean for ownership of material
         UserBeanMock userBean = new UserBeanMock();
         userBean.setCurrentAccount(memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID));
         owner = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         ownerid = owner.getId().toString();
-        materialService.setUserBean(userBean);
         project = creationTools.createProject();
         createTaxonomyTreeInDB(project.getUserGroups().getId(), owner.getId());
     }
@@ -102,12 +101,12 @@ public class BiomaterialServiceTest extends TestBase {
         Tissue tissue = saveTissueInDB(taxo);
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName(materialName, "de", 1));
-        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageInformation(), taxo, tissue);
         ACList materialACList = project.getUserGroups();
-        materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>());
+        materialService.saveMaterialToDB(biomaterial, materialACList.getId(), new HashMap<>(), publicUser);
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(owner, 0, 100);
-         requestBuilder.addMaterialType(MaterialType.BIOMATERIAL);
-        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+        requestBuilder.addMaterialType(MaterialType.BIOMATERIAL);
+        SearchResult result = materialService.getReadableMaterials(requestBuilder.build());
         List<BioMaterial> bioMaterials = result.getAllFoundObjects(BioMaterial.class, result.getNode());
         Assert.assertEquals(1, bioMaterials.size());
         BioMaterial bm = bioMaterials.get(0);
@@ -139,11 +138,11 @@ public class BiomaterialServiceTest extends TestBase {
         Tissue tissue = saveTissueInDB(taxo);
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("Löwnzahn", "de", 1));
-        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageClassInformation(), taxo, tissue);
+        BioMaterial biomaterial = new BioMaterial(0, names, project.getId(), new HazardInformation(), new StorageInformation(), taxo, tissue);
         biomaterial.setACList(project.getUserGroups());
         biomaterial.setOwner(owner);
 
-        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(biomaterial, project.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         BioMaterial editedBioMaterial = biomaterial.copyMaterial();
         editedBioMaterial.setTissue(null);
@@ -164,19 +163,13 @@ public class BiomaterialServiceTest extends TestBase {
         names.add(new MaterialName("Root", "en", 2));
         names.add(new MaterialName("Radix", "la", 3));
         Tissue tissue = new Tissue(100, names, taxo);
-        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>());
+        materialService.saveMaterialToDB(tissue, project.getUserGroups().getId(), new HashMap<>(), publicUser);
         return tissue;
     }
 
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive deployment = prepareDeployment("BiomaterialServiceTest.war")
-                .addClass(ProjectService.class)
-                .addClass(MaterialService.class)
-                .addClass(TaxonomyNestingService.class)
-                .addClass(BiomaterialService.class)
-                .addClass(TissueService.class)
-                .addClass(TaxonomyService.class);
-        return UserBeanDeployment.add(deployment);
+        WebArchive deployment = prepareDeployment("BiomaterialServiceTest.war");
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

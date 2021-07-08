@@ -19,13 +19,14 @@ package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.DefaultTreeNode;
@@ -64,6 +65,22 @@ public class TaxonomyTreeController implements Serializable {
         reloadTreeNode();
     }
 
+    /**
+     *
+     * @param selectedTaxonomy
+     * @param taxonomyService
+     * @param levelController
+     */
+    public TaxonomyTreeController(
+            Taxonomy selectedTaxonomy,
+            TaxonomyService taxonomyService,
+            TaxonomyLevelController levelController) {
+        this.idOfSelectedTaxonomy = selectedTaxonomy.getId();
+        this.taxonomyService = taxonomyService;
+        this.levelController = levelController;
+        reloadTreeNode(selectedTaxonomy);
+    }
+
     public void addTaxonomy(Taxonomy taxo) {
         List<Taxonomy> children = taxonomyService.loadDirectChildrenOf(taxo.getId());
         List<Taxonomy> grandChildren = new ArrayList<>();
@@ -82,7 +99,7 @@ public class TaxonomyTreeController implements Serializable {
     public Taxonomy createNewTaxonomy() {
         List<MaterialName> names = new ArrayList<>();
         names.add(new MaterialName("", "en", 1));
-        return new Taxonomy(0, names, new HazardInformation(), new StorageClassInformation(), new ArrayList<>(), null, null);
+        return new Taxonomy(0, names, new HazardInformation(), new StorageInformation(), new ArrayList<>(), null, null);
     }
 
     /**
@@ -164,9 +181,9 @@ public class TaxonomyTreeController implements Serializable {
      */
     public void initialise() {
         expandedTreeNodes.clear();
-        idOfSelectedTaxonomy=null;
+        idOfSelectedTaxonomy = null;
         selectedTaxonomy = null;
-        taxonomyTree=null;
+        taxonomyTree = null;
         reloadTreeNode();
         setSelectedTaxonomy(taxonomyTree.getChildren().get(0));
     }
@@ -197,7 +214,33 @@ public class TaxonomyTreeController implements Serializable {
             reorganizeTaxonomyTree();
 
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
+        }
+    }
+
+    /**
+     * Loads  taxonomies from the database and selects a taxonomy if there is
+     * one and expands all taxonomies which were expanded before. 
+     * @param t
+     */
+    public final void reloadTreeNode(Taxonomy t) {
+        try {
+            shownTaxonomies = loadShownTaxos();
+            addAbsentTaxo(t);
+            for(Taxonomy ht:t.getTaxHierachy()){
+                List<Taxonomy> childrenOfHierEntry=taxonomyService.loadDirectChildrenOf(ht.getId());
+                List<Taxonomy> grandChildrenOfHierEntry=new ArrayList<>();
+                for(Taxonomy ce:childrenOfHierEntry){
+                    grandChildrenOfHierEntry.addAll(taxonomyService.loadDirectChildrenOf(ce.getId()));
+                }
+                addAbsentTaxos(childrenOfHierEntry);
+                addAbsentTaxos(grandChildrenOfHierEntry);
+            }
+            addAbsentTaxos(t.getTaxHierachy());
+            reorganizeTaxonomyTree();
+
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
@@ -226,8 +269,8 @@ public class TaxonomyTreeController implements Serializable {
      * Reorders taxonomies by first its level and second by its names
      */
     protected void reorderTaxonomies() {
-        Comparator rankCom = Comparator.comparing((Taxonomy t) -> t.getLevel().getRank());
-        Comparator nameCom = Comparator.comparing((Taxonomy t) -> t.getFirstName());
+        Comparator<Taxonomy> rankCom = Comparator.comparing((Taxonomy t) -> t.getLevel().getRank());
+        Comparator<Taxonomy> nameCom = Comparator.comparing((Taxonomy t) -> t.getFirstName());
         shownTaxonomies.sort(rankCom.thenComparing(nameCom));
     }
 

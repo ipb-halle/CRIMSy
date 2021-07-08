@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.webservice.service.WebRequestAuthenticator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import javax.inject.Inject;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -62,9 +63,7 @@ public class KeyManagerTest extends TestBase {
     }
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         initializeKeyStoreFactory();
 
     }
@@ -83,7 +82,7 @@ public class KeyManagerTest extends TestBase {
             PublicKey publicKey = keymanager.getLocalPublicKey(TESTCLOUD);
             Assert.assertNotNull(publicKey);
         } catch (Exception e) {
-            logger.error("Keymanager may be null", e);
+            logger.error(ExceptionUtils.getStackTrace(e), e);
         }
     }
 

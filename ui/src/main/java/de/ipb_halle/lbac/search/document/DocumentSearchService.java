@@ -133,6 +133,7 @@ public class DocumentSearchService {
             int limit,
             int offSet,
             String uriOfPublicColl) throws Exception {
+
         this.uriOfPublicColl = uriOfPublicColl;
         searchState.clearState();
         searchQueryStemmer = new SearchQueryStemmer();
@@ -173,6 +174,7 @@ public class DocumentSearchService {
 
     private int loadTotalCountOfFiles() {
         Query q = em.createNativeQuery(SQL_LOAD_DOCUMENT_COUNT);
+        @SuppressWarnings("unchecked")
         List<BigInteger> result = q.getResultList();
         return result.get(0).intValue();
     }
@@ -187,14 +189,13 @@ public class DocumentSearchService {
         DocumentSearchConditionBuilder conBuilder = new DocumentSearchConditionBuilder(createEntityGraph(), "files");
         conBuilder.convertRequestToCondition(request, ACPermission.permREAD);
         String sql = sqlBuilder.query(conBuilder.convertRequestToCondition(request, ACPermission.permREAD));
-        logger.info(sql);
         Query q = em.createNativeQuery(sql, FileObjectEntity.class);
         for (Value param : sqlBuilder.getValueList()) {
             q.setParameter(param.getArgumentKey(), param.getValue());
-            logger.info(param.getArgumentKey() + " : " + param.getValue());
         }
         q.setFirstResult(request.getFirstResult());
         q.setMaxResults(request.getMaxResults());
+        @SuppressWarnings("unchecked")
         List<FileObjectEntity> entities = q.getResultList();
         for (FileObjectEntity entity : entities) {
             foundDocs.add(convertFileObjectToDocument(
@@ -220,6 +221,7 @@ public class DocumentSearchService {
 
     private boolean hasWordRoots(SearchRequest request) {
         return request.getSearchValues().get(SearchCategory.WORDROOT) != null
+                && request.getSearchValues().get(SearchCategory.WORDROOT).getValues() != null
                 && !request.getSearchValues().get(SearchCategory.WORDROOT).getValues().isEmpty();
 
     }
@@ -303,6 +305,7 @@ public class DocumentSearchService {
 
     public Set<Document> loadDocuments(FileSearchRequest request, int limit) {
         Set<Document> documents = new HashSet<>();
+        @SuppressWarnings("unchecked")
         List<FileObjectEntity> results = this.em.createNativeQuery(SQL_LOAD_DOCUMENTS, FileObjectEntity.class)
                 .setParameter("collectionid", request.holder.getId())
                 .setParameter("termvectorLength", request.wordsToSearchFor.getAllStemmedWords().size())

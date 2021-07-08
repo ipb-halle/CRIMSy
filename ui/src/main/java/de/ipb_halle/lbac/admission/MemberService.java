@@ -37,7 +37,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -55,6 +54,7 @@ public class MemberService implements Serializable {
     public final static String PARAM_SUBSYSTEM_DATA = "subSystemData";
     public final static String PARAM_NAME = "name";
     public final static String PARAM_LOGIN = "login";
+    public final static String PARAM_SHORTCUT = "shortCut";
     private final String ADMIN_GROUP_NAME = "Admin Group";
 
     private static final long serialVersionUID = 1L;
@@ -107,6 +107,23 @@ public class MemberService implements Serializable {
             group.setName(GlobalAdmissionContext.NAME_OF_DEACTIVATED_USER);
             em.merge(group.createEntity());
         }
+    }
+
+    public User loadLocalAdminUser() {
+        Map<String, Object> cmap = new HashMap<>();
+        cmap.put(PARAM_LOGIN, "admin");
+        cmap.put(PARAM_NODE_ID, nodeService.getLocalNodeId());
+        List<User> users = loadUsers(cmap);
+        if (users.isEmpty()) {
+            return null;
+        }
+        if (users.size() > 1) {
+            for (User u : users) {
+                logger.info(u.toString());
+            }
+            throw new IllegalStateException("More than one admin account found");
+        }
+        return users.get(0);
     }
 
     public boolean canGroupBeDeactivated(Group group) {
@@ -235,6 +252,12 @@ public class MemberService implements Serializable {
         if (cmap.get(PARAM_LOGIN) != null) {
             predicates.add(builder.equal(userRoot.get(PARAM_LOGIN), cmap.get(PARAM_LOGIN)));
         }
+        if (cmap.get(PARAM_NAME) != null) {
+            predicates.add(builder.equal(userRoot.get(PARAM_NAME), cmap.get(PARAM_NAME)));
+        }
+        if (cmap.get(PARAM_SHORTCUT) != null) {
+            predicates.add(builder.equal(userRoot.get(PARAM_SHORTCUT), ((String) cmap.get(PARAM_SHORTCUT)).toUpperCase()));
+        }
         if (cmap.get(PARAM_NODE_ID) != null) {
             predicates.add(builder.equal(userRoot.get("node"), cmap.get(PARAM_NODE_ID)));
         }
@@ -256,7 +279,7 @@ public class MemberService implements Serializable {
 
         criteriaQuery.where(builder.and(predicates.toArray(new Predicate[]{})));
 
-        List<User> result = new ArrayList<User>();
+        List<User> result = new ArrayList<>();
         for (UserEntity ue : this.em.createQuery(criteriaQuery).getResultList()) {
             Node node = this.nodeService.loadById(ue.getNode());
             result.add(new User(ue, node));
@@ -359,6 +382,9 @@ public class MemberService implements Serializable {
      */
     public User save(User u) {
         try {
+            if (u.getShortcut() != null) {
+                u.setShortcut(u.getShortcut().toUpperCase());
+            }
             UserEntity ue = u.createEntity();
             ue = em.merge(ue);
             if (ue != null) {

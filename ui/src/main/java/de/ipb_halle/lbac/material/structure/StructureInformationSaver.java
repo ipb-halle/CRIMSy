@@ -29,6 +29,8 @@ import javax.persistence.Query;
  */
 public class StructureInformationSaver implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule) "
             + "VALUES (:molecule) "
             + "RETURNING id";
@@ -44,19 +46,23 @@ public class StructureInformationSaver implements Serializable {
      */
     public void saveStructureInformation(Material m) {
         Structure s = (Structure) m;
-        if (s.getMolecule().getStructureModel() != null 
+        for (IndexEntry ie : s.getIndices()) {
+            em.persist(ie.toDbEntity(m.getId(), 0));
+        }
+        if (s.getMolecule().getStructureModel() != null
                 && !s.getMolecule().getStructureModel().isEmpty()) {
             s.getMolecule().setId(saveMolecule(s.getMolecule().getStructureModel()));
-        }else{
+        } else {
             s.getMolecule().setId(0);
         }
         em.persist(s.createEntity());
     }
-    
-    public int saveMolecule(String moleculeString){
-         Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
-                    .setParameter("molecule", moleculeString);
-          int molId = (int) q.getSingleResult();
-           return molId;
+
+    public int saveMolecule(String moleculeString) {
+
+        Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
+                .setParameter("molecule", moleculeString);
+        int molId = (int) q.getSingleResult();
+        return molId;
     }
 }

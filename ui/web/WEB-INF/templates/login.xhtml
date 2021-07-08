@@ -48,11 +48,13 @@
                             <b:focus rendered="true"/>
                         </b:inputText>
                         <b:message for="@previous"/>
-                        <b:inputSecret id="loginPasswd"
-                                        styleClass="tstLoginPassword"
-                                        value="#{userBean.oldPassword}" 
-                                        label="#{msgs.admission_loginForm_password}" 
-                                        required="true">
+                        <b:inputSecret 
+                            id="loginPasswd"
+                            styleClass="tstLoginPassword"
+                            value="#{userBean.oldPassword}" 
+                            label="#{msgs.admission_loginForm_password}" 
+                            required="true"
+                            converter="DummyConverter">
                             <f:facet name="prepend">
                                 <b:icon name="ok"/>
                             </f:facet>
@@ -65,7 +67,11 @@
                                     action="#{userBean.actionLogin}" 
                                     value="#{msgs.admission_loginForm_button}"/>
                         </b:column>
-                        <h:outputText id="loginDSGVOmsg" styleClass="tinyGrayText" value="#{msgs.admission_loginForm_DSGVO}" />
+                        <h:outputText styleClass="tinyGrayText" value="#{msgs.admission_loginForm_DSGVO_1}" />
+                        <h:outputLink value="dsgvo.xhtml" target="_blank">
+                            <h:outputText styleClass="tinyGrayText" style="text-decoration: underline;" value="#{msgs.admission_loginForm_DSGVO_2}" />
+                        </h:outputLink>
+                        <h:outputText styleClass="tinyGrayText" value="#{msgs.admission_loginForm_DSGVO_3}" />
                     </b:panel>
                 </h:panelGrid>
             </b:form>

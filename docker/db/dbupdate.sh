@@ -29,7 +29,7 @@
 #   statements for the schema version
 #
 #
-CURRENT_SCHEMA_VERSION=00005
+CURRENT_SCHEMA_VERSION=00001
 CURRENT_PG_VERSION=12
  cd /docker-entrypoint-initdb.d/
 
@@ -82,7 +82,7 @@ while [ "$LBAC_SCHEMA_VERSION" != "$CURRENT_SCHEMA_VERSION" ] ; do
             echo "Applying 00001.sql ..."
             cat 00001.sql | psql lbac
             ;;
-        00005)
+        00001)
             echo "reached head of development"
             ;;
     esac

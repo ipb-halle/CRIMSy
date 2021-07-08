@@ -68,11 +68,12 @@ public class CollectionInputValidator implements Validator,Serializable{
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+        Object tmpValue = value != null ? value : "";
 
         if (component.getId().equals("name")) {
 
             // check for invalid characters
-            matcher = pattern.matcher(value.toString());
+            matcher = pattern.matcher(tmpValue.toString());
             if (!matcher.matches()) {
                 throw new ValidatorException(
                   UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_invalid_char", null));
@@ -80,7 +81,7 @@ public class CollectionInputValidator implements Validator,Serializable{
 
             // check for reserved words
             for (String name: RESERVED_NAMES){
-                if ( value.toString().equalsIgnoreCase(name)){
+                if ( tmpValue.toString().equalsIgnoreCase(name)){
                     throw new ValidatorException(
                       UIMessage.getErrorMessage(MESSAGE_BUNDLE, "collection_validation_reserved", null));
                 }
@@ -90,7 +91,7 @@ public class CollectionInputValidator implements Validator,Serializable{
             List<Collection> collections = null;
             try { 
                 Map<String, Object> cmap = new HashMap<String, Object>();
-                cmap.put("name", value.toString());
+                cmap.put("name", tmpValue.toString());
                 cmap.put("local", true);
                 collections = collectionService.load(cmap);
             } catch (Exception e) {

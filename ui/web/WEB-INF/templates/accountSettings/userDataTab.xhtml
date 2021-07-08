@@ -35,7 +35,7 @@
                     <f:facet name="heading">
                         <h:outputText value="#{msgs.admission_userProfile_editProfile}"
                                       rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"/>
-                        <h:outputText value="Nutzerdaten anzeigen"
+                        <h:outputText value="#{msgs.admission_userProfile_viewProfile}"
                                       rendered="#{userBean.currentAccount.getSubSystemType().toString() != 'LOCAL'}"/>
                     </f:facet>
 

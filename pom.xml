@@ -36,6 +36,11 @@
         <module>tx</module>
         <module>ui</module>
     </modules>
+
+    <properties>
+        <hibernate.version>5.3.20.Final</hibernate.version>
+    </properties>
+
     <build>
         <plugins>
             <!-- Copy the dependencies used by the server container into an extra folder -->
@@ -79,12 +84,12 @@
                         <artifactItem>
                             <groupId>org.hibernate.common</groupId>
                             <artifactId>hibernate-commons-annotations</artifactId>
-                            <version>5.0.5.Final</version>
+                            <version>5.1.2.Final</version>
                         </artifactItem>
                         <artifactItem>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-core</artifactId>
-                            <version>5.3.6.Final</version>
+                            <version>${hibernate.version}</version>
                         </artifactItem>
 
                         <!-- Integration for using Ehcache 2.x as a 
@@ -92,7 +97,7 @@
                         <artifactItem>
                             <groupId>org.hibernate</groupId>
                             <artifactId>hibernate-ehcache</artifactId>
-                            <version>5.3.6.Final</version>
+                            <version>${hibernate.version}</version>
                         </artifactItem>
 
                         <artifactItem>

@@ -38,7 +38,7 @@ import de.ipb_halle.lbac.items.ItemPositionsHistory;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectService;
@@ -103,9 +103,7 @@ public class ItemServiceTest extends TestBase {
             + "false,%d)";
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
 
         cleanItemsFromDb();
@@ -171,7 +169,6 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals(1, instance.loadItemAmount(builder.build()));
         Assert.assertEquals("Testcase 001: One Item must be found after load", 1, items.size());
         checkItem(items.get(0));
-
         //Load item by label
         builder = new ItemSearchRequestBuilder(owner, 0, 25);
         builder.setLabel(item.getLabel());
@@ -569,7 +566,7 @@ public class ItemServiceTest extends TestBase {
 
     private Item createItem() {
 
-        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageClassInformation(), null);
+        Structure s = new Structure("", 0d, 0d, 1, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageInformation(), null);
         Item item = new Item();
         item.setAmount(23d);
 
@@ -631,7 +628,7 @@ public class ItemServiceTest extends TestBase {
         Assert.assertEquals("Testcase 001: Owner-id must be " + ownerid, owner.getId(), loadedItem.getOwner().getId());
         Assert.assertEquals("Testcase 001: Project-id must be " + project.getId(), project.getId(), loadedItem.getProject().getId());
         Assert.assertEquals("Testcase 001: Purity must be 'rein'", "rein", loadedItem.getPurity());
-        Assert.assertEquals("Testcase 001: One nested Container must be found", 2, loadedItem.getNestedContainer().size());
+        Assert.assertEquals("Testcase 001: The direct Container must be found", 1, loadedItem.getNestedContainer().size());
         Assert.assertNull("Testcase 001: Solvent must be null", loadedItem.getSolvent());
         Assert.assertNotNull(loadedItem.getcTime());
 

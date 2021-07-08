@@ -92,8 +92,10 @@ public class UnitsValidator implements Validator,Serializable {
      */
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
-        // logger.info("start::validation::" + component.getId() + " --> " + value.toString());
-        checkUnits(value.toString());
+        Object tmpValue = value != null ? value : "";
+
+        // logger.info("start::validation::" + component.getId() + " --> " + tmpValue.toString());
+        checkUnits(tmpValue.toString());
         // logger.info("Finished  validation.");
     }
 }

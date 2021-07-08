@@ -159,7 +159,7 @@ select.selCollection {
 }
 
 .upload-collection { 
-    max-width: 100px;
+    width: 500px;
     overflow: hidden;
 }
 
@@ -521,6 +521,18 @@ select.selCollection {
     margin-top: -29px;
 }
 
+.boldSelectBooleanCheckboxCaption > .form-group > .checkbox {
+	margin-top: 0px;
+}
+
+.boldSelectBooleanCheckboxCaption > .form-group > .checkbox > label {
+	font-weight: bold;
+}
+
+.boldSelectBooleanCheckboxCaption > .form-group > .checkbox > label > input {
+	margin-top: 2px;
+}
+
 .advancedSearchHeader{
     margin-bottom: 30px;
 }
@@ -593,3 +605,4 @@ body.waiting * {
 .borderlessButtonTable tr{
      border-width: 0px !important;
 }
+

@@ -24,7 +24,7 @@ import java.util.Objects;
  *
  * @author fmauz
  */
-public class StorageClass  implements Serializable{
+public class StorageClass implements Serializable {
 
     public Integer id;
     public String name;
@@ -52,7 +52,7 @@ public class StorageClass  implements Serializable{
 
     @Override
     public String toString() {
-        return name;
+        return id+": "+name;
     }
 
     @Override
@@ -80,8 +80,8 @@ public class StorageClass  implements Serializable{
         return true;
     }
 
-    
-    
-    
+    public StorageClass copy() {
+        return new StorageClass(id, name);
+    }
 
 }

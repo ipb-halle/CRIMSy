@@ -52,6 +52,7 @@ public enum AttributeType {
     STRUCTURE,
     TEXT,
     OWNER,
+    ID,
     PERM_READ,
     PERM_EDIT,
     PERM_CHOWN,
