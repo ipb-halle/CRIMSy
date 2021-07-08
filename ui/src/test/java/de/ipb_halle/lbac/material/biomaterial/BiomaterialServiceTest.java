@@ -119,7 +119,6 @@ public class BiomaterialServiceTest extends TestBase {
         Assert.assertEquals(0, bm.getIndices().size());
         Assert.assertEquals(materialName, bm.getNameToDisplay());
         Assert.assertEquals(1, bm.getNames().size());
-        Assert.assertEquals("", bm.getNumber());
         Assert.assertEquals(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID, bm.getOwner().getId());
         Assert.assertEquals(project.getId(), bm.getProjectId(), 0);
         Assert.assertNotNull(bm.getStorageInformation());

@@ -30,9 +30,12 @@ import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
+import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
 import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -96,10 +99,6 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
 
     public void setNames(List<MaterialName> names) {
         this.names = names;
-    }
-
-    public String getNumber() {
-        return "";
     }
 
     public int getId() {
@@ -233,5 +232,11 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
             }
         }
         return null;
+    }
+
+    public List<MaterialCompositionEntity> createCompositionEntities() {
+        return Arrays.asList(
+                new MaterialCompositionEntity()
+                        .setId(new MaterialCompositionId(id, id)));
     }
 }

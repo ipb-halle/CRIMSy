@@ -21,7 +21,7 @@ The [Leibniz Institute of Plant Biochemistry (IPB)](https://www.ipb-halle.de/) i
 
 The European Regional Development Fund (ERDF) and the state Saxony-Anhalt have been supporting the development of the "Cloud Resource and Information Management System" since 2019 as part of the project ["ProCognito - Pflanzliche Wirkstoffe zum Erhalt der kognitiven Leistungsfähigkeit im Alter"](http://www.aia.ovgu.de/Projekte/F%C3%B6rderperiode+2_3/K%C3%B6rper+und+Alter%28n%29.html) (ZS/2018/11/95581), which is part of the research network ["Autonomy in Old Age"](http://autonomie-im-alter.ovgu.de/en/).
 
-<img src="https://github.com/ipb-halle/CRIMSy/blob/master/ui/web/resources/img/efre_logo.jpg" width="80%" alt="EFRE Logo" title="European Regional Development Fund (ERDF) and the state Saxony-Anhalt" />
+<img src="https://github.com/ipb-halle/CRIMSy/blob/master/ui/web/resources/img/efre_logo.png" width="80%" alt="EFRE Logo" title="European Regional Development Fund (ERDF) and the state Saxony-Anhalt" />
 
 ---
 

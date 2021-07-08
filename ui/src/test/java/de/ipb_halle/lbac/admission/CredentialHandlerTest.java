@@ -45,7 +45,7 @@ public class CredentialHandlerTest {
     @Before
     public void setUp() {
         this.handler = new CredentialHandler().setDigestAlgorithm("SHA-256");
-        this.credentials = new HashMap<String, String>();
+        this.credentials = new HashMap<>();
         this.credentials.put("Leibniz",
                 "0c60bfb78a89ad8ec03375701fb04f159f460181540e98a5f973d00f462296ca$5$55e45095b0a4f1ffd87edacbebd9f8818ec1941cf26147a060c5ff5e020e9815");
         this.credentials.put("Halle",

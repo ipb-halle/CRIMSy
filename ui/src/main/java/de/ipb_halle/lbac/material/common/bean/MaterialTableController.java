@@ -59,7 +59,7 @@ public class MaterialTableController implements TableController {
 
     @Override
     public void reloadDataTableItems() {
-        SearchResult result = materialService.getReadableMaterials(createRequest());
+        SearchResult result = materialService.loadReadableMaterials(createRequest());
         shownMaterials = extractAllMaterialsFromResponse(result);
 
     }

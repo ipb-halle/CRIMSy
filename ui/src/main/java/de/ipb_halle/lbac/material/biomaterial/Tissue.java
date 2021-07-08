@@ -51,13 +51,7 @@ public class Tissue extends Material {
     }
 
     @Override
-    public String getNumber() {
-        return "";
-    }
-
-    @Override
     public Tissue copyMaterial() {
-        getCopiedNames();
         try {
             return new Tissue(
                     id,
