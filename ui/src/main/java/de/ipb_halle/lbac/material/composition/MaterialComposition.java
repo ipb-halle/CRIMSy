@@ -36,6 +36,8 @@ import java.util.Objects;
  */
 public class MaterialComposition extends Material {
 
+    private static final long serialVersionUID = 1L;
+
     protected List<Material> components = new ArrayList<>();
 
     public MaterialComposition(

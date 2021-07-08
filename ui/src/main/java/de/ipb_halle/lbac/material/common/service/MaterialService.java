@@ -248,7 +248,7 @@ public class MaterialService implements Serializable {
                 q.setParameter(param.getArgumentKey(), param.getValue());
             }
             @SuppressWarnings("unchecked")
-            List<MaterialEntity> entities =q.getResultList();
+            List<MaterialEntity> entities = q.getResultList();
             for (MaterialEntity me : entities) {
                 Material material = loadMaterial(me);
                 result.addResult(material);
@@ -579,7 +579,6 @@ public class MaterialService implements Serializable {
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
 
-
         deleteExistingComponents(newMaterial);
         saveComponents(newMaterial);
 
@@ -614,7 +613,7 @@ public class MaterialService implements Serializable {
         saveComponents(m);
 
         if (m.getType() == MaterialType.STRUCTURE) {
-            structureInformationSaver.saveStructureInformation(m);
+            structureInformationSaver.saveMaterial(m);
         }
         if (m.getType() == MaterialType.TAXONOMY) {
             saveTaxonomy((Taxonomy) m);
@@ -645,6 +644,7 @@ public class MaterialService implements Serializable {
      * @param m
      * @param projectAclId
      * @param detailTemplates
+     * @param owner
      */
     public void saveMaterialToDB(
             Material m,
@@ -747,7 +747,6 @@ public class MaterialService implements Serializable {
         t.setId(entity.getId());
         return t;
     }
-
 
     public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {
         this.editedMaterialSaver = editedMaterialSaver;
