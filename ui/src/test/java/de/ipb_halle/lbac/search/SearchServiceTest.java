@@ -21,7 +21,6 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.service.*;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
 import de.ipb_halle.lbac.base.ContainerCreator;
 import de.ipb_halle.lbac.base.DocumentCreator;
 import de.ipb_halle.lbac.base.ItemCreator;
@@ -56,10 +55,6 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageInformation;
-import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 
@@ -232,7 +227,7 @@ public class SearchServiceTest extends TestBase {
 
         request = builder.build();
         request.addSearchCategory(SearchCategory.DEACTIVATED, "activated");
-        Assert.assertEquals(4, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        Assert.assertEquals(3, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setIndex("-002");
@@ -292,7 +287,7 @@ public class SearchServiceTest extends TestBase {
                 new StorageInformation());
         composition.addComponent(materialService.loadMaterialById(materialid1));
         composition.addComponent(materialService.loadMaterialById(materialid2));
-        materialService.saveMaterialToDB(composition, project1.getId(), new HashMap<>(),publicUser);
+        materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(),publicUser);
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
