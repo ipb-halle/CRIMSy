@@ -626,23 +626,22 @@ public class MaterialServiceTest extends TestBase {
         UserBeanMock userBean = new UserBeanMock();
 
         userBean.setCurrentAccount(publicUser);
-        instance.setUserBean(userBean);
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
         Structure struture2 = creationTools.createStructure(project1);
-        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
-        instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
+        instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
 
         MaterialComposition composition = new MaterialComposition(
                 0,
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-                new StorageClassInformation());
+                new StorageInformation());
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
         composition.addComponent(struture1);
         composition.addComponent(struture2);
-        instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates());
+        instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("composition");
         SearchResult result = instance.loadReadableMaterials(requestBuilder.build());
