@@ -54,7 +54,7 @@ public class CredentialHandler implements Serializable {
         this.iterations = DEFAULT_ITERATIONS;
         this.saltLength = DEFAULT_SALT_LENGTH;
         try {
-            CredentialHandler.random = SecureRandom.getInstanceStrong();
+            CredentialHandler.random = new SecureRandom();
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
