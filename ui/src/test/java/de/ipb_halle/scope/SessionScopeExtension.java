@@ -28,6 +28,12 @@ import javax.enterprise.inject.spi.Extension;
  * object for the {@link SessionScoped} scope. This {@link Extension} has to be
  * registered via its fully qualified class name in
  * META-INF/services/javax.enterprise.inject.spi.Extension.
+ * <p>
+ * This implementation was inspired by chapter 4 of the book
+ * Pro CDI 2 in Java EE 8: An In-Depth Guide to Context and Dependency Injection
+ * by Jan Beernink and Arjan Tijms
+ * 2019, Apress, Berkeley, CA
+ * ISBN 978-1-4842-4362-6
  * 
  * @author flange
  */

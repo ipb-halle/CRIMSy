@@ -124,6 +124,17 @@ public class SessionScopeTest {
 
     @Test
     public void test003_injectOtherScopes() {
+        /*
+         * It is possible to inject ApplicationScoped beans into SessionScoped
+         * beans.
+         */
         assertEquals("Hi!", bean2.getApplicationScopedBean().getMessage());
+
+        /*
+         * It is possible to inject SessionScoped beans into ApplicationScoped 
+         * beans. Beware, this is not possible in JSF!!!
+         */
+        bean2.getApplicationScopedBean().getBean().countUp();
+        assertEquals(1, otherBean.getCount());
     }
 }

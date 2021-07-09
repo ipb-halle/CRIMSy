@@ -19,19 +19,27 @@ package de.ipb_halle.scope.test;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 @Named
 @ApplicationScoped
 public class ApplicationScopedBean {
     private String message;
-    
+
+    @Inject
+    private OtherBean bean;
+
     @PostConstruct
     public void init() {
         message = "Hi!";
     }
-    
+
     public String getMessage() {
         return message;
+    }
+
+    public OtherBean getBean() {
+        return bean;
     }
 }

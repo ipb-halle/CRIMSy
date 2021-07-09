@@ -30,6 +30,12 @@ import javax.enterprise.event.Observes;
  * This CDI context overrides the built-in session scope of JavaEE. It can be
  * used in Java SE CDI applications. A special feature of this class is that its
  * cached bean instances can be reset.
+ * <p>
+ * This implementation was inspired by chapter 4 of the book
+ * Pro CDI 2 in Java EE 8: An In-Depth Guide to Context and Dependency Injection
+ * by Jan Beernink and Arjan Tijms
+ * 2019, Apress, Berkeley, CA
+ * ISBN 978-1-4842-4362-6
  * 
  * @author flange
  */
