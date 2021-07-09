@@ -86,31 +86,6 @@ public class GroupMgrBean implements Serializable {
     }
 
     /**
-     * Constructor for injecting the dependencies if class is instanciated not
-     * by container (via @Inject) but by new.(This happens in tests, because we
-     * have problems with starting @SessionScoped containers in the arquillian
-     * environment)
-     *
-     * @param nodeService
-     * @param memberService
-     * @param membershipService
-     * @param messagePresenter
-     */
-    public GroupMgrBean(
-            NodeService nodeService,
-            MemberService memberService,
-            MembershipService membershipService,
-            MessagePresenter messagePresenter) {
-        this();
-        this.nodeService = nodeService;
-        this.memberService = memberService;
-        this.membershipService = membershipService;
-        this.groupNameValidator = new GroupNameValidator(memberService);
-        initGroup();
-
-    }
-
-    /**
      * Initialization depending on injected resources
      */
     @PostConstruct
