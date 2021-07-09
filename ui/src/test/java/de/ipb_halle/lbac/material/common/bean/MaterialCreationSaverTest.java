@@ -114,7 +114,7 @@ public class MaterialCreationSaverTest extends TestBase {
         MaterialSearchRequestBuilder b = new MaterialSearchRequestBuilder(userBean.getCurrentAccount(), 0, 25);
         b.addMaterialType(MaterialType.CONSUMABLE);
 
-        List<Consumable> c = materialService.getReadableMaterials(b.build()).getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
+        List<Consumable> c = materialService.loadReadableMaterials(b.build()).getAllFoundObjects(Consumable.class, nodeService.getLocalNode());
 
 
 

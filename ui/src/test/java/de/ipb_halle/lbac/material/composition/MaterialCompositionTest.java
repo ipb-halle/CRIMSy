@@ -20,7 +20,7 @@ package de.ipb_halle.lbac.material.composition;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageClassInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.search.SearchTarget;
@@ -44,10 +44,10 @@ public class MaterialCompositionTest {
     public void init() {
         int projectid = 10;
 
-        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageClassInformation());
+        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation());
         compo1.getNames().add(new MaterialName("compo1-name1", "de", 0));
         compo1.getNames().add(new MaterialName("compo1-name2", "de", 1));
-        compo2 = new MaterialComposition(2, new ArrayList<>(), projectid, new HazardInformation(), new StorageClassInformation());
+        compo2 = new MaterialComposition(2, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation());
         struc1 = new Structure("C", 0d, 0d, 3, new ArrayList<>(), projectid);
         struc2 = new Structure("O", 0d, 0d, 4, new ArrayList<>(), projectid);
     }
