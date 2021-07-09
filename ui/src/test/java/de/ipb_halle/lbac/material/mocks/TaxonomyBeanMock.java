@@ -41,9 +41,9 @@ public class TaxonomyBeanMock extends TaxonomyBean {
         nameController = new TaxonomyNameController(this);
         levelController = new TaxonomyLevelController(this);
         levelController.setLevels(taxonomieService.loadTaxonomyLevel());
-        validityController = new TaxonomyValidityController(this, new MessagePresenterMock());
+        validityController = new TaxonomyValidityController(this, MessagePresenterMock.getInstance());
         historyController = new TaxonomyHistoryController(this, nameController, taxonomieService, memberService);
-        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService,new MessagePresenterMock());
+        renderController = new TaxonomyRenderController(this, nameController, levelController, memberService, MessagePresenterMock.getInstance());
         treeController = new TaxonomyTreeController(selectedTaxonomy, taxonomieService, levelController);
     }
 

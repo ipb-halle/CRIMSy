@@ -41,8 +41,6 @@ import org.apache.logging.log4j.LogManager;
 @Named("groupMgrBean")
 @SessionScoped
 public class GroupMgrBean implements Serializable {
-
-    private MessagePresenter messagePresenter;
     private String oldGroupName;
 
     private enum MODE {
@@ -52,6 +50,9 @@ public class GroupMgrBean implements Serializable {
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
     private final static Long serialVersionUID = 1L;
+
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
     @Inject
     private NodeService nodeService;
@@ -104,7 +105,6 @@ public class GroupMgrBean implements Serializable {
         this.nodeService = nodeService;
         this.memberService = memberService;
         this.membershipService = membershipService;
-        this.messagePresenter = messagePresenter;
         this.groupNameValidator = new GroupNameValidator(memberService);
         initGroup();
 
@@ -115,7 +115,6 @@ public class GroupMgrBean implements Serializable {
      */
     @PostConstruct
     private void InitGroupMgrBean() {
-        this.messagePresenter = JsfMessagePresenter.getInstance();
         this.groupNameValidator = new GroupNameValidator(memberService);
         initGroup();
     }
@@ -361,9 +360,5 @@ public class GroupMgrBean implements Serializable {
 
     public boolean isDeactivationForbidden(Group g) {
         return !memberService.canGroupBeDeactivated(g);
-    }
-
-    public void setMessagePresenter(MessagePresenter messagePresenter) {
-        this.messagePresenter = messagePresenter;
     }
 }

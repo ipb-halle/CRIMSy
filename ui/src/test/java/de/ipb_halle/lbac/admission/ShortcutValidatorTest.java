@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 public class ShortcutValidatorTest extends TestBase {
     private FacesContext fc = null;
     private UIComponent comp = null;
-    private MessagePresenterMock presenterMock = new MessagePresenterMock();
+    private MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
 
     @Deployment
     public static WebArchive createDeployment() {

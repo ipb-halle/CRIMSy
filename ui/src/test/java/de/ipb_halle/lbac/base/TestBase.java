@@ -31,6 +31,7 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.globals.GlobalVersions;
 import de.ipb_halle.lbac.globals.KeyStoreFactory;
 import de.ipb_halle.lbac.material.CreationTools;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -43,6 +44,9 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.service.NodeService;
+import de.ipb_halle.scope.SessionScopeContext;
+import de.ipb_halle.scope.SessionScopeResetEvent;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,6 +56,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -131,6 +136,9 @@ public class TestBase implements Serializable {
     @Inject
     protected ProjectService projectService;
 
+    @Inject
+    private Event<SessionScopeResetEvent> event;
+
     protected ACList acListReadable, acListNonReadable;
     protected User publicUser;
     protected User adminUser;
@@ -154,15 +162,22 @@ public class TestBase implements Serializable {
                 .addClass(CollectionService.class)
                 .addClass(ProjectService.class)
                 .addClass(KeyStoreFactory.class)
+                .addClass(MessagePresenterMock.class)
+                .addClass(SessionScopeContext.class)
                 .addAsWebInfResource("test-persistence.xml", "persistence.xml")
                 .addAsResource("init.sql", "init.sql")
-                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+                .addAsResource("javax.enterprise.inject.spi.Extension",
+                        "META-INF/services/javax.enterprise.inject.spi.Extension");
         return archive;
     }
 
     @Before
     public final void setUp() {
         System.setProperty("log4j.configurationFile", "log4j2-test.xml");
+
+        resetSessionScope();
+        resetMessagePresenterMock();
 
         this.entityManagerService.doSqlUpdate("Delete from nested_containers");
         cleanItemsFromDb();
@@ -459,5 +474,13 @@ public class TestBase implements Serializable {
 
     protected void cleanExperimentsFromDB() {
         entityManagerService.doSqlUpdate("delete from experiments");
+    }
+
+    protected void resetSessionScope() {
+        event.fire(new SessionScopeResetEvent());
+    }
+
+    private void resetMessagePresenterMock() {
+        MessagePresenterMock.getInstance().resetMessages();
     }
 }
