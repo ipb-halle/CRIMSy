@@ -43,7 +43,7 @@ public class ValidatorTest {
     @Before
     public void setUp() {
         validator = new Validator(containerServiceMock, labelServiceMock);
-        validator.setMessagePresenter(new MessagePresenterMock());
+        validator.setMessagePresenter(MessagePresenterMock.getInstance());
         containerServiceMock.arePositionsFree = true;
         labelServiceMock.isLabelAvailable = true;
         isCustomLabel = false;

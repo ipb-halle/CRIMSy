@@ -17,12 +17,15 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.admission.group.DeactivateGroupOrchestrator;
 import de.ipb_halle.lbac.base.TestBase;
-import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -32,46 +35,42 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class GroupMgrBeanTest extends TestBase {
-
+    @Inject
     private GroupMgrBean groupMgrBean;
+
+    private MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
 
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
-                .add(prepareDeployment("GroupMgrBeanTest.war"));
+                .add(prepareDeployment("GroupMgrBeanTest.war"))
+                .addClass(GroupMgrBean.class)
+                .addClass(DeactivateGroupOrchestrator.class);
     }
 
     @Test
     public void test01_createNewGroup() {
-        MessagePresenterMock presenterMock = new MessagePresenterMock();
-        groupMgrBean = new GroupMgrBean(
-                nodeService,
-                memberService,
-                membershipService,
-                presenterMock);
-
         int groupsBeforeCreation = memberService.loadGroups(new HashMap()).size();
-        //Try to create group with invalide name
+
+        // Try to create group with invalid name.
         groupMgrBean.actionCreate();
         Assert.assertEquals("groupMgr_no_valide_name", presenterMock.getLastErrorMessage());
-        presenterMock.reseLastMessages();
+        presenterMock.resetMessages();
 
-        //Try to create group with valide name
+        // Try to create group with valid name
         groupMgrBean.getGroup().setName(("GroupMgrBeanTest:test01_createNewGroup"));
         groupMgrBean.actionCreate();
         Group g = loadGroupByName("GroupMgrBeanTest:test01_createNewGroup");
         Assert.assertNotNull(g);
         Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap()).size());
 
-        //Try to create the same group again -' should not create the group
+        // Try to create the same group again - should not create the group
         groupMgrBean.getGroup().setName(("GroupMgrBeanTest:test01_createNewGroup"));
         groupMgrBean.actionCreate();
         Assert.assertEquals("groupMgr_no_valide_name", presenterMock.getLastErrorMessage());
         Assert.assertEquals(groupsBeforeCreation + 1, memberService.loadGroups(new HashMap()).size());
         entityManagerService.doSqlUpdate("DELETE FROM usersgroups WHERE id=" + g.getId());
     }
-    
-   
 
     private Group loadGroupByName(String groupName) {
         Map<String, Object> cmap = new HashMap<>();
@@ -83,5 +82,4 @@ public class GroupMgrBeanTest extends TestBase {
             return null;
         }
     }
-
 }

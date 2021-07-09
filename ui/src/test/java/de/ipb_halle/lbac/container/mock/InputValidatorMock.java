@@ -29,7 +29,7 @@ public class InputValidatorMock extends InputValidator {
 
     public InputValidatorMock(ContainerService containerService) {
         super(containerService);
-        this.errorMessagePresenter = new MessagePresenterMock();
+        this.errorMessagePresenter = MessagePresenterMock.getInstance();
     }
 
 }
