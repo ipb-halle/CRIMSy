@@ -833,4 +833,8 @@ CREATE TABLE material_compositions(
     PRIMARY KEY (materialid, componentid)
 );
 
+CREATE TABLE compositions(
+    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    type VARCHAR NOT NULL
+);
 

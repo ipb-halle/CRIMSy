@@ -60,6 +60,7 @@
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.CompositionEntity</class>               
         <class>de.ipb_halle.lbac.material.structure.StructureEntity</class>
         <class>de.ipb_halle.lbac.material.structure.StructureHistEntity</class>
         <class>de.ipb_halle.lbac.container.entity.ContainerEntity</class>
