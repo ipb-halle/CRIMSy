@@ -27,7 +27,9 @@ import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -38,7 +40,7 @@ public class MaterialComposition extends Material {
 
     private static final long serialVersionUID = 1L;
 
-    protected List<Material> components = new ArrayList<>();
+    protected Map<Material, Double> components = new HashMap<>();
 
     public MaterialComposition(
             int id,
@@ -50,12 +52,12 @@ public class MaterialComposition extends Material {
         type = MaterialType.COMPOSITION;
     }
 
-    public MaterialComposition addComponent(Material comp) {
-        components.add(comp);
+    public MaterialComposition addComponent(Material comp, Double concentration) {
+        components.put(comp, concentration);
         return this;
     }
 
-    public List<Material> getComponents() {
+    public Map<Material, Double> getComponents() {
         return components;
     }
 
@@ -84,9 +86,11 @@ public class MaterialComposition extends Material {
     @Override
     public List<MaterialCompositionEntity> createCompositionEntities() {
         List<MaterialCompositionEntity> entities = new ArrayList<>();
-        for (Material m : components) {
-            entities.add(new MaterialCompositionEntity()
-                    .setId(new MaterialCompositionId(id, m.getId())));
+        for (Material m : components.keySet()) {
+            MaterialCompositionEntity entity = new MaterialCompositionEntity()
+                    .setId(new MaterialCompositionId(id, m.getId()));
+            entity.setConcentration(components.get(m));
+            entities.add(entity);
         }
         entities.addAll(super.createCompositionEntities());
         return entities;

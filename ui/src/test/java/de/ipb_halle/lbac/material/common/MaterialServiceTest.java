@@ -619,16 +619,17 @@ public class MaterialServiceTest extends TestBase {
         instance.saveMaterialToDB(struc, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         Material loadedMat = instance.loadMaterialById(struc.getId());
-        Assert.assertNull(loadedMat.getStorageInformation().getStorageClass());      
+        Assert.assertNull(loadedMat.getStorageInformation().getStorageClass());
     }
+
     @Test
     public void test009_saveLoadMaterialComposition() {
 
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
         Structure struture2 = creationTools.createStructure(project1);
-        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
-        instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
+        instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
 
         MaterialComposition composition = new MaterialComposition(
                 0,
@@ -637,9 +638,9 @@ public class MaterialServiceTest extends TestBase {
                 new HazardInformation(),
                 new StorageInformation());
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
-        composition.addComponent(struture1);
-        composition.addComponent(struture2);
-        instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
+        composition.addComponent(struture1, 0d);
+        composition.addComponent(struture2, 0d);
+        instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("composition");
         SearchResult result = instance.loadReadableMaterials(requestBuilder.build());
@@ -649,10 +650,10 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, loadedComposition.getNames().size());
         Assert.assertEquals("composition-1", loadedComposition.getFirstName());
         Assert.assertEquals(2, loadedComposition.getComponents().size());
-
-        Structure loadedStruc1 = (Structure) loadedComposition.getComponents().get(0);
+        Iterator<Material> iter = loadedComposition.getComponents().keySet().iterator();
+        Structure loadedStruc1 = (Structure) iter.next();
         Assert.assertEquals(struture1.getId(), loadedStruc1.getId());
-        Structure loadedStruc2 = (Structure) loadedComposition.getComponents().get(1);
+        Structure loadedStruc2 = (Structure) iter.next();
         Assert.assertEquals(loadedStruc2.getId(), loadedStruc2.getId());
 
         Assert.assertEquals(1, loadedComposition.getIndices().size());

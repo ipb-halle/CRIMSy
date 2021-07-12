@@ -150,7 +150,7 @@ public class SearchServiceTest extends TestBase {
         createUsers();
         createProjects();
         createMaterials();
-        createItems();        
+        createItems();
     }
 
     @After
@@ -285,9 +285,9 @@ public class SearchServiceTest extends TestBase {
                 project1.getId(),
                 new HazardInformation(),
                 new StorageInformation());
-        composition.addComponent(materialService.loadMaterialById(materialid1));
-        composition.addComponent(materialService.loadMaterialById(materialid2));
-        materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(),publicUser);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0d);
+        composition.addComponent(materialService.loadMaterialById(materialid2), 0d);
+        materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(), publicUser);
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
@@ -467,8 +467,8 @@ public class SearchServiceTest extends TestBase {
         materialService.saveMaterialToDB(structure, publicAclId, new HashMap<>(), publicUser);
 
         MaterialComposition composition = new MaterialComposition(expid1, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation());
-        composition.addComponent(bio);
-        composition.addComponent(structure);
+        composition.addComponent(bio, 0d);
+        composition.addComponent(structure, 0d);
         materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);
 
         MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);

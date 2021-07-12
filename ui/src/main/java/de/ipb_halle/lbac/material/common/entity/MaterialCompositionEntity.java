@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.common.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -35,6 +36,9 @@ public class MaterialCompositionEntity implements Serializable {
     @EmbeddedId
     private MaterialCompositionId id;
 
+    @Column
+    private Double concentration;
+
     public MaterialCompositionId getId() {
         return id;
     }
@@ -43,4 +47,14 @@ public class MaterialCompositionEntity implements Serializable {
         this.id = id;
         return this;
     }
+
+    public Double getConcentration() {
+        return concentration;
+    }
+
+    public MaterialCompositionEntity setConcentration(Double concentration) {
+        this.concentration = concentration;
+        return this;
+    }
+
 }

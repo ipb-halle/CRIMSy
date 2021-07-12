@@ -21,6 +21,7 @@ include(dist/etc/config_m4.inc)dnl
 CREATE TABLE material_compositions(
     materialid  INTEGER NOT NULL REFERENCES materials (materialid),
     componentid INTEGER NOT NULL REFERENCES materials (materialid),
+	concentration FLOAT NOT NULL DEFAULT 0,
     PRIMARY KEY (materialid, componentid)
 );
 

@@ -48,7 +48,6 @@ import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.StorageClass;
@@ -136,7 +135,7 @@ public class MaterialService implements Serializable {
             + "WHERE materialid=:mid";
 
     public final String SQL_SELECT_COMPONENTS
-            = "SELECT materialid, componentid "
+            = "SELECT materialid, componentid,concentration "
             + "FROM material_compositions "
             + "WHERE materialid=:mid";
     protected MaterialHistoryService materialHistoryService;
@@ -492,6 +491,7 @@ public class MaterialService implements Serializable {
         return material;
     }
 
+    @SuppressWarnings("unchecked")
     private MaterialComposition loadComposition(MaterialEntity entity) {
         MaterialComposition composition = new MaterialComposition(
                 entity.getMaterialid(),
@@ -499,13 +499,14 @@ public class MaterialService implements Serializable {
                 entity.getProjectid(),
                 loadHazardInformation(entity.getMaterialid()),
                 loadStorageClassInformation(entity.getMaterialid()));
+
         List<MaterialCompositionEntity> entities
                 = (List<MaterialCompositionEntity>) em.createNativeQuery(SQL_SELECT_COMPONENTS, MaterialCompositionEntity.class)
                         .setParameter("mid", entity.getMaterialid())
                         .getResultList();
         for (MaterialCompositionEntity mce : entities) {
             if (mce.getId().getComponentid() != entity.getMaterialid()) {
-                composition.addComponent(loadMaterialById(mce.getId().getComponentid()));
+                composition.addComponent(loadMaterialById(mce.getId().getComponentid()), mce.getConcentration());
             }
         }
         return composition;

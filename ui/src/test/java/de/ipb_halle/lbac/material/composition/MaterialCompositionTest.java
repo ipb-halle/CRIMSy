@@ -59,8 +59,8 @@ public class MaterialCompositionTest {
         Assert.assertEquals(1, entities.size());
 
         //Composition with two components
-        compo1.addComponent(struc1);
-        compo1.addComponent(struc2);
+        compo1.addComponent(struc1, 0d);
+        compo1.addComponent(struc2, 0d);
         entities = compo1.createCompositionEntities();
         Assert.assertEquals(3, entities.size());
     }

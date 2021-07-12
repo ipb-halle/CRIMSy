@@ -829,6 +829,7 @@ CREATE TABLE images (
 CREATE TABLE material_compositions(
     materialid  INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     componentid INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    concentration DOUBLE NOT NULL DEFAULT 0,
     PRIMARY KEY (materialid, componentid)
 );
 
