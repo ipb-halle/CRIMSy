@@ -106,7 +106,7 @@ public class MaterialCompositionTest {
         CompositionEntity entity = compo1.createEntity();
         Assert.assertNotNull(entity);
         Assert.assertNotNull(entity.getMaterialid());
-        Assert.assertEquals(CompositionType.EXTRACT.toString(), entity.getType());
+        Assert.assertEquals(CompositionType.MIXTURE.toString(), entity.getType());
     }
 
     @Test
