@@ -45,7 +45,11 @@ public enum MaterialType implements Serializable {
             MaterialDetailType.HAZARD_INFORMATION),
     COMPOSITION(
             2,
-            MaterialDetailType.COMMON_INFORMATION),
+            MaterialDetailType.COMMON_INFORMATION,
+            MaterialDetailType.INDEX,
+            MaterialDetailType.HAZARD_INFORMATION,
+            MaterialDetailType.STORAGE_CLASSES,
+            MaterialDetailType.COMPOSITION),
     BIOMATERIAL(
             3,
             MaterialDetailType.COMMON_INFORMATION,

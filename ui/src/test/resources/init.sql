@@ -282,6 +282,7 @@ INSERT INTO materialdetailtypes VALUES(3,'INDEX');
 INSERT INTO materialdetailtypes VALUES(4,'HAZARD_INFORMATION');
 INSERT INTO materialdetailtypes VALUES(5,'STORAGE_CLASSES');
 INSERT INTO materialdetailtypes VALUES(6,'TAXONOMY');
+INSERT INTO materialdetailtypes VALUES(7,'COMPOSITION');
 
 INSERT INTO materialInformations VALUES(1,1,1,false);
 INSERT INTO materialInformations VALUES(2,1,2,false);

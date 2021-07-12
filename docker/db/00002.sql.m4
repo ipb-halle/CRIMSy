@@ -30,3 +30,5 @@ CREATE TABLE compositions(
     type VARCHAR NOT NULL
 );
 
+INSERT INTO materialdetailtypes(id,name) VALUES(7,'COMPOSITION');
+
