@@ -47,9 +47,11 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Material extends ACObject implements DTO, Serializable, Searchable {
 
+    private static final long serialVersionUID = 1L;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    protected int id;
+    protected Integer id;
     protected MaterialType type;
     protected List<MaterialName> names;
     protected Integer projectId;

@@ -17,11 +17,30 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.material.MaterialType;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  *
  * @author fmauz
  */
-public enum CompositionType {
-    EXTRACT,
-    MIXTURE
+public enum CompositionType implements Serializable {
+
+    EXTRACT(MaterialType.BIOMATERIAL, MaterialType.STRUCTURE),
+    MIXTURE(MaterialType.STRUCTURE);
+
+    private final List<MaterialType> allowedMaterialTypes;
+
+    CompositionType(MaterialType... types) {
+        allowedMaterialTypes = new ArrayList<>();
+        allowedMaterialTypes.addAll(Arrays.asList(types));
+    }
+
+    public List<MaterialType> getAllowedTypes() {
+        return allowedMaterialTypes;
+    }
+
 }

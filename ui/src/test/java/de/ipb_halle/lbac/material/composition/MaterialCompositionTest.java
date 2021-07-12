@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
@@ -39,17 +40,19 @@ public class MaterialCompositionTest {
 
     MaterialComposition compo1, compo2;
     Structure struc1, struc2;
+    BioMaterial bio1;
 
     @Before
     public void init() {
         int projectid = 10;
 
-        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
         compo1.getNames().add(new MaterialName("compo1-name1", "de", 0));
         compo1.getNames().add(new MaterialName("compo1-name2", "de", 1));
         compo2 = new MaterialComposition(2, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
         struc1 = new Structure("C", 0d, 0d, 3, new ArrayList<>(), projectid);
         struc2 = new Structure("O", 0d, 0d, 4, new ArrayList<>(), projectid);
+        bio1 = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), null, null);
     }
 
     @Test
@@ -104,6 +107,20 @@ public class MaterialCompositionTest {
         Assert.assertNotNull(entity);
         Assert.assertNotNull(entity.getMaterialid());
         Assert.assertEquals(CompositionType.EXTRACT.toString(), entity.getType());
+    }
+
+    @Test
+    public void test006_addComponent() {
+        //Add biomaterial and structure to a extract
+        compo2.addComponent(struc1, 0d);
+        compo2.addComponent(bio1, 0d);
+
+        //Add biomaterial and structure to a mixture -> should result in an error
+        compo1.addComponent(struc1, 0d);
+        Assert.assertThrows(IllegalArgumentException.class, () -> {
+            compo1.addComponent(bio1, 0d);
+        });
 
     }
+
 }
