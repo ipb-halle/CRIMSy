@@ -235,8 +235,7 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
     }
 
     public List<MaterialCompositionEntity> createCompositionEntities() {
-        return Arrays.asList(
-                new MaterialCompositionEntity()
+        return Arrays.asList(new MaterialCompositionEntity()
                         .setId(new MaterialCompositionId(id, id))
                         .setConcentration(1d)
         );

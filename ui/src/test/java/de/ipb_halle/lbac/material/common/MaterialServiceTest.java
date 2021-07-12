@@ -42,9 +42,9 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
-import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.util.ArrayList;
@@ -53,6 +53,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -636,7 +637,8 @@ public class MaterialServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-                new StorageInformation());
+                new StorageInformation(),
+                CompositionType.EXTRACT);
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
         composition.addComponent(struture1, 0d);
         composition.addComponent(struture2, 0d);
@@ -650,14 +652,7 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, loadedComposition.getNames().size());
         Assert.assertEquals("composition-1", loadedComposition.getFirstName());
         Assert.assertEquals(2, loadedComposition.getComponents().size());
-        Iterator<Material> iter = loadedComposition.getComponents().keySet().iterator();
-        Structure loadedStruc1 = (Structure) iter.next();
-        Assert.assertEquals(struture1.getId(), loadedStruc1.getId());
-        Structure loadedStruc2 = (Structure) iter.next();
-        Assert.assertEquals(loadedStruc2.getId(), loadedStruc2.getId());
 
-        Assert.assertEquals(1, loadedComposition.getIndices().size());
-        composition.getId();
     }
 
     @Deployment

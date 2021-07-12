@@ -62,6 +62,7 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectSearchRequestBuilder;
@@ -284,7 +285,7 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-                new StorageInformation());
+                new StorageInformation(), CompositionType.EXTRACT);
         composition.addComponent(materialService.loadMaterialById(materialid1), 0d);
         composition.addComponent(materialService.loadMaterialById(materialid2), 0d);
         materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(), publicUser);
@@ -466,7 +467,7 @@ public class SearchServiceTest extends TestBase {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
         materialService.saveMaterialToDB(structure, publicAclId, new HashMap<>(), publicUser);
 
-        MaterialComposition composition = new MaterialComposition(expid1, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation());
+        MaterialComposition composition = new MaterialComposition(expid1, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
         composition.addComponent(bio, 0d);
         composition.addComponent(structure, 0d);
         materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);

@@ -59,6 +59,9 @@ import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
 import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.composition.CompositionEntity;
+import de.ipb_halle.lbac.material.composition.CompositionSaver;
+import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -181,6 +184,7 @@ public class MaterialService implements Serializable {
 
         materialSaverMap.put(MaterialType.STRUCTURE, new StructureInformationSaver(em));
         materialSaverMap.put(MaterialType.TAXONOMY, new TaxonomySaver(em));
+        materialSaverMap.put(MaterialType.COMPOSITION, new CompositionSaver(em));
         storageClasses = loadStorageClasses();
     }
 
@@ -493,12 +497,15 @@ public class MaterialService implements Serializable {
 
     @SuppressWarnings("unchecked")
     private MaterialComposition loadComposition(MaterialEntity entity) {
+        CompositionEntity compositionEntity = loadCompositionEntity(entity.getMaterialid());
+        CompositionType compositionType = CompositionType.valueOf(compositionEntity.getType());
         MaterialComposition composition = new MaterialComposition(
                 entity.getMaterialid(),
                 loadMaterialNamesById(entity.getMaterialid()),
                 entity.getProjectid(),
                 loadHazardInformation(entity.getMaterialid()),
-                loadStorageClassInformation(entity.getMaterialid()));
+                loadStorageClassInformation(entity.getMaterialid()),
+                compositionType);
 
         List<MaterialCompositionEntity> entities
                 = (List<MaterialCompositionEntity>) em.createNativeQuery(SQL_SELECT_COMPONENTS, MaterialCompositionEntity.class)
@@ -510,6 +517,11 @@ public class MaterialService implements Serializable {
             }
         }
         return composition;
+    }
+
+    private CompositionEntity loadCompositionEntity(Integer id) {
+        CompositionEntity entity = em.find(CompositionEntity.class, id);
+        return entity;
     }
 
     /**

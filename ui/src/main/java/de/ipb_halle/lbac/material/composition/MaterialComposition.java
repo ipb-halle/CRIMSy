@@ -37,52 +37,56 @@ import java.util.Objects;
  * @author fmauz
  */
 public class MaterialComposition extends Material {
-
+    
     private static final long serialVersionUID = 1L;
-
+    private CompositionType compositionType;
+    
     protected Map<Material, Double> components = new HashMap<>();
-
+    
     public MaterialComposition(
             int id,
             List<MaterialName> names,
             int projectId,
             HazardInformation hazards,
-            StorageInformation storageInfos) {
+            StorageInformation storageInfos,
+            CompositionType compositionType) {
         super(id, names, projectId, hazards, storageInfos);
         type = MaterialType.COMPOSITION;
+        this.compositionType = compositionType;
     }
-
+    
     public MaterialComposition addComponent(Material comp, Double concentration) {
         components.put(comp, concentration);
         return this;
     }
-
+    
     public Map<Material, Double> getComponents() {
         return components;
     }
-
+    
     @Override
     public MaterialComposition copyMaterial() {
         MaterialComposition copy = new MaterialComposition(
                 id, getCopiedNames(),
                 projectId,
                 hazards.copy(),
-                storageInformation.copy());
+                storageInformation.copy(),
+                compositionType);
         return copy;
     }
 
     /**
-     * There is no need for an specific entity of the material composition (
-     * like structures, taxonomies, ...) because there is no further information
-     * then in the material itself
      *
-     * @return always throws a "Not supported yet." exception
+     * @return
      */
     @Override
-    public MaterialCompositionEntity createEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public CompositionEntity createEntity() {
+        CompositionEntity entity = new CompositionEntity();
+        entity.setMaterialid(id);
+        entity.setType(compositionType.toString());
+        return entity;
     }
-
+    
     @Override
     public List<MaterialCompositionEntity> createCompositionEntities() {
         List<MaterialCompositionEntity> entities = new ArrayList<>();
@@ -95,7 +99,7 @@ public class MaterialComposition extends Material {
         entities.addAll(super.createCompositionEntities());
         return entities;
     }
-
+    
     @Override
     public boolean isEqualTo(Object other) {
         if (!(other instanceof MaterialComposition)) {
@@ -104,10 +108,10 @@ public class MaterialComposition extends Material {
         MaterialComposition otherUser = (MaterialComposition) other;
         return Objects.equals(otherUser.getId(), this.getId());
     }
-
+    
     @Override
     public Type getTypeToDisplay() {
         return new Type(SearchTarget.MATERIAL, MaterialType.COMPOSITION);
     }
-
+    
 }

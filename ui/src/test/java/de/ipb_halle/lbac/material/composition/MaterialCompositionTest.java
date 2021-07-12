@@ -44,10 +44,10 @@ public class MaterialCompositionTest {
     public void init() {
         int projectid = 10;
 
-        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation());
+        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
         compo1.getNames().add(new MaterialName("compo1-name1", "de", 0));
         compo1.getNames().add(new MaterialName("compo1-name2", "de", 1));
-        compo2 = new MaterialComposition(2, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation());
+        compo2 = new MaterialComposition(2, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
         struc1 = new Structure("C", 0d, 0d, 3, new ArrayList<>(), projectid);
         struc2 = new Structure("O", 0d, 0d, 4, new ArrayList<>(), projectid);
     }
@@ -62,7 +62,11 @@ public class MaterialCompositionTest {
         compo1.addComponent(struc1, 0d);
         compo1.addComponent(struc2, 0d);
         entities = compo1.createCompositionEntities();
+
         Assert.assertEquals(3, entities.size());
+
+        CompositionEntity entity = compo1.createEntity();
+        Assert.assertNotNull(entity);
     }
 
     @Test
@@ -96,8 +100,10 @@ public class MaterialCompositionTest {
 
     @Test
     public void test005_createEntity() {
-        Assert.assertThrows(UnsupportedOperationException.class, () -> {
-            compo1.createEntity();
-        });
+        CompositionEntity entity = compo1.createEntity();
+        Assert.assertNotNull(entity);
+        Assert.assertNotNull(entity.getMaterialid());
+        Assert.assertEquals(CompositionType.EXTRACT.toString(), entity.getType());
+
     }
 }
