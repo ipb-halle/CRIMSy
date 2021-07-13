@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 
-
 /**
  *
  * @author fmauz
@@ -89,14 +88,14 @@ public class LdapAdmissionSubSystemTest extends TestBase {
     }
 
     @Test
-    public void test003_authenticate_withoutExistingUser() {
+    public void test003_authenticate_withoutExistingLdabUser() {
         entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
         ldapHelper.userExists = false;
         Assert.assertFalse(system.authenticate(publicUser, "admin", userBean));
     }
 
     @Test
-    public void test004_lookUp_withExistingLBACUser() {
+    public void test004_authenticate_withExistingLBACUser() {
         entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
         ldapHelper.userExists = true;
         ldapProperties.LdapBasicsInit();
@@ -111,6 +110,17 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         User updatedUser = memberService.loadUserById(ldabUser.getId());
         Assert.assertEquals("ldab_name_edited", updatedUser.getName());
         Assert.assertEquals("ldab_email_edited", updatedUser.getEmail());
+    }
+
+    @Test
+    public void test005_authenticate_withNotExistingLBACUser() {
+        entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
+        ldapHelper.userExists = true;
+        ldapProperties.LdapBasicsInit();
+
+        system.authenticate(publicUser, "ldac_user", userBean);
+
+        
     }
 
     @Deployment
