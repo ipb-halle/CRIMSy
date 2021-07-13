@@ -75,7 +75,9 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         // do full lookup; map dn vs. LdapObject
         Map<String, LdapObject> ldapObjects = new HashMap<>();
         LdapObject ldapUser = helper.queryLdapUser(u.getLogin(), ldapObjects);
+
         if (ldapUser != null) {
+            ldapUser.debug();
             // update User (user object might be 'latent')
             User userFromDb = lookupLbacUser(ldapUser, bean);
 
@@ -119,8 +121,8 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * @return the map of memberships mapped by groupId
      */
     private Map<String, Membership> getLbacMemberships(Map<String, LdapObject> ldapObjects, UserBean bean) {
-        Map<String, Membership> lbacMemberships = new HashMap<String, Membership>();
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Membership> lbacMemberships = new HashMap<>();
+        Map<String, Object> cmap = new HashMap<>();
         cmap.put("group_node", bean.getNodeService().getLocalNode().getId());
         cmap.put("group_subSystemType", AdmissionSubSystemType.LDAP);
         cmap.put("nested", Boolean.FALSE);
@@ -311,7 +313,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         while (iter.hasNext()) {
             Member m = iter.next();
             m.setNode(node);
-            m=bean.getMemberService().save(m);
+            m = bean.getMemberService().save(m);
             bean.getMembershipService().addMembership(m, m);
             if (m.isUser()) {
                 bean.getMembershipService().addMembership(

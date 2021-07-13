@@ -21,8 +21,14 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class LdapObject implements Serializable {
+
+    private transient Logger logger = LogManager.getLogger(this.getClass().getName());
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * objects distinguished ldap name
@@ -73,11 +79,12 @@ public class LdapObject implements Serializable {
      * default constructor
      */
     public LdapObject() {
-        this.membership = new ArrayList<String>();
+        this.membership = new ArrayList<>();
     }
 
     /**
      * @param dn distinguished name of a group, this object is MEMBER_OF
+     * @return
      */
     public LdapObject addMembership(String dn) {
         this.membership.add(dn);
@@ -231,5 +238,18 @@ public class LdapObject implements Serializable {
     public LdapObject setUniqueId(String s) {
         this.uniqueId = s;
         return this;
+    }
+
+    public void debug() {
+        logger.info("Found LDAB USER:");
+        logger.info("uniqueId : " + uniqueId);
+        logger.info("dn : " + dn);
+        logger.info("email : " + email);
+        logger.info("id : " + id);
+        logger.info("login : " + login);
+        logger.info("name : " + name);
+        logger.info("phone : " + phone);
+        logger.info("type : " + type);
+        logger.info("uniqueId : " + uniqueId);
     }
 }
