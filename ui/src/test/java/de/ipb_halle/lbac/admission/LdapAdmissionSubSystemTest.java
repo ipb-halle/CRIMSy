@@ -28,13 +28,17 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+
 
 /**
  *
  * @author fmauz
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(Arquillian.class)
 public class LdapAdmissionSubSystemTest extends TestBase {
 
@@ -55,8 +59,14 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         userBean.setCurrentAccount(publicUser);
         userBean.setLdabProperties(ldapProperties);
         userBean.setNodeService(nodeService);
+        userBean.setMemberService(memberService);
+        userBean.setMemberShipService(membershipService);
+        userBean.setGlobalAdmissionContext(context);
 
-        ldapHelper = new LdapHelperMock();
+        ldapHelper = new LdapHelperMock()
+                .setLdabUserEmail("ldab_email_edited")
+                .setLdabUserId("1")
+                .setLdabUserName("ldab_name_edited");
         system = new LdapAdmissionSubSystem(ldapHelper);
         ldapProperties.LdapBasicsInit();
     }
@@ -83,6 +93,24 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
         ldapHelper.userExists = false;
         Assert.assertFalse(system.authenticate(publicUser, "admin", userBean));
+    }
+
+    @Test
+    public void test004_lookUp_withExistingLBACUser() {
+        entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
+        ldapHelper.userExists = true;
+        ldapProperties.LdapBasicsInit();
+
+        User ldabUser = createUser("ldac_user", "ldab");
+        ldabUser.setSubSystemType(AdmissionSubSystemType.LDAP);
+        ldabUser.setSubSystemData("1");
+
+        memberService.save(ldabUser);
+        Assert.assertTrue(system.authenticate(ldabUser, "ldac_user", userBean));
+
+        User updatedUser = memberService.loadUserById(ldabUser.getId());
+        Assert.assertEquals("ldab_name_edited", updatedUser.getName());
+        Assert.assertEquals("ldab_email_edited", updatedUser.getEmail());
     }
 
     @Deployment

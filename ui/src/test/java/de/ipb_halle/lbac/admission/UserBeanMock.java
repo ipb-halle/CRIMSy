@@ -44,4 +44,16 @@ public class UserBeanMock extends UserBean {
         this.nodeService = service;
     }
 
+    public void setMemberService(MemberService service) {
+        this.memberService = service;
+    }
+
+    public void setMemberShipService(MembershipService service) {
+        this.membershipService = service;
+    }
+
+    public void setGlobalAdmissionContext(GlobalAdmissionContext context) {
+        this.globalAdmissionContext = context;
+    }
+
 }

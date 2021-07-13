@@ -77,15 +77,15 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         LdapObject ldapUser = helper.queryLdapUser(u.getLogin(), ldapObjects);
         if (ldapUser != null) {
             // update User (user object might be 'latent')
-            User user = lookupLbacUser(ldapUser, bean);
+            User userFromDb = lookupLbacUser(ldapUser, bean);
 
             // to keep the user object which is used in the UserBean up to date,
             // its id is updated with the persistent one to enable user loading
             // in following steps
-            u.setId(user.getId());
+            u.setId(userFromDb.getId());
             // map the LdapObjects to Group, map might contain 'latent' objects
             Map<Integer, Member> ldapUuidMap = getLdapGroups(ldapObjects, bean);
-            ldapUuidMap.put(user.getId(), user);
+            ldapUuidMap.put(userFromDb.getId(), userFromDb);
 
             // compute the LDAP Memberships
             // all the elements in this map are transient!

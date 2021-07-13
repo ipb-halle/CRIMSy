@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.admission.mock;
 
 import de.ipb_halle.lbac.admission.LdapHelper;
 import de.ipb_halle.lbac.admission.LdapObject;
+import de.ipb_halle.lbac.admission.MemberType;
 import java.util.Map;
 
 /**
@@ -29,6 +30,10 @@ public class LdapHelperMock extends LdapHelper {
 
     public AuthentificationMode authMode = AuthentificationMode.ALLOWED;
     public boolean userExists = true;
+
+    private String ldabUserName;
+    private String ldabUserId;
+    private String ldabUserEmail;
 
     private static final long serialVersionUID = 1L;
 
@@ -62,11 +67,29 @@ public class LdapHelperMock extends LdapHelper {
     public LdapObject queryLdapUser(String login, Map<String, LdapObject> ldapObjects) {
         if (userExists) {
             LdapObject ldabObject = new LdapObject();
+            ldabObject.setUniqueId(ldabUserId);
+            ldabObject.setName(ldabUserName);
+            ldabObject.setType(MemberType.USER);
+            ldabObject.setEmail(ldabUserEmail);
             return ldabObject;
         } else {
             return null;
         }
+    }
 
+    public LdapHelperMock setLdabUserName(String ldabUserName) {
+        this.ldabUserName = ldabUserName;
+        return this;
+    }
+
+    public LdapHelperMock setLdabUserId(String ldabUserId) {
+        this.ldabUserId = ldabUserId;
+        return this;
+    }
+
+    public LdapHelperMock setLdabUserEmail(String ldabUserEmail) {
+        this.ldabUserEmail = ldabUserEmail;
+        return this;
     }
 
     public enum AuthentificationMode {

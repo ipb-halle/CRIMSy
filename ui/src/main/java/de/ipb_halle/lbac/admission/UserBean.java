@@ -63,7 +63,7 @@ public class UserBean implements Serializable {
     private ACListService aclistService;
 
     @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
+    protected GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
     private InfoObjectService infoObjectService;
@@ -72,10 +72,10 @@ public class UserBean implements Serializable {
     protected LdapProperties ldapProperties;
 
     @Inject
-    private MemberService memberService;
+    protected MemberService memberService;
 
     @Inject
-    private MembershipService membershipService;
+    protected MembershipService membershipService;
 
     @Inject
     protected NodeService nodeService;
