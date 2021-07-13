@@ -21,7 +21,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;

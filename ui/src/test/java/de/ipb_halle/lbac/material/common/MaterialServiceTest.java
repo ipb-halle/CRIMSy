@@ -628,6 +628,7 @@ public class MaterialServiceTest extends TestBase {
 
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
+        struture1.getNames().set(0, new MaterialName("First Structure","de",0));
         Structure struture2 = creationTools.createStructure(project1);
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
         instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);

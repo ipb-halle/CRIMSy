@@ -22,15 +22,15 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  *
@@ -41,7 +41,8 @@ public class MaterialComposition extends Material {
     private static final long serialVersionUID = 1L;
     private CompositionType compositionType;
 
-    protected Map<Material, Double> components = new HashMap<>();
+    protected Map<Material, Double> components
+            = new TreeMap<>(Comparator.comparing(Material::getFirstName));
 
     public MaterialComposition(
             Integer id,
@@ -53,6 +54,7 @@ public class MaterialComposition extends Material {
         super(id, names, projectId, hazards, storageInfos);
         type = MaterialType.COMPOSITION;
         this.compositionType = compositionType;
+
     }
 
     public MaterialComposition addComponent(Material comp, Double concentration) {

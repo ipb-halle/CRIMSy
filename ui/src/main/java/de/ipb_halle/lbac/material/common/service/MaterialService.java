@@ -57,7 +57,7 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySaver;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.composition.CompositionEntity;
 import de.ipb_halle.lbac.material.composition.CompositionSaver;
