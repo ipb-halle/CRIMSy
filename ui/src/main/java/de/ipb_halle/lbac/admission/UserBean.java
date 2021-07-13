@@ -69,7 +69,7 @@ public class UserBean implements Serializable {
     private InfoObjectService infoObjectService;
 
     @Inject
-    private LdapProperties ldapProperties;
+    protected LdapProperties ldapProperties;
 
     @Inject
     private MemberService memberService;

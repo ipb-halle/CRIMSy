@@ -37,7 +37,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.Context;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 //@ManagedBean(name = "ldapProps")
 @Named("ldapProps")
@@ -78,8 +79,8 @@ public class LdapProperties implements Serializable {
      */
     public LdapProperties() {
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.ldapProperties = new ArrayList<InfoObject>();
-        this.ldapPropertyKeys = new HashMap<String, Integer>();
+        this.ldapProperties = new ArrayList<>();
+        this.ldapPropertyKeys = new HashMap<>();
     }
 
     public LdapProperties(
@@ -90,8 +91,20 @@ public class LdapProperties implements Serializable {
         this.ldapPropertyKeys = propertyKeys;
     }
 
+    private boolean isLdabEnabled(InfoObject info) {
+        if (info == null) {
+            return false;
+        }
+        return Boolean.parseBoolean(info.getValue());
+
+    }
+
     @PostConstruct
     public void LdapBasicsInit() {
+        InfoObject ldapEnabledObject = this.infoObjectService.loadByKey("LDAP_ENABLE");
+        if (!isLdabEnabled(ldapEnabledObject)) {
+            return;
+        }
         this.ldapEnabled = Boolean.parseBoolean(this.infoObjectService.loadByKey("LDAP_ENABLE").getValue());
 
         //*** set default values ***
@@ -138,7 +151,7 @@ public class LdapProperties implements Serializable {
      * Initialize the LDAP context
      */
     private void initialize() {
-        ldapEnv = new Hashtable<String, String>();
+        ldapEnv = new Hashtable<>();
         if (ldapEnabled) {
             ldapEnv.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
             ldapEnv.put(Context.PROVIDER_URL, get("LDAP_CONTEXT_PROVIDER_URL"));
