@@ -311,7 +311,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         while (iter.hasNext()) {
             Member m = iter.next();
             m.setNode(node);
-            bean.getMemberService().save(m);
+            m=bean.getMemberService().save(m);
             bean.getMembershipService().addMembership(m, m);
             if (m.isUser()) {
                 bean.getMembershipService().addMembership(
