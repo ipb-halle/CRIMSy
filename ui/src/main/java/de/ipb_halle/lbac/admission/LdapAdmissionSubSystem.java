@@ -33,11 +33,10 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
     private final AdmissionSubSystemType subSystemType;
     private transient Logger logger;
+    private LdapHelper helper;
 
-    /**
-     * default constructor
-     */
-    public LdapAdmissionSubSystem() {
+    public LdapAdmissionSubSystem(LdapHelper helper) {
+        this.helper = helper;
         this.subSystemType = AdmissionSubSystemType.LDAP;
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
@@ -60,7 +59,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         }
 
         // authenticate
-        LdapHelper helper = new LdapHelper(prop);
+        helper.setLdapProperties(prop);
         try {
             if (!helper.authenticate(u.getLogin(), cred)) {
                 // login failure
@@ -203,7 +202,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             return null;
         }
 
-        LdapHelper helper = new LdapHelper(prop);
+        helper.setLdapProperties(prop);
         LdapObject ldapUser = helper.queryLdapUser(login, null);
         if (ldapUser != null) {
             return lookupLbacUser(ldapUser, bean);
@@ -252,7 +251,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     private User lookupLbacUser(LdapObject lo, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Object> cmap = new HashMap<>();
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP);
         cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, lo.getUniqueId());
         cmap.put(MemberService.PARAM_NODE_ID, node.getId());

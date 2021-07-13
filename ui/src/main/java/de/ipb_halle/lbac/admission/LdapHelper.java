@@ -45,10 +45,10 @@ public class LdapHelper implements Serializable {
 
     /**
      * constructor
+     *
      * @param prop
      */
-    public LdapHelper(LdapProperties prop) {
-        this.ldapProperties = prop;
+    public LdapHelper() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
@@ -237,6 +237,10 @@ public class LdapHelper implements Serializable {
             this.logger.warn("queryLdapUser() caught exception: ", (Throwable) e);
         }
         return null;
+    }
+
+    public void setLdapProperties(LdapProperties ldapProperties) {
+        this.ldapProperties = ldapProperties;
     }
 
 }

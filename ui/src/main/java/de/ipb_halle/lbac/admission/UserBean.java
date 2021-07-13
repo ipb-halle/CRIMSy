@@ -78,7 +78,7 @@ public class UserBean implements Serializable {
     private MembershipService membershipService;
 
     @Inject
-    private NodeService nodeService;
+    protected NodeService nodeService;
 
     @Inject
     MembershipOrchestrator membershipOrchestrator;

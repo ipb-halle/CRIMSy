@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.admission.mock.LdapHelperMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.service.InfoObjectService;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,23 +46,42 @@ public class LdapAdmissionSubSystemTest extends TestBase {
     @Inject
     private LdapProperties ldapProperties;
 
+    LdapAdmissionSubSystem system;
+    LdapHelperMock ldapHelper;
+
     @Before
     public final void init() {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
         userBean.setLdabProperties(ldapProperties);
-        entityManagerService.doSqlUpdate("DELETE FROM info WHERE key='LDAP_ENABLE'");
+        userBean.setNodeService(nodeService);
+
+        ldapHelper = new LdapHelperMock();
+        system = new LdapAdmissionSubSystem(ldapHelper);
+        ldapProperties.LdapBasicsInit();
+    }
+
+    @After
+    public void finish() {
+        entityManagerService.doSqlUpdate("DELETE FROM info");
+
     }
 
     @Test
     public void test001_authenticate_withoutLdapEntry() {
-        LdapAdmissionSubSystem system = new LdapAdmissionSubSystem();
         Assert.assertFalse(system.authenticate(publicUser, "admin", userBean));
     }
 
+    @Test
     public void test002_authenticate_withoutLdapEnabled() {
         entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','false')");
-        LdapAdmissionSubSystem system = new LdapAdmissionSubSystem();
+        Assert.assertFalse(system.authenticate(publicUser, "admin", userBean));
+    }
+
+    @Test
+    public void test003_authenticate_withoutExistingUser() {
+        entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
+        ldapHelper.userExists = false;
         Assert.assertFalse(system.authenticate(publicUser, "admin", userBean));
     }
 

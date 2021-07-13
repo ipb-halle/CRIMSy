@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.service.NodeService;
+
 /**
  *
  * @author fmauz
@@ -37,4 +39,9 @@ public class UserBeanMock extends UserBean {
     public void setLdabProperties(LdapProperties properties) {
         this.ldapProperties = properties;
     }
+
+    public void setNodeService(NodeService service) {
+        this.nodeService = service;
+    }
+
 }
