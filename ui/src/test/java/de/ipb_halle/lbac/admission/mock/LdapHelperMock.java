@@ -25,6 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * This clas mocks the services provided by the @see
+ * de.ipb_halle.lbac.admission.LdapHelper. One can add ldab entries by the
+ * method addLdapObject . The authenification behavior can be changed by
+ * authMode wich is default ALLOWED. The first ldab should be the user, the
+ * second a group in which the user is member. Every other entry leads to a
+ * indirect membership.
  *
  * @author fmauz
  */
@@ -35,10 +41,18 @@ public class LdapHelperMock extends LdapHelper {
 
     private static final long serialVersionUID = 1L;
 
-    public LdapHelperMock() {
-
-    }
-
+    /**
+     * Adds a ldab object which is then found by the service mocking methods
+     *
+     * @param dn
+     * @param email
+     * @param login
+     * @param name
+     * @param phone
+     * @param type
+     * @param uniqueId
+     * @return
+     */
     public LdapHelperMock addLdapObject(
             String dn,
             String email,
@@ -80,6 +94,14 @@ public class LdapHelperMock extends LdapHelper {
         }
         return false;
     }
+    
+    /**
+     * Returns the previous added ldab entries whith the correct setting of the 
+     * memberships (rules are given in class description)
+     * @param login
+     * @param ldapObjects
+     * @return 
+     */
 
     @Override
     public LdapObject queryLdapUser(String login, Map<String, LdapObject> ldapObjects) {

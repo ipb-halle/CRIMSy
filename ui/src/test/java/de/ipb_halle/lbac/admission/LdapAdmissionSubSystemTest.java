@@ -154,7 +154,8 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         User loadedUser = memberService.loadUserById(u.getId());
         Assert.assertNotNull(loadedUser);
         Set<Membership> memberShips = membershipService.loadMemberOf(loadedUser);
-        //User should be in public group, the created group and assigned to itself
+        //User should be in public group(direct), the created group(direct) 
+        // and assigned to itself. An indirect membership should be in the institute group
         Assert.assertEquals(4, memberShips.size());
     }
 
