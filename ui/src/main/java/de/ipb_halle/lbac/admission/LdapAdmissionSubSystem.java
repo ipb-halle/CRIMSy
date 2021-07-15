@@ -155,38 +155,32 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * @param ldapIdMemberMap a map of LBAC objects mapped by id
      * @return a map of memberships mapped by groupId|memberId
      */
-    private Map<String, Membership> getLdapMemberships(Map<String, LdapObject> ldapObjects, Map<Integer, Member> ldapIdMemberMap, UserBean bean) {
+    private Map<String, Membership> getLdapMemberships(
+            Map<String, LdapObject> ldapObjects,
+            Map<Integer, Member> ldapIdMemberMap,
+            UserBean bean) {
         Map<String, Membership> ldapMemberships = new HashMap<>();
         Iterator<LdapObject> iter = ldapObjects.values().iterator();
         while (iter.hasNext()) {
             LdapObject lo = iter.next();
-            logger.info("Next element--------------");
-            lo.debug();
             // include the self-membership
-            logger.info("1.1");
             ldapMemberships.put(
                     String.join("|", lo.getId().toString(), lo.getId().toString()),
                     new Membership(ldapIdMemberMap.get(lo.getId()), ldapIdMemberMap.get(lo.getId()), false));
-            logger.info("1.2");
             ListIterator<String> listIter = lo.getMemberships().listIterator();
-            logger.info("1.3");
             while (listIter.hasNext()) {
                 LdapObject go = ldapObjects.get(listIter.next());
-                logger.info("Next element--------------");
                 if (go.getId() == null) {
                     Group g = go.createGroup();
                     g.setNode(bean.getNodeService().getLocalNode());
-                    logger.info(g.toString());
                     g = bean.getMemberService().save(g);
                     go.setId(g.getId());
                 }
-                go.debug();
                 ldapMemberships.put(
                         String.join("|", go.getId().toString(), lo.getId().toString()),
                         new Membership(ldapIdMemberMap.get(go.getId()), ldapIdMemberMap.get(lo.getId()), false));
             }
         }
-        logger.info("1.4");
         return ldapMemberships;
     }
 
@@ -200,7 +194,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     private Map<Integer, Member> getLdapGroups(Map<String, LdapObject> lo, UserBean bean) {
         return lo.values().stream()
-                .filter(lg -> lg.getType() == MemberType.GROUP)
+                .filter(ldapGroup -> ldapGroup.getType() == MemberType.GROUP)
                 .map(lg -> lookupLbacGroup(lg, bean))
                 .collect(Collectors.toMap(g -> g.getId(), h -> (Member) h));
     }
@@ -256,11 +250,13 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
         if ((groups != null) && (groups.size() == 1)) {
             g = groups.get(0);
-            lo.setId(g.getId());
         } else {
             g = lo.createGroup();
             g.setNode(node);
+            g = bean.getMemberService().save(g);
+
         }
+        lo.setId(g.getId());
         return g;
     }
 

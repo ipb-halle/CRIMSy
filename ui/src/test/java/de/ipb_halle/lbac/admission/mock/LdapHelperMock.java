@@ -86,7 +86,7 @@ public class LdapHelperMock extends LdapHelper {
         LdapObject foundObject = null;
 
         for (LdapObject o : ldadObjects) {
-            if (o.getLogin().equals(login)) {
+            if (login.equals(o.getLogin())) {
                 foundObject = o;
             }
         }

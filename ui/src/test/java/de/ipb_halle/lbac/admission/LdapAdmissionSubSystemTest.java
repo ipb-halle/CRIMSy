@@ -125,6 +125,22 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         Assert.assertEquals(2, memberShips.size());
     }
 
+    @Test
+    public void test006_authenticate_withNotExistingLBACUser_withDirectGroup() {
+        entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
+        ldapHelper.addLdapObject("CN=ldab_user_name", "ldab_email", "ldab_login", "ldac_user_name_edited", "+xxx", MemberType.USER, "uniqueId-001");
+        ldapHelper.addLdapObject("CN=LBAC_User,OU=BioactivesCloud,OU=group,DC=ipb-halle,DC=de", null, null, "LBAC_User", null, MemberType.GROUP, "uniqueId-002");
+        ldapProperties.LdapBasicsInit();
+        User u = new User();
+        u.setLogin("ldab_login");
+        Assert.assertTrue(system.authenticate(u, "ldac_user", userBean));
+        User loadedUser = memberService.loadUserById(u.getId());
+        Assert.assertNotNull(loadedUser);
+        Set<Membership> memberShips = membershipService.loadMemberOf(loadedUser);
+        //User should be in public group, the created group and assigned to itself
+        Assert.assertEquals(3, memberShips.size());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
