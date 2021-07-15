@@ -23,6 +23,8 @@ import java.io.Serializable;
 
 public abstract class AbstractAdmissionSubSystem implements IAdmissionSubSystem,Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private MemberService       memberService;
     private MembershipService   membershipService;
     private NodeService         nodeService;

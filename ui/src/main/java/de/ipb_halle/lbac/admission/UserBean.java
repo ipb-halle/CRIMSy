@@ -130,7 +130,7 @@ public class UserBean implements Serializable {
     public void init() {
         // current account
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.permissionCache = new HashMap<ResourcePermission, Boolean>();
+        this.permissionCache = new HashMap<>();
         this.oldPassword = "";
         this.newPassword = "";
         this.newPasswordRepeat = "";
@@ -278,6 +278,7 @@ public class UserBean implements Serializable {
             setCurrentAccount(u);
             return true;
         }
+
         return false;
     }
 

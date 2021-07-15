@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.mock.LdapHelperMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.service.InfoObjectService;
+import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -62,10 +63,7 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         userBean.setMemberShipService(membershipService);
         userBean.setGlobalAdmissionContext(context);
 
-        ldapHelper = new LdapHelperMock()
-                .setLdabUserEmail("ldab_email_edited")
-                .setLdabUserId("1")
-                .setLdabUserName("ldab_name_edited");
+        ldapHelper = new LdapHelperMock();
         system = new LdapAdmissionSubSystem(ldapHelper);
         ldapProperties.LdapBasicsInit();
     }
@@ -90,17 +88,17 @@ public class LdapAdmissionSubSystemTest extends TestBase {
     @Test
     public void test003_authenticate_withoutExistingLdabUser() {
         entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
-        ldapHelper.userExists = false;
+        ldapHelper.addLdapObject("CN=ldab_user_name", "ldab_email", "ldab_login", "ldac_user_name_edited", "+xxx", MemberType.USER, "uniqueId-001");
         Assert.assertFalse(system.authenticate(publicUser, "admin", userBean));
     }
 
     @Test
     public void test004_authenticate_withExistingLBACUser() {
         entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
-        ldapHelper.userExists = true;
+        ldapHelper.addLdapObject("CN=ldab_user_name", "ldab_email_edited", "ldab_login", "ldac_user_name_edited", "+xxx", MemberType.USER, "uniqueId-001");
         ldapProperties.LdapBasicsInit();
 
-        User ldabUser = createUser("ldac_user", "ldab");
+        User ldabUser = createUser("ldab_login", "ldab_name");
         ldabUser.setSubSystemType(AdmissionSubSystemType.LDAP);
         ldabUser.setSubSystemData("1");
 
@@ -108,19 +106,23 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         Assert.assertTrue(system.authenticate(ldabUser, "ldac_user", userBean));
 
         User updatedUser = memberService.loadUserById(ldabUser.getId());
-        Assert.assertEquals("ldab_name_edited", updatedUser.getName());
+        Assert.assertEquals("ldac_user_name_edited", updatedUser.getName());
         Assert.assertEquals("ldab_email_edited", updatedUser.getEmail());
     }
 
     @Test
     public void test005_authenticate_withNotExistingLBACUser() {
         entityManagerService.doSqlUpdate("INSERT INTO info(key,value) VALUES('LDAP_ENABLE','true')");
-        ldapHelper.userExists = true;
+        ldapHelper.addLdapObject("CN=ldab_user_name", "ldab_email", "ldab_login", "ldac_user_name_edited", "+xxx", MemberType.USER, "uniqueId-001");
         ldapProperties.LdapBasicsInit();
-
-        system.authenticate(publicUser, "ldac_user", userBean);
-
-        
+        User u = new User();
+        u.setLogin("ldab_login");
+        Assert.assertTrue(system.authenticate(u, "ldac_user", userBean));
+        User loadedUser = memberService.loadUserById(u.getId());
+        Assert.assertNotNull(loadedUser);
+        Set<Membership> memberShips = membershipService.loadMemberOf(loadedUser);
+        //User should be in public group and assigned to itself
+        Assert.assertEquals(2, memberShips.size());
     }
 
     @Deployment

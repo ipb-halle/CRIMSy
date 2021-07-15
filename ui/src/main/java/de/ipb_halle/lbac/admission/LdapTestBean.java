@@ -41,6 +41,8 @@ public class LdapTestBean implements Serializable {
 
     @Inject
     private LdapProperties ldapProperties;
+    
+    
 
     private transient Logger logger;
 
@@ -65,6 +67,7 @@ public class LdapTestBean implements Serializable {
 
         // authenticate
         LdapHelper helper = new LdapHelper();
+        helper.setLdapProperties(ldapProperties);
         if (!helper.authenticate(this.ldapLogin, this.ldapPassword)) {
             // login failure
             return false;

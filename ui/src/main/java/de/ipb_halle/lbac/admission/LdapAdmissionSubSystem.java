@@ -25,14 +25,17 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
+    private static final long serialVersionUID = 1L;
+
     private final AdmissionSubSystemType subSystemType;
-    private transient Logger logger;
+    private final Logger logger;
     private LdapHelper helper;
 
     public LdapAdmissionSubSystem(LdapHelper helper) {
@@ -53,60 +56,62 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     @Override
     public boolean authenticate(User u, String cred, UserBean bean) {
-        LdapProperties prop = bean.getLdapProperties();
-        if (!prop.getLdapEnabled()) {
-            return false;
-        }
-
-        // authenticate
-        helper.setLdapProperties(prop);
         try {
-            if (!helper.authenticate(u.getLogin(), cred)) {
-                // login failure
-                this.logger.info("authenticate() failed to authenticate user: " + u.getLogin());
+
+            LdapProperties prop = bean.getLdapProperties();
+            if (!prop.getLdapEnabled()) {
                 return false;
             }
+
+            // authenticate
+            helper.setLdapProperties(prop);
+            try {
+                if (!helper.authenticate(u.getLogin(), cred)) {
+                    // login failure
+                    this.logger.info("authenticate() failed to authenticate user: " + u.getLogin());
+                    return false;
+                }
+            } catch (Exception e) {
+                // LDAP failure?
+                this.logger.warn("authenticate() caught an exception: ", (Throwable) e);
+                return false;
+            }
+
+            // do full lookup; map dn vs. LdapObject
+            Map<String, LdapObject> ldapObjects = new HashMap<>();
+            LdapObject ldapUser = helper.queryLdapUser(u.getLogin(), ldapObjects);
+
+            if (ldapUser != null) {
+                // update User (user object might be 'latent')
+                User userFromDb = lookupLbacUser(ldapUser, bean);
+
+                // to keep the user object which is used in the UserBean up to date,
+                // its id is updated with the persistent one to enable user loading
+                // in following steps
+                userFromDb = bean.getMemberService().save(userFromDb);
+                u.setId(userFromDb.getId());
+                ldapUser.setId(userFromDb.getId());
+                // map the LdapObjects to Group, map might contain 'latent' objects
+                Map<Integer, Member> ldapIdMemberMap = getLdapGroups(ldapObjects, bean);
+                ldapIdMemberMap.put(userFromDb.getId(), userFromDb);
+                // compute the LDAP Memberships
+                // all the elements in this map are transient!
+                Map<String, Membership> ldapMemberships = getLdapMemberships(ldapObjects, ldapIdMemberMap, bean);
+                // get the direct Memberships from LBAC
+                Map<String, Membership> lbacMemberships = getLbacMemberships(ldapObjects, bean);
+                // save the groups
+                saveObjects(ldapIdMemberMap, bean);
+                // remove all memberships from LBAC which are not present in 
+                // the LDAP map ldapGroups; NOTE: lbacMemberships is modified
+                removeExpiredMemberships(lbacMemberships, ldapMemberships, bean);
+                // update / add memberships
+                updateMemberships(lbacMemberships, ldapMemberships, bean);
+                return true;
+            }
         } catch (Exception e) {
-            // LDAP failure?
-            this.logger.warn("authenticate() caught an exception: ", (Throwable) e);
-            return false;
-        }
+            logger.error(ExceptionUtils.getStackTrace(e));
+        } finally {
 
-        // do full lookup; map dn vs. LdapObject
-        Map<String, LdapObject> ldapObjects = new HashMap<>();
-        LdapObject ldapUser = helper.queryLdapUser(u.getLogin(), ldapObjects);
-
-        if (ldapUser != null) {
-            ldapUser.debug();
-            // update User (user object might be 'latent')
-            User userFromDb = lookupLbacUser(ldapUser, bean);
-
-            // to keep the user object which is used in the UserBean up to date,
-            // its id is updated with the persistent one to enable user loading
-            // in following steps
-            u.setId(userFromDb.getId());
-            // map the LdapObjects to Group, map might contain 'latent' objects
-            Map<Integer, Member> ldapUuidMap = getLdapGroups(ldapObjects, bean);
-            ldapUuidMap.put(userFromDb.getId(), userFromDb);
-
-            // compute the LDAP Memberships
-            // all the elements in this map are transient!
-            Map<String, Membership> ldapMemberships = getLdapMemberships(ldapObjects, ldapUuidMap);
-
-            // get the direct Memberships from LBAC
-            Map<String, Membership> lbacMemberships = getLbacMemberships(ldapObjects, bean);
-
-            // save the groups
-            saveObjects(ldapUuidMap, bean);
-
-            // remove all memberships from LBAC which are not present in 
-            // the LDAP map ldapGroups; NOTE: lbacMemberships is modified
-            removeExpiredMemberships(lbacMemberships, ldapMemberships, bean);
-
-            // update / add memberships
-            updateMemberships(lbacMemberships, ldapMemberships, bean);
-
-            return true;
         }
 
         return false;
@@ -132,11 +137,14 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             LdapObject lo = iter.next();
             cmap.put("member_id", lo.getId());
             List<Membership> ms = bean.getMembershipService().load(cmap);
-
+            logger.info("Found Memberships " + ms.size());
             lbacMemberships.putAll(ms.stream().collect(
                     Collectors.toMap(x -> String.join("|", x.getGroupId().toString(), x.getMemberId().toString()), y -> y)));
         }
+        for (String s : lbacMemberships.keySet()) {
+            logger.info(" -- > " + s + " -- " + lbacMemberships.get(s).getMember() + ":" + lbacMemberships.get(s).getGroup());
 
+        }
         return lbacMemberships;
     }
 
@@ -144,28 +152,41 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * build a map of Memberships from the ldapObjects map
      *
      * @param ldapObjects a map of LDAP objects mapped by DN
-     * @param ldapUuidMap a map of LBAC objects mapped by id
+     * @param ldapIdMemberMap a map of LBAC objects mapped by id
      * @return a map of memberships mapped by groupId|memberId
      */
-    private Map<String, Membership> getLdapMemberships(Map<String, LdapObject> ldapObjects, Map<Integer, Member> ldapUuidMap) {
+    private Map<String, Membership> getLdapMemberships(Map<String, LdapObject> ldapObjects, Map<Integer, Member> ldapIdMemberMap, UserBean bean) {
         Map<String, Membership> ldapMemberships = new HashMap<>();
         Iterator<LdapObject> iter = ldapObjects.values().iterator();
         while (iter.hasNext()) {
             LdapObject lo = iter.next();
-
+            logger.info("Next element--------------");
+            lo.debug();
             // include the self-membership
+            logger.info("1.1");
             ldapMemberships.put(
                     String.join("|", lo.getId().toString(), lo.getId().toString()),
-                    new Membership(ldapUuidMap.get(lo.getId()), ldapUuidMap.get(lo.getId()), false));
-
+                    new Membership(ldapIdMemberMap.get(lo.getId()), ldapIdMemberMap.get(lo.getId()), false));
+            logger.info("1.2");
             ListIterator<String> listIter = lo.getMemberships().listIterator();
+            logger.info("1.3");
             while (listIter.hasNext()) {
                 LdapObject go = ldapObjects.get(listIter.next());
+                logger.info("Next element--------------");
+                if (go.getId() == null) {
+                    Group g = go.createGroup();
+                    g.setNode(bean.getNodeService().getLocalNode());
+                    logger.info(g.toString());
+                    g = bean.getMemberService().save(g);
+                    go.setId(g.getId());
+                }
+                go.debug();
                 ldapMemberships.put(
                         String.join("|", go.getId().toString(), lo.getId().toString()),
-                        new Membership(ldapUuidMap.get(go.getId()), ldapUuidMap.get(lo.getId()), false));
+                        new Membership(ldapIdMemberMap.get(go.getId()), ldapIdMemberMap.get(lo.getId()), false));
             }
         }
+        logger.info("1.4");
         return ldapMemberships;
     }
 
@@ -198,7 +219,9 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      * @return the User object or null if user could not be found or LDAP is not
      * configured
      */
+    @Override
     public User lookup(String login, UserBean bean) {
+        logger.info("Try to look up: " + login);
         LdapProperties prop = bean.getLdapProperties();
         if (!prop.getLdapEnabled()) {
             return null;
@@ -224,7 +247,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     private Group lookupLbacGroup(LdapObject lo, UserBean bean) {
         Node node = bean.getNodeService().getLocalNode();
-        Map<String, Object> cmap = new HashMap<String, Object>();
+        Map<String, Object> cmap = new HashMap<>();
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP);
         cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, lo.getUniqueId());
         cmap.put(MemberService.PARAM_NODE_ID, node.getId());
@@ -261,7 +284,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         List<User> users = bean.getMemberService().loadUsers(cmap);
         if ((users != null) && (users.size() == 1)) {
             User u = users.get(0);
-            lo.setId(u.getId());
+            lo.setUniqueId(String.valueOf(u.getId()));
             u.setEmail(lo.getEmail());
             u.setPhone(lo.getPhone());
             u.setName(lo.getName());
@@ -337,8 +360,10 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
             // Membership not yet known
             if (ms == null) {
+
                 ms = entry.getValue();
-                // this.logger.info(String.format("updateMemberships()\n        Group:  %s\n        Member: %s", ms.getGroup().toString(), ms.getMember().toString()));
+                logger.info("Membership " + ms.getMember() + " -> " + ms.getGroup());
+                this.logger.info(String.format("updateMemberships()\n        Group:  %s\n        Member: %s", ms.getGroup().toString(), ms.getMember().toString()));
                 bean.getMembershipService().addMembership(ms.getGroup(), ms.getMember());
             }
         }

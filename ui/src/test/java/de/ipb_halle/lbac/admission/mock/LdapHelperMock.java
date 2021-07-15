@@ -20,6 +20,8 @@ package de.ipb_halle.lbac.admission.mock;
 import de.ipb_halle.lbac.admission.LdapHelper;
 import de.ipb_halle.lbac.admission.LdapObject;
 import de.ipb_halle.lbac.admission.MemberType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,16 +31,32 @@ import java.util.Map;
 public class LdapHelperMock extends LdapHelper {
 
     public AuthentificationMode authMode = AuthentificationMode.ALLOWED;
-    public boolean userExists = true;
-
-    private String ldabUserName;
-    private String ldabUserId;
-    private String ldabUserEmail;
+    List<LdapObject> ldadObjects = new ArrayList<>();
 
     private static final long serialVersionUID = 1L;
 
     public LdapHelperMock() {
 
+    }
+
+    public LdapHelperMock addLdapObject(
+            String dn,
+            String email,
+            String login,
+            String name,
+            String phone,
+            MemberType type,
+            String uniqueId) {
+        LdapObject object = new LdapObject();
+        object.setDN(dn);
+        object.setEmail(email);
+        object.setLogin(login);
+        object.setName(name);
+        object.setPhone(phone);
+        object.setType(type);
+        object.setUniqueId(uniqueId);
+        ldadObjects.add(object);
+        return this;
     }
 
     /**
@@ -65,31 +83,21 @@ public class LdapHelperMock extends LdapHelper {
 
     @Override
     public LdapObject queryLdapUser(String login, Map<String, LdapObject> ldapObjects) {
-        if (userExists) {
-            LdapObject ldabObject = new LdapObject();
-            ldabObject.setUniqueId(ldabUserId);
-            ldabObject.setName(ldabUserName);
-            ldabObject.setType(MemberType.USER);
-            ldabObject.setEmail(ldabUserEmail);
-            return ldabObject;
-        } else {
-            return null;
+        LdapObject foundObject = null;
+
+        for (LdapObject o : ldadObjects) {
+            if (o.getLogin().equals(login)) {
+                foundObject = o;
+            }
         }
-    }
+        if (foundObject != null) {
+            for (LdapObject o : ldadObjects) {
+                foundObject.addMembership(o.getDN());
+                ldapObjects.put(o.getDN(), o);
+            }
+        }
+        return foundObject;
 
-    public LdapHelperMock setLdabUserName(String ldabUserName) {
-        this.ldabUserName = ldabUserName;
-        return this;
-    }
-
-    public LdapHelperMock setLdabUserId(String ldabUserId) {
-        this.ldabUserId = ldabUserId;
-        return this;
-    }
-
-    public LdapHelperMock setLdabUserEmail(String ldabUserEmail) {
-        this.ldabUserEmail = ldabUserEmail;
-        return this;
     }
 
     public enum AuthentificationMode {

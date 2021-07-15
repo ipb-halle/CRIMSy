@@ -44,11 +44,11 @@ import org.apache.logging.log4j.LogManager;
 @Named("ldapProps")
 @ApplicationScoped
 public class LdapProperties implements Serializable {
-
+    
     private final static long serialVersionUID = 1L;
-
+    
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
+    
     private transient Logger logger;
 
     /**
@@ -67,10 +67,10 @@ public class LdapProperties implements Serializable {
      * the LDAP environment
      */
     private Hashtable<String, String> ldapEnv;
-
+    
     @Inject
     private InfoObjectService infoObjectService;
-
+    
     @Inject
     private GlobalAdmissionContext globalAdmissionContext;
 
@@ -82,7 +82,7 @@ public class LdapProperties implements Serializable {
         this.ldapProperties = new ArrayList<>();
         this.ldapPropertyKeys = new HashMap<>();
     }
-
+    
     public LdapProperties(
             List<InfoObject> infoEntities,
             HashMap<String, Integer> propertyKeys) {
@@ -90,22 +90,19 @@ public class LdapProperties implements Serializable {
         this.ldapProperties = infoEntities;
         this.ldapPropertyKeys = propertyKeys;
     }
-
+    
     private boolean isLdabEnabled(InfoObject info) {
         if (info == null) {
             return false;
         }
         return Boolean.parseBoolean(info.getValue());
-
+        
     }
-
+    
     @PostConstruct
     public void LdapBasicsInit() {
         InfoObject ldapEnabledObject = this.infoObjectService.loadByKey("LDAP_ENABLE");
-        if (!isLdabEnabled(ldapEnabledObject)) {
-            return;
-        }
-        this.ldapEnabled = Boolean.parseBoolean(this.infoObjectService.loadByKey("LDAP_ENABLE").getValue());
+        this.ldapEnabled = isLdabEnabled(ldapEnabledObject);
 
         //*** set default values ***
         initProperty("LDAP_ATTR_COMMON_NAME", "cn");
@@ -127,22 +124,23 @@ public class LdapProperties implements Serializable {
         initProperty("LDAP_CONTEXT_SECURITY_AUTHENTICATION", "simple");
         initProperty("LDAP_CONTEXT_SECURITY_PRINCIPAL", "CN=<user>,CN=users,DC=<domain>,DC=de");
         initProperty("LDAP_CONTEXT_SECURITY_CREDENTIALS", "");
-
+        
         initialize();
+        logger.info("Ldab Properties initialized");
     }
-
+    
     public String get(String prop) {
         return ldapProperties.get(ldapPropertyKeys.get(prop)).getValue();
     }
-
+    
     public boolean getLdapEnabled() {
         return this.ldapEnabled;
     }
-
+    
     public List<InfoObject> getLdapProperties() {
         return ldapProperties;
     }
-
+    
     public Hashtable<String, String> getLdapEnv() {
         return this.ldapEnv;
     }
@@ -185,7 +183,7 @@ public class LdapProperties implements Serializable {
         InfoObject ie = this.infoObjectService.loadByKey("LDAP_ENABLE");
         ie.setValue(Boolean.valueOf(this.ldapEnabled).toString());
         this.infoObjectService.save(ie);
-
+        
         ListIterator<InfoObject> iter = this.ldapProperties.listIterator();
         while (iter.hasNext()) {
             ie = iter.next();
@@ -196,7 +194,7 @@ public class LdapProperties implements Serializable {
         initialize();
         UIMessage.info(MESSAGE_BUNDLE, "admission_ldap_saved");
     }
-
+    
     public void setLdapEnabled(boolean b) {
         this.ldapEnabled = b;
     }
