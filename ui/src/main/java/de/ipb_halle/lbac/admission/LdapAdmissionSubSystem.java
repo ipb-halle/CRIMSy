@@ -137,14 +137,10 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             LdapObject lo = iter.next();
             cmap.put("member_id", lo.getId());
             List<Membership> ms = bean.getMembershipService().load(cmap);
-            logger.info("Found Memberships " + ms.size());
             lbacMemberships.putAll(ms.stream().collect(
                     Collectors.toMap(x -> String.join("|", x.getGroupId().toString(), x.getMemberId().toString()), y -> y)));
         }
-        for (String s : lbacMemberships.keySet()) {
-            logger.info(" -- > " + s + " -- " + lbacMemberships.get(s).getMember() + ":" + lbacMemberships.get(s).getGroup());
 
-        }
         return lbacMemberships;
     }
 
@@ -215,7 +211,6 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
      */
     @Override
     public User lookup(String login, UserBean bean) {
-        logger.info("Try to look up: " + login);
         LdapProperties prop = bean.getLdapProperties();
         if (!prop.getLdapEnabled()) {
             return null;

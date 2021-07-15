@@ -91,8 +91,14 @@ public class LdapHelperMock extends LdapHelper {
             }
         }
         if (foundObject != null) {
-            for (LdapObject o : ldadObjects) {
-                foundObject.addMembership(o.getDN());
+
+            for (int i = 0; i < ldadObjects.size(); i++) {
+                LdapObject o = ldadObjects.get(i);
+                if (i == 0 || i == 1) {
+                    foundObject.addMembership(o.getDN());
+                } else {
+                    ldadObjects.get(i - 1).addMembership(o.getDN());
+                }
                 ldapObjects.put(o.getDN(), o);
             }
         }
