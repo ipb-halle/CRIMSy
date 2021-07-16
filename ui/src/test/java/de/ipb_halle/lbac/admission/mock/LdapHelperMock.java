@@ -26,9 +26,9 @@ import java.util.Map;
 
 /**
  * This clas mocks the services provided by the @see
- * de.ipb_halle.lbac.admission.LdapHelper. One can add ldab entries by the
+ * de.ipb_halle.lbac.admission.LdapHelper. One can add LDAP entries by the
  * method addLdapObject . The authenification behavior can be changed by
- * authMode wich is default ALLOWED. The first ldab should be the user, the
+ * authMode wich is default ALLOWED. The first LDAP should be the user, the
  * second a group in which the user is member. Every other entry leads to a
  * indirect membership.
  *
@@ -37,12 +37,12 @@ import java.util.Map;
 public class LdapHelperMock extends LdapHelper {
 
     public AuthentificationMode authMode = AuthentificationMode.ALLOWED;
-    List<LdapObject> ldadObjects = new ArrayList<>();
+    List<LdapObject> mocked_LDAP_data = new ArrayList<>();
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Adds a ldab object which is then found by the service mocking methods
+     * Adds a LDAP object which is then found by the service mocking methods
      *
      * @param dn
      * @param email
@@ -69,7 +69,7 @@ public class LdapHelperMock extends LdapHelper {
         object.setPhone(phone);
         object.setType(type);
         object.setUniqueId(uniqueId);
-        ldadObjects.add(object);
+        mocked_LDAP_data.add(object);
         return this;
     }
 
@@ -96,7 +96,7 @@ public class LdapHelperMock extends LdapHelper {
     }
     
     /**
-     * Returns the previous added ldab entries whith the correct setting of the 
+     * Returns the previous added LDAP entries whith the correct setting of the 
      * memberships (rules are given in class description)
      * @param login
      * @param ldapObjects
@@ -107,19 +107,19 @@ public class LdapHelperMock extends LdapHelper {
     public LdapObject queryLdapUser(String login, Map<String, LdapObject> ldapObjects) {
         LdapObject foundObject = null;
 
-        for (LdapObject o : ldadObjects) {
+        for (LdapObject o : mocked_LDAP_data) {
             if (login.equals(o.getLogin())) {
                 foundObject = o;
             }
         }
         if (foundObject != null) {
 
-            for (int i = 0; i < ldadObjects.size(); i++) {
-                LdapObject o = ldadObjects.get(i);
+            for (int i = 0; i < mocked_LDAP_data.size(); i++) {
+                LdapObject o = mocked_LDAP_data.get(i);
                 if (i == 0 || i == 1) {
                     foundObject.addMembership(o.getDN());
                 } else {
-                    ldadObjects.get(i - 1).addMembership(o.getDN());
+                    mocked_LDAP_data.get(i - 1).addMembership(o.getDN());
                 }
                 ldapObjects.put(o.getDN(), o);
             }

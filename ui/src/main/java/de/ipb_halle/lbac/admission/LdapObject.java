@@ -240,16 +240,4 @@ public class LdapObject implements Serializable {
         return this;
     }
 
-    public void debug() {
-        logger.info("Found LDAB USER:");
-        logger.info("uniqueId : " + uniqueId);
-        logger.info("dn : " + dn);
-        logger.info("email : " + email);
-        logger.info("id : " + id);
-        logger.info("login : " + login);
-        logger.info("name : " + name);
-        logger.info("phone : " + phone);
-        logger.info("type : " + type);
-        logger.info("uniqueId : " + uniqueId);
-    }
 }

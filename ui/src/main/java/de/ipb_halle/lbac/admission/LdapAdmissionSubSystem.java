@@ -110,10 +110,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             }
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
-        } finally {
-
         }
-
         return false;
     }
 
@@ -275,7 +272,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         List<User> users = bean.getMemberService().loadUsers(cmap);
         if ((users != null) && (users.size() == 1)) {
             User u = users.get(0);
-            lo.setUniqueId(String.valueOf(u.getId()));
+            u.setSubSystemData(lo.getUniqueId());
             u.setEmail(lo.getEmail());
             u.setPhone(lo.getPhone());
             u.setName(lo.getName());
@@ -304,10 +301,6 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             // remove LBAC memberships not present in LDAP
             if (ldapMS.get(entry.getKey()) == null) {
                 Membership ms = entry.getValue();
-                this.logger.info("removeExpiredMemberships() Group -> "
-                        + ms.getGroup().getName()
-                        + "   Member -> "
-                        + ms.getMember().getName());
                 bean.getMembershipService().removeMembership(ms);
                 iter.remove();
             }

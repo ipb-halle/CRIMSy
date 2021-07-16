@@ -20,15 +20,17 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.i18n.UIClient;
 import de.ipb_halle.lbac.i18n.UIMessage;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+
+
 import javax.inject.Inject;
 import java.io.Serializable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-@ManagedBean(name = "ldapTestBean")
+@Named("ldapTestBean")
 @RequestScoped
 public class LdapTestBean implements Serializable {
 
