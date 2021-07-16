@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.service.NodeService;
+
 /**
  *
  * @author fmauz
@@ -33,4 +35,25 @@ public class UserBeanMock extends UserBean {
     public User getCurrentAccount() {
         return currentAccount;
     }
+
+    public void setLdabProperties(LdapProperties properties) {
+        this.ldapProperties = properties;
+    }
+
+    public void setNodeService(NodeService service) {
+        this.nodeService = service;
+    }
+
+    public void setMemberService(MemberService service) {
+        this.memberService = service;
+    }
+
+    public void setMemberShipService(MembershipService service) {
+        this.membershipService = service;
+    }
+
+    public void setGlobalAdmissionContext(GlobalAdmissionContext context) {
+        this.globalAdmissionContext = context;
+    }
+
 }

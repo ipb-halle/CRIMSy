@@ -29,7 +29,7 @@
 <h:body>
     <ui:composition>
         <p:tab title="#{msgs.admission_timeZone_tabTitle}">
-            <b:form rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}">
+            <b:form>
                 <b:panel title="#{msgs.admission_timeZone_panelTitle}" collapsible="false"
                          look="info">
                     <b:panelGrid col-spans="5,5,2">
@@ -53,7 +53,6 @@
                     </b:panelGrid>
                     <b:column styleClass="text-center">
                         <b:commandButton type="submit" ajax="true" update="@form growlMsg"
-                                         rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}"
                                          action="#{timeZoneSettingsDialogControllerBean.actionSave()}"
                                          value="#{msgs.Save}" />
                     </b:column>

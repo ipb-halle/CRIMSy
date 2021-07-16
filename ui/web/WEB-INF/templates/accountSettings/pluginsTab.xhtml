@@ -30,7 +30,7 @@
 <h:body>
     <ui:composition>
         <p:tab title="#{msgs.admission_plugins_title}">
-            <b:form rendered="#{userBean.currentAccount.getSubSystemType().toString() == 'LOCAL'}">
+            <b:form>
                 <b:panel title="#{msgs.admission_plugins_molPlugin_title}" collapsible="false" look="info">
                     <b:panelGrid colSpans="2,5,5">
                         <h:panelGroup>

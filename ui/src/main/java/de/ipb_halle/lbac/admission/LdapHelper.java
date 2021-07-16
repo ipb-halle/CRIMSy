@@ -37,7 +37,7 @@ public class LdapHelper implements Serializable {
      * This class performs all LDAP lookups and synchronizes the local node with
      * settings from LDAP
      */
-    private final static Long serialVersionUID = 1L;
+    private final static long serialVersionUID = 1L;
 
     private Logger logger;
 
@@ -45,10 +45,10 @@ public class LdapHelper implements Serializable {
 
     /**
      * constructor
+     *
      * @param prop
      */
-    public LdapHelper(LdapProperties prop) {
-        this.ldapProperties = prop;
+    public LdapHelper() {
         this.logger = LogManager.getLogger(this.getClass().getName());
     }
 
@@ -62,7 +62,7 @@ public class LdapHelper implements Serializable {
      */
     public boolean authenticate(String l, String p) throws Exception {
         if (this.ldapProperties == null) {
-            logger.warn("LDAP Properties not initialized.");
+            logger.warn("LDAP Properties not initialized.(Authentificate)");
             return false;
         }
         try {
@@ -132,7 +132,6 @@ public class LdapHelper implements Serializable {
             Attributes attrs = ctx.getAttributes(groupDN);
             String cn = (String) attrs.get(this.ldapProperties.get("LDAP_ATTR_COMMON_NAME")).get();
             String uniqueId = HexUtil.toHex(attrs.get(this.ldapProperties.get("LDAP_ATTR_UNIQUE_ID")).get().toString().getBytes());
-//          this.logger.info("queryLdapGroups() uniqueId = " + uniqueId);
 
             LdapObject group = new LdapObject()
                     .setDN(groupDN)
@@ -174,7 +173,7 @@ public class LdapHelper implements Serializable {
      */
     public LdapObject queryLdapUser(String login, Map<String, LdapObject> ldapObjects) {
         if (this.ldapProperties == null) {
-            logger.warn("LDAP properties not initialized.");
+            logger.warn("LDAP properties not initialized(queryLdapUser).");
             return null;
         }
         try {
@@ -237,6 +236,10 @@ public class LdapHelper implements Serializable {
             this.logger.warn("queryLdapUser() caught exception: ", (Throwable) e);
         }
         return null;
+    }
+
+    public void setLdapProperties(LdapProperties ldapProperties) {
+        this.ldapProperties = ldapProperties;
     }
 
 }

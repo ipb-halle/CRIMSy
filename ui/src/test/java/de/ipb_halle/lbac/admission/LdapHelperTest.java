@@ -46,7 +46,8 @@ public class LdapHelperTest {
         ieList.add(ie);
 
         LdapProperties props = new LdapProperties(ieList, map);
-        instance = new LdapHelper(props);
+        instance = new LdapHelper();
+        instance.setLdapProperties(props);
 
     }
 

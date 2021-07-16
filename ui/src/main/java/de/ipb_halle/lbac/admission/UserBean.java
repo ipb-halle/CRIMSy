@@ -63,22 +63,22 @@ public class UserBean implements Serializable {
     private ACListService aclistService;
 
     @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
+    protected GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
     private InfoObjectService infoObjectService;
 
     @Inject
-    private LdapProperties ldapProperties;
+    protected LdapProperties ldapProperties;
 
     @Inject
-    private MemberService memberService;
+    protected MemberService memberService;
 
     @Inject
-    private MembershipService membershipService;
+    protected MembershipService membershipService;
 
     @Inject
-    private NodeService nodeService;
+    protected NodeService nodeService;
 
     @Inject
     MembershipOrchestrator membershipOrchestrator;
@@ -130,7 +130,7 @@ public class UserBean implements Serializable {
     public void init() {
         // current account
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.permissionCache = new HashMap<ResourcePermission, Boolean>();
+        this.permissionCache = new HashMap<>();
         this.oldPassword = "";
         this.newPassword = "";
         this.newPasswordRepeat = "";
@@ -278,6 +278,7 @@ public class UserBean implements Serializable {
             setCurrentAccount(u);
             return true;
         }
+
         return false;
     }
 
