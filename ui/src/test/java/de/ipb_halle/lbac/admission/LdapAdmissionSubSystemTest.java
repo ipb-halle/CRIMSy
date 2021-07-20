@@ -114,6 +114,8 @@ public class LdapAdmissionSubSystemTest extends TestBase {
         User updatedUser = memberService.loadUserById(ldapUser.getId());
         Assert.assertEquals("ldac_user_name_edited", updatedUser.getName());
         Assert.assertEquals("ldap_email_edited", updatedUser.getEmail());
+        
+        entityManagerService.doSqlUpdate("Delete from usersgroups where id="+updatedUser.getId());
     }
 
     @Test
