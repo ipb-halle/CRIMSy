@@ -91,7 +91,7 @@ public class LdapProperties implements Serializable {
         this.ldapPropertyKeys = propertyKeys;
     }
     
-    private boolean isLdabEnabled(InfoObject info) {
+    private boolean isLdapEnabled(InfoObject info) {
         if (info == null) {
             return false;
         }
@@ -102,7 +102,7 @@ public class LdapProperties implements Serializable {
     @PostConstruct
     public void LdapBasicsInit() {
         InfoObject ldapEnabledObject = this.infoObjectService.loadByKey("LDAP_ENABLE");
-        this.ldapEnabled = isLdabEnabled(ldapEnabledObject);
+        this.ldapEnabled = isLdapEnabled(ldapEnabledObject);
 
         //*** set default values ***
         initProperty("LDAP_ATTR_COMMON_NAME", "cn");
@@ -126,7 +126,6 @@ public class LdapProperties implements Serializable {
         initProperty("LDAP_CONTEXT_SECURITY_CREDENTIALS", "");
         
         initialize();
-        logger.info("Ldab Properties initialized");
     }
     
     public String get(String prop) {

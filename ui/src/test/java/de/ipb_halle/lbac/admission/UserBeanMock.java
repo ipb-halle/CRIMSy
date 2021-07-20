@@ -36,7 +36,7 @@ public class UserBeanMock extends UserBean {
         return currentAccount;
     }
 
-    public void setLdabProperties(LdapProperties properties) {
+    public void setLdapProperties(LdapProperties properties) {
         this.ldapProperties = properties;
     }
 
