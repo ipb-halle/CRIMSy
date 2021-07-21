@@ -103,7 +103,7 @@ public class MaterialEditPermission implements Serializable {
 
             boolean userHasRight = bean.getAcListService().isPermitted(
                     ACPermission.permREAD,
-                    getAcListOfDetailRight(type, bean.getMaterialEditState()),
+                    bean.getMaterialEditState().getMaterialToEdit().getACList(),
                     bean.getUserBean().getCurrentAccount());
 
             return materialGotDetail
