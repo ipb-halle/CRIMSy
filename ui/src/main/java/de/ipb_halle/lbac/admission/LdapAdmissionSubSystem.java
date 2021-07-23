@@ -31,13 +31,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     private final AdmissionSubSystemType subSystemType;
     private final Logger logger;
     private LdapHelper helper;
-
+    
     public LdapAdmissionSubSystem(LdapHelper helper) {
         this.helper = helper;
         this.subSystemType = AdmissionSubSystemType.LDAP;
@@ -57,7 +57,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
     @Override
     public boolean authenticate(User u, String cred, UserBean bean) {
         try {
-
+            
             LdapProperties prop = bean.getLdapProperties();
             if (!prop.getLdapEnabled()) {
                 return false;
@@ -80,7 +80,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             // do full lookup; map dn vs. LdapObject
             Map<String, LdapObject> ldapObjects = new HashMap<>();
             LdapObject ldapUser = helper.queryLdapUser(u.getLogin(), ldapObjects);
-
+            
             if (ldapUser != null) {
                 // update User (user object might be 'latent')
                 User userFromDb = lookupLbacUser(ldapUser, bean);
@@ -128,7 +128,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         cmap.put("group_node", bean.getNodeService().getLocalNode().getId());
         cmap.put("group_subSystemType", AdmissionSubSystemType.LDAP);
         cmap.put("nested", Boolean.FALSE);
-
+        
         Iterator<LdapObject> iter = ldapObjects.values().iterator();
         while (iter.hasNext()) {
             LdapObject lo = iter.next();
@@ -137,7 +137,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             lbacMemberships.putAll(ms.stream().collect(
                     Collectors.toMap(x -> String.join("|", x.getGroupId().toString(), x.getMemberId().toString()), y -> y)));
         }
-
+        
         return lbacMemberships;
     }
 
@@ -212,7 +212,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         if (!prop.getLdapEnabled()) {
             return null;
         }
-
+        
         helper.setLdapProperties(prop);
         LdapObject ldapUser = helper.queryLdapUser(login, null);
         if (ldapUser != null) {
@@ -239,14 +239,14 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         cmap.put(MemberService.PARAM_NODE_ID, node.getId());
         List<Group> groups = bean.getMemberService().loadGroups(cmap);
         Group g;
-
+        
         if ((groups != null) && (groups.size() == 1)) {
             g = groups.get(0);
         } else {
             g = lo.createGroup();
             g.setNode(node);
             g = bean.getMemberService().save(g);
-
+            
         }
         lo.setId(g.getId());
         return g;
@@ -268,7 +268,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
         cmap.put(MemberService.PARAM_SUBSYSTEM_TYPE, AdmissionSubSystemType.LDAP);
         cmap.put(MemberService.PARAM_SUBSYSTEM_DATA, lo.getUniqueId());
         cmap.put(MemberService.PARAM_NODE_ID, node.getId());
-
+        
         List<User> users = bean.getMemberService().loadUsers(cmap);
         if ((users != null) && (users.size() == 1)) {
             User u = users.get(0);
@@ -276,6 +276,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             u.setEmail(lo.getEmail());
             u.setPhone(lo.getPhone());
             u.setName(lo.getName());
+            u.setLogin(lo.getLogin());
             return u;
         }
         User u = lo.createUser();
@@ -344,7 +345,7 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
             // Membership not yet known
             if (ms == null) {
-
+                
                 ms = entry.getValue();
                 logger.info("Membership " + ms.getMember() + " -> " + ms.getGroup());
                 this.logger.info(String.format("updateMemberships()\n        Group:  %s\n        Member: %s", ms.getGroup().toString(), ms.getMember().toString()));
@@ -352,5 +353,5 @@ public class LdapAdmissionSubSystem extends AbstractAdmissionSubSystem {
             }
         }
     }
-
+    
 }
