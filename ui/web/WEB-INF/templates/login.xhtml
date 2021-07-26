@@ -37,6 +37,7 @@
                             title="#{msgs.admission_loginForm_title}" 
                             collapsible="false" 
                             look="info">
+                        <h:outputText value="#{userBean.getCustomLogInInfo()}"/>
                         <b:inputText id="loginLogin"
                                 styleClass="tstLoginLogin" 
                                 value="#{userBean.login}" 
