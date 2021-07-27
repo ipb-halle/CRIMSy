@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;

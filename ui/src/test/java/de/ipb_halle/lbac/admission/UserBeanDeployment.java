@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.timezone.TimeZonesBean;

@@ -58,6 +58,7 @@ public class UserBean implements Serializable {
      */
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private static final String LOGIN_CUSTOM_TEXT = "LOGIN_CUSTOM_TEXT";
 
     @Inject
     private ACListService aclistService;
@@ -66,7 +67,7 @@ public class UserBean implements Serializable {
     protected GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
-    private InfoObjectService infoObjectService;
+    protected InfoObjectService infoObjectService;
 
     @Inject
     protected LdapProperties ldapProperties;
@@ -437,6 +438,17 @@ public class UserBean implements Serializable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Returns the value of the infoobject 'LOGIN_CUSTOM_TEXT'.
+     *
+     * @return value of infoobject or empty string if not present in db
+     */
+    public String getCustomLogInInfo() {
+        InfoObject infoObject = infoObjectService.loadByKey(LOGIN_CUSTOM_TEXT);
+        return infoObject == null ? "" : infoObject.getValue();
+
     }
 
 }

@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.admission.mock.LdapHelperMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;

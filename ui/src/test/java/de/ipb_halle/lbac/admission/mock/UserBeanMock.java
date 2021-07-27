@@ -15,8 +15,14 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.admission;
+package de.ipb_halle.lbac.admission.mock;
 
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LdapProperties;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.service.NodeService;
 
 /**
