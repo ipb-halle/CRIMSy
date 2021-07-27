@@ -81,7 +81,7 @@ public class SystemSettingsTest extends TestBase {
     }
 
     @Test
-    public void test004_getBoolSettings() {
+    public void test004_getStringSettings() {
         Assert.assertEquals(3, settings.getStringSettings().size());
         List<String> keys = settings.getStringSettings().stream().map(v -> v.getKey()).collect(Collectors.toList());
         Assert.assertTrue(keys.contains(SystemSettings.SETTING_INSTITUTION_WEB));
