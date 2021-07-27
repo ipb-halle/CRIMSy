@@ -36,7 +36,7 @@ In der Regel ist der Knoten nach Durchlaufen aller Installationsschritte betrieb
 ![docker ps](img/docker_ps.png)
 Sofern alle Container ordnungsgemäß gestartet wurden, kann der Knoten mit einem Webbrowser benutzt und weiter konfiguriert werden (s.u.). 
 
-> **Wichtig:** _Insbesondere sollte als erstes das default-Passwort (admin) des lokalen Administrator-Accounts (admin) geändert werden!_
+> **Wichtig:** _Insbesondere sollte als erstes das beim Konfigurationsprozess vergebene initiale Passwort des lokalen Administrator-Accounts (admin) geändert werden!_
 
 Durch die bei der Installation hinterlegte Adresse des Master-Knotens werden die übrigen Knoten der Cloud dem neuen Knoten in den ersten Minuten seines Betriebs bekannt. Hierzu ist ungehinderte HTTPS-Kommunikation mit externen Knoten auf Port 8443 notwendig.
 
