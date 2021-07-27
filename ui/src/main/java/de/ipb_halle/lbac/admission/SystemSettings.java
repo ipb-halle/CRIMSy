@@ -43,11 +43,9 @@ public class SystemSettings implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
-    private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-
     public final static String SETTING_FORCE_LOGIN = "SETTING_FORCE_LOGIN";
     public final static String SETTING_AGENCY_SECRET = "SETTING_AGENCY_SECRET";
-    public static final String SETTING_LOGIN_CUSTOM_TEXT = "LOGIN_CUSTOM_TEXT";
+    public static final String SETTING_LOGIN_CUSTOM_TEXT = "SETTING_LOGIN_CUSTOM_TEXT";
     public static final String SETTING_INSTITUTION_WEB = "SETTING_INSTITUTION_WEB";
     public static final String SETTING_GDPR_CONTACT = "SETTING_GDPR_CONTACT";
 
@@ -149,6 +147,6 @@ public class SystemSettings implements Serializable {
                     .setOwner(this.globalAdmissionContext.getAdminAccount())
                     .setACList(this.globalAdmissionContext.getAdminOnlyACL()));
         }
-        messagePresenter.info(MESSAGE_BUNDLE, "SETTINGS_SAVED");
+        messagePresenter.info("SETTINGS_SAVED");
     }
 }

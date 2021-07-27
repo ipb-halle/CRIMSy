@@ -35,31 +35,31 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class UserBeanTest extends TestBase {
-    
+
     private static final long serialVersionUID = 1L;
     @Inject
     private InfoObjectService infoService;
-    private static final String LOGIN_CUSTOM_TEXT = "LOGIN_CUSTOM_TEXT";
-    
+    private static final String LOGIN_CUSTOM_TEXT = "SETTING_LOGIN_CUSTOM_TEXT";
+
     @Test
     public void test001_getCustomLogInInfo() {
         UserBean bean = new UserBean();
         bean.infoObjectService = infoService;
-        
+
         Assert.assertEquals("", bean.getCustomLogInInfo());
         InfoObject infoObject = new InfoObject(LOGIN_CUSTOM_TEXT, "A custom text at login");
         infoObject.setACList(acListReadable);
         infoObject.setOwner(adminUser);
         infoService.save(infoObject);
         Assert.assertEquals("A custom text at login", bean.getCustomLogInInfo());
-        
+
         entityManagerService.doSqlUpdate("DELETE FROM info WHERE key='" + LOGIN_CUSTOM_TEXT + "'");
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
                 .add(prepareDeployment("UserBeanTest.war"));
     }
-    
+
 }

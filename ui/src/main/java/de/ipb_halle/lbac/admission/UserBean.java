@@ -58,7 +58,7 @@ public class UserBean implements Serializable {
      */
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
-    private static final String LOGIN_CUSTOM_TEXT = "LOGIN_CUSTOM_TEXT";
+    private static final String LOGIN_CUSTOM_TEXT = "SETTING_LOGIN_CUSTOM_TEXT";
 
     @Inject
     private ACListService aclistService;
