@@ -33,7 +33,71 @@
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
                 <p:outputPanel
                     rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
-                    Hallo in der Komposition
+                    <p:panelGrid>
+                        <p:column>
+                            <p:outputLabel>
+                                Bitte wählen sie den Typ
+                            </p:outputLabel>
+                        </p:column>
+                        <p:column>
+                            <p:selectManyMenu>
+
+                            </p:selectManyMenu>                            
+                        </p:column>
+                    </p:panelGrid>
+
+                    <p:panelGrid>
+                        <p:row>
+                            <p:column>
+                                <p:panelGrid>
+                                    <p:row>
+                                        <p:column>
+                                            <p:inputText
+                                                value=""
+                                                placeholder="Suchbegriff">
+                                            </p:inputText>            
+                                        </p:column>
+                                        <p:column>
+                                            <p:commandButton
+                                                value="Suchen">
+                                            </p:commandButton>          
+                                        </p:column>
+                                    </p:row>
+                                    <p:row>
+                                        <p:column>
+                                            <p:tabView>
+                                                <p:tab title="Struktur">
+                                                    Struktursuche
+                                                </p:tab>
+                                                <p:tab title="Sequenz"
+                                                       disabled="true">
+                                                    Sequenz
+                                                </p:tab>
+                                            </p:tabView>
+                                        </p:column>             
+                                    </p:row>
+
+                                </p:panelGrid>
+
+                            </p:column>
+                            <p:column>
+                                <p:row>
+                                    <p:column>
+                                        <b:dataTable>
+
+                                        </b:dataTable>
+                                    </p:column>
+                                </p:row>
+                                <p:row>
+                                    <p:column>
+                                        <b:dataTable>
+
+                                        </b:dataTable>
+                                    </p:column>
+                                </p:row>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
                 </p:outputPanel>
             </p:tab>
         </ui:composition>
