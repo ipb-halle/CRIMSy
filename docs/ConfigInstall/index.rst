@@ -5,7 +5,7 @@ Konfiguration und Installation
    :maxdepth: 2
    :caption: Contents:
 
-   01_Vorbemerkung.md
+   01_Vorbemerkung.rst
    02_Konfiguration.md
    03_ExternerProxy.md
    04_Installation.md
