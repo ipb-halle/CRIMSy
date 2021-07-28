@@ -40,9 +40,16 @@
                             </p:outputLabel>
                         </p:column>
                         <p:column>
-                            <p:selectManyMenu>
+                            <b:selectOneMenu
+                                value="#{materialCompositionBean.choosenType}"
+                                >
+                                <f:selectItems 
+                                    value="#{materialCompositionBean.getCompositionTypes()}"
+                                    var="type"
+                                   />
 
-                            </p:selectManyMenu>                            
+
+                            </b:selectOneMenu>                            
                         </p:column>
                     </p:panelGrid>
 

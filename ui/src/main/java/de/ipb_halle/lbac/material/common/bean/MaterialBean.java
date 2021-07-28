@@ -71,6 +71,8 @@ import org.apache.logging.log4j.Logger;
 @Named
 public class MaterialBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     protected ProjectService projectService;
 
