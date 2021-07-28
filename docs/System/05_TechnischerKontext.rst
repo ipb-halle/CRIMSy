@@ -3,11 +3,12 @@ Technischer Kontext
 
 Der Knoten wird als einzelner Docker-Host realisiert, der in eine DMZ eingebettet ist. Ein Scale-Out (z.B. mit Kubernetes oder Docker Swarm) ist momentan nicht geplant. Wie bei Docker üblich stellt der Host Speicherplatz zur Verfügung und sorgt für die (Netzwerk-)Konnektivität der Komponenten. Dabei ist wichtig, dass der Speicherplatz nicht über Protokolle wie NFS oder CIFS angebunden ist, sondern als interner Plattenspeicher, DAS oder SAN-Speicher zur Verfügung gestellt wird. Das System kann als physischer Server oder virtuelle Maschine realisiert sein. Sämtliche Kommunikation findet über die Ethernet-Schnittstelle(n) des Hosts statt. Die Unterscheidung zwischen institutsinterner und externer Kommunikation wird dabei durch die Firewalls der DMZ getroffen. Eine Unterscheidung durch mehrere Schnittstellen des Hosts ist im Docker-Szenario nicht vorgesehen und müsste manuell durch einen Paketfilter (Firewall) im Docker-Host realisiert werden.
 
-.. image:: img/DMZ-Networking.svg
+.. figure:: img/DMZ-Networking.svg
     :width: 80%
     :align: center
     :alt: DMZ: network traffic
 
+    DMZ: Netzwerkverkehr
 
 Die Netzwerkverbindungen des Knotens (Docker Host) lassen sich wie folgt charakterisieren:
 

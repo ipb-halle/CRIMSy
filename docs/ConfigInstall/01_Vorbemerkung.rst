@@ -17,9 +17,15 @@ Ablauf
 ------
 Zunächst prüfen Sie die im folgenden Abschnitt beschriebenen Systemanforderungen und stellen ein entsprechend konfiguriertes System zusammen. Anschließend laden Sie das Konfigurationsskript und unsere Schlüssel herunter. Nachdem Sie die digitale Signatur des Konfigurationssskripts verifiziert haben, führen Sie dieses aus und senden uns die vom Skript erstellte Konfigurationsdatei zu. Anhand dieser Konfigurationsdatei wird von uns ein Installationspaket betriebsfertig konfektioniert, an Sie verteilt und schließlich von Ihnen in Betrieb genommen.
 
-.. info:: Für die Konfiguration und die Installation benutzen Sie bitte einen einzigen dedizierten unprivilegierten Account.
+.. note:: Für die Konfiguration und die Installation benutzen Sie bitte einen einzigen dedizierten unprivilegierten Account.
 
-![PuTTY Terminal Konfiguration](img/putty_terminal.png "PuTTY Terminal Konfiguration")
+.. figure:: img/putty_terminal.png
+    :width: 60%
+    :align: center
+    :alt: PuTTY Terminal Konfiguration
+
+    PuTTY Terminal Konfiguration
+
 Falls Sie die Konfiguration über PuTTY ausführen wollen, stellen Sie bitte den Zeichensatz auf UTF-8 um.
 
 Systemanforderungen
@@ -30,7 +36,7 @@ Speicher
 --------
 Ein Teil des Plattenspeichers wird für die permanente Speicherung der lokalen Cloud-Daten verwendet. In der Standardeinstellung wird hierfür das Verzeichnis Home-Verzeichnis des Nutzers verwendet, der das Konfigurationsskript aufruft. Diese Einstellung ist jedoch konfigurierbar. Diese Daten sollten durch ein regelmäßiges Backup vor Datenverlust geschützt werden. Wichtig: für das Datenverzeichnis soll kein Netzwerkdateisystem (z.B. NFS) verwendet werden.
 
-.. info:: Es gibt Szenarien, in denen der Einsatz von NFS unvermeidbar ist, z.B. wenn ein ESX-Cluster seine Volumes per NFS von einem NetApp Filer bezieht. Innerhalb des Knotens bzw. aus Knotensicht handelt es sich hier jedoch nicht um den Einsatz von NFS, da dies dem Knoten vollständig verborgen ist.
+.. note:: Es gibt Szenarien, in denen der Einsatz von NFS unvermeidbar ist, z.B. wenn ein ESX-Cluster seine Volumes per NFS von einem NetApp Filer bezieht. Innerhalb des Knotens bzw. aus Knotensicht handelt es sich hier jedoch nicht um den Einsatz von NFS, da dies dem Knoten vollständig verborgen ist.
 
 Betriebssystem
 --------------
@@ -57,7 +63,7 @@ Benutzer
 --------
 Für die Cloud sollte auf dem Knoten ein unprivilegierter Benutzer (z.B. lbac) eingerichtet werden. Dieser Benutzer benötigt Zugriff auf die verwendeten Schlüssel und Zertifikate (s.u.). Für bestimmte Zwecke (z.B. Einrichten von Cron-Jobs, Starten von Docker-Containern) benötigt dieser Nutzer auch Zugriff auf eine administrative Shell (sudo). Während der Installation konfiguriert sich das Setup-Skript einen entsprechenden Zugang für den unprivilegierten Benutzer, wofür einmalig das Root-Passwort benötigt wird.
 
-.. info:: Zur Erhöhung der Sicherheit kann die sudo-Berechtigung nach Beendigung des Installationsskripts wieder entzogen werden. Dazu muss die Datei `/etc/sudoers.d/lbac` gelöscht werden.
+.. note:: Zur Erhöhung der Sicherheit kann die sudo-Berechtigung nach Beendigung des Installationsskripts wieder entzogen werden. Dazu muss die Datei `/etc/sudoers.d/lbac` gelöscht werden.
 
 Falls der Speicherort nicht anderweitig konfiguriert wurde, sollte das Homeverzeichnis des Nutzers ausreichend freien Platz für die Daten des Knotens haben (aktuell 10 GByte).
 
@@ -77,11 +83,11 @@ Für die Absicherung der Maschine-zu-Maschine-Kommunikation der Knoten untereina
 | `..47f3a5597ee2d2dd96e9f8f131c0365f` | (Zertifikatskette: `chain.txt`) |
 +--------------------------------------+---------------------------------+
 
-.. info:: Die Leibniz Bioactives Cloud stellt insofern eine Besonderheit dar, als dass zunächst nur das Zertifikat verbreitet wurde. Ab Version CRIMSy 1.3.x gibt es auch für die Leibniz Bioactives Cloud eine 'Zertifikatskette', die allerdings auch nur das selbe CA-Zertifikat enthält.
+.. note:: Die Leibniz Bioactives Cloud stellt insofern eine Besonderheit dar, als dass zunächst nur das Zertifikat verbreitet wurde. Ab Version CRIMSy 1.3.x gibt es auch für die Leibniz Bioactives Cloud eine 'Zertifikatskette', die allerdings auch nur das selbe CA-Zertifikat enthält.
 
 Die Zertifikatsketten sowie zugehörige Zertifikatssperrlisten usw. können von den jeweiligen Distributionsseiten heruntergeladen werden. Die URL und etwaige Credentials können beim Verwalter der Cloud erfragt werden. Die vom Verwalter übermittelten Informatioenn sollten auch den Hashwert der Zertifikatskette beinhalten, um durch Übermittlung auf einem unabhängigen Kanal die Sicherheit zu erhöhen.
 
-.. info:: Die Webadressen, Prüfsummen usw. dieses Handbuchs beziehen sich auf die von den CRIMSy-Entwicklern verwalteten Clouds (z.B. die Leibniz Bioactives Cloud). Falls Sie eine separate Distribution betreiben (vielleicht für Maschinenbauer oder Germanisten), werden die Webadressen, Prüfsummen usw. abweichen. Der Verantwortliche einer separaten Distribution sollte aber die unabhängige Prüfung der Authentizität der Zertifikate, Konfigurations- und Installationsskripte ermöglichen (z.B. über eine zusätzliche Email-Information).
+.. note:: Die Webadressen, Prüfsummen usw. dieses Handbuchs beziehen sich auf die von den CRIMSy-Entwicklern verwalteten Clouds (z.B. die Leibniz Bioactives Cloud). Falls Sie eine separate Distribution betreiben (vielleicht für Maschinenbauer oder Germanisten), werden die Webadressen, Prüfsummen usw. abweichen. Der Verantwortliche einer separaten Distribution sollte aber die unabhängige Prüfung der Authentizität der Zertifikate, Konfigurations- und Installationsskripte ermöglichen (z.B. über eine zusätzliche Email-Information).
 
 Das Zertifikat für Ihren Knoten wird bei der Zusammenstellung des Installationspakets durch uns erzeugt und basiert auf dem während der Konfiguration erstellten Zertifikatsrequest. Für die Interaktion mit dem Nutzer sollte ein offizielles (d.h. ein von einer allgemein akzeptierten CA herausgegebenes) Zertifikat verwendet werden, um Fehlermeldungen im Browser des Nutzers zu vermeiden. Als Fallback-Lösung kann jedoch auch das Zertifikat Ihrer Cloud-CA benutzt werden.
 

@@ -373,7 +373,7 @@ for i in $* ; do
             LBAC_TOMEE_PORT_ENABLE=" "
             ;;
         --help)
-            echo "Usage: setup.sh [--debug] [--noproxy] [--proxy] [--standalone]"
+            echo "Usage: setup.sh [--debug] [--skip-snapshot] [--standalone]"
             echo 
             echo "  --debug            enable debugging (i.e. open ports)"
             echo "  --skip-snapshot    skip preinstallation procedure (snapshot / backup)"

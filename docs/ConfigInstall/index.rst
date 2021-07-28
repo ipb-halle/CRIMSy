@@ -7,6 +7,6 @@ Konfiguration und Installation
 
    01_Vorbemerkung.rst
    02_Konfiguration.md
-   03_ExternerProxy.md
-   04_Installation.md
+   03_ExternerProxy.rst
+   04_Installation.rst
    05_Management.rst
