@@ -1,6 +1,6 @@
 Externer Proxy
 ==============
-Neben der Authentifizierung des Datenverkehrs erfüllt der Proxy noch eine weitere Funktion, indem er statischen Content, wie z.B. JavaScript-Bibliotheken von Browser-Plugins zur Verfügung stellt. Es wird daher empfohlen, den vorkonfigurierten Proxy-Container des Systems zu verwenden. Der nachfolgende Abschnitt kann aber als Referenz dienen, wenn ein dedizierter eigener Proxy-Server verwendet werden soll. Ebenso finden kann das Github-Projekt `CRIMSz-CI <https://github.com/ipb-halle/CRIMSy-CI>`__ nützliche Hinweise liefern. Notwendig ist auf jeden Fall die manuelle Anpassung der Docker Compose-Datei.
+Neben der Authentifizierung des Datenverkehrs erfüllt der Proxy noch eine weitere Funktion, indem er statischen Content, wie z.B. JavaScript-Bibliotheken von Browser-Plugins zur Verfügung stellt. Es wird daher empfohlen, den vorkonfigurierten Proxy-Container des Systems zu verwenden. Der nachfolgende Abschnitt kann aber als Referenz dienen, wenn ein dedizierter eigener Proxy-Server verwendet werden soll. Ebenso kann das Github-Projekt `CRIMSy-CI <https://github.com/ipb-halle/CRIMSy-CI>`__ nützliche Hinweise liefern. Notwendig ist auf jeden Fall die manuelle Anpassung der Docker Compose-Datei.
 
 .. warning:: Die Nutzung eines externen Proxy-Servers wird nicht mehr offiziell unterstützt, die hier gegebenen Hinweise können zum Teil veraltet sein.
 

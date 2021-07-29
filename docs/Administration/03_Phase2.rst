@@ -100,7 +100,7 @@ Management
 ----------
 Die Managementaufgaben des Distributors umfassen neben allgemeinen Wartungsaufgaben (Überwachung der Dienste, Patch-Management, ...) vor allem die Verwaltung der Zertifikate und der Konfigurationsdateien. Der Widerruf eines Zertifikats kann dabei sowohl bei Kompromittierung als auch beim Ausscheiden einer Cloud-Instanz notwendig werden. In diesem Fall dürfen für den betroffenen Knoten keine Softwarepakete mehr erstellt werden. Insbesondere muss auch sichergestellt werden, dass der Zertifikatsrequest nicht wiederverwendet wird (der private Schlüssel könnte kompromittiert sein).
 
-Trifft das Script package.sh auf eine Konfiguration mit wiederrufenem Zertifikat, wird eine Warnmeldung ausgegeben und das Skript beendet.
+Trifft das Script package.sh auf eine Konfiguration mit widerrufenem Zertifikat, wird eine Warnmeldung ausgegeben und das Skript beendet.
 
 .. image: img/package_07.png
     :align: center

@@ -6,7 +6,7 @@ Konfiguration und Installation
    :caption: Contents:
 
    01_Vorbemerkung.rst
-   02_Konfiguration.md
+   02_Konfiguration.rst
    03_ExternerProxy.rst
    04_Installation.rst
    05_Management.rst

@@ -27,7 +27,7 @@ include(dist/etc/config_m4.inc)dnl
 
         <IfModule headers_module>
                 Header always set X-Frame-Options "sameorigin"
-LBAC_HSTS_ENABLE               Header always set Strict-Transport-Security "max-age=3600"
+LBAC_HSTS_ENABLE               Header always set Strict-Transport-Security "max-age=360000"
         </IfModule>
 
 </VirtualHost>                                  

@@ -307,7 +307,7 @@ function dialog_PROXY_HSTS {
         fi
 	dialog --backtitle "$CLOUD_NAME" \
 	  --cancel-label "Abbrechen" \
-          --checklist "Zur Erhöhung der Sicherheit können Sie HTTP Strict Transport Security (HSTS) aktivieren. Dies setzt jedoch ein Zertifikat einer offiziellen Zertifizierungsstelle voraus." 15 72 2 \
+          --checklist "Zur Erhöhung der Sicherheit sollten Sie HTTP Strict Transport Security (HSTS) aktivieren. Dies setzt jedoch ein Zertifikat einer offiziellen Zertifizierungsstelle voraus." 15 72 2 \
           HSTS "HTTP Strict Transport Security (HSTS) aktivieren" $LBAC_PROXY_HSTS 2> $TMP_RESULT
 	case $? in
 		0)
