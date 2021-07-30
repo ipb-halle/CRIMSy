@@ -48,6 +48,7 @@ public class SystemSettings implements Serializable {
     public static final String SETTING_LOGIN_CUSTOM_TEXT = "SETTING_LOGIN_CUSTOM_TEXT";
     public static final String SETTING_INSTITUTION_WEB = "SETTING_INSTITUTION_WEB";
     public static final String SETTING_GDPR_CONTACT = "SETTING_GDPR_CONTACT";
+    public static final String SETTING_CUSTOM_TEXT = "SETTING_DSGVO_CUSTOM_TEXT";
 
     private transient Logger logger;
     private Map<String, InfoObject> stringSettings;
@@ -148,5 +149,13 @@ public class SystemSettings implements Serializable {
                     .setACList(this.globalAdmissionContext.getAdminOnlyACL()));
         }
         messagePresenter.info("SETTINGS_SAVED");
+    }
+
+    public void setCustomDsgvoString(String text) {
+        stringSettings.get(SETTING_CUSTOM_TEXT).setValue(text);
+    }
+
+    public String getCustomDsgvoString() {
+        return stringSettings.get(SETTING_CUSTOM_TEXT).getValue();
     }
 }

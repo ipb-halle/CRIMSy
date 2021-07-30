@@ -49,6 +49,10 @@
             06120 Halle (Saale)<br/>
         </p>
 
+        <h:outputText value="#{systemSettings.getString('SETTING_DSGVO_CUSTOM_TEXT')}" escape="False" >
+            <f:converter converterId="InputConverter"/>
+        </h:outputText>
+
         <h2>Allgemeines zur Datenverarbeitung</h2>
         <p>Das Angebot der Leibniz Bioactives Cloud richtet sich an die Beschäftigten (Wissenschaftler, 
             technische Mitarbeiter, Studierende usw.) der teilnehmenden Institutionen. Das Angebot der 
