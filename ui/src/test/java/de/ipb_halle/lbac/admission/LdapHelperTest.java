@@ -17,12 +17,22 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.base.TestBase;
+import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.entity.InfoObject;
+import de.ipb_halle.lbac.service.InfoObjectService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.keycloak.util.ldap.LDAPEmbeddedServer;
 
 /**
  * NOTE: This test runs NOT within an Arquillian context and therefore ignores
@@ -31,11 +41,29 @@ import org.junit.Test;
  *
  * @author fmauz
  */
-public class LdapHelperTest {
+@RunWith(Arquillian.class)
+public class LdapHelperTest extends TestBase {
+
+    private static final long serialVersionUID = 1L;
+
+    @Inject
+    private InfoObjectService infoService;
+
+    @Inject
+    private LdapProperties properties;
 
     private LdapHelper instance;
+    public static final String PROPERTY_DSF = "ldap.dsf";
+    public static final String DSF_FILE = "file";
+    public static final String DEFAULT_DSF = DSF_FILE;
 
-    public LdapHelperTest() {
+    @Before
+    public final void init() {
+        saveInfo("LDAP_ENABLE", "True");
+        saveInfo("LDAP_CONTEXT_PROVIDER_URL", "ldap://localhost:10389");
+        saveInfo("LDAP_CONTEXT_SECURITY_CREDENTIALS", "certificatePassword");
+        saveInfo("LDAP_BASE_DN", "dc=keycloak,dc=org");
+        saveInfo("LDAP_CONTEXT_SECURITY_PRINCIPAL", "ldap.saslPrincipal");
 
         InfoObject ie = new InfoObject(
                 "LDAP_GROUP_FILTER_DN",
@@ -48,6 +76,14 @@ public class LdapHelperTest {
         LdapProperties props = new LdapProperties(ieList, map);
         instance = new LdapHelper();
         instance.setLdapProperties(props);
+    }
+
+    @Test
+    public void hui() throws Exception {
+        LDAPEmbeddedServer.main(null);
+        LdapHelper helper = new LdapHelper();
+        helper.setLdapProperties(properties);
+        helper.authenticate("admin", "admin");
 
     }
 
@@ -60,5 +96,21 @@ public class LdapHelperTest {
         b = instance.filterGroup(
                 "CN=Irrelevant_Group,OU=SomeOU,DC=ipb-halle,DC=de");
         Assert.assertFalse(b);
+    }
+
+    @Deployment
+    public static WebArchive createDeployment() {
+        return UserBeanDeployment
+                .add(prepareDeployment("LdapHelperTest.war")
+                        .addClass(InfoObjectService.class));
+    }
+
+    private void saveInfo(String key, String value) {
+        InfoObject ie = new InfoObject(
+                key,
+                value);
+        ie.setACList(context.getOwnerAllPermACL());
+        ie.setOwner(adminUser);
+        infoService.save(ie);
     }
 }

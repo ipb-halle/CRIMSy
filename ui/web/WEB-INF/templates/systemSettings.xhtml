@@ -23,8 +23,7 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-          
+      xmlns:f="http://xmlns.jcp.org/jsf/core"          
       xmlns:p="http://primefaces.org/ui">
 
     <h:body>
@@ -32,7 +31,6 @@
             <b:panelGrid colSpans="9,3" size="sm" id="systemSettingPanel">
                 <b:form id="systemSettings" horizontal="true" method="post">
                     <b:panel title="#{msgs.SystemSettings}" collapsible="false" look="info">
-
                         <ui:repeat id="systemSettingsString" value="#{systemSettings.stringSettings}" var="p" varStatus="status">
                             <b:inputText
                                 label="#{msgs[p.key]}:"
@@ -56,23 +54,24 @@
                                 </f:facet>
                             </b:selectBooleanCheckbox>
                         </ui:repeat>
-                        
-                        <b:column styleClass="text-center">
-                            
-                            <p:inputTextarea
-                                value="#{systemSettings.customDsgvoString}"
-                                label="Label_custom_text"
-                                title="title_custom_text">     
-                                 <f:facet name="append">
-                                    <b:iconAwesome name="th-list"/>
-                                </f:facet>
-                            </p:inputTextarea>
-                        </b:column>
-                        
+                        <p:panelGrid>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel value="Custom Text"/>
+                                </p:column>
+                                <p:column>
+                                    <b:inputTextarea
+                                        value="#{systemSettings.customDsgvoString}">     
+                                    </b:inputTextarea>  
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+
                         <b:column styleClass="text-center">
                             <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
                                              action="#{systemSettings.save}" value="#{msgs.SystemSettingsSave}"/>
                         </b:column>
+
                     </b:panel>
                 </b:form>
             </b:panelGrid>

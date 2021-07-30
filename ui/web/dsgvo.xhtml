@@ -49,8 +49,12 @@
             06120 Halle (Saale)<br/>
         </p>
 
-        <h:outputText value="#{systemSettings.getString('SETTING_DSGVO_CUSTOM_TEXT')}" escape="False" >
-            <f:converter converterId="InputConverter"/>
+        <h:outputText 
+            value="#{systemSettings.getString('SETTING_DSGVO_CUSTOM_TEXT')}"
+            escape="False">
+            
+            <f:converter converterId="RichTextConverter"/>
+            
         </h:outputText>
 
         <h2>Allgemeines zur Datenverarbeitung</h2>
