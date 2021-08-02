@@ -25,8 +25,10 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
 import javax.naming.directory.*;
 import javax.naming.ldap.LdapName;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -141,25 +143,51 @@ public class LdapHelper implements Serializable {
 
             // add early to cache to prevent loops
             ldapObjects.put(groupDN, group);
-            try {
-                NamingEnumeration<?> groups = ((BasicAttribute) attrs.get(this.ldapProperties.get("LDAP_ATTR_MEMBER_OF"))).getAll();
-                while (groups.hasMore()) {
-                    String memberdn = groups.next().toString();
-//                  this.logger.info("queryLdapGroups(): found member dn " + memberdn + " for group " + groupDN);
-                    if (filterGroup(memberdn)) {
-                        group.addMembership(memberdn);
-                        // prevent loops
-                        if (ldapObjects.get(memberdn) == null) {
-                            queryLdapGroups(ctx, memberdn, ldapObjects);
-                        }
-                    }
-                }
-            } catch (NullPointerException npe) {
-                // will occur for groups which are not members elsewhere and can be ignored safely
+
+            if (isMemberOfAttributeSet()) {
+                NamingEnumeration<?> groups = getMemberOfEnumeration(attrs);
+                readAllRelevantGroupsFromLDAP(ctx, groups, ldapObjects, group);
             }
+
         } catch (Exception e) {
-            this.logger.warn("queryLdapGroups() caught exception: ", e);
+            this.logger.error("queryLdapGroups() caught exception: ");
+            this.logger.error(ExceptionUtils.getStackTrace((e)));
         }
+    }
+
+    private void readAllRelevantGroupsFromLDAP(DirContext ctx, NamingEnumeration<?> groups, Map<String, LdapObject> ldapObjects, LdapObject group) throws NamingException {
+        if (groups == null) {
+            return;
+        }
+        while (groups.hasMore()) {
+            String memberdn = groups.next().toString();
+            if (filterGroup(memberdn)) {
+                group.addMembership(memberdn);
+                // prevent loops
+                if (ldapObjects.get(memberdn) == null) {
+                    queryLdapGroups(ctx, memberdn, ldapObjects);
+                }
+            }
+        }
+    }
+
+    private NamingEnumeration<?> getMemberOfEnumeration(Attributes attrs) {
+        try {
+            BasicAttribute basicAttr = (BasicAttribute) attrs.get(this.ldapProperties.get("LDAP_ATTR_MEMBER_OF"));
+            if (basicAttr != null) {
+                return basicAttr.getAll();
+            }
+            return null;
+        } catch (Exception e) {
+            logger.error("Could not fetch 'LDAP_ATTR_MEMBER_OF' from LDAP");
+            logger.error(ExceptionUtils.getStackTrace(e));
+            return null;
+        }
+    }
+
+    private boolean isMemberOfAttributeSet() {
+        return this.ldapProperties.get("LDAP_ATTR_MEMBER_OF") != null
+                && !this.ldapProperties.get("LDAP_ATTR_MEMBER_OF").trim().isEmpty();
     }
 
     /**
@@ -212,18 +240,21 @@ public class LdapHelper implements Serializable {
                     user.addMembership(dn);
 
                     if (ldapObjects != null) {
-
                         ldapObjects.put(dn, user);
-                        NamingEnumeration<?> groups = ((BasicAttribute) attrs.get(this.ldapProperties.get("LDAP_ATTR_MEMBER_OF"))).getAll();
-                        while (groups.hasMore()) {
-
-                            String groupDn = groups.next().toString();
-                            boolean groupToSave = filterGroup(groupDn);
-                            if (groupToSave) {
-                                user.addMembership(groupDn);
-                                queryLdapGroups(ctx, groupDn, ldapObjects);
+                        String propertyValue = this.ldapProperties.get("LDAP_ATTR_MEMBER_OF");
+                        Attribute attr = attrs.get(propertyValue);
+                        if (attr != null) {
+                            NamingEnumeration<?> groups = ((BasicAttribute) attr).getAll();
+                            if (groups != null) {
+                                while (groups.hasMore()) {
+                                    String groupDn = groups.next().toString();
+                                    boolean groupToSave = filterGroup(groupDn);
+                                    if (groupToSave) {
+                                        user.addMembership(groupDn);
+                                        queryLdapGroups(ctx, groupDn, ldapObjects);
+                                    }
+                                }
                             }
-
                         }
                     }
                     srch.close();
@@ -233,7 +264,8 @@ public class LdapHelper implements Serializable {
                 ctx.close();
             }
         } catch (Exception e) {
-            this.logger.warn("queryLdapUser() caught exception: ", (Throwable) e);
+            this.logger.error("queryLdapUser() caught exception: ", (Throwable) e);
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
         return null;
     }

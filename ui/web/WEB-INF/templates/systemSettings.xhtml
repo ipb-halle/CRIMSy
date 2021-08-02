@@ -23,15 +23,14 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      >
+      xmlns:f="http://xmlns.jcp.org/jsf/core"          
+      xmlns:p="http://primefaces.org/ui">
 
     <h:body>
         <ui:composition>
             <b:panelGrid colSpans="9,3" size="sm" id="systemSettingPanel">
                 <b:form id="systemSettings" horizontal="true" method="post">
                     <b:panel title="#{msgs.SystemSettings}" collapsible="false" look="info">
-
                         <ui:repeat id="systemSettingsString" value="#{systemSettings.stringSettings}" var="p" varStatus="status">
                             <b:inputText
                                 label="#{msgs[p.key]}:"
@@ -55,11 +54,18 @@
                                 </f:facet>
                             </b:selectBooleanCheckbox>
                         </ui:repeat>
-
+                        <b:inputTextarea
+                            label="#{msgs.customDsgvoText}: "
+                            labelColMd="4"
+                            labelStyle="text-align:right;"
+                            colMd="7"
+                            value="#{systemSettings.customDsgvoString}">     
+                        </b:inputTextarea>  
                         <b:column styleClass="text-center">
                             <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
                                              action="#{systemSettings.save}" value="#{msgs.SystemSettingsSave}"/>
                         </b:column>
+
                     </b:panel>
                 </b:form>
             </b:panelGrid>

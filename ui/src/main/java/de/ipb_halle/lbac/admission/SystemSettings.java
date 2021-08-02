@@ -48,6 +48,7 @@ public class SystemSettings implements Serializable {
     public static final String SETTING_LOGIN_CUSTOM_TEXT = "SETTING_LOGIN_CUSTOM_TEXT";
     public static final String SETTING_INSTITUTION_WEB = "SETTING_INSTITUTION_WEB";
     public static final String SETTING_GDPR_CONTACT = "SETTING_GDPR_CONTACT";
+    public static final String SETTING_DSGVO_CUSTOM_TEXT = "SETTING_DSGVO_CUSTOM_TEXT";
 
     private transient Logger logger;
     private Map<String, InfoObject> stringSettings;
@@ -60,6 +61,7 @@ public class SystemSettings implements Serializable {
     protected GlobalAdmissionContext globalAdmissionContext;
 
     protected MessagePresenter messagePresenter;
+    private String customDsgvoText = "";
 
     public SystemSettings() {
         this.logger = LogManager.getLogger(this.getClass().getName());
@@ -75,6 +77,10 @@ public class SystemSettings implements Serializable {
         initProperty(this.stringSettings, SETTING_INSTITUTION_WEB, "Homepage");
         initProperty(this.boolSettings, SETTING_FORCE_LOGIN, "True");
         initProperty(this.stringSettings, SETTING_LOGIN_CUSTOM_TEXT, "");
+        InfoObject ie = infoObjectService.loadByKey(SETTING_DSGVO_CUSTOM_TEXT);
+        if (ie != null) {
+            customDsgvoText = ie.getValue();
+        }
         messagePresenter = JsfMessagePresenter.getInstance();
     }
 
@@ -104,7 +110,8 @@ public class SystemSettings implements Serializable {
         if (stringSettings.containsKey(prop)) {
             return stringSettings.get(prop).getValue();
         } else {
-            return "";
+            InfoObject io = infoObjectService.loadByKey(prop);
+            return io != null ? io.getValue() : "";
         }
     }
 
@@ -147,6 +154,34 @@ public class SystemSettings implements Serializable {
                     .setOwner(this.globalAdmissionContext.getAdminAccount())
                     .setACList(this.globalAdmissionContext.getAdminOnlyACL()));
         }
+        InfoObject io = new InfoObject();
+        io.setKey(SETTING_DSGVO_CUSTOM_TEXT);
+        io.setValue(customDsgvoText);
+        io.setOwner(this.globalAdmissionContext.getAdminAccount());
+        io.setACList(this.globalAdmissionContext.getAdminOnlyACL());
+        infoObjectService.save(io);
         messagePresenter.info("SETTINGS_SAVED");
+    }
+
+    public void setCustomDsgvoString(String text) {
+        this.customDsgvoText = text;
+    }
+
+    public String getCustomDsgvoString() {
+        return this.customDsgvoText;
+    }
+
+    public boolean hasHomePage() {
+        InfoObject io = infoObjectService.loadByKey(SETTING_INSTITUTION_WEB);
+        return io != null && !io.getValue().isEmpty();
+    }
+
+    public String getHomePage() {
+        InfoObject io = infoObjectService.loadByKey(SETTING_INSTITUTION_WEB);
+        if (io != null) {
+            return io.getValue();
+        } else {
+            return "";
+        }
     }
 }

@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +59,11 @@ public class SystemSettingsTest extends TestBase {
         settings.infoObjectService = infoService;
         settings.globalAdmissionContext = context;
         settings.SystemSettingsInit();
+    }
 
+    @After
+    public void clean() {
+        entityManagerService.doSqlUpdate("DELETE FROM info WHERE key='SETTING_INSTITUTION_WEB'");
     }
 
     @Test
@@ -100,9 +105,43 @@ public class SystemSettingsTest extends TestBase {
         Assert.assertTrue(settings.getBoolean("SETTING_FORCE_LOGIN"));
     }
 
+    @Test
+    public void test006_hasHomePage() {
+        entityManagerService.doSqlUpdate("DELETE FROM info WHERE key='SETTING_INSTITUTION_WEB'");
+        Assert.assertFalse(settings.hasHomePage());
+        addHomePageInfoObject();
+        Assert.assertTrue(settings.hasHomePage());
+    }
+
+    @Test
+    public void test007_getHomePage() {
+        entityManagerService.doSqlUpdate("DELETE FROM info WHERE key='SETTING_INSTITUTION_WEB'");
+        Assert.assertEquals("", settings.getHomePage());
+        addHomePageInfoObject();
+        Assert.assertEquals("example", settings.getHomePage());
+    }
+
+    @Test
+    public void test008_set_get_customDsgvoText() {
+        settings.setCustomDsgvoString("customText");
+        Assert.assertEquals("customText", settings.getCustomDsgvoString());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
                 .add(prepareDeployment("SystemSettingsTest.war"));
+    }
+
+    private void addHomePageInfoObject() {
+        int ownerId = publicUser.getId();
+        int aclId = GlobalAdmissionContext.getPublicReadACL().getId();
+        entityManagerService.doSqlUpdate(
+                String.format("INSERT INTO info VALUES (%s,%s,%d,%d)",
+                        "'SETTING_INSTITUTION_WEB'",
+                        "'example'",
+                        ownerId,
+                        aclId
+                ));
     }
 }
