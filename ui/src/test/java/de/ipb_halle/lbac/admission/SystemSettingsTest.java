@@ -121,6 +121,12 @@ public class SystemSettingsTest extends TestBase {
         Assert.assertEquals("example", settings.getHomePage());
     }
 
+    @Test
+    public void test008_set_get_customDsgvoText() {
+        settings.setCustomDsgvoString("customText");
+        Assert.assertEquals("customText", settings.getCustomDsgvoString());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         return UserBeanDeployment
