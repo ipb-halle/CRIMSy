@@ -22,13 +22,14 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  *
@@ -36,24 +37,34 @@ import java.util.Objects;
  */
 public class MaterialComposition extends Material {
 
-    protected List<Material> components = new ArrayList<>();
+    private static final long serialVersionUID = 1L;
+    private CompositionType compositionType;
+
+    protected Map<Material, Double> components
+            = new TreeMap<>(Comparator.comparing(Material::getFirstName));
 
     public MaterialComposition(
-            int id,
+            Integer id,
             List<MaterialName> names,
             int projectId,
             HazardInformation hazards,
-            StorageInformation storageInfos) {
+            StorageInformation storageInfos,
+            CompositionType compositionType) {
         super(id, names, projectId, hazards, storageInfos);
         type = MaterialType.COMPOSITION;
+        this.compositionType = compositionType;
+
     }
 
-    public MaterialComposition addComponent(Material comp) {
-        components.add(comp);
+    public MaterialComposition addComponent(Material comp, Double concentration) {
+        if (!canHoldType(comp.getType())) {
+            throw new IllegalArgumentException("Composition " + compositionType + " must not hold material of type " + comp.getType());
+        }
+        components.put(comp, concentration);
         return this;
     }
 
-    public List<Material> getComponents() {
+    public Map<Material, Double> getComponents() {
         return components;
     }
 
@@ -63,28 +74,31 @@ public class MaterialComposition extends Material {
                 id, getCopiedNames(),
                 projectId,
                 hazards.copy(),
-                storageInformation.copy());
+                storageInformation.copy(),
+                compositionType);
         return copy;
     }
 
     /**
-     * There is no need for an specific entity of the material composition (
-     * like structures, taxonomies, ...) because there is no further information
-     * then in the material itself
      *
-     * @return always throws a "Not supported yet." exception
+     * @return
      */
     @Override
-    public MaterialCompositionEntity createEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public CompositionEntity createEntity() {
+        CompositionEntity entity = new CompositionEntity();
+        entity.setMaterialid(id);
+        entity.setType(compositionType.toString());
+        return entity;
     }
 
     @Override
     public List<MaterialCompositionEntity> createCompositionEntities() {
         List<MaterialCompositionEntity> entities = new ArrayList<>();
-        for (Material m : components) {
-            entities.add(new MaterialCompositionEntity()
-                    .setId(new MaterialCompositionId(id, m.getId())));
+        for (Material m : components.keySet()) {
+            MaterialCompositionEntity entity = new MaterialCompositionEntity()
+                    .setId(new MaterialCompositionId(id, m.getId()));
+            entity.setConcentration(components.get(m));
+            entities.add(entity);
         }
         entities.addAll(super.createCompositionEntities());
         return entities;
@@ -102,6 +116,14 @@ public class MaterialComposition extends Material {
     @Override
     public Type getTypeToDisplay() {
         return new Type(SearchTarget.MATERIAL, MaterialType.COMPOSITION);
+    }
+
+    public List<MaterialType> getPossibleTypesOfComponents() {
+        return compositionType.getAllowedTypes();
+    }
+
+    public boolean canHoldType(MaterialType type) {
+        return getPossibleTypesOfComponents().contains(type);
     }
 
 }

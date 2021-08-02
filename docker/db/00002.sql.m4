@@ -2,7 +2,7 @@ include(dist/etc/config_m4.inc)dnl
 /*
  * Leibniz Bioactives Cloud
  * Initial data 
- * Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,14 @@ include(dist/etc/config_m4.inc)dnl
 CREATE TABLE material_compositions(
     materialid  INTEGER NOT NULL REFERENCES materials (materialid),
     componentid INTEGER NOT NULL REFERENCES materials (materialid),
+	concentration FLOAT NOT NULL DEFAULT 0,
     PRIMARY KEY (materialid, componentid)
 );
+
+CREATE TABLE compositions(
+    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    type VARCHAR NOT NULL
+);
+
+INSERT INTO materialdetailtypes(id,name) VALUES(7,'COMPOSITION');
 

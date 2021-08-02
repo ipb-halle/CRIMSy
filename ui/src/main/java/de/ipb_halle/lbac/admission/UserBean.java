@@ -58,27 +58,28 @@ public class UserBean implements Serializable {
      */
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
+    private static final String LOGIN_CUSTOM_TEXT = "SETTING_LOGIN_CUSTOM_TEXT";
 
     @Inject
     private ACListService aclistService;
 
     @Inject
-    private GlobalAdmissionContext globalAdmissionContext;
+    protected GlobalAdmissionContext globalAdmissionContext;
 
     @Inject
-    private InfoObjectService infoObjectService;
+    protected InfoObjectService infoObjectService;
 
     @Inject
-    private LdapProperties ldapProperties;
+    protected LdapProperties ldapProperties;
 
     @Inject
-    private MemberService memberService;
+    protected MemberService memberService;
 
     @Inject
-    private MembershipService membershipService;
+    protected MembershipService membershipService;
 
     @Inject
-    private NodeService nodeService;
+    protected NodeService nodeService;
 
     @Inject
     MembershipOrchestrator membershipOrchestrator;
@@ -130,7 +131,7 @@ public class UserBean implements Serializable {
     public void init() {
         // current account
         this.logger = LogManager.getLogger(this.getClass().getName());
-        this.permissionCache = new HashMap<ResourcePermission, Boolean>();
+        this.permissionCache = new HashMap<>();
         this.oldPassword = "";
         this.newPassword = "";
         this.newPasswordRepeat = "";
@@ -278,6 +279,7 @@ public class UserBean implements Serializable {
             setCurrentAccount(u);
             return true;
         }
+
         return false;
     }
 
@@ -436,6 +438,17 @@ public class UserBean implements Serializable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Returns the value of the infoobject 'LOGIN_CUSTOM_TEXT'.
+     *
+     * @return value of infoobject or empty string if not present in db
+     */
+    public String getCustomLogInInfo() {
+        InfoObject infoObject = infoObjectService.loadByKey(LOGIN_CUSTOM_TEXT);
+        return infoObject == null ? "" : infoObject.getValue();
+
     }
 
 }

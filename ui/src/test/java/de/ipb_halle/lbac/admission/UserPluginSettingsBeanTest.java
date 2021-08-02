@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.admission;
 
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

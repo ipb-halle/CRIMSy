@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,26 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.admission;
+package de.ipb_halle.lbac.material.common;
+
+import de.ipb_halle.lbac.material.structure.Structure;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author fmauz
  */
-public class UserBeanMock extends UserBean {
+public class MaterialIndexSaver {
 
-    private User currentAccount;
+    private EntityManager em;
 
-    public void setCurrentAccount(User u) {
-        this.currentAccount = u;
+    public MaterialIndexSaver(EntityManager em) {
+        this.em = em;
     }
 
-    @Override
-    public User getCurrentAccount() {
-        return currentAccount;
+    public void saveIndices(Structure s) {
+        for (IndexEntry ie : s.getIndices()) {
+            em.persist(ie.toDbEntity(s.getId(), 0));
+        }
     }
 }

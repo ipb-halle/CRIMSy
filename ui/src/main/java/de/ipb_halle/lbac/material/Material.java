@@ -30,14 +30,15 @@ import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionId;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionId;
 import de.ipb_halle.lbac.search.Searchable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,9 +48,11 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Material extends ACObject implements DTO, Serializable, Searchable {
 
+    private static final long serialVersionUID = 1L;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
-    protected int id;
+    protected Integer id;
     protected MaterialType type;
     protected List<MaterialName> names;
     protected Integer projectId;
@@ -235,8 +238,9 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
     }
 
     public List<MaterialCompositionEntity> createCompositionEntities() {
-        return Arrays.asList(
-                new MaterialCompositionEntity()
-                        .setId(new MaterialCompositionId(id, id)));
-    }
+        return Arrays.asList(new MaterialCompositionEntity()
+                        .setId(new MaterialCompositionId(id, id))
+                        .setConcentration(1d)
+        );
+    }       
 }

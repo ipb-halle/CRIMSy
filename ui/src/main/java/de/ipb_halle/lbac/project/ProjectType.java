@@ -28,13 +28,14 @@ import java.util.List;
  *
  * @author fmauz
  */
-public enum ProjectType implements Serializable{
+public enum ProjectType implements Serializable {
     DUMMY_PROJECT(0),
     CHEMICAL_PROJECT(1,
             MaterialType.STRUCTURE,
-            MaterialType.CONSUMABLE
-//            MaterialType.SEQUENCE,
-//            MaterialType.COMPOSITION
+            MaterialType.CONSUMABLE,
+            MaterialType.COMPOSITION
+    //            MaterialType.SEQUENCE,
+
     ),
     IT_PROJECT(2,
             MaterialType.CONSUMABLE
@@ -45,15 +46,16 @@ public enum ProjectType implements Serializable{
     BIOLOGICAL_PROJECT(4,
             MaterialType.BIOMATERIAL,
             MaterialType.CONSUMABLE
-//            MaterialType.SEQUENCE,
-//            MaterialType.COMPOSITION
+    //            MaterialType.COMPOSITION
+    //            MaterialType.SEQUENCE,
     ),
     BIOCHEMICAL_PROJECT(5,
             MaterialType.STRUCTURE,
             MaterialType.BIOMATERIAL,
-            MaterialType.CONSUMABLE
-//            MaterialType.SEQUENCE,
-//            MaterialType.COMPOSITION
+            MaterialType.CONSUMABLE,
+            MaterialType.COMPOSITION
+    //            MaterialType.SEQUENCE,
+    //            MaterialType.COMPOSITION
     );
 
     private final int id;

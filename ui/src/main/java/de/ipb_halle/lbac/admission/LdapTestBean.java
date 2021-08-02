@@ -20,14 +20,17 @@ package de.ipb_halle.lbac.admission;
 import de.ipb_halle.lbac.i18n.UIClient;
 import de.ipb_halle.lbac.i18n.UIMessage;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+
+
 import javax.inject.Inject;
 import java.io.Serializable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-@ManagedBean(name = "ldapTestBean")
+@Named("ldapTestBean")
 @RequestScoped
 public class LdapTestBean implements Serializable {
 
@@ -35,13 +38,15 @@ public class LdapTestBean implements Serializable {
 
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    private String              ldapLogin;
-    private String              ldapPassword;
+    private String ldapLogin;
+    private String ldapPassword;
 
     @Inject
-    private LdapProperties      ldapProperties;
+    private LdapProperties ldapProperties;
+    
+    
 
-    private transient Logger    logger;
+    private transient Logger logger;
 
     /**
      * default constructor
@@ -52,18 +57,20 @@ public class LdapTestBean implements Serializable {
 
     /**
      * authenticate a user against LDAP using the current LDAP settings
+     *
      * @return true on successful authentication
      * @throws
      */
     private boolean authenticate() throws Exception {
-        if(! ldapProperties.getLdapEnabled()) {
+        if (!ldapProperties.getLdapEnabled()) {
             this.logger.warn("authenticate(): LDAP not enabled.");
             return false;
         }
 
         // authenticate
-        LdapHelper helper = new LdapHelper(ldapProperties);
-        if(! helper.authenticate(this.ldapLogin, this.ldapPassword)) {
+        LdapHelper helper = new LdapHelper();
+        helper.setLdapProperties(ldapProperties);
+        if (!helper.authenticate(this.ldapLogin, this.ldapPassword)) {
             // login failure
             return false;
         }
@@ -71,13 +78,13 @@ public class LdapTestBean implements Serializable {
     }
 
     /**
-     * Perform the LDAP authentication without any user or group
-     * lookup and set a FacesMessage
+     * Perform the LDAP authentication without any user or group lookup and set
+     * a FacesMessage
      */
     public void checkLdapConnect() {
         try {
 
-            if ( authenticate() ) {
+            if (authenticate()) {
                 UIMessage.info(new UIClient("checkLdapForm:testresult"), MESSAGE_BUNDLE, "admission_ldap_success");
             } else {
                 UIMessage.warn(new UIClient("checkLdapForm:testresult"), MESSAGE_BUNDLE, "admission_ldap_failure");
@@ -87,10 +94,20 @@ public class LdapTestBean implements Serializable {
         }
     }
 
-    public String getLdapLogin() { return ldapLogin; }
-    public String getLdapPassword() { return ldapPassword; }
+    public String getLdapLogin() {
+        return ldapLogin;
+    }
 
-    public void setLdapLogin(String ldapLogin) { this.ldapLogin = ldapLogin; }
-    public void setLdapPassword(String ldapPassword) { this.ldapPassword = ldapPassword; }
+    public String getLdapPassword() {
+        return ldapPassword;
+    }
+
+    public void setLdapLogin(String ldapLogin) {
+        this.ldapLogin = ldapLogin;
+    }
+
+    public void setLdapPassword(String ldapPassword) {
+        this.ldapPassword = ldapPassword;
+    }
 
 }

@@ -48,16 +48,20 @@ import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomySaver;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
+import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
+import de.ipb_halle.lbac.material.composition.CompositionEntity;
+import de.ipb_halle.lbac.material.composition.CompositionSaver;
+import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -77,6 +81,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -103,7 +108,7 @@ public class MaterialService implements Serializable {
 
     private List<StorageClass> storageClasses = new ArrayList<>();
     private MaterialEntityGraphBuilder graphBuilder;
-    protected StructureInformationSaver structureInformationSaver;
+    private Map<MaterialType, MaterialSaver> materialSaverMap = new HashMap<>();
 
     private final String SQL_GET_STORAGE = "SELECT materialid,storageClass,description FROM storages WHERE materialid=:mid";
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_material WHERE materialid=:mid";
@@ -121,7 +126,6 @@ public class MaterialService implements Serializable {
             + "AND " + SqlStringWrapper.WHERE_KEYWORD + " "
             + "AND mi.typeid=1 "
             + "AND m.materialtypeid NOT IN(6,7)";
-    private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
     private final String SQL_GET_STORAGE_CLASSES = "SELECT id,name FROM storageclasses";
 
     private final String SQL_UPDATE_MATERIAL_ACL
@@ -134,7 +138,7 @@ public class MaterialService implements Serializable {
             + "WHERE materialid=:mid";
 
     public final String SQL_SELECT_COMPONENTS
-            = "SELECT materialid, componentid "
+            = "SELECT materialid, componentid,concentration "
             + "FROM material_compositions "
             + "WHERE materialid=:mid";
     protected MaterialHistoryService materialHistoryService;
@@ -177,7 +181,10 @@ public class MaterialService implements Serializable {
         comparator = new MaterialComparator();
         materialHistoryService = new MaterialHistoryService(this);
         editedMaterialSaver = new MaterialEditSaver(this, taxonomyNestingService);
-        structureInformationSaver = new StructureInformationSaver(em);
+
+        materialSaverMap.put(MaterialType.STRUCTURE, new StructureInformationSaver(em));
+        materialSaverMap.put(MaterialType.TAXONOMY, new TaxonomySaver(em));
+        materialSaverMap.put(MaterialType.COMPOSITION, new CompositionSaver(em));
         storageClasses = loadStorageClasses();
     }
 
@@ -248,7 +255,7 @@ public class MaterialService implements Serializable {
                 q.setParameter(param.getArgumentKey(), param.getValue());
             }
             @SuppressWarnings("unchecked")
-            List<MaterialEntity> entities =q.getResultList();
+            List<MaterialEntity> entities = q.getResultList();
             for (MaterialEntity me : entities) {
                 Material material = loadMaterial(me);
                 result.addResult(material);
@@ -286,7 +293,7 @@ public class MaterialService implements Serializable {
         }
         BioMaterial b = new BioMaterial(
                 me.getMaterialid(),
-                new ArrayList(),
+                new ArrayList<>(),
                 me.getProjectid(),
                 loadHazardInformation(me.getMaterialid()),
                 loadStorageClassInformation(me.getMaterialid()),
@@ -488,23 +495,33 @@ public class MaterialService implements Serializable {
         return material;
     }
 
+    @SuppressWarnings("unchecked")
     private MaterialComposition loadComposition(MaterialEntity entity) {
+        CompositionEntity compositionEntity = loadCompositionEntity(entity.getMaterialid());
+        CompositionType compositionType = CompositionType.valueOf(compositionEntity.getType());
         MaterialComposition composition = new MaterialComposition(
                 entity.getMaterialid(),
                 loadMaterialNamesById(entity.getMaterialid()),
                 entity.getProjectid(),
                 loadHazardInformation(entity.getMaterialid()),
-                loadStorageClassInformation(entity.getMaterialid()));
+                loadStorageClassInformation(entity.getMaterialid()),
+                compositionType);
+
         List<MaterialCompositionEntity> entities
                 = (List<MaterialCompositionEntity>) em.createNativeQuery(SQL_SELECT_COMPONENTS, MaterialCompositionEntity.class)
                         .setParameter("mid", entity.getMaterialid())
                         .getResultList();
         for (MaterialCompositionEntity mce : entities) {
             if (mce.getId().getComponentid() != entity.getMaterialid()) {
-                composition.addComponent(loadMaterialById(mce.getId().getComponentid()));
+                composition.addComponent(loadMaterialById(mce.getId().getComponentid()), mce.getConcentration());
             }
         }
         return composition;
+    }
+
+    private CompositionEntity loadCompositionEntity(Integer id) {
+        CompositionEntity entity = em.find(CompositionEntity.class, id);
+        return entity;
     }
 
     /**
@@ -579,7 +596,6 @@ public class MaterialService implements Serializable {
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
 
-
         deleteExistingComponents(newMaterial);
         saveComponents(newMaterial);
 
@@ -613,17 +629,14 @@ public class MaterialService implements Serializable {
         saveDetailRightsFromTemplate(m, detailTemplates);
         saveComponents(m);
 
-        if (m.getType() == MaterialType.STRUCTURE) {
-            structureInformationSaver.saveStructureInformation(m);
-        }
-        if (m.getType() == MaterialType.TAXONOMY) {
-            saveTaxonomy((Taxonomy) m);
-        }
         if (m.getType() == MaterialType.TISSUE) {
             saveTissue((Tissue) m);
         }
         if (m.getType() == MaterialType.BIOMATERIAL) {
             saveBioMaterial((BioMaterial) m);
+        }
+        if (materialSaverMap.get(m.getType()) != null) {
+            materialSaverMap.get(m.getType()).saveMaterial(m);
         }
     }
 
@@ -645,6 +658,7 @@ public class MaterialService implements Serializable {
      * @param m
      * @param projectAclId
      * @param detailTemplates
+     * @param owner
      */
     public void saveMaterialToDB(
             Material m,
@@ -729,18 +743,6 @@ public class MaterialService implements Serializable {
         }
     }
 
-    private Taxonomy saveTaxonomy(Taxonomy t) {
-        this.em.persist(t.createEntity());
-        for (Taxonomy th : t.getTaxHierachy()) {
-            em.createNativeQuery(SQL_SAVE_EFFECTIVE_TAXONOMY)
-                    .setParameter("tid", t.getId())
-                    .setParameter("pid", th.getId())
-                    .executeUpdate();
-        }
-
-        return t;
-    }
-
     private Tissue saveTissue(Tissue t) {
         TissueEntity entity = t.createEntity();
         this.em.persist(entity);
@@ -748,13 +750,12 @@ public class MaterialService implements Serializable {
         return t;
     }
 
-
     public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {
         this.editedMaterialSaver = editedMaterialSaver;
     }
 
     public void setStructureInformationSaver(StructureInformationSaver structureInformationSaver) {
-        this.structureInformationSaver = structureInformationSaver;
+        materialSaverMap.put(MaterialType.STRUCTURE, structureInformationSaver);
         this.editedMaterialSaver.setStructureSaver(structureInformationSaver);
     }
 
@@ -816,5 +817,4 @@ public class MaterialService implements Serializable {
     public EntityManager getEm() {
         return em;
     }
-    
 }

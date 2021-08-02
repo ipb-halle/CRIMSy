@@ -145,16 +145,13 @@ public class TimeZoneSettingsDialogControllerBean implements Serializable {
         User currentUser = userBean.getCurrentAccount();
 
         if (!currentUser.isPublicAccount()) {
-            if (currentUser
-                    .getSubSystemType() == AdmissionSubSystemType.LOCAL) {
-                boolean result = userBean.getTimeZoneSettings()
-                        .setPreferredTimeZone(timeZone);
+            boolean result = userBean.getTimeZoneSettings()
+                    .setPreferredTimeZone(timeZone);
 
-                if (result) {
-                    messagePresenter.info("admission_timeZone_updated");
-                } else {
-                    messagePresenter.error("admission_timeZone_not_updated");
-                }
+            if (result) {
+                messagePresenter.info("admission_timeZone_updated");
+            } else {
+                messagePresenter.error("admission_timeZone_not_updated");
             }
         }
     }

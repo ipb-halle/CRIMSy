@@ -1,3 +1,21 @@
+2.0.1 - 2021-08-02
+		* Minor BugFixes and features
+                        - support for customizable text fragments in the DSGVO (GDPR) declaration 
+                        - support for LDAP servers, which do not support management of group memberships
+                        - a link to the homepage of the hosting organization can be displayed in DSGVO declaration
+
+2.0.0 - 2021-07-13
+		* Feature: Basic LIMS functionalities added
+			- Add structures and biomaterials
+			- Add structure editor
+			- Add items and an inventorysystem
+		* Changed structure of DB
+			- Add several new tables
+		* Changed configuration script
+		
+		This version is no longer backward compatible.
+		A new installation is recommended.
+
 1.3.0 - 2020-03-12
         * Feature: features MultiCloud & DTO were rolled out to production
 

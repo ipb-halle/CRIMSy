@@ -24,7 +24,7 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.admission.User;
@@ -42,9 +42,9 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
-import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.search.SearchResult;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.util.ArrayList;
@@ -53,6 +53,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -619,29 +620,31 @@ public class MaterialServiceTest extends TestBase {
         instance.saveMaterialToDB(struc, p.getUserGroups().getId(), new HashMap<>(), publicUser);
 
         Material loadedMat = instance.loadMaterialById(struc.getId());
-        Assert.assertNull(loadedMat.getStorageInformation().getStorageClass());      
+        Assert.assertNull(loadedMat.getStorageInformation().getStorageClass());
     }
+
     @Test
     public void test009_saveLoadMaterialComposition() {
-        UserBeanMock userBean = new UserBeanMock();
-
-        userBean.setCurrentAccount(publicUser);
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
+        struture1.getNames().set(0, new MaterialName("First Structure","de",0));
         Structure struture2 = creationTools.createStructure(project1);
-        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
-        instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
+
+        instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
+        instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
 
         MaterialComposition composition = new MaterialComposition(
                 0,
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-                new StorageInformation());
+
+                new StorageInformation(),
+                CompositionType.EXTRACT);
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
-        composition.addComponent(struture1);
-        composition.addComponent(struture2);
-        instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(),publicUser);
+        composition.addComponent(struture1, 0d);
+        composition.addComponent(struture2, 0d);
+        instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("composition");
         SearchResult result = instance.loadReadableMaterials(requestBuilder.build());
@@ -652,13 +655,6 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals("composition-1", loadedComposition.getFirstName());
         Assert.assertEquals(2, loadedComposition.getComponents().size());
 
-        Structure loadedStruc1 = (Structure) loadedComposition.getComponents().get(0);
-        Assert.assertEquals(struture1.getId(), loadedStruc1.getId());
-        Structure loadedStruc2 = (Structure) loadedComposition.getComponents().get(1);
-        Assert.assertEquals(loadedStruc2.getId(), loadedStruc2.getId());
-
-        Assert.assertEquals(1, loadedComposition.getIndices().size());
-        composition.getId();
     }
 
     @Deployment

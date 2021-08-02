@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,43 +15,48 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.entity;
+package de.ipb_halle.lbac.material.composition;
 
 import java.io.Serializable;
-import javax.persistence.Embeddable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  *
  * @author fmauz
  */
-@Embeddable
-public class MaterialCompositionId implements Serializable {
+@Entity
+@Table(name = "compositions")
+public class CompositionEntity implements Serializable {
 
-    private int materialid;
-    private int componentid;
+    private static final long serialVersionUID = 1L;
 
-    public MaterialCompositionId() {
+    @Id
+    private Integer materialid;
+    @Column
+    private String type;
+
+    public CompositionEntity() {
     }
 
-    public MaterialCompositionId(int materialid, int componentid) {
-        this.materialid = materialid;
-        this.componentid = componentid;
-    }
-
-    public int getMaterialid() {
+    public Integer getMaterialid() {
         return materialid;
     }
 
-    public void setMaterialid(int materialid) {
+    public void setMaterialid(Integer materialid) {
         this.materialid = materialid;
     }
 
-    public int getComponentid() {
-        return componentid;
+    public String getType() {
+        return type;
     }
 
-    public void setComponentid(int componentid) {
-        this.componentid = componentid;
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

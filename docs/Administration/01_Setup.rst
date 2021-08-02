@@ -13,27 +13,3 @@ Zur Einrichtung und zum Betrieb einer Cloud-Instanz mit ein oder mehreren Knoten
 
 Notfalls können alle Komponenten auf einem Rechner zusammengefasst werden - dies sollte bei Produktivsystemen aber vermieden werden. Das Handbuch setzt grundlegende Fertigkeiten in der Administration von Linux-Rechnern voraus. Soweit nicht explizit anders gefordert, sollten alle Schritte mit einem unprivilegierten Nutzeraccount durchgeführt werden.
 
-Playground
-----------
-Eine Tabelle
-
-.. tabularcolumns:: |l|p{8cm}|
-
-+-------------+------------------------------------------------------+
-| Typ         | Beschreibung                                         |
-+=============+======================================================+
-| `BUILTIN`   | vordefinierte Nutzer und Gruppen,                    |
-|             | z.B. `Public Account`; keine Änderungen möglich      |
-|             |                                                      |
-|             | Das ist ein sehr langer Tabelleneintrag, so dass     |
-|             | die Zeile eigentlich umgebrochen werden sollte.      |
-|             | Ob Sphinx das drauf hat?                             |
-+-------------+------------------------------------------------------+
-| `LOCAL`     | lokale Nutzer und Gruppen des Knotens                |
-+-------------+------------------------------------------------------+
-| `LDAP`      | lokale Nutzer und Gruppen aus einem LDAP-Verzeichnis |
-+-------------+------------------------------------------------------+
-| `REMOTE`    | remote Nutzer, d.h. Nutzer eines anderen Knotens     |
-+-------------+------------------------------------------------------+
-
-

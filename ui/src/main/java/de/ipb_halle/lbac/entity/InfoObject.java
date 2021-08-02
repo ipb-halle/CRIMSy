@@ -20,16 +20,12 @@ package de.ipb_halle.lbac.entity;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACObject;
 import de.ipb_halle.lbac.admission.User;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
  * Simple key - value store
  */
-public class InfoObject extends ACObject implements Serializable, DTO {
+public class InfoObject extends ACObject implements Serializable, DTO<InfoObjectEntity> {
 
     private final static long serialVersionUID = 1L;
 

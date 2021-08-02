@@ -5,11 +5,12 @@ Welcome to CRIMSy's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   Administration/index.rst
 
    ConfigInstall/index.rst
 
    System/index.rst
+
+   Administration/index.rst
 
 Fulltext Search
 ===============

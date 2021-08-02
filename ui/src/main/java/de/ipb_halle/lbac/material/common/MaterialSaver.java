@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,32 +15,16 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.entity;
+package de.ipb_halle.lbac.material.common;
 
+import de.ipb_halle.lbac.material.Material;
 import java.io.Serializable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  *
  * @author fmauz
  */
-@Entity
-@Table(name = "material_compositions")
-public class MaterialCompositionEntity implements Serializable {
+public interface MaterialSaver extends Serializable{
 
-    private final static long serialVersionUID = 1L;
-
-    @EmbeddedId
-    private MaterialCompositionId id;
-
-    public MaterialCompositionId getId() {
-        return id;
-    }
-
-    public MaterialCompositionEntity setId(MaterialCompositionId id) {
-        this.id = id;
-        return this;
-    }
+    public void saveMaterial(Material m);
 }

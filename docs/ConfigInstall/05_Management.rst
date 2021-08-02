@@ -1,6 +1,6 @@
 Management des Knotens
 ======================
-.. warning:: Das Standardpasswort des Administrators (`admin` → `admin`) sollte umgehend nach der Installation geändert werden!
+.. warning:: Das initiale Passwort des Administrators (bei der Konfiguration vergeben) sollte umgehend nach der Installation geändert werden!
 
 Einige Einstellungen des Knotens können zur Laufzeit mit dem Webbrowser konfiguriert werden. Dazu gehören
 
@@ -13,6 +13,62 @@ Einige Einstellungen des Knotens können zur Laufzeit mit dem Webbrowser konfigu
 * Konfiguration eines externen Job-Schedulers
 * Verwaltung von Barcode-Druckern
 * Verwaltung von Collections (Anlegen, Ändern, Löschen, ...)
+
+Firewall
+--------
+Sofern CRIMSy nicht in einer demilitarisierten Zone (DMZ) betrieben wird, sollte mindestens ein Paketfilter installiert werden, um den Zugang zu den einzelnen Diensten zu regulieren. Während Port 8443 öffentlich erreichbar sein muss, dürfen die Ports 80 und 443 (HTTP und HTTPS) nur aus dem internen Netz erreichbar sein. Für Ubuntu- und Debian-Systeme mit installierter 'Uncomplicated Firewall' (ufw) könnten die nachfolgend wiedergegebenen Regeln einen Basis-Schutz darstellen. Dazu müssen die Regeln nach lokaler Anpassung an die Datei `/etc/ufw/after.rules` angefügt werden.::
+
+    ###
+    ### Block worldwide access to CRIMSy user interface
+    ### Filter rules according to: https://github.com/chaifeng/ufw-docker
+    ### 
+    ###
+    *filter
+    :ufw-user-forward - [0:0]
+    :ufw-docker-logging-deny - [0:0]
+    :DOCKER-USER - [0:0]
+    -A DOCKER-USER -j ufw-user-forward
+
+    #
+    #=====================================================================
+    #
+    # - global access to port 8443
+    # - unlimited traffic among docker containers
+    #
+    -A DOCKER-USER -j RETURN -p tcp --dport 8443
+    -A DOCKER-USER -j RETURN -s 172.16.0.0/12
+
+    #
+    #=====================================================================
+    #
+    # repeat the following two lines for each subnet to allow internal 
+    # HTTP / HTTPS traffic (HTTP will be redirected to HTTPS by proxy container)
+    # Replace '192.168.1.80/28' by the actual subnet address.
+    #
+    -A DOCKER-USER -j RETURN -p tcp -s 192.168.1.80/28 --dport 80
+    -A DOCKER-USER -j RETURN -p tcp -s 192.168.1.80/28 --dport 443
+
+    #
+    #=====================================================================
+    #
+    # reject or log malformed traffic
+    #
+    -A DOCKER-USER -p udp -m udp --sport 53 --dport 1024:65535 -j RETURN
+
+    -A DOCKER-USER -j ufw-docker-logging-deny -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -d 172.16.0.0/12
+    -A DOCKER-USER -j ufw-docker-logging-deny -p udp -m udp --dport 0:32767 -d 172.16.0.0/12
+
+    -A DOCKER-USER -j RETURN
+
+    -A ufw-docker-logging-deny -m limit --limit 3/min --limit-burst 10 -j LOG --log-prefix "[UFW DOCKER BLOCK] "
+    -A ufw-docker-logging-deny -j DROP
+
+    COMMIT
+
+
+Bislang liegen nur Anforderungen und Betriebserfahrungen mit dem IPv4-Protokoll vor. Der Betrieb in IPv6-Netzen sollte prinzipiell möglich sein. Mangels Testmöglichkeiten und aufgrund der zusätzlichen Komplexität wurde bislang von Versuchen in diese Richtung abgesehen. 
+
+.. warning:: Administratoren müssen durch Einführung entsprechender Regeln sicherstellen, dass sich durch das IPv6-Protokoll keine Angriffsvektoren (z.B. bezüglich unkontrollierter Datenabflüsse) ergeben.
 
 
 Systemeinstellungen

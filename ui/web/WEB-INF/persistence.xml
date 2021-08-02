@@ -23,7 +23,7 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
     <persistence-unit name="de.ipb_halle.lbac">
-        <description>LBAC ui</description>
+        <description>CRIMSy ui</description>
 
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>uiDS</jta-data-source>
@@ -44,7 +44,7 @@
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TissueEntity</class>
-        <class>de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.MaterialCompositionEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity</class>
@@ -58,6 +58,7 @@
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.storage.StorageEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.CompositionEntity</class>
         <class>de.ipb_halle.lbac.material.structure.StructureEntity</class>
         <class>de.ipb_halle.lbac.material.structure.StructureHistEntity</class>
         <class>de.ipb_halle.lbac.device.job.JobEntity</class>
