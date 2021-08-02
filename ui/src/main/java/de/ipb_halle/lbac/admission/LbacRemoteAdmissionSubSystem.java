@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.admission;
 
 public class LbacRemoteAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
+    private static final long serialVersionUID = 1L;
+
     private final AdmissionSubSystemType subSystemType;
 
     /**
@@ -30,11 +32,14 @@ public class LbacRemoteAdmissionSubSystem extends AbstractAdmissionSubSystem {
 
     /**
      * authenticate a user
-     * @param u the user 
+     *
+     * @param u the user
      * @param cred the credential string
      * @param bean the current sessions UserBean
-     * @return Always false; authenticating remote users is currently not implemented. 
+     * @return Always false; authenticating remote users is currently not
+     * implemented.
      */
+    @Override
     public boolean authenticate(User u, String cred, UserBean bean) {
         return false;
     }
@@ -42,16 +47,20 @@ public class LbacRemoteAdmissionSubSystem extends AbstractAdmissionSubSystem {
     /**
      * @return the AdmissionSubSystemType implemented by this class
      */
-    public AdmissionSubSystemType getSubSystemType() { return this.subSystemType; }
+    @Override
+    public AdmissionSubSystemType getSubSystemType() {
+        return this.subSystemType;
+    }
 
     /**
      * lookup a user in the directory
+     *
      * @param login the login name (or email address)
      * @param bean the current sessions UserBean
      * @return always null; lookup of remote users is not implemented.
      */
+    @Override
     public User lookup(String login, UserBean bean) {
         return null;
     }
 }
-

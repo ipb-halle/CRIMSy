@@ -23,46 +23,52 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
->
+      xmlns:f="http://xmlns.jcp.org/jsf/core"          
+      xmlns:p="http://primefaces.org/ui">
 
-<h:body>
-    <ui:composition>
-        <b:panelGrid colSpans="9,3" size="sm" id="systemSettingPanel">
-            <b:form id="systemSettings" horizontal="true" method="post">
-                <b:panel title="#{msgs.SystemSettings}" collapsible="false" look="info">
-
-                    <ui:repeat id="systemSettingsString" value="#{systemSettings.stringSettings}" var="p" varStatus="status">
-                        <b:inputText
+    <h:body>
+        <ui:composition>
+            <b:panelGrid colSpans="9,3" size="sm" id="systemSettingPanel">
+                <b:form id="systemSettings" horizontal="true" method="post">
+                    <b:panel title="#{msgs.SystemSettings}" collapsible="false" look="info">
+                        <ui:repeat id="systemSettingsString" value="#{systemSettings.stringSettings}" var="p" varStatus="status">
+                            <b:inputText
                                 label="#{msgs[p.key]}:"
                                 title="#{msgs[p.key.concat('_detail')]}"
                                 labelColMd="4" labelStyle="text-align:right;" value="#{p.value}" colMd="7">
-                            <f:facet name="append">
-                                <b:iconAwesome name="th-list"/>
-                            </f:facet>
-                        </b:inputText>
-                    </ui:repeat>
+                                <f:facet name="append">
+                                    <b:iconAwesome name="th-list"/>
+                                </f:facet>
+                            </b:inputText>
+                        </ui:repeat>
 
-                    <ui:repeat id="systemSettingsBool" value="#{systemSettings.boolSettings}" var="p" varStatus="status">
-                        <b:selectBooleanCheckbox value="#{p.value}"
-                          label="#{msgs[p.key]}:"
-                          labelColMd="4"
-                          colMd="7"
-                          caption="#{msgs[p.key.concat('_detail')]}" ajax="false">
+                        <ui:repeat id="systemSettingsBool" value="#{systemSettings.boolSettings}" var="p" varStatus="status">
+                            <b:selectBooleanCheckbox value="#{p.value}"
+                                                     label="#{msgs[p.key]}:"
+                                                     labelColMd="4"
+                                                     colMd="7"
+                                                     caption="#{msgs[p.key.concat('_detail')]}" ajax="false">
 
-                            <f:facet name="append">
-                                <b:iconAwesome name="th-list"/>
-                            </f:facet>
-                        </b:selectBooleanCheckbox>
-                    </ui:repeat>
+                                <f:facet name="append">
+                                    <b:iconAwesome name="th-list"/>
+                                </f:facet>
+                            </b:selectBooleanCheckbox>
+                        </ui:repeat>
+                        <b:inputTextarea
+                            label="#{msgs.customDsgvoText}: "
+                            labelColMd="4"
+                            labelStyle="text-align:right;"
+                            colMd="7"
+                            value="#{systemSettings.customDsgvoString}">     
+                        </b:inputTextarea>  
+                        <b:column styleClass="text-center">
+                            <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
+                                             action="#{systemSettings.save}" value="#{msgs.SystemSettingsSave}"/>
+                        </b:column>
 
-                    <b:column styleClass="text-center">
-                        <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
-                                         action="#{systemSettings.save}" value="#{msgs.SystemSettingsSave}"/>
-                    </b:column>
-                </b:panel>
-            </b:form>
-        </b:panelGrid>
-    </ui:composition>
-</h:body>
+                    </b:panel>
+                </b:form>
+            </b:panelGrid>
+        </ui:composition>
+    </h:body>
 </html>

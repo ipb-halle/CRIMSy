@@ -23,25 +23,33 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
 
     <h:body>
         <ui:composition>
             <b:form method="post" id="logInFormId">
                 <h:panelGrid id="loginPanelGrid" 
-                        colSpans="6,6" 
-                        size="sm" 
-                        rendered="#{userBean.currentAccount.isPublicAccount()}" 
-                        styleClass="centerPanel">
+                             colSpans="6,6" 
+                             size="sm" 
+                             rendered="#{userBean.currentAccount.isPublicAccount()}" 
+                             styleClass="centerPanel">
+
                     <b:panel id="loginPanel"
-                            title="#{msgs.admission_loginForm_title}" 
-                            collapsible="false" 
-                            look="info">
+                             title="#{msgs.admission_loginForm_title}" 
+                             collapsible="false" 
+                             look="info">
+                        <b:column 
+                            styleClass="text-center">
+                            <p:outputLabel 
+                                value="#{userBean.getCustomLogInInfo()}"
+                                styleClass="margin: 5px;width: 100%;text-align: center;font-weight:bold;"/>
+                        </b:column>
                         <b:inputText id="loginLogin"
-                                styleClass="tstLoginLogin" 
-                                value="#{userBean.login}" 
-                                label="#{msgs.admission_loginForm_login}" 
-                                required="true">
+                                     styleClass="tstLoginLogin" 
+                                     value="#{userBean.login}" 
+                                     label="#{msgs.admission_loginForm_login}" 
+                                     required="true">
                             <f:facet name="prepend">
                                 <b:icon name="envelope"/>
                             </f:facet>
@@ -61,11 +69,11 @@
                         </b:inputSecret>
                         <b:message for="@previous"/>
                         <b:column id="loginCmdBtnCol"
-                                styleClass="text-center">
+                                  styleClass="text-center">
                             <b:commandButton id="loginCmdBtn"
-                                    styleClass="tstLoginCmdBtn"
-                                    action="#{userBean.actionLogin}" 
-                                    value="#{msgs.admission_loginForm_button}"/>
+                                             styleClass="tstLoginCmdBtn"
+                                             action="#{userBean.actionLogin}" 
+                                             value="#{msgs.admission_loginForm_button}"/>
                         </b:column>
                         <h:outputText styleClass="tinyGrayText" value="#{msgs.admission_loginForm_DSGVO_1}" />
                         <h:outputLink value="dsgvo.xhtml" target="_blank">

@@ -24,7 +24,6 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Random;
-import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,7 +41,7 @@ public class CredentialHandler implements Serializable {
     private final static int DEFAULT_ITERATIONS = 2;
     private final static int DEFAULT_SALT_LENGTH = 8;
     private Logger logger = LogManager.getLogger(CredentialHandler.class);
-    private static Random random;
+    private static Random random = new SecureRandom();
     private static Charset charset = Charset.forName("UTF-8");
     private static final long serialVersionUID = 1L;
     private String digestAlgorithm;
@@ -53,11 +52,6 @@ public class CredentialHandler implements Serializable {
         this.digestAlgorithm = DEFAULT_ALGORITHM;
         this.iterations = DEFAULT_ITERATIONS;
         this.saltLength = DEFAULT_SALT_LENGTH;
-        try {
-            CredentialHandler.random = SecureRandom.getInstanceStrong();
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-        }
     }
 
     /**

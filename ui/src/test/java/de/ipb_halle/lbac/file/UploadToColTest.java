@@ -27,7 +27,6 @@ import de.ipb_halle.lbac.file.mock.AsyncContextMock;
 import de.ipb_halle.lbac.file.mock.HttpServletResponseMock.WriterMock;
 import de.ipb_halle.lbac.file.mock.UploadToColMock;
 import java.io.File;
-import java.io.FileInputStream;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -115,7 +114,7 @@ public class UploadToColTest extends TestBase {
     @Test
     public void test002_fileUploadTestNoCollectionFound() throws Exception {
         UploadToColMock upload = new UploadToColMock(
-               FilterDefinitionInputStreamFactory.getFilterDefinition(),
+                FilterDefinitionInputStreamFactory.getFilterDefinition(),
                 fileEntityService,
                 publicUser,
                 new AsyncContextMock(
@@ -130,6 +129,48 @@ public class UploadToColTest extends TestBase {
         String json = writermock.getJson();
         Assert.assertEquals("{\"success\":false,\"error\":\"Could not find collection with name test-coll-does-not-exist\"}", json);
 
+    }
+
+    @Test
+    public void test003_fileUploadWithSmallNumbers() throws Exception {
+        createAndSaveNewCol();
+        UploadToColMock upload = new UploadToColMock(
+                FilterDefinitionInputStreamFactory.getFilterDefinition(),
+                fileEntityService,
+                publicUser,
+                new AsyncContextMock(
+                        new File(examplaDocsRootFolder + "ShotNumberExample.docx"),
+                        col.getName()),
+                collectionService,
+                termVectorEntityService,
+                "target/test-classes/collections");
+
+        upload.run();
+        Map<String, Integer> terms = termVectorEntityService.getTermVector(Arrays.asList(upload.fileId), 100);
+        Assert.assertEquals(4, terms.size());
+
+    }
+
+    @Test
+    public void test004_regExForNumbers() {
+        String replacement = " ";
+        String regEx = "(\\[|<||-|,| |^|\\(|\\{)\\d+([\\W])*\\d*( |$|\\)|,|\\}|-|\\.|\\%|\\]|>)";
+
+        Assert.assertEquals(" ", " 1.23 ".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", "1.23 ".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", " 1-23 ".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", " 1,23 ".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", "(1,23)".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", "{1,23}".replaceAll(regEx, replacement));
+        Assert.assertEquals("  ", "<1,23> ".replaceAll(regEx, replacement));
+        Assert.assertEquals("386er", "386er".replaceAll(regEx, replacement));
+        Assert.assertEquals("  ", "(1,23, 2-12".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", "18598-18604.".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", "8947–8950.".replaceAll(regEx, replacement));
+        Assert.assertEquals(" is a good number ", "1,23 is a good number 2,7".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", " 963.5590,".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", "100%".replaceAll(regEx, replacement));
+        Assert.assertEquals(" ", "[86,85]".replaceAll(regEx, replacement));
     }
 
     @Deployment

@@ -23,38 +23,35 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * Defines the different subsystems available for user, group and 
- * permission management and authentication / authorization.
+ * Defines the different subsystems available for user, group and permission
+ * management and authentication / authorization.
  *
- * DO NOT CHANGE THE ORDER OF ENUM VALUES AS THIS WOULD BREAK 
- * EXISTING INSTALLATIONS. APPENDING ADDITIONAL VALUES IS OKAY THOUGH.
+ * DO NOT CHANGE THE ORDER OF ENUM VALUES AS THIS WOULD BREAK EXISTING
+ * INSTALLATIONS. APPENDING ADDITIONAL VALUES IS OKAY THOUGH.
  *
- * BUILTIN is for internal or anonymous entities which should not 
- * be accessible to managment (public account, owner account, ...). 
- * 
+ * BUILTIN is for internal or anonymous entities which should not be accessible
+ * to managment (public account, owner account, ...).
+ *
  * LOCAL is for all accounts, groups, etc. managed on the local node
- * 
+ *
  * LDAP is for all accounts or groups managed by LDAP
  *
- * LBAC_REMOTE is for all accounts or groups managed by a remote instance of 
+ * LBAC_REMOTE is for all accounts or groups managed by a remote instance of
  * Cloud Resource & Information Management System (CRIMSy)
  */
-
 public enum AdmissionSubSystemType implements Serializable {
 
     BUILTIN(0),
-    LOCAL(1), 
+    LOCAL(1),
     LDAP(2),
     LBAC_REMOTE(3);
 
     private final int index;
-    private static final Map<Integer, AdmissionSubSystemType> int2Enum    = Stream.of(values()).collect(toMap(e -> e.index, e -> e));
-    private static final Map<String, AdmissionSubSystemType>  string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
+    private static final Map<Integer, AdmissionSubSystemType> int2Enum = Stream.of(values()).collect(toMap(e -> e.index, e -> e));
+    private static final Map<String, AdmissionSubSystemType> string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
 
- 
     /**
-     * constructor
-     * This enum is persisted by an index value
+     * constructor This enum is persisted by an index value
      */
     AdmissionSubSystemType(int i) {
         this.index = i;
@@ -70,21 +67,21 @@ public enum AdmissionSubSystemType implements Serializable {
     /**
      * @return the index
      */
-    public int getIndex() { 
-        return this.index; 
+    public int getIndex() {
+        return this.index;
     }
 
     /**
      * @return an instance of the respective AdmissionSubSystem
      */
     public IAdmissionSubSystem getInstance() {
-        switch(this) {
+        switch (this) {
             case BUILTIN:
                 return new BuiltinAdmissionSubSystem();
             case LOCAL:
                 return new LocalAdmissionSubSystem();
             case LDAP:
-                return new LdapAdmissionSubSystem();
+                return new LdapAdmissionSubSystem(new LdapHelper());
             case LBAC_REMOTE:
                 return new LbacRemoteAdmissionSubSystem();
         }
@@ -92,4 +89,3 @@ public enum AdmissionSubSystemType implements Serializable {
     }
 
 }
-

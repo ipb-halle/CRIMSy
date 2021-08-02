@@ -19,7 +19,7 @@ package de.ipb_halle.lbac.material.common.bean;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserBeanMock;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;

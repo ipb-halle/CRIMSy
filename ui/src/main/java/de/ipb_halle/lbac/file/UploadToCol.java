@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import de.ipb_halle.lbac.file.save.AttachmentHolder;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.InputStream;
+import java.io.PrintWriter;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -116,24 +117,22 @@ public class UploadToCol implements Runnable {
     @Override
     public void run() {
         try {
-            try {
-                fileId = fileSaver.saveFile(
-                        getAttachmentTarget(),
-                        getFileNameFromRequest(),
-                        request.getPart(HTTP_PART_FILENAME).getInputStream());
-                fileAnalyser.analyseFile(fileSaver.getFileLocation().toString(), fileId);
-                saveTermVector(fileAnalyser.getTermVector());
-                saveOriginalWords(fileAnalyser.getWordOrigins());
-                fileSaver.updateLanguageOfFile(fileAnalyser.getLanguage());
-                response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
-            } catch (Exception e) {
-                response.getWriter().write(createJsonErrorResponse(e.getMessage()));
-            } finally {
-                asyncContext.complete();
-            }
-        } catch (IOException e2) {
-            logger.error("Could not write response message", ExceptionUtils.getStackTrace(e2));
+            fileId = fileSaver.saveFile(
+                    getAttachmentTarget(),
+                    getFileNameFromRequest(),
+                    request.getPart(HTTP_PART_FILENAME).getInputStream());
+            fileAnalyser.analyseFile(fileSaver.getFileLocation().toString(), fileId);
+            saveTermVector(fileAnalyser.getTermVector());
+            saveOriginalWords(fileAnalyser.getWordOrigins());
+            fileSaver.updateLanguageOfFile(fileAnalyser.getLanguage());
+            response.getWriter().write(createJsonSuccessResponse(fileId, getFileNameFromRequest()));
+        } catch (Exception e) {
+            writeErrorMessage(e);
+            logger.error(ExceptionUtils.getStackTrace(e));
+        } finally {
+            asyncContext.complete();
         }
+
     }
 
     protected void saveOriginalWords(List<StemmedWordOrigin> originals) {
@@ -142,6 +141,14 @@ public class UploadToCol implements Runnable {
 
     protected void saveTermVector(List<TermVector> termVector) {
         fileEntityService.saveTermVectors(termVector);
+    }
+
+    private void writeErrorMessage(Exception outerException) {
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write(createJsonErrorResponse(outerException.getMessage()));
+        } catch (IOException ex) {
+            logger.error(ExceptionUtils.getStackTrace(ex));
+        }
     }
 
 }

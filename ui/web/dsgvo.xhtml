@@ -33,20 +33,35 @@
         </p><p>
             <b>Name und Kontaktdaten des Verantwortlichen:</b><br/>
             <h:outputText value="#{systemSettings.getString('SETTING_GDPR_CONTACT')}" escape="False" >
-                <f:converter converterId="InputConverter"/>
+                <f:converter converterId="RichTextConverter"/>
             </h:outputText>
         </p><p>
             Bei Fragen zum Datenschutz können Sie sich an den Betreiber Ihres Knotens, Ihre IT-Abteilung, 
             den Datenschutzbeauftragten Ihrer Einrichtung oder schließlich die Entwickler der Software wenden.
         </p><p>
-            <b>Entwickler:</b><br/>
-            Dr. Frank Broda (fbroda@ipb-halle.de, Tel. +49-345-5582-1361)<br/>
-            Fabian Mauz (fmauz@ipb-halle.de)<br/><br/>
-            <b>Postanschrift:</b><br/>
-            Leibniz-Institut für Pflanzenbiochemie<br/>
-            Abteilung Natur- und Wirkstoffchemie<br/>
-            Weinberg 3<br/>
-            06120 Halle (Saale)<br/>
+            <b>Homepage des Verantwortlichen:</b><br/>
+            <h:outputLink 
+                rendered="#{systemSettings.hasHomePage()}"
+                value="#{systemSettings.getHomePage()}">
+                Homepage
+            </h:outputLink><br/><br/>
+        </p><p>
+            <b>Zusätzliche Erklärung des Verantwortlichen:</b><br/>
+            <h:outputText 
+                value="#{systemSettings.getString('SETTING_DSGVO_CUSTOM_TEXT')}"
+                escape="False">
+
+                <f:converter converterId="RichTextConverter"/>
+
+            </h:outputText><br/><br/>
+        </p><p>
+            <b>Projekt-Homepage:</b><br/>
+            <h:outputLink             
+                value="https://github.com/ipb-halle/CRIMSy/">
+                https://github.com/ipb-halle/CRIMSy/
+            </h:outputLink>
+
+            <br/><br/>
         </p>
 
         <h2>Allgemeines zur Datenverarbeitung</h2>

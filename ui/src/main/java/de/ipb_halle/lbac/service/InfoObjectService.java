@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.entity.InfoObject;
 import de.ipb_halle.lbac.entity.InfoObjectEntity;
 
-
 import java.io.Serializable;
 
 import javax.ejb.Stateless;
@@ -30,7 +29,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.logging.log4j.Logger;import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 @Stateless
 public class InfoObjectService implements Serializable {
@@ -53,10 +53,11 @@ public class InfoObjectService implements Serializable {
     }
 
     /**
-     * Obtain the InfoObject for the given key
+     * Obtain the InfoObject for the given key. If the object is not present in
+     * db null will be returned
      *
      * @param key - String key
-     * @return InfoObject (key, value)
+     * @return InfoObject (key, value) or null if key is not present in db
      */
     public InfoObject loadByKey(String key) {
 

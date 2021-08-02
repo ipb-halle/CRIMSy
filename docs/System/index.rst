@@ -9,7 +9,7 @@ Systemarchitektur Handbuch
    02_Aufgaben.md
    03_Randbedingungen.md
    04_Fachkontext.md
-   05_TechnischerKontext.md
+   05_TechnischerKontext.rst
    06_1_Bausteinsicht.md
    06_2_Bausteinsicht.md
    06_3_Bausteinsicht.rst

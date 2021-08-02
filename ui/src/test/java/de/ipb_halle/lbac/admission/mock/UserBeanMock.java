@@ -15,7 +15,15 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.admission;
+package de.ipb_halle.lbac.admission.mock;
+
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.LdapProperties;
+import de.ipb_halle.lbac.admission.MemberService;
+import de.ipb_halle.lbac.admission.MembershipService;
+import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.admission.UserBean;
+import de.ipb_halle.lbac.service.NodeService;
 
 /**
  *
@@ -33,4 +41,25 @@ public class UserBeanMock extends UserBean {
     public User getCurrentAccount() {
         return currentAccount;
     }
+
+    public void setLdapProperties(LdapProperties properties) {
+        this.ldapProperties = properties;
+    }
+
+    public void setNodeService(NodeService service) {
+        this.nodeService = service;
+    }
+
+    public void setMemberService(MemberService service) {
+        this.memberService = service;
+    }
+
+    public void setMemberShipService(MembershipService service) {
+        this.membershipService = service;
+    }
+
+    public void setGlobalAdmissionContext(GlobalAdmissionContext context) {
+        this.globalAdmissionContext = context;
+    }
+
 }
