@@ -38,7 +38,6 @@ public class MaterialCompositionBean implements Serializable {
     private CompositionType choosenType = CompositionType.EXTRACT;
 
     public List<CompositionType> getCompositionTypes() {
-        logger.info("got values");
         return Arrays.asList(CompositionType.values());
     }
 
@@ -49,5 +48,7 @@ public class MaterialCompositionBean implements Serializable {
     public void setChoosenType(CompositionType choosenType) {
         this.choosenType = choosenType;
     }
+    
+    
 
 }
