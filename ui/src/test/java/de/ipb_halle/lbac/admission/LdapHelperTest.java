@@ -32,7 +32,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.util.ldap.LDAPEmbeddedServer;
 
 /**
  * NOTE: This test runs NOT within an Arquillian context and therefore ignores
@@ -76,15 +75,6 @@ public class LdapHelperTest extends TestBase {
         LdapProperties props = new LdapProperties(ieList, map);
         instance = new LdapHelper();
         instance.setLdapProperties(props);
-    }
-
-    @Test
-    public void hui() throws Exception {
-        LDAPEmbeddedServer.main(null);
-        LdapHelper helper = new LdapHelper();
-        helper.setLdapProperties(properties);
-        helper.authenticate("admin", "admin");
-
     }
 
     @Test
