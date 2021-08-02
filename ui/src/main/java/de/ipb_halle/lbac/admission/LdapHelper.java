@@ -173,9 +173,12 @@ public class LdapHelper implements Serializable {
 
     private NamingEnumeration<?> getMemberOfEnumeration(Attributes attrs) {
         try {
-            NamingEnumeration<?> groups = ((BasicAttribute) attrs.get(this.ldapProperties.get("LDAP_ATTR_MEMBER_OF"))).getAll();
-            return groups;
-        } catch (NamingException e) {
+            BasicAttribute basicAttr = (BasicAttribute) attrs.get(this.ldapProperties.get("LDAP_ATTR_MEMBER_OF"));
+            if (basicAttr != null) {
+                return basicAttr.getAll();
+            }
+            return null;
+        } catch (Exception e) {
             logger.error("Could not fetch 'LDAP_ATTR_MEMBER_OF' from LDAP");
             logger.error(ExceptionUtils.getStackTrace(e));
             return null;
