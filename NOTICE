@@ -1,7 +1,7 @@
 Cloud Resource and Information Management System
 (formerly: Leibniz Bioactives Cloud)
 
-Copyright 2015-2020 Leibniz-Institut f. Pflanzenbiochemie
+Copyright 2015-2021 Leibniz-Institut f. Pflanzenbiochemie
                     Weinberg 3
                     06120 Halle (Saale)
                     Deutschland
@@ -11,6 +11,7 @@ The following people have contributed code to this project:
 - Frank Broda (fbroda@ipb-halle.de)
 - Henrik Teuscher
 - Fabian Mauz (fmauz@ipb-halle.de)
+- Frank Lange
 
 
 In addition to libraries linked with this product, this product 
