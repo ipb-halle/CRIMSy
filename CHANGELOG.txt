@@ -1,8 +1,8 @@
 2.0.1 - 2021-08-02
 		* Minor BugFixes and features
-			- Node depent DSGVO text can be added via the admin user
-			- LDAP memberships can be ignored
-			- Homepage Link can be set in DSGVO			
+                        - support for customizable text fragments in the DSGVO (GDPR) declaration 
+                        - support for LDAP servers, which do not support management of group memberships
+                        - a link to the homepage of the hosting organization can be displayed in DSGVO declaration
 
 2.0.0 - 2021-07-13
 		* Feature: Basic LIMS functionalities added
