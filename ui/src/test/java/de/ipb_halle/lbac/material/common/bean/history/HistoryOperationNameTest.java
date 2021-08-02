@@ -85,7 +85,7 @@ public class HistoryOperationNameTest extends TestBase {
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
 
-        StorageInformationBuilder storageInfoBuilder = new StorageInformationBuilder(new MessagePresenterMock(), materialService);
+        StorageInformationBuilder storageInfoBuilder = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService);
         instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(), storageInfoBuilder, null, new ArrayList<>());
     }
 

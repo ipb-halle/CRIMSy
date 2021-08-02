@@ -285,10 +285,12 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
+
                 new StorageInformation(), CompositionType.EXTRACT);
         composition.addComponent(materialService.loadMaterialById(materialid1), 0d);
         composition.addComponent(materialService.loadMaterialById(materialid2), 0d);
         materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(), publicUser);
+
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");

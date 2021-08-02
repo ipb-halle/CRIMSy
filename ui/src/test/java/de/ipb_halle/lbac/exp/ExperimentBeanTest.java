@@ -117,7 +117,7 @@ public class ExperimentBeanTest extends TestBase {
                 .setMaterialAgent(materialAgentMock)
                 .setMemberService(memberService)
                 .setProjectService(projectService)
-                .setMessagePresenter(new MessagePresenterMock())
+                .setMessagePresenter(MessagePresenterMock.getInstance())
                 .setItemAgent(itemAgentMock);
         experimentBean.setCurrentAccount(new LoginEvent(publicUser));
 

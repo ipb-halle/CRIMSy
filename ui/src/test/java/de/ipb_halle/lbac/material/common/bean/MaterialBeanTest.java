@@ -137,7 +137,7 @@ public class MaterialBeanTest extends TestBase {
         materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
 
         instance.setMaterialNameBean(new MaterialNameBean());
-        instance.setMessagePresenter(new MessagePresenterMock());
+        instance.setMessagePresenter(MessagePresenterMock.getInstance());
         instance.getMaterialEditState().setMaterialToEdit(material);
         instance.getMaterialEditState().setMaterialBeforeEdit(material);
         instance.setMaterialService(materialService);

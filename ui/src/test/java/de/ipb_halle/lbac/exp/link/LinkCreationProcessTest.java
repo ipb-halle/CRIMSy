@@ -87,7 +87,7 @@ public class LinkCreationProcessTest extends TestBase {
                 .setProjectName("LinkCreationProcessTest_Project")
                 .setType(ProjectType.BIOCHEMICAL_PROJECT)
                 .createAndSaveProject(publicUser);
-        experimentBean = new ExperimentBean(itemAgent, materialAgent, context, projectService, expService, new MessagePresenterMock(), expRecService);
+        experimentBean = new ExperimentBean(itemAgent, materialAgent, context, projectService, expService, MessagePresenterMock.getInstance(), expRecService);
         LoginEvent event = new LoginEvent(publicUser);
         experimentBean.setCurrentAccount(event);
         linkCreationProcess = new LinkCreationProcess(materialAgent, itemAgent, experimentBean);

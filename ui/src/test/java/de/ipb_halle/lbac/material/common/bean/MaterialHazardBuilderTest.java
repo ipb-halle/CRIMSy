@@ -76,21 +76,21 @@ public class MaterialHazardBuilderTest extends TestBase {
     @Test
     public void test001_checkPossibleHazardCategories() {
         //Check Structure
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, structure.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, structure.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Biomaterial
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.GHS.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.RADIOACTIVITY.toString()));
         //Check Consumable
-        builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.BSL.toString()));
         Assert.assertTrue(builder.isHazardCategoryRendered(HazardType.Category.CUSTOM.toString()));
         Assert.assertFalse(builder.isHazardCategoryRendered(HazardType.Category.STATEMENTS.toString()));
@@ -100,7 +100,7 @@ public class MaterialHazardBuilderTest extends TestBase {
 
     @Test
     public void test002_getImageLocation() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertEquals(
                 "img/hazards/GHS01.png",
                 builder.getImageLocation(new HazardType(1, true, "GHS01", 1)));
@@ -108,7 +108,7 @@ public class MaterialHazardBuilderTest extends TestBase {
 
     @Test
     public void test003_getHazardsOfType() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         List<HazardType> hazards = builder.getHazardsOfType(HazardType.Category.BSL.toString());
         Assert.assertEquals(4, hazards.size());
         Assert.assertEquals(12, hazards.get(0).getId());
@@ -138,7 +138,7 @@ public class MaterialHazardBuilderTest extends TestBase {
 
     @Test
     public void test004_createHazardMap() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertTrue(builder.buildHazardsMap().isEmpty());
         HazardType explosive = hazardService.getHazardOf(HazardType.Category.GHS).get(0);
         builder.setSelectedHazards(new HazardType[]{explosive});
@@ -165,14 +165,14 @@ public class MaterialHazardBuilderTest extends TestBase {
         types.put(hazardService.getHazardOf(HazardType.Category.GHS).get(0), null);
         types.put(hazardService.getHazardOf(HazardType.Category.CUSTOM).get(0), "customText");
         types.put(hazardService.getHazardOf(HazardType.Category.STATEMENTS).get(0), "h-statement");
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, types, new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, types, MessagePresenterMock.getInstance());
 
         Assert.assertEquals(3, builder.buildHazardsMap().size());
     }
 
     @Test
     public void test006_createHazardMapWithBioSavetyLevel() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Map<HazardType, String> hazards = builder.buildHazardsMap();
         Assert.assertEquals(0, hazards.size());
         //set level 0
@@ -205,28 +205,28 @@ public class MaterialHazardBuilderTest extends TestBase {
     public void test007_createBuilderWithSavetyLevel() {
         Map<HazardType, String> hazards = new HashMap<>();
         hazards.put(hazardService.getHazardById(12), null);
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
         Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(1), builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(13), null);
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
         Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(2), builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(14), null);
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
         Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(3), builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(15), null);
-        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, new MessagePresenterMock());
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
         Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(4), builder.getBioSavetyLevel());
     }
 
     @Test
     public void test008_getImageLocationOfBls() {
-        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), new MessagePresenterMock());
+        MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, consumable.getType(), true, new HashMap<>(), MessagePresenterMock.getInstance());
         Assert.assertEquals("img/hazards/Empty.png", builder.getImageLocationOfBls(0));
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(1));
         Assert.assertEquals("img/hazards/BIOHAZARD.png", builder.getImageLocationOfBls(2));

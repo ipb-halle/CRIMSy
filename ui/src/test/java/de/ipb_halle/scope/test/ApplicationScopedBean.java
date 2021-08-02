@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,31 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.container.mock;
+package de.ipb_halle.scope.test;
 
-import de.ipb_halle.lbac.container.bean.EditInputValidator;
-import de.ipb_halle.lbac.container.service.ContainerService;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-/**
- *
- * @author fmauz
- */
-public class EditInputValidatorMock extends EditInputValidator {
+@Named
+@ApplicationScoped
+public class ApplicationScopedBean {
+    private String message;
 
-    public EditInputValidatorMock(ContainerService containerService, String originalLabel) {
-        super(containerService, originalLabel);
-        this.errorMessagePresenter = MessagePresenterMock.getInstance();
+    @Inject
+    private OtherBean bean;
+
+    @PostConstruct
+    public void init() {
+        message = "Hi!";
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public OtherBean getBean() {
+        return bean;
+    }
 }

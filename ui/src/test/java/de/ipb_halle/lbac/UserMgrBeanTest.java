@@ -45,7 +45,7 @@ public class UserMgrBeanTest extends TestBase {
 
     @Test
     public void test001_createNewUser() {
-        MessagePresenterMock presenterMock = new MessagePresenterMock();
+        MessagePresenterMock presenterMock = MessagePresenterMock.getInstance();
         userMgrBean = new UserMgrBean(
                 nodeService,
                 memberService,

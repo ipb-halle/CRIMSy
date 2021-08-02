@@ -625,11 +625,11 @@ public class MaterialServiceTest extends TestBase {
 
     @Test
     public void test009_saveLoadMaterialComposition() {
-
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
         struture1.getNames().set(0, new MaterialName("First Structure","de",0));
         Structure struture2 = creationTools.createStructure(project1);
+
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
         instance.saveMaterialToDB(struture2, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
 
@@ -638,6 +638,7 @@ public class MaterialServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
+
                 new StorageInformation(),
                 CompositionType.EXTRACT);
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
