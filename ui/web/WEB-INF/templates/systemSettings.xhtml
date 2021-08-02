@@ -54,19 +54,13 @@
                                 </f:facet>
                             </b:selectBooleanCheckbox>
                         </ui:repeat>
-                        <p:panelGrid>
-                            <p:row>
-                                <p:column>
-                                    <h:outputLabel value="Custom Text"/>
-                                </p:column>
-                                <p:column>
-                                    <b:inputTextarea
-                                        value="#{systemSettings.customDsgvoString}">     
-                                    </b:inputTextarea>  
-                                </p:column>
-                            </p:row>
-                        </p:panelGrid>
-
+                        <b:inputTextarea
+                            label="#{msgs.customDsgvoText}: "
+                            labelColMd="4"
+                            labelStyle="text-align:right;"
+                            colMd="7"
+                            value="#{systemSettings.customDsgvoString}">     
+                        </b:inputTextarea>  
                         <b:column styleClass="text-center">
                             <b:commandButton type="submit" iconAwesome="save" style="margin-right:3px;"
                                              action="#{systemSettings.save}" value="#{msgs.SystemSettingsSave}"/>
