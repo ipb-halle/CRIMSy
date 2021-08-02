@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;

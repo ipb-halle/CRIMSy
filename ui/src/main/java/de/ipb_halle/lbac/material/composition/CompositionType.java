@@ -29,7 +29,14 @@ import java.util.List;
  */
 public enum CompositionType implements Serializable {
 
-    EXTRACT(MaterialType.BIOMATERIAL, MaterialType.STRUCTURE),
+    EXTRACT(
+            MaterialType.BIOMATERIAL,
+            MaterialType.STRUCTURE
+    ),
+    PROTEIN(
+            MaterialType.SEQUENCE,
+            MaterialType.BIOMATERIAL
+    ),
     MIXTURE(MaterialType.STRUCTURE);
 
     private final List<MaterialType> allowedMaterialTypes;
