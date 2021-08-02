@@ -170,4 +170,18 @@ public class SystemSettings implements Serializable {
     public String getCustomDsgvoString() {
         return this.customDsgvoText;
     }
+
+    public boolean hasHomePage() {
+        InfoObject io = infoObjectService.loadByKey(SETTING_INSTITUTION_WEB);
+        return io != null && !io.getValue().isEmpty();
+    }
+
+    public String getHomePage() {
+        InfoObject io = infoObjectService.loadByKey(SETTING_INSTITUTION_WEB);
+        if (io != null) {
+            return io.getValue();
+        } else {
+            return "";
+        }
+    }
 }

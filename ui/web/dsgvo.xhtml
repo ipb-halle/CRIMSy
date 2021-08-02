@@ -49,12 +49,18 @@
             06120 Halle (Saale)<br/>
         </p>
 
+        <h:outputLink 
+            rendered="#{systemSettings.hasHomePage()}"
+            value="#{systemSettings.getHomePage()}">
+            Homepage
+        </h:outputLink>
+
         <h:outputText 
             value="#{systemSettings.getString('SETTING_DSGVO_CUSTOM_TEXT')}"
             escape="False">
-            
+
             <f:converter converterId="RichTextConverter"/>
-            
+
         </h:outputText>
 
         <h2>Allgemeines zur Datenverarbeitung</h2>
