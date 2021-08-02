@@ -184,7 +184,7 @@ public class LdapHelper implements Serializable {
 
     private boolean isMemberOfAttributeSet() {
         return this.ldapProperties.get("LDAP_ATTR_MEMBER_OF") != null
-                && this.ldapProperties.get("LDAP_ATTR_MEMBER_OF").trim().isEmpty();
+                && !this.ldapProperties.get("LDAP_ATTR_MEMBER_OF").trim().isEmpty();
     }
 
     /**
