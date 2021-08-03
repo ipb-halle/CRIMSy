@@ -17,9 +17,11 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
@@ -38,26 +40,61 @@ public class MaterialCompositionBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
+    private List<Material> foundMaterials = new ArrayList<>();
+    private MaterialType choosenMaterialType;
 
     @Inject
     private MessagePresenter presenter;
 
-    private CompositionType choosenType = CompositionType.EXTRACT;
+    private CompositionType choosenCompositionType = CompositionType.EXTRACT;
 
     public List<CompositionType> getCompositionTypes() {
         return Arrays.asList(CompositionType.values());
     }
 
     public CompositionType getChoosenType() {
-        return choosenType;
+        return choosenCompositionType;
     }
 
     public void setChoosenType(CompositionType choosenType) {
-        this.choosenType = choosenType;
+        this.choosenCompositionType = choosenType;
     }
 
-    public MessagePresenter getPresenter() {
-        return presenter;
+    public void actionStartSearch() {
+
+    }
+
+    /**
+     * Switches the current material type. If null , an invalid or not allowed
+     * type is passed, no change is made.
+     *
+     * @param type String value of @see MaterialType
+     */
+    public void actionSwitchMaterialType(String type) {
+        MaterialType t;
+        if (type == null) {
+            logger.error("No null value allowed as argument");
+            return;
+        }
+        try {
+            t = MaterialType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            logger.error(String.format("%s does not match a enum value", type));
+            return;
+        }
+        if (choosenCompositionType.getAllowedTypes().contains(t)) {
+            this.choosenMaterialType = t;
+        } else {
+            logger.error(String.format("CompositionType %s does not allow material type %s", choosenMaterialType, type));
+        }
+    }
+
+    public MaterialType getChoosenMaterialType() {
+        return choosenMaterialType;
+    }
+
+    public List<Material> getFoundMaterials() {
+        return foundMaterials;
     }
 
     public boolean isMaterialTypePanelDisabled(String materialTypeString) {
@@ -65,7 +102,7 @@ public class MaterialCompositionBean implements Serializable {
         if (type == null) {
             return false;
         }
-        return !choosenType.getAllowedTypes().contains(type);
+        return !choosenCompositionType.getAllowedTypes().contains(type);
     }
 
 }

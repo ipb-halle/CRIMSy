@@ -106,6 +106,22 @@ public class MaterialCompositionBeanTest extends TestBase {
         Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
     }
 
+    @Test
+    public void test003_switchMaterialType() {
+        bean.setChoosenType(CompositionType.MIXTURE);
+        bean.actionSwitchMaterialType(MaterialType.STRUCTURE.toString());
+        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        //Materialtype not allowed by Composition type
+        bean.actionSwitchMaterialType(MaterialType.SEQUENCE.toString());
+        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        //Materialtype not valide 
+        bean.actionSwitchMaterialType("no valide type");
+        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+        //Materialtype null
+        bean.actionSwitchMaterialType(null);
+        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
