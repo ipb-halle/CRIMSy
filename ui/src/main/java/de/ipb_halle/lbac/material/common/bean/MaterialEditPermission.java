@@ -20,10 +20,8 @@ package de.ipb_halle.lbac.material.common.bean;
 import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.ACPermission;
 import static de.ipb_halle.lbac.admission.ACPermission.permEDIT;
-import de.ipb_halle.lbac.material.common.MaterialDetailRight;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import java.io.Serializable;
-import java.util.List;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +31,8 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class MaterialEditPermission implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -65,8 +65,8 @@ public class MaterialEditPermission implements Serializable {
         return bean.getMaterialEditState().getCurrentVersiondate() != null;
     }
 
-    public boolean isFormulaAndMassesInputsEnabled() {
-        return !bean.isAutoCalcFormularAndMasses() && bean.getMode() != MaterialBean.Mode.HISTORY;
+    public boolean isFormulaAndMassesInputsDisabled() {
+        return !bean.isAutoCalcFormularAndMasses() || bean.getMode() == MaterialBean.Mode.HISTORY;
     }
 
     /**
@@ -78,7 +78,6 @@ public class MaterialEditPermission implements Serializable {
      * @return
      */
     private boolean isOwnerOrPermitted(MaterialDetailType type, ACPermission permission) {
-        //ACList aclist = bean.getMaterialEditState().getMaterialToEdit().getDetailRight(type);
         ACList aclist = bean.getMaterialEditState().getMaterialToEdit().getACList();
         boolean userHasEditRight = aclist != null && bean.getAcListService().isPermitted(permission, aclist, bean.getUserBean().getCurrentAccount());
         boolean userIsOwner = bean.getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(bean.getUserBean().getCurrentAccount().getId());
@@ -101,15 +100,9 @@ public class MaterialEditPermission implements Serializable {
             MaterialDetailType type = MaterialDetailType.valueOf(typeName);
             boolean materialGotDetail = bean.getCurrentMaterialType().getPossibleDetailTypes().contains(type);
 
-            boolean userHasRight = bean.getAcListService().isPermitted(
-                    ACPermission.permREAD,
-                    bean.getMaterialEditState().getMaterialToEdit().getACList(),
-                    bean.getUserBean().getCurrentAccount());
-
             return materialGotDetail
                     && (isOwner()
-                    || userHasRight
-                    || bean.getMode() == MaterialBean.Mode.CREATE);
+                    || userHasAccessRight());
 
         } catch (Exception e) {
             logger.error("Error in isVisible(): " + typeName);
@@ -119,22 +112,15 @@ public class MaterialEditPermission implements Serializable {
         return false;
     }
 
-    protected ACList getAcListOfDetailRight(MaterialDetailType type, MaterialEditState state) {
-        if (bean.getMaterialEditState() == null
-                || bean.getMaterialEditState().getMaterialToEdit() == null) {
-            return null;
+    private boolean userHasAccessRight() {
+        if (bean.getMode() != MaterialBean.Mode.CREATE) {
+            return bean.getAcListService().isPermitted(
+                    ACPermission.permREAD,
+                    bean.getMaterialEditState().getMaterialToEdit().getACList(),
+                    bean.getUserBean().getCurrentAccount());
         }
-        try {
-            List<MaterialDetailRight> rights = bean.getMaterialEditState().getMaterialToEdit().getDetailRights();
-            for (MaterialDetailRight mdr : rights) {
-                if (mdr.getType() == type) {
-                    return mdr.getAcList();
-                }
-            }
-        } catch (Exception e) {
-            logger.error(ExceptionUtils.getStackTrace(e));
-        }
-        return null;
+        return true;
+
     }
 
     private boolean isOwner() {

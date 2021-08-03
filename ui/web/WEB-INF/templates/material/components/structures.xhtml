@@ -82,7 +82,7 @@
                                         <b:column span="2"
                                                   styleClass="autocalculatable">
                                             <b:inputText
-                                                disabled="#{!materialBean.permission.isFormulaAndMassesInputsEnabled()}"
+                                                disabled="#{!materialBean.permission.isFormulaAndMassesInputsDisabled()}"
                                                 value="#{materialBean.structureInfos.sumFormula}">
                                                 <f:converter converterId="InputConverter" />
                                             </b:inputText>
@@ -96,7 +96,7 @@
                                         <b:column span="2"
                                                   styleClass="autocalculatable">
                                             <b:inputText
-                                                disabled="#{!materialBean.permission.isFormulaAndMassesInputsEnabled()}"
+                                                disabled="#{!materialBean.permission.isFormulaAndMassesInputsDisabled()}"
                                                 value="#{materialBean.structureInfos.averageMolarMass}">
                                                 <f:converter converterId="InputConverter" />
                                             </b:inputText>
@@ -110,7 +110,7 @@
                                         <b:column span="2"
                                                   styleClass="autocalculatable">
                                             <b:inputText
-                                                disabled="#{!materialBean.permission.isFormulaAndMassesInputsEnabled()}"
+                                                disabled="#{!materialBean.permission.isFormulaAndMassesInputsDisabled()}"
                                                 value="#{materialBean.structureInfos.exactMolarMass}">
                                                 <f:converter converterId="InputConverter" />
                                             </b:inputText>
