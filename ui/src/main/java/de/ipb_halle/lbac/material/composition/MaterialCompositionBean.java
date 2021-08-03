@@ -41,6 +41,7 @@ public class MaterialCompositionBean implements Serializable {
     private static final long serialVersionUID = 1L;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Material> foundMaterials = new ArrayList<>();
+    private List<Material> materialsInComposition = new ArrayList<>();
     private MaterialType choosenMaterialType;
 
     @Inject
@@ -64,6 +65,28 @@ public class MaterialCompositionBean implements Serializable {
 
     }
 
+    public boolean isMaterialAlreadyInComposition(Material materialToLookFor) {
+        for (Material materialAlreadyIn : materialsInComposition) {
+            if (materialAlreadyIn.getId() == materialToLookFor.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds a material to the composition if the material is not already in it
+     * and its type is allowed by the compositionType
+     *
+     * @param materialToAdd
+     */
+    public void actionAddMaterialToComposition(Material materialToAdd) {
+        if (!isMaterialAlreadyInComposition(materialToAdd)
+                && choosenCompositionType.getAllowedTypes().contains(materialToAdd.getType())) {
+            materialsInComposition.add(materialToAdd);
+        }
+    }
+
     /**
      * Switches the current material type. If null , an invalid or not allowed
      * type is passed, no change is made.
@@ -71,6 +94,8 @@ public class MaterialCompositionBean implements Serializable {
      * @param type String value of @see MaterialType
      */
     public void actionSwitchMaterialType(String type) {
+        materialsInComposition.clear();
+        foundMaterials.clear();
         MaterialType t;
         if (type == null) {
             logger.error("No null value allowed as argument");
@@ -103,6 +128,10 @@ public class MaterialCompositionBean implements Serializable {
             return false;
         }
         return !choosenCompositionType.getAllowedTypes().contains(type);
+    }
+
+    public List<Material> getMaterialsInComposition() {
+        return materialsInComposition;
     }
 
 }
