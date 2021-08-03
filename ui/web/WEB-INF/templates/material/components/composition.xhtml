@@ -36,24 +36,25 @@
                     <p:panelGrid>
                         <p:column>
                             <p:outputLabel>
-                                Bitte wählen sie den Typ
+                                Bitte wÃ¤hlen sie den Typ
                             </p:outputLabel>
                         </p:column>
                         <p:column>
                             <b:selectOneMenu
-                                value="#{materialCompositionBean.choosenType}"
-                                >
+                                ajax="true"
+                                update="@(.searchMask)"
+                                value="#{materialCompositionBean.choosenType}">
                                 <f:selectItems 
                                     value="#{materialCompositionBean.getCompositionTypes()}"
-                                    var="type"
-                                   />
+                                    var="type"/>
 
 
                             </b:selectOneMenu>                            
                         </p:column>
                     </p:panelGrid>
 
-                    <p:panelGrid>
+                    <p:panelGrid
+                        styleClass="searchMask">
                         <p:row>
                             <p:column>
                                 <p:panelGrid>
@@ -73,11 +74,17 @@
                                     <p:row>
                                         <p:column>
                                             <p:tabView>
-                                                <p:tab title="Struktur">
+                                                <p:tab 
+                                                    disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
+                                                    title="Struktur">
                                                     Struktursuche
                                                 </p:tab>
                                                 <p:tab title="Sequenz"
-                                                       disabled="true">
+                                                       disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
+                                                    Sequenz
+                                                </p:tab>
+                                                <p:tab title="Biomaterial"
+                                                       disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
                                                     Sequenz
                                                 </p:tab>
                                             </p:tabView>
