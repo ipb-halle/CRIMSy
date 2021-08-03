@@ -152,12 +152,12 @@ public class MaterialEditPremissionTest extends TestBase {
     @Test
     public void test003_isFormulaAndMassesInputsEnabled() {
         materialBean.setAutoCalcFormularAndMasses(false);
-        Assert.assertTrue(permissionBean.isFormulaAndMassesInputsDisabled());
+        Assert.assertFalse(permissionBean.isFormulaAndMassesInputsDisabled());
         materialBean.setAutoCalcFormularAndMasses(true);
         materialBean.setMode(MaterialBean.Mode.CREATE);
-        Assert.assertFalse(permissionBean.isFormulaAndMassesInputsDisabled());
-        materialBean.setMode(MaterialBean.Mode.HISTORY);
         Assert.assertTrue(permissionBean.isFormulaAndMassesInputsDisabled());
+        materialBean.setMode(MaterialBean.Mode.HISTORY);
+        Assert.assertFalse(permissionBean.isFormulaAndMassesInputsDisabled());
     }
 
     @Test
