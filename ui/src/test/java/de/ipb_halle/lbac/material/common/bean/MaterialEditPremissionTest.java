@@ -157,7 +157,7 @@ public class MaterialEditPremissionTest extends TestBase {
         materialBean.setMode(MaterialBean.Mode.CREATE);
         Assert.assertTrue(permissionBean.isFormulaAndMassesInputsDisabled());
         materialBean.setMode(MaterialBean.Mode.HISTORY);
-        Assert.assertFalse(permissionBean.isFormulaAndMassesInputsDisabled());
+        Assert.assertTrue(permissionBean.isFormulaAndMassesInputsDisabled());
     }
 
     @Test
