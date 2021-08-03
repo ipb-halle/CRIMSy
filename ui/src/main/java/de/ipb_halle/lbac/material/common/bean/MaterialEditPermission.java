@@ -66,7 +66,8 @@ public class MaterialEditPermission implements Serializable {
     }
 
     public boolean isFormulaAndMassesInputsDisabled() {
-        return !bean.isAutoCalcFormularAndMasses() || bean.getMode() == MaterialBean.Mode.HISTORY;
+        return bean.isAutoCalcFormularAndMasses()
+                || bean.getMode() == MaterialBean.Mode.HISTORY;
     }
 
     /**
