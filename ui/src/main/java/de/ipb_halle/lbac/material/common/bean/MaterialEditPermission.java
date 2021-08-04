@@ -43,9 +43,10 @@ public class MaterialEditPermission implements Serializable {
     }
 
     /**
-     * Checks if the current user has the right to edit a detailinformation of a
-     * material. If the current state of the materialEditBean is in CREATE than
-     * always true, if it is in HITORY mode then always false.
+     * Checks whether the current user has the right to edit the detail
+     * information of a material. If the current state of the materialEditBean
+     * is in CREATE mode, then always true, if it is in HISTORY mode, then
+     * always false.
      *
      * @param typeString
      * @return

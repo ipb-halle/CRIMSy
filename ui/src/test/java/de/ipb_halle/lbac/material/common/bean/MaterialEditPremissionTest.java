@@ -131,12 +131,14 @@ public class MaterialEditPremissionTest extends TestBase {
         materialBean.setCurrentMaterialType(MaterialType.STRUCTURE);
         Assert.assertFalse(permissionBean.isDetailPanelVisible(MaterialDetailType.TAXONOMY.toString()));
 
-        //In EDIT mode current user (public) has access to common information
+        //In  EDIT/HISTORY mode current user (public) has access to common information
         userBean.setCurrentAccount(publicUser);
         materialBean.setMode(MaterialBean.Mode.EDIT);
         Structure s = createStructure(GlobalAdmissionContext.getPublicReadACL(), adminUser);
         materialBean.getMaterialEditState().setMaterialToEdit(s);
         materialBean.getMaterialEditState().setMaterialBeforeEdit(s);
+        Assert.assertTrue(permissionBean.isDetailPanelVisible(COMMON_INFORMATION.toString()));
+        materialBean.setMode(MaterialBean.Mode.HISTORY);
         Assert.assertTrue(permissionBean.isDetailPanelVisible(COMMON_INFORMATION.toString()));
 
         //Not valide detailtype
@@ -145,6 +147,27 @@ public class MaterialEditPremissionTest extends TestBase {
         //Create corrupted state
         userBean.setCurrentAccount(null);
         Assert.assertFalse(permissionBean.isDetailPanelVisible(COMMON_INFORMATION.toString()));
+
+        //In EDIT/HISTORY mode current user is owner but has no read rights
+        userBean.setCurrentAccount(publicUser);
+        materialBean.setMode(MaterialBean.Mode.EDIT);
+        s.setOwner(publicUser);
+        s.setACList(context.getAdminOnlyACL());
+        Assert.assertTrue(permissionBean.isDetailPanelVisible(COMMON_INFORMATION.toString()));
+        materialBean.setMode(MaterialBean.Mode.HISTORY);
+        Assert.assertTrue(permissionBean.isDetailPanelVisible(COMMON_INFORMATION.toString()));
+
+        //In EDIT/HISTORY mode current user is not owner but has no read rights
+        userBean.setCurrentAccount(publicUser);
+        materialBean.setMode(MaterialBean.Mode.EDIT);
+        s.setOwner(adminUser);
+        s.setACList(context.getAdminOnlyACL());
+        Assert.assertFalse(permissionBean.isDetailPanelVisible(COMMON_INFORMATION.toString()));
+        materialBean.setMode(MaterialBean.Mode.HISTORY);
+        Assert.assertFalse(permissionBean.isDetailPanelVisible(COMMON_INFORMATION.toString()));
+
+        //Not valide detailtype
+        Assert.assertFalse(permissionBean.isDetailPanelVisible("no valide subtype"));
         userBean.setCurrentAccount(publicUser);
 
     }
