@@ -279,7 +279,8 @@ public class MaterialBean implements Serializable {
                 hazardService,
                 currentMaterialType,
                 true,
-                new HashMap<>());
+                new HashMap<>(),
+                messagePresenter);
     }
 
     public Project getCurrentProject() {

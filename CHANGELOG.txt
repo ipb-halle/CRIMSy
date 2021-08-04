@@ -1,3 +1,6 @@
+2.0.2 - 2021-08-04
+		* Minor BugFixes
+			- Fixed a bug with the visibility of detail panels when creating a new material
 2.0.1 - 2021-08-02
 		* Minor BugFixes and features
                         - support for customizable text fragments in the DSGVO (GDPR) declaration 
