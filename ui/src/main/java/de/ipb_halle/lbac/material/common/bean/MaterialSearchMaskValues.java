@@ -34,4 +34,5 @@ public class MaterialSearchMaskValues {
     public String index;
     public Set<MaterialType> type = new HashSet<>();
     public String molecule;
+    public Boolean deactivated;
 }

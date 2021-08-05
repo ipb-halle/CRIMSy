@@ -18,13 +18,11 @@
 package de.ipb_halle.lbac.material.common.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
@@ -32,7 +30,6 @@ import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

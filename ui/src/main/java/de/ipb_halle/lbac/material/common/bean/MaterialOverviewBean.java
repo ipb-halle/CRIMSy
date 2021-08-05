@@ -181,6 +181,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         materialService.deactivateMaterial(
                 m.getId(),
                 currentUser);
+        searchController.actionStartMaterialSearch();
     }
 
     public void actionCreateNewItem(Material m) {
