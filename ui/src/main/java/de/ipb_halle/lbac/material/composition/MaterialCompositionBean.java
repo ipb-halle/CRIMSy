@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,7 +46,7 @@ public class MaterialCompositionBean implements Serializable {
     private MaterialType choosenMaterialType;
 
     @Inject
-    private MessagePresenter presenter;
+    private transient MessagePresenter presenter;
 
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
 
@@ -62,7 +63,14 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public void actionStartSearch() {
+        
+    }
 
+    public List<Material> getMaterialsThatCanBeAdded() {
+        return foundMaterials.stream()
+                .filter(m -> choosenCompositionType.getAllowedTypes().contains(m.getType()))
+                .filter((m -> !isMaterialAlreadyInComposition(m)))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public boolean isMaterialAlreadyInComposition(Material materialToLookFor) {
