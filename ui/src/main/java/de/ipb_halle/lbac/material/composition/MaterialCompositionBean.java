@@ -17,9 +17,13 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,9 +48,29 @@ public class MaterialCompositionBean implements Serializable {
     private List<Material> foundMaterials = new ArrayList<>();
     private List<Material> materialsInComposition = new ArrayList<>();
     private MaterialType choosenMaterialType;
+    private int MAX_RESULTS = 25;
+    private String materialName;
+
+    @Inject
+    private MaterialService materialService;
 
     @Inject
     private transient MessagePresenter presenter;
+
+    @Inject
+    private UserBean userBean;
+
+    public MaterialCompositionBean() {
+    }
+
+    public MaterialCompositionBean(
+            UserBean userBean,
+            MessagePresenter presenter,
+            MaterialService materialService) {
+        this.userBean = userBean;
+        this.presenter = presenter;
+        this.materialService = materialService;
+    }
 
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
 
@@ -60,10 +84,21 @@ public class MaterialCompositionBean implements Serializable {
 
     public void setChoosenType(CompositionType choosenType) {
         this.choosenCompositionType = choosenType;
+        if (!choosenType.getAllowedTypes().contains(choosenMaterialType)) {
+            choosenMaterialType = choosenType.getAllowedTypes().get(0);
+        }
     }
 
     public void actionStartSearch() {
-        
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(userBean.getCurrentAccount(), 0, MAX_RESULTS);
+        requestBuilder.addMaterialType(choosenMaterialType);
+        if (materialName != null && !materialName.trim().isEmpty()) {
+            requestBuilder.setMaterialName(materialName);
+        }
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+        foundMaterials = result.getAllFoundObjects(choosenMaterialType.getClassOfDto(), result.getNode());
+        int i = 0;
+
     }
 
     public List<Material> getMaterialsThatCanBeAdded() {
@@ -140,6 +175,14 @@ public class MaterialCompositionBean implements Serializable {
 
     public List<Material> getMaterialsInComposition() {
         return materialsInComposition;
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName;
     }
 
 }

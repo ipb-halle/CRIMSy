@@ -31,6 +31,8 @@ import de.ipb_halle.lbac.service.NodeService;
  */
 public class UserBeanMock extends UserBean {
 
+    private static final long serialVersionUID = 1L;
+
     private User currentAccount;
 
     public void setCurrentAccount(User u) {

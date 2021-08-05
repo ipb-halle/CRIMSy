@@ -18,10 +18,18 @@
 package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.UserBeanDeployment;
+import de.ipb_halle.lbac.admission.LdapProperties;
+import de.ipb_halle.lbac.admission.MembershipOrchestrator;
+import de.ipb_halle.lbac.admission.SystemSettings;
+import de.ipb_halle.lbac.admission.UserPluginSettingsBean;
+import de.ipb_halle.lbac.admission.UserTimeZoneSettingsBean;
+import de.ipb_halle.lbac.admission.mock.UserBeanMock;
+import de.ipb_halle.lbac.base.MaterialCreator;
+import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -31,9 +39,15 @@ import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.navigation.Navigator;
+import de.ipb_halle.lbac.timezone.TimeZonesBean;
+import de.ipb_halle.lbac.util.pref.PreferenceService;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -59,12 +73,20 @@ public class MaterialCompositionBeanTest extends TestBase {
     private MaterialService materialService;
     private Project project;
 
-    @Inject
     private MaterialCompositionBean bean;
+
+    private UserBeanMock userBeanMock;
+    private Project project1;
+
+    @Inject
+    private TaxonomyService taxonomyService;
+    int publicAclId;
 
     @Before
     public void init() {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
+        userBeanMock = new UserBeanMock();
+        userBeanMock.setCurrentAccount(publicUser);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
@@ -72,6 +94,8 @@ public class MaterialCompositionBeanTest extends TestBase {
         project.setOwner(publicUser);
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveProjectToDb(project);
+        bean = new MaterialCompositionBean(userBeanMock, MessagePresenterMock.getInstance(), materialService);
+        publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
 
     }
 
@@ -181,6 +205,32 @@ public class MaterialCompositionBeanTest extends TestBase {
 
     }
 
+    @Test
+    public void test007_actionStartSearch() {
+
+        ProjectCreator projectCreator = new ProjectCreator(
+                projectService,
+                GlobalAdmissionContext.getPublicReadACL());
+        projectCreator.setProjectName("SearchServiceTest-Project-01");
+        project1 = projectCreator.createAndSaveProject(publicUser);
+
+        createMaterials();
+        bean.setChoosenType(CompositionType.MIXTURE);
+        bean.actionSwitchMaterialType("STRUCTURE");
+        bean.actionStartSearch();
+        Assert.assertEquals(2, bean.getMaterialsThatCanBeAdded().size());
+
+        bean.setMaterialName("l-002");
+        bean.actionStartSearch();
+        Assert.assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
+
+        bean.setChoosenType(CompositionType.EXTRACT);
+        bean.actionSwitchMaterialType("BIOMATERIAL");
+        bean.actionStartSearch();
+        Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
@@ -188,8 +238,38 @@ public class MaterialCompositionBeanTest extends TestBase {
                         .addClass(IndexService.class)
                         .addClass(MaterialCompositionBean.class);
         deployment = ItemDeployment.add(deployment);
-        deployment = UserBeanDeployment.add(deployment);
+        deployment.addClass(KeyManager.class)
+                .addClass(LdapProperties.class)
+                .addClass(MembershipOrchestrator.class)
+                .addClass(SystemSettings.class)
+                .addClass(Navigator.class)
+                .addClass(PreferenceService.class)
+                .addClass(UserPluginSettingsBean.class)
+                .addClass(TimeZonesBean.class)
+                .addClass(UserTimeZoneSettingsBean.class)
+                .addClass(UserBeanMock.class);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
+    }
+
+    private void createMaterials() {
+        materialCreator = new MaterialCreator(entityManagerService);
+        int materialid1 = materialCreator.createStructure(
+                publicUser.getId(),
+                publicAclId,
+                "CCCCCCCCC",
+                project1.getId(),
+                "Testmaterial-001");
+        materialCreator.addIndexToMaterial(materialid1, 2, "Index of material 1");
+
+        materialCreator.createStructure(
+                publicUser.getId(),
+                publicAclId,
+                project1.getId(),
+                "Testmaterial-002");
+
+        createTaxanomy(1000, "Life", 1, publicAclId, publicUser.getId());
+        BioMaterial bioMaterial = creationTools.createBioMaterial(project1, "BioMaterial001", taxonomyService.loadRootTaxonomy(), null);
+        materialService.saveMaterialToDB(bioMaterial, publicAclId, new HashMap<>(), publicUser.getId());
     }
 
 }

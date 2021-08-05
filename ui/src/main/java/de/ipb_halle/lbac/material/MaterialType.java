@@ -21,6 +21,10 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.consumable.Consumable;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -38,6 +42,7 @@ import java.util.stream.Stream;
 public enum MaterialType implements Serializable {
     STRUCTURE(
             1,
+            Structure.class,
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.INDEX,
             MaterialDetailType.STORAGE_CLASSES,
@@ -45,6 +50,7 @@ public enum MaterialType implements Serializable {
             MaterialDetailType.HAZARD_INFORMATION),
     COMPOSITION(
             2,
+            MaterialComposition.class,
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.INDEX,
             MaterialDetailType.HAZARD_INFORMATION,
@@ -52,33 +58,38 @@ public enum MaterialType implements Serializable {
             MaterialDetailType.COMPOSITION),
     BIOMATERIAL(
             3,
+            BioMaterial.class,
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.TAXONOMY),
     CONSUMABLE(
             4,
+            Consumable.class,
             MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.COMMON_INFORMATION),
     SEQUENCE(
             5,
+            Sequence.class,
             MaterialDetailType.COMMON_INFORMATION),
     TISSUE(
-            6, MaterialDetailType.COMMON_INFORMATION),
+            6, Tissue.class, MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
-            7, MaterialDetailType.COMMON_INFORMATION),
-    INACCESSIBLE(8);
+            7, Taxonomy.class, MaterialDetailType.COMMON_INFORMATION),
+    INACCESSIBLE(8, InaccessibleMaterial.class);
 
     private final List<MaterialDetailType> types;
     private static final Map<String, MaterialType> string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
     private final int id;
+    private final Class clazz;
 
     /**
      *
      * @param id
      * @param t
      */
-    MaterialType(int id, MaterialDetailType... t) {
+    MaterialType(int id, Class clazz, MaterialDetailType... t) {
         types = Arrays.asList(t);
+        this.clazz = clazz;
         this.id = id;
     }
 
@@ -119,18 +130,6 @@ public enum MaterialType implements Serializable {
     }
 
     public Class getClassOfDto() {
-        if (this == STRUCTURE) {
-            return Structure.class;
-        }
-        if (this == BIOMATERIAL) {
-            return BioMaterial.class;
-        }
-        if (this == TISSUE) {
-            return Tissue.class;
-        }
-        if (this == TAXONOMY) {
-            return Taxonomy.class;
-        }
-        throw new RuntimeException("Could not resolve class of DTO for" + this);
+        return clazz;
     }
 }
