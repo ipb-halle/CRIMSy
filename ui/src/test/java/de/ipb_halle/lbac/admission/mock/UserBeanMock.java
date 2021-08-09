@@ -24,13 +24,20 @@ import de.ipb_halle.lbac.admission.MembershipService;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.service.NodeService;
+import javax.enterprise.context.SessionScoped;
 
 /**
  *
  * @author fmauz
  */
+@SessionScoped
 public class UserBeanMock extends UserBean {
 
+    
+    public void init(){
+        
+    }
+    
     private static final long serialVersionUID = 1L;
 
     private User currentAccount;
