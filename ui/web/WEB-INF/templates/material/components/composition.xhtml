@@ -28,7 +28,7 @@
       xmlns:p="http://primefaces.org/ui">
     <h:body>
         <ui:composition>
-            <p:tab 
+            <p:tab            
                 title="#{msgs.materialCreation_panelNames_composition}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
                 <p:outputPanel
@@ -36,7 +36,7 @@
                     <p:panelGrid>
                         <p:column>
                             <p:outputLabel>
-                                Bitte wÃ¤hlen sie den Typ
+                                Bitte wÃƒÆ’Ã‚Â¤hlen sie den Typ
                             </p:outputLabel>
                         </p:column>
                         <p:column>
@@ -55,7 +55,7 @@
 
                     <p:panelGrid
                         styleClass="searchMask">
-                        <p:row>
+                        <p:row styleClass="topAligned" style="vertical-align: top">
                             <p:column>
                                 <p:panelGrid>
                                     <p:row>
@@ -67,14 +67,20 @@
                                         </p:column>
                                         <p:column>
                                             <p:commandButton
+                                                ajax="true"
+                                                action="#{materialCompositionBean.actionStartSearch()}"
+                                                update="@(.resultTable)"
                                                 value="Suchen">
                                             </p:commandButton>          
                                         </p:column>
                                     </p:row>
                                     <p:row>
-                                        <p:column>
+                                        <p:column
+                                            >
                                             <p:tabView>
+                                                 <p:ajax event="tabChange" listener="#{materialCompositionBean.onTabChange}"/>
                                                 <p:tab 
+                                                    
                                                     disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
                                                     title="Struktur">
                                                     Struktursuche
@@ -94,22 +100,64 @@
                                 </p:panelGrid>
 
                             </p:column>
+
+
                             <p:column>
-                                <p:row>
-                                    <p:column>
-                                        <b:dataTable>
-
-                                        </b:dataTable>
-                                    </p:column>
-                                </p:row>
-                                <p:row>
-                                    <p:column>
-                                        <b:dataTable>
-
-                                        </b:dataTable>
-                                    </p:column>
-                                </p:row>
+                                <b:dataTable
+                                    styleClass="resultTable"
+                                    value="#{materialCompositionBean.materialsThatCanBeAdded}"
+                                    searching="false"
+                                    var="material"
+                                    saveState="false"
+                                    paginated="true">
+                                    <b:dataTableColumn
+                                        label="ID"
+                                        value="#{material.getId()}">
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        label="Name"
+                                        value="#{material.getFirstName()}">
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        label="Aktion">
+                                        <b:commandButton
+                                            ajax="true"
+                                            action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
+                                            update="@(.resultTable)"
+                                            icon="plus"/>
+                                    </b:dataTableColumn>
+                                </b:dataTable>
                             </p:column>
+
+                            <p:column >
+                                <b:dataTable
+
+                                    styleClass="resultTable"
+                                    value="#{materialCompositionBean.materialsInComposition}"
+                                    searching="false"
+                                    var="material"
+                                    saveState="false"
+                                    paginated="true">
+                                    <b:dataTableColumn
+                                        label="ID"
+                                        value="#{material.getId()}">
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        label="Name"
+                                        value="#{material.getFirstName()}">
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        label="Aktion">
+                                        <b:commandButton 
+                                            icon="minus"
+                                            action="#{materialCompositionBean.actionRemoveMaterialFromComposition(material)}"
+                                            update="@(.resultTable)"
+                                            ajax="true"/>
+                                    </b:dataTableColumn>
+                                </b:dataTable>
+                            </p:column>
+
+
                         </p:row>
                     </p:panelGrid>
                 </p:outputPanel>

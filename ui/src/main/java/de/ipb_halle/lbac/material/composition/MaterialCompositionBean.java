@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *
@@ -50,6 +51,7 @@ public class MaterialCompositionBean implements Serializable {
     private MaterialType choosenMaterialType;
     private int MAX_RESULTS = 25;
     private String materialName;
+    private CompositionType choosenCompositionType = CompositionType.EXTRACT;
 
     @Inject
     private MaterialService materialService;
@@ -72,8 +74,6 @@ public class MaterialCompositionBean implements Serializable {
         this.materialService = materialService;
     }
 
-    private CompositionType choosenCompositionType = CompositionType.EXTRACT;
-
     public List<CompositionType> getCompositionTypes() {
         return Arrays.asList(CompositionType.values());
     }
@@ -83,10 +83,27 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public void setChoosenType(CompositionType choosenType) {
+        if (choosenType != choosenCompositionType) {
+            materialsInComposition.clear();
+            foundMaterials.clear();
+        }
         this.choosenCompositionType = choosenType;
         if (!choosenType.getAllowedTypes().contains(choosenMaterialType)) {
             choosenMaterialType = choosenType.getAllowedTypes().get(0);
         }
+        logger.info(choosenMaterialType);
+    }
+
+    public void onTabChange(TabChangeEvent event) {
+        logger.info(event.getTab().getTitle());
+        if (event.getTab().getTitle().equals("Struktur")) {
+            choosenMaterialType = MaterialType.STRUCTURE;
+        } else if ((event.getTab().getTitle().equals("Sequenz"))) {
+            choosenMaterialType = MaterialType.SEQUENCE;
+        } else {
+            choosenMaterialType = MaterialType.BIOMATERIAL;
+        }
+        logger.info(choosenMaterialType);
     }
 
     public void actionStartSearch() {
@@ -97,8 +114,7 @@ public class MaterialCompositionBean implements Serializable {
         }
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         foundMaterials = result.getAllFoundObjects(choosenMaterialType.getClassOfDto(), result.getNode());
-        int i = 0;
-
+        logger.info("Materials in " + materialsInComposition.size());
     }
 
     public List<Material> getMaterialsThatCanBeAdded() {
@@ -127,7 +143,13 @@ public class MaterialCompositionBean implements Serializable {
         if (!isMaterialAlreadyInComposition(materialToAdd)
                 && choosenCompositionType.getAllowedTypes().contains(materialToAdd.getType())) {
             materialsInComposition.add(materialToAdd);
+            logger.info("Put " + materialToAdd.getFirstName() + " in( " + materialsInComposition.size() + ")");
+
         }
+    }
+
+    public void actionRemoveMaterialFromComposition(Material materialToRemove) {
+        materialsInComposition.remove(materialToRemove);
     }
 
     /**

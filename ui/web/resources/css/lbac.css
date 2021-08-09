@@ -606,3 +606,7 @@ body.waiting * {
      border-width: 0px !important;
 }
 
+.topAligned{
+    vertical-align: top !important;
+}
+
