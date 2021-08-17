@@ -22,14 +22,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:body>
         <ui:composition>
             <b:form>
                 <b:navBar position="top" sticky="true" styleClass="navigationMenu">
                     <b:flyOutMenu width="50px" styleClass="lbacDropDownMenu">
-                        <b:dropMenu value="BioCloud" styleClass="tstNavBioCloud">
+                        <b:dropMenu 
+                            pt:data-test-id="navigation:bioCloud"
+                            value="BioCloud"
+                            styleClass="tstNavBioCloud">
                             <b:navCommandLink
                                 value="#{msgs.navigation_bioCloud_search}"
                                 styleClass="tstNavLBAC"
@@ -50,7 +54,10 @@
                         width="50px" 
                         rendered="#{userBean.isComponentAccessable('InhouseDB')}"
                         styleClass="lbacDropDownMenu">
-                        <b:dropMenu value="LIMS" styleClass="tstNavLIMS">
+                        <b:dropMenu
+                            pt:data-test-id="navigation:lims"
+                            value="LIMS"
+                            styleClass="tstNavLIMS">
                             <b:navCommandLink 
                                 value="#{msgs.navigation_lims_materials}"
                                 styleClass="tstNavMaterials"
@@ -88,14 +95,27 @@
                     <!-- ##################################################################### -->
 
                     <b:navbarLinks pull="right" styleClass="tstProperties">
-                        <b:navCommandLink iconAwesome="log-in" rendered="#{userBean.currentAccount.isPublicAccount()}" value="Login"
-                                          styleClass="tstLoginCmdLink" actionListener="#{navigator.navigate('login')}"/>
-                        <b:navCommandLink iconAwesome="log-out" rendered="#{! userBean.currentAccount.isPublicAccount()}" value="Logout"
-                                          styleClass="tstLogoutCmdLink" actionListener="#{userBean.actionLogout}"/>
-                        <b:dropMenu value="#{msgs.navigation_admission_title}" 
-                                    styleClass="tstNavSettings"
-                                    rendered="#{! userBean.currentAccount.isPublicAccount()}" iconAwesome="cog"
-                                    iconAlign="left">
+                        <b:navCommandLink
+                            pt:data-test-id="navigation:login"
+                            iconAwesome="log-in"
+                            rendered="#{userBean.currentAccount.isPublicAccount()}"
+                            value="Login"
+                            styleClass="tstLoginCmdLink"
+                            actionListener="#{navigator.navigate('login')}"/>
+                        <b:navCommandLink
+                            pt:data-test-id="navigation:logout"
+                            iconAwesome="log-out"
+                            rendered="#{! userBean.currentAccount.isPublicAccount()}"
+                            value="Logout"
+                            styleClass="tstLogoutCmdLink"
+                            actionListener="#{userBean.actionLogout}"/>
+                        <b:dropMenu
+                            pt:data-test-id="navigation:settings"
+                            value="#{msgs.navigation_admission_title}" 
+                            styleClass="tstNavSettings"
+                            rendered="#{! userBean.currentAccount.isPublicAccount()}"
+                            iconAwesome="cog"
+                            iconAlign="left">
                             <b:navLink header="#{userBean.currentAccount.name}"/>
 
                             <!-- Admission -->

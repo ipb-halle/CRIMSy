@@ -24,7 +24,8 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:body>
         <ui:composition>
@@ -46,6 +47,7 @@
                                 styleClass="margin: 5px;width: 100%;text-align: center;font-weight:bold;"/>
                         </b:column>
                         <b:inputText id="loginLogin"
+                                     pt:data-test-id="login:loginName_input"
                                      styleClass="tstLoginLogin" 
                                      value="#{userBean.login}" 
                                      label="#{msgs.admission_loginForm_login}" 
@@ -55,9 +57,11 @@
                             </f:facet>
                             <b:focus rendered="true"/>
                         </b:inputText>
-                        <b:message for="@previous"/>
+                        <b:message for="@previous"
+                                   pt:data-test-id="login:loginName_message"/>
                         <b:inputSecret 
                             id="loginPasswd"
+                            pt:data-test-id="login:password_input"
                             styleClass="tstLoginPassword"
                             value="#{userBean.oldPassword}" 
                             label="#{msgs.admission_loginForm_password}" 
@@ -67,10 +71,12 @@
                                 <b:icon name="ok"/>
                             </f:facet>
                         </b:inputSecret>
-                        <b:message for="@previous"/>
+                        <b:message for="@previous"
+                                   pt:data-test-id="login:password_message"/>
                         <b:column id="loginCmdBtnCol"
                                   styleClass="text-center">
                             <b:commandButton id="loginCmdBtn"
+                                             pt:data-test-id="login:loginButton"
                                              styleClass="tstLoginCmdBtn"
                                              action="#{userBean.actionLogin}" 
                                              value="#{msgs.admission_loginForm_button}"/>
