@@ -20,6 +20,7 @@ package de.ipb_halle.pageobjects.util;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * 
@@ -31,12 +32,11 @@ public class I18n {
 
     public static final String REQUIRED_VALIDATION_ERROR_KEY = "javax.faces.component.UIInput.REQUIRED";
 
+    private static final String JSF_BUNDLE_BASENAME = "javax.faces.Messages";
+    private static final String UI_BUNDLE_BASENAME = "de.ipb_halle.lbac.i18n.messages";
+
     public static String getJSFMessage(String key, Locale locale) {
-        /*
-         * requires: myfaces-api, same version we use in ui
-         * read messages_xx.properties from there and extract the value for the given key
-         */
-        throw new UnsupportedOperationException("Not implemented yet");
+        return getMessageFromBundle(JSF_BUNDLE_BASENAME, key, locale);
     }
 
     public static boolean isJSFMessage(String test, String key, Locale locale) {
@@ -45,13 +45,22 @@ public class I18n {
     }
 
     public static String getUIMessage(String key, Locale locale) {
-        // get messages_xx.properties from the resources of ui
-        throw new UnsupportedOperationException("Not implemented yet");
+        return getMessageFromBundle(UI_BUNDLE_BASENAME, key, locale);
     }
 
     public static boolean isUIMessage(String test, String key, Locale locale) {
         String pattern = getUIMessage(key, locale);
         return isParsableMessage(test, pattern);
+    }
+
+    private static String getMessageFromBundle(String baseName, String key,
+            Locale locale) {
+        ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale);
+        if (bundle.containsKey(key)) {
+            return bundle.getString(key);
+        } else {
+            return null;
+        }
     }
 
     private static boolean isParsableMessage(String test, String pattern) {
