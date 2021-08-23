@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -57,7 +58,9 @@ public enum MaterialType implements Serializable {
             MaterialDetailType.COMMON_INFORMATION),
     SEQUENCE(
             5,
-            MaterialDetailType.COMMON_INFORMATION),
+            MaterialDetailType.COMMON_INFORMATION,
+            MaterialDetailType.INDEX,
+            MaterialDetailType.SEQUENCE_INFORMATION),
     TISSUE(
             6, MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
@@ -120,6 +123,9 @@ public enum MaterialType implements Serializable {
         }
         if (this == BIOMATERIAL) {
             return BioMaterial.class;
+        }
+        if (this == SEQUENCE) {
+            return Sequence.class;
         }
         if (this == TISSUE) {
             return Tissue.class;

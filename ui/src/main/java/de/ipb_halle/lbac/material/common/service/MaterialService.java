@@ -443,6 +443,9 @@ public class MaterialService implements Serializable {
         if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.CONSUMABLE) {
             material = loadConsumable(entity);
         }
+        if (MaterialType.getTypeById(entity.getMaterialtypeid()) == MaterialType.SEQUENCE) {
+            material = loadSequence(entity);
+        }
         material.setACList(aclService.loadById(entity.getACList()));
         material.setStorageInformation(loadStorageClassInformation(id));
         material.setOwner(memberService.loadUserById(entity.getOwner()));
@@ -461,6 +464,10 @@ public class MaterialService implements Serializable {
                 loadStorageClassInformation(me.getMaterialid()));
         c.setCreationTime(me.getCtime());
         return c;
+    }
+
+    private Material loadSequence(MaterialEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

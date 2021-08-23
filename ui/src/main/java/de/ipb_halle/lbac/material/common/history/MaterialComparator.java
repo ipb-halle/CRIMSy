@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardType;
@@ -117,6 +118,11 @@ public class MaterialComparator implements Serializable {
             } catch (Exception e) {
                 logger.error("Error at calculating bio diffs "+ExceptionUtils.getStackTrace(e));
             }
+        }
+        if (originalMat.getType() == MaterialType.SEQUENCE) {
+            addSequenceDifference(differences,
+                    (Sequence) originalMat,
+                    (Sequence) editedMat);
         }
 
         return differences;
@@ -481,4 +487,8 @@ public class MaterialComparator implements Serializable {
 
     }
 
+    private void addSequenceDifference(List<MaterialDifference> differences,
+            Sequence originalMat, Sequence editedMat) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

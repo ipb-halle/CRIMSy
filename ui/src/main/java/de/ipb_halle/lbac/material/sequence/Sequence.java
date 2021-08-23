@@ -33,6 +33,7 @@ import java.util.Objects;
  * @author fmauz
  */
 public class Sequence extends Material {
+    private static final long serialVersionUID = 1L;
 
     public Sequence(
             int id,
@@ -42,7 +43,6 @@ public class Sequence extends Material {
             StorageInformation storageInfos) {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.SEQUENCE;
-
     }
 
     @Override
