@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~     Leibniz Bioactives Cloud
+  ~     Copyright 2017 Leibniz-Institut f. Pflanzenbiochemie
+  ~
+  ~     Licensed under the Apache License, Version 2.0 (the "License");
+  ~     you may not use this file except in compliance with the License.
+  ~     You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~     Unless required by applicable law or agreed to in writing, software
+  ~     distributed under the License is distributed on an "AS IS" BASIS,
+  ~     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~     See the License for the specific language governing permissions and
+  ~     limitations under the License.
+  ~
+  ~
+  ~
+-->
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
+    <h:body>
+        <ui:composition>
+            <p:tab 
+                title="#{msgs.materialCreation_panelSequenceInfos_name}"
+                disabled="#{!materialBean.permission.isDetailPanelVisible('SEQUENCE_INFORMATION')}">
+                <p:outputPanel
+                    styleClass="structurePanelClass"
+                    rendered="#{materialBean.permission.isDetailPanelVisible('SEQUENCE_INFORMATION')}">
+                    <b:container>
+                        <b:panelGrid
+                            col-spans="5,7">
+                            <h:panelGrid
+                                columns="2"
+                                style="margin-bottom:20px"
+                                cellpadding="5">
+                                <p:outputLabel
+                                    for="sequenceTypeRadioId"
+                                    value="#{msgs.materialCreation_panelSequenceInfos_sequenceType}"
+                                    style="margin-right:20px" />
+                                <p:selectOneRadio
+                                    id="sequenceTypeRadioId"
+                                    value="#{materialBean.sequenceInfos.sequenceType}"
+                                    disabled="#{materialBean.sequenceInfos.sequenceTypeSelected}">
+                                    <f:selectItems
+                                        value="#{materialBean.sequenceInfos.possibleSequenceTypes}"
+                                        var="type"
+                                        itemLabel="#{type}"
+                                        itemValue="#{type}" />
+                                    <p:ajax
+                                        event="change"
+                                        listener="#{materialBean.sequenceInfos.actionSelectSequenceType}"
+                                        process="@this"
+                                        update="sequenceTypeRadioId sequenceOpenVectorEditorId"/>
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                            <h:outputText value="#{msgs.materialCreation_panelSequenceInfos_automaticSequenceInformationText}" />
+
+                            <h:panelGroup id="sequenceOpenVectorEditorId">
+                                <mol:openVectorEditor 
+                                    value="#{materialBean.sequenceInfos.sequenceJson}"
+                                    rendered="#{materialBean.sequenceInfos.sequenceTypeSelected}"
+                                    readonly="#{!materialBean.permission.isDetailInformationEditable('SEQUENCE_INFORMATION')}"
+                                    converter="jsonSanitizingConverter" />
+                            </h:panelGroup>
+                            <b:panelGrid columns="1">
+                                <b:inputText
+                                    value="#{materialBean.sequenceInfos.sequenceLength}"
+                                    label="#{msgs.materialCreation_panelSequenceInfos_sequenceLength}"
+                                    disabled="true" />
+                                <b:inputTextarea
+                                    value="#{materialBean.sequenceInfos.sequenceString}"
+                                    label="#{msgs.materialCreation_panelSequenceInfos_sequence}"
+                                    disabled="true" />
+                                <!-- Datatable with Annotations -->
+                            </b:panelGrid>
+                        </b:panelGrid>
+                    </b:container>
+                </p:outputPanel>
+            </p:tab>
+        </ui:composition>
+    </h:body>
+</html>
