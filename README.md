@@ -9,7 +9,9 @@ CRIMSy is the software which powers the **Leibniz Bioactives Cloud** and which w
 
 Additional information is available on the website of the Leibniz Research Alliance "Bioactive Compounds and Biotechnology": [https://www.leibniz-wirkstoffe.de/projects/lbac_project/](https://www.leibniz-wirkstoffe.de/projects/lbac_project/). 
 
-We took part in the Hackathon EUvsVirus Hackathon 2020.The homepage of the project can be found at: 
+Watch CRIMSy in action: [https://www.youtube.com/watch?v=PDGm0_Wsly0](https://www.youtube.com/watch?v=PDGm0_Wsly0) (2:46 min, Jul 2021)
+
+We took part in the Hackathon EUvsVirus Hackathon 2020. The homepage of the project can be found at: 
 https://devpost.com/software/crimsy-cloud-information-resource-management-system
 
 ## Funding

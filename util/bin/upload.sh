@@ -52,12 +52,12 @@ cat <<EOF >$LBAC_REPO/target/index.html
 Auf dieser Seite sind die für die Installation relevanten Ressourcen 
 (Handbücher, das signierte Konfigurations-Skript und die zugehörigen 
 Zertifikate) zum Herunterladen zusammengefasst. Ausführlichere Dokumentation 
-finden Sie entweder <a href="docu/index.html">hier</a> oder auf 
+finden Sie entweder <a href="https://www.leibniz-wirkstoffe/CRIMSy/docu/index.html">hier</a> oder auf 
 unserer <a href="https://github.com/ipb-halle/CRIMSy">Projektseite</a>.
 
 <h2>Installation</h2>
 <ul>
-<li><a href="docu/ConfigManual.pdf">Konfigurationshandbuch</a></li>
+<li><a href="https://www.leibniz-wirkstoffe/CRIMSy/docu/CRIMSy.pdf">Handbücher</a> (PDF)</li>
 <li><a href="configure.sh.sig">configure.sh.sig</a> das PEM-kodierte und signierte Installationsskript</li>
 <li><a href="chain.txt">chain.txt</a> LBAC Zertifikatskette</li>
 <li><a href="devcert.pem">devcert.pem</a> Code-Signing-Zertifikat</li>
@@ -109,7 +109,4 @@ chmod go+r configure.sh.sig index.html chain.txt devcert.pem
 echo "Upload to: $SCP_ADDR"
 scp -p index.html configure.sh.sig devcert.pem $SCP_ADDR
 popd > /dev/null
-
-# rsync -av $LBAC_REPO/api/target/site/ $SCP_ADDR/docu/javadoc/api/ 
-# rsync -av $LBAC_REPO/ui/target/site/ $SCP_ADDR/docu/javadoc/ui/
 
