@@ -1,7 +1,7 @@
 <!--
  
   Leibniz Bioactives Cloud
-  Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+  Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
 
     <groupId>de.ipb-halle</groupId>
     <artifactId>ui</artifactId>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
     <scm>
         <connection>scm:git:https://github.com/ipb-halle/CRIMSy.git</connection>
         <url>https://github.com/ipb-halle/CRIMSy.git</url>
@@ -482,13 +482,6 @@
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-52</artifactId>
             <version>2.10.4</version>
-        </dependency>
-
-        <!-- SolrJ -->
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-            <version>6.2.1</version>
         </dependency>
 
         <!-- Reference implementation of JSON encoders/decoders -->
