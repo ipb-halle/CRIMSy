@@ -52,12 +52,12 @@ cat <<EOF >$LBAC_REPO/target/index.html
 Auf dieser Seite sind die für die Installation relevanten Ressourcen 
 (Handbücher, das signierte Konfigurations-Skript und die zugehörigen 
 Zertifikate) zum Herunterladen zusammengefasst. Ausführlichere Dokumentation 
-finden Sie entweder <a href="https://www.leibniz-wirkstoffe/CRIMSy/docu/index.html">hier</a> oder auf 
+finden Sie entweder <a href="https://www.leibniz-wirkstoffe.de/CRIMSy/docu/index.html">hier</a> oder auf 
 unserer <a href="https://github.com/ipb-halle/CRIMSy">Projektseite</a>.
 
 <h2>Installation</h2>
 <ul>
-<li><a href="https://www.leibniz-wirkstoffe/CRIMSy/docu/CRIMSy.pdf">Handbücher</a> (PDF)</li>
+<li><a href="https://www.leibniz-wirkstoffe.de/CRIMSy/docu/CRIMSy.pdf">Handbücher</a> (PDF)</li>
 <li><a href="configure.sh.sig">configure.sh.sig</a> das PEM-kodierte und signierte Installationsskript</li>
 <li><a href="chain.txt">chain.txt</a> LBAC Zertifikatskette</li>
 <li><a href="devcert.pem">devcert.pem</a> Code-Signing-Zertifikat</li>
