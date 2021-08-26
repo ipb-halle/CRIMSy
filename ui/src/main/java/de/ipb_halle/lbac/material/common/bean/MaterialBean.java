@@ -215,7 +215,7 @@ public class MaterialBean implements Serializable {
                 taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, bm.getTaxonomy());
             }
             if (m.getType() == MaterialType.SEQUENCE) {
-                sequenceInfos = new SequenceInformation((Sequence) m);
+                //sequenceInfos = new SequenceInformation((Sequence) m);
             }
 
             storageInformationBuilder = new StorageInformationBuilder(

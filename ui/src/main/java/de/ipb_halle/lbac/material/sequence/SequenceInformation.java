@@ -21,6 +21,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import de.ipb_halle.molecularfaces.component.openvectoreditor.OpenVectorEditorCore;
 
 /**
@@ -32,33 +34,38 @@ public class SequenceInformation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String sequenceJson;
-    private Sequence sequence;
+    private SequenceData data;
     private List<SequenceType> possibleSequenceTypes = Arrays
             .asList(SequenceType.values());
 
     public SequenceInformation() {
-        //sequence = new Sequence();
+        data = new SequenceData();
     }
 
-    public SequenceInformation(Sequence sequence) {
-        this.sequence = sequence;
-        // sequenceJson = ...
+    public SequenceInformation(SequenceData sequenceData) {
+        this.data = sequenceData;
+
+        try {
+            sequenceJson = new OpenVectorEditorJsonConverter().sequenceDataToJson(data);
+        } catch (JsonProcessingException e) {
+            // TODO
+        }
     }
 
     public boolean isSequenceTypeSelected() {
-        return sequence.getData().getSequenceType() != null;
+        return data.getSequenceType() != null;
     }
 
     public void actionSelectSequenceType() {
-        if (sequence.getData().getSequenceType() == SequenceType.PROTEIN) {
+        if (data.getSequenceType() == SequenceType.PROTEIN) {
             sequenceJson = OpenVectorEditorCore.EMPTY_PROTEIN_SEQUENCE_JSON;
         } else {
             sequenceJson = "";
         }
     }
 
-    public Sequence getSequence() {
-        return sequence;
+    public SequenceData getData() {
+        return data;
     }
 
     public String getSequenceJson() {

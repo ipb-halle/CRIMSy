@@ -23,6 +23,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
@@ -48,7 +49,7 @@
                                     style="margin-right:20px" />
                                 <p:selectOneRadio
                                     id="sequenceTypeRadioId"
-                                    value="#{materialBean.sequenceInfos.sequence.data.sequenceType}"
+                                    value="#{materialBean.sequenceInfos.data.sequenceType}"
                                     disabled="#{materialBean.sequenceInfos.sequenceTypeSelected}">
                                     <f:selectItems
                                         value="#{materialBean.sequenceInfos.possibleSequenceTypes}"
@@ -73,14 +74,43 @@
                             </h:panelGroup>
                             <b:panelGrid columns="1">
                                 <b:inputText
-                                    value="#{materialBean.sequenceInfos.sequence.data.sequenceLength}"
+                                    value="#{materialBean.sequenceInfos.data.sequenceLength}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequenceLength}"
                                     disabled="true" />
                                 <b:inputTextarea
-                                    value="#{materialBean.sequenceInfos.sequence.data.sequenceString}"
+                                    value="#{materialBean.sequenceInfos.data.sequenceString}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequence}"
                                     disabled="true" />
-                                <!-- Datatable with Annotations -->
+                                <b:dataTable
+                                    value="#{materialBean.sequenceInfos.data.annotations}"
+                                    paginated="false"
+                                    var="feature"
+                                    searching="false"
+                                    saveState="false">
+                                    <b:dataTableColumn
+                                        label="#{msgs.materialCreation_panelSequenceInfos_featureName}">
+                                        <b:badge
+                                            value="&#160;"
+                                            style="background-color: #{fn:escapeXml(feature.color)}; margin-right: 10px" />
+                                        <h:outputText value="#{feature.name}" />
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        value="#{feature.start}"
+                                        label="#{msgs.materialCreation_panelSequenceInfos_featureStart}"
+                                        order="asc" />
+                                    <b:dataTableColumn
+                                        value="#{feature.end}"
+                                        label="#{msgs.materialCreation_panelSequenceInfos_featureEnd}" />
+                                    <b:dataTableColumn
+                                        label="#{msgs.materialCreation_panelSequenceInfos_featureDirection}">
+                                        <h:outputText
+                                            value="forward"
+                                            rendered="#{feature.forward}" />
+                                        <h:outputText
+                                            value="reverse"
+                                            rendered="#{!feature.forward}" />
+                                    </b:dataTableColumn>
+                                </b:dataTable>
                             </b:panelGrid>
                         </b:panelGrid>
                     </b:container>

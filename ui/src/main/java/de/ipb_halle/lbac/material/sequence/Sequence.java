@@ -44,6 +44,8 @@ public class Sequence extends Material {
             StorageInformation storageInfos) {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.SEQUENCE;
+
+        data = new SequenceData();
     }
 
     @Override
