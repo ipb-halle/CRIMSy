@@ -1,0 +1,806 @@
+{
+  "isProtein": true,
+  "sequence": "augaarauhmngcarcaycayuuygungcngaygarggnuuyugg",
+  "proteinSequence": "MKIRQHHFVADEGFW",
+  "circular": false,
+  "aminoAcidDataForEachBaseOfDNA": [
+    {
+      "aminoAcid": {
+        "value": "M",
+        "name": "Methionine",
+        "threeLettersName": "Met",
+        "hydrophobicity": 1.9,
+        "color": "#FF6161"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 0,
+      "sequenceIndex": 0,
+      "codonRange": {
+        "start": 0,
+        "end": 2
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "M",
+        "name": "Methionine",
+        "threeLettersName": "Met",
+        "hydrophobicity": 1.9,
+        "color": "#FF6161"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 0,
+      "sequenceIndex": 1,
+      "codonRange": {
+        "start": 0,
+        "end": 2
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "M",
+        "name": "Methionine",
+        "threeLettersName": "Met",
+        "hydrophobicity": 1.9,
+        "color": "#FF6161"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 0,
+      "sequenceIndex": 2,
+      "codonRange": {
+        "start": 0,
+        "end": 2
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "K",
+        "name": "Lysine",
+        "threeLettersName": "Lys",
+        "hydrophobicity": -3.9,
+        "color": "#380000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 1,
+      "sequenceIndex": 3,
+      "codonRange": {
+        "start": 3,
+        "end": 5
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "K",
+        "name": "Lysine",
+        "threeLettersName": "Lys",
+        "hydrophobicity": -3.9,
+        "color": "#380000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 1,
+      "sequenceIndex": 4,
+      "codonRange": {
+        "start": 3,
+        "end": 5
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "K",
+        "name": "Lysine",
+        "threeLettersName": "Lys",
+        "hydrophobicity": -3.9,
+        "color": "#380000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 1,
+      "sequenceIndex": 5,
+      "codonRange": {
+        "start": 3,
+        "end": 5
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "I",
+        "name": "Isoleucine ",
+        "threeLettersName": "Ile",
+        "hydrophobicity": 4.5,
+        "color": "#FFE6E6"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 2,
+      "sequenceIndex": 6,
+      "codonRange": {
+        "start": 6,
+        "end": 8
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "I",
+        "name": "Isoleucine ",
+        "threeLettersName": "Ile",
+        "hydrophobicity": 4.5,
+        "color": "#FFE6E6"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 2,
+      "sequenceIndex": 7,
+      "codonRange": {
+        "start": 6,
+        "end": 8
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "I",
+        "name": "Isoleucine ",
+        "threeLettersName": "Ile",
+        "hydrophobicity": 4.5,
+        "color": "#FFE6E6"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 2,
+      "sequenceIndex": 8,
+      "codonRange": {
+        "start": 6,
+        "end": 8
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "R",
+        "name": "Arginine",
+        "threeLettersName": "Arg",
+        "hydrophobicity": -4.5,
+        "color": "#190000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 3,
+      "sequenceIndex": 9,
+      "codonRange": {
+        "start": 9,
+        "end": 11
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "R",
+        "name": "Arginine",
+        "threeLettersName": "Arg",
+        "hydrophobicity": -4.5,
+        "color": "#190000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 3,
+      "sequenceIndex": 10,
+      "codonRange": {
+        "start": 9,
+        "end": 11
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "R",
+        "name": "Arginine",
+        "threeLettersName": "Arg",
+        "hydrophobicity": -4.5,
+        "color": "#190000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 3,
+      "sequenceIndex": 11,
+      "codonRange": {
+        "start": 9,
+        "end": 11
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "Q",
+        "name": "Glutamine",
+        "threeLettersName": "Gln",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 4,
+      "sequenceIndex": 12,
+      "codonRange": {
+        "start": 12,
+        "end": 14
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "Q",
+        "name": "Glutamine",
+        "threeLettersName": "Gln",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 4,
+      "sequenceIndex": 13,
+      "codonRange": {
+        "start": 12,
+        "end": 14
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "Q",
+        "name": "Glutamine",
+        "threeLettersName": "Gln",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 4,
+      "sequenceIndex": 14,
+      "codonRange": {
+        "start": 12,
+        "end": 14
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "H",
+        "name": "Histidine",
+        "threeLettersName": "His",
+        "hydrophobicity": -3.2,
+        "color": "#5C0000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 5,
+      "sequenceIndex": 15,
+      "codonRange": {
+        "start": 15,
+        "end": 17
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "H",
+        "name": "Histidine",
+        "threeLettersName": "His",
+        "hydrophobicity": -3.2,
+        "color": "#5C0000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 5,
+      "sequenceIndex": 16,
+      "codonRange": {
+        "start": 15,
+        "end": 17
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "H",
+        "name": "Histidine",
+        "threeLettersName": "His",
+        "hydrophobicity": -3.2,
+        "color": "#5C0000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 5,
+      "sequenceIndex": 17,
+      "codonRange": {
+        "start": 15,
+        "end": 17
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "H",
+        "name": "Histidine",
+        "threeLettersName": "His",
+        "hydrophobicity": -3.2,
+        "color": "#5C0000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 6,
+      "sequenceIndex": 18,
+      "codonRange": {
+        "start": 18,
+        "end": 20
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "H",
+        "name": "Histidine",
+        "threeLettersName": "His",
+        "hydrophobicity": -3.2,
+        "color": "#5C0000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 6,
+      "sequenceIndex": 19,
+      "codonRange": {
+        "start": 18,
+        "end": 20
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "H",
+        "name": "Histidine",
+        "threeLettersName": "His",
+        "hydrophobicity": -3.2,
+        "color": "#5C0000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 6,
+      "sequenceIndex": 20,
+      "codonRange": {
+        "start": 18,
+        "end": 20
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "F",
+        "name": "Phenylalanine",
+        "threeLettersName": "Phe",
+        "hydrophobicity": 2.8,
+        "color": "#FF8F8F"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 7,
+      "sequenceIndex": 21,
+      "codonRange": {
+        "start": 21,
+        "end": 23
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "F",
+        "name": "Phenylalanine",
+        "threeLettersName": "Phe",
+        "hydrophobicity": 2.8,
+        "color": "#FF8F8F"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 7,
+      "sequenceIndex": 22,
+      "codonRange": {
+        "start": 21,
+        "end": 23
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "F",
+        "name": "Phenylalanine",
+        "threeLettersName": "Phe",
+        "hydrophobicity": 2.8,
+        "color": "#FF8F8F"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 7,
+      "sequenceIndex": 23,
+      "codonRange": {
+        "start": 21,
+        "end": 23
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "V",
+        "name": "Valine",
+        "threeLettersName": "Val",
+        "hydrophobicity": 4.2,
+        "color": "#FFD6D6"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 8,
+      "sequenceIndex": 24,
+      "codonRange": {
+        "start": 24,
+        "end": 26
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "V",
+        "name": "Valine",
+        "threeLettersName": "Val",
+        "hydrophobicity": 4.2,
+        "color": "#FFD6D6"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 8,
+      "sequenceIndex": 25,
+      "codonRange": {
+        "start": 24,
+        "end": 26
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "V",
+        "name": "Valine",
+        "threeLettersName": "Val",
+        "hydrophobicity": 4.2,
+        "color": "#FFD6D6"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 8,
+      "sequenceIndex": 26,
+      "codonRange": {
+        "start": 24,
+        "end": 26
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "A",
+        "name": "Alanine",
+        "threeLettersName": "Ala",
+        "hydrophobicity": 1.8,
+        "color": "#FF5C5C"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 9,
+      "sequenceIndex": 27,
+      "codonRange": {
+        "start": 27,
+        "end": 29
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "A",
+        "name": "Alanine",
+        "threeLettersName": "Ala",
+        "hydrophobicity": 1.8,
+        "color": "#FF5C5C"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 9,
+      "sequenceIndex": 28,
+      "codonRange": {
+        "start": 27,
+        "end": 29
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "A",
+        "name": "Alanine",
+        "threeLettersName": "Ala",
+        "hydrophobicity": 1.8,
+        "color": "#FF5C5C"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 9,
+      "sequenceIndex": 29,
+      "codonRange": {
+        "start": 27,
+        "end": 29
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "D",
+        "name": "Aspartic acid",
+        "threeLettersName": "Asp",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 10,
+      "sequenceIndex": 30,
+      "codonRange": {
+        "start": 30,
+        "end": 32
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "D",
+        "name": "Aspartic acid",
+        "threeLettersName": "Asp",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 10,
+      "sequenceIndex": 31,
+      "codonRange": {
+        "start": 30,
+        "end": 32
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "D",
+        "name": "Aspartic acid",
+        "threeLettersName": "Asp",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 10,
+      "sequenceIndex": 32,
+      "codonRange": {
+        "start": 30,
+        "end": 32
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "E",
+        "name": "Glutamic acid",
+        "threeLettersName": "Glu",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 11,
+      "sequenceIndex": 33,
+      "codonRange": {
+        "start": 33,
+        "end": 35
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "E",
+        "name": "Glutamic acid",
+        "threeLettersName": "Glu",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 11,
+      "sequenceIndex": 34,
+      "codonRange": {
+        "start": 33,
+        "end": 35
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "E",
+        "name": "Glutamic acid",
+        "threeLettersName": "Glu",
+        "hydrophobicity": -3.5,
+        "color": "#4D0000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 11,
+      "sequenceIndex": 35,
+      "codonRange": {
+        "start": 33,
+        "end": 35
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "G",
+        "name": "Glycine",
+        "threeLettersName": "Gly",
+        "hydrophobicity": -0.4,
+        "color": "#EB0000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 12,
+      "sequenceIndex": 36,
+      "codonRange": {
+        "start": 36,
+        "end": 38
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "G",
+        "name": "Glycine",
+        "threeLettersName": "Gly",
+        "hydrophobicity": -0.4,
+        "color": "#EB0000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 12,
+      "sequenceIndex": 37,
+      "codonRange": {
+        "start": 36,
+        "end": 38
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "G",
+        "name": "Glycine",
+        "threeLettersName": "Gly",
+        "hydrophobicity": -0.4,
+        "color": "#EB0000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 12,
+      "sequenceIndex": 38,
+      "codonRange": {
+        "start": 36,
+        "end": 38
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "F",
+        "name": "Phenylalanine",
+        "threeLettersName": "Phe",
+        "hydrophobicity": 2.8,
+        "color": "#FF8F8F"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 13,
+      "sequenceIndex": 39,
+      "codonRange": {
+        "start": 39,
+        "end": 41
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "F",
+        "name": "Phenylalanine",
+        "threeLettersName": "Phe",
+        "hydrophobicity": 2.8,
+        "color": "#FF8F8F"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 13,
+      "sequenceIndex": 40,
+      "codonRange": {
+        "start": 39,
+        "end": 41
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "F",
+        "name": "Phenylalanine",
+        "threeLettersName": "Phe",
+        "hydrophobicity": 2.8,
+        "color": "#FF8F8F"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 13,
+      "sequenceIndex": 41,
+      "codonRange": {
+        "start": 39,
+        "end": 41
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "W",
+        "name": "Tryptophan",
+        "threeLettersName": "Trp",
+        "hydrophobicity": -0.9,
+        "color": "#D10000"
+      },
+      "positionInCodon": 0,
+      "aminoAcidIndex": 14,
+      "sequenceIndex": 42,
+      "codonRange": {
+        "start": 42,
+        "end": 44
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "W",
+        "name": "Tryptophan",
+        "threeLettersName": "Trp",
+        "hydrophobicity": -0.9,
+        "color": "#D10000"
+      },
+      "positionInCodon": 1,
+      "aminoAcidIndex": 14,
+      "sequenceIndex": 43,
+      "codonRange": {
+        "start": 42,
+        "end": 44
+      },
+      "fullCodon": true
+    },
+    {
+      "aminoAcid": {
+        "value": "W",
+        "name": "Tryptophan",
+        "threeLettersName": "Trp",
+        "hydrophobicity": -0.9,
+        "color": "#D10000"
+      },
+      "positionInCodon": 2,
+      "aminoAcidIndex": 14,
+      "sequenceIndex": 44,
+      "codonRange": {
+        "start": 42,
+        "end": 44
+      },
+      "fullCodon": true
+    }
+  ],
+  "size": 45,
+  "proteinSize": 15,
+  "features": {
+    "612610797395d7937dfecabe": {
+      "start": 6,
+      "end": 35,
+      "cursorAtEnd": true,
+      "id": "612610797395d7937dfecabe",
+      "forward": true,
+      "type": "misc_structure",
+      "name": "alpha helix",
+      "strand": 1,
+      "notes": {},
+      "color": "#B3FF00",
+      "annotationTypePlural": "features"
+    }
+  },
+  "warnings": {},
+  "assemblyPieces": {},
+  "lineageAnnotations": {},
+  "parts": {},
+  "cutsites": {},
+  "orfs": {},
+  "translations": {},
+  "primers": {},
+  "guides": {},
+  "materiallyAvailable": true,
+  "name": "Untitled Sequence",
+  "description": "",
+  "fromFileUpload": false,
+  "stateTrackingId": "zIpD1W57D",
+  "filteredParts": {},
+  "filteredFeatures": {}
+}

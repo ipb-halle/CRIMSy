@@ -21,12 +21,10 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.ipb_halle.molecularfaces.component.openvectoreditor.OpenVectorEditorCore;
 
 /**
+ * Controller for the material type sequence
  * 
  * @author flange
  */
@@ -34,23 +32,33 @@ public class SequenceInformation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String sequenceJson;
-    private Integer sequenceLength;
-    private String sequenceString;
-    //private List<SequenceAnnotation> annotations;
-    private SequenceType sequenceType = null;
+    private Sequence sequence;
     private List<SequenceType> possibleSequenceTypes = Arrays
             .asList(SequenceType.values());
 
+    public SequenceInformation() {
+        //sequence = new Sequence();
+    }
+
+    public SequenceInformation(Sequence sequence) {
+        this.sequence = sequence;
+        // sequenceJson = ...
+    }
+
     public boolean isSequenceTypeSelected() {
-        return sequenceType != null;
+        return sequence.getData().getSequenceType() != null;
     }
 
     public void actionSelectSequenceType() {
-        if (sequenceType == SequenceType.PROTEIN) {
+        if (sequence.getData().getSequenceType() == SequenceType.PROTEIN) {
             sequenceJson = OpenVectorEditorCore.EMPTY_PROTEIN_SEQUENCE_JSON;
         } else {
             sequenceJson = "";
         }
+    }
+
+    public Sequence getSequence() {
+        return sequence;
     }
 
     public String getSequenceJson() {
@@ -59,30 +67,6 @@ public class SequenceInformation implements Serializable {
 
     public void setSequenceJson(String sequenceJson) {
         this.sequenceJson = sequenceJson;
-    }
-
-    public Integer getSequenceLength() {
-        return sequenceLength;
-    }
-
-    public void setSequenceLength(Integer sequenceLength) {
-        this.sequenceLength = sequenceLength;
-    }
-
-    public String getSequenceString() {
-        return sequenceString;
-    }
-
-    public void setSequenceString(String sequenceString) {
-        this.sequenceString = sequenceString;
-    }
-
-    public SequenceType getSequenceType() {
-        return sequenceType;
-    }
-
-    public void setSequenceType(SequenceType sequenceType) {
-        this.sequenceType = sequenceType;
     }
 
     public List<SequenceType> getPossibleSequenceTypes() {

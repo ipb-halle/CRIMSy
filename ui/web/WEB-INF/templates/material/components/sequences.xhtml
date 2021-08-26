@@ -48,7 +48,7 @@
                                     style="margin-right:20px" />
                                 <p:selectOneRadio
                                     id="sequenceTypeRadioId"
-                                    value="#{materialBean.sequenceInfos.sequenceType}"
+                                    value="#{materialBean.sequenceInfos.sequence.data.sequenceType}"
                                     disabled="#{materialBean.sequenceInfos.sequenceTypeSelected}">
                                     <f:selectItems
                                         value="#{materialBean.sequenceInfos.possibleSequenceTypes}"
@@ -73,11 +73,11 @@
                             </h:panelGroup>
                             <b:panelGrid columns="1">
                                 <b:inputText
-                                    value="#{materialBean.sequenceInfos.sequenceLength}"
+                                    value="#{materialBean.sequenceInfos.sequence.data.sequenceLength}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequenceLength}"
                                     disabled="true" />
                                 <b:inputTextarea
-                                    value="#{materialBean.sequenceInfos.sequenceString}"
+                                    value="#{materialBean.sequenceInfos.sequence.data.sequenceString}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequence}"
                                     disabled="true" />
                                 <!-- Datatable with Annotations -->

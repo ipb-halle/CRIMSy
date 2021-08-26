@@ -26,6 +26,7 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Molecule;
@@ -214,8 +215,7 @@ public class MaterialBean implements Serializable {
                 taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, bm.getTaxonomy());
             }
             if (m.getType() == MaterialType.SEQUENCE) {
-                sequenceInfos = new SequenceInformation();
-                // TODO
+                sequenceInfos = new SequenceInformation((Sequence) m);
             }
 
             storageInformationBuilder = new StorageInformationBuilder(
