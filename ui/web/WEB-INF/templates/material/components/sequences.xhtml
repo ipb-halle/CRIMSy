@@ -88,12 +88,14 @@
                                     searching="false"
                                     saveState="false">
                                     <b:dataTableColumn
-                                        label="#{msgs.materialCreation_panelSequenceInfos_featureName}">
-                                        <b:badge
-                                            value="&#160;"
-                                            style="background-color: #{fn:escapeXml(feature.color)}; margin-right: 10px" />
-                                        <h:outputText value="#{feature.name}" />
+                                        label="#{msgs.materialCreation_panelSequenceInfos_featureType}">
+                                        <b:label
+                                            value="#{feature.type}"
+                                            style="background-color: #{fn:escapeXml(feature.color)};" />
                                     </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        value="#{feature.name}"
+                                        label="#{msgs.materialCreation_panelSequenceInfos_featureName}" />
                                     <b:dataTableColumn
                                         value="#{feature.start}"
                                         label="#{msgs.materialCreation_panelSequenceInfos_featureStart}"
