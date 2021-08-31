@@ -221,7 +221,6 @@ function postInstall {
 #
 function removeFunc {
     "$LBAC_DATASTORE/dist/bin/lbacInit.sh" remove 
-    docker rmi pgchem 2>/dev/null >/dev/null
 }
 
 #
