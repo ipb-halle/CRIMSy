@@ -22,4 +22,4 @@ INSERT INTO materialdetailtypes VALUES(7,'SEQUENCE_INFORMATION');
 
 INSERT INTO materialInformations VALUES(11,5,1,false);
 INSERT INTO materialInformations VALUES(12,5,3,false);
-INSERT INTO materialInformations VALUES(13,5,7,false);
+INSERT INTO materialInformations VALUES(13,5,8,false);
