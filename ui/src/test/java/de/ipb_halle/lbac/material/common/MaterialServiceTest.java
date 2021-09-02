@@ -638,13 +638,14 @@ public class MaterialServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-
                 new StorageInformation(),
                 CompositionType.EXTRACT);
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
         composition.addComponent(struture1, 0d);
         composition.addComponent(struture2, 0d);
         instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
+        
+        //Load composition by direct name
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("composition");
         SearchResult result = instance.loadReadableMaterials(requestBuilder.build());

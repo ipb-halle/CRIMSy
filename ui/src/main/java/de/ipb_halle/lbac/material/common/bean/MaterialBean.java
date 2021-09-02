@@ -137,6 +137,7 @@ public class MaterialBean implements Serializable {
 
     private MaterialHazardBuilder hazardController;
     private StorageInformationBuilder storageInformationBuilder;
+   
 
     public enum Mode {
         CREATE, EDIT, HISTORY

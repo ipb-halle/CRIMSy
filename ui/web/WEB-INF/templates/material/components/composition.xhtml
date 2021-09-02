@@ -25,47 +25,52 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:mol="http://github.com/ipb-halle/MolecularFaces">
     <h:body>
         <ui:composition>
-            <p:tab            
+            <p:tab
+
                 title="#{msgs.materialCreation_panelNames_composition}"
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
                 <p:outputPanel
                     rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
-                    <p:panelGrid>
-                        <p:column>
-                            <p:outputLabel>
-                                Bitte wÃƒÆ’Ã‚Â¤hlen sie den Typ
-                            </p:outputLabel>
-                        </p:column>
-                        <p:column>
-                            <b:selectOneMenu
-                                ajax="true"
-                                update="@(.searchMask)"
-                                value="#{materialCompositionBean.choosenType}">
-                                <f:selectItems 
-                                    value="#{materialCompositionBean.getCompositionTypes()}"
-                                    var="type"/>
+                    <p:panelGrid                       
+                        >
+                        <p:row styleClass="borderless">
 
-
-                            </b:selectOneMenu>                            
-                        </p:column>
+                            <p:column styleClass="borderless">
+                                <p:outputLabel style="border-width: 0px">
+                                    Bitte waehlen sie den Typ
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column styleClass="borderless">
+                                <b:selectOneMenu
+                                    ajax="true"
+                                    update="@(.resultTable)"
+                                    value="#{materialCompositionBean.choosenType}">
+                                    <f:selectItems 
+                                        value="#{materialCompositionBean.getCompositionTypes()}"
+                                        var="type"/>
+                                </b:selectOneMenu>                            
+                            </p:column>
+                        </p:row>
                     </p:panelGrid>
 
                     <p:panelGrid
-                        styleClass="searchMask">
-                        <p:row styleClass="topAligned" style="vertical-align: top">
-                            <p:column>
+                        class="wideBody">
+                        <p:row styleClass="borderless">
+                            <p:column styleClass="borderless" style="vertical-align: top;">
                                 <p:panelGrid>
-                                    <p:row>
-                                        <p:column>
+                                    <p:row styleClass="borderless">
+                                        <p:column styleClass="borderless">
                                             <p:inputText
+                                                styleClass="inputText"
                                                 value=""
                                                 placeholder="Suchbegriff">
                                             </p:inputText>            
                                         </p:column>
-                                        <p:column>
+                                        <p:column styleClass="borderless">
                                             <p:commandButton
                                                 ajax="true"
                                                 action="#{materialCompositionBean.actionStartSearch()}"
@@ -74,16 +79,25 @@
                                             </p:commandButton>          
                                         </p:column>
                                     </p:row>
-                                    <p:row>
-                                        <p:column
-                                            >
-                                            <p:tabView>
-                                                 <p:ajax event="tabChange" listener="#{materialCompositionBean.onTabChange}"/>
-                                                <p:tab 
-                                                    
+                                    <p:row styleClass="borderless">
+                                        <p:column styleClass="borderless resultTable">
+                                            <p:tabView
+                                                dynamic="true">
+                                                <p:ajax event="tabChange" listener="#{materialCompositionBean.onTabChange}"/>
+                                                <p:tab
                                                     disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
                                                     title="Struktur">
-                                                    Struktursuche
+                                                    <mol:molecule
+                                                        value="#{materialCompositionBean.searchMolecule}"
+                                                        pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
+                                                        format="MDLV2000"
+                                                        border="true"
+                                                        readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
+                                                        widgetVar="structurePlugin">
+                                                    </mol:molecule>
+                                                    <!-- This JS snippet guarantees proper plugin initialization after
+                                                         this p:tab is rendered by AJAX and the tab comes into focus. -->
+                                                    <script>structurePlugin.then(plugin => plugin.init());</script>
                                                 </p:tab>
                                                 <p:tab title="Sequenz"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
@@ -100,9 +114,7 @@
                                 </p:panelGrid>
 
                             </p:column>
-
-
-                            <p:column>
+                            <p:column style="vertical-align: top;min-width:30%;max-width: 30%" styleClass="borderless">
                                 <b:dataTable
                                     styleClass="resultTable"
                                     value="#{materialCompositionBean.materialsThatCanBeAdded}"
@@ -129,9 +141,11 @@
                                 </b:dataTable>
                             </p:column>
 
-                            <p:column >
+                            <p:column 
+                                styleClass="borderless"
+                                style="vertical-align: top;
+                                min-width:30%;max-width: 30%">
                                 <b:dataTable
-
                                     styleClass="resultTable"
                                     value="#{materialCompositionBean.materialsInComposition}"
                                     searching="false"
@@ -156,8 +170,6 @@
                                     </b:dataTableColumn>
                                 </b:dataTable>
                             </p:column>
-
-
                         </p:row>
                     </p:panelGrid>
                 </p:outputPanel>

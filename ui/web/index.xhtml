@@ -44,6 +44,8 @@
         <h:outputStylesheet name="css/itemOverview.css"/>
         <h:outputStylesheet name="css/materialsOverview.css"/>
         <h:outputStylesheet name="css/collections.css"/>
+        <h:outputStylesheet name="css/materialEdit.css"/>
+
 
 
 
@@ -75,9 +77,9 @@
         </ui:insert>
 
         <b:container class="simplesearch">
-                <ui:insert name="content">
-                    <ui:include src="#{navigator.nextPage}"/>
-                </ui:insert>
+            <ui:insert name="content">
+                <ui:include src="#{navigator.nextPage}"/>
+            </ui:insert>
 
         </b:container>
         <ui:insert name="footer">

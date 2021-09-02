@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ public class MaterialCompositionBean implements Serializable {
     private int MAX_RESULTS = 25;
     private String materialName;
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
+    private String searchMolecule = "";
 
     @Inject
     private MaterialService materialService;
@@ -80,6 +81,14 @@ public class MaterialCompositionBean implements Serializable {
 
     public CompositionType getChoosenType() {
         return choosenCompositionType;
+    }
+
+    public String getSearchMolecule() {
+        return searchMolecule;
+    }
+
+    public void setSearchMolecule(String searchMolecule) {
+        this.searchMolecule = searchMolecule;
     }
 
     public void setChoosenType(CompositionType choosenType) {
@@ -112,8 +121,12 @@ public class MaterialCompositionBean implements Serializable {
         if (materialName != null && !materialName.trim().isEmpty()) {
             requestBuilder.setMaterialName(materialName);
         }
+        if (searchMolecule != null && !searchMolecule.isEmpty() && choosenMaterialType == MaterialType.STRUCTURE) {
+            requestBuilder.setStructure(searchMolecule);
+        }
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         foundMaterials = result.getAllFoundObjects(choosenMaterialType.getClassOfDto(), result.getNode());
+
         logger.info("Materials in " + materialsInComposition.size());
     }
 

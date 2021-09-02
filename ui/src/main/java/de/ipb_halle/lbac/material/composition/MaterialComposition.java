@@ -38,7 +38,7 @@ import java.util.TreeMap;
 public class MaterialComposition extends Material {
 
     private static final long serialVersionUID = 1L;
-    private CompositionType compositionType;
+    private final CompositionType compositionType;
 
     protected Map<Material, Double> components
             = new TreeMap<>(Comparator.comparing(Material::getFirstName));
@@ -111,11 +111,6 @@ public class MaterialComposition extends Material {
         }
         MaterialComposition otherUser = (MaterialComposition) other;
         return Objects.equals(otherUser.getId(), this.getId());
-    }
-
-    @Override
-    public Type getTypeToDisplay() {
-        return new Type(SearchTarget.MATERIAL, MaterialType.COMPOSITION);
     }
 
     public List<MaterialType> getPossibleTypesOfComponents() {
