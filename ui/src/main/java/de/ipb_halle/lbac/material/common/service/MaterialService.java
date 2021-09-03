@@ -629,9 +629,6 @@ public class MaterialService implements Serializable {
         if (m.getType() == MaterialType.TISSUE) {
             saveTissue((Tissue) m);
         }
-        if (m.getType() == MaterialType.BIOMATERIAL) {
-            saveBioMaterial((BioMaterial) m);
-        }
 
         if (m.getType().getFactory() != null) {
             m.getType().getFactory().createSaver().saveMaterial(m, em);
@@ -668,10 +665,6 @@ public class MaterialService implements Serializable {
                 projectAclId,
                 detailTemplates,
                 owner.getId());
-    }
-
-    public void saveBioMaterial(BioMaterial b) {
-        this.em.persist(b.createEntity());
     }
 
     /**

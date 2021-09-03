@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material;
 
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.BioMaterialFactory;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyFactory;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
@@ -65,7 +66,7 @@ public enum MaterialType implements Serializable {
     BIOMATERIAL(
             3,
             BioMaterial.class,
-            null,
+            new BioMaterialFactory(),
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.TAXONOMY),
