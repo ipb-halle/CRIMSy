@@ -618,21 +618,15 @@ public class MaterialService implements Serializable {
             Integer onwerId) {
         saveMaterialOverview(m, projectAclId, onwerId);
         saveMaterialNames(m);
-
         saveIndices(m);
-
         saveMaterialHazards(m);
         saveStorageConditions(m);
         saveDetailRightsFromTemplate(m, detailTemplates);
         saveComponents(m);
 
-        if (m.getType() == MaterialType.TISSUE) {
-            saveTissue((Tissue) m);
-        }
+        //Save specific attributes for the subtype
+        m.getType().getFactory().createSaver().saveMaterial(m, em);
 
-        if (m.getType().getFactory() != null) {
-            m.getType().getFactory().createSaver().saveMaterial(m, em);
-        }
     }
 
     private void saveComponents(Material m) {
@@ -732,13 +726,6 @@ public class MaterialService implements Serializable {
         for (StorageConditionMaterialEntity scsE : m.getStorageInformation().createDBInstances(m.getId())) {
             em.persist(scsE);
         }
-    }
-
-    private Tissue saveTissue(Tissue t) {
-        TissueEntity entity = t.createEntity();
-        this.em.persist(entity);
-        t.setId(entity.getId());
-        return t;
     }
 
     public void setEditedMaterialSaver(MaterialEditSaver editedMaterialSaver) {

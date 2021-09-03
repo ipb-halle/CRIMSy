@@ -22,11 +22,13 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterialFactory;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyFactory;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
+import de.ipb_halle.lbac.material.biomaterial.TissueFactory;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.composition.CompositionFactory;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
+import de.ipb_halle.lbac.material.consumable.ConsumableFactory;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -73,7 +75,7 @@ public enum MaterialType implements Serializable {
     CONSUMABLE(
             4,
             Consumable.class,
-            null,
+            new ConsumableFactory(),
             MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.COMMON_INFORMATION),
     SEQUENCE(
@@ -82,7 +84,7 @@ public enum MaterialType implements Serializable {
             null,
             MaterialDetailType.COMMON_INFORMATION),
     TISSUE(
-            6, Tissue.class, null, MaterialDetailType.COMMON_INFORMATION),
+            6, Tissue.class, new TissueFactory(), MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
             7, Taxonomy.class, new TaxonomyFactory(), MaterialDetailType.COMMON_INFORMATION),
     INACCESSIBLE(8, InaccessibleMaterial.class, null);

@@ -15,19 +15,23 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.service;
+package de.ipb_halle.lbac.material.consumable;
 
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
-import java.io.Serializable;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialFactory extends Serializable {
+public class ConsumableSaver implements MaterialSaver {
 
-    public MaterialSaver createSaver();
+    private static final long serialVersionUID = 1L;
 
-    public MaterialLoader createLoader();
+    @Override
+    public void saveMaterial(Material m, EntityManager em) {
+
+    }
 
 }

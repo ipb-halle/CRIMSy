@@ -15,19 +15,28 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.service;
+package de.ipb_halle.lbac.material.consumable;
 
 import de.ipb_halle.lbac.material.common.MaterialSaver;
-import java.io.Serializable;
+import de.ipb_halle.lbac.material.common.service.MaterialFactory;
+import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialFactory extends Serializable {
+public class ConsumableFactory implements MaterialFactory {
 
-    public MaterialSaver createSaver();
+    private static final long serialVersionUID = 1L;
 
-    public MaterialLoader createLoader();
+    @Override
+    public MaterialSaver createSaver() {
+        return new ConsumableSaver();
+    }
+
+    @Override
+    public MaterialLoader createLoader() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

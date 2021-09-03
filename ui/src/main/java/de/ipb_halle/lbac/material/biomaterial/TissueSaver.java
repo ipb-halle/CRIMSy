@@ -15,19 +15,24 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.service;
+package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
-import java.io.Serializable;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialFactory extends Serializable {
+public class TissueSaver implements MaterialSaver {
 
-    public MaterialSaver createSaver();
-
-    public MaterialLoader createLoader();
+    @Override
+    public void saveMaterial(Material m, EntityManager em) {
+        Tissue t = (Tissue) m;
+        TissueEntity entity = t.createEntity();
+        em.persist(entity);
+        m.setId(entity.getId());
+    }
 
 }
