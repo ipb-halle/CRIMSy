@@ -53,6 +53,7 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import static de.ipb_halle.lbac.material.MaterialType.BIOMATERIAL;
 import static de.ipb_halle.lbac.material.MaterialType.COMPOSITION;
 import static de.ipb_halle.lbac.material.MaterialType.STRUCTURE;
 import de.ipb_halle.lbac.material.common.IndexEntry;
@@ -267,31 +268,6 @@ public class MaterialService implements Serializable {
     }
 
     /**
-     * Loads a biomaterial from the database
-     *
-     * @param me
-     * @return
-     */
-    private BioMaterial getBioMaterial(MaterialEntity me) {
-        BioMaterialEntity entity = this.em.find(BioMaterialEntity.class, me.getMaterialid());
-
-        Tissue tissue = null;
-        if (entity.getTissueid() != null) {
-            tissue = tissueService.loadTissueById(entity.getTissueid());
-        }
-        BioMaterial b = new BioMaterial(
-                me.getMaterialid(),
-                new ArrayList<>(),
-                me.getProjectid(),
-                loadHazardInformation(me.getMaterialid()),
-                loadStorageClassInformation(me.getMaterialid()),
-                taxonomyService.loadTaxonomyById(entity.getTaxoid()),
-                tissue
-        );
-        return b;
-    }
-
-    /**
      * Gets all materialnames which matches the pattern %name% and are readable
      * by the user
      *
@@ -415,7 +391,7 @@ public class MaterialService implements Serializable {
                 material = STRUCTURE.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
                 break;
             case BIOMATERIAL:
-                material = getBioMaterial(entity);
+                material = BIOMATERIAL.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
                 break;
             case TAXONOMY:
                 material = taxonomyService.loadTaxonomyById(entity.getMaterialid());
