@@ -97,7 +97,7 @@ public class MaterialServiceTest extends TestBase {
         creationTools = new CreationTools(hazardStatement, precautionaryStatement, storageClassRemark, memberService, projectService);
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        instance.setStructureInformationSaver(new StructureInformationSaverMock(instance.getEm()));
+        instance.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
     }
 
@@ -627,7 +627,7 @@ public class MaterialServiceTest extends TestBase {
     public void test009_saveLoadMaterialComposition() {
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
-        struture1.getNames().set(0, new MaterialName("First Structure","de",0));
+        struture1.getNames().set(0, new MaterialName("First Structure", "de", 0));
         Structure struture2 = creationTools.createStructure(project1);
 
         instance.saveMaterialToDB(struture1, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
@@ -644,7 +644,7 @@ public class MaterialServiceTest extends TestBase {
         composition.addComponent(struture1, 0d);
         composition.addComponent(struture2, 0d);
         instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
-        
+
         //Load composition by direct name
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("composition");

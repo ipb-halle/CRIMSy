@@ -285,12 +285,10 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-
                 new StorageInformation(), CompositionType.EXTRACT);
         composition.addComponent(materialService.loadMaterialById(materialid1), 0d);
         composition.addComponent(materialService.loadMaterialById(materialid2), 0d);
         materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(), publicUser);
-
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
@@ -466,7 +464,7 @@ public class SearchServiceTest extends TestBase {
         BioMaterial bio = creationTools.createBioMaterial(project1, "BioMat-001", taxonomyService.loadTaxonomyById(4), null);
         Structure structure = creationTools.createStructure(project1);
         structure.setMolecule(null);
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         materialService.saveMaterialToDB(structure, publicAclId, new HashMap<>(), publicUser);
 
         MaterialComposition composition = new MaterialComposition(expid1, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);

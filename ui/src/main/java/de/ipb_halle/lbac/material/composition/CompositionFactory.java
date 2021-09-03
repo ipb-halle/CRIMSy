@@ -17,22 +17,24 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
-import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialSaver;
-import javax.persistence.EntityManager;
+import de.ipb_halle.lbac.material.common.service.MaterialFactory;
+import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 
 /**
  *
  * @author fmauz
  */
-public class CompositionSaver implements MaterialSaver {
-
-    private static final long serialVersionUID = 1L;
+public class CompositionFactory implements MaterialFactory {
 
     @Override
-    public void saveMaterial(Material m, EntityManager em) {
-        MaterialComposition composition = (MaterialComposition) m;
-        em.merge(composition.createEntity());
+    public MaterialSaver createSaver() {
+        return new CompositionSaver();
+    }
+
+    @Override
+    public MaterialLoader createLoader() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

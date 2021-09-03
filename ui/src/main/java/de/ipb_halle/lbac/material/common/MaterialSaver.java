@@ -19,12 +19,13 @@ package de.ipb_halle.lbac.material.common;
 
 import de.ipb_halle.lbac.material.Material;
 import java.io.Serializable;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialSaver extends Serializable{
+public interface MaterialSaver extends Serializable {
 
-    public void saveMaterial(Material m);
+    public void saveMaterial(Material m, EntityManager em);
 }

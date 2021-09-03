@@ -18,20 +18,13 @@
 package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.LdapProperties;
-import de.ipb_halle.lbac.admission.MembershipOrchestrator;
-import de.ipb_halle.lbac.admission.SystemSettings;
-import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.UserTimeZoneSettingsBean;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
-import de.ipb_halle.lbac.admission.mock.UserPluginSettingsBeanMock;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
-import de.ipb_halle.lbac.globals.KeyManager;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -44,9 +37,6 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.navigation.Navigator;
-import de.ipb_halle.lbac.timezone.TimeZonesBean;
-import de.ipb_halle.lbac.util.pref.PreferenceService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +77,7 @@ public class MaterialCompositionBeanTest extends TestBase {
 
     @Before
     public void init() {
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         userBeanMock.setCurrentAccount(publicUser);
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         creationTools = new CreationTools("", "", "", memberService, projectService);
@@ -230,7 +220,6 @@ public class MaterialCompositionBeanTest extends TestBase {
         bean.actionStartSearch();
         Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
     }
-
 
     @Deployment
     public static WebArchive createDeployment() {

@@ -29,16 +29,11 @@ public class TaxonomySaver implements MaterialSaver {
 
     private final String SQL_SAVE_EFFECTIVE_TAXONOMY = "INSERT INTO effective_taxonomy (taxoid,parentid) VALUES(:tid,:pid)";
     private static final long serialVersionUID = 1L;
-    protected EntityManager em;
-
-    public TaxonomySaver(EntityManager em) {
-        this.em = em;
-    }
 
     @Override
-    public void saveMaterial(Material m) {
+    public void saveMaterial(Material m, EntityManager em) {
         Taxonomy t = (Taxonomy) m;
-        this.em.persist(t.createEntity());
+        em.persist(t.createEntity());
         for (Taxonomy th : t.getTaxHierachy()) {
             em.createNativeQuery(SQL_SAVE_EFFECTIVE_TAXONOMY)
                     .setParameter("tid", t.getId())

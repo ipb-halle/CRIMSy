@@ -107,7 +107,7 @@ public class MaterialEditSaver implements Serializable {
             TaxonomyNestingService taxonomyNestingService) {
         this.materialService = materialService;
         this.taxonomyNestingService = taxonomyNestingService;
-        this.structureSaver = new StructureInformationSaver(materialService.getEm());
+        this.structureSaver = new StructureInformationSaver();
     }
 
     /**
@@ -251,7 +251,7 @@ public class MaterialEditSaver implements Serializable {
             Molecule oldMol = strucDiff.getMoleculeId_old();
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
-                    newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel()));
+                    newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel(), materialService.getEm()));
                 }
             }
             saveMaterialStrcutureDifferences(strucDiff);

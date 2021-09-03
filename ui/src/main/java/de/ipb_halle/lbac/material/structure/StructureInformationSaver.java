@@ -30,28 +30,27 @@ import javax.persistence.Query;
 public class StructureInformationSaver implements MaterialSaver {
 
     private static final long serialVersionUID = 1L;
-    private final MaterialIndexSaver indexSaver;
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (molecule) "
             + "VALUES (:molecule) "
             + "RETURNING id";
-    protected EntityManager em;
 
-    public StructureInformationSaver(EntityManager em) {
-        this.em = em;
-        this.indexSaver = new MaterialIndexSaver(em);
+    public StructureInformationSaver() {
+
     }
 
     /**
      * Saves the indices and if present the molecule of the structure
      *
      * @param m Structure to save
+     * @param em
      */
     @Override
-    public void saveMaterial(Material m) {
+    public void saveMaterial(Material m, EntityManager em) {
+        MaterialIndexSaver indexSaver = new MaterialIndexSaver(em);
         Structure s = (Structure) m;
         indexSaver.saveIndices(s);
         if (s.getMolecule() != null) {
-            saveMoleculeOf(s);
+            saveMoleculeOf(s, em);
         }
         em.persist(s.createEntity());
     }
@@ -60,19 +59,20 @@ public class StructureInformationSaver implements MaterialSaver {
      * Saves a molecule in the database and returns the generated id
      *
      * @param moleculeString SMILES,V2000 or V3000
+     * @param em
      * @return generated id
      */
-    public int saveMolecule(String moleculeString) {
+    public int saveMolecule(String moleculeString, EntityManager em) {
         Query q = em.createNativeQuery(SQL_INSERT_MOLECULE)
                 .setParameter("molecule", moleculeString);
         int molId = (int) q.getSingleResult();
         return molId;
     }
 
-    private void saveMoleculeOf(Structure s) {
+    private void saveMoleculeOf(Structure s, EntityManager em) {
         if (s.getMolecule().getStructureModel() != null
                 && !s.getMolecule().getStructureModel().isEmpty()) {
-            s.getMolecule().setId(saveMolecule(s.getMolecule().getStructureModel()));
+            s.getMolecule().setId(saveMolecule(s.getMolecule().getStructureModel(), em));
         } else {
             s.getMolecule().setId(0);
         }

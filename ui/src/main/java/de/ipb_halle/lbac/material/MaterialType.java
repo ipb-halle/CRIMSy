@@ -19,14 +19,17 @@ package de.ipb_halle.lbac.material;
 
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyFactory;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
+import de.ipb_halle.lbac.material.composition.CompositionFactory;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.material.structure.StructureFactory;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +47,7 @@ public enum MaterialType implements Serializable {
     STRUCTURE(
             1,
             Structure.class,
-            null,
+            new StructureFactory(),
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.INDEX,
             MaterialDetailType.STORAGE_CLASSES,
@@ -53,7 +56,7 @@ public enum MaterialType implements Serializable {
     COMPOSITION(
             2,
             MaterialComposition.class,
-            null,
+            new CompositionFactory(),
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.INDEX,
             MaterialDetailType.HAZARD_INFORMATION,
@@ -80,7 +83,7 @@ public enum MaterialType implements Serializable {
     TISSUE(
             6, Tissue.class, null, MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
-            7, Taxonomy.class, null, MaterialDetailType.COMMON_INFORMATION),
+            7, Taxonomy.class, new TaxonomyFactory(), MaterialDetailType.COMMON_INFORMATION),
     INACCESSIBLE(8, InaccessibleMaterial.class, null);
 
     private final List<MaterialDetailType> types;
@@ -142,4 +145,9 @@ public enum MaterialType implements Serializable {
     public Class getClassOfDto() {
         return clazz;
     }
+
+    public MaterialFactory getFactory() {
+        return factory;
+    }
+
 }
