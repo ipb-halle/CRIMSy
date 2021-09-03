@@ -27,6 +27,8 @@ import de.ipb_halle.lbac.material.common.service.MaterialLoader;
  */
 public class CompositionFactory implements MaterialFactory {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public MaterialSaver createSaver() {
         return new CompositionSaver();
@@ -34,7 +36,7 @@ public class CompositionFactory implements MaterialFactory {
 
     @Override
     public MaterialLoader createLoader() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new CompositionLoader();
     }
 
 }

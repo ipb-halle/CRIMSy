@@ -33,6 +33,7 @@ public interface MaterialLoader extends Serializable {
     public Material loadMaterial(
             MaterialEntity entity,
             EntityManager em,
+            MaterialService materialService,
             TaxonomyService taxoService,
             TissueService tissueService);
 }

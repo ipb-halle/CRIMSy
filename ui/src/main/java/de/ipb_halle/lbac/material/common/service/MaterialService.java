@@ -53,6 +53,7 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
+import static de.ipb_halle.lbac.material.MaterialType.COMPOSITION;
 import static de.ipb_halle.lbac.material.MaterialType.STRUCTURE;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
@@ -131,10 +132,6 @@ public class MaterialService implements Serializable {
             = "DELETE FROM material_compositions "
             + "WHERE materialid=:mid";
 
-    public final String SQL_SELECT_COMPONENTS
-            = "SELECT materialid, componentid,concentration "
-            + "FROM material_compositions "
-            + "WHERE materialid=:mid";
     protected MaterialHistoryService materialHistoryService;
 
     @PersistenceContext(name = "de.ipb_halle.lbac")
@@ -415,7 +412,7 @@ public class MaterialService implements Serializable {
         Material material = null;
         switch (MaterialType.getTypeById(entity.getMaterialtypeid())) {
             case STRUCTURE:
-                material = STRUCTURE.getFactory().createLoader().loadMaterial(entity, em, taxonomyService, tissueService);
+                material = STRUCTURE.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
                 break;
             case BIOMATERIAL:
                 material = getBioMaterial(entity);
@@ -427,7 +424,7 @@ public class MaterialService implements Serializable {
                 material = loadConsumable(entity);
                 break;
             case COMPOSITION:
-                material = loadComposition(entity);
+                material = COMPOSITION.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported MaterialType");
@@ -444,35 +441,6 @@ public class MaterialService implements Serializable {
         material.setStorageInformation(loadStorageClassInformation(entity.getMaterialid()));
         material.setHazards(loadHazardInformation(entity.getMaterialid()));
         return material;
-    }
-
-    @SuppressWarnings("unchecked")
-    private MaterialComposition loadComposition(MaterialEntity entity) {
-        CompositionEntity compositionEntity = loadCompositionEntity(entity.getMaterialid());
-        CompositionType compositionType = CompositionType.valueOf(compositionEntity.getType());
-        MaterialComposition composition = new MaterialComposition(
-                entity.getMaterialid(),
-                loadMaterialNamesById(entity.getMaterialid()),
-                entity.getProjectid(),
-                loadHazardInformation(entity.getMaterialid()),
-                loadStorageClassInformation(entity.getMaterialid()),
-                compositionType);
-
-        List<MaterialCompositionEntity> entities
-                = (List<MaterialCompositionEntity>) em.createNativeQuery(SQL_SELECT_COMPONENTS, MaterialCompositionEntity.class)
-                        .setParameter("mid", entity.getMaterialid())
-                        .getResultList();
-        for (MaterialCompositionEntity mce : entities) {
-            if (mce.getId().getComponentid() != entity.getMaterialid()) {
-                composition.addComponent(loadMaterialById(mce.getId().getComponentid()), mce.getConcentration());
-            }
-        }
-        return composition;
-    }
-
-    private CompositionEntity loadCompositionEntity(Integer id) {
-        CompositionEntity entity = em.find(CompositionEntity.class, id);
-        return entity;
     }
 
     /**

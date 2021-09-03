@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
 import java.util.ArrayList;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -42,6 +43,7 @@ public class StructureLoader implements MaterialLoader {
     public Material loadMaterial(
             MaterialEntity entity,
             EntityManager em,
+            MaterialService materialService,
             TaxonomyService taxoService,
             TissueService tissueService) {
 
