@@ -50,12 +50,12 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
 import static de.ipb_halle.lbac.material.MaterialType.BIOMATERIAL;
 import static de.ipb_halle.lbac.material.MaterialType.COMPOSITION;
+import static de.ipb_halle.lbac.material.MaterialType.CONSUMABLE;
 import static de.ipb_halle.lbac.material.MaterialType.STRUCTURE;
 import static de.ipb_halle.lbac.material.MaterialType.TAXONOMY;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
-import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.structure.StructureFactory;
 import de.ipb_halle.lbac.search.SearchRequest;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -378,28 +378,12 @@ public class MaterialService implements Serializable {
     }
 
     private Material loadMaterial(MaterialEntity entity) {
-        Material material = null;
-        switch (MaterialType.getTypeById(entity.getMaterialtypeid())) {
-            case STRUCTURE:
-                material = STRUCTURE.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
-                break;
-            case BIOMATERIAL:
-                material = BIOMATERIAL.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
-                break;
-            case TAXONOMY:
-                material = TAXONOMY.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
-                break;
-            case CONSUMABLE:
-                material = loadConsumable(entity);
-                break;
-            case COMPOSITION:
-                material = COMPOSITION.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported MaterialType");
-        }
+        Material material = MaterialType.getTypeById(entity.getMaterialtypeid())
+                .getFactory()
+                .createLoader()
+                .loadMaterial(entity, em, this, taxonomyService, tissueService);
+
         material.setACList(aclService.loadById(entity.getACList()));
-        material.setStorageInformation(loadStorageClassInformation(entity.getMaterialid()));
         material.setOwner(memberService.loadUserById(entity.getOwner()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
         material.setNames(loadMaterialNamesById(material.getId()));
@@ -420,17 +404,6 @@ public class MaterialService implements Serializable {
     public Material loadMaterialById(int id) {
         MaterialEntity entity = em.find(MaterialEntity.class, id);
         return loadMaterial(entity);
-    }
-
-    private Consumable loadConsumable(MaterialEntity me) {
-        Consumable c = new Consumable(
-                me.getMaterialid(),
-                loadMaterialNamesById(me.getMaterialid()),
-                me.getProjectid(),
-                loadHazardInformation(me.getMaterialid()),
-                loadStorageClassInformation(me.getMaterialid()));
-        c.setCreationTime(me.getCtime());
-        return c;
     }
 
     /**
