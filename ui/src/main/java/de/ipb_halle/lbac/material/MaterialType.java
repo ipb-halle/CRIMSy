@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
@@ -43,6 +44,7 @@ public enum MaterialType implements Serializable {
     STRUCTURE(
             1,
             Structure.class,
+            null,
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.INDEX,
             MaterialDetailType.STORAGE_CLASSES,
@@ -51,6 +53,7 @@ public enum MaterialType implements Serializable {
     COMPOSITION(
             2,
             MaterialComposition.class,
+            null,
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.INDEX,
             MaterialDetailType.HAZARD_INFORMATION,
@@ -59,38 +62,45 @@ public enum MaterialType implements Serializable {
     BIOMATERIAL(
             3,
             BioMaterial.class,
+            null,
             MaterialDetailType.COMMON_INFORMATION,
             MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.TAXONOMY),
     CONSUMABLE(
             4,
             Consumable.class,
+            null,
             MaterialDetailType.HAZARD_INFORMATION,
             MaterialDetailType.COMMON_INFORMATION),
     SEQUENCE(
             5,
             Sequence.class,
+            null,
             MaterialDetailType.COMMON_INFORMATION),
     TISSUE(
-            6, Tissue.class, MaterialDetailType.COMMON_INFORMATION),
+            6, Tissue.class, null, MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
-            7, Taxonomy.class, MaterialDetailType.COMMON_INFORMATION),
-    INACCESSIBLE(8, InaccessibleMaterial.class);
+            7, Taxonomy.class, null, MaterialDetailType.COMMON_INFORMATION),
+    INACCESSIBLE(8, InaccessibleMaterial.class, null);
 
     private final List<MaterialDetailType> types;
     private static final Map<String, MaterialType> string2Enum = Stream.of(values()).collect(toMap(Object::toString, e -> e));
     private final int id;
     private final Class clazz;
+    private final MaterialFactory factory;
 
     /**
      *
      * @param id
      * @param t
+     * @param clazz
+     * @param factory
      */
-    MaterialType(int id, Class clazz, MaterialDetailType... t) {
-        types = Arrays.asList(t);
+    MaterialType(int id, Class clazz, MaterialFactory factory, MaterialDetailType... t) {
+        this.types = Arrays.asList(t);
         this.clazz = clazz;
         this.id = id;
+        this.factory = factory;
     }
 
     public static MaterialType fromString(String type) {
