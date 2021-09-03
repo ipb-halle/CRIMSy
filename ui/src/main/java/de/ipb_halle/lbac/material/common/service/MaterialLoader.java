@@ -18,13 +18,21 @@
 package de.ipb_halle.lbac.material.common.service;
 
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
+import java.io.Serializable;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialLoader {
+public interface MaterialLoader extends Serializable {
 
-    public Material loadMaterial(MaterialEntity entity);
+    public Material loadMaterial(
+            MaterialEntity entity,
+            EntityManager em,
+            TaxonomyService taxoService,
+            TissueService tissueService);
 }

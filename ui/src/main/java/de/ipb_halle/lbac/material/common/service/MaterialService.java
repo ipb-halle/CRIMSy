@@ -45,7 +45,6 @@ import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
-import de.ipb_halle.lbac.material.biomaterial.TissueEntity;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
@@ -54,13 +53,11 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberService;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomySaver;
+import static de.ipb_halle.lbac.material.MaterialType.STRUCTURE;
 import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.MaterialSaver;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
 import de.ipb_halle.lbac.material.composition.CompositionEntity;
-import de.ipb_halle.lbac.material.composition.CompositionSaver;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
@@ -82,7 +79,6 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -114,8 +110,6 @@ public class MaterialService implements Serializable {
     private final String SQL_GET_STORAGE_CONDITION = "SELECT conditionId,materialid FROM storageconditions_material WHERE materialid=:mid";
     private final String SQL_GET_HAZARDS = "SELECT typeid,materialid,remarks FROM material_hazards WHERE materialid=:mid";
     private final String SQL_GET_INDICES = "SELECT id,materialid,typeid,value,language,rank FROM material_indices WHERE materialid=:mid order by rank";
-    private final String SQL_GET_STRUCTURE_INFOS = "SELECT id,sumformula,molarmass,exactmolarmass,moleculeid FROM structures WHERE id=:mid";
-    private final String SQL_GET_MOLECULE = "SELECT id,molecule FROM molecules WHERE id=:mid";
     private final String SQL_DEACTIVATE_MATERIAL = "UPDATE materials SET deactivated=true WHERE materialid=:mid";
     private final String SQL_GET_SIMILAR_NAMES
             = "SELECT DISTINCT(mi.value) "
@@ -346,46 +340,6 @@ public class MaterialService implements Serializable {
     }
 
     /**
-     * loads the structure information and if possible the molecule information
-     *
-     * @param me
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    protected Structure getStructure(MaterialEntity me) {
-        Query q4 = em.createNativeQuery(SQL_GET_INDICES, MaterialIndexEntryEntity.class);
-        q4.setParameter("mid", me.getMaterialid());
-
-        Query q5 = em.createNativeQuery(SQL_GET_STRUCTURE_INFOS, StructureEntity.class);
-        q5.setParameter("mid", me.getMaterialid());
-
-        StructureEntity sE = (StructureEntity) q5.getSingleResult();
-        String molecule = "";
-        String moleculeFormat = "";
-        int moleculeId = 0;
-        if (sE.getMoleculeid() != null && sE.getMoleculeid() != 0) {
-            Query q6 = em.createNativeQuery(SQL_GET_MOLECULE);
-            q6.setParameter("mid", sE.getMoleculeid());
-            Object[] result = (Object[]) q6.getSingleResult();
-            moleculeId = (int) result[0];
-            molecule = (String) result[1];
-        }
-
-        Structure s = Structure.createInstanceFromDB(
-                me,
-                loadHazardInformation(me.getMaterialid()),
-                loadStorageClassInformation(me.getMaterialid()),
-                q4.getResultList(),
-                sE,
-                molecule,
-                moleculeId,
-                moleculeFormat);
-        s.setOwner(memberService.loadUserById(me.getOwner()));
-
-        return s;
-    }
-
-    /**
      * Loads all indices of a material (indextype == 1)
      *
      * @param materialid
@@ -461,7 +415,7 @@ public class MaterialService implements Serializable {
         Material material = null;
         switch (MaterialType.getTypeById(entity.getMaterialtypeid())) {
             case STRUCTURE:
-                material = getStructure(entity);
+                material = STRUCTURE.getFactory().createLoader().loadMaterial(entity, em, taxonomyService, tissueService);
                 break;
             case BIOMATERIAL:
                 material = getBioMaterial(entity);

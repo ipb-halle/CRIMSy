@@ -10,6 +10,8 @@ import de.ipb_halle.lbac.material.common.service.MaterialLoader;
  */
 public class StructureFactory implements MaterialFactory {
 
+    private static final long serialVersionUID = 1L;
+
     StructureInformationSaver saver = new StructureInformationSaver();
 
     @Override
@@ -19,7 +21,7 @@ public class StructureFactory implements MaterialFactory {
 
     @Override
     public MaterialLoader createLoader() {
-        return null;
+        return new StructureLoader();
     }
 
     public void setSaver(StructureInformationSaver saver) {
