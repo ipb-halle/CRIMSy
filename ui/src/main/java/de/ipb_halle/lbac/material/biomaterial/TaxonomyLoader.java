@@ -17,26 +17,23 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.service.MaterialFactory;
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.service.MaterialService;
+import javax.persistence.EntityManager;
 
 /**
  *
  * @author fmauz
  */
-public class TaxonomyFactory implements MaterialFactory {
+public class TaxonomyLoader implements MaterialLoader {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    public MaterialSaver createSaver() {
-        return new TaxonomySaver();
-    }
-
-    @Override
-    public MaterialLoader createLoader() {
-        return new TaxonomyLoader();
+    public Material loadMaterial(MaterialEntity entity, EntityManager em, MaterialService materialService, TaxonomyService taxoService, TissueService tissueService) {
+        return taxoService.loadTaxonomyById(entity.getMaterialid());
     }
 
 }

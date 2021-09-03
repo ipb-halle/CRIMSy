@@ -40,15 +40,10 @@ import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryId;
-import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
-import de.ipb_halle.lbac.material.structure.StructureEntity;
-import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
-import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
-import de.ipb_halle.lbac.material.biomaterial.Tissue;
 import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
@@ -56,12 +51,10 @@ import de.ipb_halle.lbac.admission.MemberService;
 import static de.ipb_halle.lbac.material.MaterialType.BIOMATERIAL;
 import static de.ipb_halle.lbac.material.MaterialType.COMPOSITION;
 import static de.ipb_halle.lbac.material.MaterialType.STRUCTURE;
+import static de.ipb_halle.lbac.material.MaterialType.TAXONOMY;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchConditionBuilder;
-import de.ipb_halle.lbac.material.composition.CompositionEntity;
-import de.ipb_halle.lbac.material.composition.CompositionType;
-import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.structure.StructureFactory;
 import de.ipb_halle.lbac.search.SearchRequest;
@@ -394,7 +387,7 @@ public class MaterialService implements Serializable {
                 material = BIOMATERIAL.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
                 break;
             case TAXONOMY:
-                material = taxonomyService.loadTaxonomyById(entity.getMaterialid());
+                material = TAXONOMY.getFactory().createLoader().loadMaterial(entity, em, this, taxonomyService, tissueService);
                 break;
             case CONSUMABLE:
                 material = loadConsumable(entity);
