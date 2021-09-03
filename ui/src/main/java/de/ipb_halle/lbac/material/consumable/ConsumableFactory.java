@@ -36,7 +36,7 @@ public class ConsumableFactory implements MaterialFactory {
 
     @Override
     public MaterialLoader createLoader() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ConsumableLoader();
     }
 
 }
