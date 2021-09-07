@@ -161,15 +161,15 @@ public class MaterialCompositionBeanTest extends TestBase {
         bean.setChoosenType(CompositionType.MIXTURE);
 
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertEquals(1, bean.getMaterialsInComposition().size());
+        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
         //Not the same material again
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertEquals(1, bean.getMaterialsInComposition().size());
+        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
         // No biomaterial because compositionType is MIXTURE
         bean.actionAddMaterialToComposition(dummyBioMaterial3);
-        Assert.assertEquals(1, bean.getMaterialsInComposition().size());
+        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
         bean.actionAddMaterialToComposition(dummyStructure2);
-        Assert.assertEquals(2, bean.getMaterialsInComposition().size());
+        Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
     }
 
     @Test
@@ -189,7 +189,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         Assert.assertTrue(listOfIds.contains(2));
 
         // Only one strcuture should be available because compositiontype is MIXTURE and the other structure is already in
-        bean.getMaterialsInComposition().add(dummyStructure1);
+        bean.getConcentrationsInComposition().add(new Concentration(dummyStructure1));
         listOfIds = bean.getMaterialsThatCanBeAdded().stream().map(m -> m.getId()).collect(Collectors.toCollection(ArrayList::new));
         Assert.assertEquals(1, listOfIds.size());
         Assert.assertTrue(listOfIds.contains(2));

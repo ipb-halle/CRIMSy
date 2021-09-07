@@ -49,7 +49,7 @@ public class MaterialCompositionBean implements Serializable {
     private static final long serialVersionUID = 1L;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Material> foundMaterials = new ArrayList<>();
-    private List<Material> materialsInComposition = new ArrayList<>();
+    private List<Concentration> concentrationsInComposition = new ArrayList<>();
     private MaterialType choosenMaterialType;
     private int MAX_RESULTS = 25;
     private String materialName;
@@ -96,7 +96,7 @@ public class MaterialCompositionBean implements Serializable {
 
     public void setChoosenType(CompositionType choosenType) {
         if (choosenType != choosenCompositionType) {
-            materialsInComposition.clear();
+            concentrationsInComposition.clear();
             foundMaterials.clear();
             concentrations.clear();
         }
@@ -130,7 +130,7 @@ public class MaterialCompositionBean implements Serializable {
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         foundMaterials = result.getAllFoundObjects(choosenMaterialType.getClassOfDto(), result.getNode());
 
-        logger.info("Materials in " + materialsInComposition.size());
+        logger.info("Materials in " + concentrationsInComposition.size());
     }
 
     public List<Material> getMaterialsThatCanBeAdded() {
@@ -141,8 +141,8 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public boolean isMaterialAlreadyInComposition(Material materialToLookFor) {
-        for (Material materialAlreadyIn : materialsInComposition) {
-            if (materialAlreadyIn.getId() == materialToLookFor.getId()) {
+        for (Concentration concentrationAlreadyIn : concentrationsInComposition) {
+            if (concentrationAlreadyIn.isSameMaterial(materialToLookFor)) {
                 return true;
             }
         }
@@ -158,14 +158,13 @@ public class MaterialCompositionBean implements Serializable {
     public void actionAddMaterialToComposition(Material materialToAdd) {
         if (!isMaterialAlreadyInComposition(materialToAdd)
                 && choosenCompositionType.getAllowedTypes().contains(materialToAdd.getType())) {
-            materialsInComposition.add(materialToAdd);
+            concentrationsInComposition.add(new Concentration(materialToAdd));
             concentrations.put(materialToAdd, 0d);
         }
     }
 
-    public void actionRemoveMaterialFromComposition(Material materialToRemove) {
-        materialsInComposition.remove(materialToRemove);
-        concentrations.remove(materialToRemove);
+    public void actionRemoveConcentrationFromComposition(Concentration concentrationToRemove) {
+        concentrationsInComposition.remove(concentrationToRemove);
     }
 
     /**
@@ -175,9 +174,8 @@ public class MaterialCompositionBean implements Serializable {
      * @param type String value of @see MaterialType
      */
     public void actionSwitchMaterialType(String type) {
-        materialsInComposition.clear();
+        concentrationsInComposition.clear();
         foundMaterials.clear();
-        concentrations.clear();
         MaterialType t;
         if (type == null) {
             logger.error("No null value allowed as argument");
@@ -212,8 +210,8 @@ public class MaterialCompositionBean implements Serializable {
         return !choosenCompositionType.getAllowedTypes().contains(type);
     }
 
-    public List<Material> getMaterialsInComposition() {
-        return materialsInComposition;
+    public List<Concentration> getConcentrationsInComposition() {
+        return concentrationsInComposition;
     }
 
     public String getMaterialName() {
@@ -224,8 +222,8 @@ public class MaterialCompositionBean implements Serializable {
         this.materialName = materialName;
     }
 
-    public Double getConventrationOfMaterial(Material m) {
-        return concentrations.get(m);
+    public String getLocalizedMaterialType(Concentration conc) {
+        return conc.getMaterialType().toString();
     }
 
 }

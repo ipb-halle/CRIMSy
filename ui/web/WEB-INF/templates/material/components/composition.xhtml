@@ -88,7 +88,7 @@
                                                 <p:tab
                                                     disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
                                                     title="Struktur">
-                                                    <mol:molecule
+                                                    <mol:molecule                                                        
                                                         value="#{materialCompositionBean.searchMolecule}"
                                                         pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
                                                         format="MDLV2000"
@@ -157,30 +157,28 @@
                                     style="font-weight: bold;font-size: 115%"/>
                                 <b:dataTable
                                     styleClass="resultTable"                                    
-                                    value="#{materialCompositionBean.materialsInComposition}"
+                                    value="#{materialCompositionBean.concentrationsInComposition}"
                                     searching="false"
-                                    var="material"
+                                    var="concentration"
                                     saveState="false"
                                     paginated="true">
                                     <b:dataTableColumn
                                         label="ID"
-                                        value="#{material.getId()}">
+                                        value="#{concentration.getMaterialId()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         label="Name"
-                                        value="#{material.getFirstName()}">
+                                        value="#{concentration.getMaterialName()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         label="Type"
-                                        value="#{material.getType()}">
+                                        value="#{materialCompositionBean.getLocalizedMaterialType(concentration)}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         label="Concentration">
                                         <b:inputText
-                                            value="#{materialCompositionBean.getConventrationOfMaterial(material)}"
+                                            value="#{concentration.concentration}"
                                             />
-                                    </b:dataTableColumn>
-
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         label="Aktion">
@@ -188,7 +186,7 @@
                                             look="link"
                                             type="button"
                                             icon="minus"
-                                            action="#{materialCompositionBean.actionRemoveMaterialFromComposition(material)}"
+                                            action="#{materialCompositionBean.actionRemoveConcentrationFromComposition(concentration)}"
                                             update="@(.resultTable)"
                                             ajax="true"/>
                                     </b:dataTableColumn>
