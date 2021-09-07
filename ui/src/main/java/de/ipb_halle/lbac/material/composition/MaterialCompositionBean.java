@@ -27,7 +27,9 @@ import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -53,6 +55,7 @@ public class MaterialCompositionBean implements Serializable {
     private String materialName;
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
     private String searchMolecule = "";
+    private Map<Material, Double> concentrations = new HashMap<>();
 
     @Inject
     private MaterialService materialService;
@@ -95,12 +98,12 @@ public class MaterialCompositionBean implements Serializable {
         if (choosenType != choosenCompositionType) {
             materialsInComposition.clear();
             foundMaterials.clear();
+            concentrations.clear();
         }
         this.choosenCompositionType = choosenType;
         if (!choosenType.getAllowedTypes().contains(choosenMaterialType)) {
             choosenMaterialType = choosenType.getAllowedTypes().get(0);
         }
-        logger.info(choosenMaterialType);
     }
 
     public void onTabChange(TabChangeEvent event) {
@@ -156,13 +159,13 @@ public class MaterialCompositionBean implements Serializable {
         if (!isMaterialAlreadyInComposition(materialToAdd)
                 && choosenCompositionType.getAllowedTypes().contains(materialToAdd.getType())) {
             materialsInComposition.add(materialToAdd);
-            logger.info("Put " + materialToAdd.getFirstName() + " in( " + materialsInComposition.size() + ")");
-
+            concentrations.put(materialToAdd, 0d);
         }
     }
 
     public void actionRemoveMaterialFromComposition(Material materialToRemove) {
         materialsInComposition.remove(materialToRemove);
+        concentrations.remove(materialToRemove);
     }
 
     /**
@@ -174,6 +177,7 @@ public class MaterialCompositionBean implements Serializable {
     public void actionSwitchMaterialType(String type) {
         materialsInComposition.clear();
         foundMaterials.clear();
+        concentrations.clear();
         MaterialType t;
         if (type == null) {
             logger.error("No null value allowed as argument");
@@ -218,6 +222,10 @@ public class MaterialCompositionBean implements Serializable {
 
     public void setMaterialName(String materialName) {
         this.materialName = materialName;
+    }
+
+    public Double getConventrationOfMaterial(Material m) {
+        return concentrations.get(m);
     }
 
 }

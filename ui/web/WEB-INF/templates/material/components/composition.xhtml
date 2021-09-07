@@ -35,9 +35,8 @@
                 disabled="#{!materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
                 <p:outputPanel
                     rendered="#{materialBean.permission.isDetailPanelVisible('COMPOSITION')}">
-                    <p:panelGrid                       
-                        >
-                        <p:row styleClass="borderless">
+                    <p:panelGrid>
+                        <p:row>
 
                             <p:column styleClass="borderless">
                                 <p:outputLabel style="border-width: 0px">
@@ -60,14 +59,16 @@
                     <p:panelGrid
                         class="wideBody">
                         <p:row styleClass="borderless">
-                            <p:column styleClass="borderless" style="vertical-align: top;">
+                            <p:column 
+                                style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">
                                 <p:panelGrid>
                                     <p:row styleClass="borderless">
                                         <p:column styleClass="borderless">
                                             <p:inputText
+                                                style="width: 450px"
                                                 styleClass="inputText"
                                                 value=""
-                                                placeholder="Suchbegriff">
+                                                placeholder="Please insert name of material">
                                             </p:inputText>            
                                         </p:column>
                                         <p:column styleClass="borderless">
@@ -79,8 +80,8 @@
                                             </p:commandButton>          
                                         </p:column>
                                     </p:row>
-                                    <p:row styleClass="borderless">
-                                        <p:column styleClass="borderless resultTable">
+                                    <p:row  styleClass="borderless">
+                                        <p:column  styleClass="borderless">
                                             <p:tabView
                                                 dynamic="true">
                                                 <p:ajax event="tabChange" listener="#{materialCompositionBean.onTabChange}"/>
@@ -114,7 +115,10 @@
                                 </p:panelGrid>
 
                             </p:column>
-                            <p:column style="vertical-align: top;min-width:30%;max-width: 30%" styleClass="borderless">
+                            <p:column style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;" styleClass="borderless compositionMaterialTable" >
+                                <h:outputText 
+                                    value="Found materials by search"
+                                    style="font-weight: bold;font-size: 115%"/>
                                 <b:dataTable
                                     styleClass="resultTable"
                                     value="#{materialCompositionBean.materialsThatCanBeAdded}"
@@ -134,6 +138,8 @@
                                         label="Aktion">
                                         <b:commandButton
                                             ajax="true"
+                                            look="link"
+                                            type="button"
                                             action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
                                             update="@(.resultTable)"
                                             icon="plus"/>
@@ -142,11 +148,15 @@
                             </p:column>
 
                             <p:column 
-                                styleClass="borderless"
+                                styleClass="borderless compositionMaterialTable"
                                 style="vertical-align: top;
-                                min-width:30%;max-width: 30%">
+                                min-width:30%;max-width: 30%;
+                                text-align: center;">
+                                <h:outputText
+                                    value="Materials in Composition"
+                                    style="font-weight: bold;font-size: 115%"/>
                                 <b:dataTable
-                                    styleClass="resultTable"
+                                    styleClass="resultTable"                                    
                                     value="#{materialCompositionBean.materialsInComposition}"
                                     searching="false"
                                     var="material"
@@ -161,8 +171,22 @@
                                         value="#{material.getFirstName()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
+                                        label="Type"
+                                        value="#{material.getType()}">
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
+                                        label="Concentration">
+                                        <b:inputText
+                                            value="#{materialCompositionBean.getConventrationOfMaterial(material)}"
+                                            />
+                                    </b:dataTableColumn>
+
+                                    </b:dataTableColumn>
+                                    <b:dataTableColumn
                                         label="Aktion">
                                         <b:commandButton 
+                                            look="link"
+                                            type="button"
                                             icon="minus"
                                             action="#{materialCompositionBean.actionRemoveMaterialFromComposition(material)}"
                                             update="@(.resultTable)"
