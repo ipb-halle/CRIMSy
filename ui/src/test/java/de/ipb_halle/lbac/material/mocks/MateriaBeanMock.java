@@ -28,11 +28,14 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import javax.enterprise.context.SessionScoped;
 
 /**
  *
  * @author fmauz
  */
+@SessionScoped
 public class MateriaBeanMock extends MaterialBean {
 
     boolean rightToEdit = true;
@@ -75,11 +78,13 @@ public class MateriaBeanMock extends MaterialBean {
     public boolean hasDetailRight(ACPermission what, MaterialDetailType onWhat) {
         return rightToEdit;
     }
-    
-    public void setHazardService(HazardService service){
-        this.hazardService=service;
+
+    public void setHazardService(HazardService service) {
+        this.hazardService = service;
     }
     
-    
+    public MaterialCompositionBean getCompositionBean(){
+        return compositionBean;
+    }
 
 }

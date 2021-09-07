@@ -39,15 +39,21 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.bean.ItemBean;
+import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.lbac.project.ProjectEditBean;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,7 +68,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.primefaces.component.contextmenu.ContextMenu.PropertyKeys.event;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
@@ -73,21 +78,32 @@ import org.primefaces.model.TreeNode;
  */
 @RunWith(Arquillian.class)
 public class MaterialBeanTest extends TestBase {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     @Inject
     private ACListService aclistService;
-
+    
     @Inject
     private MaterialService materialService;
-
+    
     @Inject
     private ProjectService projectService;
-
+    
     private TreeNode nodeToOperateOn;
-
-    MateriaBeanMock instance;
+    
+    @Inject
+    private MateriaBeanMock instance;
+    
+    @Inject
+    private IndexService indexService;
+    
+    @Inject
+    private HazardService hazardService;
+    
+    @Inject
+    private TaxonomyService taxoService;
+    
     CreationTools creationTools;
     User publicUser;
     User customUser;
@@ -95,25 +111,19 @@ public class MaterialBeanTest extends TestBase {
     Material material;
     UserBeanMock userBean;
     Project project;
-
-    @Inject
-    private IndexService indexService;
-
-    @Inject
-    private HazardService hazardService;
-
-    @Inject
-    private TaxonomyService taxoService;
-
+    
     @Before
     public void init() {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         ACList publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
         createTaxonomyTreeInDB(publicReadAcl.getId(), publicUser.getId());
-        instance = new MateriaBeanMock();
-        instance.setAcListService(aclistService);
-        instance.setHazardService(hazardService);
+        /**
+         * instance = new MateriaBeanMock();
+         * instance.setAcListService(aclistService);
+         * instance.setHazardService(hazardService);
+         *
+         */
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -124,33 +134,31 @@ public class MaterialBeanTest extends TestBase {
         project.setOwner(publicUser);
         project.setACList(acl);
         projectService.saveProjectToDb(project);
-
+        
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
         instance.setUserBean(userBean);
-
+        
         material = creationTools.createStructure(project);
         Structure s = (Structure) material;
         s.getMolecule().setStructureModel(null);
         material.setOwner(publicUser);
-
+        
         materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
 
-        instance.setMaterialNameBean(new MaterialNameBean());
-        instance.setMessagePresenter(MessagePresenterMock.getInstance());
-        instance.getMaterialEditState().setMaterialToEdit(material);
-        instance.getMaterialEditState().setMaterialBeforeEdit(material);
-        instance.setMaterialService(materialService);
-
-        MaterialIndexBean indexBean = new MaterialIndexBean();
-        indexBean.setIndexService(indexService);
-        instance.setMaterialIndexBean(indexBean);
-        instance.setTaxonomyService(taxoService);
-        instance.setProjectService(projectService);
-        instance.setProjectBean(new ProjectBean());
-
+//        instance.setMaterialNameBean(new MaterialNameBean());
+//        instance.setMessagePresenter(MessagePresenterMock.getInstance());
+//        instance.getMaterialEditState().setMaterialToEdit(material);
+//        instance.getMaterialEditState().setMaterialBeforeEdit(material);
+//        instance.setMaterialService(materialService);
+//        MaterialIndexBean indexBean = new MaterialIndexBean();
+//        indexBean.setIndexService(indexService);
+//        instance.setMaterialIndexBean(indexBean);
+//        instance.setTaxonomyService(taxoService);
+//        instance.setProjectService(projectService);
+//        instance.setProjectBean(new ProjectBean());
     }
-
+    
     @After
     public void finish() {
         cleanMaterialsFromDB();
@@ -158,10 +166,10 @@ public class MaterialBeanTest extends TestBase {
         // cleanUserFromDB(customUser);
 
     }
-
+    
     @Test
     public void test001_checkRights() {
-
+        
         instance.setMode(MaterialBean.Mode.HISTORY);
         Assert.assertFalse("testcase 001: In history mode edit must be false ", instance.isProjectEditEnabled());
         instance.setMode(MaterialBean.Mode.CREATE);
@@ -174,38 +182,38 @@ public class MaterialBeanTest extends TestBase {
         userBean.setCurrentAccount(customUser);
         Assert.assertTrue("testcase 001: Priviliged user must   be able to edit project", instance.isProjectEditEnabled());
     }
-
+    
     @Test
     public void test002_navigateInHistory() throws Exception {
         MaterialIndexBean indexBean = new MaterialIndexBean();
-
+        
         instance.setProjectService(projectService);
         indexBean.setIndexService(indexService);
         instance.setMaterialIndexBean(indexBean);
-
+        
         instance.setProjectBean(new ProjectBean());
-
+        
         Material originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial.copyMaterial());
         MaterialEditState materialEditState = new MaterialEditState(project, null, originalMaterial.copyMaterial(), originalMaterial, instance.getHazardController());
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-1", "de", 3));
         materialEditState.getMaterialToEdit().getNames().add(new MaterialName("Edited-name-2", "en", 4));
-
+        
         materialService.saveEditedMaterial(
                 materialEditState.getMaterialToEdit(),
                 materialEditState.getMaterialBeforeEdit(),
                 materialEditState.getCurrentProject().getUserGroups().getId(),
                 userBean.getCurrentAccount().getId());
-
+        
         instance.setMaterialIndexBean(indexBean);
         originalMaterial = materialService.loadMaterialById(material.getId());
         instance.startMaterialEdit(originalMaterial);
         instance.switchOneVersionBack();
-
+        
         Assert.assertEquals(2, instance.getMaterialNameBean().getNames().size());
         Assert.assertEquals("Test-Struktur", instance.getMaterialNameBean().getNames().get(0).getValue());
         Assert.assertEquals("Test-Structure", instance.getMaterialNameBean().getNames().get(1).getValue());
-
+        
         instance.switchOneVersionForward();
         Assert.assertEquals(4, instance.getMaterialNameBean().getNames().size());
         Assert.assertEquals("Test-Struktur", instance.getMaterialNameBean().getNames().get(0).getValue());
@@ -213,47 +221,47 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertEquals("Edited-name-1", instance.getMaterialNameBean().getNames().get(2).getValue());
         Assert.assertEquals("Edited-name-2", instance.getMaterialNameBean().getNames().get(3).getValue());
     }
-
+    
     @Test
     public void test003_editBioMaterial() {
         MaterialIndexBean indexBean = new MaterialIndexBean();
         indexBean.setIndexService(indexService);
         instance.setMaterialIndexBean(indexBean);
         instance.setTaxonomyService(taxoService);
-
+        
         BioMaterial bioMat = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(bioMat, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
         instance.setProjectService(projectService);
         instance.setProjectBean(new ProjectBean());
         instance.startMaterialEdit(bioMat);
-
+        
         instance.getHazardController().setBioSavetyLevel(instance.getHazardController().getPossibleBioSavetyLevels().get(1));
-
+        
         instance.actionSaveMaterial();
-
+        
         Material loadedBioMat = materialService.loadMaterialById(bioMat.getId());
         Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
         Assert.assertEquals(13, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
-
+        
         instance.startMaterialEdit(loadedBioMat);
         instance.getHazardController().setBioSavetyLevel(instance.getHazardController().getPossibleBioSavetyLevels().get(2));
         instance.actionSaveMaterial();
-
+        
         loadedBioMat = materialService.loadMaterialById(bioMat.getId());
         instance.getMaterialEditState().setMaterialBeforeEdit(loadedBioMat);
         instance.getMaterialEditState().setCurrentVersiondate(loadedBioMat.getHistory().getChanges().keySet().stream().reduce((first, second) -> second).orElse(null));
         Assert.assertEquals(1, loadedBioMat.getHazards().getHazards().size());
         Assert.assertEquals(14, loadedBioMat.getHazards().getHazards().keySet().iterator().next().getId());
-
+        
         instance.switchOneVersionBack();
-
+        
         instance.switchOneVersionBack();
-
+        
         instance.switchOneVersionForward();
-
+        
         instance.switchOneVersionForward();
     }
-
+    
     @Test
     public void test004_editStorageInformation() {
         material = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
@@ -326,21 +334,21 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertNull(diff.getStorageclassNew());
         Assert.assertEquals("Remark!!", diff.getDescriptionOld());
         Assert.assertNull(diff.getDescriptionNew());
-
+        
     }
-
+    
     @Test
     public void test005_editStorageConditions() {
         material = creationTools.createBioMaterial(project, "BioMat-001", taxoService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(material, GlobalAdmissionContext.getPublicReadACL().getId(), new HashMap<>(), publicUser);
         instance.startMaterialEdit(material);
-
+        
         Assert.assertEquals(23, instance.getStorageInformationBuilder().getPossibleStorageClasses().size());
         // add frozen and lightsensitive
 
         addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepFrozen);
         addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.lightSensitive);
-
+        
         instance.actionSaveMaterial();
         //load material and check new conditions
         material = materialService.loadMaterialById(material.getId());
@@ -351,10 +359,10 @@ public class MaterialBeanTest extends TestBase {
 
         //remove frozen, add acidSensitive, keep cool
         removeStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepFrozen);
-
+        
         addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.acidSensitive);
         addStorageCondition(instance.getStorageInformationBuilder(), StorageCondition.keepCool);
-
+        
         instance.actionSaveMaterial();
         //load material and check new conditions
         material = materialService.loadMaterialById(material.getId());
@@ -384,52 +392,79 @@ public class MaterialBeanTest extends TestBase {
 
         //Check History of storage conditions
     }
-
+    
     @Test
     public void test006_editTaxonomyOfBioMaterial() {
-
+        
         ACList publicAcl = GlobalAdmissionContext.getPublicReadACL();
         cleanMaterialsFromDB();
         createTaxonomyTreeInDB(GlobalAdmissionContext.getPublicReadACL().getId(), publicUser.getId());
         Taxonomy mushromTaxo = taxoService.loadTaxonomyById(2);
         material = creationTools.createBioMaterial(project, "BioMat-001", mushromTaxo, null);
         materialService.saveMaterialToDB(material, publicAcl.getId(), new HashMap<>(), publicUser);
-
+        
         instance.startMaterialEdit(material);
         instance.getTaxonomyController().onTaxonomyExpand(createExpandEvent("Pilze_de"));
         instance.getTaxonomyController().onTaxonomyExpand(createExpandEvent("Agaricomycetes_de"));
         instance.getTaxonomyController().onTaxonomySelect(createSelectEvent("Champignonartige_de"));
-
+        
         instance.actionSaveMaterial();
-
+        
         BioMaterial bioMaterial = (BioMaterial) materialService.loadMaterialById(material.getId());
         Assert.assertEquals(4, bioMaterial.getTaxonomy().getId());
-
+        
         instance.startMaterialEdit(bioMaterial);
     }
-
+    
     @Test
     public void test007_tryToEditMaterialWithoutName() {
         material = creationTools.createStructure(project);
         materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
-
+        
         instance.startMaterialEdit(material);
         instance.getMaterialNameBean().getNames().clear();
         instance.actionSaveMaterial();
-
+        
         Assert.assertEquals("There must be at least one materialname", instance.getErrorMessages());
     }
-
+    
+    @Test
+    public void test008_saveNewComposition() {
+        material = creationTools.createStructure(project);
+        materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        instance.startMaterialCreation();
+        instance.getCompositionBean().actionAddMaterialToComposition(material);
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        instance.getMaterialNameBean().getNames().get(0).setValue("Composition");
+        instance.setCurrentMaterialType(MaterialType.COMPOSITION);
+        instance.actionSaveMaterial();
+        
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("Composition");
+        requestBuilder.addMaterialType(MaterialType.COMPOSITION);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+    }
+    
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialBeanTest.war")
-                        .addClass(IndexService.class);
+                        .addClass(IndexService.class)
+                        .addClass(MaterialNameBean.class)
+                        .addClass(MaterialOverviewBean.class)
+                        .addClass(ProjectBean.class)
+                        .addClass(ProjectEditBean.class)
+                        .addClass(ItemBean.class)
+                        .addClass(ItemOverviewBean.class)
+                        .addClass(MaterialIndexBean.class)
+                        .addClass(MessagePresenterMock.class)
+                        .addClass(MateriaBeanMock.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
-
+    
     private void addStorageCondition(StorageInformationBuilder builder, StorageCondition c) {
         StorageCondition[] conds = builder.getSelectedConditions();
         StorageCondition[] condsNew = new StorageCondition[conds.length + 1];
@@ -439,7 +474,7 @@ public class MaterialBeanTest extends TestBase {
         condsNew[condsNew.length - 1] = c;
         builder.setSelectedConditions(condsNew);
     }
-
+    
     private void removeStorageCondition(StorageInformationBuilder builder, StorageCondition c) {
         StorageCondition[] conds = builder.getSelectedConditions();
         StorageCondition[] condsNew = new StorageCondition[conds.length - 1];
@@ -452,7 +487,7 @@ public class MaterialBeanTest extends TestBase {
         }
         builder.setSelectedConditions(condsNew);
     }
-
+    
     private boolean containsStorageCondition(StorageCondition[] conds, StorageCondition c) {
         for (StorageCondition sc : conds) {
             if (sc == c) {
@@ -461,7 +496,7 @@ public class MaterialBeanTest extends TestBase {
         }
         return false;
     }
-
+    
     private NodeExpandEvent createExpandEvent(String nameOfTaxToSelect) {
         nodeToOperateOn = null;
         selectTaxonomyFromTree(nameOfTaxToSelect, instance.getTaxonomyController().getTreeController().getTaxonomyTree());
@@ -474,7 +509,7 @@ public class MaterialBeanTest extends TestBase {
                 nodeToOperateOn
         );
     }
-
+    
     private void selectTaxonomyFromTree(String name, TreeNode tree) {
         Taxonomy taxo = (Taxonomy) tree.getData();
         if (taxo.getFirstName().equals(name)) {
@@ -484,7 +519,7 @@ public class MaterialBeanTest extends TestBase {
             selectTaxonomyFromTree(name, n);
         }
     }
-
+    
     private NodeSelectEvent createSelectEvent(String nameOfTaxToSelect) {
         nodeToOperateOn = null;
         selectTaxonomyFromTree(nameOfTaxToSelect, instance.getTaxonomyController().getTreeController().getTaxonomyTree());
@@ -497,5 +532,5 @@ public class MaterialBeanTest extends TestBase {
                 nodeToOperateOn
         );
     }
-
+    
 }

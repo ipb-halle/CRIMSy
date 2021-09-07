@@ -54,6 +54,7 @@ public class GroupMgrBeanTest extends TestBase {
 
         // Try to create group with invalid name.
         groupMgrBean.actionCreate();
+        
         Assert.assertEquals("groupMgr_no_valide_name", presenterMock.getLastErrorMessage());
         presenterMock.resetMessages();
 

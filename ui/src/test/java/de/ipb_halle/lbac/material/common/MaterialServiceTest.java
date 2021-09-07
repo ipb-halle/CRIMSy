@@ -70,6 +70,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class MaterialServiceTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private MaterialService instance;
 
@@ -661,6 +663,7 @@ public class MaterialServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("MaterialServiceTest.war");
-        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
+
+        return UserBeanDeployment.add(MaterialDeployment.add(deployment));
     }
 }

@@ -47,6 +47,9 @@ import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.composition.CompositionType;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -95,6 +98,9 @@ public class MaterialBean implements Serializable {
     protected MaterialOverviewBean overviewBean;
 
     @Inject
+    protected MaterialCompositionBean compositionBean;
+
+    @Inject
     protected MaterialNameBean materialNameBean;
 
     @Inject
@@ -133,11 +139,11 @@ public class MaterialBean implements Serializable {
 
     private TaxonomySelectionController taxonomyController;
     private TissueController tissueController;
-    private MessagePresenter messagePresenter = JsfMessagePresenter.getInstance();
+    @Inject
+    private transient MessagePresenter messagePresenter;
 
     private MaterialHazardBuilder hazardController;
     private StorageInformationBuilder storageInformationBuilder;
-   
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -167,7 +173,7 @@ public class MaterialBean implements Serializable {
                     hazardService,
                     currentMaterialType,
                     true,
-                    new HashMap<>());
+                    new HashMap<>(), messagePresenter);
             storageInformationBuilder = new StorageInformationBuilder(
                     messagePresenter,
                     materialService
@@ -339,6 +345,15 @@ public class MaterialBean implements Serializable {
                         storageInformationBuilder.build(),
                         materialIndexBean.getIndices(),
                         userBean.getCurrentAccount());
+            } else if (currentMaterialType == MaterialType.COMPOSITION) {
+                MaterialComposition composition = new MaterialComposition(
+                        null,
+                        materialNameBean.getNames(),
+                        materialEditState.getCurrentProject().getId(),
+                        hazards,
+                        storageInformationBuilder.build(),
+                        compositionBean.getChoosenType());
+                materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getId(), new HashMap<>(), userBean.getCurrentAccount());
             }
         } else {
             throw new Exception("Material not valide");
