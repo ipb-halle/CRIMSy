@@ -67,7 +67,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
      * @param isName limit search to names (true; SearchCategory=NAME), indices
      * (false; SearchCategory=INDEX) or not at all (SearchCategory=TEXT) (null)
      */
-    private Condition addIndexCondition(String pathPrefix, List<Condition> conditionList, Set<String> values, Boolean isName, Boolean addToConditionList) {
+    private Condition createIndexCondition(String pathPrefix, List<Condition> conditionList, Set<String> values, Boolean isName) {
         if (isName != null) {
             Condition typeCondition = getBinaryLeafCondition(
                     isName ? Operator.EQUAL : Operator.NOT_EQUAL,
@@ -78,15 +78,10 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     Operator.AND,
                     getIndexCondition(pathPrefix, values, false),
                     typeCondition);
-            if (addToConditionList) {
-                conditionList.add(con);
-            }
+
             return con;
         }
         Condition con = getIndexCondition(pathPrefix, values, true);
-        if (addToConditionList) {
-            conditionList.add(con);
-        }
         return con;
     }
 
@@ -207,8 +202,8 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     addDeactivatedCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case INDEX:
-                    addIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE, true);
-                    addIndexCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE, true);
+                    conditionList.add(createIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE));
+                    conditionList.add(createIndexCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE));
                     break;
                 case LABEL:
                     if (toplevel) {
@@ -217,8 +212,8 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     }
                     break;
                 case NAME:
-                    Condition c1 = addIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE, false);
-                    Condition c2 = addIndexCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE, false);
+                    Condition c1 = createIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE);
+                    Condition c2 = createIndexCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE);
                     conditionList.add(new Condition(Operator.OR, c1, c2));
                     break;
                 case PROJECT:
@@ -231,7 +226,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     break;
                 case TEXT:
                     if (toplevel) {
-                        addIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), null, true);
+                        conditionList.add(createIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), null));
                     }
                     break;
                 case TYPE:
