@@ -52,9 +52,13 @@ public class Concentration {
     public String getMaterialName() {
         return material.getFirstName();
     }
-    
-    public MaterialType getMaterialType(){
+
+    public MaterialType getMaterialType() {
         return material.getType();
+    }
+
+    public Material getMaterial() {
+        return material;
     }
 
 }

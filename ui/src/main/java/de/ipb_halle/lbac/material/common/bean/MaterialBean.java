@@ -43,11 +43,10 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
-import de.ipb_halle.lbac.material.composition.CompositionType;
+import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
@@ -346,6 +345,7 @@ public class MaterialBean implements Serializable {
                         materialIndexBean.getIndices(),
                         userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.COMPOSITION) {
+
                 MaterialComposition composition = new MaterialComposition(
                         null,
                         materialNameBean.getNames(),
@@ -353,7 +353,10 @@ public class MaterialBean implements Serializable {
                         hazards,
                         storageInformationBuilder.build(),
                         compositionBean.getChoosenType());
-                materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getId(), new HashMap<>(), userBean.getCurrentAccount());
+                for (Concentration c : compositionBean.getConcentrationsInComposition()) {
+                    composition.addComponent(c.getMaterial(), c.getConcentration());
+                }
+                materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
             }
         } else {
             throw new Exception("Material not valide");
@@ -434,6 +437,7 @@ public class MaterialBean implements Serializable {
             overviewBean.getSearchController().actionStartMaterialSearch();
             navigator.navigate("/material/materials");
         } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
             messagePresenter.error("materialCreation_creation_error", getErrorMessages());
         }
     }

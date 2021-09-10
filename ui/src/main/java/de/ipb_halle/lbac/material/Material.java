@@ -67,7 +67,7 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
     protected InputConverter vFilter;
 
     public Material(
-            int id,
+            Integer id,
             List<MaterialName> names,
             Integer projectId,
             HazardInformation hazards,

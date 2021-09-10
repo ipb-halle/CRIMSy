@@ -33,6 +33,12 @@ public class CompositionSaver implements MaterialSaver {
     public void saveMaterial(Material m, EntityManager em) {
         MaterialComposition composition = (MaterialComposition) m;
         em.merge(composition.createEntity());
+        for (Material component : composition.getComponents().keySet()) {
+            MaterialCompositionEntity componentEntity = new MaterialCompositionEntity();
+            componentEntity.setId(new MaterialCompositionId(m.getId(), component.getId()));
+            componentEntity.setConcentration(composition.getComponents().get(component));
+            em.merge(componentEntity);
+        }
     }
 
 }
