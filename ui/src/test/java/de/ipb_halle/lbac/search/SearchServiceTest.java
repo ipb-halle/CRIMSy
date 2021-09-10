@@ -84,6 +84,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
+import org.bouncycastle.asn1.isismtt.x509.Admissions;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -453,32 +454,25 @@ public class SearchServiceTest extends TestBase {
         deleteDocuments();
     }
 
-    @Ignore("Test deactivated for the time being until materialcomposition can be created ")
     @Test
-    public void test011_searchForStructureInCompositionByTaxonomy() {
+    public void test011_searchForEmptyComposition() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        createTaxonomyTreeInDB(publicAclId, publicUser.getId());
-        creationTools = new CreationTools("", "", "", memberService, projectService);
 
-        BioMaterial bio = creationTools.createBioMaterial(project1, "BioMat-001", taxonomyService.loadTaxonomyById(4), null);
-        Structure structure = creationTools.createStructure(project1);
-        structure.setMolecule(null);
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
-        materialService.saveMaterialToDB(structure, publicAclId, new HashMap<>(), publicUser);
-
-        MaterialComposition composition = new MaterialComposition(expid1, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
-        composition.addComponent(bio, 0d);
-        composition.addComponent(structure, 0d);
-        materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);
+        //Create a Composition with readable and one without readable ACL
+        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        composition.getNames().add(new MaterialName("Composition X", "de", 0));
+        MaterialComposition composition2 = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        composition.getNames().add(new MaterialName("Composition Y", "de", 0));
+        materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), adminUser);
+        materialService.saveMaterialToDB(composition2, context.getAdminOnlyACL().getId(), new HashMap<>(), adminUser);
 
         MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
-        matRequestbuilder.addMaterialType(MaterialType.BIOMATERIAL);
-        matRequestbuilder.setMaterialName("Champignion");
-
-        SearchResult result = searchService.search(Arrays.asList(matRequestbuilder.build()), localNode);
+        matRequestbuilder.setMaterialName("Composition");
+        SearchResult result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
         Assert.assertEquals(1, result.getAllFoundObjects().size());
-
     }
 
     private void uploadDocuments() {
