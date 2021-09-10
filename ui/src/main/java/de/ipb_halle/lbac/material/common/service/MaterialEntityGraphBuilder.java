@@ -55,7 +55,7 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     protected void addComponents() {
-        EntityGraph componentsGraph = addJoinInherit(JoinType.LEFT, MaterialCompositionEntity.class, "materialid", "componentid");
+        EntityGraph componentsGraph = addJoinInherit(JoinType.LEFT, MaterialCompositionEntity.class, "materialid", "materialid");
         materialsGraph = addJoinToChildInherit(JoinType.LEFT, componentsGraph, MaterialEntity.class, "componentid", "materialid");
     }
     
