@@ -294,7 +294,8 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        List<NetObject> results=searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
+        Assert.assertEquals(2, results.size());
 
     }
 
@@ -473,6 +474,24 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(matRequestbuilder.build()),
                 localNode);
         Assert.assertEquals(1, result.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test012_searchForComposition() {
+        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d);
+        composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d);
+        composition.addComponent(bioMaterial, 0.3d);
+
+        materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);
+
+        MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.setMaterialName("Testmaterial-001");
+        SearchResult result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
+        Assert.assertEquals(2, result.getAllFoundObjects().size());
+
     }
 
     private void uploadDocuments() {
