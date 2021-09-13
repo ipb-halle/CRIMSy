@@ -269,7 +269,8 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName(publicUser.getName());
         request = builder.build();
-        Assert.assertEquals(4, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        List<NetObject> results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
+        Assert.assertEquals(3, results.size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.addMaterialType(MaterialType.STRUCTURE);
@@ -294,7 +295,7 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
         request = builder.build();
-        List<NetObject> results=searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
+         results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
         Assert.assertEquals(2, results.size());
 
     }
@@ -491,6 +492,13 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(matRequestbuilder.build()),
                 localNode);
         Assert.assertEquals(2, result.getAllFoundObjects().size());
+
+        matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.setMaterialName("notReadable");
+        result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
 
     }
 

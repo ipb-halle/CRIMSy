@@ -221,9 +221,7 @@ public class MaterialService implements Serializable {
 
             MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
             Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
-
-            String sql = sqlBuilder.query(con,
-                    createOrderList());
+            String sql = sqlBuilder.query(con);
 
             Query q = em.createNativeQuery(sql, MaterialEntity.class);
             q.setFirstResult(request.getFirstResult());

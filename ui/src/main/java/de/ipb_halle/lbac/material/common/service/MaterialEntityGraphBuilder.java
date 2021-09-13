@@ -20,7 +20,6 @@ package de.ipb_halle.lbac.material.common.service;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.MemberEntity;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialEntity;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyEntity;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
@@ -39,33 +38,36 @@ import javax.persistence.criteria.JoinType;
  */
 public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
 
+    public final static String COMPONENT_MATERIAL_SUBGRAPHNAME = "componentMaterials";
     protected ACListService aclistService;
     protected EntityGraph detailRightSubGraph;
     private EntityGraph indexGraph;
     private EntityGraph componentIndexGraph;
     private EntityGraph materialsGraph;
+    private EntityGraph componentsGraph;
 
     public MaterialEntityGraphBuilder() {
         super(MaterialEntity.class);
     }
 
     protected void addProject() {
-        addJoinInherit(JoinType.LEFT, ProjectEntity.class, "projectid", "id");
         addJoinToChildInherit(JoinType.LEFT, materialsGraph, ProjectEntity.class, "projectid", "id");
     }
 
     protected void addComponents() {
-        EntityGraph componentsGraph = addJoinInherit(JoinType.LEFT, MaterialCompositionEntity.class, "materialid", "materialid");
+        componentsGraph = addJoinInherit(JoinType.LEFT, MaterialCompositionEntity.class, "materialid", "materialid");
         materialsGraph = addJoinToChildInherit(JoinType.LEFT, componentsGraph, MaterialEntity.class, "componentid", "materialid");
+        materialsGraph.setGraphName(COMPONENT_MATERIAL_SUBGRAPHNAME);
+        materialsGraph.setSubSelectAttribute(AttributeType.DIRECT);
+        materialsGraph.addAttributeType(AttributeType.DIRECT);
+
     }
-    
-    protected void addIndex() {
-        indexGraph = addJoin(JoinType.LEFT, MaterialIndexEntryEntity.class, "materialid", "materialid");
+
+    protected void addIndex() {       
         componentIndexGraph = addJoinToChild(JoinType.LEFT, materialsGraph, MaterialIndexEntryEntity.class, "materialid", "materialid");
     }
 
-    protected void addOwner() {
-        addJoinInherit(JoinType.INNER, MemberEntity.class, "owner_id", "id");
+    protected void addOwner() {      
         addJoinToChildInherit(JoinType.INNER, materialsGraph, MemberEntity.class, "owner_id", "id");
     }
 
@@ -79,8 +81,9 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
     }
 
     protected void addAcls() {
-        addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
         addACListConstraint(materialsGraph, getACESubGraph(), "aclist_id", true);
+        addACListConstraint(graph, getACESubGraph(), "aclist_id", true);
+
     }
 
     protected void addBioMaterial() {
@@ -99,13 +102,11 @@ public class MaterialEntityGraphBuilder extends EntityGraphBuilder {
         addIndex();
         addOwner();
         addStructure();
-        addDetailRights();
         addProject();
         addAcls();
         //addBioMaterial();
         graph.addAttributeType(AttributeType.DIRECT);
         if (toplevel) {
-            indexGraph.addAttributeType(AttributeType.TOPLEVEL);
             componentIndexGraph.addAttributeType(AttributeType.TOPLEVEL);
             graph.addAttributeType(AttributeType.TOPLEVEL);
         }
