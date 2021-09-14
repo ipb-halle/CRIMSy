@@ -99,9 +99,6 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
     @Inject
     protected HazardService hazardService;
 
-    @Inject
-    private MaterialCompositionBean compositionBean;
-
     /**
      * Creates the tablecontroller and the controller for managing the search
      * values
@@ -168,7 +165,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
-        compositionBean.clearBean();
+       
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
 

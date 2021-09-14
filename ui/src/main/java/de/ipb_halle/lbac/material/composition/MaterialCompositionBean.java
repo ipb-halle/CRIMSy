@@ -27,10 +27,9 @@ import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toCollection;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -76,6 +75,15 @@ public class MaterialCompositionBean implements Serializable {
         this.userBean = userBean;
         this.presenter = presenter;
         this.materialService = materialService;
+    }
+
+    public void startCompositionEdit(MaterialComposition comp) {
+        clearBean();
+        for (Material m : comp.getComponents().keySet()) {
+            this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
+        }
+        this.choosenCompositionType = comp.getCompositionType();
+
     }
 
     public void clearBean() {
@@ -173,6 +181,10 @@ public class MaterialCompositionBean implements Serializable {
 
     public void actionRemoveConcentrationFromComposition(Concentration concentrationToRemove) {
         concentrationsInComposition.remove(concentrationToRemove);
+        ArrayList<Integer> ids = foundMaterials.stream().map(mat -> mat.getId()).collect(toCollection(ArrayList::new));
+        if (!ids.contains(concentrationToRemove.getMaterialId())) {
+            foundMaterials.add(concentrationToRemove.getMaterial());
+        }
     }
 
     /**

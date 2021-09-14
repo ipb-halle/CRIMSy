@@ -74,6 +74,10 @@ public class MaterialComposition extends Material {
                 hazards.copy(),
                 storageInformation.copy(),
                 compositionType);
+        copy.setOwner(this.getOwner());
+        copy.setACList(getACList());
+        copy.setCreationTime(creationTime);
+        copy.setHistory(history);
         return copy;
     }
 
@@ -117,6 +121,10 @@ public class MaterialComposition extends Material {
 
     public boolean canHoldType(MaterialType type) {
         return getPossibleTypesOfComponents().contains(type);
+    }
+
+    public CompositionType getCompositionType() {
+        return compositionType;
     }
 
 }
