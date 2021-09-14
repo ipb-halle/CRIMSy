@@ -206,7 +206,7 @@ public class SqlBuilder {
             return;
         }
         for (DbField field : orderList) {
-            getOrderColumn(field).getEntityGraph().activate(context);
+            getOrderColumn(field, context).getEntityGraph().activate(context);
         }
     }
 
@@ -279,9 +279,17 @@ public class SqlBuilder {
         return fields;
     }
 
-    private DbField getOrderColumn(DbField field) {
+    /**
+     * obtain the column which matches given column and tablename and has the
+     * correct context
+     *
+     * @param field
+     * @param context
+     * @return
+     */
+    private DbField getOrderColumn(DbField field, String context) {
         for (DbField f : this.allFields) {
-            if (f.matchesOrder(field)) {
+            if (f.matchesOrder(field, context)) {
                 return f;
             }
         }
@@ -409,8 +417,15 @@ public class SqlBuilder {
         return sb.toString();
     }
 
-    public String order(List<DbField> orderList) {
-        if ((orderList == null) || (orderList.size() == 0)) {
+    /**
+     * Creates the order by clause for the given context
+     *
+     * @param orderList
+     * @param alias
+     * @return
+     */
+    public String order(List<DbField> orderList, String alias) {
+        if ((orderList == null) || (orderList.isEmpty())) {
             return "";
         }
         String sep = "";
@@ -418,7 +433,7 @@ public class SqlBuilder {
         sb.append(" \nORDER BY ");
         for (DbField field : orderList) {
             sb.append(sep);
-            sb.append(getOrderColumn(field).getAliasedColumnName());
+            sb.append(getOrderColumn(field, alias).getAliasedColumnName());
             switch (field.getOrderDirection()) {
                 case ASC:
                     sb.append(" ASC ");
@@ -452,7 +467,7 @@ public class SqlBuilder {
         sb.append(select(alias));
         sb.append(from(alias, attr));
         sb.append(where(alias, condition));
-        sb.append(order(orderList));
+        sb.append(order(orderList, alias));
         return sb.toString();
     }
 
