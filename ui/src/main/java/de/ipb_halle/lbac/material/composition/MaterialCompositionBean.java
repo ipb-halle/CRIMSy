@@ -55,7 +55,6 @@ public class MaterialCompositionBean implements Serializable {
     private String materialName;
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
     private String searchMolecule = "";
-    private Map<Material, Double> concentrations = new HashMap<>();
 
     @Inject
     private MaterialService materialService;
@@ -73,9 +72,18 @@ public class MaterialCompositionBean implements Serializable {
             UserBean userBean,
             MessagePresenter presenter,
             MaterialService materialService) {
+        this.choosenMaterialType = MaterialType.STRUCTURE;
         this.userBean = userBean;
         this.presenter = presenter;
         this.materialService = materialService;
+    }
+
+    public void clearBean() {
+        this.choosenCompositionType = CompositionType.EXTRACT;
+        this.choosenMaterialType = MaterialType.STRUCTURE;
+        this.concentrationsInComposition.clear();
+        this.foundMaterials.clear();
+
     }
 
     public List<CompositionType> getCompositionTypes() {
@@ -98,7 +106,7 @@ public class MaterialCompositionBean implements Serializable {
         if (choosenType != choosenCompositionType) {
             concentrationsInComposition.clear();
             foundMaterials.clear();
-            concentrations.clear();
+
         }
         this.choosenCompositionType = choosenType;
         if (!choosenType.getAllowedTypes().contains(choosenMaterialType)) {
@@ -120,6 +128,7 @@ public class MaterialCompositionBean implements Serializable {
 
     public void actionStartSearch() {
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(userBean.getCurrentAccount(), 0, MAX_RESULTS);
+        logger.info("Current materialType " + choosenMaterialType);
         requestBuilder.addMaterialType(choosenMaterialType);
         if (materialName != null && !materialName.trim().isEmpty()) {
             requestBuilder.setMaterialName(materialName);
@@ -159,7 +168,6 @@ public class MaterialCompositionBean implements Serializable {
         if (!isMaterialAlreadyInComposition(materialToAdd)
                 && choosenCompositionType.getAllowedTypes().contains(materialToAdd.getType())) {
             concentrationsInComposition.add(new Concentration(materialToAdd));
-            concentrations.put(materialToAdd, 0d);
         }
     }
 
