@@ -82,8 +82,8 @@ public class MateriaBeanMock extends MaterialBean {
     public void setHazardService(HazardService service) {
         this.hazardService = service;
     }
-    
-    public MaterialCompositionBean getCompositionBean(){
+
+    public MaterialCompositionBean getCompositionBean() {
         return compositionBean;
     }
 

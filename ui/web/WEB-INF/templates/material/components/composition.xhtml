@@ -46,6 +46,7 @@
                             <p:column styleClass="borderless">
                                 <b:selectOneMenu
                                     ajax="true"
+                                    disabled="#{!materialCompositionBean.isCompositionTypeEditable()}"
                                     update="@(.resultTable)"
                                     value="#{materialCompositionBean.choosenType}">
                                     <f:selectItems 

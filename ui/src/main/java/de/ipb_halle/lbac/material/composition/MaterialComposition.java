@@ -78,6 +78,9 @@ public class MaterialComposition extends Material {
         copy.setACList(getACList());
         copy.setCreationTime(creationTime);
         copy.setHistory(history);
+        for(Material m:components.keySet()){
+            copy.getComponents().put(m, components.get(m));
+        }
         return copy;
     }
 

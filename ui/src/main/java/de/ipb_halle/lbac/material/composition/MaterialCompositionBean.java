@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.search.SearchResult;
@@ -51,9 +52,10 @@ public class MaterialCompositionBean implements Serializable {
     private List<Concentration> concentrationsInComposition = new ArrayList<>();
     private MaterialType choosenMaterialType;
     private int MAX_RESULTS = 25;
-    private String materialName;
+    private String materialName = "";
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
     private String searchMolecule = "";
+    private Mode mode;
 
     @Inject
     private MaterialService materialService;
@@ -79,6 +81,7 @@ public class MaterialCompositionBean implements Serializable {
 
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
+        mode = Mode.EDIT;
         for (Material m : comp.getComponents().keySet()) {
             this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
         }
@@ -87,10 +90,13 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public void clearBean() {
+        this.mode = Mode.CREATE;
+        this.materialName = "";
         this.choosenCompositionType = CompositionType.EXTRACT;
         this.choosenMaterialType = MaterialType.STRUCTURE;
         this.concentrationsInComposition.clear();
         this.foundMaterials.clear();
+        this.searchMolecule="";
 
     }
 
@@ -146,8 +152,6 @@ public class MaterialCompositionBean implements Serializable {
         }
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         foundMaterials = result.getAllFoundObjects(choosenMaterialType.getClassOfDto(), result.getNode());
-
-        logger.info("Materials in " + concentrationsInComposition.size());
     }
 
     public List<Material> getMaterialsThatCanBeAdded() {
@@ -244,6 +248,10 @@ public class MaterialCompositionBean implements Serializable {
 
     public String getLocalizedMaterialType(Concentration conc) {
         return conc.getMaterialType().toString();
+    }
+
+    public boolean isCompositionTypeEditable() {
+        return mode == Mode.CREATE;
     }
 
 }

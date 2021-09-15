@@ -50,6 +50,9 @@ import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.composition.CompositionType;
+import de.ipb_halle.lbac.material.composition.Concentration;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
@@ -423,7 +426,6 @@ public class MaterialBeanTest extends TestBase {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveEditedProjectToDb(project);
         material = creationTools.createStructure(project);
-        //material.getNames().add(new MaterialName("Composition X", "de", 1));
         materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
         instance.startMaterialCreation();
         instance.getCompositionBean().actionAddMaterialToComposition(material);
@@ -438,6 +440,52 @@ public class MaterialBeanTest extends TestBase {
         requestBuilder.addMaterialType(MaterialType.COMPOSITION);
         SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
         Assert.assertEquals(1, result.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test009_editComposition() {
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        projectService.saveEditedProjectToDb(project);
+        material = creationTools.createStructure(project);        
+        materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        
+        Material material2 = creationTools.createStructure(project);
+        materialService.saveMaterialToDB(material2, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        instance.startMaterialCreation();
+        instance.getCompositionBean().actionAddMaterialToComposition(material);
+        instance.getMaterialEditState().setCurrentProject(project);
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        instance.getMaterialNameBean().getNames().get(0).setValue("Composition");
+        instance.setCurrentMaterialType(MaterialType.COMPOSITION);
+        instance.actionSaveMaterial();
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("Composition");
+        requestBuilder.addMaterialType(MaterialType.COMPOSITION);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+
+        instance.startMaterialEdit((MaterialComposition) result.getAllFoundObjects().get(0).getSearchable());
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        Assert.assertEquals(CompositionType.EXTRACT, instance.getCompositionBean().getChoosenType());
+        Assert.assertFalse(instance.getCompositionBean().isCompositionTypeEditable());
+        Assert.assertTrue(instance.getCompositionBean().getMaterialName().isEmpty());
+        Assert.assertTrue(instance.getCompositionBean().getSearchMolecule().isEmpty());
+        Assert.assertTrue(instance.getCompositionBean().getFoundMaterials().isEmpty());
+
+        Concentration conc = instance.getCompositionBean().getConcentrationsInComposition().get(0);
+        instance.getCompositionBean().actionRemoveConcentrationFromComposition(conc);
+        instance.getCompositionBean().actionAddMaterialToComposition(material2);
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        Assert.assertEquals(1, instance.getCompositionBean().getFoundMaterials().size());
+        
+        instance.actionSaveMaterial();
+        
+        requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("Composition");
+        requestBuilder.addMaterialType(MaterialType.COMPOSITION);
+        result = materialService.loadReadableMaterials(requestBuilder.build());
+        MaterialComposition composition=(MaterialComposition) result.getAllFoundObjects().get(0).getSearchable();
+        Assert.assertEquals(1,composition.getComponents().size());
+        Assert.assertEquals(material2.getId(),composition.getComponents().keySet().iterator().next().getId());
     }
 
     @Deployment
