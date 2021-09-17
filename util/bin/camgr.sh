@@ -796,6 +796,7 @@ function genCRL {
 
         find crl/ -type f -mtime +10 -exec rm {} \;
 
+        chmod go+r crl/crl.$DATE.pem
         scp crl/crl.$DATE.pem $SCP_ADDR/crl.pem
 }
 
@@ -831,6 +832,7 @@ function importSubCA {
         tmp=`openssl x509 -in cacert.pem -fingerprint -noout | cut -d= -f2 | tr -d $':\n'`
         echo $tmp$'\t'$DOWNLOAD_URL/cacert.pem$'\t'$CA_CRL >> addresses.txt
 
+        chmod go+r cacert.pem chain.txt addresses.txt truststore truststore.passwd
         scp cacert.pem $SCP_ADDR/cacert.pem
         scp chain.txt $SCP_ADDR/chain.txt
         scp addresses.txt $SCP_ADDR/addresses.txt
