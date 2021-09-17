@@ -45,17 +45,16 @@ public enum ProjectType implements Serializable {
     ),
     BIOLOGICAL_PROJECT(4,
             MaterialType.BIOMATERIAL,
-            MaterialType.CONSUMABLE
-    //            MaterialType.COMPOSITION
-    //            MaterialType.SEQUENCE,
+            MaterialType.CONSUMABLE,
+            MaterialType.SEQUENCE
+//            MaterialType.COMPOSITION
     ),
     BIOCHEMICAL_PROJECT(5,
             MaterialType.STRUCTURE,
             MaterialType.BIOMATERIAL,
             MaterialType.CONSUMABLE,
             MaterialType.COMPOSITION
-    //            MaterialType.SEQUENCE,
-    //            MaterialType.COMPOSITION
+            MaterialType.SEQUENCE
     );
 
     private final int id;

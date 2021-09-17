@@ -26,6 +26,8 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
@@ -123,6 +125,8 @@ public class MaterialBean implements Serializable {
     protected HazardInformation hazards;
 
     protected StructureInformation structureInfos;
+
+    private SequenceInformation sequenceInfos;
 
     protected List<String> errorMessages = new ArrayList<>();
 
@@ -222,6 +226,9 @@ public class MaterialBean implements Serializable {
             if (m.getType() == MaterialType.COMPOSITION) {
                 compositionBean.startCompositionEdit((MaterialComposition) m);
             }
+            if (m.getType() == MaterialType.SEQUENCE) {
+                //sequenceInfos = new SequenceInformation((Sequence) m);
+            }
 
             storageInformationBuilder = new StorageInformationBuilder(
                     messagePresenter,
@@ -249,6 +256,7 @@ public class MaterialBean implements Serializable {
         errorMessages = new ArrayList<>();
         hazards = new HazardInformation();
         structureInfos = new StructureInformation();
+        sequenceInfos = new SequenceInformation();
         materialNameBean.init();
         materialIndexBean.init();
         currentMaterialType = MaterialType.CONSUMABLE;
@@ -361,6 +369,8 @@ public class MaterialBean implements Serializable {
                     composition.addComponent(c.getMaterial(), c.getConcentration());
                 }
                 materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
+            } else if (currentMaterialType == MaterialType.SEQUENCE) {
+                // TODO
             }
         } else {
             throw new Exception("Material not valide");
@@ -461,6 +471,14 @@ public class MaterialBean implements Serializable {
     public void setStructureInfos(StructureInformation structureInfos) {
         this.structureInfos = structureInfos;
     }
+
+    public SequenceInformation getSequenceInfos() {
+        return sequenceInfos;
+    }
+
+//    public void setSequenceInfos(SequenceInformation sequenceInfos) {
+//        this.sequenceInfos = sequenceInfos;
+//    }
 
     public MaterialNameBean getMaterialNameBean() {
         return materialNameBean;

@@ -376,6 +376,7 @@ public class MaterialService implements Serializable {
                 .createLoader()
                 .loadMaterial(entity, em, this, taxonomyService, tissueService);
 
+
         material.setACList(aclService.loadById(entity.getACList()));
         material.setOwner(memberService.loadUserById(entity.getOwner()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
@@ -397,6 +398,10 @@ public class MaterialService implements Serializable {
     public Material loadMaterialById(int id) {
         MaterialEntity entity = em.find(MaterialEntity.class, id);
         return loadMaterial(entity);
+    }
+
+    private Material loadSequence(MaterialEntity entity) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /**

@@ -32,6 +32,7 @@ public enum MaterialDetailType implements Serializable {
     STORAGE_CLASSES(5),
     TAXONOMY(6),
     COMPOSITION(7);
+    SEQUENCE_INFORMATION(8);
 
     private int id;
 

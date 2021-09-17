@@ -82,7 +82,9 @@ public enum MaterialType implements Serializable {
             5,
             Sequence.class,
             null,
-            MaterialDetailType.COMMON_INFORMATION),
+            MaterialDetailType.COMMON_INFORMATION,
+            MaterialDetailType.INDEX,
+            MaterialDetailType.SEQUENCE_INFORMATION),
     TISSUE(
             6, Tissue.class, new TissueFactory(), MaterialDetailType.COMMON_INFORMATION),
     TAXONOMY(
