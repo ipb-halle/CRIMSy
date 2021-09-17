@@ -5,11 +5,11 @@ Das digital signierte Konfigurationsskript steht auf der Distributions-Webseite 
 
 .. code-block:: none
 
-    wget -O conimage.sh.sig \
+    curl -o conimage.sh.sig \
       https://test.crimsy.invalid/TEST/configure.sh.sig
-    wget -O chain.txt \
+    curl -o chain.txt \
       https://test.crimsy.invalid/TEST/chain.txt
-    wget -O devcert.pem \
+    curl -o devcert.pem \
       https://test.crimsy.invalid/TEST/devcert.pem
     sha256sum chain.txt
     openssl verify -CAfile chain.txt devcert.pem

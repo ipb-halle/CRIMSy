@@ -39,7 +39,7 @@ Das Basissystem besteht aus einem Linux-Server in Minimalkonfiguration, der um f
 * sudo
 * tar
 * sharutils (uuencode / uudecode)
-* wget
+* curl
 
 Java ist auf dem Basissystem nicht erforderlich.
 
