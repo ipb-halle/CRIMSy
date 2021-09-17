@@ -32,6 +32,8 @@ import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,6 +50,10 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class MaterialComparator implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private final float EPSILON = 0.0001f;
 
     Logger logger = LogManager.getLogger(this.getClass().getName());
 
@@ -110,13 +116,18 @@ public class MaterialComparator implements Serializable {
                     (Taxonomy) originalMat,
                     (Taxonomy) editedMat);
         }
+        if (originalMat.getType() == MaterialType.COMPOSITION) {
+            addCompositionDifferences(differences,
+                    (MaterialComposition) originalMat,
+                    (MaterialComposition) editedMat);
+        }
         if (originalMat.getType() == MaterialType.BIOMATERIAL) {
             try {
                 addBioMaterialDifference(differences,
                         (BioMaterial) originalMat,
                         (BioMaterial) editedMat);
             } catch (Exception e) {
-                logger.error("Error at calculating bio diffs "+ExceptionUtils.getStackTrace(e));
+                logger.error("Error at calculating bio diffs " + ExceptionUtils.getStackTrace(e));
             }
         }
         if (originalMat.getType() == MaterialType.SEQUENCE) {
@@ -126,6 +137,57 @@ public class MaterialComparator implements Serializable {
         }
 
         return differences;
+
+    }
+
+    private void addCompositionDifferences(
+            List<MaterialDifference> differences,
+            MaterialComposition originalMat,
+            MaterialComposition editedMat) {
+        CompositionDifference diff = new CompositionDifference("EDIT");
+        //Add new component
+        for (Material m : editedMat.getComponents().keySet()) {
+            if (!originalMat.getComponents().keySet().contains(m)) {
+                diff.addDifference(null, m.getId(), null, editedMat.getComponents().get(m));
+            }
+        }
+        //Remove component
+        for (Material m : originalMat.getComponents().keySet()) {
+            if (!editedMat.getComponents().keySet().contains(m)) {
+                diff.addDifference(m.getId(), null, originalMat.getComponents().get(m), null);
+            }
+        }
+        //Change concentration
+        for (Material originalComponent : originalMat.getComponents().keySet()) {
+            int id = originalComponent.getId();
+            Material newComponent = getMaterialWithId(originalComponent.getId(), editedMat.getComponents().keySet());
+            Double concentrationOld = originalMat.getComponents().get(originalComponent);
+            Double concentrationNew = editedMat.getComponents().get(newComponent);
+            if (concentrationNew == null && concentrationOld != null) {
+                diff.addDifference(id, id, concentrationOld, null);
+            }
+            if (concentrationNew != null && concentrationOld == null) {
+                diff.addDifference(id, id, null, concentrationNew);
+            }
+            if (concentrationNew != null && concentrationOld != null) {
+                if (Math.abs(concentrationNew - concentrationOld) < EPSILON) {
+                    diff.addDifference(id, id, concentrationOld, concentrationNew);
+                }
+            }
+        }
+
+        if (diff.hasDifferences()) {
+            differences.add(diff);
+        }
+    }
+
+    private Material getMaterialWithId(int id, Set<Material> set) {
+        for (Material m : set) {
+            if (m.getId() == id) {
+                return m;
+            }
+        }
+        return null;
 
     }
 
@@ -218,8 +280,8 @@ public class MaterialComparator implements Serializable {
             Material originalMat,
             Material editedMat) throws Exception {
         MaterialStorageDifference diff = new MaterialStorageDifference();
-        Integer newStorageClassId = editedMat.getStorageInformation().getStorageClass()==null?null:editedMat.getStorageInformation().getStorageClass().getId();
-        Integer oldStorageClassId = originalMat.getStorageInformation().getStorageClass()==null?null:originalMat.getStorageInformation().getStorageClass().getId();
+        Integer newStorageClassId = editedMat.getStorageInformation().getStorageClass() == null ? null : editedMat.getStorageInformation().getStorageClass().getId();
+        Integer oldStorageClassId = originalMat.getStorageInformation().getStorageClass() == null ? null : originalMat.getStorageInformation().getStorageClass().getId();
         String newDescription = editedMat.getStorageInformation().getRemarks();
         String oldDescription = originalMat.getStorageInformation().getRemarks();
         Set<StorageCondition> oldConditions = originalMat.getStorageInformation().getStorageConditions();
