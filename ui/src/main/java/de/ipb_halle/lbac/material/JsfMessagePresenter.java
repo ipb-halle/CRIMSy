@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.material;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+
 import com.corejsf.util.Messages;
 import de.ipb_halle.lbac.i18n.UIMessage;
 
@@ -24,8 +27,14 @@ import de.ipb_halle.lbac.i18n.UIMessage;
  *
  * @author fmauz
  */
+/*
+ * There are two possible mechanisms for CDI to supply an instance of this class:
+ * (1) via the class (even though it has a private constructor ... weird!)
+ * (2) via the producer method marked by @Produces
+ * The @Any annotation on the class marks a lower priority, thus (2) is considered.
+ */
+@Any
 public class JsfMessagePresenter implements MessagePresenter {
-
     private static JsfMessagePresenter instance;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
@@ -53,5 +62,10 @@ public class JsfMessagePresenter implements MessagePresenter {
     @Override
     public String presentMessage(String messageKey, Object... args) {
           return Messages.getString(MESSAGE_BUNDLE, messageKey, args);
+    }
+
+    @Produces
+    public MessagePresenter produce() {
+        return JsfMessagePresenter.getInstance();
     }
 }

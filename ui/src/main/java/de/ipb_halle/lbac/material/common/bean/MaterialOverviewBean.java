@@ -35,6 +35,8 @@ import de.ipb_halle.lbac.admission.MemberService;
 import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -163,6 +165,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
 
     public void actionCreateNewMaterial() {
         materialEditBean.startMaterialCreation();
+       
         navigator.navigate(NAVIGATION_MATERIAL_EDIT);
     }
 
@@ -181,6 +184,7 @@ public class MaterialOverviewBean implements Serializable, ACObjectBean {
         materialService.deactivateMaterial(
                 m.getId(),
                 currentUser);
+        searchController.actionStartMaterialSearch();
     }
 
     public void actionCreateNewItem(Material m) {

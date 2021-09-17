@@ -60,12 +60,12 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class ItemBeanTest extends TestBase {
-    
+
     private ItemBeanMock itemBean;
     private PrintBean printBean;
     private ItemOverviewBean overviewBean;
     private UserBeanMock userBean;
-    
+
     @Inject
     private ItemService itemService;
     @Inject
@@ -74,18 +74,18 @@ public class ItemBeanTest extends TestBase {
     private ContainerService containerService;
     @Inject
     private ContainerPositionService containerPositionService;
-    
+
     @Inject
     private TaxonomyNestingService taxoNestingService;
-    
+
     @Inject
     protected MaterialService materialService;
     protected Project project;
     protected Material structure;
     protected User user;
-    
+
     protected ItemOverviewBean itemOverviewBean;
-    
+
     @Before
     public void init() {
         creationTools = new CreationTools("", "", "", memberService, projectService);
@@ -93,13 +93,13 @@ public class ItemBeanTest extends TestBase {
         structure = creationTools.createStructure(project);
         structure.setACList(project.getACList());
         user = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         materialService.setEditedMaterialSaver(new MaterialEditSaver(materialService, taxoNestingService));
         materialService.saveMaterialToDB(structure, project.getUserGroups().getId(), new HashMap<>(), user.getId());
-        
+
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(user);
-        
+
         itemBean = new ItemBeanMock();
         printBean = new PrintBean();
         overviewBean = new ItemOverviewBeanMock()
@@ -111,7 +111,7 @@ public class ItemBeanTest extends TestBase {
                 .setProjectService(projectService)
                 .setNodeService(nodeService)
                 .setUser(user);
-        
+
         itemBean.setItemService(itemService);
         itemBean.setPrintBean(printBean);
         itemBean.setItemOverviewBean(overviewBean);
@@ -120,14 +120,14 @@ public class ItemBeanTest extends TestBase {
         itemBean.setContainerPositionService(containerPositionService);
         itemBean.setNavigator(new NavigatorMock(userBean));
         itemBean.setUserBean(userBean);
-        itemBean.setMessagePresenter(new MessagePresenterMock());
+        itemBean.setMessagePresenter(MessagePresenterMock.getInstance());
         itemBean.init();
-        
+
     }
-    
+
     @Test
     public void test001_createNewItem() {
-       
+
         itemBean.actionStartItemCreation(structure);
         itemBean.getState().getEditedItem().setAmount(20d);
         itemBean.getState().getEditedItem().setUnit(Unit.getUnit("g"));
@@ -137,9 +137,9 @@ public class ItemBeanTest extends TestBase {
         itemBean.getState().getEditedItem().setContainerSize(40d);
         itemBean.getState().getEditedItem().setProject(project);
         itemBean.getState().getEditedItem().setPurity("pure");
-        
+
         Assert.assertEquals(ItemBean.Mode.CREATE, itemBean.mode);
-        
+
         itemBean.actionSave();
         Item item = itemService.loadItemById(itemBean.getState().getEditedItem().getId());
         Assert.assertEquals(structure.getId(), item.getMaterial().getId());
@@ -150,9 +150,9 @@ public class ItemBeanTest extends TestBase {
         Assert.assertEquals(.5d, item.getConcentration(), 0);
         Assert.assertEquals(project.getId(), item.getProject().getId());
         Assert.assertEquals("pure", item.getPurity());
-        
+
     }
-    
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("ItemBeanTest.war")

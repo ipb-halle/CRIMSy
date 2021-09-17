@@ -109,7 +109,7 @@ public class MaterialEditSaverTest extends TestBase {
         mOld.getStorageInformation().setStorageClass(new StorageClass(1, "storageClass-1"));
       
       
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
     }
 
     @After

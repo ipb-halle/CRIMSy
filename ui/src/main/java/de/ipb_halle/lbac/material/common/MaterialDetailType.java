@@ -23,7 +23,7 @@ import java.io.Serializable;
  *
  * @author fmauz
  */
-public enum MaterialDetailType  implements Serializable{
+public enum MaterialDetailType implements Serializable {
 
     COMMON_INFORMATION(1),
     STRUCTURE_INFORMATION(2),
@@ -31,6 +31,7 @@ public enum MaterialDetailType  implements Serializable{
     HAZARD_INFORMATION(4),
     STORAGE_CLASSES(5),
     TAXONOMY(6),
+    COMPOSITION(7),
     SEQUENCE_INFORMATION(8);
 
     private int id;

@@ -39,15 +39,24 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.bean.ItemBean;
+import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.material.MaterialDeployment;
+import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.HazardService;
+import de.ipb_halle.lbac.material.composition.CompositionType;
+import de.ipb_halle.lbac.material.composition.Concentration;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
+import de.ipb_halle.lbac.project.ProjectEditBean;
+import de.ipb_halle.lbac.search.SearchResult;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,7 +71,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.primefaces.component.contextmenu.ContextMenu.PropertyKeys.event;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.TreeNode;
@@ -87,14 +95,8 @@ public class MaterialBeanTest extends TestBase {
 
     private TreeNode nodeToOperateOn;
 
-    MateriaBeanMock instance;
-    CreationTools creationTools;
-    User publicUser;
-    User customUser;
-    ACList acl;
-    Material material;
-    UserBeanMock userBean;
-    Project project;
+    @Inject
+    private MateriaBeanMock instance;
 
     @Inject
     private IndexService indexService;
@@ -105,15 +107,26 @@ public class MaterialBeanTest extends TestBase {
     @Inject
     private TaxonomyService taxoService;
 
+    CreationTools creationTools;
+    User publicUser;
+    User customUser;
+    ACList acl;
+    Material material;
+    UserBeanMock userBean;
+    Project project;
+
     @Before
     public void init() {
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         ACList publicReadAcl = GlobalAdmissionContext.getPublicReadACL();
         createTaxonomyTreeInDB(publicReadAcl.getId(), publicUser.getId());
-        instance = new MateriaBeanMock();
-        instance.setAcListService(aclistService);
-        instance.setHazardService(hazardService);
+        /**
+         * instance = new MateriaBeanMock();
+         * instance.setAcListService(aclistService);
+         * instance.setHazardService(hazardService);
+         *
+         */
         creationTools = new CreationTools("", "", "", memberService, projectService);
         project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
@@ -135,20 +148,6 @@ public class MaterialBeanTest extends TestBase {
         material.setOwner(publicUser);
 
         materialService.saveMaterialToDB(material, acl.getId(), new HashMap<>(), publicUser);
-
-        instance.setMaterialNameBean(new MaterialNameBean());
-        instance.setMessagePresenter(new MessagePresenterMock());
-        instance.getMaterialEditState().setMaterialToEdit(material);
-        instance.getMaterialEditState().setMaterialBeforeEdit(material);
-        instance.setMaterialService(materialService);
-
-        MaterialIndexBean indexBean = new MaterialIndexBean();
-        indexBean.setIndexService(indexService);
-        instance.setMaterialIndexBean(indexBean);
-        instance.setTaxonomyService(taxoService);
-        instance.setProjectService(projectService);
-        instance.setProjectBean(new ProjectBean());
-
     }
 
     @After
@@ -161,6 +160,8 @@ public class MaterialBeanTest extends TestBase {
 
     @Test
     public void test001_checkRights() {
+        instance.getMaterialEditState().setMaterialToEdit(material);
+        instance.getMaterialEditState().setMaterialBeforeEdit(material);
 
         instance.setMode(MaterialBean.Mode.HISTORY);
         Assert.assertFalse("testcase 001: In history mode edit must be false ", instance.isProjectEditEnabled());
@@ -420,11 +421,87 @@ public class MaterialBeanTest extends TestBase {
         Assert.assertEquals("There must be at least one materialname", instance.getErrorMessages());
     }
 
+    @Test
+    public void test008_saveNewComposition() {
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        projectService.saveEditedProjectToDb(project);
+        material = creationTools.createStructure(project);
+        materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        instance.startMaterialCreation();
+        instance.getCompositionBean().actionAddMaterialToComposition(material);
+        instance.getMaterialEditState().setCurrentProject(project);
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        instance.getMaterialNameBean().getNames().get(0).setValue("Composition");
+        instance.setCurrentMaterialType(MaterialType.COMPOSITION);
+        instance.actionSaveMaterial();
+
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("Composition");
+        requestBuilder.addMaterialType(MaterialType.COMPOSITION);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test009_editComposition() {
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        projectService.saveEditedProjectToDb(project);
+        material = creationTools.createStructure(project);        
+        materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        
+        Material material2 = creationTools.createStructure(project);
+        materialService.saveMaterialToDB(material2, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+        instance.startMaterialCreation();
+        instance.getCompositionBean().actionAddMaterialToComposition(material);
+        instance.getMaterialEditState().setCurrentProject(project);
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        instance.getMaterialNameBean().getNames().get(0).setValue("Composition");
+        instance.setCurrentMaterialType(MaterialType.COMPOSITION);
+        instance.actionSaveMaterial();
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("Composition");
+        requestBuilder.addMaterialType(MaterialType.COMPOSITION);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+
+        instance.startMaterialEdit((MaterialComposition) result.getAllFoundObjects().get(0).getSearchable());
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        Assert.assertEquals(CompositionType.EXTRACT, instance.getCompositionBean().getChoosenType());
+        Assert.assertFalse(instance.getCompositionBean().isCompositionTypeEditable());
+        Assert.assertTrue(instance.getCompositionBean().getMaterialName().isEmpty());
+        Assert.assertTrue(instance.getCompositionBean().getSearchMolecule().isEmpty());
+        Assert.assertTrue(instance.getCompositionBean().getFoundMaterials().isEmpty());
+
+        Concentration conc = instance.getCompositionBean().getConcentrationsInComposition().get(0);
+        instance.getCompositionBean().actionRemoveConcentrationFromComposition(conc);
+        instance.getCompositionBean().actionAddMaterialToComposition(material2);
+        Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
+        Assert.assertEquals(1, instance.getCompositionBean().getFoundMaterials().size());
+        
+        instance.actionSaveMaterial();
+        
+        requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("Composition");
+        requestBuilder.addMaterialType(MaterialType.COMPOSITION);
+        result = materialService.loadReadableMaterials(requestBuilder.build());
+        MaterialComposition composition=(MaterialComposition) result.getAllFoundObjects().get(0).getSearchable();
+        Assert.assertEquals(1,composition.getComponents().size());
+        Assert.assertEquals(material2.getId(),composition.getComponents().keySet().iterator().next().getId());
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
                 = prepareDeployment("MaterialBeanTest.war")
-                        .addClass(IndexService.class);
+                        .addClass(IndexService.class)
+                        .addClass(MaterialNameBean.class)
+                        .addClass(MaterialOverviewBean.class)
+                        .addClass(ProjectBean.class)
+                        .addClass(ProjectEditBean.class)
+                        .addClass(ItemBean.class)
+                        .addClass(ItemOverviewBean.class)
+                        .addClass(MaterialIndexBean.class)
+                        .addClass(MessagePresenterMock.class)
+                        .addClass(MateriaBeanMock.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));

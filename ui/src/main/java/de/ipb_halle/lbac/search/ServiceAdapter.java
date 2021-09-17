@@ -75,7 +75,7 @@ public class ServiceAdapter {
             result = itemService.loadItems(request);
         }
         if (target == SearchTarget.MATERIAL) {
-            result = materialService.getReadableMaterials(request);
+            result = materialService.loadReadableMaterials(request);
         }
         if (target == SearchTarget.PROJECT) {
             result = projectService.loadProjects(request);

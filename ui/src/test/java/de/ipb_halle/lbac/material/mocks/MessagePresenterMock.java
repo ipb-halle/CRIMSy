@@ -17,16 +17,39 @@
  */
 package de.ipb_halle.lbac.material.mocks;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+
 import de.ipb_halle.lbac.material.MessagePresenter;
 
 /**
  *
  * @author fmauz
  */
+@Any
 public class MessagePresenterMock implements MessagePresenter {
+    private List<String> errorMessages = new ArrayList<>();
+    private List<String> infoMessages = new ArrayList<>();
 
-    private String lastErrorMessage;
-    private String lastInfoMessage;
+    private static MessagePresenterMock instance;
+
+    private MessagePresenterMock() {
+    }
+
+    public static synchronized MessagePresenterMock getInstance() {
+        if (instance == null) {
+            instance = new MessagePresenterMock();
+        }
+        return instance;
+    }
+
+    @Produces
+    public MessagePresenter produce() {
+        return getInstance();
+    }
 
     @Override
     public String presentMessage(String messageKey, Object... args) {
@@ -35,26 +58,32 @@ public class MessagePresenterMock implements MessagePresenter {
 
     @Override
     public void error(String message, Object... args) {
-        lastErrorMessage = message;
+        errorMessages.add(message);
     }
 
     @Override
     public void info(String message, Object... args) {
-        lastInfoMessage = message;
+        infoMessages.add(message);
     }
 
+    /**
+     * 
+     * @return the last error message or null if there were no error messages
+     */
     public String getLastErrorMessage() {
-        return lastErrorMessage;
+        return errorMessages.isEmpty() ? null : errorMessages.get(errorMessages.size() - 1);
     }
 
+    /**
+     * 
+     * @return the last info message or null if there were no info messages
+     */
     public String getLastInfoMessage() {
-        return lastInfoMessage;
+        return infoMessages.isEmpty() ? null : infoMessages.get(infoMessages.size() - 1);
     }
-    public void reseLastMessages(){
-        lastErrorMessage=null;
-        lastInfoMessage=null;
+
+    public void resetMessages() {
+        errorMessages.clear();
+        infoMessages.clear();
     }
-    
-    
-    
 }

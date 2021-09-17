@@ -53,7 +53,8 @@ public class InputValidatorTest extends TestBase {
     public void init() {
         validator = new InputValidator(containerService);
         validator.setContainerService(containerService);
-        messagePresenter = new MessagePresenterMock();
+        messagePresenter = MessagePresenterMock.getInstance();
+        messagePresenter.resetMessages();
         validator.setErrorMessagePresenter(messagePresenter);
         c = new Container();
         c.setBarCode(null);
@@ -78,7 +79,7 @@ public class InputValidatorTest extends TestBase {
         c.setType(new ContainerType("mock_no_unique_name", 99, false, true));
         Assert.assertFalse("test001: containername already in use", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_name_invalide"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         //Try to save a new container with a already saved name and a 
         //NOT unique_name type. This should lead to no error message.
@@ -89,12 +90,12 @@ public class InputValidatorTest extends TestBase {
         c.setLabel("");
         Assert.assertFalse("test001: containername is empty", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_name_invalide"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         c.setLabel(null);
         Assert.assertFalse("test001: containername is null", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_name_invalide"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         c.setLabel("VALIDE_CONTAINER_NAME");
         Assert.assertTrue("test001: Valide containername not accepted", validator.isInputValideForCreation(c, null, null, 1, 1));
@@ -108,7 +109,7 @@ public class InputValidatorTest extends TestBase {
 
         Assert.assertFalse("test002: project expected, but not found", validator.isInputValideForCreation(c, "TEST_PROJECT", null, 1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_project_invalide"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         Assert.assertTrue("test002: no project set and  expected", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertNull(messagePresenter.getLastErrorMessage());
@@ -116,12 +117,12 @@ public class InputValidatorTest extends TestBase {
         c.setProject(p);
         Assert.assertFalse("test002: project set, but none expected", validator.isInputValideForCreation(c, null, null, 1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_project_invalide"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         c.setProject(p);
         Assert.assertFalse("test002: project set, but wrong name expected", validator.isInputValideForCreation(c, "TEST_PROJECT-FAILURE", null, 1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_project_invalide"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         Assert.assertTrue("test002: project found and expected", validator.isInputValideForCreation(c, "TEST_PROJECT", null, 1, 1));
         Assert.assertNull(messagePresenter.getLastErrorMessage());
@@ -152,7 +153,7 @@ public class InputValidatorTest extends TestBase {
         c.setParentContainer(c2);
         Assert.assertFalse("test004: container to big for location", validator.isInputValideForCreation(c, null, c2, 1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_location_to_small"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         c.setType(new ContainerType("CUPBOARD", 20, true, false));
         Assert.assertTrue("test004: container should fit into location ", validator.isInputValideForCreation(c, null, c2, 1, 1));
@@ -166,15 +167,15 @@ public class InputValidatorTest extends TestBase {
         c2.setType(new ContainerType("ROOM", 100, false, true));
         Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, c2, -1, 1));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_dimensions"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         Assert.assertFalse("test005: invalide dimension", validator.isInputValideForCreation(c, null, c2, -1, -11));
         Assert.assertTrue(messagePresenter.getLastErrorMessage().equals("container_input_dimensions"));
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
 
         Assert.assertTrue("test005: invalide dimension", validator.isInputValideForCreation(c, null, c2, 1, 1));
 
-        messagePresenter.reseLastMessages();
+        messagePresenter.resetMessages();
     }
 
     @Deployment

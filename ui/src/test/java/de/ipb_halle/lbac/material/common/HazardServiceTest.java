@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common;
 
+import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
@@ -111,6 +112,6 @@ public class HazardServiceTest extends TestBase {
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment = prepareDeployment("HazardServiceTest.war");
-        return MaterialDeployment.add(deployment);
+        return MaterialDeployment.add(UserBeanDeployment.add(deployment));
     }
 }

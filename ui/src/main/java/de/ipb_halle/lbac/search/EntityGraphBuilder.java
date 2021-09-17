@@ -55,10 +55,18 @@ public abstract class EntityGraphBuilder {
                 .addLinkField(leftJoinField, rightJoinField)
                 .setJoinType(type);
         subGraph.addChild(child);
-        child.setJoinType(type);
         return child;
     }
 
+        protected EntityGraph addJoinToChildInherit(JoinType type, EntityGraph subGraph, Class joinedEntity, String leftJoinField, String rightJoinField) {
+        EntityGraph child = new EntityGraph(joinedEntity)
+                .addLinkField(leftJoinField, rightJoinField)
+                .setJoinType(type);
+        subGraph.addChildInherit(child);
+        return child;
+    }
+
+    
     public void addACListConstraint(
             EntityGraph mainGraph,
             EntityGraph aclSubGraph,

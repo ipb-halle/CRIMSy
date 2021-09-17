@@ -282,6 +282,7 @@ INSERT INTO materialdetailtypes VALUES(3,'INDEX');
 INSERT INTO materialdetailtypes VALUES(4,'HAZARD_INFORMATION');
 INSERT INTO materialdetailtypes VALUES(5,'STORAGE_CLASSES');
 INSERT INTO materialdetailtypes VALUES(6,'TAXONOMY');
+INSERT INTO materialdetailtypes VALUES(7,'COMPOSITION');
 
 INSERT INTO materialInformations VALUES(1,1,1,false);
 INSERT INTO materialInformations VALUES(2,1,2,false);
@@ -826,4 +827,15 @@ CREATE TABLE images (
     owner_id    INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE material_compositions(
+    materialid  INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    componentid INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    concentration DOUBLE,
+    PRIMARY KEY (materialid, componentid)
+);
+
+CREATE TABLE compositions(
+    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    type VARCHAR NOT NULL
+);
 

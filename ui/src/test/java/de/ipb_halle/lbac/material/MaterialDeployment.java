@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.project.ProjectService;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -41,6 +42,7 @@ public class MaterialDeployment {
                 .addClass(TissueService.class)
                 .addClass(MaterialService.class)
                 .addClass(IndexService.class)
+                .addClass(MaterialCompositionBean.class)
                 .addClass(BiomaterialService.class)
                 .addClass(HazardService.class)
                 .addClass(TaxonomyNestingService.class);

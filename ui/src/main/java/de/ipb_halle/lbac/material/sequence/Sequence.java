@@ -48,10 +48,6 @@ public class Sequence extends Material {
         data = new SequenceData();
     }
 
-    @Override
-    public String getNumber() {
-        return "";
-    }
 
     @Override
     public Material copyMaterial() {
