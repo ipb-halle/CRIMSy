@@ -107,9 +107,8 @@ public class MaterialComparator implements Serializable {
         addMaterialNameDifference(differences, originalMat, editedMat);
 
         if (originalMat.getType() == MaterialType.STRUCTURE) {
-            addStructureDifferences(differences,
-                    (Structure) originalMat,
-                    (Structure) editedMat);
+            StructureComparator comparator = new StructureComparator();
+            comparator.compareDifferences(differences, originalMat, editedMat);
         }
         if (originalMat.getType() == MaterialType.TAXONOMY) {
             addTaxonomyDifference(differences,
@@ -466,68 +465,6 @@ public class MaterialComparator implements Serializable {
             differences.add(hazardDiff);
         }
 
-    }
-
-    /**
-     * Adds the differences of structure information to the list of differences
-     *
-     * @param differences
-     * @param originalStruc
-     * @param editedStruc
-     */
-    protected void addStructureDifferences(
-            List<MaterialDifference> differences,
-            Structure originalStruc,
-            Structure editedStruc) {
-        MaterialStructureDifference diff = new MaterialStructureDifference();
-        if (!Objects.equals(originalStruc.getSumFormula(), editedStruc.getSumFormula())) {
-            diff.setSumFormula_new(editedStruc.getSumFormula());
-            diff.setSumFormula_old(originalStruc.getSumFormula());
-        }
-        if (!checkIfBothAreNull(originalStruc.getExactMolarMass(), editedStruc.getExactMolarMass())) {
-            if (checkIfOneIsNull(originalStruc.getExactMolarMass(), editedStruc.getExactMolarMass())
-                    || Math.abs(originalStruc.getExactMolarMass() - editedStruc.getExactMolarMass()) > Double.MIN_NORMAL) {
-                diff.setExactMolarMass_new(editedStruc.getExactMolarMass());
-                diff.setExactMolarMass_old(originalStruc.getExactMolarMass());
-            }
-        }
-        if (!checkIfBothAreNull(originalStruc.getAverageMolarMass(), editedStruc.getAverageMolarMass())) {
-            if (checkIfOneIsNull(originalStruc.getAverageMolarMass(), editedStruc.getAverageMolarMass())
-                    || Math.abs(originalStruc.getAverageMolarMass() - editedStruc.getAverageMolarMass()) > Double.MIN_NORMAL) {
-                diff.setMolarMass_new(editedStruc.getAverageMolarMass());
-                diff.setMolarMass_old(originalStruc.getAverageMolarMass());
-            }
-        }
-        Molecule origMol = originalStruc.getMolecule();
-        Molecule newMol = editedStruc.getMolecule();
-        boolean newMoleculeSet = origMol == null && newMol != null;
-        boolean newMoleculeRemoved = origMol != null && newMol == null;
-        boolean modelEdited = newMol != null
-                && origMol != null
-                && !newMol.getStructureModel().equals(origMol.getStructureModel());
-
-        if (newMoleculeSet || newMoleculeRemoved || modelEdited) {
-            diff.setMoleculeId_new(editedStruc.getMolecule());
-            diff.setMoleculeId_old(originalStruc.getMolecule());
-        }
-
-        diff.setAction(ModificationType.EDIT);
-        if (diff.differenceFound()) {
-            differences.add(diff);
-        }
-    }
-
-    private boolean checkIfOneIsNull(
-            Double originalStruc,
-            Double editedStruc) {
-        return (originalStruc != null && editedStruc == null)
-                || (originalStruc == null && editedStruc != null);
-    }
-
-    private boolean checkIfBothAreNull(
-            Double originalStruc,
-            Double editedStruc) {
-        return originalStruc == null && editedStruc == null;
     }
 
     /**
