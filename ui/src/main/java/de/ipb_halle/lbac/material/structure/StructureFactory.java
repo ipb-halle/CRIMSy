@@ -1,6 +1,8 @@
 package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
+import de.ipb_halle.lbac.material.common.history.StructureComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 
@@ -26,6 +28,11 @@ public class StructureFactory implements MaterialFactory {
 
     public void setSaver(StructureInformationSaver saver) {
         this.saver = saver;
+    }
+
+    @Override
+    public IMaterialComparator createComparator() {
+        return new StructureComparator();
     }
 
 }

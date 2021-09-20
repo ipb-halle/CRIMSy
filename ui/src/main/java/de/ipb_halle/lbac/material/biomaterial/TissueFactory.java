@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 
@@ -27,6 +28,8 @@ import de.ipb_halle.lbac.material.common.service.MaterialLoader;
  */
 public class TissueFactory implements MaterialFactory {
 
+    private static final long serialVersionUID = 1L;
+
     @Override
     public MaterialSaver createSaver() {
         return new TissueSaver();
@@ -35,6 +38,11 @@ public class TissueFactory implements MaterialFactory {
     @Override
     public MaterialLoader createLoader() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IMaterialComparator createComparator() {
+        return null;
     }
 
 }

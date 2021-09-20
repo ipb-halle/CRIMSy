@@ -15,22 +15,20 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.service;
+package de.ipb_halle.lbac.material.common.history;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import java.io.Serializable;
+import de.ipb_halle.lbac.material.Material;
+import java.util.List;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialFactory extends Serializable {
+public class SequenzComparator extends IMaterialComparator {
 
-    public MaterialSaver createSaver();
-
-    public MaterialLoader createLoader();
-    
-    public IMaterialComparator createComparator();
+    @Override
+    public void compareDifferences(List<MaterialDifference> differences, Material originalMat, Material editedMat) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }
