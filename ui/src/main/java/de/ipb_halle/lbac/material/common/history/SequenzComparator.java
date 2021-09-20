@@ -15,34 +15,20 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.biomaterial;
+package de.ipb_halle.lbac.material.common.history;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import de.ipb_halle.lbac.material.common.service.MaterialFactory;
-import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.Material;
+import java.util.List;
 
 /**
  *
  * @author fmauz
  */
-public class TissueFactory implements MaterialFactory {
-
-    private static final long serialVersionUID = 1L;
+public class SequenzComparator extends IMaterialComparator {
 
     @Override
-    public MaterialSaver createSaver() {
-        return new TissueSaver();
-    }
-
-    @Override
-    public MaterialLoader createLoader() {
+    public void compareDifferences(List<MaterialDifference> differences, Material originalMat, Material editedMat) throws Exception {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public IMaterialComparator createComparator() {
-        return null;
     }
 
 }

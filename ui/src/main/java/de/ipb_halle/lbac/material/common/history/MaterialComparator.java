@@ -18,21 +18,9 @@
 package de.ipb_halle.lbac.material.common.history;
 
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.MaterialName;
-import de.ipb_halle.lbac.material.common.StorageCondition;
-import de.ipb_halle.lbac.material.sequence.Sequence;
-import de.ipb_halle.lbac.material.common.HazardType;
-import de.ipb_halle.lbac.material.composition.CompositionDifference;
-import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -61,28 +49,7 @@ public class MaterialComparator implements Serializable {
         if (originalMat.getType() != editedMat.getType()) {
             throw new Exception("Materials not comparable: ORIG - " + originalMat.getType() + " EDIT - " + editedMat.getType());
         }
-
-        if (originalMat.getType() == MaterialType.STRUCTURE) {
-            StructureComparator comparator = new StructureComparator();
-            comparator.compareDifferences(differences, originalMat, editedMat);
-        }
-        if (originalMat.getType() == MaterialType.TAXONOMY) {
-            TaxonomyComparator comparator = new TaxonomyComparator();
-            comparator.compareDifferences(differences, originalMat, editedMat);
-        }
-        if (originalMat.getType() == MaterialType.COMPOSITION) {
-            CompositionComparator comparator = new CompositionComparator();
-            comparator.compareDifferences(differences, originalMat, editedMat);
-        }
-        if (originalMat.getType() == MaterialType.BIOMATERIAL) {
-            BioMaterialComparator bioComparator = new BioMaterialComparator();
-            bioComparator.compareDifferences(differences, originalMat, editedMat);
-        }
-        if (originalMat.getType() == MaterialType.SEQUENCE) {
-            addSequenceDifference(differences,
-                    (Sequence) originalMat,
-                    (Sequence) editedMat);
-        }
+        originalMat.getType().getFactory().createComparator().compareDifferences(differences, originalMat, editedMat);
 
         return differences;
 
@@ -105,10 +72,5 @@ public class MaterialComparator implements Serializable {
             }
         }
         return null;
-    }
-
-    private void addSequenceDifference(List<MaterialDifference> differences,
-            Sequence originalMat, Sequence editedMat) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
