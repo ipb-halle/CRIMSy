@@ -88,6 +88,7 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
             entity.setMaterialid_old(materialIds_old.get(i));
             entity.setConcentration_new(concentrations_new.get(i));
             entity.setConcentration_old(concentrations_old.get(i));
+            entities.add(entity);
         }
 
         return entities;

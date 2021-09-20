@@ -161,17 +161,19 @@ public class MaterialComparator implements Serializable {
         for (Material originalComponent : originalMat.getComponents().keySet()) {
             int id = originalComponent.getId();
             Material newComponent = getMaterialWithId(originalComponent.getId(), editedMat.getComponents().keySet());
-            Double concentrationOld = originalMat.getComponents().get(originalComponent);
-            Double concentrationNew = editedMat.getComponents().get(newComponent);
-            if (concentrationNew == null && concentrationOld != null) {
-                diff.addDifference(id, id, concentrationOld, null);
-            }
-            if (concentrationNew != null && concentrationOld == null) {
-                diff.addDifference(id, id, null, concentrationNew);
-            }
-            if (concentrationNew != null && concentrationOld != null) {
-                if (Math.abs(concentrationNew - concentrationOld) < EPSILON) {
-                    diff.addDifference(id, id, concentrationOld, concentrationNew);
+            if (newComponent != null) {
+                Double concentrationOld = originalMat.getComponents().get(originalComponent);
+                Double concentrationNew = editedMat.getComponents().get(newComponent);
+                if (concentrationNew == null && concentrationOld != null) {
+                    diff.addDifference(id, id, concentrationOld, null);
+                }
+                if (concentrationNew != null && concentrationOld == null) {
+                    diff.addDifference(id, id, null, concentrationNew);
+                }
+                if (concentrationNew != null && concentrationOld != null) {
+                    if (Math.abs(concentrationNew - concentrationOld) > EPSILON) {
+                        diff.addDifference(id, id, concentrationOld, concentrationNew);
+                    }
                 }
             }
         }

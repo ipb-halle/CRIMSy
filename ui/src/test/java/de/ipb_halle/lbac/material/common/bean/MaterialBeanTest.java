@@ -446,11 +446,14 @@ public class MaterialBeanTest extends TestBase {
     public void test009_editComposition() {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveEditedProjectToDb(project);
-        material = creationTools.createStructure(project);        
+        material = creationTools.createStructure(project);
         materialService.saveMaterialToDB(material, project.getACList().getId(), new HashMap<>(), publicUser.getId());
-        
+
         Material material2 = creationTools.createStructure(project);
+        material2.getNames().clear();
+        material2.getNames().add(new MaterialName("component2", "en", 0));
         materialService.saveMaterialToDB(material2, project.getACList().getId(), new HashMap<>(), publicUser.getId());
+
         instance.startMaterialCreation();
         instance.getCompositionBean().actionAddMaterialToComposition(material);
         instance.getMaterialEditState().setCurrentProject(project);
@@ -476,16 +479,16 @@ public class MaterialBeanTest extends TestBase {
         instance.getCompositionBean().actionAddMaterialToComposition(material2);
         Assert.assertEquals(1, instance.getCompositionBean().getConcentrationsInComposition().size());
         Assert.assertEquals(1, instance.getCompositionBean().getFoundMaterials().size());
-        
+
         instance.actionSaveMaterial();
-        
+
         requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         requestBuilder.setMaterialName("Composition");
         requestBuilder.addMaterialType(MaterialType.COMPOSITION);
         result = materialService.loadReadableMaterials(requestBuilder.build());
-        MaterialComposition composition=(MaterialComposition) result.getAllFoundObjects().get(0).getSearchable();
-        Assert.assertEquals(1,composition.getComponents().size());
-        Assert.assertEquals(material2.getId(),composition.getComponents().keySet().iterator().next().getId());
+        MaterialComposition composition = (MaterialComposition) result.getAllFoundObjects().get(0).getSearchable();
+        Assert.assertEquals(1, composition.getComponents().size());
+        Assert.assertEquals(material2.getId(), composition.getComponents().keySet().iterator().next().getId());
     }
 
     @Deployment

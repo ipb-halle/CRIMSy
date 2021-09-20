@@ -38,6 +38,7 @@ import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.List;
@@ -345,31 +346,7 @@ public class MaterialComparatorTest {
     }
 
     @Test
-    public void test008_compareCompositions() throws Exception {
-
-        Structure oldStruc = createEmptyStructure(user);
-        oldStruc.setId(1);
-        Structure newStruc = createEmptyStructure(user);
-        newStruc.setId(2);
-        MaterialComposition compositionOld = new MaterialComposition(3, new ArrayList<>(), 1, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
-        compositionOld.setACList(new ACList());
-        compositionOld.setOwner(user);
-        MaterialComposition compositionNew = new MaterialComposition(3, new ArrayList<>(), 1, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
-        compositionNew.setACList(new ACList());
-        compositionNew.setOwner(user);
-
-        compositionNew.addComponent(newStruc, 1d);
-
-        List<MaterialDifference> diffs = instance.compareMaterial(compositionOld, compositionNew);
-        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
-        List<CompositionHistoryEntity> entities= diff.createEntity();
-        Assert.assertEquals(1,entities.size());
-        
-
-    }
-
-    @Test
-    public void compareBioMaterialWithHazardDiffs() throws Exception {
+    public void test008_compareBioMaterialWithHazardDiffs() throws Exception {
 
         BioMaterial original = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), null, null);
         original.setACList(new ACList());
@@ -383,17 +360,96 @@ public class MaterialComparatorTest {
         copy.getHazards().getHazards().put(new HazardType(13, false, "S2", 2), null);
         diffs = instance.compareMaterial(original, copy);
         Assert.assertEquals(1, diffs.size());
+    }
+
+    @Test
+    public void test009_compareCompositions() throws Exception {
+        //Prepare materials
+        Structure structure1 = createEmptyStructure(user, "struc1", 1);
+        Structure structure2 = createEmptyStructure(user, "struc2", 2);
+        MaterialComposition composition1 = createEmptyComposition();
+        MaterialComposition composition2 = createEmptyComposition();
+
+        //UC1 -> add a new component
+        composition1.addComponent(structure1, 1d);
+
+        List<MaterialDifference> diffs = instance.compareMaterial(composition2, composition1);
+        checkDifference(diffs, 1);
+        checkDiffEntity(diffs, 0, null, structure1.getId(), null, 1d);
+
+        //UC2 -> remove a component 
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 1);
+        checkDiffEntity(diffs, 0, structure1.getId(), null, 1d, null);
+
+        //UC3 -> swap components
+        composition2.addComponent(structure2, null);
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 2);
+        checkDiffEntity(diffs, 0, null, structure2.getId(), null, null);
+        checkDiffEntity(diffs, 1, structure1.getId(), null, 1d, null);
+
+        //UC4 -> change concentrations
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition1.addComponent(structure1, .2d);
+        composition2.addComponent(structure1, .3d);
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 1);
+        checkDiffEntity(diffs, 0, structure1.getId(), structure1.getId(), .2d, .3d);
+        //UC5 -> add 2 components
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition2.addComponent(structure1, .2d);
+        composition2.addComponent(structure2, .3d);
+        diffs = instance.compareMaterial(composition1, composition2);
+        checkDifference(diffs, 2);
+        checkDiffEntity(diffs, 0, null, structure1.getId(), null, .2d);
+        checkDiffEntity(diffs, 1, null, structure2.getId(), null, .3d);
+    }
+
+    private void checkDifference(List<MaterialDifference> diffs, int expectedDifferences) {
+        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        List<CompositionHistoryEntity> entities = diff.createEntity();
+        Assert.assertEquals(expectedDifferences, entities.size());
+    }
+
+    private void checkDiffEntity(
+            List<MaterialDifference> diffs,
+            int position,
+            Integer materialIdOld,
+            Integer materialIdNew,
+            Double concentrationOld,
+            Double concentrationNew) {
+        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        List<CompositionHistoryEntity> entities = diff.createEntity();
+        CompositionHistoryEntity entity = entities.get(position);
+        Assert.assertEquals(materialIdOld, entity.getMaterialid_old());
+        Assert.assertEquals(materialIdNew, entity.getMaterialid_new());
+        Assert.assertEquals(concentrationOld, entity.getConcentration_old());
+        Assert.assertEquals(concentrationNew, entity.getConcentration_new());
 
     }
 
+    private MaterialComposition createEmptyComposition() {
+        MaterialComposition composition = new MaterialComposition(3, new ArrayList<>(), 1, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        composition.setACList(new ACList());
+        composition.setOwner(user);
+        return composition;
+    }
+
     protected Structure createEmptyStructure(User user) {
+        return createEmptyStructure(user, "", 0);
+    }
+
+    protected Structure createEmptyStructure(User user, String name, int id) {
         List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName(name, "en", 0));
         int projectId = 4;
         HazardInformation hazards = new HazardInformation();
         StorageInformation storage = new StorageInformation();
         double molarMass = 0;
         double exactMolarMass = 0;
-        int id = 0;
         Structure s = new Structure(
                 "",
                 molarMass,
