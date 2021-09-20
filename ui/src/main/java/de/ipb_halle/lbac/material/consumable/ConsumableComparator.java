@@ -15,35 +15,26 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.composition;
+package de.ipb_halle.lbac.material.consumable;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.history.CompositionComparator;
+import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import de.ipb_halle.lbac.material.common.service.MaterialFactory;
-import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+import de.ipb_halle.lbac.material.common.history.MaterialDifference;
+import java.util.List;
 
 /**
  *
  * @author fmauz
  */
-public class CompositionFactory implements MaterialFactory {
-
-    private static final long serialVersionUID = 1L;
+public class ConsumableComparator extends IMaterialComparator {
 
     @Override
-    public MaterialSaver createSaver() {
-        return new CompositionSaver();
-    }
-
-    @Override
-    public MaterialLoader createLoader() {
-        return new CompositionLoader();
-    }
-
-    @Override
-    public IMaterialComparator createComparator() {
-        return new CompositionComparator();
+    public void compareDifferences(List<MaterialDifference> differences, Material originalMat, Material editedMat) throws Exception {
+        addMaterialNameDifference(differences, originalMat, editedMat);
+        addOverviewDifference(differences, originalMat, editedMat);
+        addIndexDifference(differences, originalMat, editedMat);
+        addHazardDifference(differences, originalMat, editedMat);
+        addStorageDifference(differences, originalMat, editedMat);
     }
 
 }

@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.consumable;
 
 import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
 import de.ipb_halle.lbac.material.common.service.MaterialFactory;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 
@@ -39,4 +40,8 @@ public class ConsumableFactory implements MaterialFactory {
         return new ConsumableLoader();
     }
 
+    @Override
+    public IMaterialComparator createComparator() {
+        return new ConsumableComparator();
+    }
 }
