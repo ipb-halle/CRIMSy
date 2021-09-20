@@ -18,6 +18,14 @@ include(dist/etc/config_m4.inc)dnl
  *
  */
 
+\connect lbac 
+\connect - lbac
+\set LBAC_SCHEMA_VERSION '\'00002\''
+
+BEGIN TRANSACTION;
+
+UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
+
 CREATE TABLE material_compositions(
     materialid  INTEGER NOT NULL REFERENCES materials (materialid),
     componentid INTEGER NOT NULL REFERENCES materials (materialid),
@@ -32,3 +40,4 @@ CREATE TABLE compositions(
 
 INSERT INTO materialdetailtypes(id,name) VALUES(7,'COMPOSITION');
 
+COMMIT TRANSACTION;
