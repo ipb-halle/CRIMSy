@@ -444,7 +444,9 @@ public class MaterialComparatorTest {
 
     protected Structure createEmptyStructure(User user, String name, int id) {
         List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName(name, "en", 0));
+        if (!name.equals("")) {
+            names.add(new MaterialName(name, "en", 0));
+        }
         int projectId = 4;
         HazardInformation hazards = new HazardInformation();
         StorageInformation storage = new StorageInformation();
