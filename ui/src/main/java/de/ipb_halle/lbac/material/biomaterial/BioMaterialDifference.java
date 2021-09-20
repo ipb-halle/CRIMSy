@@ -29,6 +29,8 @@ import java.util.Objects;
  */
 public class BioMaterialDifference implements Serializable, MaterialDifference, DTO {
 
+    private static final long serialVersionUID = 1L;
+
     protected Integer actorId;
     protected Date mTime;
     protected int materialId;

@@ -18,8 +18,18 @@ include(dist/etc/config_m4.inc)dnl
  *
  */
 
-INSERT INTO materialdetailtypes VALUES(7,'SEQUENCE_INFORMATION');
+\connect lbac 
+\connect - lbac
+\set LBAC_SCHEMA_VERSION '\'00003\''
+
+BEGIN TRANSACTION;
+
+UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
+
+INSERT INTO materialdetailtypes VALUES(8,'SEQUENCE_INFORMATION');
 
 INSERT INTO materialInformations VALUES(11,5,1,false);
 INSERT INTO materialInformations VALUES(12,5,3,false);
 INSERT INTO materialInformations VALUES(13,5,8,false);
+
+COMMIT TRANSACTION;

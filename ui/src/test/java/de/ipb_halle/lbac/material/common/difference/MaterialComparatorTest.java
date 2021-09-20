@@ -34,6 +34,10 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
+import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
+import de.ipb_halle.lbac.material.composition.CompositionType;
+import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.List;
@@ -308,7 +312,6 @@ public class MaterialComparatorTest {
 
     @Test
     public void test007_compareMaterialWithStorageDifference() throws Exception {
-        UUID ownerID = UUID.randomUUID();
         Structure oldStruc = createEmptyStructure(user);
         Structure newStruc = createEmptyStructure(user);
 
@@ -342,6 +345,30 @@ public class MaterialComparatorTest {
     }
 
     @Test
+    public void test008_compareCompositions() throws Exception {
+
+        Structure oldStruc = createEmptyStructure(user);
+        oldStruc.setId(1);
+        Structure newStruc = createEmptyStructure(user);
+        newStruc.setId(2);
+        MaterialComposition compositionOld = new MaterialComposition(3, new ArrayList<>(), 1, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        compositionOld.setACList(new ACList());
+        compositionOld.setOwner(user);
+        MaterialComposition compositionNew = new MaterialComposition(3, new ArrayList<>(), 1, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        compositionNew.setACList(new ACList());
+        compositionNew.setOwner(user);
+
+        compositionNew.addComponent(newStruc, 1d);
+
+        List<MaterialDifference> diffs = instance.compareMaterial(compositionOld, compositionNew);
+        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        List<CompositionHistoryEntity> entities= diff.createEntity();
+        Assert.assertEquals(1,entities.size());
+        
+
+    }
+
+    @Test
     public void compareBioMaterialWithHazardDiffs() throws Exception {
 
         BioMaterial original = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), null, null);
@@ -349,13 +376,13 @@ public class MaterialComparatorTest {
         original.setOwner(user);
         original.getHazards().getHazards().put(new HazardType(12, false, "S1", 2), null);
         BioMaterial copy = original.copyMaterial();
-        List<MaterialDifference> diffs=instance.compareMaterial(original, copy);
-        Assert.assertEquals(0,diffs.size());
-        
+        List<MaterialDifference> diffs = instance.compareMaterial(original, copy);
+        Assert.assertEquals(0, diffs.size());
+
         copy.getHazards().getHazards().clear();
         copy.getHazards().getHazards().put(new HazardType(13, false, "S2", 2), null);
-        diffs=instance.compareMaterial(original, copy);
-        Assert.assertEquals(1,diffs.size());
+        diffs = instance.compareMaterial(original, copy);
+        Assert.assertEquals(1, diffs.size());
 
     }
 

@@ -839,3 +839,16 @@ CREATE TABLE compositions(
     type VARCHAR NOT NULL
 );
 
+CREATE TABLE components_history(
+    id INTEGER NOT NULL REFERENCES biomaterial(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    actorid INTEGER NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    mtime TIMESTAMP NOT NULL,
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    materialid_old INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE, 
+    materialid_new INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    concentration_old FLOAT,
+    concentration_new FLOAT,
+    PRIMARY KEY(id,actorid,mtime)
+);
+
