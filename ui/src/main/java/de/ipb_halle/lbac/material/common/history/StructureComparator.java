@@ -29,7 +29,7 @@ import java.util.Objects;
  *
  * @author fmauz
  */
-public class StructureComparator implements IMaterialComparator {
+public class StructureComparator extends IMaterialComparator {
 
     /**
      * Compares two structures and calculate the differences. The differences
@@ -43,7 +43,13 @@ public class StructureComparator implements IMaterialComparator {
     public void compareDifferences(
             List<MaterialDifference> differences,
             Material originalMat,
-            Material editedMat) {
+            Material editedMat) throws Exception {
+        addMaterialNameDifference(differences, originalMat, editedMat);
+        addOverviewDifference(differences, originalMat, editedMat);
+        addIndexDifference(differences, originalMat, editedMat);
+        addHazardDifference(differences, originalMat, editedMat);
+        addStorageDifference(differences, originalMat, editedMat);
+
         Structure originalStruc = (Structure) originalMat;
         Structure editedStruc = (Structure) editedMat;
         MaterialStructureDifference diff = new MaterialStructureDifference();
