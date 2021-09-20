@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,7 +49,7 @@ public class SequenceInformation implements Serializable {
 
         try {
             sequenceJson = new OpenVectorEditorJsonConverter().sequenceDataToJson(data);
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             // TODO
         }
     }

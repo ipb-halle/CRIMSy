@@ -17,8 +17,6 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
-import java.util.List;
-
 /**
  * 
  * @author flange
@@ -27,7 +25,8 @@ public class SequenceData {
     private String sequenceString;
     private SequenceType sequenceType = null;
     private boolean circular = false;
-    private List<SequenceAnnotation> annotations;
+//    private List<SequenceAnnotation> annotations;
+    private String annotations = "";
 
     public String getSequenceString() {
         return sequenceString;
@@ -53,11 +52,17 @@ public class SequenceData {
         this.circular = circular;
     }
 
-    public List<SequenceAnnotation> getAnnotations() {
+//    public List<SequenceAnnotation> getAnnotations() {
+//        return annotations;
+//    }
+    public String getAnnotations() {
         return annotations;
     }
 
-    public void setAnnotations(List<SequenceAnnotation> annotations) {
+//    public void setAnnotations(List<SequenceAnnotation> annotations) {
+//        this.annotations = annotations;
+//    }
+    public void setAnnotations(String annotations) {
         this.annotations = annotations;
     }
 
