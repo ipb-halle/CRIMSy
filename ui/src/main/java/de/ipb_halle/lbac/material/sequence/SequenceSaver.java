@@ -17,12 +17,21 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import javax.persistence.EntityManager;
+
+import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.MaterialSaver;
+
 /**
  * 
  * @author flange
  */
-public enum SequenceType {
-    DNA,
-    RNA,
-    PROTEIN;
+public class SequenceSaver implements MaterialSaver {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void saveMaterial(Material m, EntityManager em) {
+        Sequence sequence = (Sequence) m;
+        em.merge(sequence.createEntity());
+    }
 }

@@ -852,3 +852,10 @@ CREATE TABLE components_history(
     PRIMARY KEY(id,actorid,mtime)
 );
 
+CREATE TABLE sequences (
+    id INTEGER PRIMARY KEY NOT NULL REFERENCES materials(materialid),
+    sequenceString VARCHAR,
+    sequenceType VARCHAR,
+    circular BOOLEAN,
+    annotations VARCHAR
+);

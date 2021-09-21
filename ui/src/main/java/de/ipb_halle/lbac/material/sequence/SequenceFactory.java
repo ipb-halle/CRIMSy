@@ -17,12 +17,30 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import de.ipb_halle.lbac.material.common.MaterialSaver;
+import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
+import de.ipb_halle.lbac.material.common.service.MaterialFactory;
+import de.ipb_halle.lbac.material.common.service.MaterialLoader;
+
 /**
  * 
  * @author flange
  */
-public enum SequenceType {
-    DNA,
-    RNA,
-    PROTEIN;
+public class SequenceFactory implements MaterialFactory {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public MaterialSaver createSaver() {
+        return new SequenceSaver();
+    }
+
+    @Override
+    public MaterialLoader createLoader() {
+        return new SequenceLoader();
+    }
+
+    @Override
+    public IMaterialComparator createComparator() {
+        return null;
+    }
 }

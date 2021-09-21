@@ -17,30 +17,39 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * 
  * @author flange
  */
-public class SequenceData {
-    private String sequenceString;
-    private SequenceType sequenceType = null;
-    private boolean circular = false;
-//    private List<SequenceAnnotation> annotations;
-    private String annotations = "";
+@Entity
+@Table(name = "sequences")
+public class SequenceEntity {
+    @Id
+    private Integer id;
 
-    public SequenceData() {
+    @Column
+    private String sequenceString;
+
+    @Column
+    private String sequenceType;
+
+    @Column
+    private boolean circular = false;
+
+    @Column
+    private String annotations;
+
+    public Integer getId() {
+        return id;
     }
 
-    /**
-     * Copy constructor
-     * 
-     * @param data
-     */
-    public SequenceData(SequenceData data) {
-        this.sequenceString = data.getSequenceString();
-        this.sequenceType = data.getSequenceType();
-        this.circular = data.isCircular();
-        this.annotations = data.getAnnotations();
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getSequenceString() {
@@ -51,11 +60,11 @@ public class SequenceData {
         this.sequenceString = sequenceString;
     }
 
-    public SequenceType getSequenceType() {
+    public String getSequenceType() {
         return sequenceType;
     }
 
-    public void setSequenceType(SequenceType sequenceType) {
+    public void setSequenceType(String sequenceType) {
         this.sequenceType = sequenceType;
     }
 
@@ -67,21 +76,11 @@ public class SequenceData {
         this.circular = circular;
     }
 
-//    public List<SequenceAnnotation> getAnnotations() {
-//        return annotations;
-//    }
     public String getAnnotations() {
         return annotations;
     }
 
-//    public void setAnnotations(List<SequenceAnnotation> annotations) {
-//        this.annotations = annotations;
-//    }
     public void setAnnotations(String annotations) {
         this.annotations = annotations;
-    }
-
-    public Integer getSequenceLength() {
-        return sequenceString != null ? sequenceString.length() : null;
     }
 }

@@ -21,9 +21,12 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,26 +40,71 @@ public class Sequence extends Material {
     private SequenceData data;
 
     public Sequence(
-            int id,
+            Integer id,
             List<MaterialName> names,
             int projectId,
             HazardInformation hazards,
-            StorageInformation storageInfos) {
+            StorageInformation storageInfos,
+            SequenceData sequenceData) {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.SEQUENCE;
 
-        data = new SequenceData();
+        data = sequenceData;
     }
 
+    public static Sequence fromEntities(MaterialEntity materialEntity, SequenceEntity sequenceEntity) {
+        Integer id = sequenceEntity.getId();
+        List<MaterialName> names = new ArrayList<>();
+        int projectId = materialEntity.getProjectid();
+        HazardInformation hazards = new HazardInformation();
+        StorageInformation storageInfos = new StorageInformation();
 
-    @Override
-    public Material copyMaterial() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SequenceData data = sequenceDatafromSequenceEntity(sequenceEntity);
+
+        return new Sequence(id, names, projectId, hazards, storageInfos, data);
+    }
+
+    private static SequenceData sequenceDatafromSequenceEntity(SequenceEntity entity) {
+        SequenceData result = new SequenceData();
+        result.setSequenceString(entity.getSequenceString());
+        result.setSequenceType(SequenceType.valueOf(entity.getSequenceType()));
+        result.setCircular(entity.isCircular());
+        result.setAnnotations(entity.getAnnotations());
+
+        return result;
     }
 
     @Override
-    public Object createEntity() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Sequence copyMaterial() {
+        Sequence copy = new Sequence(
+                id,
+                getCopiedNames(),
+                projectId,
+                hazards.copy(),
+                storageInformation.copy(),
+                new SequenceData(data));
+
+        copy.setIndices(getCopiedIndices());
+        copy.setNames(getCopiedNames());
+        copy.setDetailRights(getCopiedDetailRights());
+        copy.setOwner(getOwner());
+        copy.setACList(getACList());
+        copy.setCreationTime(creationTime);
+        copy.setHistory(history);
+
+        return copy;
+    }
+
+    @Override
+    public SequenceEntity createEntity() {
+        SequenceEntity entity = new SequenceEntity();
+        entity.setId(this.getId());
+        entity.setSequenceString(data.getSequenceString());
+        entity.setSequenceType(data.getSequenceType().name());
+        entity.setCircular(data.isCircular());
+        entity.setAnnotations(data.getAnnotations());
+
+        return entity;
     }
 
     @Override

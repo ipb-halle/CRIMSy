@@ -400,10 +400,6 @@ public class MaterialService implements Serializable {
         return loadMaterial(entity);
     }
 
-    private Material loadSequence(MaterialEntity entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     /**
      *
      * @param m

@@ -32,4 +32,12 @@ INSERT INTO materialInformations VALUES(11,5,1,false);
 INSERT INTO materialInformations VALUES(12,5,3,false);
 INSERT INTO materialInformations VALUES(13,5,8,false);
 
+CREATE TABLE sequences (
+        id INTEGER PRIMARY KEY NOT NULL REFERENCES materials(materialid),
+        sequenceString VARCHAR,
+        sequenceType VARCHAR,
+        circular BOOLEAN,
+        annotations VARCHAR
+);
+
 COMMIT TRANSACTION;
