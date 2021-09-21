@@ -26,6 +26,11 @@ BEGIN TRANSACTION;
 
 UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
 
+CREATE TABLE compositions(
+    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    type VARCHAR NOT NULL
+);
+
 CREATE TABLE material_compositions(
     materialid  INTEGER NOT NULL REFERENCES materials (materialid),
     componentid INTEGER NOT NULL REFERENCES materials (materialid),
@@ -33,10 +38,7 @@ CREATE TABLE material_compositions(
     PRIMARY KEY (materialid, componentid)
 );
 
-CREATE TABLE compositions(
-    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
-    type VARCHAR NOT NULL
-);
+
 
 INSERT INTO materialdetailtypes(id,name) VALUES(7,'COMPOSITION');
 

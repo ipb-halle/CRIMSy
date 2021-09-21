@@ -827,6 +827,11 @@ CREATE TABLE images (
     owner_id    INTEGER REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE compositions(
+    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    type VARCHAR NOT NULL
+);
+
 CREATE TABLE material_compositions(
     materialid  INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     componentid INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -834,13 +839,8 @@ CREATE TABLE material_compositions(
     PRIMARY KEY (materialid, componentid)
 );
 
-CREATE TABLE compositions(
-    materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
-    type VARCHAR NOT NULL
-);
-
 CREATE TABLE components_history(
-    id INTEGER NOT NULL REFERENCES biomaterial(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    id INTEGER NOT NULL REFERENCES compositions(materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     actorid INTEGER NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
     mtime TIMESTAMP NOT NULL,
     digest VARCHAR,
