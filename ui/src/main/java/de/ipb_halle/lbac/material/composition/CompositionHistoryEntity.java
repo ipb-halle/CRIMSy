@@ -19,9 +19,13 @@ package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.material.biomaterial.*;
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -33,9 +37,15 @@ import javax.persistence.Table;
 public class CompositionHistoryEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @EmbeddedId
-    private CompositionHistEntityId id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Integer id;
+    @Column
+    private Integer materialid;
+    @Column
+    private Date mdate;
+    @Column
+    private Integer actorid;
 
     @Column
     private String digest;
@@ -49,15 +59,6 @@ public class CompositionHistoryEntity implements Serializable {
     private Double concentration_old;
     @Column
     private Double concentration_new;
-
-    public CompositionHistEntityId getId() {
-        return id;
-    }
-
-    public CompositionHistoryEntity setId(CompositionHistEntityId id) {
-        this.id = id;
-        return this;
-    }
 
     public String getDigest() {
         return digest;
@@ -107,6 +108,38 @@ public class CompositionHistoryEntity implements Serializable {
 
     public void setConcentration_new(Double concentration_new) {
         this.concentration_new = concentration_new;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getMaterialid() {
+        return materialid;
+    }
+
+    public void setMaterialid(Integer materialid) {
+        this.materialid = materialid;
+    }
+
+    public Date getMdate() {
+        return mdate;
+    }
+
+    public void setMdate(Date mdate) {
+        this.mdate = mdate;
+    }
+
+    public Integer getActorid() {
+        return actorid;
+    }
+
+    public void setActorid(Integer actorid) {
+        this.actorid = actorid;
     }
 
 }

@@ -221,7 +221,7 @@ public class MaterialService implements Serializable {
 
             MaterialSearchConditionBuilder materialBuilder = new MaterialSearchConditionBuilder(graph, "materials");
             Condition con = materialBuilder.convertRequestToCondition(request, ACPermission.permREAD);
-            String sql = sqlBuilder.query(con,createOrderList());
+            String sql = sqlBuilder.query(con, createOrderList());
 
             Query q = em.createNativeQuery(sql, MaterialEntity.class);
             q.setFirstResult(request.getFirstResult());
@@ -376,7 +376,6 @@ public class MaterialService implements Serializable {
                 .createLoader()
                 .loadMaterial(entity, em, this, taxonomyService, tissueService);
 
-
         material.setACList(aclService.loadById(entity.getACList()));
         material.setOwner(memberService.loadUserById(entity.getOwner()));
         material.getDetailRights().addAll(loadDetailRightsOfMaterial(material.getId()));
@@ -454,6 +453,7 @@ public class MaterialService implements Serializable {
         editedMaterialSaver.saveEditedMaterialStorage();
         editedMaterialSaver.saveEditedTaxonomy();
         editedMaterialSaver.saveEditedBiomaterial();
+        editedMaterialSaver.saveComponentDifferences();
 
         deleteExistingComponents(newMaterial);
         saveComponents(newMaterial);

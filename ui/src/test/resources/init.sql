@@ -840,15 +840,15 @@ CREATE TABLE material_compositions(
 );
 
 CREATE TABLE components_history(
-    id INTEGER NOT NULL REFERENCES compositions(materialid) ON UPDATE CASCADE ON DELETE CASCADE,
-    actorid INTEGER NOT NULL REFERENCES usersGroups(id) ON UPDATE CASCADE ON DELETE CASCADE,
-    mtime TIMESTAMP NOT NULL,
+    id SERIAL NOT NULL PRIMARY KEY,
+    materialid INTEGER NOT NULL REFERENCES materials(materialid),
+    mdate TIMESTAMP NOT NULL,
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
     digest VARCHAR,
     action VARCHAR NOT NULL,
     materialid_old INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE, 
     materialid_new INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     concentration_old FLOAT,
-    concentration_new FLOAT,
-    PRIMARY KEY(id,actorid,mtime)
+    concentration_new FLOAT
 );
 

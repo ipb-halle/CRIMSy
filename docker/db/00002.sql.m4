@@ -38,8 +38,20 @@ CREATE TABLE material_compositions(
     PRIMARY KEY (materialid, componentid)
 );
 
-
-
 INSERT INTO materialdetailtypes(id,name) VALUES(7,'COMPOSITION');
+
+CREATE TABLE components_history(
+    id SERIAL NOT NULL PRIMARY KEY,
+    materialid INTEGER NOT NULL REFERENCES materials(materialid),
+    mdate TIMESTAMP NOT NULL,
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    materialid_old INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE, 
+    materialid_new INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    concentration_old FLOAT,
+    concentration_new FLOAT
+);
+
 
 COMMIT TRANSACTION;

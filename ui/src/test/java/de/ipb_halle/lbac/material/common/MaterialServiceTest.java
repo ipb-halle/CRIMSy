@@ -42,6 +42,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
@@ -53,7 +54,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -626,7 +626,7 @@ public class MaterialServiceTest extends TestBase {
     }
 
     @Test
-    public void test009_saveLoadMaterialComposition() {
+    public void test009_saveLoadMaterialComposition() throws Exception {
         Project project1 = creationTools.createAndSaveProject("biochemical-test-project");
         Structure struture1 = creationTools.createStructure(project1);
         struture1.getNames().set(0, new MaterialName("First Structure", "de", 0));
@@ -657,6 +657,35 @@ public class MaterialServiceTest extends TestBase {
         Assert.assertEquals(1, loadedComposition.getNames().size());
         Assert.assertEquals("composition-1", loadedComposition.getFirstName());
         Assert.assertEquals(2, loadedComposition.getComponents().size());
+
+        //Edit the loaded composition and save it
+        MaterialComposition compositionToEdit = loadedComposition.copyMaterial();
+        compositionToEdit.getComponents().clear();
+
+        instance.saveEditedMaterial(
+                compositionToEdit,
+                loadedComposition,
+                GlobalAdmissionContext.getPublicReadACL().getId(),
+                publicUser.getId());
+
+        requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("composition");
+        result = instance.loadReadableMaterials(requestBuilder.build());
+        Assert.assertEquals(1, result.getAllFoundObjects(MaterialComposition.class, result.getNode()).size());
+        loadedComposition = (MaterialComposition) result.getAllFoundObjects(MaterialComposition.class, result.getNode()).get(0);
+
+        //Check if the changes are made
+        Assert.assertEquals(0, loadedComposition.getComponents().size());
+        Assert.assertEquals(1, loadedComposition.getHistory().getChanges().size());
+        CompositionDifference diff = (CompositionDifference) loadedComposition.getHistory().getChanges().values().iterator().next().get(0);
+        Assert.assertEquals(2, diff.getConcentrations_new().size());
+        Assert.assertNull(diff.getConcentrations_new().get(0));
+        Assert.assertNull(diff.getConcentrations_new().get(1));
+        Assert.assertTrue(diff.getConcentrations_old().contains(0d));
+        Assert.assertNull(diff.getMaterialIds_new().get(0));
+        Assert.assertNull(diff.getMaterialIds_new().get(1));
+        Assert.assertTrue(diff.getMaterialIds_old().contains(struture1.getId()));
+        Assert.assertTrue(diff.getMaterialIds_old().contains(struture2.getId()));
 
     }
 

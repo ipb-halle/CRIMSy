@@ -52,6 +52,8 @@ import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
+import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import java.io.Serializable;
 import java.util.List;
@@ -284,6 +286,16 @@ public class MaterialEditSaver implements Serializable {
         if (diff != null) {
             materialService.getEm().merge(diff.createEntity());
             updateBioMaterialOverview();
+        }
+    }
+
+    public void saveComponentDifferences() {
+        CompositionDifference diff = comparator.getDifferenceOfType(diffs, CompositionDifference.class);
+        if (diff != null) {
+            for (CompositionHistoryEntity entity : diff.createEntity()) {
+                materialService.getEm().merge(entity);
+            }
+
         }
     }
 
