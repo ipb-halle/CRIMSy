@@ -17,14 +17,12 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import static de.ipb_halle.lbac.base.JsonAssert.assertJsonEquals;
 import static org.junit.Assert.*;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -66,8 +64,7 @@ public class OpenVectorEditorJsonConverterTest {
 
         json = readResourceFile("sequences/out_DNASequenceLinearWithoutFeatures.json");
         convertedJson = converter.sequenceDataToJson(data);
-        assertTrue("No matching JSONs:\nTest JSON:\n" + json + "\n\nConverted JSON:\n" + convertedJson,
-                sameJsons(json, convertedJson));
+        assertJsonEquals(json, convertedJson);
     }
 
     @Test
@@ -109,8 +106,7 @@ public class OpenVectorEditorJsonConverterTest {
                 + "      \"yOffset\": 0\n"
                 + "    }\n"
                 + "  }";
-        assertTrue("No matching JSONs:\nExpected JSON:\n" + expectedJson + "\n\nConverted JSON:\n" + annotations,
-                sameJsons(expectedJson, annotations));
+        assertJsonEquals(expectedJson, annotations);
 
         assertThrows(OpenVectorEditorJsonConverterException.class,
                 () -> converter.jsonToSequenceData(json, SequenceType.PROTEIN));
@@ -145,8 +141,7 @@ public class OpenVectorEditorJsonConverterTest {
 
         json = readResourceFile("sequences/out_DNASequenceCircularWithOneFeature.json");
         convertedJson = converter.sequenceDataToJson(data);
-        assertTrue("No matching JSONs:\nTest JSON:\n" + json + "\n\nConverted JSON:\n" + convertedJson,
-                sameJsons(json, convertedJson));
+        assertJsonEquals(json, convertedJson);
     }
 
     @Test
@@ -230,8 +225,7 @@ public class OpenVectorEditorJsonConverterTest {
                 + "      \"annotationTypePlural\": \"features\"\n"
                 + "    }\n"
                 + "  }";
-        assertTrue("No matching JSONs:\nExpected JSON:\n" + expectedJson + "\n\nConverted JSON:\n" + annotations,
-                sameJsons(expectedJson, annotations));
+        assertJsonEquals(expectedJson, annotations);
 
         assertThrows(OpenVectorEditorJsonConverterException.class,
                 () -> converter.jsonToSequenceData(json, SequenceType.PROTEIN));
@@ -301,8 +295,7 @@ public class OpenVectorEditorJsonConverterTest {
 
         json = readResourceFile("sequences/out_DNASequenceLinearWithThreeFeatures.json");
         convertedJson = converter.sequenceDataToJson(data);
-        assertTrue("No matching JSONs:\nTest JSON:\n" + json + "\n\nConverted JSON:\n" + convertedJson,
-                sameJsons(json, convertedJson));
+        assertJsonEquals(json, convertedJson);
     }
 
     @Test
@@ -339,8 +332,7 @@ public class OpenVectorEditorJsonConverterTest {
                 + "      \"annotationTypePlural\": \"features\"\n"
                 + "    }\n"
                 + "  }";
-        assertTrue("No matching JSONs:\nExpected JSON:\n" + expectedJson + "\n\nConverted JSON:\n" + annotations,
-                sameJsons(expectedJson, annotations));
+        assertJsonEquals(expectedJson, annotations);
 
         assertThrows(OpenVectorEditorJsonConverterException.class,
                 () -> converter.jsonToSequenceData(json, SequenceType.DNA));
@@ -377,19 +369,11 @@ public class OpenVectorEditorJsonConverterTest {
 
         json = readResourceFile("sequences/out_ProteinSequenceWithOneFeature.json");
         convertedJson = converter.sequenceDataToJson(data);
-        assertTrue("No matching JSONs:\nTest JSON:\n" + json + "\n\nConverted JSON:\n" + convertedJson,
-                sameJsons(json, convertedJson));
+        assertJsonEquals(json, convertedJson);
     }
 
     private String readResourceFile(String resourceFile) throws Exception {
         return new String(Files.readAllBytes(Paths.get(this.getClass()
                 .getClassLoader().getResource(resourceFile).toURI())));
-    }
-
-    private boolean sameJsons(String json1, String json2) throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node1 = mapper.readTree(json1);
-        JsonNode node2 = mapper.readTree(json2);
-        return node1.equals(node2);
     }
 }
