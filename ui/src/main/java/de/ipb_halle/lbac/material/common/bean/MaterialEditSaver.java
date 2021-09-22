@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
@@ -45,7 +46,6 @@ import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageI
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntityId;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
@@ -131,7 +131,7 @@ public class MaterialEditSaver implements Serializable {
             if (diff != null) {
                 TaxonomyHistEntity the = new TaxonomyHistEntity();
                 the.setAction("EDIT");
-                the.setId(new TaxonomyHistEntityId(oldMaterial.getId(), diff.getModificationDate(), actorId));
+                the.setId(new HistoryEntityId(oldMaterial.getId(), diff.getModificationDate(), actorId));
                 if (diff.isHierarchyChanged()) {
                     updateEffectiveTaxonomy(diff);
                     the.setParentid_new(diff.getNewHierarchy().get(0));

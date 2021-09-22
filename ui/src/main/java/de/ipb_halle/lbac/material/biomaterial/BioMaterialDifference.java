@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.io.Serializable;
 import java.util.Date;
@@ -117,7 +118,7 @@ public class BioMaterialDifference implements Serializable, MaterialDifference, 
     public BioMaterialHistoryEntity createEntity() {
         return new BioMaterialHistoryEntity()
                 .setAction("EDIT")
-                .setId(new BioMaterialHistEntityId(materialId, mdate, actorId))
+                .setId(new HistoryEntityId(materialId, mdate, actorId))
                 .setTaxoid_new(taxonomyid_new)
                 .setTaxoid_old(taxonomyid_old)
                 .setTissueid_new(tissueid_new)
