@@ -70,7 +70,7 @@ public class MaterialHistoryService implements Serializable {
             + "from material_indices_hist where materialid=:mid";
     
     private final String SQL_GET_OVERVIEW_HISTORY = "select "
-            + "materialid,"
+            + "id,"
             + "mdate,"
             + "actorid,"
             + "digest,"
@@ -81,13 +81,13 @@ public class MaterialHistoryService implements Serializable {
             + "projectid_new,"
             + "ownerid_old,"
             + "ownerid_new "
-            + " from materials_hist where materialid=:mid";
+            + " from materials_hist where id=:mid";
     
     private final String SQL_GET_STRUCTURE_HISTORY
             = "select "
             + "id,"
             + "actorid,"
-            + "mtime,"
+            + "mdate,"
             + "digest, "
             + "sumformula_old,"
             + "sumformula_new,"
@@ -115,7 +115,7 @@ public class MaterialHistoryService implements Serializable {
             + " WHERE materialid=:mid";
     
     private final String SQL_GET_TAXONOMY_HISTORY
-            = "SELECT taxonomyid,"
+            = "SELECT id,"
             + "actorid,"
             + "mdate,"
             + "action,"
@@ -125,7 +125,7 @@ public class MaterialHistoryService implements Serializable {
             + "parentid_old,"
             + "parentid_new "
             + "FROM taxonomy_history "
-            + "WHERE taxonomyid=:taxoid";
+            + "WHERE id=:taxoid";
     private final String SQL_GET_MOLECULE = "SELECT "
             + "id,"
             + "molecule "
@@ -133,7 +133,7 @@ public class MaterialHistoryService implements Serializable {
             + " WHERE id=:mid";
     
     private final String SQL_GET_STORAGE_CLASS_HISTORY = "SELECT"
-            + " materialid,"
+            + " id,"
             + "mdate,"
             + "actorid,"
             + "digest,"
@@ -142,7 +142,7 @@ public class MaterialHistoryService implements Serializable {
             + "storageclass_old,"
             + "storageclass_new "
             + "FROM storages_hist "
-            + "WHERE materialid=:mid";
+            + "WHERE id=:mid";
     
     private final String SQL_GET_STORAGE_CONDITION_HISTORY = "SELECT "
             + "id,"
@@ -158,7 +158,7 @@ public class MaterialHistoryService implements Serializable {
     private final String SQL_GET_BIOMATERIAL_HISTORY = "SELECT "
             + "id, "
             + "actorid, "
-            + "mtime, "
+            + "mdate, "
             + "digest, "
             + "action, "
             + "tissueid_old, "
