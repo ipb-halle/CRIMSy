@@ -35,9 +35,9 @@ public class BioMaterialHistEntityId implements Serializable {
     public BioMaterialHistEntityId() {
     }
 
-    public BioMaterialHistEntityId(Integer id, Date mtime, Integer actorid) {
+    public BioMaterialHistEntityId(Integer id, Date mdate, Integer actorid) {
         this.id = id;
-        this.mdate = mtime;
+        this.mdate = mdate;
         this.actorid = actorid;
     }
 
@@ -71,8 +71,8 @@ public class BioMaterialHistEntityId implements Serializable {
         return id.intValue() + mdate.hashCode() + actorid.intValue();
     }
 
-    public void setMdate(Date mtime) {
-        this.mdate = mtime;
+    public void setMdate(Date mdate) {
+        this.mdate = mdate;
     }
 
     public Integer getActorid() {

@@ -34,9 +34,9 @@ public class StructureHistEntityId implements Serializable {
     public StructureHistEntityId() {
     }
 
-    public StructureHistEntityId(int id, Date mtime) {
+    public StructureHistEntityId(int id, Date mdate) {
         this.id = id;
-        this.mdate = mtime;
+        this.mdate = mdate;
     }
 
     @Override
@@ -73,8 +73,8 @@ public class StructureHistEntityId implements Serializable {
         return mdate;
     }
 
-    public void setMdate(Date mtime) {
-        this.mdate = mtime;
+    public void setMdate(Date mdate) {
+        this.mdate = mdate;
     }
 
 }

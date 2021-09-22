@@ -35,9 +35,9 @@ public class TaxonomyHistEntityId implements Serializable {
     public TaxonomyHistEntityId() {
     }
 
-    public TaxonomyHistEntityId(Integer id, Date mtime, Integer actorid) {
+    public TaxonomyHistEntityId(Integer id, Date mdate, Integer actorid) {
         this.id = id;
-        this.mdate = mtime;
+        this.mdate = mdate;
         this.actorid = actorid;
     }
 
