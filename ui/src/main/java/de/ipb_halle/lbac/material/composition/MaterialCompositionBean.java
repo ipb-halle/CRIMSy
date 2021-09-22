@@ -213,10 +213,13 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public boolean isMaterialTypePanelDisabled(String materialTypeString) {
-        MaterialType type = MaterialType.valueOf(materialTypeString);
-        if (type == null) {
+        MaterialType type;
+        try {
+            type = MaterialType.valueOf(materialTypeString);
+        } catch (IllegalArgumentException e) {
             return false;
         }
+
         return !choosenCompositionType.getAllowedTypes().contains(type);
     }
 

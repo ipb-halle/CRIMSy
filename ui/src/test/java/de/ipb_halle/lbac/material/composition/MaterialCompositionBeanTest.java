@@ -113,6 +113,7 @@ public class MaterialCompositionBeanTest extends TestBase {
     public void test002_setChoosenType() {
         bean.setChoosenType(CompositionType.MIXTURE);
         Assert.assertEquals(CompositionType.MIXTURE, bean.getChoosenType());
+        Assert.assertFalse(bean.isMaterialTypePanelDisabled("No valide name"));
         Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
         Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
         Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
@@ -238,6 +239,7 @@ public class MaterialCompositionBeanTest extends TestBase {
     public void test009_onTabChange() {
         Tab structureTab = new Tab();
         structureTab.setTitle(MaterialType.STRUCTURE.toString());
+        Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
         bean.onTabChange(new TabChangeEvent(new UIViewRoot(), new BehaviorBase(), structureTab));
         Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
