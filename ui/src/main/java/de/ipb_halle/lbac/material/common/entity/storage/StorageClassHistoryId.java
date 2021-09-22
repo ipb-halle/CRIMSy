@@ -28,14 +28,14 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class StorageClassHistoryId implements Serializable {
 
-    private int materialid;
+    private int id;
     private Date mdate;
 
     public StorageClassHistoryId() {
     }
 
     public StorageClassHistoryId(int materialid, Date mdate) {
-        this.materialid = materialid;
+        this.id = materialid;
         this.mdate = mdate;
     }
 
@@ -49,24 +49,24 @@ public class StorageClassHistoryId implements Serializable {
             assert(mdate != null);
             if (o instanceof StorageClassHistoryId) {
                 StorageClassHistoryId otherId = (StorageClassHistoryId) o;
-                return (otherId.materialid == this.materialid)
+                return (otherId.id == this.id)
                     && mdate.equals(otherId.mdate);
             }
         }
         return false;
     }
 
-    public int getMaterialid() {
-        return materialid;
+    public int getId() {
+        return id;
     }
 
     @Override
     public int hashCode() {
-        return this.materialid + this.mdate.hashCode();
+        return this.id + this.mdate.hashCode();
     }
 
-    public void setMaterialid(int materialid) {
-        this.materialid = materialid;
+    public void setId(int materialid) {
+        this.id = materialid;
     }
 
     public Date getMdate() {

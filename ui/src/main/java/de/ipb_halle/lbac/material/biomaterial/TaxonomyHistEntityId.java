@@ -28,7 +28,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class TaxonomyHistEntityId implements Serializable {
 
-    private Integer taxonomyId;
+    private Integer id;
     private Date mdate;
     private Integer actorid;
 
@@ -36,7 +36,7 @@ public class TaxonomyHistEntityId implements Serializable {
     }
 
     public TaxonomyHistEntityId(Integer id, Date mtime, Integer actorid) {
-        this.taxonomyId = id;
+        this.id = id;
         this.mdate = mtime;
         this.actorid = actorid;
     }
@@ -49,12 +49,12 @@ public class TaxonomyHistEntityId implements Serializable {
             }
 
             assert(mdate != null);
-            assert(taxonomyId != null);
+            assert(id != null);
             assert(actorid != null);
 
             if (o instanceof TaxonomyHistEntityId) {
                 TaxonomyHistEntityId otherId = (TaxonomyHistEntityId) o;
-                return taxonomyId.equals(otherId.taxonomyId)
+                return id.equals(otherId.id)
                     && mdate.equals(otherId.mdate)
                     && actorid.equals(otherId.actorid);
             }
@@ -67,7 +67,7 @@ public class TaxonomyHistEntityId implements Serializable {
     }
 
     public int hashCode() {
-        return taxonomyId.intValue() + mdate.hashCode() + actorid.intValue();
+        return id.intValue() + mdate.hashCode() + actorid.intValue();
     }
 
     public void setMdate(Date mdate) {
@@ -82,12 +82,12 @@ public class TaxonomyHistEntityId implements Serializable {
         this.actorid = actorid;
     }
 
-    public Integer getTaxonomyId() {
-        return taxonomyId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTaxonomyId(Integer taxonomyId) {
-        this.taxonomyId = taxonomyId;
+    public void setId(Integer taxonomyId) {
+        this.id = taxonomyId;
     }
 
 }

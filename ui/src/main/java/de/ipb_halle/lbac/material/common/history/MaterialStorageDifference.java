@@ -53,7 +53,7 @@ public class MaterialStorageDifference implements MaterialDifference {
 
     public MaterialStorageDifference(StorageClassHistoryEntity classEntity, List< StorageConditionHistoryEntity> entities) {
         if (classEntity != null) {
-            materialID = classEntity.getId().getMaterialid();
+            materialID = classEntity.getId().getId();
             actorID = classEntity.getActorid();
             mDate = classEntity.getId().getMdate();
             if (!Objects.equals(classEntity.getDescription_new(), classEntity.getDescription_old())) {

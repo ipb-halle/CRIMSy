@@ -29,14 +29,14 @@ import javax.persistence.Embeddable;
 public class StructureHistEntityId implements Serializable {
 
     private int id;
-    private Date mtime;
+    private Date mdate;
 
     public StructureHistEntityId() {
     }
 
     public StructureHistEntityId(int id, Date mtime) {
         this.id = id;
-        this.mtime = mtime;
+        this.mdate = mtime;
     }
 
     @Override
@@ -46,11 +46,11 @@ public class StructureHistEntityId implements Serializable {
                 return true;
             }
 
-            assert(mtime != null);
+            assert(mdate != null);
             if (o instanceof StructureHistEntityId) {
                 StructureHistEntityId otherId = (StructureHistEntityId) o;
                 return (otherId.id == this.id)
-                    && mtime.equals(otherId.mtime);
+                    && mdate.equals(otherId.mdate);
             }
         }
         return false;
@@ -62,19 +62,19 @@ public class StructureHistEntityId implements Serializable {
     }
 
     public int hashCode() {
-        return this.id + this.mtime.hashCode();
+        return this.id + this.mdate.hashCode();
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public Date getMtime() {
-        return mtime;
+    public Date getMdate() {
+        return mdate;
     }
 
-    public void setMtime(Date mtime) {
-        this.mtime = mtime;
+    public void setMdate(Date mtime) {
+        this.mdate = mtime;
     }
 
 }

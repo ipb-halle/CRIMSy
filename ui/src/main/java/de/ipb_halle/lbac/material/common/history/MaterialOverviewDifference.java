@@ -51,7 +51,7 @@ public class MaterialOverviewDifference implements MaterialDifference {
     public MaterialOverviewDifference(
             MaterialHistoryEntity dbentity,
             ACListService acService) {
-        materialID = dbentity.getId().getMaterialid();
+        materialID = dbentity.getId().getId();
         actorID = dbentity.getActorid();
         mDate = dbentity.getId().getmDate();
         action = ModificationType.valueOf(dbentity.getAction());

@@ -50,7 +50,7 @@ public class MaterialStructureDifference implements MaterialDifference {
             StructureHistEntity dbE,
             Molecule moleculeOld,
             Molecule moleculeNew) {
-        this.modificationTime = dbE.getId().getMtime();
+        this.modificationTime = dbE.getId().getMdate();
         this.actorId = dbE.getActorid();
         this.materialId = dbE.getId().getId();
         this.sumFormula_new = dbE.getSumformula_new();

@@ -29,7 +29,7 @@ import javax.persistence.Embeddable;
 public class BioMaterialHistEntityId implements Serializable {
 
     private Integer id;
-    private Date mtime;
+    private Date mdate;
     private Integer actorid;
 
     public BioMaterialHistEntityId() {
@@ -37,7 +37,7 @@ public class BioMaterialHistEntityId implements Serializable {
 
     public BioMaterialHistEntityId(Integer id, Date mtime, Integer actorid) {
         this.id = id;
-        this.mtime = mtime;
+        this.mdate = mtime;
         this.actorid = actorid;
     }
 
@@ -48,31 +48,31 @@ public class BioMaterialHistEntityId implements Serializable {
                 return true;
             }
 
-            assert(mtime != null);
+            assert(mdate != null);
             assert(id != null);
             assert(actorid != null);
 
             if (o instanceof BioMaterialHistEntityId) {
                 BioMaterialHistEntityId otherId = (BioMaterialHistEntityId) o;
                 return id.equals(otherId.id)
-                    && mtime.equals(otherId.mtime)
+                    && mdate.equals(otherId.mdate)
                     && actorid.equals(otherId.actorid);
             }
         }
         return false;
     }
 
-    public Date getMtime() {
-        return mtime;
+    public Date getMdate() {
+        return mdate;
     }
 
     @Override
     public int hashCode() {
-        return id.intValue() + mtime.hashCode() + actorid.intValue();
+        return id.intValue() + mdate.hashCode() + actorid.intValue();
     }
 
-    public void setMtime(Date mtime) {
-        this.mtime = mtime;
+    public void setMdate(Date mtime) {
+        this.mdate = mtime;
     }
 
     public Integer getActorid() {

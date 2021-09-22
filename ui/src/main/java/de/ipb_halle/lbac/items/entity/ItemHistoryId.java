@@ -28,7 +28,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class ItemHistoryId implements Serializable {
 
-    private int itemid;
+    private int id;
     private Integer actorid;
     private Date mdate;
 
@@ -36,7 +36,7 @@ public class ItemHistoryId implements Serializable {
     }
 
     public ItemHistoryId(int itemid, Integer actorid, Date mdate) {
-        this.itemid = itemid;
+        this.id = itemid;
         this.actorid = actorid;
         this.mdate = mdate;
     }
@@ -52,7 +52,7 @@ public class ItemHistoryId implements Serializable {
             assert(actorid != null);
             if (o instanceof ItemHistoryId) {
                  ItemHistoryId otherId = (ItemHistoryId) o;
-                return (otherId.itemid == this.itemid)
+                return (otherId.id == this.id)
                     && actorid.equals(otherId.actorid)
                     && mdate.equals(otherId.mdate);
             }
@@ -60,17 +60,17 @@ public class ItemHistoryId implements Serializable {
         return false;
     }
 
-    public int getItemid() {
-        return itemid;
+    public int getId() {
+        return id;
     }
 
     @Override
     public int hashCode() {
-        return this.itemid + this.actorid.intValue() + this.mdate.hashCode();
+        return this.id + this.actorid.intValue() + this.mdate.hashCode();
     }
 
-    public void setItemid(int itemid) {
-        this.itemid = itemid;
+    public void setId(int itemid) {
+        this.id = itemid;
     }
 
     public Integer getActorid() {

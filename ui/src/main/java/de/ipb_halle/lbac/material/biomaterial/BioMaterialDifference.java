@@ -46,7 +46,7 @@ public class BioMaterialDifference implements Serializable, MaterialDifference, 
     public BioMaterialDifference(
             BioMaterialHistoryEntity dbentity) {
         this.actorId = dbentity.getId().getActorid();
-        this.mTime = dbentity.getId().getMtime();
+        this.mTime = dbentity.getId().getMdate();
         this.materialId = dbentity.getId().getId();
         this.taxonomyid_old = dbentity.getTaxoid_old();
         this.taxonomyid_new = dbentity.getTaxoid_new();
