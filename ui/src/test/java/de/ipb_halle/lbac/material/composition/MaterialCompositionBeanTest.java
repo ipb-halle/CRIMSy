@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.behavior.BehaviorBase;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -50,6 +52,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.primefaces.component.tabview.Tab;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *
@@ -109,6 +113,7 @@ public class MaterialCompositionBeanTest extends TestBase {
     public void test002_setChoosenType() {
         bean.setChoosenType(CompositionType.MIXTURE);
         Assert.assertEquals(CompositionType.MIXTURE, bean.getChoosenType());
+        Assert.assertFalse(bean.isMaterialTypePanelDisabled("No valide name"));
         Assert.assertFalse(bean.isMaterialTypePanelDisabled(MaterialType.STRUCTURE.toString()));
         Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.BIOMATERIAL.toString()));
         Assert.assertTrue(bean.isMaterialTypePanelDisabled(MaterialType.SEQUENCE.toString()));
@@ -193,7 +198,6 @@ public class MaterialCompositionBeanTest extends TestBase {
         listOfIds = bean.getMaterialsThatCanBeAdded().stream().map(m -> m.getId()).collect(Collectors.toCollection(ArrayList::new));
         Assert.assertEquals(1, listOfIds.size());
         Assert.assertTrue(listOfIds.contains(2));
-
     }
 
     @Test
@@ -215,10 +219,29 @@ public class MaterialCompositionBeanTest extends TestBase {
         bean.actionStartSearch();
         Assert.assertEquals(1, bean.getMaterialsThatCanBeAdded().size());
 
+        bean.setSearchMolecule("H2O");
+        bean.actionStartSearch();
+        Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+
         bean.setChoosenType(CompositionType.EXTRACT);
         bean.actionSwitchMaterialType("BIOMATERIAL");
         bean.actionStartSearch();
         Assert.assertEquals(0, bean.getMaterialsThatCanBeAdded().size());
+    }
+
+    @Test
+    public void test008_checkLocalizationOfMaterialType() {
+        Structure dummyStructure1 = new Structure("", 0d, 0d, 1, new ArrayList<>(), 0);
+        Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedMaterialType(new Concentration(dummyStructure1)));
+    }
+
+    @Test
+    public void test009_onTabChange() {
+        Tab structureTab = new Tab();
+        structureTab.setTitle(MaterialType.STRUCTURE.toString());
+        Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
+        bean.onTabChange(new TabChangeEvent(new UIViewRoot(), new BehaviorBase(), structureTab));
+        Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
 
     @Deployment

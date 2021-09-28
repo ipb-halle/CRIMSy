@@ -373,7 +373,7 @@ public class TestBase implements Serializable {
         termVectorEntityService.deleteTermVectors();
         for (Collection c : colls) {
             fileEntityService.delete(c);
-        }   
+        }
     }
 
     public void resetCollectionsInDb(CollectionService collectionService) {
@@ -446,12 +446,15 @@ public class TestBase implements Serializable {
     }
 
     protected void cleanMaterialsFromDB() {
+        entityManagerService.doSqlUpdate("DELETE FROM material_compositions");
         entityManagerService.doSqlUpdate("delete from biomaterial");
         entityManagerService.doSqlUpdate("DELETE FROM tissues");
         entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
         entityManagerService.doSqlUpdate("DELETE FROM sequences");
+
+        entityManagerService.doSqlUpdate("DELETE FROM compositions");
 
         entityManagerService.doSqlUpdate("delete from storagesconditions_storages_hist");
         entityManagerService.doSqlUpdate("delete from material_hazards_hist");

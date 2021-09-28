@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.common.history;
 
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,8 +52,8 @@ public class MaterialStorageDifference implements MaterialDifference {
 
     public MaterialStorageDifference(StorageClassHistoryEntity classEntity, List< StorageConditionHistoryEntity> entities) {
         if (classEntity != null) {
-            materialID = classEntity.getId().getMaterialid();
-            actorID = classEntity.getActorid();
+            materialID = classEntity.getId().getId();
+            actorID = classEntity.getId().getActorid();
             mDate = classEntity.getId().getMdate();
             if (!Objects.equals(classEntity.getDescription_new(), classEntity.getDescription_old())) {
                 descriptionOld = classEntity.getDescription_old();
@@ -151,8 +150,7 @@ public class MaterialStorageDifference implements MaterialDifference {
 
     public StorageClassHistoryEntity createStorageClassHistEntity() {
         StorageClassHistoryEntity entity = new StorageClassHistoryEntity();
-        entity.setActorid(actorID);
-        entity.setId(new StorageClassHistoryId(materialID, mDate));
+        entity.setId(new HistoryEntityId(materialID, mDate, actorID));
         entity.setDescription_new(descriptionNew);
         entity.setDescription_old(descriptionOld);
         entity.setStorageclass_new(storageclassNew);

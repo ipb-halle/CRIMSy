@@ -66,19 +66,6 @@ public class MaterialCompositionBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-    public MaterialCompositionBean() {
-    }
-
-    public MaterialCompositionBean(
-            UserBean userBean,
-            MessagePresenter presenter,
-            MaterialService materialService) {
-        this.choosenMaterialType = MaterialType.STRUCTURE;
-        this.userBean = userBean;
-        this.presenter = presenter;
-        this.materialService = materialService;
-    }
-
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
         mode = Mode.EDIT;
@@ -96,7 +83,7 @@ public class MaterialCompositionBean implements Serializable {
         this.choosenMaterialType = MaterialType.STRUCTURE;
         this.concentrationsInComposition.clear();
         this.foundMaterials.clear();
-        this.searchMolecule="";
+        this.searchMolecule = "";
 
     }
 
@@ -129,20 +116,19 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public void onTabChange(TabChangeEvent event) {
-        logger.info(event.getTab().getTitle());
-        if (event.getTab().getTitle().equals("Struktur")) {
-            choosenMaterialType = MaterialType.STRUCTURE;
-        } else if ((event.getTab().getTitle().equals("Sequenz"))) {
-            choosenMaterialType = MaterialType.SEQUENCE;
-        } else {
-            choosenMaterialType = MaterialType.BIOMATERIAL;
+        for (MaterialType t : MaterialType.values()) {
+            if (event.getTab().getTitle().equals(presenter.presentMessage(t.toString()))) {
+                choosenMaterialType = t;
+            }
         }
-        logger.info(choosenMaterialType);
+    }
+
+    public String getLocalizedTabTitle(String materialType) {
+        return presenter.presentMessage("search_category_" + materialType);
     }
 
     public void actionStartSearch() {
         MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(userBean.getCurrentAccount(), 0, MAX_RESULTS);
-        logger.info("Current materialType " + choosenMaterialType);
         requestBuilder.addMaterialType(choosenMaterialType);
         if (materialName != null && !materialName.trim().isEmpty()) {
             requestBuilder.setMaterialName(materialName);
@@ -227,10 +213,13 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public boolean isMaterialTypePanelDisabled(String materialTypeString) {
-        MaterialType type = MaterialType.valueOf(materialTypeString);
-        if (type == null) {
+        MaterialType type;
+        try {
+            type = MaterialType.valueOf(materialTypeString);
+        } catch (IllegalArgumentException e) {
             return false;
         }
+
         return !choosenCompositionType.getAllowedTypes().contains(type);
     }
 
@@ -247,7 +236,9 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public String getLocalizedMaterialType(Concentration conc) {
-        return conc.getMaterialType().toString();
+        return presenter.
+                presentMessage("search_category_" + conc.getMaterialType().toString());
+
     }
 
     public boolean isCompositionTypeEditable() {

@@ -88,7 +88,7 @@
                                                 <p:ajax event="tabChange" listener="#{materialCompositionBean.onTabChange}"/>
                                                 <p:tab
                                                     disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('STRUCTURE')}"
-                                                    title="Struktur">
+                                                    title="#{materialCompositionBean.getLocalizedTabTitle('STRUCTURE')}">
                                                     <mol:molecule                                                        
                                                         value="#{materialCompositionBean.searchMolecule}"
                                                         pluginType="#{userBean.pluginSettings.preferredMolPluginType}"
@@ -101,11 +101,11 @@
                                                          this p:tab is rendered by AJAX and the tab comes into focus. -->
                                                     <script>structurePlugin.then(plugin => plugin.init());</script>
                                                 </p:tab>
-                                                <p:tab title="Sequenz"
+                                                <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
                                                     Sequenz
                                                 </p:tab>
-                                                <p:tab title="Biomaterial"
+                                                <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
                                                     Sequenz
                                                 </p:tab>

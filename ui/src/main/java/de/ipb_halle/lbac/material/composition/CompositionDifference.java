@@ -40,6 +40,19 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
     private final List<Double> concentrations_new = new ArrayList<>();
     private String action;
 
+    public CompositionDifference(List<CompositionHistoryEntity> componentHistory, int materialId) {
+        this.actorId = componentHistory.get(0).getActorid();
+        this.mDate = componentHistory.get(0).getMdate();
+        this.materialId = materialId;
+        for (CompositionHistoryEntity entity : componentHistory) {
+            materialIds_old.add(entity.getMaterialid_old());
+            materialIds_new.add(entity.getMaterialid_new());
+            concentrations_old.add(entity.getConcentration_old());
+            concentrations_new.add(entity.getConcentration_new());
+        }
+
+    }
+
     public CompositionDifference(String action) {
         this.action = action;
     }
@@ -82,7 +95,9 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
         List<CompositionHistoryEntity> entities = new ArrayList<>();
         for (int i = 0; i < materialIds_old.size(); i++) {
             CompositionHistoryEntity entity = new CompositionHistoryEntity();
-            entity.setId(new CompositionHistEntityId(materialId, mDate, actorId));
+            entity.setMaterialid(materialId);
+            entity.setMdate(mDate);
+            entity.setActorid(actorId);
             entity.setAction(action);
             entity.setMaterialid_new(materialIds_new.get(i));
             entity.setMaterialid_old(materialIds_old.get(i));
@@ -96,6 +111,22 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
 
     public boolean hasDifferences() {
         return materialIds_new.size() > 0;
+    }
+
+    public List<Integer> getMaterialIds_old() {
+        return materialIds_old;
+    }
+
+    public List<Integer> getMaterialIds_new() {
+        return materialIds_new;
+    }
+
+    public List<Double> getConcentrations_old() {
+        return concentrations_old;
+    }
+
+    public List<Double> getConcentrations_new() {
+        return concentrations_new;
     }
 
 }

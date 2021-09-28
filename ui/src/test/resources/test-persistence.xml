@@ -47,6 +47,7 @@
         <class>de.ipb_halle.lbac.material.biomaterial.TaxonomyLevelEntity</class>
         <class>de.ipb_halle.lbac.material.biomaterial.TissueEntity</class>
         <class>de.ipb_halle.lbac.material.composition.MaterialCompositionEntity</class>
+        <class>de.ipb_halle.lbac.material.composition.CompositionHistoryEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity</class>
         <class>de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity</class>

@@ -23,6 +23,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
+
 /**
  *
  * @author fmauz
@@ -32,7 +34,7 @@ import javax.persistence.Table;
 public class BioMaterialHistoryEntity implements Serializable {
 
     @EmbeddedId
-    private BioMaterialHistEntityId id;
+    private HistoryEntityId id;
 
     @Column
     private String digest;
@@ -47,11 +49,11 @@ public class BioMaterialHistoryEntity implements Serializable {
     @Column
     private Integer taxoid_new;
 
-    public BioMaterialHistEntityId getId() {
+    public HistoryEntityId getId() {
         return id;
     }
 
-    public BioMaterialHistoryEntity setId(BioMaterialHistEntityId id) {
+    public BioMaterialHistoryEntity setId(HistoryEntityId id) {
         this.id = id;
         return this;
     }
