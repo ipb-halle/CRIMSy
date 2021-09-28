@@ -349,7 +349,7 @@ CREATE TABLE structures_hist (
         exactMolarMass_new FLOAT,
         moleculeId_old INTEGER REFERENCES molecules(id),
         moleculeId_new INTEGER REFERENCES molecules(id),
-        PRIMARY KEY (id,mdate));
+        PRIMARY KEY (id,actorid,mdate));
 
 CREATE TABLE  hazards (
         id INTEGER PRIMARY KEY,
@@ -462,7 +462,7 @@ CREATE TABLE  materials_hist (
         projectid_new INTEGER REFERENCES projects(id),
         ownerid_old INTEGER REFERENCES usersgroups(id),
         ownerid_new INTEGER REFERENCES usersgroups(id),
-        PRIMARY KEY(id,mDate));
+        PRIMARY KEY (id,actorId,mDate));
 
 CREATE TABLE  material_indices_hist (
     id SERIAL NOT NULL PRIMARY KEY,
@@ -498,7 +498,7 @@ CREATE TABLE  storages_hist (
     description_new VARCHAR,
     storageclass_old INTEGER REFERENCES storageclasses(id),
     storageclass_new INTEGER REFERENCES storageclasses(id),
-    PRIMARY KEY(id,mdate));
+    PRIMARY KEY (id,actorId,mdate));
 
 CREATE TABLE  storagesconditions_storages_hist (
     id SERIAL NOT NULL PRIMARY KEY,

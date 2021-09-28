@@ -60,4 +60,11 @@ ALTER TABLE items_history RENAME COLUMN itemid TO id;
 ALTER TABLE taxonomy_history RENAME COLUMN taxonomyid TO id;
 ALTER TABLE biomaterial_history RENAME COLUMN mtime TO mdate;
 
+ALTER TABLE structures_hist DROP CONSTRAINT structures_hist_pkey;
+ALTER TABLE structures_hist ADD PRIMARY KEY (id,actorid,mdate);
+ALTER TABLE materials_hist DROP CONSTRAINT materials_hist_pkey;
+ALTER TABLE materials_hist ADD PRIMARY KEY (id,actorid,mdate);
+ALTER TABLE storages_hist DROP CONSTRAINT storages_hist_pkey;
+ALTER TABLE storages_hist ADD PRIMARY KEY (id,actorid,mdate);
+
 COMMIT TRANSACTION;

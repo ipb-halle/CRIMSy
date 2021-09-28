@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialHistory;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -39,7 +40,6 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialDetailRightEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialHistoryId;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexEntryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
@@ -178,9 +178,8 @@ public class MaterialService implements Serializable {
                 .executeUpdate();
 
         MaterialHistoryEntity histEntity = new MaterialHistoryEntity();
-        histEntity.setActorid(actor.getId());
         histEntity.setAction("DELETE");
-        histEntity.setId(new MaterialHistoryId(materialID, new Date()));
+        histEntity.setId(new HistoryEntityId(materialID, new Date(), actor.getId()));
         this.em.persist(histEntity);
     }
 

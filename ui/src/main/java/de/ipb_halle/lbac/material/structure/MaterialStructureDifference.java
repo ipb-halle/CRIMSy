@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.common.ModificationType;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 
 import java.util.Date;
@@ -51,7 +52,7 @@ public class MaterialStructureDifference implements MaterialDifference {
             Molecule moleculeOld,
             Molecule moleculeNew) {
         this.modificationTime = dbE.getId().getMdate();
-        this.actorId = dbE.getActorid();
+        this.actorId = dbE.getId().getActorid();
         this.materialId = dbE.getId().getId();
         this.sumFormula_new = dbE.getSumformula_new();
         this.sumFormula_old = dbE.getSumformula_old();
@@ -70,8 +71,7 @@ public class MaterialStructureDifference implements MaterialDifference {
 
     public StructureHistEntity createDbInstance() {
         StructureHistEntity dbentity = new StructureHistEntity();
-        dbentity.setId(new StructureHistEntityId(materialId, modificationTime));
-        dbentity.setActorid(actorId);
+        dbentity.setId(new HistoryEntityId(materialId, modificationTime, actorId));
         dbentity.setExactmolarmass_new(exactMolarMass_new);
         dbentity.setExactmolarmass_new(exactMolarMass_old);
         dbentity.setMolarmass_new(molarMass_new);

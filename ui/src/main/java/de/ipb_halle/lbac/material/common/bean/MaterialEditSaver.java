@@ -36,10 +36,8 @@ import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialHistEntity
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialHistoryId;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageId;
@@ -198,8 +196,7 @@ public class MaterialEditSaver implements Serializable {
     protected void saveStorageHistoryEntries(MaterialStorageDifference diff) {
         if (diff.storageClassDiffFound()) {
             StorageClassHistoryEntity storageClassEntity = new StorageClassHistoryEntity();
-            storageClassEntity.setActorid(actorId);
-            storageClassEntity.setId(new StorageClassHistoryId(diff.getMaterialID(), diff.getModificationDate()));
+            storageClassEntity.setId(new HistoryEntityId(diff.getMaterialID(), diff.getModificationDate(), actorId));
             storageClassEntity.setStorageclass_new(diff.getStorageclassNew());
             storageClassEntity.setStorageclass_old(diff.getStorageclassOld());
             storageClassEntity.setDescription_new(diff.getDescriptionNew());
@@ -314,8 +311,7 @@ public class MaterialEditSaver implements Serializable {
         }
 
         entity.setAction(diff.getAction().toString());
-        entity.setActorid(diff.getActorID());
-        entity.setId(new MaterialHistoryId(diff.getMaterialID(), diff.getmDate()));
+        entity.setId(new HistoryEntityId(diff.getMaterialID(), diff.getmDate(), diff.getActorID()));
         entity.setOwnerid_new(diff.getOwnerIdNew());
         entity.setOwnerid_old(diff.getOwnerIdOld());
         entity.setProjectid_new(diff.getProjectIdNew());
