@@ -461,7 +461,7 @@ CREATE TABLE structures (
 CREATE TABLE structures_hist (
         id INTEGER NOT NULL REFERENCES structures(id),
         actorId INTEGER NOT NULL REFERENCES usersgroups(id),
-        mtime TIMESTAMP  NOT NULL,
+        mtime TIMESTAMP NOT NULL,
         digest VARCHAR,
         sumformula_old VARCHAR,
         sumformula_new VARCHAR,

@@ -23,6 +23,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
+
 /**
  *
  * @author fmauz
@@ -32,10 +34,7 @@ import javax.persistence.Table;
 public class StructureHistEntity implements Serializable {
 
     @EmbeddedId
-    private StructureHistEntityId id;
-
-    @Column
-    private Integer actorid;
+    private HistoryEntityId id;
 
     @Column
     private String digest;
@@ -63,14 +62,6 @@ public class StructureHistEntity implements Serializable {
 
     @Column
     private Integer moleculeid_new;
-
-    public Integer getActorid() {
-        return actorid;
-    }
-
-    public void setActorid(Integer actorid) {
-        this.actorid = actorid;
-    }
 
     public String getDigest() {
         return digest;
@@ -144,11 +135,11 @@ public class StructureHistEntity implements Serializable {
         this.moleculeid_new = moleculeid_new;
     }
 
-    public StructureHistEntityId getId() {
+    public HistoryEntityId getId() {
         return id;
     }
 
-    public void setId(StructureHistEntityId id) {
+    public void setId(HistoryEntityId id) {
         this.id = id;
     }
 
