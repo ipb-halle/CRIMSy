@@ -17,6 +17,9 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
@@ -25,6 +28,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -62,11 +66,13 @@ public class MaterialCompositionBean implements Serializable {
     private MaterialService materialService;
 
     @Inject
+    private ACListService aclistService;
+
+    @Inject
     private transient MessagePresenter presenter;
 
     @Inject
     private UserBean userBean;
-    
 
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
@@ -145,13 +151,13 @@ public class MaterialCompositionBean implements Serializable {
     public List<Material> getMaterialsThatCanBeAdded() {
         return foundMaterials.stream()
                 .filter(m -> choosenCompositionType.getAllowedTypes().contains(m.getType()))
-                .filter((m -> !isMaterialAlreadyInComposition(m)))
+                .filter((m -> !isMaterialAlreadyInComposition(m.getId())))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public boolean isMaterialAlreadyInComposition(Material materialToLookFor) {
+    public boolean isMaterialAlreadyInComposition(int materialIdToLookFor) {
         for (Concentration concentrationAlreadyIn : concentrationsInComposition) {
-            if (concentrationAlreadyIn.isSameMaterial(materialToLookFor)) {
+            if (concentrationAlreadyIn.isSameMaterial(materialIdToLookFor)) {
                 return true;
             }
         }
@@ -165,7 +171,7 @@ public class MaterialCompositionBean implements Serializable {
      * @param materialToAdd
      */
     public void actionAddMaterialToComposition(Material materialToAdd) {
-        if (!isMaterialAlreadyInComposition(materialToAdd)
+        if (!isMaterialAlreadyInComposition(materialToAdd.getId())
                 && choosenCompositionType.getAllowedTypes().contains(materialToAdd.getType())) {
             concentrationsInComposition.add(new Concentration(materialToAdd));
         }
@@ -245,6 +251,30 @@ public class MaterialCompositionBean implements Serializable {
 
     public boolean isCompositionTypeEditable() {
         return mode == Mode.CREATE;
+    }
+
+    public void applyNegativeDifference(CompositionDifference diff) {
+        for (int i = 0; i < diff.getMaterialIds_old().size(); i++) {
+            Integer materialId = diff.getMaterialIds_old().get(i);
+            if (!isMaterialAlreadyInComposition(materialId)) {
+                Material material = materialService.loadMaterialById(materialId);
+                if (!aclistService.isPermitted(ACPermission.permREAD, material, userBean.getCurrentAccount())) {
+                    material = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
+                }
+                concentrationsInComposition.add(new Concentration(material, diff.getConcentrations_old().get(i)));
+            } else {
+                getConcentrationWithMaterial(materialId).setConcentration(diff.getConcentrations_old().get(i));
+            }
+        }
+    }
+
+    private Concentration getConcentrationWithMaterial(int materialid) {
+        for (Concentration conc : concentrationsInComposition) {
+            if (conc.isSameMaterial(materialid)) {
+                return conc;
+            }
+        }
+        return null;
     }
 
 }

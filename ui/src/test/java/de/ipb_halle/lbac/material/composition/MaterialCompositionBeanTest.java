@@ -175,10 +175,10 @@ public class MaterialCompositionBeanTest extends TestBase {
         Structure dummyStructure1 = new Structure("", 0d, 0d, 1, new ArrayList<>(), 0);
         Structure dummyStructure2 = new Structure("", 0d, 0d, 2, new ArrayList<>(), 0);
 
-        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure1));
+        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
         bean.actionAddMaterialToComposition(dummyStructure1);
-        Assert.assertTrue(bean.isMaterialAlreadyInComposition(dummyStructure1));
-        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure2));
+        Assert.assertTrue(bean.isMaterialAlreadyInComposition(dummyStructure1.getId()));
+        Assert.assertFalse(bean.isMaterialAlreadyInComposition(dummyStructure2.getId()));
     }
 
     @Test
@@ -280,8 +280,8 @@ public class MaterialCompositionBeanTest extends TestBase {
         composition.getHistory().addDifference(diff1);
         //Add structure 1 and biomaterial 1
         CompositionDifference diff2 = new CompositionDifference("EDIT");
-        diff1.addDifference(null, structureId1, null, .75d);
-        diff1.addDifference(null, biomaterialId, null, null);
+        diff2.addDifference(null, structureId1, null, .75d);
+        diff2.addDifference(null, biomaterialId, null, null);
 
         cal.set(2000, 8, 10);
         Date date2 = cal.getTime();
@@ -294,8 +294,11 @@ public class MaterialCompositionBeanTest extends TestBase {
         Assert.assertEquals(biomaterialId, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
         Assert.assertEquals(structureId1, bean.getConcentrationsInComposition().get(1).getMaterial().getId());
         
+        materialBean.switchOneVersionBack();
         
-
+        Assert.assertEquals(3, bean.getConcentrationsInComposition().size());
+        
+        
     }
 
     @Deployment

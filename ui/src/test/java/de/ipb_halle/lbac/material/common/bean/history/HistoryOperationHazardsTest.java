@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
@@ -42,6 +43,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
@@ -68,6 +70,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class HistoryOperationHazardsTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private HazardService hazardService;
     @Inject
@@ -80,6 +84,9 @@ public class HistoryOperationHazardsTest extends TestBase {
     MaterialIndexDifference mid;
     MaterialIndexBean mib;
     Random random = new Random();
+
+    @Inject
+    private MaterialCompositionBean compositionBean;
 
     @Before
     public void init() {
@@ -106,7 +113,16 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService), null, possibleHazards,null);
+        instance = new HistoryOperation(
+                mes,
+                new ProjectBeanMock(),
+                new MaterialNameBean(),
+                mib, new StructureInformation(),
+                new StorageInformationBuilder(MessagePresenterMock.getInstance(),
+                        materialService),
+                null,
+                possibleHazards,
+                compositionBean);
     }
 
     /**
@@ -181,6 +197,7 @@ public class HistoryOperationHazardsTest extends TestBase {
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
+        deployment = MaterialBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }

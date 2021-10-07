@@ -25,10 +25,9 @@ import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.StorageClass;
-import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
@@ -47,6 +46,8 @@ import org.apache.logging.log4j.Logger;
  * @author fmauz
  */
 public class HistoryOperation implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     protected ProjectBean projectBean;
@@ -128,7 +129,10 @@ public class HistoryOperation implements Serializable {
     }
 
     private void applyNegativeComposition() {
-
+        CompositionDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(CompositionDifference.class, materialEditState.getCurrentVersiondate());
+        if (diff != null) {
+            compositionBean.applyNegativeDifference(diff);
+        }
     }
 
     private void applyPositiveComposition() {
