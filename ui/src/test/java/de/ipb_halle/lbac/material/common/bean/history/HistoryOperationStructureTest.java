@@ -79,7 +79,7 @@ public class HistoryOperationStructureTest extends TestBase {
         mes.setCurrentVersiondate(currentDate);
         strucInfo = new StructureInformation();
 
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), new MaterialIndexBean(), strucInfo, new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService), null, new ArrayList<>());
+        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), new MaterialIndexBean(), strucInfo, new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService), null, new ArrayList<>(), null);
     }
 
     @Test

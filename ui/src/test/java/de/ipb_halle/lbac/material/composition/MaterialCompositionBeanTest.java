@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.admission.ACList;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.MaterialCreator;
@@ -31,13 +33,27 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.items.bean.ItemBean;
+import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
+import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.StorageInformation;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
+import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
+import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.project.ProjectBean;
+import de.ipb_halle.lbac.project.ProjectEditBean;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -78,6 +94,10 @@ public class MaterialCompositionBeanTest extends TestBase {
     @Inject
     private TaxonomyService taxonomyService;
     int publicAclId;
+    private int structureId1, structureId2, biomaterialId;
+
+    @Inject
+    MaterialBean materialBean;
 
     @Before
     public void init() {
@@ -98,6 +118,9 @@ public class MaterialCompositionBeanTest extends TestBase {
     public void finish() {
         cleanMaterialsFromDB();
         cleanProjectFromDB(project, false);
+        if (project1 != null) {
+            cleanProjectFromDB(project1, false);
+        }
 
     }
 
@@ -202,12 +225,7 @@ public class MaterialCompositionBeanTest extends TestBase {
 
     @Test
     public void test007_actionStartSearch() {
-
-        ProjectCreator projectCreator = new ProjectCreator(
-                projectService,
-                GlobalAdmissionContext.getPublicReadACL());
-        projectCreator.setProjectName("SearchServiceTest-Project-01");
-        project1 = projectCreator.createAndSaveProject(publicUser);
+        createProject("SearchServiceTest-Project-01", GlobalAdmissionContext.getPublicReadACL(), publicUser);
 
         createMaterials();
         bean.setChoosenType(CompositionType.MIXTURE);
@@ -244,29 +262,63 @@ public class MaterialCompositionBeanTest extends TestBase {
         Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
 
+    @Test
+    public void test010_changeHistoryState() {
+        createProject("SearchServiceTest-Project-01", GlobalAdmissionContext.getPublicReadACL(), publicUser);
+        createMaterials();
+
+        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        composition.addComponent(materialService.loadMaterialById(structureId1), .5d);
+        composition.addComponent(materialService.loadMaterialById(biomaterialId), null);
+        //Remove structure 2
+        CompositionDifference diff1 = new CompositionDifference("EDIT");
+        diff1.addDifference(structureId2, null, null, null);
+        Calendar cal = new GregorianCalendar();
+        cal.set(2000, 8, 12);
+        Date date1 = cal.getTime();
+        diff1.initialise(1, publicUser.getId(), date1);
+        composition.getHistory().addDifference(diff1);
+        //Add structure 1 and biomaterial 1
+        CompositionDifference diff2 = new CompositionDifference("EDIT");
+        diff1.addDifference(null, structureId1, null, .75d);
+        diff1.addDifference(null, biomaterialId, null, null);
+
+        cal.set(2000, 8, 10);
+        Date date2 = cal.getTime();
+        diff2.initialise(1, publicUser.getId(), date2);
+        composition.getHistory().addDifference(diff2);
+
+        materialBean.startMaterialEdit(composition);
+
+        Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
+        Assert.assertEquals(biomaterialId, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
+        Assert.assertEquals(structureId1, bean.getConcentrationsInComposition().get(1).getMaterial().getId());
+
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
-                = prepareDeployment("MaterialCompositionBeanTest.war")
-                        .addClass(IndexService.class)
-                        .addClass(MaterialCompositionBean.class);
+                = prepareDeployment("MaterialCompositionBeanTest.war");
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
-
-        return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
+        deployment = MaterialBeanDeployment.add(deployment);
+        deployment = PrintBeanDeployment.add(deployment);
+        deployment = MaterialDeployment.add(deployment);
+        return deployment;
     }
 
     private void createMaterials() {
         materialCreator = new MaterialCreator(entityManagerService);
-        int materialid1 = materialCreator.createStructure(
+        structureId1 = materialCreator.createStructure(
                 publicUser.getId(),
                 publicAclId,
                 "CCCCCCCCC",
                 project1.getId(),
                 "Testmaterial-001");
-        materialCreator.addIndexToMaterial(materialid1, 2, "Index of material 1");
+        materialCreator.addIndexToMaterial(structureId1, 2, "Index of material 1");
 
-        materialCreator.createStructure(
+        structureId2 = materialCreator.createStructure(
                 publicUser.getId(),
                 publicAclId,
                 project1.getId(),
@@ -275,6 +327,15 @@ public class MaterialCompositionBeanTest extends TestBase {
         createTaxanomy(1000, "Life", 1, publicAclId, publicUser.getId());
         BioMaterial bioMaterial = creationTools.createBioMaterial(project1, "BioMaterial001", taxonomyService.loadRootTaxonomy(), null);
         materialService.saveMaterialToDB(bioMaterial, publicAclId, new HashMap<>(), publicUser.getId());
+        biomaterialId = bioMaterial.getId();
+    }
+
+    private void createProject(String projectName, ACList projectAcl, User user) {
+        ProjectCreator projectCreator = new ProjectCreator(
+                projectService,
+                projectAcl);
+        projectCreator.setProjectName(projectName);
+        project1 = projectCreator.createAndSaveProject(user);
     }
 
 }
