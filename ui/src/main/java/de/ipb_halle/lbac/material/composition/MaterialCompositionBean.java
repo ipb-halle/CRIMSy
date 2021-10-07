@@ -21,6 +21,7 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -65,6 +66,7 @@ public class MaterialCompositionBean implements Serializable {
 
     @Inject
     private UserBean userBean;
+    
 
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();

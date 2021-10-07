@@ -45,6 +45,7 @@ public class MaterialDeployment {
                 .addClass(MaterialCompositionBean.class)
                 .addClass(BiomaterialService.class)
                 .addClass(HazardService.class)
+                .addClass(IndexService.class)
                 .addClass(TaxonomyNestingService.class);
     }
 }

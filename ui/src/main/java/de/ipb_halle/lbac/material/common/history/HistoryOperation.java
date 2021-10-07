@@ -29,6 +29,7 @@ import de.ipb_halle.lbac.material.common.StorageClass;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
@@ -53,6 +54,7 @@ public class HistoryOperation implements Serializable {
     protected MaterialNameBean materialNameBean;
     protected MaterialIndexBean indexBean;
     protected StructureInformation structureInfos;
+    protected MaterialCompositionBean compositionBean;
     protected StorageInformationBuilder storageInformationBuilder;
     protected TaxonomySelectionController taxonomySelectionController;
     protected List<HazardType> possibleHazards = new ArrayList<>();
@@ -70,6 +72,7 @@ public class HistoryOperation implements Serializable {
      * @param storageInformationBuilder
      * @param taxonomySelectionController
      * @param possibleHazards
+     * @param compositionBean
      */
     public HistoryOperation(
             MaterialEditState materialEditState,
@@ -79,7 +82,8 @@ public class HistoryOperation implements Serializable {
             StructureInformation structureInfos,
             StorageInformationBuilder storageInformationBuilder,
             TaxonomySelectionController taxonomySelectionController,
-            List<HazardType> possibleHazards) {
+            List<HazardType> possibleHazards,
+            MaterialCompositionBean compositionBean) {
         this.projectBean = projectBean;
         this.materialEditState = materialEditState;
         this.materialNameBean = nameBean;
@@ -88,6 +92,7 @@ public class HistoryOperation implements Serializable {
         this.storageInformationBuilder = storageInformationBuilder;
         this.taxonomySelectionController = taxonomySelectionController;
         this.possibleHazards = possibleHazards;
+        this.compositionBean = compositionBean;
     }
 
     /**
@@ -103,6 +108,7 @@ public class HistoryOperation implements Serializable {
         applyPositiveHazards();
         applyPositiveStorage();
         applyPositiveTaxonomy();
+        applyPositiveComposition();
     }
 
     /**
@@ -117,7 +123,16 @@ public class HistoryOperation implements Serializable {
         applyNegativeHazards();
         applyNegativeStorage();
         applyNegativeTaxonomy();
+        applyNegativeComposition();
         materialEditState.changeVersionDateToPrevious(materialEditState.getCurrentVersiondate());
+    }
+
+    private void applyNegativeComposition() {
+
+    }
+
+    private void applyPositiveComposition() {
+
     }
 
     public void applyPositiveStorage() {
@@ -197,7 +212,7 @@ public class HistoryOperation implements Serializable {
 
     protected void applyNegativeHazards() {
         MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
-       
+
         if (diff != null) {
             materialEditState.getHazardController().setEditable(false);
             for (int i = 0; i < diff.getEntries(); i++) {

@@ -245,7 +245,8 @@ public class MaterialBean implements Serializable {
                     structureInfos,
                     storageInformationBuilder,
                     taxonomyController,
-                    hazardService.getAllHazardTypes()
+                    hazardService.getAllHazardTypes(),
+                    compositionBean
             );
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
@@ -479,7 +480,6 @@ public class MaterialBean implements Serializable {
 //    public void setSequenceInfos(SequenceInformation sequenceInfos) {
 //        this.sequenceInfos = sequenceInfos;
 //    }
-
     public MaterialNameBean getMaterialNameBean() {
         return materialNameBean;
     }
