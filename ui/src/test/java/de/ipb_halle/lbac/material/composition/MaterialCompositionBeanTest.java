@@ -267,7 +267,7 @@ public class MaterialCompositionBeanTest extends TestBase {
         createProject("SearchServiceTest-Project-01", GlobalAdmissionContext.getPublicReadACL(), publicUser);
         createMaterials();
 
-        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        MaterialComposition composition = new MaterialComposition(project.getId(),CompositionType.EXTRACT);
         composition.addComponent(materialService.loadMaterialById(structureId1), .5d);
         composition.addComponent(materialService.loadMaterialById(biomaterialId), null);
         //Remove structure 2
@@ -293,6 +293,8 @@ public class MaterialCompositionBeanTest extends TestBase {
         Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
         Assert.assertEquals(biomaterialId, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
         Assert.assertEquals(structureId1, bean.getConcentrationsInComposition().get(1).getMaterial().getId());
+        
+        
 
     }
 

@@ -45,10 +45,10 @@ public class MaterialCompositionTest {
     public void init() {
         int projectid = 10;
 
-        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        compo1 = new MaterialComposition(1, projectid, CompositionType.MIXTURE);
         compo1.getNames().add(new MaterialName("compo1-name1", "de", 0));
         compo1.getNames().add(new MaterialName("compo1-name2", "de", 1));
-        compo2 = new MaterialComposition(2, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        compo2 = new MaterialComposition(2, projectid, CompositionType.EXTRACT);
         struc1 = new Structure("C", 0d, 0d, 3, new ArrayList<>(), projectid);
         struc2 = new Structure("O", 0d, 0d, 4, new ArrayList<>(), projectid);
         bio1 = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), null, null);

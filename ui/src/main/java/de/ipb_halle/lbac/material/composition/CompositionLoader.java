@@ -48,10 +48,7 @@ public class CompositionLoader implements MaterialLoader {
         CompositionType compositionType = CompositionType.valueOf(compositionEntity.getType());
         MaterialComposition composition = new MaterialComposition(
                 entity.getMaterialid(),
-                new ArrayList<>(),
                 entity.getProjectid(),
-                new HazardInformation(),
-                new StorageInformation(),
                 compositionType);
 
         List<MaterialCompositionEntity> entities

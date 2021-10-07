@@ -295,7 +295,7 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
         request = builder.build();
-         results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
+        results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
         Assert.assertEquals(2, results.size());
 
     }
@@ -462,9 +462,9 @@ public class SearchServiceTest extends TestBase {
         cleanMaterialsFromDB();
 
         //Create a Composition with readable and one without readable ACL
-        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.MIXTURE);
         composition.getNames().add(new MaterialName("Composition X", "de", 0));
-        MaterialComposition composition2 = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        MaterialComposition composition2 = new MaterialComposition(null, project1.getId(), CompositionType.MIXTURE);
         composition.getNames().add(new MaterialName("Composition Y", "de", 0));
         materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), adminUser);
         materialService.saveMaterialToDB(composition2, context.getAdminOnlyACL().getId(), new HashMap<>(), adminUser);
@@ -479,7 +479,7 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test012_searchForComposition() {
-        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.EXTRACT);
         composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d);
         composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d);
         composition.addComponent(bioMaterial, 0.3d);
