@@ -131,7 +131,7 @@ public class HistoryOperation implements Serializable {
     private void applyNegativeComposition() {
         CompositionDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(CompositionDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            compositionBean.applyNegativeDifference(diff);
+            compositionBean.getHistoryController().applyNegativeDifference(diff);
         }
     }
 

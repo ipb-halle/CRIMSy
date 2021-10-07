@@ -298,6 +298,9 @@ public class MaterialCompositionBeanTest extends TestBase {
         
         Assert.assertEquals(3, bean.getConcentrationsInComposition().size());
         
+         materialBean.switchOneVersionBack();
+          Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
+        
         
     }
 

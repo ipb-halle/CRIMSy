@@ -18,17 +18,13 @@
 package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
-import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.search.SearchResult;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,13 +50,14 @@ public class MaterialCompositionBean implements Serializable {
     private static final long serialVersionUID = 1L;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Material> foundMaterials = new ArrayList<>();
-    private List<Concentration> concentrationsInComposition = new ArrayList<>();
+    private final List<Concentration> concentrationsInComposition = new ArrayList<>();
     private MaterialType choosenMaterialType;
     private int MAX_RESULTS = 25;
     private String materialName = "";
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
     private String searchMolecule = "";
     private Mode mode;
+    private HistoryController historyController;
 
     @Inject
     private MaterialService materialService;
@@ -81,6 +78,7 @@ public class MaterialCompositionBean implements Serializable {
             this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
         }
         this.choosenCompositionType = comp.getCompositionType();
+        historyController = new HistoryController(this, userBean.getCurrentAccount(), aclistService, materialService);
 
     }
 
@@ -92,7 +90,6 @@ public class MaterialCompositionBean implements Serializable {
         this.concentrationsInComposition.clear();
         this.foundMaterials.clear();
         this.searchMolecule = "";
-
     }
 
     public List<CompositionType> getCompositionTypes() {
@@ -253,22 +250,7 @@ public class MaterialCompositionBean implements Serializable {
         return mode == Mode.CREATE;
     }
 
-    public void applyNegativeDifference(CompositionDifference diff) {
-        for (int i = 0; i < diff.getMaterialIds_old().size(); i++) {
-            Integer materialId = diff.getMaterialIds_old().get(i);
-            if (!isMaterialAlreadyInComposition(materialId)) {
-                Material material = materialService.loadMaterialById(materialId);
-                if (!aclistService.isPermitted(ACPermission.permREAD, material, userBean.getCurrentAccount())) {
-                    material = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
-                }
-                concentrationsInComposition.add(new Concentration(material, diff.getConcentrations_old().get(i)));
-            } else {
-                getConcentrationWithMaterial(materialId).setConcentration(diff.getConcentrations_old().get(i));
-            }
-        }
-    }
-
-    private Concentration getConcentrationWithMaterial(int materialid) {
+    protected Concentration getConcentrationWithMaterial(int materialid) {
         for (Concentration conc : concentrationsInComposition) {
             if (conc.isSameMaterial(materialid)) {
                 return conc;
@@ -276,5 +258,11 @@ public class MaterialCompositionBean implements Serializable {
         }
         return null;
     }
+
+    public HistoryController getHistoryController() {
+        return historyController;
+    }
+    
+    
 
 }
