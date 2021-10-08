@@ -234,15 +234,8 @@ public class HistoryOperation implements Serializable {
                         BioMaterialDifference.class,
                         materialEditState.getCurrentVersiondate());
 
-        if (bioMatDiff != null && bioMatDiff.getTaxonomyid_new() != null) {
-            taxonomySelectionController.setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_new());
-        }
-        if (taxonomySelectionController != null) {
-            if (!materialEditState.isMostRecentVersion()) {
-                taxonomySelectionController.deactivateTree();
-            } else {
-                taxonomySelectionController.activateTree();
-            }
+        if (bioMatDiff != null) {
+            bioMatDiff.createHistoryController(materialBean).applyPositiveDifference(bioMatDiff);
         }
 
     }
@@ -255,11 +248,8 @@ public class HistoryOperation implements Serializable {
                         BioMaterialDifference.class,
                         materialEditState.getCurrentVersiondate());
 
-        if (bioMatDiff != null && bioMatDiff.getTaxonomyid_old() != null) {
-            taxonomySelectionController.setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_old());
-        }
-        if (taxonomySelectionController != null) {
-            taxonomySelectionController.deactivateTree();
+        if (bioMatDiff != null) {
+            bioMatDiff.createHistoryController(materialBean).applyNegativeDifference(bioMatDiff);
         }
     }
 

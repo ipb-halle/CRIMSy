@@ -33,13 +33,25 @@ public class BioMaterialHistoryController implements HistoryController<BioMateri
     }
 
     @Override
-    public void applyPositiveDifference(BioMaterialDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyPositiveDifference(BioMaterialDifference bioMatDiff) {
+        if (bioMatDiff.getTaxonomyid_new() != null) {
+            materialBean.getTaxonomyController().setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_new());
+        }
+        if (materialBean.getTaxonomyController() != null) {
+            if (!materialBean.getMaterialEditState().isMostRecentVersion()) {
+                materialBean.getTaxonomyController().deactivateTree();
+            } else {
+                materialBean.getTaxonomyController().activateTree();
+            }
+        }
     }
 
     @Override
-    public void applyNegativeDifference(BioMaterialDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyNegativeDifference(BioMaterialDifference bioMatDiff) {
+        if (materialBean.getTaxonomyController() != null && bioMatDiff.getTaxonomyid_old() != null) {
+            materialBean.getTaxonomyController().setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_old());
+            materialBean.getTaxonomyController().deactivateTree();
+        }
     }
 
 }
