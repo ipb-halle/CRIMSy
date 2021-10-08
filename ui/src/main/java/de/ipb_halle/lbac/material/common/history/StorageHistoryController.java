@@ -17,7 +17,9 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import java.util.Objects;
 
 /**
  *
@@ -32,13 +34,50 @@ public class StorageHistoryController implements HistoryController<MaterialStora
     }
 
     @Override
-    public void applyPositiveDifference(MaterialStorageDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyPositiveDifference(MaterialStorageDifference diff) {
+        if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
+            materialBean.getStorageInformationBuilder().setRemarks(diff.getDescriptionNew());
+        }
+        if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
+            if (diff.getStorageclassNew() != null) {
+                materialBean.getStorageInformationBuilder().setChoosenStorageClass(materialBean.getStorageInformationBuilder().getStorageClassById(diff.getStorageclassNew()));
+                materialBean.getStorageInformationBuilder().setStorageClassActivated(true);
+
+            } else {
+                materialBean.getStorageInformationBuilder().setStorageClassActivated(false);
+            }
+        }
+        for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
+            if (diff.getStorageConditionsOld().get(i) == null) {
+                materialBean.getStorageInformationBuilder().addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+
+            } else {
+                materialBean.getStorageInformationBuilder().removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+            }
+        }
     }
 
     @Override
-    public void applyNegativeDifference(MaterialStorageDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyNegativeDifference(MaterialStorageDifference diff) {
+        if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
+            materialBean.getStorageInformationBuilder().setRemarks(diff.getDescriptionOld());
+        }
+        if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
+            if (diff.getStorageclassOld() != null) {
+                materialBean.getStorageInformationBuilder().setChoosenStorageClass(materialBean.getStorageInformationBuilder().getStorageClassById(diff.getStorageclassOld()));
+                materialBean.getStorageInformationBuilder().setStorageClassActivated(true);
+            } else {
+                materialBean.getStorageInformationBuilder().setStorageClassActivated(false);
+            }
+        }
+        for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
+            if (diff.getStorageConditionsNew().get(i) == null) {
+                materialBean.getStorageInformationBuilder().addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
+
+            } else {
+                materialBean.getStorageInformationBuilder().removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
+            }
+        }
     }
 
 }

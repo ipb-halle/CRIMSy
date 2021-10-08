@@ -151,51 +151,14 @@ public class HistoryOperation implements Serializable {
     public void applyPositiveStorage() {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
-                storageInformationBuilder.setRemarks(diff.getDescriptionNew());
-            }
-            if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
-                if (diff.getStorageclassNew() != null) {
-                    storageInformationBuilder.setChoosenStorageClass(storageInformationBuilder.getStorageClassById(diff.getStorageclassNew()));
-                    storageInformationBuilder.setStorageClassActivated(true);
-
-                } else {
-                    storageInformationBuilder.setStorageClassActivated(false);
-                }
-            }
-            for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
-                if (diff.getStorageConditionsOld().get(i) == null) {
-                    storageInformationBuilder.addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
-
-                } else {
-                    storageInformationBuilder.removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
-                }
-            }
+            diff.createHistoryController(materialBean).applyPositiveDifference(diff);
         }
     }
 
     public void applyNegativeStorage() {
         MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            if (!Objects.equals(diff.getDescriptionNew(), diff.getDescriptionOld())) {
-                storageInformationBuilder.setRemarks(diff.getDescriptionOld());
-            }
-            if (!Objects.equals(diff.getStorageclassNew(), diff.getStorageclassOld())) {
-                if (diff.getStorageclassOld() != null) {
-                    storageInformationBuilder.setChoosenStorageClass(storageInformationBuilder.getStorageClassById(diff.getStorageclassOld()));
-                    storageInformationBuilder.setStorageClassActivated(true);
-                } else {
-                    storageInformationBuilder.setStorageClassActivated(false);
-                }
-            }
-            for (int i = 0; i < diff.getStorageConditionsNew().size(); i++) {
-                if (diff.getStorageConditionsNew().get(i) == null) {
-                    storageInformationBuilder.addStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsOld().get(i).getId()));
-
-                } else {
-                    storageInformationBuilder.removeStorageCondition(StorageCondition.getStorageConditionById(diff.getStorageConditionsNew().get(i).getId()));
-                }
-            }
+            diff.createHistoryController(materialBean).applyNegativeDifference(diff);
         }
     }
 
@@ -261,18 +224,6 @@ public class HistoryOperation implements Serializable {
         if (indexDiff != null) {
             indexDiff.createHistoryController(materialBean).applyNegativeDifference(indexDiff);
         }
-    }
-
-    protected IndexEntry getIndexByTypeId(int typeId, List<IndexEntry> indices) {
-        if (indices == null) {
-            return null;
-        }
-        for (IndexEntry ie : indices) {
-            if (ie.getTypeId() == typeId) {
-                return ie;
-            }
-        }
-        return null;
     }
 
     public void applyPositiveTaxonomy() {
