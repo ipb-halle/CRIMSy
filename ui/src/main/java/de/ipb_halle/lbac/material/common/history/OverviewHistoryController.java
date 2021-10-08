@@ -32,13 +32,17 @@ public class OverviewHistoryController implements HistoryController<MaterialOver
     }
 
     @Override
-    public void applyPositiveDifference(MaterialOverviewDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyPositiveDifference(MaterialOverviewDifference diff) {
+        if (diff.getProjectIdNew() != null) {
+            materialBean.getMaterialEditState().setCurrentProject(materialBean.getProjectBean().getProjectService().loadProjectById(diff.getProjectIdNew()));
+        }
     }
 
     @Override
-    public void applyNegativeDifference(MaterialOverviewDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyNegativeDifference(MaterialOverviewDifference diff) {
+        if (diff.getProjectIdOld() != null) {
+            materialBean.getMaterialEditState().setCurrentProject(materialBean.getProjectBean().getProjectService().loadProjectById(diff.getProjectIdOld()));
+        }
     }
 
 }

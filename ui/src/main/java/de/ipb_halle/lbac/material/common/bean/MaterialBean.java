@@ -663,4 +663,9 @@ public class MaterialBean implements Serializable {
         return compositionBean;
     }
 
+    public ProjectBean getProjectBean() {
+        return projectBean;
+    }
+    
+
 }

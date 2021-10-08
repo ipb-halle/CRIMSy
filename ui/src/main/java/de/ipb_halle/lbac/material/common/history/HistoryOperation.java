@@ -243,18 +243,14 @@ public class HistoryOperation implements Serializable {
     protected void applyNegativeOverview() {
         MaterialOverviewDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialOverviewDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            if (diff.getProjectIdOld() != null) {
-                materialEditState.setCurrentProject(projectBean.getProjectService().loadProjectById(diff.getProjectIdOld()));
-            }
+            diff.createHistoryController(materialBean).applyNegativeDifference(diff);
         }
     }
 
     protected void applyPositiveOverview() {
         MaterialOverviewDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialOverviewDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            if (diff.getProjectIdOld() != null) {
-                materialEditState.setCurrentProject(projectBean.getProjectService().loadProjectById(diff.getProjectIdNew()));
-            }
+            diff.createHistoryController(materialBean).applyPositiveDifference(diff);
         }
     }
 
