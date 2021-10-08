@@ -238,6 +238,7 @@ public class MaterialBean implements Serializable {
             storageInformationBuilder.setAccessRightToEdit(acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()));
 
             historyOperation = new HistoryOperation(
+                    this,
                     materialEditState,
                     projectBean,
                     materialNameBean,

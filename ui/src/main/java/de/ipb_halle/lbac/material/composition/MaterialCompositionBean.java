@@ -69,8 +69,7 @@ public class MaterialCompositionBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-    @Inject
-    private MaterialBean materialBean;
+   
 
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
@@ -79,8 +78,6 @@ public class MaterialCompositionBean implements Serializable {
             this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
         }
         this.choosenCompositionType = comp.getCompositionType();
-        historyController = new CompositionHistoryController(materialBean);
-
     }
 
     public void clearBean() {

@@ -294,31 +294,40 @@ public class MaterialCompositionBeanTest extends TestBase {
         materialBean.startMaterialEdit(composition);
 
         Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
-        Assert.assertEquals(biomaterialId, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
-        Assert.assertEquals(structureId1, bean.getConcentrationsInComposition().get(1).getMaterial().getId());
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
 
         materialBean.switchOneVersionBack();
 
         Assert.assertEquals(3, bean.getConcentrationsInComposition().size());
-        Assert.assertEquals(biomaterialId, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
-        Assert.assertEquals(structureId1, bean.getConcentrationsInComposition().get(1).getMaterial().getId());
-        Assert.assertEquals(structureId2, bean.getConcentrationsInComposition().get(2).getMaterial().getId());
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId2));
 
         materialBean.switchOneVersionBack();
         Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
-        Assert.assertEquals(structureId2, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId2));
 
         materialBean.switchOneVersionForward();
         Assert.assertEquals(3, bean.getConcentrationsInComposition().size());
-        Assert.assertEquals(biomaterialId, bean.getConcentrationsInComposition().get(2).getMaterial().getId());
-        Assert.assertEquals(structureId1, bean.getConcentrationsInComposition().get(1).getMaterial().getId());
-        Assert.assertEquals(structureId2, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId2));
 
         materialBean.switchOneVersionForward();
         Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
-        Assert.assertEquals(biomaterialId, bean.getConcentrationsInComposition().get(0).getMaterial().getId());
-        Assert.assertEquals(structureId1, bean.getConcentrationsInComposition().get(1).getMaterial().getId());
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
+        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
 
+    }
+
+    private boolean containsId(List<Concentration> concentrations, int id) {
+        for (Concentration c : concentrations) {
+            if (c.getMaterialId() == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Deployment

@@ -114,6 +114,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
         instance = new HistoryOperation(
+                null,
                 mes,
                 new ProjectBeanMock(),
                 new MaterialNameBean(),

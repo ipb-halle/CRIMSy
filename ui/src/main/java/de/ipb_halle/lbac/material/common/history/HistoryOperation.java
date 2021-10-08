@@ -26,8 +26,10 @@ import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.composition.CompositionDifference;
+import de.ipb_halle.lbac.material.composition.CompositionHistoryController;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
@@ -59,6 +61,7 @@ public class HistoryOperation implements Serializable {
     protected StorageInformationBuilder storageInformationBuilder;
     protected TaxonomySelectionController taxonomySelectionController;
     protected List<HazardType> possibleHazards = new ArrayList<>();
+    protected MaterialBean materialBean;
 
     /**
      * Initialises the functionality by neccessary services and the history
@@ -76,6 +79,7 @@ public class HistoryOperation implements Serializable {
      * @param compositionBean
      */
     public HistoryOperation(
+            MaterialBean materialBean,
             MaterialEditState materialEditState,
             ProjectBean projectBean,
             MaterialNameBean nameBean,
@@ -94,6 +98,7 @@ public class HistoryOperation implements Serializable {
         this.taxonomySelectionController = taxonomySelectionController;
         this.possibleHazards = possibleHazards;
         this.compositionBean = compositionBean;
+        this.materialBean = materialBean;
     }
 
     /**
@@ -131,14 +136,17 @@ public class HistoryOperation implements Serializable {
     private void applyNegativeComposition() {
         CompositionDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(CompositionDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            compositionBean.getHistoryController().applyNegativeDifference(diff);
+
+            CompositionHistoryController controller = new CompositionHistoryController(materialBean);
+            controller.applyNegativeDifference(diff);
         }
     }
 
     private void applyPositiveComposition() {
         CompositionDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(CompositionDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            compositionBean.getHistoryController().applyPositiveDifference(diff);
+            CompositionHistoryController controller = new CompositionHistoryController(materialBean);
+            controller.applyPositiveDifference(diff);
         }
     }
 
