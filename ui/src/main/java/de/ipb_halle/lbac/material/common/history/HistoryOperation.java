@@ -109,13 +109,11 @@ public class HistoryOperation implements Serializable {
      */
     public void applyNextPositiveDifference() {
         materialEditState.changeVersionDateToNext(materialEditState.getCurrentVersiondate());
-        applyPositiveOverview(); //Migrated
-        applyPositiveStructure();
-        applyPositiveIndices();
-        applyPositiveHazards();
-        applyPositiveStorage();
-        applyPositiveTaxonomy();
-        applyPositiveComposition();
+
+        for (MaterialDifference difference : materialEditState.getMaterialBeforeEdit().getHistory().getChanges().get(materialEditState.getCurrentVersiondate())) {
+            difference.createHistoryController(materialBean).applyPositiveDifference(difference);
+        }
+
     }
 
     /**
@@ -124,42 +122,11 @@ public class HistoryOperation implements Serializable {
      *
      */
     public void applyNextNegativeDifference() {
-        applyNegativeOverview();  //Migrated
-        applyNegativeStructure();
-        applyNegativeIndices();
-        applyNegativeHazards();
-        applyNegativeStorage();
-        applyNegativeTaxonomy();
-        applyNegativeComposition();
+
+        for (MaterialDifference difference : materialEditState.getMaterialBeforeEdit().getHistory().getChanges().get(materialEditState.getCurrentVersiondate())) {
+            difference.createHistoryController(materialBean).applyNegativeDifference(difference);
+        }
         materialEditState.changeVersionDateToPrevious(materialEditState.getCurrentVersiondate());
-    }
-
-    private void applyNegativeComposition() {
-        CompositionDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(CompositionDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyNegativeDifference(diff);
-        }
-    }
-
-    private void applyPositiveComposition() {
-        CompositionDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(CompositionDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyPositiveDifference(diff);
-        }
-    }
-
-    public void applyPositiveStorage() {
-        MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyPositiveDifference(diff);
-        }
-    }
-
-    public void applyNegativeStorage() {
-        MaterialStorageDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStorageDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyNegativeDifference(diff);
-        }
     }
 
     /**
@@ -168,89 +135,6 @@ public class HistoryOperation implements Serializable {
      */
     public boolean isOriginalMaterial() {
         return materialEditState.getCurrentVersiondate() == null;
-    }
-
-    protected void applyPositiveHazards() {
-        MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyPositiveDifference(diff);
-        }
-    }
-
-    protected void applyNegativeHazards() {
-        MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyNegativeDifference(diff);
-        }
-    }
-
-    protected void applyNegativeOverview() {
-        MaterialOverviewDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialOverviewDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyNegativeDifference(diff);
-        }
-    }
-
-    protected void applyPositiveOverview() {
-        MaterialOverviewDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialOverviewDifference.class, materialEditState.getCurrentVersiondate());
-        if (diff != null) {
-            diff.createHistoryController(materialBean).applyPositiveDifference(diff);
-        }
-    }
-
-    protected void applyNegativeStructure() {
-        MaterialStructureDifference structureDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStructureDifference.class, materialEditState.getCurrentVersiondate());
-        if (structureDiff != null) {
-            structureDiff.createHistoryController(materialBean).applyNegativeDifference(structureDiff);
-        }
-    }
-
-    protected void applyPositiveStructure() {
-        MaterialStructureDifference structureDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStructureDifference.class, materialEditState.getCurrentVersiondate());
-        if (structureDiff != null) {
-            structureDiff.createHistoryController(materialBean).applyPositiveDifference(structureDiff);
-        }
-    }
-
-    protected void applyPositiveIndices() {
-        MaterialIndexDifference indexDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialIndexDifference.class, materialEditState.getCurrentVersiondate());
-        if (indexDiff != null) {
-            indexDiff.createHistoryController(materialBean).applyPositiveDifference(indexDiff);
-        }
-    }
-
-    protected void applyNegativeIndices() {
-        MaterialIndexDifference indexDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialIndexDifference.class, materialEditState.getCurrentVersiondate());
-        if (indexDiff != null) {
-            indexDiff.createHistoryController(materialBean).applyNegativeDifference(indexDiff);
-        }
-    }
-
-    public void applyPositiveTaxonomy() {
-        BioMaterialDifference bioMatDiff = materialEditState
-                .getMaterialBeforeEdit()
-                .getHistory()
-                .getDifferenceOfTypeAtDate(
-                        BioMaterialDifference.class,
-                        materialEditState.getCurrentVersiondate());
-
-        if (bioMatDiff != null) {
-            bioMatDiff.createHistoryController(materialBean).applyPositiveDifference(bioMatDiff);
-        }
-
-    }
-
-    public void applyNegativeTaxonomy() {
-        BioMaterialDifference bioMatDiff = materialEditState
-                .getMaterialBeforeEdit()
-                .getHistory()
-                .getDifferenceOfTypeAtDate(
-                        BioMaterialDifference.class,
-                        materialEditState.getCurrentVersiondate());
-
-        if (bioMatDiff != null) {
-            bioMatDiff.createHistoryController(materialBean).applyNegativeDifference(bioMatDiff);
-        }
     }
 
 }
