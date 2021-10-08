@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.biomaterial;
 
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -97,6 +99,11 @@ public class TaxonomyDifference implements MaterialDifference, Serializable {
         } else {
             return !Objects.equals(newLevelId, oldLevelId);
         }
+    }
+
+    @Override
+    public <T extends MaterialDifference> HistoryController<T> createHistoryController(MaterialBean bean) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

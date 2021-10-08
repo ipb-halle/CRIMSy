@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.common.ModificationType;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 
@@ -206,6 +208,11 @@ public class MaterialStructureDifference implements MaterialDifference {
     @Override
     public Date getModificationDate() {
         return modificationTime;
+    }
+
+    @Override
+    public StructureHistoryController createHistoryController(MaterialBean bean) {
+        return new StructureHistoryController(bean);
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * Cloud Resource & Information Management System (CRIMSy)
- * Copyright 2020 Leibniz-Institut f. Pflanzenbiochemie
+ * Copyright 2021 Leibniz-Institut f. Pflanzenbiochemie
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,27 @@
 package de.ipb_halle.lbac.material.common.history;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialDifference extends Serializable{
+public class IndexHistoryController implements HistoryController<MaterialIndexDifference> {
 
-    public Integer getActorId();
+    private MaterialBean materialBean;
 
-    public void initialise(int materialId, Integer actorID, Date mDate);
+    public IndexHistoryController(MaterialBean materialBean) {
+        this.materialBean = materialBean;
+    }
 
-    public Date getModificationDate();
-    
-    public <T extends MaterialDifference> HistoryController<T> createHistoryController(MaterialBean bean);
-    
-    
+    @Override
+    public void applyPositiveDifference(MaterialIndexDifference difference) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void applyNegativeDifference(MaterialIndexDifference difference) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

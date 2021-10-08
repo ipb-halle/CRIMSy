@@ -20,7 +20,12 @@ package de.ipb_halle.lbac.material.common.history;
 /**
  *
  * @author fmauz
+ * @param <T>
  */
-public interface HistoryController {
-    
+public interface HistoryController<T extends MaterialDifference> {
+
+    public void applyPositiveDifference(T difference);
+
+    public void applyNegativeDifference(T difference);
+
 }

@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 
@@ -30,7 +31,7 @@ import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
  *
  * @author fmauz
  */
-public class CompositionHistoryController {
+public class CompositionHistoryController implements HistoryController<CompositionDifference> {
 
     MaterialCompositionBean compositionBean;
     User user;
@@ -44,9 +45,13 @@ public class CompositionHistoryController {
         this.user = materialBean.getUserBean().getCurrentAccount();
         this.aclistService = materialBean.getAcListService();
         this.materialService = materialBean.getMaterialService();
-
     }
 
+    /**
+     *
+     * @param diff
+     */
+    @Override
     public void applyPositiveDifference(CompositionDifference diff) {
         for (int i = 0; i < diff.getMaterialIds_new().size(); i++) {
             Double concentrationNew = diff.getConcentrations_new().get(i);
@@ -54,6 +59,11 @@ public class CompositionHistoryController {
         }
     }
 
+    /**
+     *
+     * @param diff
+     */
+    @Override
     public void applyNegativeDifference(CompositionDifference diff) {
         for (int i = 0; i < diff.getMaterialIds_old().size(); i++) {
             Double concentrationOld = diff.getConcentrations_old().get(i);
