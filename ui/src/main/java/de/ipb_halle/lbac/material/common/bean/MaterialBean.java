@@ -654,4 +654,12 @@ public class MaterialBean implements Serializable {
         return storageInformationBuilder;
     }
 
+    public MaterialService getMaterialService() {
+        return materialService;
+    }
+
+    public MaterialCompositionBean getCompositionBean() {
+        return compositionBean;
+    }
+
 }

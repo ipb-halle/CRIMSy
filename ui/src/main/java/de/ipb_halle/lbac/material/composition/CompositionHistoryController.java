@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 
@@ -29,22 +30,21 @@ import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
  *
  * @author fmauz
  */
-public class HistoryController {
+public class CompositionHistoryController {
 
-    MaterialCompositionBean bean;
+    MaterialCompositionBean compositionBean;
     User user;
     ACListService aclistService;
     MaterialService materialService;
+    MaterialBean materialBean;
 
-    public HistoryController(
-            MaterialCompositionBean bean,
-            User user,
-            ACListService aclistService,
-            MaterialService materialService) {
-        this.bean = bean;
-        this.user = user;
-        this.aclistService = aclistService;
-        this.materialService = materialService;
+    public CompositionHistoryController(
+            MaterialBean materialBean) {
+        this.compositionBean = materialBean.getCompositionBean();
+        this.user = materialBean.getUserBean().getCurrentAccount();
+        this.aclistService = materialBean.getAcListService();
+        this.materialService = materialBean.getMaterialService();
+
     }
 
     public void applyPositiveDifference(CompositionDifference diff) {
@@ -70,20 +70,20 @@ public class HistoryController {
     }
 
     private void removeConcentration(int materialId) {
-        bean.getConcentrationsInComposition().remove(bean.getConcentrationWithMaterial(materialId));
+        compositionBean.getConcentrationsInComposition().remove(compositionBean.getConcentrationWithMaterial(materialId));
     }
 
     private void addConcentration(int materialId, Double oldConcentration) {
-        if (!bean.isMaterialAlreadyInComposition(materialId)) {
+        if (!compositionBean.isMaterialAlreadyInComposition(materialId)) {
             addNewMaterialToComposition(materialId, oldConcentration);
         } else {
-            bean.getConcentrationWithMaterial(materialId).setConcentration(oldConcentration);
+            compositionBean.getConcentrationWithMaterial(materialId).setConcentration(oldConcentration);
         }
     }
 
     private void addNewMaterialToComposition(int materialId, Double concentration) {
         Material material = getMaterialWithPermissionCheck(materialId);
-        bean.getConcentrationsInComposition().add(new Concentration(material, concentration));
+        compositionBean.getConcentrationsInComposition().add(new Concentration(material, concentration));
     }
 
     private Material getMaterialWithPermissionCheck(int materialId) {

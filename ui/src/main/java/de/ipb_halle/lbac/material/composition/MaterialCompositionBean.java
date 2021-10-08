@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -57,19 +58,19 @@ public class MaterialCompositionBean implements Serializable {
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
     private String searchMolecule = "";
     private Mode mode;
-    private HistoryController historyController;
+    private CompositionHistoryController historyController;
 
     @Inject
     private MaterialService materialService;
-
-    @Inject
-    private ACListService aclistService;
 
     @Inject
     private transient MessagePresenter presenter;
 
     @Inject
     private UserBean userBean;
+
+    @Inject
+    private MaterialBean materialBean;
 
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
@@ -78,7 +79,7 @@ public class MaterialCompositionBean implements Serializable {
             this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
         }
         this.choosenCompositionType = comp.getCompositionType();
-        historyController = new HistoryController(this, userBean.getCurrentAccount(), aclistService, materialService);
+        historyController = new CompositionHistoryController(materialBean);
 
     }
 
@@ -259,10 +260,8 @@ public class MaterialCompositionBean implements Serializable {
         return null;
     }
 
-    public HistoryController getHistoryController() {
+    public CompositionHistoryController getHistoryController() {
         return historyController;
     }
-    
-    
 
 }
