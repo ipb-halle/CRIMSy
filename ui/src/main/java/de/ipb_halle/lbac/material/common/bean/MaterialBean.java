@@ -132,7 +132,7 @@ public class MaterialBean implements Serializable {
 
     private boolean autoCalcFormularAndMasses = true;
 
-    private MaterialEditState materialEditState = new MaterialEditState();
+    protected MaterialEditState materialEditState = new MaterialEditState();
     private HistoryOperation historyOperation;
 
     private MaterialEditPermission permission;
