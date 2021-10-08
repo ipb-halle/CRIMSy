@@ -17,27 +17,19 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
-import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.common.HazardType;
-import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
-import de.ipb_halle.lbac.material.composition.CompositionDifference;
-import de.ipb_halle.lbac.material.composition.CompositionHistoryController;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
-import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.project.ProjectBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,15 +44,6 @@ public class HistoryOperation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
-    protected ProjectBean projectBean;
-    protected MaterialEditState materialEditState;
-    protected MaterialNameBean materialNameBean;
-    protected MaterialIndexBean indexBean;
-    protected StructureInformation structureInfos;
-    protected MaterialCompositionBean compositionBean;
-    protected StorageInformationBuilder storageInformationBuilder;
-    protected TaxonomySelectionController taxonomySelectionController;
-    protected List<HazardType> possibleHazards = new ArrayList<>();
     protected MaterialBean materialBean;
 
     /**
@@ -69,36 +52,8 @@ public class HistoryOperation implements Serializable {
      * materialEditState variable.
      *
      * @param materialBean
-     * @param materialEditState
-     * @param projectBean
-     * @param nameBean
-     * @param indexBean
-     * @param structureInfos
-     * @param storageInformationBuilder
-     * @param taxonomySelectionController
-     * @param possibleHazards
-     * @param compositionBean
      */
-    public HistoryOperation(
-            MaterialBean materialBean,
-            MaterialEditState materialEditState,
-            ProjectBean projectBean,
-            MaterialNameBean nameBean,
-            MaterialIndexBean indexBean,
-            StructureInformation structureInfos,
-            StorageInformationBuilder storageInformationBuilder,
-            TaxonomySelectionController taxonomySelectionController,
-            List<HazardType> possibleHazards,
-            MaterialCompositionBean compositionBean) {
-        this.projectBean = projectBean;
-        this.materialEditState = materialEditState;
-        this.materialNameBean = nameBean;
-        this.indexBean = indexBean;
-        this.structureInfos = structureInfos;
-        this.storageInformationBuilder = storageInformationBuilder;
-        this.taxonomySelectionController = taxonomySelectionController;
-        this.possibleHazards = possibleHazards;
-        this.compositionBean = compositionBean;
+    public HistoryOperation(MaterialBean materialBean) {
         this.materialBean = materialBean;
     }
 
@@ -108,9 +63,9 @@ public class HistoryOperation implements Serializable {
      *
      */
     public void applyNextPositiveDifference() {
-        materialEditState.changeVersionDateToNext(materialEditState.getCurrentVersiondate());
+        materialBean.getMaterialEditState().changeVersionDateToNext(materialBean.getMaterialEditState().getCurrentVersiondate());
 
-        for (MaterialDifference difference : materialEditState.getMaterialBeforeEdit().getHistory().getChanges().get(materialEditState.getCurrentVersiondate())) {
+        for (MaterialDifference difference : materialBean.getMaterialEditState().getMaterialBeforeEdit().getHistory().getChanges().get(materialBean.getMaterialEditState().getCurrentVersiondate())) {
             difference.createHistoryController(materialBean).applyPositiveDifference(difference);
         }
 
@@ -122,11 +77,10 @@ public class HistoryOperation implements Serializable {
      *
      */
     public void applyNextNegativeDifference() {
-
-        for (MaterialDifference difference : materialEditState.getMaterialBeforeEdit().getHistory().getChanges().get(materialEditState.getCurrentVersiondate())) {
+        for (MaterialDifference difference : materialBean.getMaterialEditState().getMaterialBeforeEdit().getHistory().getChanges().get(materialBean.getMaterialEditState().getCurrentVersiondate())) {
             difference.createHistoryController(materialBean).applyNegativeDifference(difference);
         }
-        materialEditState.changeVersionDateToPrevious(materialEditState.getCurrentVersiondate());
+        materialBean.getMaterialEditState().changeVersionDateToPrevious(materialBean.getMaterialEditState().getCurrentVersiondate());
     }
 
     /**
@@ -134,7 +88,7 @@ public class HistoryOperation implements Serializable {
      * version
      */
     public boolean isOriginalMaterial() {
-        return materialEditState.getCurrentVersiondate() == null;
+        return materialBean.getMaterialEditState().getCurrentVersiondate() == null;
     }
 
 }

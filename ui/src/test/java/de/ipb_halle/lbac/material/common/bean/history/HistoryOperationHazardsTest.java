@@ -117,17 +117,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         MaterialBeanMock mock = new MaterialBeanMock();
         mock.setMaterialEditState(mes);
         mock.setHazardService(hazardService);
-        instance = new HistoryOperation(
-                mock,
-                mes,
-                new ProjectBeanMock(),
-                new MaterialNameBean(),
-                mib, new StructureInformation(),
-                new StorageInformationBuilder(MessagePresenterMock.getInstance(),
-                        materialService),
-                null,
-                possibleHazards,
-                compositionBean);
+        instance = new HistoryOperation(mock);
     }
 
     /**

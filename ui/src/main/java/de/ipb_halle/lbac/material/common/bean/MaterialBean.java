@@ -239,18 +239,7 @@ public class MaterialBean implements Serializable {
             );
             storageInformationBuilder.setAccessRightToEdit(acListService.isPermitted(ACPermission.permEDIT, m, userBean.getCurrentAccount()));
 
-            historyOperation = new HistoryOperation(
-                    this,
-                    materialEditState,
-                    projectBean,
-                    materialNameBean,
-                    materialIndexBean,
-                    structureInfos,
-                    storageInformationBuilder,
-                    taxonomyController,
-                    hazardService.getAllHazardTypes(),
-                    compositionBean
-            );
+            historyOperation = new HistoryOperation(this);
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
