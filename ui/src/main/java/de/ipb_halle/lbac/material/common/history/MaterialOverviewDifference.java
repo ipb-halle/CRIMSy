@@ -31,6 +31,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialOverviewDifference implements MaterialDifference {
 
+    private static final long serialVersionUID = 1L;
+
     private Logger logger = LogManager.getLogger(this.getClass().getName());
 
     private int materialID;

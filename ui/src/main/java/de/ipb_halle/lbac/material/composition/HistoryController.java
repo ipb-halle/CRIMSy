@@ -47,18 +47,25 @@ public class HistoryController {
         this.materialService = materialService;
     }
 
-    public void applyNegativeDifference(CompositionDifference diff) {
-        for (int i = 0; i < diff.getMaterialIds_old().size(); i++) {
-            Double concentrationOld = diff.getConcentrations_old().get(i);
-            handleNegativeDelta(diff.getMaterialIds_old().get(i), concentrationOld, diff.getMaterialIds_new().get(i));
+    public void applyPositiveDifference(CompositionDifference diff) {
+        for (int i = 0; i < diff.getMaterialIds_new().size(); i++) {
+            Double concentrationNew = diff.getConcentrations_new().get(i);
+            handleDelta(diff.getMaterialIds_new().get(i), concentrationNew, diff.getMaterialIds_old().get(i));
         }
     }
 
-    private void handleNegativeDelta(Integer materialId, Double concentrationOld, Integer materialIdNew) {
-        if (materialId != null) {
-            addConcentration(materialId, concentrationOld);
+    public void applyNegativeDifference(CompositionDifference diff) {
+        for (int i = 0; i < diff.getMaterialIds_old().size(); i++) {
+            Double concentrationOld = diff.getConcentrations_old().get(i);
+            handleDelta(diff.getMaterialIds_old().get(i), concentrationOld, diff.getMaterialIds_new().get(i));
+        }
+    }
+
+    private void handleDelta(Integer materialIdToInsert, Double concentrationOld, Integer materialIdToRemove) {
+        if (materialIdToInsert != null) {
+            addConcentration(materialIdToInsert, concentrationOld);
         } else {
-            removeConcentration(materialIdNew);
+            removeConcentration(materialIdToRemove);
         }
     }
 
@@ -86,6 +93,5 @@ public class HistoryController {
         }
         return material;
     }
-    
-    
+
 }
