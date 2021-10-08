@@ -84,12 +84,12 @@ public class HistoryOperationIndexTest {
         s.setIndices(indices);
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
-        StorageInformationBuilder storageInfoBuilder = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService);
+        
         MaterialBeanMock mock = new MaterialBeanMock();
         mock.setMaterialIndexBean(mib);
         mock.setMaterialEditState(mes);
         mock.setMaterialNameBean(new MaterialNameBean());
-        instance = new HistoryOperation(mock, mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), storageInfoBuilder, null, new ArrayList<>(), null);
+        instance = new HistoryOperation(mock);
     }
     
     @Test

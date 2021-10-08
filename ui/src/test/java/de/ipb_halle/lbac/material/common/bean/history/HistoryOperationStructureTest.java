@@ -105,17 +105,7 @@ public class HistoryOperationStructureTest extends TestBase {
         s.getHistory().addDifference(createDiff1());
         s.getHistory().addDifference(createDiff2());
 
-        instance = new HistoryOperation(
-                materialBean,
-                materialBean.getMaterialEditState(),
-                new ProjectBeanMock(),
-                new MaterialNameBean(),
-                new MaterialIndexBean(),
-                materialBean.getStructureInfos(),
-                new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService),
-                null,
-                new ArrayList<>(),
-                null);
+        instance = new HistoryOperation(materialBean);
 
         instance.applyNextNegativeDifference();
 
