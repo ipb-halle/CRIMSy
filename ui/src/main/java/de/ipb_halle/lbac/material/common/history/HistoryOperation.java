@@ -210,34 +210,14 @@ public class HistoryOperation implements Serializable {
     protected void applyPositiveHazards() {
         MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
         if (diff != null) {
-            for (int i = 0; i < diff.getEntries(); i++) {
-                Integer newTypeId = diff.getTypeIdsNew().get(i);
-                Integer oldTypeId = diff.getTypeIdsOld().get(i);
-                String newValue = diff.getRemarksNew().get(i);
-                if (newTypeId != null) {
-                    materialEditState.getHazardController().addHazardType(getHazardById(newTypeId), newValue);
-                } else {
-                    materialEditState.getHazardController().removeHazard(getHazardById(oldTypeId));
-                }
-            }
+            diff.createHistoryController(materialBean).applyPositiveDifference(diff);
         }
     }
 
     protected void applyNegativeHazards() {
         MaterialHazardDifference diff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialHazardDifference.class, materialEditState.getCurrentVersiondate());
-
         if (diff != null) {
-            materialEditState.getHazardController().setEditable(false);
-            for (int i = 0; i < diff.getEntries(); i++) {
-                Integer newTypeId = diff.getTypeIdsNew().get(i);
-                Integer oldTypeId = diff.getTypeIdsOld().get(i);
-                String oldValue = diff.getRemarksOld().get(i);
-                if (oldTypeId != null) {
-                    materialEditState.getHazardController().addHazardType(getHazardById(oldTypeId), oldValue);
-                } else {
-                    materialEditState.getHazardController().removeHazard(getHazardById(newTypeId));
-                }
-            }
+            diff.createHistoryController(materialBean).applyNegativeDifference(diff);
         }
     }
 
@@ -330,15 +310,6 @@ public class HistoryOperation implements Serializable {
         if (taxonomySelectionController != null) {
             taxonomySelectionController.deactivateTree();
         }
-    }
-
-    private HazardType getHazardById(int id) {
-        for (HazardType hazard : possibleHazards) {
-            if (hazard.getId() == id) {
-                return hazard;
-            }
-        }
-        return null;
     }
 
 }

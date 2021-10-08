@@ -46,6 +46,7 @@ import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.Concentration;
@@ -124,7 +125,8 @@ public class MaterialBean implements Serializable {
     protected Mode mode;
     protected HazardInformation hazards;
 
-    protected StructureInformation structureInfos= new StructureInformation();;
+    protected StructureInformation structureInfos = new StructureInformation();
+    ;
 
     private SequenceInformation sequenceInfos;
 
@@ -252,6 +254,10 @@ public class MaterialBean implements Serializable {
         } catch (Exception e) {
             logger.error(ExceptionUtils.getStackTrace(e));
         }
+    }
+
+    public List<HazardType> getAllPossibleHazards() {
+        return hazardService.getAllHazardTypes();
     }
 
     private void initState() {
@@ -666,6 +672,5 @@ public class MaterialBean implements Serializable {
     public ProjectBean getProjectBean() {
         return projectBean;
     }
-    
 
 }

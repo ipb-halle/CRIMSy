@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
+import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 
 /**
@@ -32,13 +33,41 @@ public class HazardHistoryController implements HistoryController<MaterialHazard
     }
 
     @Override
-    public void applyPositiveDifference(MaterialHazardDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyPositiveDifference(MaterialHazardDifference diff) {
+        for (int i = 0; i < diff.getEntries(); i++) {
+            Integer newTypeId = diff.getTypeIdsNew().get(i);
+            Integer oldTypeId = diff.getTypeIdsOld().get(i);
+            String newValue = diff.getRemarksNew().get(i);
+            if (newTypeId != null) {
+                materialBean.getMaterialEditState().getHazardController().addHazardType(getHazardById(newTypeId), newValue);
+            } else {
+                materialBean.getMaterialEditState().getHazardController().removeHazard(getHazardById(oldTypeId));
+            }
+        }
     }
 
     @Override
-    public void applyNegativeDifference(MaterialHazardDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyNegativeDifference(MaterialHazardDifference diff) {
+        materialBean.getMaterialEditState().getHazardController().setEditable(false);
+        for (int i = 0; i < diff.getEntries(); i++) {
+            Integer newTypeId = diff.getTypeIdsNew().get(i);
+            Integer oldTypeId = diff.getTypeIdsOld().get(i);
+            String oldValue = diff.getRemarksOld().get(i);
+            if (oldTypeId != null) {
+                materialBean.getMaterialEditState().getHazardController().addHazardType(getHazardById(oldTypeId), oldValue);
+            } else {
+                materialBean.getMaterialEditState().getHazardController().removeHazard(getHazardById(newTypeId));
+            }
+        }
+    }
+
+    private HazardType getHazardById(int id) {
+        for (HazardType hazard : materialBean.getAllPossibleHazards()) {
+            if (hazard.getId() == id) {
+                return hazard;
+            }
+        }
+        return null;
     }
 
 }
