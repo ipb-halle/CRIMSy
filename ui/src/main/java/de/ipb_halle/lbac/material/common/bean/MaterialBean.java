@@ -124,7 +124,7 @@ public class MaterialBean implements Serializable {
     protected Mode mode;
     protected HazardInformation hazards;
 
-    protected StructureInformation structureInfos;
+    protected StructureInformation structureInfos= new StructureInformation();;
 
     private SequenceInformation sequenceInfos;
 

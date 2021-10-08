@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.history.HistoryController;
+import java.util.Objects;
 
 /**
  *
@@ -33,13 +34,44 @@ public class StructureHistoryController implements HistoryController<MaterialStr
     }
 
     @Override
-    public void applyPositiveDifference(MaterialStructureDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyPositiveDifference(MaterialStructureDifference structureDiff) {
+
+        if (!Objects.equals(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
+            if (structureDiff.getMoleculeId_old() != null && structureDiff.getMoleculeId_new() == null) {
+                materialBean.getStructureInfos().setStructureModel(null);
+            } else {
+                materialBean.getStructureInfos().setStructureModel(structureDiff.getMoleculeId_new().getStructureModel());
+            }
+        }
+        if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
+            materialBean.getStructureInfos().setAverageMolarMass(structureDiff.getMolarMass_new());
+        }
+        if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
+            materialBean.getStructureInfos().setExactMolarMass(structureDiff.getExactMolarMass_new());
+        }
+        if (!Objects.equals(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
+            materialBean.getStructureInfos().setSumFormula(structureDiff.getSumFormula_new());
+        }
     }
 
     @Override
-    public void applyNegativeDifference(MaterialStructureDifference difference) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void applyNegativeDifference(MaterialStructureDifference structureDiff) {
+        if (!Objects.equals(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
+            if (structureDiff.getMoleculeId_old() == null && structureDiff.getMoleculeId_new() != null) {
+                materialBean.getStructureInfos().setStructureModel(null);
+            } else {
+                materialBean.getStructureInfos().setStructureModel(structureDiff.getMoleculeId_old().getStructureModel());
+            }
+        }
+        if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
+            materialBean.getStructureInfos().setAverageMolarMass(structureDiff.getMolarMass_old());
+        }
+        if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
+            materialBean.getStructureInfos().setExactMolarMass(structureDiff.getExactMolarMass_old());
+        }
+        if (!Objects.equals(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
+            materialBean.getStructureInfos().setSumFormula(structureDiff.getSumFormula_old());
+        }
     }
 
 }

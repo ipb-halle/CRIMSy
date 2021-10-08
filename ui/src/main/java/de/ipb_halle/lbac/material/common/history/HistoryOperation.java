@@ -68,6 +68,7 @@ public class HistoryOperation implements Serializable {
      * (collection of all differences at some timepoints) in the
      * materialEditState variable.
      *
+     * @param materialBean
      * @param materialEditState
      * @param projectBean
      * @param nameBean
@@ -108,7 +109,7 @@ public class HistoryOperation implements Serializable {
      */
     public void applyNextPositiveDifference() {
         materialEditState.changeVersionDateToNext(materialEditState.getCurrentVersiondate());
-        applyPositiveOverview();
+        applyPositiveOverview(); //Migrated
         applyPositiveStructure();
         applyPositiveIndices();
         applyPositiveHazards();
@@ -123,7 +124,7 @@ public class HistoryOperation implements Serializable {
      *
      */
     public void applyNextNegativeDifference() {
-        applyNegativeOverview();
+        applyNegativeOverview();  //Migrated
         applyNegativeStructure();
         applyNegativeIndices();
         applyNegativeHazards();
@@ -257,44 +258,14 @@ public class HistoryOperation implements Serializable {
     protected void applyNegativeStructure() {
         MaterialStructureDifference structureDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStructureDifference.class, materialEditState.getCurrentVersiondate());
         if (structureDiff != null) {
-            if (!Objects.equals(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
-                if (structureDiff.getMoleculeId_old() == null && structureDiff.getMoleculeId_new() != null) {
-                    structureInfos.setStructureModel(null);
-                } else {
-                    structureInfos.setStructureModel(structureDiff.getMoleculeId_old().getStructureModel());
-                }
-            }
-            if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
-                structureInfos.setAverageMolarMass(structureDiff.getMolarMass_old());
-            }
-            if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
-                structureInfos.setExactMolarMass(structureDiff.getExactMolarMass_old());
-            }
-            if (!Objects.equals(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
-                structureInfos.setSumFormula(structureDiff.getSumFormula_old());
-            }
+            structureDiff.createHistoryController(materialBean).applyNegativeDifference(structureDiff);
         }
     }
 
     protected void applyPositiveStructure() {
         MaterialStructureDifference structureDiff = materialEditState.getMaterialBeforeEdit().getHistory().getDifferenceOfTypeAtDate(MaterialStructureDifference.class, materialEditState.getCurrentVersiondate());
         if (structureDiff != null) {
-            if (!Objects.equals(structureDiff.getMoleculeId_old(), structureDiff.getMoleculeId_new())) {
-                if (structureDiff.getMoleculeId_old() != null && structureDiff.getMoleculeId_new() == null) {
-                    structureInfos.setStructureModel(null);
-                } else {
-                    structureInfos.setStructureModel(structureDiff.getMoleculeId_new().getStructureModel());
-                }
-            }
-            if (!Objects.equals(structureDiff.getMolarMass_old(), structureDiff.getMolarMass_new())) {
-                structureInfos.setAverageMolarMass(structureDiff.getMolarMass_new());
-            }
-            if (!Objects.equals(structureDiff.getExactMolarMass_old(), structureDiff.getExactMolarMass_new())) {
-                structureInfos.setExactMolarMass(structureDiff.getExactMolarMass_new());
-            }
-            if (!Objects.equals(structureDiff.getSumFormula_old(), structureDiff.getSumFormula_new())) {
-                structureInfos.setSumFormula(structureDiff.getSumFormula_new());
-            }
+            structureDiff.createHistoryController(materialBean).applyPositiveDifference(structureDiff);
         }
     }
 

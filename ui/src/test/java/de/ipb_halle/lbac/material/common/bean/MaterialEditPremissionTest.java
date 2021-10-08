@@ -35,7 +35,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -67,14 +67,14 @@ public class MaterialEditPremissionTest extends TestBase {
     @Inject
     private HazardService hazardService;
     private MaterialEditPermission permissionBean;
-    private MateriaBeanMock materialBean;
+    private MaterialBeanMock materialBean;
     private UserBeanMock userBean;
 
     @Before
     public void init() {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        materialBean = new MateriaBeanMock();
+        materialBean = new MaterialBeanMock();
         materialBean.setAcListService(aclistService);
         materialBean.setHazardService(hazardService);
         materialBean.setMessagePresenter(MessagePresenterMock.getInstance());

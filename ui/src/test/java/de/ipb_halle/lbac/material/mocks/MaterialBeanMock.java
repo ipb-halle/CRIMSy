@@ -36,7 +36,9 @@ import javax.enterprise.context.SessionScoped;
  * @author fmauz
  */
 @SessionScoped
-public class MateriaBeanMock extends MaterialBean {
+public class MaterialBeanMock extends MaterialBean {
+
+    private static final long serialVersionUID = 1L;
 
     boolean rightToEdit = true;
 
