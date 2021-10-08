@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -86,7 +87,9 @@ public class HistoryOperationNameTest extends TestBase {
         mid.initialise(0, random.nextInt(100000), currentDate);
 
         StorageInformationBuilder storageInfoBuilder = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService);
-        instance = new HistoryOperation(null,mes, new ProjectBeanMock(), mnb, null, new StructureInformation(), storageInfoBuilder, null, new ArrayList<>(),null);
+        MaterialBeanMock mock = new MaterialBeanMock();
+        mock.setMaterialNameBean(mnb);
+        instance = new HistoryOperation(mock, mes, new ProjectBeanMock(), mnb, null, new StructureInformation(), storageInfoBuilder, null, new ArrayList<>(), null);
     }
 
     @Test
