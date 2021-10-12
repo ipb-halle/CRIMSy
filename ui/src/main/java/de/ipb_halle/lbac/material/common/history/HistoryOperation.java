@@ -17,19 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
-import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
-import de.ipb_halle.lbac.material.common.HazardType;
-import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
-import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
-import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.structure.StructureInformation;
-import de.ipb_halle.lbac.project.ProjectBean;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

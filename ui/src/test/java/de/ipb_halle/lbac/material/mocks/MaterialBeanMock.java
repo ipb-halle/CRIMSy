@@ -28,6 +28,7 @@ import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
+import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import javax.enterprise.context.SessionScoped;
@@ -92,6 +93,10 @@ public class MaterialBeanMock extends MaterialBean {
 
     public void setMaterialEditState(MaterialEditState materialEditState) {
         this.materialEditState = materialEditState;
+    }
+
+    public void setHazardController(MaterialHazardBuilder hazardController) {
+        this.hazardController = hazardController;
     }
 
 }

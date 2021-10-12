@@ -147,7 +147,7 @@ public class MaterialBean implements Serializable {
     @Inject
     private transient MessagePresenter messagePresenter;
 
-    private MaterialHazardBuilder hazardController;
+    protected MaterialHazardBuilder hazardController;
     private StorageInformationBuilder storageInformationBuilder;
 
     public enum Mode {

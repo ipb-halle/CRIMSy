@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -118,12 +117,6 @@ public class MaterialHazardBuilder {
      * @param hazard
      */
     public void removeHazard(HazardType hazard) {
-        for (int i = 0; i < BSL_IDS.length; i++) {
-            if (hazard.getId() == BSL_IDS[i]) {
-                bioSavetyLevel = possibleBioSavetyLevels.get(0);
-            }
-        }
-
         hStatements = hazard.getId() == H_STATEMENT_ID ? null : hStatements;
         pStatements = hazard.getId() == P_STATEMENT_ID ? null : pStatements;
         customText = hazard.getId() == CUSTOM_STATEMENT_ID ? null : customText;
