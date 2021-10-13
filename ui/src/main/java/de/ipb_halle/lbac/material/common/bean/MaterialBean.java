@@ -142,7 +142,7 @@ public class MaterialBean implements Serializable {
     private MaterialCreationSaver creationSaver;
     private final static String MESSAGE_BUNDLE = "de.ipb_halle.lbac.i18n.messages";
 
-    private TaxonomySelectionController taxonomyController;
+    protected TaxonomySelectionController taxonomyController;
     private TissueController tissueController;
     @Inject
     private transient MessagePresenter messagePresenter;

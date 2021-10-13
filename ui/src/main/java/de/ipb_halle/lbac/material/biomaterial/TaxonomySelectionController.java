@@ -94,6 +94,7 @@ public class TaxonomySelectionController implements Serializable {
 
     public void setSelectedTaxonomy(Taxonomy t) {
         treeController.selectTaxonomy(t);
+        selectedTaxonomy=treeController.selectedTaxonomy;
     }
 
     public String getSelectedTaxonomyName() {

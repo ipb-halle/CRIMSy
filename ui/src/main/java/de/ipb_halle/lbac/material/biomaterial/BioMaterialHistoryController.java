@@ -51,6 +51,7 @@ public class BioMaterialHistoryController implements HistoryController<BioMateri
         if (materialBean.getTaxonomyController() != null && bioMatDiff.getTaxonomyid_old() != null) {
             materialBean.getTaxonomyController().setSelectedTaxonomyById(bioMatDiff.getTaxonomyid_old());
             materialBean.getTaxonomyController().deactivateTree();
+            
         }
     }
 

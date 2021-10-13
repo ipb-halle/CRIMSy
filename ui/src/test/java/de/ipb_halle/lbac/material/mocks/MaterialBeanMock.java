@@ -26,6 +26,9 @@ import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
+import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
@@ -98,5 +101,19 @@ public class MaterialBeanMock extends MaterialBean {
     public void setHazardController(MaterialHazardBuilder hazardController) {
         this.hazardController = hazardController;
     }
+
+    public void setTaxonomyService(TaxonomyService taxonomyService) {
+        this.taxonomyService = taxonomyService;
+    }
+
+    public void setTissueService(TissueService tissueService) {
+        this.tissueService = tissueService;
+    }
+
+    public void setTaxonomyController(TaxonomySelectionController taxonomyController) {
+        this.taxonomyController = taxonomyController;
+    }
+    
+    
 
 }
