@@ -30,6 +30,7 @@ public class MaterialTypeFilter {
     private boolean structures;
     private boolean biomaterial;
     private boolean sequences;
+    private boolean compositions;
 
     public boolean isStructures() {
         return structures;
@@ -55,6 +56,14 @@ public class MaterialTypeFilter {
         this.sequences = sequences;
     }
 
+    public boolean isCompositions() {
+        return compositions;
+    }
+
+    public void setCompositions(boolean compositions) {
+        this.compositions = compositions;
+    }
+
     public Set<MaterialType> getTypes() {
         Set<MaterialType> types = new HashSet<>();
         if (structures) {
@@ -65,6 +74,9 @@ public class MaterialTypeFilter {
         }
         if (biomaterial) {
             types.add(MaterialType.BIOMATERIAL);
+        }
+        if (compositions) {
+            types.add(MaterialType.COMPOSITION);
         }
         return types;
     }
