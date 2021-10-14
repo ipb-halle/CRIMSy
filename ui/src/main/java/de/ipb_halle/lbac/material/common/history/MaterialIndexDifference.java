@@ -17,6 +17,7 @@
  */
 package de.ipb_halle.lbac.material.common.history;
 
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import java.util.ArrayList;
 import java.util.Date;
@@ -198,6 +199,11 @@ public class MaterialIndexDifference implements MaterialDifference {
 
     public Integer getActorID() {
         return actorID;
+    }
+
+    @Override
+    public IndexHistoryController createHistoryController(MaterialBean bean) {
+        return new IndexHistoryController(bean);
     }
 
 }

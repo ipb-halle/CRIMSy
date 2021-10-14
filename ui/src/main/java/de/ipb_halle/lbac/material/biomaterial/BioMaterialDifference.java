@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.material.biomaterial;
 
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.io.Serializable;
@@ -123,6 +125,11 @@ public class BioMaterialDifference implements Serializable, MaterialDifference, 
                 .setTaxoid_old(taxonomyid_old)
                 .setTissueid_new(tissueid_new)
                 .setTissueid_old(tissueid_old);
+    }
+
+    @Override
+    public BioMaterialHistoryController createHistoryController(MaterialBean bean) {
+        return new BioMaterialHistoryController(bean);
     }
 
 }

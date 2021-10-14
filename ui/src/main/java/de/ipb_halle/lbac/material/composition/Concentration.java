@@ -32,13 +32,18 @@ public class Concentration {
     public Concentration(Material material) {
         this.material = material;
     }
-     public Concentration(Material material,Double conc) {
+
+    public Concentration(Material material, Double conc) {
         this.material = material;
-        this.concentration=conc;
+        this.concentration = conc;
     }
 
     public boolean isSameMaterial(Material materialToCheck) {
         return materialToCheck.getId() == material.getId();
+    }
+
+    public boolean isSameMaterial(int materialIdToCheck) {
+        return materialIdToCheck == material.getId();
     }
 
     public Double getConcentration() {

@@ -141,7 +141,7 @@ public class LinkCreationProcess implements Serializable, MaterialHolder, ItemHo
 
     @Override
     public List<MaterialType> getMaterialTypes() {
-        return Arrays.asList(MaterialType.STRUCTURE);
+        return Arrays.asList(MaterialType.STRUCTURE,MaterialType.COMPOSITION);
     }
 
     @Override

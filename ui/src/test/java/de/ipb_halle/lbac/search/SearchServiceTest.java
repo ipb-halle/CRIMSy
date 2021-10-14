@@ -48,15 +48,12 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
-import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
-import de.ipb_halle.lbac.material.structure.Structure;
 
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
@@ -73,7 +70,6 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,7 +80,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.apache.openejb.loader.Files;
-import org.bouncycastle.asn1.isismtt.x509.Admissions;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -92,7 +87,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -295,7 +289,7 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
         request = builder.build();
-         results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
+        results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
         Assert.assertEquals(2, results.size());
 
     }
@@ -462,9 +456,9 @@ public class SearchServiceTest extends TestBase {
         cleanMaterialsFromDB();
 
         //Create a Composition with readable and one without readable ACL
-        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.MIXTURE);
         composition.getNames().add(new MaterialName("Composition X", "de", 0));
-        MaterialComposition composition2 = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        MaterialComposition composition2 = new MaterialComposition(null, project1.getId(), CompositionType.MIXTURE);
         composition.getNames().add(new MaterialName("Composition Y", "de", 0));
         materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), adminUser);
         materialService.saveMaterialToDB(composition2, context.getAdminOnlyACL().getId(), new HashMap<>(), adminUser);
@@ -479,7 +473,7 @@ public class SearchServiceTest extends TestBase {
 
     @Test
     public void test012_searchForComposition() {
-        MaterialComposition composition = new MaterialComposition(null, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.EXTRACT);
         composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d);
         composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d);
         composition.addComponent(bioMaterial, 0.3d);

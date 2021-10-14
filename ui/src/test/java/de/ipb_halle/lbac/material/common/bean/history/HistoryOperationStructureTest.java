@@ -24,6 +24,7 @@ import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.common.HazardInformation;
+import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
@@ -33,13 +34,16 @@ import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -64,14 +68,21 @@ public class HistoryOperationStructureTest extends TestBase {
     Date currentDate;
     MaterialEditState mes;
     HistoryOperation instance;
-    MaterialStructureDifference sdiff;
+    private Date d_20001220, d_20001020;
 
     @Inject
     private MaterialService materialService;
 
+    private MaterialBeanMock materialBean;
+
     @Before
     public void init() {
-
+        Calendar c = new GregorianCalendar();
+        c.set(2000, 12, 20);
+        d_20001220 = c.getTime();
+        c.set(2000, 10, 20);
+        d_20001020 = c.getTime();
+        materialBean = new MaterialBeanMock();
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();
@@ -79,31 +90,81 @@ public class HistoryOperationStructureTest extends TestBase {
         mes.setCurrentVersiondate(currentDate);
         strucInfo = new StructureInformation();
 
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), new MaterialIndexBean(), strucInfo, new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService), null, new ArrayList<>());
     }
 
     @Test
     public void test01_strcutureDifferenceOperations() {
+        materialBean.getStructureInfos().setAverageMolarMass(18.01528);
+        materialBean.getStructureInfos().setExactMolarMass(18.01528);
+        materialBean.getStructureInfos().setSumFormula("H2O");
+        materialBean.getStructureInfos().setStructureModel("MOL-H2O");
+        materialBean.getMaterialEditState().setMaterialToEdit(s);
+        materialBean.getMaterialEditState().setMaterialBeforeEdit(s);
+        materialBean.getMaterialEditState().setCurrentVersiondate(d_20001220);
 
-        //################
-        //Testcase 1: remove a molecule from the strucutre
-        sdiff = new MaterialStructureDifference();
-        sdiff.setModificationTime(currentDate);
-        Molecule m = new Molecule("H20", 1);
+        s.getHistory().addDifference(createDiff1());
+        s.getHistory().addDifference(createDiff2());
 
-        strucInfo.setAverageMolarMass(12d);
+        instance = new HistoryOperation(materialBean);
 
-        strucInfo.setAverageMolarMass(12d);
-        strucInfo.setExactMolarMass(11d);
-        strucInfo.setSumFormula("H2O");
-        strucInfo.setStructureModel("xxx-xxx");
-        sdiff.setMoleculeId_old(null);
-        sdiff.setMoleculeId_new(m);
-
-        s.getHistory().addDifference(sdiff);
         instance.applyNextNegativeDifference();
 
-        Assert.assertNull("Testcase 1 - no molecule found", strucInfo.getStructureModel());
+        Assert.assertEquals("MOL-H3O", materialBean.getStructureInfos().getStructureModel());
+        Assert.assertEquals("H3O", materialBean.getStructureInfos().getSumFormula());
+        Assert.assertEquals(18.01528, materialBean.getStructureInfos().getAverageMolarMass(), 0.001);
+        Assert.assertEquals(18.01528, materialBean.getStructureInfos().getExactMolarMass(), 0.001);
+
+        instance.applyNextNegativeDifference();
+
+        Assert.assertNull(materialBean.getStructureInfos().getStructureModel());
+        Assert.assertEquals("H3O", materialBean.getStructureInfos().getSumFormula());
+        Assert.assertEquals(10, materialBean.getStructureInfos().getAverageMolarMass(), 0.001);
+        Assert.assertEquals(11, materialBean.getStructureInfos().getExactMolarMass(), 0.001);
+
+        instance.applyNextPositiveDifference();
+
+        Assert.assertEquals("MOL-H3O", materialBean.getStructureInfos().getStructureModel());
+        Assert.assertEquals("H3O", materialBean.getStructureInfos().getSumFormula());
+        Assert.assertEquals(18.01528, materialBean.getStructureInfos().getAverageMolarMass(), 0.001);
+        Assert.assertEquals(18.01528, materialBean.getStructureInfos().getExactMolarMass(), 0.001);
+
+        instance.applyNextPositiveDifference();
+
+        Assert.assertEquals("MOL-H2O", materialBean.getStructureInfos().getStructureModel());
+        Assert.assertEquals("H2O", materialBean.getStructureInfos().getSumFormula());
+        Assert.assertEquals(18.01528, materialBean.getStructureInfos().getAverageMolarMass(), 0.001);
+        Assert.assertEquals(18.01528, materialBean.getStructureInfos().getExactMolarMass(), 0.001);
+    }
+
+    private MaterialStructureDifference createDiff1() {
+
+        MaterialStructureDifference difference = new MaterialStructureDifference();
+        difference.setModificationTime(d_20001220);
+        difference.setMoleculeId_old(new Molecule("MOL-H3O", 1));
+        difference.setMoleculeId_new(new Molecule("MOL-H2O", 2));
+        difference.setSumFormula_old("H3O");
+        difference.setSumFormula_new("H2O");
+        difference.setActorId(1);
+        difference.setAction(ModificationType.EDIT);
+        difference.setMaterialId(1);
+        return difference;
+    }
+
+    private MaterialStructureDifference createDiff2() {
+
+        MaterialStructureDifference difference = new MaterialStructureDifference();
+        difference.setModificationTime(d_20001020);
+        difference.setExactMolarMass_new(18.01528);
+        difference.setExactMolarMass_old(11d);
+        difference.setMolarMass_new(18.01528);
+        difference.setMolarMass_old(10d);
+        difference.setMoleculeId_old(null);
+        difference.setMoleculeId_new(new Molecule("MOL-H3O", 2));
+
+        difference.setActorId(1);
+        difference.setAction(ModificationType.EDIT);
+        difference.setMaterialId(1);
+        return difference;
     }
 
     @Deployment

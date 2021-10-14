@@ -17,10 +17,12 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
@@ -49,13 +51,14 @@ public class MaterialCompositionBean implements Serializable {
     private static final long serialVersionUID = 1L;
     protected Logger logger = LogManager.getLogger(this.getClass().getName());
     private List<Material> foundMaterials = new ArrayList<>();
-    private List<Concentration> concentrationsInComposition = new ArrayList<>();
+    private final List<Concentration> concentrationsInComposition = new ArrayList<>();
     private MaterialType choosenMaterialType;
     private int MAX_RESULTS = 25;
     private String materialName = "";
     private CompositionType choosenCompositionType = CompositionType.EXTRACT;
     private String searchMolecule = "";
     private Mode mode;
+    private CompositionHistoryController historyController;
 
     @Inject
     private MaterialService materialService;
@@ -66,6 +69,8 @@ public class MaterialCompositionBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+   
+
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
         mode = Mode.EDIT;
@@ -73,7 +78,6 @@ public class MaterialCompositionBean implements Serializable {
             this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
         }
         this.choosenCompositionType = comp.getCompositionType();
-
     }
 
     public void clearBean() {
@@ -84,7 +88,6 @@ public class MaterialCompositionBean implements Serializable {
         this.concentrationsInComposition.clear();
         this.foundMaterials.clear();
         this.searchMolecule = "";
-
     }
 
     public List<CompositionType> getCompositionTypes() {
@@ -143,13 +146,13 @@ public class MaterialCompositionBean implements Serializable {
     public List<Material> getMaterialsThatCanBeAdded() {
         return foundMaterials.stream()
                 .filter(m -> choosenCompositionType.getAllowedTypes().contains(m.getType()))
-                .filter((m -> !isMaterialAlreadyInComposition(m)))
+                .filter((m -> !isMaterialAlreadyInComposition(m.getId())))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public boolean isMaterialAlreadyInComposition(Material materialToLookFor) {
+    public boolean isMaterialAlreadyInComposition(int materialIdToLookFor) {
         for (Concentration concentrationAlreadyIn : concentrationsInComposition) {
-            if (concentrationAlreadyIn.isSameMaterial(materialToLookFor)) {
+            if (concentrationAlreadyIn.isSameMaterial(materialIdToLookFor)) {
                 return true;
             }
         }
@@ -163,7 +166,7 @@ public class MaterialCompositionBean implements Serializable {
      * @param materialToAdd
      */
     public void actionAddMaterialToComposition(Material materialToAdd) {
-        if (!isMaterialAlreadyInComposition(materialToAdd)
+        if (!isMaterialAlreadyInComposition(materialToAdd.getId())
                 && choosenCompositionType.getAllowedTypes().contains(materialToAdd.getType())) {
             concentrationsInComposition.add(new Concentration(materialToAdd));
         }
@@ -243,6 +246,19 @@ public class MaterialCompositionBean implements Serializable {
 
     public boolean isCompositionTypeEditable() {
         return mode == Mode.CREATE;
+    }
+
+    protected Concentration getConcentrationWithMaterial(int materialid) {
+        for (Concentration conc : concentrationsInComposition) {
+            if (conc.isSameMaterial(materialid)) {
+                return conc;
+            }
+        }
+        return null;
+    }
+
+    public CompositionHistoryController getHistoryController() {
+        return historyController;
     }
 
 }

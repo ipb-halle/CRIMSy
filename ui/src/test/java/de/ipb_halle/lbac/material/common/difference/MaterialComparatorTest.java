@@ -432,7 +432,7 @@ public class MaterialComparatorTest {
     }
 
     private MaterialComposition createEmptyComposition() {
-        MaterialComposition composition = new MaterialComposition(3, new ArrayList<>(), 1, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        MaterialComposition composition = new MaterialComposition(3, 1, CompositionType.MIXTURE);
         composition.setACList(new ACList());
         composition.setOwner(user);
         return composition;

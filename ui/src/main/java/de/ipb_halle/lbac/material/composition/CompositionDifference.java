@@ -18,6 +18,8 @@
 package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.entity.DTO;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -127,6 +129,16 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
 
     public List<Double> getConcentrations_new() {
         return concentrations_new;
+    }
+
+    /**
+     *
+     * @param bean
+     * @return
+     */
+    @Override
+    public CompositionHistoryController createHistoryController(MaterialBean bean) {
+        return new CompositionHistoryController(bean);
     }
 
 }

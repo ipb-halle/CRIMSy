@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
+import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -96,7 +96,7 @@ public class MaterialBeanTest extends TestBase {
     private TreeNode nodeToOperateOn;
 
     @Inject
-    private MateriaBeanMock instance;
+    private MaterialBeanMock instance;
 
     @Inject
     private IndexService indexService;
@@ -504,7 +504,7 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(ItemOverviewBean.class)
                         .addClass(MaterialIndexBean.class)
                         .addClass(MessagePresenterMock.class)
-                        .addClass(MateriaBeanMock.class);
+                        .addClass(MaterialBeanMock.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));

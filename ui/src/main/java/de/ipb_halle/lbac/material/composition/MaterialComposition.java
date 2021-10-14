@@ -34,13 +34,24 @@ import java.util.TreeMap;
  * @author fmauz
  */
 public class MaterialComposition extends Material {
-    
+
     private static final long serialVersionUID = 1L;
     private final CompositionType compositionType;
-    
+
     protected Map<Material, Double> components
             = new TreeMap<>(Comparator.comparing(Material::getFirstName));
-    
+
+    public MaterialComposition(int projectId, CompositionType compositionType) {
+        super(null, new ArrayList<>(), projectId, new HazardInformation(), new StorageInformation());
+        type = MaterialType.COMPOSITION;
+        this.compositionType = compositionType;
+    }
+     public MaterialComposition(Integer materialId,int projectId, CompositionType compositionType) {
+        super(materialId, new ArrayList<>(), projectId, new HazardInformation(), new StorageInformation());
+        type = MaterialType.COMPOSITION;
+        this.compositionType = compositionType;
+    }
+
     public MaterialComposition(
             Integer id,
             List<MaterialName> names,
@@ -51,9 +62,9 @@ public class MaterialComposition extends Material {
         super(id, names, projectId, hazards, storageInfos);
         type = MaterialType.COMPOSITION;
         this.compositionType = compositionType;
-        
+
     }
-    
+
     public MaterialComposition addComponent(Material comp, Double concentration) {
         if (!canHoldType(comp.getType())) {
             throw new IllegalArgumentException("Composition " + compositionType + " must not hold material of type " + comp.getType());
@@ -61,15 +72,16 @@ public class MaterialComposition extends Material {
         components.put(comp, concentration);
         return this;
     }
-    
+
     public Map<Material, Double> getComponents() {
         return components;
     }
-    
+
     @Override
     public MaterialComposition copyMaterial() {
         MaterialComposition copy = new MaterialComposition(
-                id, getCopiedNames(),
+                id,
+                getCopiedNames(),
                 projectId,
                 hazards.copy(),
                 storageInformation.copy(),
@@ -79,7 +91,7 @@ public class MaterialComposition extends Material {
         copy.setCreationTime(creationTime);
         copy.setHistory(history);
         copy.setIndices(getCopiedIndices());
-        
+
         for (Material m : components.keySet()) {
             copy.getComponents().put(m, components.get(m));
         }
@@ -97,7 +109,7 @@ public class MaterialComposition extends Material {
         entity.setType(compositionType.toString());
         return entity;
     }
-    
+
     @Override
     public List<MaterialCompositionEntity> createCompositionEntities() {
         List<MaterialCompositionEntity> entities = new ArrayList<>();
@@ -110,7 +122,7 @@ public class MaterialComposition extends Material {
         entities.addAll(super.createCompositionEntities());
         return entities;
     }
-    
+
     @Override
     public boolean isEqualTo(Object other) {
         if (!(other instanceof MaterialComposition)) {
@@ -119,17 +131,17 @@ public class MaterialComposition extends Material {
         MaterialComposition otherUser = (MaterialComposition) other;
         return Objects.equals(otherUser.getId(), this.getId());
     }
-    
+
     public List<MaterialType> getPossibleTypesOfComponents() {
         return compositionType.getAllowedTypes();
     }
-    
+
     public boolean canHoldType(MaterialType type) {
         return getPossibleTypesOfComponents().contains(type);
     }
-    
+
     public CompositionType getCompositionType() {
         return compositionType;
     }
-    
+
 }

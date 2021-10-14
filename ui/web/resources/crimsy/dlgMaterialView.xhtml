@@ -135,6 +135,31 @@
                             </p:panelGrid>
                         </b:column>
                     </b:row>
+                    <b:row>
+                        <b:column>
+                            <p:panelGrid>
+                                <ui:repeat
+                                    var="concentration"
+                                    value="#{cc.attrs.agent.getComponentsOfMaterial()}">
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText
+                                                value="#{concentration.getMaterial().getFirstName()}"/>
+                                        </p:column>
+                                         <p:column>
+                                            <h:outputText
+                                                value="#{cc.attrs.agent.getLocalizedMaterialTypeName(concentration.getMaterial())}"/>
+                                        </p:column>
+                                         <p:column>
+                                            <h:outputText
+                                                value="#{concentration.getConcentration()}"/>
+                                        </p:column>
+                                    </p:row>
+
+                                </ui:repeat>
+                            </p:panelGrid>
+                        </b:column>
+                    </b:row>
                 </b:container>
             </p:dialog>
         </h:form>

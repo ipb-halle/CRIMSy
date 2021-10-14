@@ -18,6 +18,7 @@
 package de.ipb_halle.lbac.material.common.history;
 
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity;
 import java.util.ArrayList;
@@ -190,6 +191,11 @@ public class MaterialStorageDifference implements MaterialDifference {
 
     public void setDescriptionNew(String descriptionNew) {
         this.descriptionNew = descriptionNew;
+    }
+
+    @Override
+    public StorageHistoryController createHistoryController(MaterialBean bean) {
+        return new StorageHistoryController(bean);
     }
 
 }
