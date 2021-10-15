@@ -95,7 +95,6 @@
                     </b:row>
                     <b:row>
                         <b:column
-
                             span="6"
                             styleClass="dlgMaterialViewNames dlgMaterialViewBorderLess">
                             <p:panelGrid>
@@ -135,22 +134,43 @@
                             </p:panelGrid>
                         </b:column>
                     </b:row>
-                    <b:row>
+                    <b:row style="margin-top:30px">
+                        <h:outputText 
+                            value="Komponenten"
+                            style="text-align: center;
+                            width: 100%;
+                            display: inline-block;"/>
                         <b:column>
-                            <p:panelGrid>
+                            <p:panelGrid
+                                style="margin-left:auto">
+                                <p:row styleClass="borderless">
+                                    <p:column style="width:100%">
+                                        <h:outputText
+                                            styleClass="borderless"
+                                            value="Name"/>
+                                    </p:column>
+                                    <p:column styleClass="borderless">
+                                        <h:outputText
+                                            value="Typ"/>
+                                    </p:column>
+                                    <p:column styleClass="borderless">
+                                        <h:outputText
+                                            value="Concentration(%)"/>
+                                    </p:column>
+                                </p:row>
                                 <ui:repeat
                                     var="concentration"
                                     value="#{cc.attrs.agent.getComponentsOfMaterial()}">
-                                    <p:row>
-                                        <p:column>
+                                    <p:row styleClass="borderless">
+                                        <p:column style="width:100%" styleClass="borderless">
                                             <h:outputText
                                                 value="#{concentration.getMaterial().getFirstName()}"/>
                                         </p:column>
-                                         <p:column>
+                                        <p:column styleClass="borderless">
                                             <h:outputText
                                                 value="#{cc.attrs.agent.getLocalizedMaterialTypeName(concentration.getMaterial())}"/>
                                         </p:column>
-                                         <p:column>
+                                        <p:column styleClass="borderless">
                                             <h:outputText
                                                 value="#{concentration.getConcentration()}"/>
                                         </p:column>

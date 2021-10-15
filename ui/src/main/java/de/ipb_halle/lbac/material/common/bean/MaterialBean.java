@@ -354,7 +354,6 @@ public class MaterialBean implements Serializable {
                         materialIndexBean.getIndices(),
                         userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.COMPOSITION) {
-
                 MaterialComposition composition = new MaterialComposition(
                         null,
                         materialNameBean.getNames(),

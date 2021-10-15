@@ -47,7 +47,7 @@
                                 <b:selectOneMenu
                                     ajax="true"
                                     disabled="#{!materialCompositionBean.isCompositionTypeEditable()}"
-                                    update="@(.resultTable)"
+                                    update="@(.resultTable) @(.searchTabView)"
                                     value="#{materialCompositionBean.choosenType}">
                                     <f:selectItems 
                                         value="#{materialCompositionBean.getCompositionTypes()}"
@@ -58,7 +58,8 @@
                     </p:panelGrid>
 
                     <p:panelGrid
-                        class="wideBody">
+                        class="wideBody"
+                        id="a">
                         <p:row styleClass="borderless">
                             <p:column 
                                 style="vertical-align: top;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;border-left-right: 2px;">
@@ -82,8 +83,12 @@
                                         </p:column>
                                     </p:row>
                                     <p:row  styleClass="borderless">
-                                        <p:column  styleClass="borderless">
+                                        <p:column 
+                                            styleClass="borderless">
                                             <p:tabView
+                                                styleClass="searchTabView"
+                                                activeIndex="#{materialCompositionBean.activeIndex}"
+                                                id="searchTabViewId"
                                                 dynamic="true">
                                                 <p:ajax event="tabChange" listener="#{materialCompositionBean.onTabChange}"/>
                                                 <p:tab
@@ -103,11 +108,11 @@
                                                 </p:tab>
                                                 <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
-                                                    Sequenz
+                                                    Work in progress
                                                 </p:tab>
                                                 <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
-                                                    Sequenz
+
                                                 </p:tab>
                                             </p:tabView>
                                         </p:column>             

@@ -37,6 +37,7 @@ public class MaterialComposition extends Material {
 
     private static final long serialVersionUID = 1L;
     private final CompositionType compositionType;
+    
 
     protected Map<Material, Double> components
             = new TreeMap<>(Comparator.comparing(Material::getFirstName));
@@ -46,7 +47,8 @@ public class MaterialComposition extends Material {
         type = MaterialType.COMPOSITION;
         this.compositionType = compositionType;
     }
-     public MaterialComposition(Integer materialId,int projectId, CompositionType compositionType) {
+
+    public MaterialComposition(Integer materialId, int projectId, CompositionType compositionType) {
         super(materialId, new ArrayList<>(), projectId, new HazardInformation(), new StorageInformation());
         type = MaterialType.COMPOSITION;
         this.compositionType = compositionType;
@@ -144,4 +146,5 @@ public class MaterialComposition extends Material {
         return compositionType;
     }
 
+   
 }
