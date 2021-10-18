@@ -61,8 +61,8 @@ public class MaterialCompositionTest {
         Assert.assertEquals(1, entities.size());
 
         //Composition with two components
-        compo1.addComponent(struc1, 0d);
-        compo1.addComponent(struc2, 0d);
+        compo1.addComponent(struc1, 0d,null);
+        compo1.addComponent(struc2, 0d,null);
         entities = compo1.createCompositionEntities();
 
         Assert.assertEquals(3, entities.size());
@@ -111,13 +111,13 @@ public class MaterialCompositionTest {
     @Test
     public void test006_addComponent() {
         //Add biomaterial and structure to a extract
-        compo2.addComponent(struc1, 0d);
-        compo2.addComponent(bio1, 0d);
+        compo2.addComponent(struc1, 0d,null);
+        compo2.addComponent(bio1, 0d,null);
 
         //Add biomaterial and structure to a mixture -> should result in an error
-        compo1.addComponent(struc1, 0d);
+        compo1.addComponent(struc1, 0d,null);
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            compo1.addComponent(bio1, 0d);
+            compo1.addComponent(bio1, 0d,null);
         });
 
     }

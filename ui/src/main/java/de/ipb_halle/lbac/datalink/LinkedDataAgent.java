@@ -139,14 +139,12 @@ public class LinkedDataAgent implements Serializable {
         }
         if (material.getType() == MaterialType.COMPOSITION) {
             MaterialComposition composition = (MaterialComposition) material;
-            for (Material m : composition.getComponents().keySet()) {
-                concentrations.add(new Concentration(m, composition.getComponents().get(m)));
-            }
+            concentrations = composition.getComponents();
         }
         return concentrations;
     }
-    
-    public String getLocalizedMaterialTypeName(Material m){
+
+    public String getLocalizedMaterialTypeName(Material m) {
         return m.getType().toString();
     }
 

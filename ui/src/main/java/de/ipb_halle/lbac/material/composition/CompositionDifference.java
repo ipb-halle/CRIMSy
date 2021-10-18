@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
-import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,6 +39,8 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
     private final List<Integer> materialIds_new = new ArrayList<>();
     private final List<Double> concentrations_old = new ArrayList<>();
     private final List<Double> concentrations_new = new ArrayList<>();
+    private final List<String> units_old = new ArrayList<>();
+    private final List<String> units_new = new ArrayList<>();
     private String action;
 
     public CompositionDifference(List<CompositionHistoryEntity> componentHistory, int materialId) {
@@ -51,6 +52,8 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
             materialIds_new.add(entity.getMaterialid_new());
             concentrations_old.add(entity.getConcentration_old());
             concentrations_new.add(entity.getConcentration_new());
+            units_old.add(entity.getUnit_old());
+            units_new.add(entity.getUnit_new());
         }
 
     }
@@ -84,12 +87,26 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
             Integer materialIdOld,
             Integer materialIdNew,
             Double comncentrationOld,
-            Double concentrationNew) {
+            Double concentrationNew,
+            String unitOld,
+            String unitNew) {
         this.materialIds_new.add(materialIdNew);
         this.materialIds_old.add(materialIdOld);
         this.concentrations_new.add(concentrationNew);
         this.concentrations_old.add(comncentrationOld);
+        this.units_old.add(unitOld);
+        this.units_new.add(unitNew);
+    }
 
+    public void addConcentrationDifference(
+            int materialId,
+            Double concentrationOld,
+            Double concentrationNew) {
+        addDifference(materialId, materialId, concentrationOld, concentrationNew, null, null);
+    }
+
+    public void addUnitDifference(int materialId, String unitOld, String unitNew) {
+        addDifference(materialId, materialId, null, null, unitOld, unitNew);
     }
 
     @Override
@@ -129,6 +146,14 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
 
     public List<Double> getConcentrations_new() {
         return concentrations_new;
+    }
+
+    public List<String> getUnits_old() {
+        return units_old;
+    }
+
+    public List<String> getUnits_new() {
+        return units_new;
     }
 
     /**

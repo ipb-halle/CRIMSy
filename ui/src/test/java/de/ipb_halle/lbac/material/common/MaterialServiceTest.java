@@ -643,8 +643,8 @@ public class MaterialServiceTest extends TestBase {
                 new StorageInformation(),
                 CompositionType.EXTRACT);
         composition.getIndices().add(new IndexEntry(2, "index-1", "de"));
-        composition.addComponent(struture1, 0d);
-        composition.addComponent(struture2, 0d);
+        composition.addComponent(struture1, 0d,null);
+        composition.addComponent(struture2, 0d,null);
         instance.saveMaterialToDB(composition, GlobalAdmissionContext.getPublicReadACL().getId(), project1.getDetailTemplates(), publicUser);
 
         //Load composition by direct name

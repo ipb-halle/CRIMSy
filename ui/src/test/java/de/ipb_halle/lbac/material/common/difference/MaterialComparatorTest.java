@@ -371,7 +371,7 @@ public class MaterialComparatorTest {
         MaterialComposition composition2 = createEmptyComposition();
 
         //UC1 -> add a new component
-        composition1.addComponent(structure1, 1d);
+        composition1.addComponent(structure1, 1d,null);
 
         List<MaterialDifference> diffs = instance.compareMaterial(composition2, composition1);
         checkDifference(diffs, 1);
@@ -383,7 +383,7 @@ public class MaterialComparatorTest {
         checkDiffEntity(diffs, 0, structure1.getId(), null, 1d, null);
 
         //UC3 -> swap components
-        composition2.addComponent(structure2, null);
+        composition2.addComponent(structure2, null,null);
         diffs = instance.compareMaterial(composition1, composition2);
         checkDifference(diffs, 2);
         checkDiffEntity(diffs, 0, null, structure2.getId(), null, null);
@@ -392,16 +392,16 @@ public class MaterialComparatorTest {
         //UC4 -> change concentrations
         composition1.getComponents().clear();
         composition2.getComponents().clear();
-        composition1.addComponent(structure1, .2d);
-        composition2.addComponent(structure1, .3d);
+        composition1.addComponent(structure1, .2d,null);
+        composition2.addComponent(structure1, .3d,null);
         diffs = instance.compareMaterial(composition1, composition2);
         checkDifference(diffs, 1);
         checkDiffEntity(diffs, 0, structure1.getId(), structure1.getId(), .2d, .3d);
         //UC5 -> add 2 components
         composition1.getComponents().clear();
         composition2.getComponents().clear();
-        composition2.addComponent(structure1, .2d);
-        composition2.addComponent(structure2, .3d);
+        composition2.addComponent(structure1, .2d,null);
+        composition2.addComponent(structure2, .3d,null);
         diffs = instance.compareMaterial(composition1, composition2);
         checkDifference(diffs, 2);
         checkDiffEntity(diffs, 0, null, structure1.getId(), null, .2d);

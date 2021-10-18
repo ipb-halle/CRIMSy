@@ -178,7 +178,9 @@ public class MaterialHistoryService implements Serializable {
             + "materialid_old, "
             + "materialid_new, "
             + "concentration_old, "
-            + "concentration_new "
+            + "concentration_new, "
+            + "unit_old, "
+            + "unit_new "
             + "FROM components_history "
             + "WHERE materialid=:mid";
     

@@ -22,12 +22,10 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 
 /**
  *
@@ -37,10 +35,9 @@ public class MaterialComposition extends Material {
 
     private static final long serialVersionUID = 1L;
     private final CompositionType compositionType;
-    
 
-    protected Map<Material, Double> components
-            = new TreeMap<>(Comparator.comparing(Material::getFirstName));
+    protected List<Concentration> components
+            = new ArrayList<>();
 
     public MaterialComposition(int projectId, CompositionType compositionType) {
         super(null, new ArrayList<>(), projectId, new HazardInformation(), new StorageInformation());
@@ -67,15 +64,15 @@ public class MaterialComposition extends Material {
 
     }
 
-    public MaterialComposition addComponent(Material comp, Double concentration) {
+    public MaterialComposition addComponent(Material comp, Double concentration, Unit unit) {
         if (!canHoldType(comp.getType())) {
             throw new IllegalArgumentException("Composition " + compositionType + " must not hold material of type " + comp.getType());
         }
-        components.put(comp, concentration);
+        components.add(new Concentration(comp, concentration, unit));
         return this;
     }
 
-    public Map<Material, Double> getComponents() {
+    public List<Concentration> getComponents() {
         return components;
     }
 
@@ -94,8 +91,8 @@ public class MaterialComposition extends Material {
         copy.setHistory(history);
         copy.setIndices(getCopiedIndices());
 
-        for (Material m : components.keySet()) {
-            copy.getComponents().put(m, components.get(m));
+        for (Concentration conc : components) {
+            copy.getComponents().add(new Concentration(conc.getMaterial(), conc.getConcentration(), conc.getUnit()));
         }
         return copy;
     }
@@ -115,10 +112,11 @@ public class MaterialComposition extends Material {
     @Override
     public List<MaterialCompositionEntity> createCompositionEntities() {
         List<MaterialCompositionEntity> entities = new ArrayList<>();
-        for (Material m : components.keySet()) {
+        for (Concentration m : components) {
             MaterialCompositionEntity entity = new MaterialCompositionEntity()
-                    .setId(new MaterialCompositionId(id, m.getId()));
-            entity.setConcentration(components.get(m));
+                    .setId(new MaterialCompositionId(id, m.getMaterialId()));
+            entity.setConcentration(m.getConcentration());
+            entity.setUnit(m.getUnitString());
             entities.add(entity);
         }
         entities.addAll(super.createCompositionEntities());
@@ -146,5 +144,4 @@ public class MaterialComposition extends Material {
         return compositionType;
     }
 
-   
 }

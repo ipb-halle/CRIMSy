@@ -71,9 +71,7 @@ public class MaterialCompositionBean implements Serializable {
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
         mode = Mode.EDIT;
-        for (Material m : comp.getComponents().keySet()) {
-            this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
-        }
+        this.concentrationsInComposition.addAll(comp.getComponents());
         this.choosenCompositionType = comp.getCompositionType();
     }
 

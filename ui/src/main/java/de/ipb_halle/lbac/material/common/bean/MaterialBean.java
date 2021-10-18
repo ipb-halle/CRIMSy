@@ -26,7 +26,6 @@ import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.sequence.Sequence;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Molecule;
@@ -362,7 +361,7 @@ public class MaterialBean implements Serializable {
                         storageInformationBuilder.build(),
                         compositionBean.getChoosenType());
                 for (Concentration c : compositionBean.getConcentrationsInComposition()) {
-                    composition.addComponent(c.getMaterial(), c.getConcentration());
+                    composition.addComponent(c.getMaterial(),c.getConcentration(),c.getUnit());
                 }
                 materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.SEQUENCE) {
@@ -387,7 +386,7 @@ public class MaterialBean implements Serializable {
                 MaterialComposition composition = (MaterialComposition) materialEditState.getMaterialToEdit();
                 composition.getComponents().clear();
                 for (Concentration c : compositionBean.getConcentrationsInComposition()) {
-                    composition.addComponent(c.getMaterial(), c.getConcentration());
+                    composition.addComponent(c.getMaterial(), c.getConcentration(),c.getUnit());
                 }
 
             }

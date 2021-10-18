@@ -17,11 +17,9 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
-import de.ipb_halle.lbac.material.biomaterial.*;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -59,6 +57,10 @@ public class CompositionHistoryEntity implements Serializable {
     private Double concentration_old;
     @Column
     private Double concentration_new;
+    @Column
+    private String unit_old;
+    @Column
+    private String unit_new;
 
     public String getDigest() {
         return digest;
@@ -140,6 +142,22 @@ public class CompositionHistoryEntity implements Serializable {
 
     public void setActorid(Integer actorid) {
         this.actorid = actorid;
+    }
+
+    public String getUnit_old() {
+        return unit_old;
+    }
+
+    public void setUnit_old(String unit_old) {
+        this.unit_old = unit_old;
+    }
+
+    public String getUnit_new() {
+        return unit_new;
+    }
+
+    public void setUnit_new(String unit_new) {
+        this.unit_new = unit_new;
     }
 
 }

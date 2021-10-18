@@ -39,6 +39,9 @@ public class MaterialCompositionEntity implements Serializable {
     @Column
     private Double concentration;
 
+    @Column
+    private String unit;
+
     public MaterialCompositionId getId() {
         return id;
     }
@@ -55,6 +58,14 @@ public class MaterialCompositionEntity implements Serializable {
     public MaterialCompositionEntity setConcentration(Double concentration) {
         this.concentration = concentration;
         return this;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
 }

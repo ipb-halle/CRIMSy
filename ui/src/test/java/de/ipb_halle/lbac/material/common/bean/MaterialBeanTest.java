@@ -488,7 +488,7 @@ public class MaterialBeanTest extends TestBase {
         result = materialService.loadReadableMaterials(requestBuilder.build());
         MaterialComposition composition = (MaterialComposition) result.getAllFoundObjects().get(0).getSearchable();
         Assert.assertEquals(1, composition.getComponents().size());
-        Assert.assertEquals(material2.getId(), composition.getComponents().keySet().iterator().next().getId());
+        Assert.assertEquals(material2.getId(), composition.getComponents().iterator().next().getMaterialId());
     }
 
     @Deployment

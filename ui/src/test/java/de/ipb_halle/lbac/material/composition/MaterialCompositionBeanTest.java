@@ -256,7 +256,7 @@ public class MaterialCompositionBeanTest extends TestBase {
     @Test
     public void test009_onTabChange() {
         Tab structureTab = new Tab();
-        structureTab.setTitle(MaterialType.STRUCTURE.toString());
+        structureTab.setTitle("search_category_STRUCTURE");
         Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
         bean.onTabChange(new TabChangeEvent(new UIViewRoot(), new BehaviorBase(), structureTab));
         Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
@@ -271,11 +271,11 @@ public class MaterialCompositionBeanTest extends TestBase {
         createMaterials();
 
         MaterialComposition composition = new MaterialComposition(project.getId(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(structureId1), .5d);
-        composition.addComponent(materialService.loadMaterialById(biomaterialId), null);
+        composition.addComponent(materialService.loadMaterialById(structureId1), .5d,null);
+        composition.addComponent(materialService.loadMaterialById(biomaterialId), null,null);
         //Remove structure 2
         CompositionDifference diff1 = new CompositionDifference("EDIT");
-        diff1.addDifference(structureId2, null, null, null);
+        diff1.addDifference(structureId2, null, null, null,null,null);
         Calendar cal = new GregorianCalendar();
         cal.set(2000, 8, 12);
         Date date1 = cal.getTime();
@@ -283,8 +283,8 @@ public class MaterialCompositionBeanTest extends TestBase {
         composition.getHistory().addDifference(diff1);
         //Add structure 1 and biomaterial 1
         CompositionDifference diff2 = new CompositionDifference("EDIT");
-        diff2.addDifference(null, structureId1, null, .75d);
-        diff2.addDifference(null, biomaterialId, null, null);
+        diff2.addDifference(null, structureId1, null, .75d,null,null);
+        diff2.addDifference(null, biomaterialId, null, null,null,null);
 
         cal.set(2000, 8, 10);
         Date date2 = cal.getTime();

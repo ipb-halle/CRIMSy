@@ -282,8 +282,8 @@ public class SearchServiceTest extends TestBase {
                 project1.getId(),
                 new HazardInformation(),
                 new StorageInformation(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(materialid1), 0d);
-        composition.addComponent(materialService.loadMaterialById(materialid2), 0d);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0d,null);
+        composition.addComponent(materialService.loadMaterialById(materialid2), 0d,null);
         materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(), publicUser);
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
@@ -474,9 +474,9 @@ public class SearchServiceTest extends TestBase {
     @Test
     public void test012_searchForComposition() {
         MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d);
-        composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d);
-        composition.addComponent(bioMaterial, 0.3d);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d,null);
+        composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d,null);
+        composition.addComponent(bioMaterial, 0.3d,null);
 
         materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);
 
