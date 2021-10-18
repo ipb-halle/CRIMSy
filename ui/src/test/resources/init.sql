@@ -859,3 +859,20 @@ CREATE TABLE sequences (
     circular BOOLEAN,
     annotations VARCHAR
 );
+
+CREATE TABLE sequences_history(
+    id INTEGER NOT NULL REFERENCES sequences(id),
+    actorid INTEGER NOT NULL REFERENCES usersgroups(id),
+    mdate TIMESTAMP NOT NULL,
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    sequenceString_old VARCHAR,
+    sequenceString_new VARCHAR,
+    sequenceType_old VARCHAR,
+    sequenceType_new VARCHAR,
+    circular_old BOOLEAN,
+    circular_new BOOLEAN,
+    annotations_old VARCHAR,
+    annotations_new VARCHAR,
+    PRIMARY KEY(id,actorid,mdate)
+);

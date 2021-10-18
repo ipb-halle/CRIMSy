@@ -22,6 +22,8 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.history.SequenceDifference;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
@@ -299,6 +301,19 @@ public class MaterialEditSaver implements Serializable {
     protected void updateBioMaterialOverview() {
         BioMaterial b = (BioMaterial) newMaterial;
         materialService.getEm().merge(b.createEntity());
+    }
+
+    public void saveEditedSequence() {
+        SequenceDifference diff = comparator.getDifferenceOfType(diffs, SequenceDifference.class);
+        if (diff != null) {
+            materialService.getEm().merge(diff.createEntity());
+            updateSequenceOverview();
+        }
+    }
+
+    private void updateSequenceOverview() {
+        Sequence sequence = (Sequence) newMaterial;
+        materialService.getEm().merge(sequence.createEntity());
     }
 
     protected void saveMaterialOverviewDifference(MaterialOverviewDifference diff) {

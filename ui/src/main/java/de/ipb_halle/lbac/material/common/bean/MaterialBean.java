@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.sequence.Sequence;
+import de.ipb_halle.lbac.material.sequence.SequenceData;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.structure.Molecule;
@@ -229,7 +230,9 @@ public class MaterialBean implements Serializable {
                 compositionBean.startCompositionEdit((MaterialComposition) m);
             }
             if (m.getType() == MaterialType.SEQUENCE) {
-                //sequenceInfos = new SequenceInformation((Sequence) m);
+                Sequence sequence = (Sequence) m;
+                sequenceInfos = new SequenceInformation();
+                sequenceInfos.setSequenceData(sequence.getSequenceData());
             }
 
             storageInformationBuilder = new StorageInformationBuilder(
@@ -367,7 +370,14 @@ public class MaterialBean implements Serializable {
                 }
                 materialService.saveMaterialToDB(composition, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
             } else if (currentMaterialType == MaterialType.SEQUENCE) {
-                // TODO
+                Sequence sequence = new Sequence(
+                        null,
+                        materialNameBean.getNames(),
+                        materialEditState.getCurrentProject().getId(),
+                        hazards,
+                        storageInformationBuilder.build(),
+                        sequenceInfos.getSequenceData());
+                materialService.saveMaterialToDB(sequence, materialEditState.getCurrentProject().getACList().getId(), new HashMap<>(), userBean.getCurrentAccount());
             }
         } else {
             throw new Exception("Material not valide");
@@ -390,7 +400,10 @@ public class MaterialBean implements Serializable {
                 for (Concentration c : compositionBean.getConcentrationsInComposition()) {
                     composition.addComponent(c.getMaterial(), c.getConcentration());
                 }
-
+            }
+            if (materialEditState.getMaterialToEdit().getType() == MaterialType.SEQUENCE) {
+                Sequence sequence = (Sequence) materialEditState.getMaterialToEdit();
+                sequence.setSequenceData(sequenceInfos.getSequenceData());
             }
             materialService.saveEditedMaterial(
                     materialEditState.getMaterialToEdit(),
@@ -524,6 +537,14 @@ public class MaterialBean implements Serializable {
             }
             count++;
         }
+
+        if (currentMaterialType == MaterialType.SEQUENCE) {
+            if (!sequenceInfos.isSequenceTypeSelected()) {
+                isValide = false;
+                errorMessages.add("Please choose the sequence type.");
+            }
+        }
+
         return isValide;
     }
 

@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.sequence;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -28,7 +30,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sequences")
-public class SequenceEntity {
+public class SequenceEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     @Id
     private Integer id;
 
@@ -39,7 +43,7 @@ public class SequenceEntity {
     private String sequenceType;
 
     @Column
-    private boolean circular = false;
+    private Boolean circular;
 
     @Column
     private String annotations;
@@ -68,11 +72,11 @@ public class SequenceEntity {
         this.sequenceType = sequenceType;
     }
 
-    public boolean isCircular() {
+    public Boolean isCircular() {
         return circular;
     }
 
-    public void setCircular(boolean circular) {
+    public void setCircular(Boolean circular) {
         this.circular = circular;
     }
 

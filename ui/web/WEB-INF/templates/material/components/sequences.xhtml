@@ -49,7 +49,7 @@
                                     style="margin-right:20px" />
                                 <p:selectOneRadio
                                     id="sequenceTypeRadioId"
-                                    value="#{materialBean.sequenceInfos.data.sequenceType}"
+                                    value="#{materialBean.sequenceInfos.sequenceType}"
                                     disabled="#{materialBean.sequenceInfos.sequenceTypeSelected}">
                                     <f:selectItems
                                         value="#{materialBean.sequenceInfos.possibleSequenceTypes}"
@@ -74,16 +74,16 @@
                             </h:panelGroup>
                             <b:panelGrid columns="1">
                                 <b:inputText
-                                    value="#{materialBean.sequenceInfos.data.sequenceLength}"
+                                    value="#{materialBean.sequenceInfos.sequenceData.sequenceLength}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequenceLength}"
                                     disabled="true" />
                                 <b:inputTextarea
-                                    value="#{materialBean.sequenceInfos.data.sequenceString}"
+                                    value="#{materialBean.sequenceInfos.sequenceData.sequenceString}"
                                     label="#{msgs.materialCreation_panelSequenceInfos_sequence}"
                                     disabled="true" />
                                 <!-- Deprecated: The POJO class SequenceAnnotation is not used anymore.
                                 <b:dataTable
-                                    value="#{materialBean.sequenceInfos.data.annotations}"
+                                    value="#{materialBean.sequenceInfos.sequenceData.annotations}"
                                     paginated="false"
                                     var="feature"
                                     searching="false"

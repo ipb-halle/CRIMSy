@@ -83,11 +83,12 @@ public class SequenceSaveAndLoadTest extends TestBase {
 
     @Test
     public void test001_saveAndLoadSequence() {
-        SequenceData data = new SequenceData();
-        data.setSequenceString("AGTTAAGCGTGA");
-        data.setSequenceType(SequenceType.PROTEIN);
-        data.setCircular(true);
-        data.setAnnotations("some features in JSON format");
+        SequenceData data = SequenceData.builder()
+                .sequenceString("AGTTAAGCGTGA")
+                .sequenceType(SequenceType.PROTEIN)
+                .circular(true)
+                .annotations("some features in JSON format")
+                .build();
         Sequence sequence = new Sequence(null, new ArrayList<>(), project.getId(),
                 new HazardInformation(), new StorageInformation(), data);
 
@@ -97,10 +98,10 @@ public class SequenceSaveAndLoadTest extends TestBase {
         Sequence loadedSequence = (Sequence) materialService.loadMaterialById(sequence.getId());
 
         assertEquals(sequence.getId(), loadedSequence.getId());
-        assertEquals("AGTTAAGCGTGA", loadedSequence.getData().getSequenceString());
-        assertEquals(SequenceType.PROTEIN, loadedSequence.getData().getSequenceType());
-        assertTrue(loadedSequence.getData().isCircular());
-        assertEquals("some features in JSON format", loadedSequence.getData().getAnnotations());
+        assertEquals("AGTTAAGCGTGA", loadedSequence.getSequenceData().getSequenceString());
+        assertEquals(SequenceType.PROTEIN, loadedSequence.getSequenceData().getSequenceType());
+        assertTrue(loadedSequence.getSequenceData().isCircular());
+        assertEquals("some features in JSON format", loadedSequence.getSequenceData().getAnnotations());
     }
 
     @Deployment

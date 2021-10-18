@@ -452,6 +452,7 @@ public class TestBase implements Serializable {
         entityManagerService.doSqlUpdate("DELETE FROM EFFECTIVE_TAXONOMY");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy_history");
         entityManagerService.doSqlUpdate("DELETE FROM taxonomy");
+        entityManagerService.doSqlUpdate("DELETE FROM sequences_history");
         entityManagerService.doSqlUpdate("DELETE FROM sequences");
 
         entityManagerService.doSqlUpdate("DELETE FROM compositions");

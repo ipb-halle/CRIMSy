@@ -33,11 +33,11 @@ public class SequenceLoader implements MaterialLoader {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Sequence loadMaterial(MaterialEntity entity, EntityManager em,
+    public Sequence loadMaterial(MaterialEntity materialEntity, EntityManager em,
             MaterialService materialService, TaxonomyService taxoService,
             TissueService tissueService) {
         SequenceEntity sequenceEntity = em.find(SequenceEntity.class,
-                entity.getMaterialid());
-        return Sequence.fromEntities(entity, sequenceEntity);
+                materialEntity.getMaterialid());
+        return Sequence.fromEntities(materialEntity, sequenceEntity);
     }
 }

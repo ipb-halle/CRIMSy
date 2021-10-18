@@ -35,9 +35,26 @@ INSERT INTO materialInformations VALUES(13,5,8,false);
 CREATE TABLE sequences (
         id INTEGER PRIMARY KEY NOT NULL REFERENCES materials(materialid),
         sequenceString VARCHAR,
-        sequenceType VARCHAR,
+        sequenceType VARCHAR NOT NULL,
         circular BOOLEAN,
         annotations VARCHAR
+);
+
+CREATE TABLE sequences_history(
+    id INTEGER NOT NULL REFERENCES sequences(id),
+    actorid INTEGER NOT NULL REFERENCES usersgroups(id),
+    mdate TIMESTAMP NOT NULL,
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    sequenceString_old VARCHAR,
+    sequenceString_new VARCHAR,
+    sequenceType_old VARCHAR,
+    sequenceType_new VARCHAR,
+    circular_old BOOLEAN,
+    circular_new BOOLEAN,
+    annotations_old VARCHAR,
+    annotations_new VARCHAR,
+    PRIMARY KEY(id,actorid,mdate)
 );
 
 COMMIT TRANSACTION;

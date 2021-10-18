@@ -19,11 +19,8 @@ package de.ipb_halle.lbac.material.sequence;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import de.ipb_halle.molecularfaces.component.openvectoreditor.OpenVectorEditorCore;
 
@@ -35,39 +32,48 @@ import de.ipb_halle.molecularfaces.component.openvectoreditor.OpenVectorEditorCo
 public class SequenceInformation implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String sequenceJson;
-    private SequenceData data;
-    private List<SequenceType> possibleSequenceTypes = Arrays
-            .asList(SequenceType.values());
+    private SequenceType sequenceType = null;
+    private String sequenceJson = "";
+    private SequenceData sequenceData = SequenceData.builder().build();
 
-    public SequenceInformation() {
-        data = new SequenceData();
-    }
-
-    public SequenceInformation(SequenceData sequenceData) {
-        this.data = sequenceData;
-
-        try {
-            sequenceJson = new OpenVectorEditorJsonConverter().sequenceDataToJson(data);
-        } catch (IOException e) {
-            // TODO
-        }
-    }
-
-    public boolean isSequenceTypeSelected() {
-        return data.getSequenceType() != null;
-    }
+    private static final List<SequenceType> POSSIBLE_SEQUENCE_TYPES = Arrays.asList(SequenceType.values());
+    private final OpenVectorEditorJsonConverter converter = new OpenVectorEditorJsonConverter();
 
     public void actionSelectSequenceType() {
-        if (data.getSequenceType() == SequenceType.PROTEIN) {
+        if (sequenceType == SequenceType.PROTEIN) {
             sequenceJson = OpenVectorEditorCore.EMPTY_PROTEIN_SEQUENCE_JSON;
         } else {
             sequenceJson = "";
         }
     }
 
-    public SequenceData getData() {
-        return data;
+    /*
+     * Getters/Setters
+     */
+    public boolean isSequenceTypeSelected() {
+        return sequenceType != null;
+    }
+
+    public SequenceType getSequenceType() {
+        return sequenceType;
+    }
+
+    public void setSequenceType(SequenceType sequenceType) {
+        this.sequenceType = sequenceType;
+    }
+
+    public SequenceData getSequenceData() {
+        return sequenceData;
+    }
+
+    public void setSequenceData(SequenceData sequenceData) {
+        this.sequenceData = sequenceData;
+        this.sequenceType = sequenceData.getSequenceType();
+        try {
+            sequenceJson = converter.sequenceDataToJson(sequenceData);
+        } catch (IOException e) {
+            // TODO
+        }
     }
 
     public String getSequenceJson() {
@@ -76,9 +82,14 @@ public class SequenceInformation implements Serializable {
 
     public void setSequenceJson(String sequenceJson) {
         this.sequenceJson = sequenceJson;
+        try {
+            sequenceData = converter.jsonToSequenceData(sequenceJson, sequenceType);
+        } catch (OpenVectorEditorJsonConverterException | IOException e) {
+            // TODO
+        }
     }
 
     public List<SequenceType> getPossibleSequenceTypes() {
-        return possibleSequenceTypes;
+        return POSSIBLE_SEQUENCE_TYPES;
     }
 }

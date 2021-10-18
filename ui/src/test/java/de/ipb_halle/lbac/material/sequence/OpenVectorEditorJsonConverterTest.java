@@ -55,12 +55,13 @@ public class OpenVectorEditorJsonConverterTest {
 
     @Test
     public void test001b_sequenceToJsonWithDNASequenceLinearWithoutFeatures() throws Exception {
-        data = new SequenceData();
-        data.setSequenceString("ATGGGCATCTGA");
-        data.setSequenceType(SequenceType.DNA);
-        data.setCircular(false);
-//        data.setAnnotations(new ArrayList<>());
-        data.setAnnotations("");
+        data = SequenceData.builder()
+                .sequenceString("ATGGGCATCTGA")
+                .sequenceType(SequenceType.DNA)
+                .circular(false)
+//                .annotations(new ArrayList<>())
+                .annotations("")
+                .build();
 
         json = readResourceFile("sequences/out_DNASequenceLinearWithoutFeatures.json");
         convertedJson = converter.sequenceDataToJson(data);
@@ -114,10 +115,6 @@ public class OpenVectorEditorJsonConverterTest {
 
     @Test
     public void test002b_sequenceToJsonWithDNASequenceCircularWithOneFeature() throws Exception {
-        data = new SequenceData();
-        data.setSequenceString("ATGGGCATCTGA");
-        data.setSequenceType(SequenceType.DNA);
-        data.setCircular(true);
 //        annotations = new ArrayList<>();
 //        annotation = new SequenceAnnotation();
 //        annotation.setStart(3);
@@ -137,7 +134,12 @@ public class OpenVectorEditorJsonConverterTest {
                 + "      \"color\": \"#E419DA\"\n"
                 + "    }\n"
                 + "  }";
-        data.setAnnotations(annotations);
+        data = SequenceData.builder()
+                .sequenceString("ATGGGCATCTGA")
+                .sequenceType(SequenceType.DNA)
+                .circular(true)
+                .annotations(annotations)
+                .build();
 
         json = readResourceFile("sequences/out_DNASequenceCircularWithOneFeature.json");
         convertedJson = converter.sequenceDataToJson(data);
@@ -233,10 +235,6 @@ public class OpenVectorEditorJsonConverterTest {
 
     @Test
     public void test003b_sequenceToJsonWithDNASequenceLinearWithThreeFeatures() throws Exception {
-        data = new SequenceData();
-        data.setSequenceString("ATGGGCATCGCGTAAAGCGGTTGA");
-        data.setSequenceType(SequenceType.DNA);
-        data.setCircular(false);
 //        annotations = new ArrayList<>();
 //
 //        annotation = new SequenceAnnotation();
@@ -266,32 +264,37 @@ public class OpenVectorEditorJsonConverterTest {
 //        annotation.setColor("#D44FC9");
 //        annotations.add(annotation);
         annotations = "{\n"
-                + "    \"feature_1\": {\n"
-                + "      \"start\": 3,\n"
-                + "      \"end\": 8,\n"
-                + "      \"forward\": true,\n"
-                + "      \"type\": \"tag\",\n"
-                + "      \"name\": \"My Feature ABCDEF\",\n"
-                + "      \"color\": \"#E419DA\"\n"
-                + "    },\n"
-                + "    \"feature_2\": {\n"
-                + "      \"start\": 6,\n"
-                + "      \"end\": 17,\n"
-                + "      \"forward\": false,\n"
-                + "      \"type\": \"conserved\",\n"
-                + "      \"name\": \"Second feature that overlaps with the first feature\",\n"
-                + "      \"color\": \"#A3A5F0\"\n"
-                + "    },\n"
-                + "    \"feature_3\": {\n"
-                + "      \"start\": 21,\n"
-                + "      \"end\": 23,\n"
-                + "      \"forward\": true,\n"
-                + "      \"type\": \"stop\",\n"
-                + "      \"name\": \"Stop codon\",\n"
-                + "      \"color\": \"#D44FC9\"\n"
-                + "    }\n"
-                + "  }";
-        data.setAnnotations(annotations);
+              + "    \"feature_1\": {\n"
+              + "      \"start\": 3,\n"
+              + "      \"end\": 8,\n"
+              + "      \"forward\": true,\n"
+              + "      \"type\": \"tag\",\n"
+              + "      \"name\": \"My Feature ABCDEF\",\n"
+              + "      \"color\": \"#E419DA\"\n"
+              + "    },\n"
+              + "    \"feature_2\": {\n"
+              + "      \"start\": 6,\n"
+              + "      \"end\": 17,\n"
+              + "      \"forward\": false,\n"
+              + "      \"type\": \"conserved\",\n"
+              + "      \"name\": \"Second feature that overlaps with the first feature\",\n"
+              + "      \"color\": \"#A3A5F0\"\n"
+              + "    },\n"
+              + "    \"feature_3\": {\n"
+              + "      \"start\": 21,\n"
+              + "      \"end\": 23,\n"
+              + "      \"forward\": true,\n"
+              + "      \"type\": \"stop\",\n"
+              + "      \"name\": \"Stop codon\",\n"
+              + "      \"color\": \"#D44FC9\"\n"
+              + "    }\n"
+              + "  }";
+        data = SequenceData.builder()
+                .sequenceString("ATGGGCATCGCGTAAAGCGGTTGA")
+                .sequenceType(SequenceType.DNA)
+                .circular(false)
+                .annotations(annotations)
+                .build();
 
         json = readResourceFile("sequences/out_DNASequenceLinearWithThreeFeatures.json");
         convertedJson = converter.sequenceDataToJson(data);
@@ -342,10 +345,6 @@ public class OpenVectorEditorJsonConverterTest {
 
     @Test
     public void test004b_sequenceToJsonWithProteinSequenceWithOneFeature() throws Exception {
-        data = new SequenceData();
-        data.setSequenceString("MKIRQHHFVADEGFW");
-        data.setSequenceType(SequenceType.PROTEIN);
-        data.setCircular(false);
 //        annotations = new ArrayList<>();
 //        annotation = new SequenceAnnotation();
 //        annotation.setStart(6);
@@ -356,16 +355,21 @@ public class OpenVectorEditorJsonConverterTest {
 //        annotation.setColor("#B3FF00");
 //        annotations.add(annotation);
         annotations = "{\n"
-                + "    \"feature_1\": {\n"
-                + "      \"start\": 6,\n"
-                + "      \"end\": 35,\n"
-                + "      \"forward\": true,\n"
-                + "      \"type\": \"misc_structure\",\n"
-                + "      \"name\": \"alpha helix\",\n"
-                + "      \"color\": \"#B3FF00\"\n"
-                + "    }\n"
-                + "  }";
-        data.setAnnotations(annotations);
+              + "    \"feature_1\": {\n"
+              + "      \"start\": 6,\n"
+              + "      \"end\": 35,\n"
+              + "      \"forward\": true,\n"
+              + "      \"type\": \"misc_structure\",\n"
+              + "      \"name\": \"alpha helix\",\n"
+              + "      \"color\": \"#B3FF00\"\n"
+              + "    }\n"
+              + "  }";
+        data = SequenceData.builder()
+                .sequenceString("MKIRQHHFVADEGFW")
+                .sequenceType(SequenceType.PROTEIN)
+                .circular(false)
+                .annotations(annotations)
+                .build();
 
         json = readResourceFile("sequences/out_ProteinSequenceWithOneFeature.json");
         convertedJson = converter.sequenceDataToJson(data);

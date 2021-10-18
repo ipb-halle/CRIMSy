@@ -37,25 +37,25 @@ import java.util.Objects;
 public class Sequence extends Material {
     private static final long serialVersionUID = 1L;
 
-    private SequenceData data;
+    private SequenceData sequenceData;
 
     public Sequence(
             Integer id,
             List<MaterialName> names,
-            int projectId,
+            Integer projectId,
             HazardInformation hazards,
             StorageInformation storageInfos,
             SequenceData sequenceData) {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.SEQUENCE;
 
-        data = sequenceData;
+        this.sequenceData = sequenceData;
     }
 
     public static Sequence fromEntities(MaterialEntity materialEntity, SequenceEntity sequenceEntity) {
         Integer id = sequenceEntity.getId();
         List<MaterialName> names = new ArrayList<>();
-        int projectId = materialEntity.getProjectid();
+        Integer projectId = materialEntity.getProjectid();
         HazardInformation hazards = new HazardInformation();
         StorageInformation storageInfos = new StorageInformation();
 
@@ -65,13 +65,17 @@ public class Sequence extends Material {
     }
 
     private static SequenceData sequenceDatafromSequenceEntity(SequenceEntity entity) {
-        SequenceData result = new SequenceData();
-        result.setSequenceString(entity.getSequenceString());
-        result.setSequenceType(SequenceType.valueOf(entity.getSequenceType()));
-        result.setCircular(entity.isCircular());
-        result.setAnnotations(entity.getAnnotations());
+        SequenceData.Builder builder = SequenceData.builder();
+        builder.sequenceString(entity.getSequenceString());
+        builder.circular(entity.isCircular());
+        builder.annotations(entity.getAnnotations());
 
-        return result;
+        String type = entity.getSequenceType();
+        if (type != null) {
+            builder.sequenceType(SequenceType.valueOf(type));
+        }
+
+        return builder.build();
     }
 
     @Override
@@ -82,7 +86,7 @@ public class Sequence extends Material {
                 projectId,
                 hazards.copy(),
                 storageInformation.copy(),
-                new SequenceData(data));
+                SequenceData.builder(sequenceData).build());
 
         copy.setIndices(getCopiedIndices());
         copy.setNames(getCopiedNames());
@@ -98,11 +102,11 @@ public class Sequence extends Material {
     @Override
     public SequenceEntity createEntity() {
         SequenceEntity entity = new SequenceEntity();
-        entity.setId(this.getId());
-        entity.setSequenceString(data.getSequenceString());
-        entity.setSequenceType(data.getSequenceType().name());
-        entity.setCircular(data.isCircular());
-        entity.setAnnotations(data.getAnnotations());
+        entity.setId(id);
+        entity.setSequenceString(sequenceData.getSequenceString());
+        entity.setSequenceType(sequenceData.getSequenceType().name());
+        entity.setCircular(sequenceData.isCircular());
+        entity.setAnnotations(sequenceData.getAnnotations());
 
         return entity;
     }
@@ -112,8 +116,8 @@ public class Sequence extends Material {
         if (!(other instanceof Sequence)) {
             return false;
         }
-        Sequence otherUser = (Sequence) other;
-        return Objects.equals(otherUser.getId(), this.getId());
+        Sequence otherSequence = (Sequence) other;
+        return Objects.equals(otherSequence.getId(), this.getId());
     }
 
     @Override
@@ -121,11 +125,11 @@ public class Sequence extends Material {
         return new Type(SearchTarget.MATERIAL, MaterialType.SEQUENCE);
     }
 
-    public SequenceData getData() {
-        return data;
+    public SequenceData getSequenceData() {
+        return sequenceData;
     }
 
-    public void setData(SequenceData data) {
-        this.data = data;
+    public void setSequenceData(SequenceData data) {
+        this.sequenceData = data;
     }
 }

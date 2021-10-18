@@ -29,11 +29,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author flange
  */
 public class OpenVectorEditorJsonConverter {
-    public SequenceData jsonToSequenceData(String json,
-            SequenceType sequenceType)
-            throws OpenVectorEditorJsonConverterException,
-            JsonProcessingException, IOException {
-        SequenceData result = new SequenceData();
+    public SequenceData jsonToSequenceData(String json, SequenceType sequenceType)
+            throws OpenVectorEditorJsonConverterException, JsonProcessingException, IOException {
+        SequenceData.Builder builder = SequenceData.builder();
+
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
@@ -45,16 +44,16 @@ public class OpenVectorEditorJsonConverter {
                 throw new OpenVectorEditorJsonConverterException(
                         "Not a protein sequence.");
             }
-            result.setSequenceString(root.at("/proteinSequence").asText());
+            builder.sequenceString(root.at("/proteinSequence").asText());
         } else {
             if (isProteinFromJson) {
                 throw new OpenVectorEditorJsonConverterException(
                         "Not a nucleotide sequence.");
             }
-            result.setSequenceString(root.at("/sequence").asText());
+            builder.sequenceString(root.at("/sequence").asText());
         }
-        result.setSequenceType(sequenceType);
-        result.setCircular(root.at("/circular").asBoolean(false));
+        builder.sequenceType(sequenceType);
+        builder.circular(root.at("/circular").asBoolean(false));
 
 //        List<SequenceAnnotation> annotations = new ArrayList<>();
 //        for (JsonNode featureNode : root.at("/features")) {
@@ -63,9 +62,9 @@ public class OpenVectorEditorJsonConverter {
 //            annotations.add(annotation);
 //        }
         String annotations = root.at("/features").toString();
-        result.setAnnotations(annotations);
+        builder.annotations(annotations);
 
-        return result;
+        return builder.build();
     }
 
     public String sequenceDataToJson(SequenceData data) throws IOException {
@@ -78,7 +77,13 @@ public class OpenVectorEditorJsonConverter {
         } else {
             root.put("sequence", data.getSequenceString());
         }
-        root.put("circular", data.isCircular());
+
+        Boolean isCircular = data.isCircular();
+        if (isCircular == null) {
+            root.put("circular", false);
+        } else {
+            root.put("circular", isCircular);
+        }
 
 //        int i = 1;
 //        for (SequenceAnnotation annotation : data.getAnnotations()) {

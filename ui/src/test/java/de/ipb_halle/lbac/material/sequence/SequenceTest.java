@@ -46,11 +46,12 @@ public class SequenceTest {
 
     @Before
     public void init() {
-        data = new SequenceData();
-        data.setSequenceString("AGTTAAGCGTGA");
-        data.setSequenceType(SequenceType.PROTEIN);
-        data.setCircular(true);
-        data.setAnnotations("no features ;)");
+        data = SequenceData.builder()
+                .sequenceString("AGTTAAGCGTGA")
+                .sequenceType(SequenceType.PROTEIN)
+                .circular(true)
+                .annotations("no features ;)")
+                .build();
         sequence = new Sequence(21, new ArrayList<>(), 42, new HazardInformation(),
                 new StorageInformation(), data);
     }
@@ -58,7 +59,7 @@ public class SequenceTest {
     @Test
     public void test001_copyMaterial() {
         Sequence copy = sequence.copyMaterial();
-        SequenceData copiedData = copy.getData();
+        SequenceData copiedData = copy.getSequenceData();
 
         assertNotSame(sequence, copy);
         assertNotSame(data, copiedData);
@@ -102,14 +103,14 @@ public class SequenceTest {
 
     @Test
     public void test005_getAndSetData() {
-        assertSame(data, sequence.getData());
-        SequenceData newData = new SequenceData();
-        sequence.setData(newData);
-        assertSame(newData, sequence.getData());
+        assertSame(data, sequence.getSequenceData());
+        SequenceData newData = SequenceData.builder().build();
+        sequence.setSequenceData(newData);
+        assertSame(newData, sequence.getSequenceData());
     }
     
     @Test
-    public void test006_fromEntity() {
+    public void test006_fromEntities() {
         MaterialEntity materialEntity = new MaterialEntity();
         SequenceEntity sequenceEntity = new SequenceEntity();
         sequenceEntity.setId(42);
@@ -121,9 +122,9 @@ public class SequenceTest {
         Sequence result = Sequence.fromEntities(materialEntity, sequenceEntity);
         
         assertEquals(42, result.getId());
-        assertEquals("AGTTAAGCGTGA", result.getData().getSequenceString());
-        assertEquals(SequenceType.PROTEIN, result.getData().getSequenceType());
-        assertTrue(result.getData().isCircular());
-        assertEquals("some features", result.getData().getAnnotations());
+        assertEquals("AGTTAAGCGTGA", result.getSequenceData().getSequenceString());
+        assertEquals(SequenceType.PROTEIN, result.getSequenceData().getSequenceType());
+        assertTrue(result.getSequenceData().isCircular());
+        assertEquals("some features", result.getSequenceData().getAnnotations());
     }
 }
