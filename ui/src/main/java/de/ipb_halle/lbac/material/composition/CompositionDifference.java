@@ -55,8 +55,8 @@ public class CompositionDifference implements Serializable, MaterialDifference, 
             units_old.add(entity.getUnit_old());
             units_new.add(entity.getUnit_new());
         }
-
     }
+    
 
     public CompositionDifference(String action) {
         this.action = action;

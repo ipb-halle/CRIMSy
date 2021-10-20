@@ -104,9 +104,12 @@ public class CompositionHistoryController implements HistoryController<Compositi
         if (!compositionBean.isMaterialAlreadyInComposition(materialId)) {
             addNewMaterialToComposition(materialId, oldConcentration, unit);
         } else {
-            compositionBean.getConcentrationWithMaterial(materialId).setConcentration(oldConcentration);
+            compositionBean.getConcentrationWithMaterial(materialId).setConcentration(oldConcentration);            
+            compositionBean.getConcentrationWithMaterial(materialId).setUnit(unit);
         }
     }
+    
+   
 
     private void addNewMaterialToComposition(int materialId, Double concentration, Unit unit) {
         Material material = getMaterialWithPermissionCheck(materialId);

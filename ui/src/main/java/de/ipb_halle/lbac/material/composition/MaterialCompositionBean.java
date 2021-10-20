@@ -25,6 +25,8 @@ import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.Quality;
+import de.ipb_halle.lbac.util.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,6 +70,14 @@ public class MaterialCompositionBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+    public MaterialCompositionBean(MaterialService materialService, MessagePresenter presenter, UserBean userBean) {
+        this.materialService = materialService;
+        this.presenter = presenter;
+        this.userBean = userBean;
+    }
+
+    
+    
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
         mode = Mode.EDIT;
@@ -282,6 +292,10 @@ public class MaterialCompositionBean implements Serializable {
 
     public void setActiveIndex(int activeIndex) {
         this.activeIndex = activeIndex;
+    }
+
+    public List<Unit> getAvailableAmountUnits() {
+        return Unit.getUnitsOfQuality(Quality.AMOUNT_OF_SUBSTANCE, Quality.PERCENT_CONCENTRATION, Quality.MOLAR_MASS, Quality.VOLUME);
     }
 
 }

@@ -113,6 +113,12 @@ public class MaterialBeanMock extends MaterialBean {
     public void setTaxonomyController(TaxonomySelectionController taxonomyController) {
         this.taxonomyController = taxonomyController;
     }
+
+    public void setCompositionBean(MaterialCompositionBean compositionBean) {
+        this.compositionBean = compositionBean;
+    }
+    
+    
     
     
 

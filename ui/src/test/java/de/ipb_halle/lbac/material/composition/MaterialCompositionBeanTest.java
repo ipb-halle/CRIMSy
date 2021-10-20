@@ -28,28 +28,19 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.items.bean.ItemBean;
-import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.project.ProjectBean;
-import de.ipb_halle.lbac.project.ProjectEditBean;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -263,7 +254,8 @@ public class MaterialCompositionBeanTest extends TestBase {
     }
 
     /**
-     * (S1,B1) -> (S1,S2,B1) -> (S1,B1)
+     * ([S2:g:0.7]) -> ([S1:null,0.75],[S2,null,null],[B1,null,0.3]) ->
+     * ([S1:g:0.5],[B1:null,null])
      */
     @Test
     public void test010_changeHistoryState() {
@@ -271,11 +263,12 @@ public class MaterialCompositionBeanTest extends TestBase {
         createMaterials();
 
         MaterialComposition composition = new MaterialComposition(project.getId(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(structureId1), .5d,null);
-        composition.addComponent(materialService.loadMaterialById(biomaterialId), null,null);
-        //Remove structure 2
+        composition.addComponent(materialService.loadMaterialById(structureId1), .5d, Unit.getUnit("g"));
+        composition.addComponent(materialService.loadMaterialById(biomaterialId), null, null);
+        //Remove structure 2 and change unit of s1
         CompositionDifference diff1 = new CompositionDifference("EDIT");
-        diff1.addDifference(structureId2, null, null, null,null,null);
+        diff1.addDifference(structureId2, null, null, null, null, null);
+        diff1.addUnitDifference(structureId1, null, "g");
         Calendar cal = new GregorianCalendar();
         cal.set(2000, 8, 12);
         Date date1 = cal.getTime();
@@ -283,8 +276,8 @@ public class MaterialCompositionBeanTest extends TestBase {
         composition.getHistory().addDifference(diff1);
         //Add structure 1 and biomaterial 1
         CompositionDifference diff2 = new CompositionDifference("EDIT");
-        diff2.addDifference(null, structureId1, null, .75d,null,null);
-        diff2.addDifference(null, biomaterialId, null, null,null,null);
+        diff2.addDifference(null, structureId1, null, .75d, null, null);
+        diff2.addDifference(null, biomaterialId, null, null, null, null);
 
         cal.set(2000, 8, 10);
         Date date2 = cal.getTime();
@@ -318,8 +311,12 @@ public class MaterialCompositionBeanTest extends TestBase {
         Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
         Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
         Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
-
+        Concentration c = getConcentrationById(structureId1);
+        Assert.assertEquals("g", c.getUnit().toString());
+        Assert.assertEquals(.5d, c.getConcentration(), .1);
     }
+    
+    
 
     private boolean containsId(List<Concentration> concentrations, int id) {
         for (Concentration c : concentrations) {
@@ -328,6 +325,15 @@ public class MaterialCompositionBeanTest extends TestBase {
             }
         }
         return false;
+    }
+
+    private Concentration getConcentrationById(int id) {
+        for (Concentration c : bean.getConcentrationsInComposition()) {
+            if (c.getMaterialId() == id) {
+                return c;
+            }
+        }
+        return null;
     }
 
     @Deployment
