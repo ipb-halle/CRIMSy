@@ -19,7 +19,6 @@ package de.ipb_halle.lbac.material.common.bean.history;
 
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
-import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.MaterialCreator;
@@ -27,12 +26,9 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
-import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -77,64 +73,17 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class HistoryOperationCompositionTest extends TestBase {
+public class HistoryOperationCompositionTest extends HistoryOperationTest {
 
     private static final long serialVersionUID = 1L;
-
-    @Inject
-    private HazardService hazardService;
-    @Inject
-    private MaterialService materialService;
-    @Inject
-    private TaxonomyService taxonomyService;
-    @Inject
-    private TissueService tissueService;
-    @Inject
-    private ACListService aclistService;
-
-    List<IndexEntry> indices;
-    BioMaterial biomaterial;
-    Date currentDate;
-    MaterialEditState mes;
-    HistoryOperation instance;
-    MaterialIndexDifference mid;
-    MaterialIndexBean mib;
-    Random random = new Random();
-    TaxonomySelectionController taxonomyController;
-    MaterialBeanMock materialBeanMock;
-    private Date d_20001220, d_20001020;
-    private int structureId1, structureId2, biomaterialId;
-    private UserBeanMock userBean;
-    int publicAclId;
-    Project project;
-
-    private MaterialComposition composition;
-    private MaterialCompositionBean compositionBean;
-
-    @Before
-    public void init() {
-        setUpDates();
-        project = new Project(ProjectType.BIOCHEMICAL_PROJECT, "Test-Project");
-        project.setOwner(publicUser);
-        project.setACList(GlobalAdmissionContext.getPublicReadACL());
-        projectService.saveProjectToDb(project);
-        publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
-        createTaxonomyTreeInDB(publicAclId, publicUser.getId());
-        createCompositionMaterial();
-        createMaterialEditState();
-        createMaterialBeanMock();
-        instance = new HistoryOperation(materialBeanMock);
-
-    }
 
     /**
      * ([S2:g:0.7]) -> ([S1:null,0.75],[S2,null,null],[B1,null,0.3]) ->
      * ([S1:g:0.5],[B1:null,null])
      */
     @Test
-    public void test01_BioMaterialDifferenceOperations() {
+    public void test01_chechHistoryOperation() {
         checkCurrentState();
-
         //Go one step back (20.12.2000)
         instance.applyNextNegativeDifference();
         checkStateAt20001220();
@@ -149,74 +98,8 @@ public class HistoryOperationCompositionTest extends TestBase {
         checkCurrentState();
     }
 
-    private MaterialBeanMock createMaterialBeanMock() {
-        userBean = new UserBeanMock();
-        userBean.setCurrentAccount(publicUser);
-        materialBeanMock = new MaterialBeanMock();
-        materialBeanMock.setMaterialEditState(mes);
-        materialBeanMock.setHazardService(hazardService);
-        materialBeanMock.setTaxonomyService(taxonomyService);
-        materialBeanMock.setTissueService(tissueService);
-        materialBeanMock.setUserBean(userBean);
-        materialBeanMock.setMaterialService(materialService);
-        materialBeanMock.setAcListService(aclistService);
-        taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, biomaterial.getTaxonomy());
-        materialBeanMock.setTaxonomyController(taxonomyController);
-        compositionBean = new MaterialCompositionBean(materialService, MessagePresenterMock.getInstance(), userBean);
-        compositionBean.startCompositionEdit(composition);
-        materialBeanMock.setCompositionBean(compositionBean);
-        return materialBeanMock;
-    }
-
-    private MaterialEditState createMaterialEditState() {
-        mes = new MaterialEditState(
-                new Project(),
-                currentDate,
-                composition,
-                composition,
-                new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), MessagePresenterMock.getInstance()));
-        mes.setCurrentVersiondate(d_20001220);
-        return mes;
-    }
-
-    private MaterialComposition createCompositionMaterial() {
-        materialCreator = new MaterialCreator(entityManagerService);
-        structureId1 = materialCreator.createStructure(
-                publicUser.getId(),
-                publicAclId,
-                "CCCCCCCCC",
-                project.getId(),
-                "Testmaterial-001");
-        materialCreator.addIndexToMaterial(structureId1, 2, "Index of material 1");
-
-        structureId2 = materialCreator.createStructure(
-                publicUser.getId(),
-                publicAclId,
-                project.getId(),
-                "Testmaterial-002");
-
-        biomaterial = creationTools.createBioMaterial(project, "BioMaterial001", taxonomyService.loadRootTaxonomy(), null);
-        materialService.saveMaterialToDB(biomaterial, publicAclId, new HashMap<>(), publicUser.getId());
-        composition = new MaterialComposition(project.getId(), CompositionType.EXTRACT);
-        biomaterialId = biomaterial.getId();
-        composition.addComponent(materialService.loadMaterialById(structureId1), 0.5d, Unit.getUnit("g"));
-        composition.addComponent(biomaterial, null, null);
-        composition.getHistory().addDifference(createDiffAt20001020());
-        composition.getHistory().addDifference(createDiffAt20001220());
-
-        return composition;
-    }
-
-    private void setUpDates() {
-        currentDate = new Date();
-        Calendar c = new GregorianCalendar();
-        c.set(2000, 12, 20);
-        d_20001220 = c.getTime();
-        c.set(2000, 10, 20);
-        d_20001020 = c.getTime();
-    }
-
-    private void checkCurrentState() {
+    @Override
+    protected void checkCurrentState() {
         Assert.assertEquals(2, compositionBean.getConcentrationsInComposition().size());
         Assert.assertEquals(0.5d, getConcentrationByMaterialId(structureId1).getConcentration(), 0.01);
         Assert.assertEquals("g", getConcentrationByMaterialId(structureId1).getUnit().toString());
@@ -225,13 +108,15 @@ public class HistoryOperationCompositionTest extends TestBase {
 
     }
 
-    private void checkStateAt20001020() {
+    @Override
+    protected void checkStateAt20001020() {
         Assert.assertEquals(1, compositionBean.getConcentrationsInComposition().size());
         Assert.assertEquals(0.7d, getConcentrationByMaterialId(structureId2).getConcentration(), 0.01);
         Assert.assertEquals("g", getConcentrationByMaterialId(structureId2).getUnit().toString());
     }
 
-    private void checkStateAt20001220() {
+    @Override
+    protected void checkStateAt20001220() {
         Assert.assertEquals(3, compositionBean.getConcentrationsInComposition().size());
         Assert.assertEquals(0.75d, getConcentrationByMaterialId(structureId1).getConcentration(), 0.01);
         Assert.assertNull(getConcentrationByMaterialId(structureId1).getUnit());
@@ -251,7 +136,8 @@ public class HistoryOperationCompositionTest extends TestBase {
         return null;
     }
 
-    private CompositionDifference createDiffAt20001020() {
+    @Override
+    protected CompositionDifference createDiffAt20001020() {
         CompositionDifference diff = new CompositionDifference("EDIT");
         diff.initialise(0, publicUser.getId(), d_20001020);
 
@@ -261,7 +147,8 @@ public class HistoryOperationCompositionTest extends TestBase {
         return diff;
     }
 
-    private MaterialDifference createDiffAt20001220() {
+    @Override
+    protected MaterialDifference createDiffAt20001220() {
         CompositionDifference diff = new CompositionDifference("EDIT");
         diff.initialise(0, publicUser.getId(), d_20001220);
         diff.addDifference(structureId1, structureId1, 0.75d, 0.5d, null, "g");
