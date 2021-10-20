@@ -82,7 +82,7 @@ public class HistoryOperationHazardsTest extends TestBase {
     MaterialIndexBean mib;
     Random random = new Random();
 
-    @Inject
+   
     private MaterialCompositionBean compositionBean;
 
     @Before
@@ -187,8 +187,7 @@ public class HistoryOperationHazardsTest extends TestBase {
                 = prepareDeployment("HistoryOperationHazardsTest.war")
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
-        deployment = UserBeanDeployment.add(deployment);
-        deployment = MaterialBeanDeployment.add(deployment);
+        deployment = UserBeanDeployment.add(deployment);      
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }

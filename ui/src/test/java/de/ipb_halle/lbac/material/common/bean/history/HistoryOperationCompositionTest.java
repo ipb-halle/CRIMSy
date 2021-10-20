@@ -17,53 +17,19 @@
  */
 package de.ipb_halle.lbac.material.common.bean.history;
 
-import de.ipb_halle.lbac.admission.ACListService;
-import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.UserBeanDeployment;
-import de.ipb_halle.lbac.admission.mock.UserBeanMock;
-import de.ipb_halle.lbac.base.MaterialCreator;
-import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
-import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
-import de.ipb_halle.lbac.material.common.history.HistoryOperation;
-import de.ipb_halle.lbac.material.common.IndexEntry;
-import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
-import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
-import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
-import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.CompositionDifference;
-import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.Concentration;
-import de.ipb_halle.lbac.material.composition.MaterialComposition;
-import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
-import de.ipb_halle.lbac.project.Project;
-import de.ipb_halle.lbac.project.ProjectType;
-import de.ipb_halle.lbac.util.Unit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Assert;
-import org.junit.Before;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -140,7 +106,6 @@ public class HistoryOperationCompositionTest extends HistoryOperationTest {
     protected CompositionDifference createDiffAt20001020() {
         CompositionDifference diff = new CompositionDifference("EDIT");
         diff.initialise(0, publicUser.getId(), d_20001020);
-
         diff.addDifference(null, structureId1, null, 0.75d, null, null);
         diff.addDifference(null, biomaterialId, null, 0.3d, null, null);
         diff.addDifference(structureId2, structureId2, 0.7d, null, "g", null);

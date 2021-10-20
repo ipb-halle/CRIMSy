@@ -24,10 +24,14 @@ import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
+import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomySelectionController;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
+import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
@@ -44,6 +48,7 @@ import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.util.Unit;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -92,6 +97,7 @@ public abstract class HistoryOperationTest extends TestBase {
 
     protected MaterialComposition composition;
     protected MaterialCompositionBean compositionBean;
+    protected Taxonomy plantsTaxonomy, mushroomsTaxonomy;
 
     @Before
     public void init() {
@@ -101,12 +107,22 @@ public abstract class HistoryOperationTest extends TestBase {
         project.setACList(GlobalAdmissionContext.getPublicReadACL());
         projectService.saveProjectToDb(project);
         publicAclId = GlobalAdmissionContext.getPublicReadACL().getId();
-        createTaxonomyTreeInDB(publicAclId, publicUser.getId());
+
+        setUpTaxonomy();
+        createBioMaterial();
+
         createCompositionMaterial();
         createMaterialEditState();
         createMaterialBeanMock();
         instance = new HistoryOperation(materialBeanMock);
 
+    }       
+
+    private void setUpTaxonomy() {
+        createTaxonomyTreeInDB(publicAclId, publicUser.getId());
+        List<Taxonomy> taxonomyList = taxonomyService.loadTaxonomy(new HashMap<>(), true);
+        plantsTaxonomy = taxonomyList.get(3);
+        mushroomsTaxonomy = taxonomyList.get(1);
     }
 
     private MaterialEditState createMaterialEditState() {
@@ -118,6 +134,15 @@ public abstract class HistoryOperationTest extends TestBase {
                 new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(), MessagePresenterMock.getInstance()));
         mes.setCurrentVersiondate(d_20001220);
         return mes;
+    }
+
+    protected BioMaterial createBioMaterial() {
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("Biomaterial", "en", 0));
+        biomaterial = new BioMaterial(biomaterialId, names, project.getId(), new HazardInformation(), new StorageInformation(), taxonomyService.loadRootTaxonomy(), null);
+        biomaterial.getHistory().addDifference(createDiffAt20001020());
+        biomaterial.getHistory().addDifference(createDiffAt20001220());
+        return biomaterial;
     }
 
     private MaterialComposition createCompositionMaterial() {
@@ -148,7 +173,7 @@ public abstract class HistoryOperationTest extends TestBase {
         return composition;
     }
 
-    private void setUpDates() {
+    protected void setUpDates() {
         currentDate = new Date();
         Calendar c = new GregorianCalendar();
         c.set(2000, 12, 20);
