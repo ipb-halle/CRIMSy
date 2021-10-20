@@ -53,6 +53,7 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
@@ -106,6 +107,9 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private TaxonomyService taxoService;
+
+    @Inject
+    private MaterialCompositionBean compositionBean;
 
     CreationTools creationTools;
     User publicUser;
@@ -504,6 +508,7 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(ItemOverviewBean.class)
                         .addClass(MaterialIndexBean.class)
                         .addClass(MessagePresenterMock.class)
+                        .addClass(MaterialCompositionBean.class)
                         .addClass(MaterialBeanMock.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);

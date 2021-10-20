@@ -70,6 +70,9 @@ public class MaterialCompositionBean implements Serializable {
     @Inject
     private UserBean userBean;
 
+    public MaterialCompositionBean(){
+        
+    }
     public MaterialCompositionBean(MaterialService materialService, MessagePresenter presenter, UserBean userBean) {
         this.materialService = materialService;
         this.presenter = presenter;
