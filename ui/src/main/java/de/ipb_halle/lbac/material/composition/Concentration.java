@@ -33,6 +33,7 @@ public class Concentration {
 
     public Concentration(Material material) {
         this.material = material;
+        this.unit=Unit.getUnit("mg");
     }
 
     public Concentration(Material material, Double conc, Unit unit) {

@@ -21,9 +21,9 @@ import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
-import de.ipb_halle.lbac.util.Unit;
 import java.util.List;
-import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -33,6 +33,7 @@ public class CompositionComparator extends IMaterialComparator {
 
     private MaterialComposition originalComposition, editedComposition;
     private CompositionDifference diff;
+    protected Logger logger = LogManager.getLogger(this.getClass().getName());
 
     @Override
     public void compareDifferences(List<MaterialDifference> differences, Material originalMat, Material editedMat) throws Exception {
@@ -88,7 +89,7 @@ public class CompositionComparator extends IMaterialComparator {
                 if (concentrationNew != null && concentrationOld == null) {
                     diff.addConcentrationDifference(id, null, concentrationNew);
                 }
-                if (concentrationNew != null && concentrationOld != null) {
+                if (concentrationNew != null && concentrationOld != null) {                    
                     if (Math.abs(concentrationNew - concentrationOld) > Double.MIN_NORMAL) {
                         diff.addConcentrationDifference(id, concentrationOld, concentrationNew);
                     }
@@ -111,10 +112,8 @@ public class CompositionComparator extends IMaterialComparator {
                 if (unitNew != null && unitOld == null) {
                     diff.addUnitDifference(id, null, unitNew);
                 }
-                if (unitNew != null && unitOld != null) {
-
+                if (unitNew != null && unitOld != null&&!unitNew.equals(unitOld)) {
                     diff.addUnitDifference(id, unitOld, unitNew);
-
                 }
             }
         }

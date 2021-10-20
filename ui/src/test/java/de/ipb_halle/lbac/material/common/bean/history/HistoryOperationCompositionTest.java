@@ -48,7 +48,7 @@ public class HistoryOperationCompositionTest extends HistoryOperationTest {
      * ([S1:g:0.5],[B1:null,null])
      */
     @Test
-    public void test01_chechHistoryOperation() {
+    public void test01_checkHistoryOperation() {
         checkCurrentState();
         //Go one step back (20.12.2000)
         instance.applyNextNegativeDifference();

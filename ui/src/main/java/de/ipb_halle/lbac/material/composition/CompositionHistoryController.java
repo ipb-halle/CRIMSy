@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.material.common.history.HistoryController;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.util.Unit;
+import java.util.Objects;
 
 /**
  *
@@ -56,11 +57,16 @@ public class CompositionHistoryController implements HistoryController<Compositi
     public void applyPositiveDifference(CompositionDifference diff) {
         for (int i = 0; i < diff.getMaterialIds_new().size(); i++) {
             Double concentrationNew = diff.getConcentrations_new().get(i);
+            Double concentrationOld = diff.getConcentrations_old().get(i);
+
             handleDelta(
                     diff.getMaterialIds_new().get(i),
-                    concentrationNew,
                     diff.getMaterialIds_old().get(i),
-                    getUnitFromString(diff.getUnits_new().get(i)));
+                    concentrationOld, concentrationNew,
+                    getUnitFromString(diff.getUnits_old().get(i)),
+                    getUnitFromString(diff.getUnits_new().get(i))
+            );
+
         }
     }
 
@@ -72,11 +78,15 @@ public class CompositionHistoryController implements HistoryController<Compositi
     public void applyNegativeDifference(CompositionDifference diff) {
         for (int i = 0; i < diff.getMaterialIds_old().size(); i++) {
             Double concentrationOld = diff.getConcentrations_old().get(i);
+            Double concentrationNew = diff.getConcentrations_new().get(i);
+
             handleDelta(
                     diff.getMaterialIds_old().get(i),
-                    concentrationOld,
                     diff.getMaterialIds_new().get(i),
-                    getUnitFromString(diff.getUnits_old().get(i)));
+                    concentrationNew, concentrationOld,
+                    getUnitFromString(diff.getUnits_new().get(i)),
+                    getUnitFromString(diff.getUnits_old().get(i))
+            );
         }
     }
 
@@ -88,9 +98,30 @@ public class CompositionHistoryController implements HistoryController<Compositi
         return unit;
     }
 
-    private void handleDelta(Integer materialIdToInsert, Double concentrationOld, Integer materialIdToRemove, Unit unit) {
+    private void handleDelta(
+            Integer materialIdToInsert,
+            Integer materialIdToRemove,
+            Double concentrationToRemove,
+            Double concentrationToInsert,
+            Unit unitToRemove,
+            Unit unitToInsert) {
         if (materialIdToInsert != null) {
-            addConcentration(materialIdToInsert, concentrationOld, unit);
+            if (!compositionBean.isMaterialAlreadyInComposition(materialIdToInsert)) {
+                addNewMaterialToComposition(materialIdToInsert, concentrationToInsert, unitToInsert);
+            } else {
+                if (concentrationToInsert != null) {
+                    if (concentrationToRemove == null) {
+                        compositionBean.getConcentrationWithMaterial(materialIdToInsert).setConcentration(concentrationToInsert);
+                    } else if (Math.abs(concentrationToInsert - concentrationToRemove) > Double.MIN_VALUE) {
+                        compositionBean.getConcentrationWithMaterial(materialIdToInsert).setConcentration(concentrationToInsert);
+                    }
+                } else if (concentrationToRemove != null) {
+                    compositionBean.getConcentrationWithMaterial(materialIdToInsert).setConcentration(null);
+                }
+                if (!Objects.equals(unitToInsert, unitToRemove)) {
+                    compositionBean.getConcentrationWithMaterial(materialIdToInsert).setUnit(unitToInsert);
+                }
+            }
         } else {
             removeConcentration(materialIdToRemove);
         }
@@ -104,12 +135,10 @@ public class CompositionHistoryController implements HistoryController<Compositi
         if (!compositionBean.isMaterialAlreadyInComposition(materialId)) {
             addNewMaterialToComposition(materialId, oldConcentration, unit);
         } else {
-            compositionBean.getConcentrationWithMaterial(materialId).setConcentration(oldConcentration);            
+            compositionBean.getConcentrationWithMaterial(materialId).setConcentration(oldConcentration);
             compositionBean.getConcentrationWithMaterial(materialId).setUnit(unit);
         }
     }
-    
-   
 
     private void addNewMaterialToComposition(int materialId, Double concentration, Unit unit) {
         Material material = getMaterialWithPermissionCheck(materialId);
