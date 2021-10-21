@@ -658,4 +658,8 @@ public class MaterialBean implements Serializable {
         return projectBean;
     }
     
+    public boolean isInHistoryMode(){
+        return mode==Mode.HISTORY;
+    }
+    
 }

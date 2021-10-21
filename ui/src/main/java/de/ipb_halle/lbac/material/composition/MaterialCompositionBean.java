@@ -298,7 +298,13 @@ public class MaterialCompositionBean implements Serializable {
     }
 
     public List<Unit> getAvailableAmountUnits() {
-        return Unit.getUnitsOfQuality(Quality.AMOUNT_OF_SUBSTANCE, Quality.PERCENT_CONCENTRATION, Quality.MOLAR_MASS, Quality.VOLUME);
+        return Unit.getUnitsOfQuality(
+                Quality.AMOUNT_OF_SUBSTANCE,
+                Quality.PERCENT_CONCENTRATION,
+                Quality.MOLAR_MASS,
+                Quality.VOLUME);        
     }
+    
+
 
 }

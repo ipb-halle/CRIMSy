@@ -146,6 +146,7 @@
                                             ajax="true"
                                             look="link"
                                             type="button"
+                                            disabled="#{materialBean.isInHistoryMode()}"
                                             action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
                                             update="@(.resultTable)"
                                             icon="plus"/>
@@ -183,6 +184,7 @@
                                     <b:dataTableColumn
                                         label="Concentration">
                                         <b:inputText
+                                            disabled="#{materialBean.isInHistoryMode()}"
                                             value="#{concentration.concentration}"
                                             />
                                     </b:dataTableColumn>
@@ -190,6 +192,7 @@
                                         label="Unit">
                                         <b:selectOneMenu 
                                             value="#{concentration.unit}"
+                                            disabled="#{materialBean.isInHistoryMode()}"
                                             >
                                             <f:selectItems
                                                 value="#{materialCompositionBean.availableAmountUnits}"
@@ -203,6 +206,7 @@
                                             look="link"
                                             type="button"
                                             icon="minus"
+                                            disabled="#{materialBean.isInHistoryMode()}"
                                             action="#{materialCompositionBean.actionRemoveConcentrationFromComposition(concentration)}"
                                             update="@(.resultTable)"
                                             ajax="true"/>
