@@ -70,17 +70,16 @@ public class MaterialCompositionBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-    public MaterialCompositionBean(){
-        
+    public MaterialCompositionBean() {
+
     }
+
     public MaterialCompositionBean(MaterialService materialService, MessagePresenter presenter, UserBean userBean) {
         this.materialService = materialService;
         this.presenter = presenter;
         this.userBean = userBean;
     }
 
-    
-    
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
         mode = Mode.EDIT;
@@ -96,6 +95,10 @@ public class MaterialCompositionBean implements Serializable {
         this.concentrationsInComposition.clear();
         this.foundMaterials.clear();
         this.searchMolecule = "";
+    }
+
+    public String getLocalizedCompositionType(CompositionType type) {
+        return presenter.presentMessage("materialComposition_" + type);
     }
 
     public List<CompositionType> getCompositionTypes() {
@@ -302,9 +305,7 @@ public class MaterialCompositionBean implements Serializable {
                 Quality.AMOUNT_OF_SUBSTANCE,
                 Quality.PERCENT_CONCENTRATION,
                 Quality.MOLAR_MASS,
-                Quality.VOLUME);        
+                Quality.VOLUME);
     }
-    
-
 
 }
