@@ -37,3 +37,7 @@
 .compositionMaterialTable  .row:nth-child(1) {
     height:0px !important;
 }
+
+.compositionTypeSelectBox div{
+    width:270px !important;
+}
