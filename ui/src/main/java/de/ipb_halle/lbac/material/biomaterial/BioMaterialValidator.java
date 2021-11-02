@@ -29,7 +29,6 @@ import java.util.Set;
  * @author fmauz
  */
 public class BioMaterialValidator implements MaterialValidator {
-
     MaterialNameValidator nameValidator;
     Set<Invalidity> errors = new HashSet<>();
 
