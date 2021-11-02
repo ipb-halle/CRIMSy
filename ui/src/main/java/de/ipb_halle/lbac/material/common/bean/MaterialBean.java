@@ -27,11 +27,8 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.sequence.Sequence;
-import de.ipb_halle.lbac.material.sequence.SequenceData;
 import de.ipb_halle.lbac.material.sequence.SequenceInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.structure.Molecule;
-import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
@@ -39,20 +36,22 @@ import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.navigation.Navigator;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectBean;
 import de.ipb_halle.lbac.project.ProjectService;
-import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.material.MessagePresenter;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.MaterialDetailType;
+import de.ipb_halle.lbac.material.common.MaterialName;
+import static de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode.HISTORY;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import de.ipb_halle.lbac.material.structure.Molecule;
+import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.util.chemistry.Calculator;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,6 +66,7 @@ import javax.inject.Named;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.c;
 
 /**
  * Bean for interacting with the ui to present and manipulate a single material
@@ -396,20 +396,19 @@ public class MaterialBean implements Serializable {
                 MaterialComposition composition = (MaterialComposition) materialEditState.getMaterialToEdit();
                 composition.getComponents().clear();                
                 for (Concentration c : compositionBean.getConcentrationsInComposition()) {
-                    composition.addComponent(c.getMaterial(), c.getConcentration());
+                    composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
                 }
             }
             if (materialEditState.getMaterialToEdit().getType() == MaterialType.SEQUENCE) {
                 Sequence sequence = (Sequence) materialEditState.getMaterialToEdit();
-                sequence.setSequenceData(sequenceInfos.getSequenceData());
-                    composition.addComponent(c.getMaterial(), c.getConcentration(), c.getUnit());
-                }                
+                sequence.setSequenceData(sequenceInfos.getSequenceData());                                
             }
             materialService.saveEditedMaterial(
                     materialEditState.getMaterialToEdit(),
                     materialEditState.getMaterialBeforeEdit(),
                     materialEditState.getCurrentProject().getUserGroups().getId(),
                     userBean.getCurrentAccount().getId());
+    
         } else {
             throw new Exception("Material not valide");
         }
