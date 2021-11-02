@@ -34,7 +34,7 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.project.Project;
@@ -72,7 +72,7 @@ public class HistoryOperationStorageTest extends TestBase {
     @Inject
     private HazardService hazardService;
 
-    private MaterialBeanMock materialBean;
+    private MateriaBeanMock materialBean;
     private int projectId = 0;
     private HazardType radioactivity, explosive, flammable, toxic;
     private HazardType hStatement, pStatement;
@@ -95,7 +95,7 @@ public class HistoryOperationStorageTest extends TestBase {
         d_20001220 = c.getTime();
         c.set(2000, 10, 20);
         d_20001020 = c.getTime();
-        materialBean = new MaterialBeanMock();
+        materialBean = new MateriaBeanMock();
         composition = new MaterialComposition(projectId, CompositionType.EXTRACT);
         composition.getHazards().getHazards().put(explosive, null);
         composition.getHazards().getHazards().put(flammable, null);

@@ -43,7 +43,7 @@ import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
@@ -88,7 +88,7 @@ public abstract class HistoryOperationTest extends TestBase {
     protected MaterialIndexBean mib;
     protected Random random = new Random();
     protected TaxonomySelectionController taxonomyController;
-    protected MaterialBeanMock materialBeanMock;
+    protected MateriaBeanMock materialBeanMock;
     protected Date d_20001220, d_20001020;
     protected int structureId1, structureId2, biomaterialId;
     protected UserBeanMock userBean;
@@ -182,10 +182,10 @@ public abstract class HistoryOperationTest extends TestBase {
         d_20001020 = c.getTime();
     }
 
-    private MaterialBeanMock createMaterialBeanMock() {
+    private MateriaBeanMock createMaterialBeanMock() {
         userBean = new UserBeanMock();
         userBean.setCurrentAccount(publicUser);
-        materialBeanMock = new MaterialBeanMock();
+        materialBeanMock = new MateriaBeanMock();
         materialBeanMock.setMaterialEditState(mes);
         materialBeanMock.setHazardService(hazardService);
         materialBeanMock.setTaxonomyService(taxonomyService);
