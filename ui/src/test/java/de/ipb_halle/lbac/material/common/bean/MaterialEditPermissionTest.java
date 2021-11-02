@@ -57,7 +57,7 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class MaterialEditPremissionTest extends TestBase {
+public class MaterialEditPermissionTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
     @Inject
