@@ -44,7 +44,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import java.util.ArrayList;
