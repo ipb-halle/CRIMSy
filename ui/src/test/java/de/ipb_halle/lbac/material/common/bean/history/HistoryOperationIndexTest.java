@@ -33,7 +33,7 @@ import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,7 +81,7 @@ public class HistoryOperationIndexTest {
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
         
-        MaterialBeanMock mock = new MaterialBeanMock();
+        MateriaBeanMock mock = new MateriaBeanMock();
         mock.setMaterialIndexBean(mib);
         mock.setMaterialEditState(mes);
         mock.setMaterialNameBean(new MaterialNameBean());

@@ -836,6 +836,7 @@ CREATE TABLE material_compositions(
     materialid  INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     componentid INTEGER NOT NULL REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     concentration DOUBLE,
+    unit VARCHAR,
     PRIMARY KEY (materialid, componentid)
 );
 
@@ -849,7 +850,10 @@ CREATE TABLE components_history(
     materialid_old INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE, 
     materialid_new INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     concentration_old FLOAT,
-    concentration_new FLOAT
+    concentration_new FLOAT,
+    unit_old VARCHAR,
+    unit_new VARCHAR
+
 );
 
 CREATE TABLE sequences (

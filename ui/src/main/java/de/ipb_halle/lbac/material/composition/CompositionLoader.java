@@ -25,6 +25,7 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -36,7 +37,7 @@ import javax.persistence.EntityManager;
 public class CompositionLoader implements MaterialLoader {
 
     public final String SQL_SELECT_COMPONENTS
-            = "SELECT materialid, componentid,concentration "
+            = "SELECT materialid, componentid,concentration,unit "
             + "FROM material_compositions "
             + "WHERE materialid=:mid";
 
@@ -57,7 +58,12 @@ public class CompositionLoader implements MaterialLoader {
                         .getResultList();
         for (MaterialCompositionEntity mce : entities) {
             if (mce.getId().getComponentid() != entity.getMaterialid()) {
-                composition.addComponent(materialService.loadMaterialById(mce.getId().getComponentid()), mce.getConcentration());
+
+                composition.addComponent(
+                        materialService.loadMaterialById(
+                                mce.getId().getComponentid()),
+                        mce.getConcentration(),
+                        mce.getUnit() == null ? null : Unit.getUnit(mce.getUnit()));
             }
         }
         return composition;

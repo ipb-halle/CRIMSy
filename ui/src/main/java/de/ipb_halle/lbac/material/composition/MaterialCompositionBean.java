@@ -17,16 +17,16 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
-import de.ipb_halle.lbac.admission.ACListService;
 import de.ipb_halle.lbac.admission.UserBean;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.MessagePresenter;
-import de.ipb_halle.lbac.material.common.bean.MaterialBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean.Mode;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.util.Quality;
+import de.ipb_halle.lbac.util.Unit;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +59,7 @@ public class MaterialCompositionBean implements Serializable {
     private String searchMolecule = "";
     private Mode mode;
     private CompositionHistoryController historyController;
+    private int activeIndex = 0;
 
     @Inject
     private MaterialService materialService;
@@ -69,14 +70,20 @@ public class MaterialCompositionBean implements Serializable {
     @Inject
     private UserBean userBean;
 
-   
+    public MaterialCompositionBean() {
+
+    }
+
+    public MaterialCompositionBean(MaterialService materialService, MessagePresenter presenter, UserBean userBean) {
+        this.materialService = materialService;
+        this.presenter = presenter;
+        this.userBean = userBean;
+    }
 
     public void startCompositionEdit(MaterialComposition comp) {
         clearBean();
         mode = Mode.EDIT;
-        for (Material m : comp.getComponents().keySet()) {
-            this.concentrationsInComposition.add(new Concentration(m, comp.getComponents().get(m)));
-        }
+        this.concentrationsInComposition.addAll(comp.getComponents());
         this.choosenCompositionType = comp.getCompositionType();
     }
 
@@ -88,6 +95,10 @@ public class MaterialCompositionBean implements Serializable {
         this.concentrationsInComposition.clear();
         this.foundMaterials.clear();
         this.searchMolecule = "";
+    }
+
+    public String getLocalizedCompositionType(CompositionType type) {
+        return presenter.presentMessage("materialComposition_" + type);
     }
 
     public List<CompositionType> getCompositionTypes() {
@@ -110,20 +121,40 @@ public class MaterialCompositionBean implements Serializable {
         if (choosenType != choosenCompositionType) {
             concentrationsInComposition.clear();
             foundMaterials.clear();
-
         }
         this.choosenCompositionType = choosenType;
         if (!choosenType.getAllowedTypes().contains(choosenMaterialType)) {
             choosenMaterialType = choosenType.getAllowedTypes().get(0);
+            activeIndex = calculateIndexOfMaterialType(choosenMaterialType);
+            changeSelectedMaterialType(getLocalizedTabTitle(choosenMaterialType.toString()));
+        }
+    }
+
+    private int calculateIndexOfMaterialType(MaterialType type) {
+        if (type == MaterialType.STRUCTURE) {
+            return 0;
+        }
+        if (type == MaterialType.SEQUENCE) {
+            return 1;
+        }
+        if (type == MaterialType.BIOMATERIAL) {
+            return 2;
+        }
+        return 0;
+    }
+
+    private void changeSelectedMaterialType(String typeName) {
+        for (MaterialType t : MaterialType.values()) {
+            String localizedMateralName = getLocalizedTabTitle(t.toString());
+            if (typeName.equals(localizedMateralName)) {
+                choosenMaterialType = t;
+            }
         }
     }
 
     public void onTabChange(TabChangeEvent event) {
-        for (MaterialType t : MaterialType.values()) {
-            if (event.getTab().getTitle().equals(presenter.presentMessage(t.toString()))) {
-                choosenMaterialType = t;
-            }
-        }
+
+        changeSelectedMaterialType(event.getTab().getTitle());
     }
 
     public String getLocalizedTabTitle(String materialType) {
@@ -259,6 +290,22 @@ public class MaterialCompositionBean implements Serializable {
 
     public CompositionHistoryController getHistoryController() {
         return historyController;
+    }
+
+    public int getActiveIndex() {
+        return activeIndex;
+    }
+
+    public void setActiveIndex(int activeIndex) {
+        this.activeIndex = activeIndex;
+    }
+
+    public List<Unit> getAvailableAmountUnits() {
+        return Unit.getUnitsOfQuality(
+                Quality.AMOUNT_OF_SUBSTANCE,
+                Quality.PERCENT_CONCENTRATION,
+                Quality.MOLAR_MASS,
+                Quality.VOLUME);
     }
 
 }

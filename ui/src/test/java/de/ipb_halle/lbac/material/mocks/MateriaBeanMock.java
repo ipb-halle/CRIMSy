@@ -41,7 +41,7 @@ import javax.enterprise.context.SessionScoped;
  * @author fmauz
  */
 @SessionScoped
-public class MaterialBeanMock extends MaterialBean {
+public class MateriaBeanMock extends MaterialBean {
 
     private static final long serialVersionUID = 1L;
 
@@ -113,6 +113,12 @@ public class MaterialBeanMock extends MaterialBean {
     public void setTaxonomyController(TaxonomySelectionController taxonomyController) {
         this.taxonomyController = taxonomyController;
     }
+
+    public void setCompositionBean(MaterialCompositionBean compositionBean) {
+        this.compositionBean = compositionBean;
+    }
+    
+    
     
     
 

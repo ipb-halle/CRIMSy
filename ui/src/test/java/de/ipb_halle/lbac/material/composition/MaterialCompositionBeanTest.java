@@ -28,28 +28,19 @@ import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.material.CreationTools;
-import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
 import de.ipb_halle.lbac.project.ProjectType;
 import de.ipb_halle.lbac.items.ItemDeployment;
-import de.ipb_halle.lbac.items.bean.ItemBean;
-import de.ipb_halle.lbac.items.bean.ItemOverviewBean;
 import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialOverviewBean;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.project.ProjectBean;
-import de.ipb_halle.lbac.project.ProjectEditBean;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -256,78 +247,10 @@ public class MaterialCompositionBeanTest extends TestBase {
     @Test
     public void test009_onTabChange() {
         Tab structureTab = new Tab();
-        structureTab.setTitle(MaterialType.STRUCTURE.toString());
+        structureTab.setTitle("search_category_STRUCTURE");
         Assert.assertEquals("search_category_STRUCTURE", bean.getLocalizedTabTitle(MaterialType.STRUCTURE.toString()));
         bean.onTabChange(new TabChangeEvent(new UIViewRoot(), new BehaviorBase(), structureTab));
         Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
-    }
-
-    /**
-     * (S1,B1) -> (S1,S2,B1) -> (S1,B1)
-     */
-    @Test
-    public void test010_changeHistoryState() {
-        createProject("SearchServiceTest-Project-01", GlobalAdmissionContext.getPublicReadACL(), publicUser);
-        createMaterials();
-
-        MaterialComposition composition = new MaterialComposition(project.getId(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(structureId1), .5d);
-        composition.addComponent(materialService.loadMaterialById(biomaterialId), null);
-        //Remove structure 2
-        CompositionDifference diff1 = new CompositionDifference("EDIT");
-        diff1.addDifference(structureId2, null, null, null);
-        Calendar cal = new GregorianCalendar();
-        cal.set(2000, 8, 12);
-        Date date1 = cal.getTime();
-        diff1.initialise(1, publicUser.getId(), date1);
-        composition.getHistory().addDifference(diff1);
-        //Add structure 1 and biomaterial 1
-        CompositionDifference diff2 = new CompositionDifference("EDIT");
-        diff2.addDifference(null, structureId1, null, .75d);
-        diff2.addDifference(null, biomaterialId, null, null);
-
-        cal.set(2000, 8, 10);
-        Date date2 = cal.getTime();
-        diff2.initialise(1, publicUser.getId(), date2);
-        composition.getHistory().addDifference(diff2);
-
-        materialBean.startMaterialEdit(composition);
-
-        Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
-
-        materialBean.switchOneVersionBack();
-
-        Assert.assertEquals(3, bean.getConcentrationsInComposition().size());
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId2));
-
-        materialBean.switchOneVersionBack();
-        Assert.assertEquals(1, bean.getConcentrationsInComposition().size());
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId2));
-
-        materialBean.switchOneVersionForward();
-        Assert.assertEquals(3, bean.getConcentrationsInComposition().size());
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId2));
-
-        materialBean.switchOneVersionForward();
-        Assert.assertEquals(2, bean.getConcentrationsInComposition().size());
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), biomaterialId));
-        Assert.assertTrue(containsId(bean.getConcentrationsInComposition(), structureId1));
-
-    }
-
-    private boolean containsId(List<Concentration> concentrations, int id) {
-        for (Concentration c : concentrations) {
-            if (c.getMaterialId() == id) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Deployment

@@ -35,7 +35,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -57,7 +57,7 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class MaterialEditPremissionTest extends TestBase {
+public class MaterialEditPermissionTest extends TestBase {
 
     private static final long serialVersionUID = 1L;
     @Inject
@@ -67,14 +67,14 @@ public class MaterialEditPremissionTest extends TestBase {
     @Inject
     private HazardService hazardService;
     private MaterialEditPermission permissionBean;
-    private MaterialBeanMock materialBean;
+    private MateriaBeanMock materialBean;
     private UserBeanMock userBean;
 
     @Before
     public void init() {
         materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
-        materialBean = new MaterialBeanMock();
+        materialBean = new MateriaBeanMock();
         materialBean.setAcListService(aclistService);
         materialBean.setHazardService(hazardService);
         materialBean.setMessagePresenter(MessagePresenterMock.getInstance());

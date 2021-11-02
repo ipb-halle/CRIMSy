@@ -33,11 +33,11 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
     private static final long serialVersionUID = 1L;
 
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule) VALUES(?,?)";
-    private static int molId = 0;
+    private int molId = 0;
 
     @Override
     public void saveMaterial(Material m, EntityManager em) {
-
+        molId=(int)(Math.random()*100000000);
         Structure s = (Structure) m;
         for (IndexEntry ie : s.getIndices()) {
             em.persist(ie.toDbEntity(m.getId(), 0));
@@ -50,8 +50,6 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
             q.executeUpdate();
             s.getMolecule().setId(molId);
             em.persist(s.createEntity());
-            molId++;
-
         } else {
             em.persist(s.createEntity());
         }

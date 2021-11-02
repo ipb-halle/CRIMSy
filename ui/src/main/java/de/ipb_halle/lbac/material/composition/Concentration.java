@@ -19,6 +19,7 @@ package de.ipb_halle.lbac.material.composition;
 
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.MaterialType;
+import de.ipb_halle.lbac.util.Unit;
 
 /**
  *
@@ -28,14 +29,17 @@ public class Concentration {
 
     private final Material material;
     private Double concentration;
+    private Unit unit;
 
     public Concentration(Material material) {
         this.material = material;
+        this.unit=Unit.getUnit("%");
     }
 
-    public Concentration(Material material, Double conc) {
+    public Concentration(Material material, Double conc, Unit unit) {
         this.material = material;
         this.concentration = conc;
+        this.unit = unit;
     }
 
     public boolean isSameMaterial(Material materialToCheck) {
@@ -68,6 +72,22 @@ public class Concentration {
 
     public Material getMaterial() {
         return material;
+    }
+
+    public Unit getUnit() {
+        return unit;
+    }
+
+    public String getUnitString() {
+        if (unit == null) {
+            return null;
+        } else {
+            return unit.toString();
+        }
+    }
+
+    public void setUnit(Unit unit) {
+        this.unit = unit;
     }
 
 }

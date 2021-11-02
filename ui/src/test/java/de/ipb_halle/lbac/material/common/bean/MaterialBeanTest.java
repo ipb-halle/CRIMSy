@@ -28,7 +28,7 @@ import de.ipb_halle.lbac.admission.ACPermission;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.Material;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.common.MaterialName;
@@ -53,6 +53,7 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.Concentration;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.project.ProjectEditBean;
@@ -96,7 +97,7 @@ public class MaterialBeanTest extends TestBase {
     private TreeNode nodeToOperateOn;
 
     @Inject
-    private MaterialBeanMock instance;
+    private MateriaBeanMock instance;
 
     @Inject
     private IndexService indexService;
@@ -106,6 +107,9 @@ public class MaterialBeanTest extends TestBase {
 
     @Inject
     private TaxonomyService taxoService;
+
+    @Inject
+    private MaterialCompositionBean compositionBean;
 
     CreationTools creationTools;
     User publicUser;
@@ -488,7 +492,7 @@ public class MaterialBeanTest extends TestBase {
         result = materialService.loadReadableMaterials(requestBuilder.build());
         MaterialComposition composition = (MaterialComposition) result.getAllFoundObjects().get(0).getSearchable();
         Assert.assertEquals(1, composition.getComponents().size());
-        Assert.assertEquals(material2.getId(), composition.getComponents().keySet().iterator().next().getId());
+        Assert.assertEquals(material2.getId(), composition.getComponents().iterator().next().getMaterialId());
     }
 
     @Deployment
@@ -504,7 +508,8 @@ public class MaterialBeanTest extends TestBase {
                         .addClass(ItemOverviewBean.class)
                         .addClass(MaterialIndexBean.class)
                         .addClass(MessagePresenterMock.class)
-                        .addClass(MaterialBeanMock.class);
+                        .addClass(MaterialCompositionBean.class)
+                        .addClass(MateriaBeanMock.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));

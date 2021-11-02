@@ -38,8 +38,8 @@ import de.ipb_halle.lbac.material.composition.CompositionDifference;
 import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
 import de.ipb_halle.lbac.material.composition.CompositionType;
 import de.ipb_halle.lbac.material.composition.MaterialComposition;
-import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.structure.Structure;
+import de.ipb_halle.lbac.util.Unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -371,7 +371,7 @@ public class MaterialComparatorTest {
         MaterialComposition composition2 = createEmptyComposition();
 
         //UC1 -> add a new component
-        composition1.addComponent(structure1, 1d);
+        composition1.addComponent(structure1, 1d, null);
 
         List<MaterialDifference> diffs = instance.compareMaterial(composition2, composition1);
         checkDifference(diffs, 1);
@@ -383,7 +383,7 @@ public class MaterialComparatorTest {
         checkDiffEntity(diffs, 0, structure1.getId(), null, 1d, null);
 
         //UC3 -> swap components
-        composition2.addComponent(structure2, null);
+        composition2.addComponent(structure2, null, null);
         diffs = instance.compareMaterial(composition1, composition2);
         checkDifference(diffs, 2);
         checkDiffEntity(diffs, 0, null, structure2.getId(), null, null);
@@ -392,20 +392,48 @@ public class MaterialComparatorTest {
         //UC4 -> change concentrations
         composition1.getComponents().clear();
         composition2.getComponents().clear();
-        composition1.addComponent(structure1, .2d);
-        composition2.addComponent(structure1, .3d);
+        composition1.addComponent(structure1, .2d, null);
+        composition2.addComponent(structure1, .3d, null);
         diffs = instance.compareMaterial(composition1, composition2);
         checkDifference(diffs, 1);
         checkDiffEntity(diffs, 0, structure1.getId(), structure1.getId(), .2d, .3d);
         //UC5 -> add 2 components
         composition1.getComponents().clear();
         composition2.getComponents().clear();
-        composition2.addComponent(structure1, .2d);
-        composition2.addComponent(structure2, .3d);
+        composition2.addComponent(structure1, .2d, null);
+        composition2.addComponent(structure2, .3d, null);
         diffs = instance.compareMaterial(composition1, composition2);
         checkDifference(diffs, 2);
         checkDiffEntity(diffs, 0, null, structure1.getId(), null, .2d);
         checkDiffEntity(diffs, 1, null, structure2.getId(), null, .3d);
+
+        //UC6 -> change unit
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition1.addComponent(structure1, .2d, Unit.getUnit("%"));
+        composition2.addComponent(structure1, .2d, null);
+        diffs = instance.compareMaterial(composition1, composition2);
+        Assert.assertEquals(1, diffs.size());
+        CompositionDifference diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        Assert.assertNull(diff.getUnits_new().get(0));
+        Assert.assertEquals("%", diff.getUnits_old().get(0));
+
+        diffs = instance.compareMaterial(composition2, composition1);
+        Assert.assertEquals(1, diffs.size());
+        diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        Assert.assertNull(diff.getUnits_old().get(0));
+        Assert.assertEquals("%", diff.getUnits_new().get(0));
+
+        composition1.getComponents().clear();
+        composition2.getComponents().clear();
+        composition1.addComponent(structure1, .2d, Unit.getUnit("%"));
+        composition2.addComponent(structure1, .2d, Unit.getUnit("ml"));
+        diffs = instance.compareMaterial(composition1, composition2);
+        Assert.assertEquals(1, diffs.size());
+        diff = instance.getDifferenceOfType(diffs, CompositionDifference.class);
+        Assert.assertEquals("ml", diff.getUnits_new().get(0));
+        Assert.assertEquals("%", diff.getUnits_old().get(0));
+
     }
 
     private void checkDifference(List<MaterialDifference> diffs, int expectedDifferences) {

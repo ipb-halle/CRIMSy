@@ -27,16 +27,11 @@ import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.ModificationType;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
-import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
-import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.structure.MaterialStructureDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
-import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
-import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.structure.Molecule;
 import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -73,7 +68,7 @@ public class HistoryOperationStructureTest extends TestBase {
     @Inject
     private MaterialService materialService;
 
-    private MaterialBeanMock materialBean;
+    private MateriaBeanMock materialBean;
 
     @Before
     public void init() {
@@ -82,7 +77,7 @@ public class HistoryOperationStructureTest extends TestBase {
         d_20001220 = c.getTime();
         c.set(2000, 10, 20);
         d_20001020 = c.getTime();
-        materialBean = new MaterialBeanMock();
+        materialBean = new MateriaBeanMock();
         s = new Structure("H2O", 0d, 0d, 0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), new Molecule("h2o", 0));
         currentDate = new Date();
         mes = new MaterialEditState();

@@ -40,7 +40,7 @@ import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
@@ -82,7 +82,7 @@ public class HistoryOperationHazardsTest extends TestBase {
     MaterialIndexBean mib;
     Random random = new Random();
 
-    @Inject
+   
     private MaterialCompositionBean compositionBean;
 
     @Before
@@ -110,7 +110,7 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        MaterialBeanMock mock = new MaterialBeanMock();
+        MateriaBeanMock mock = new MateriaBeanMock();
         mock.setMaterialEditState(mes);
         mock.setHazardService(hazardService);
         instance = new HistoryOperation(mock);
@@ -187,8 +187,7 @@ public class HistoryOperationHazardsTest extends TestBase {
                 = prepareDeployment("HistoryOperationHazardsTest.war")
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
-        deployment = UserBeanDeployment.add(deployment);
-        deployment = MaterialBeanDeployment.add(deployment);
+        deployment = UserBeanDeployment.add(deployment);      
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }

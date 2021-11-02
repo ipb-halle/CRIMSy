@@ -103,6 +103,13 @@
                                                 </ui:include>
                                             </ui:insert>
                                         </ui:fragment>
+                                        <ui:fragment rendered="#{materialOverviewBean.isDetailSubComponentVisisble('COMPOSITION', material)}">
+                                            <ui:insert name="structurePanel">
+                                                <ui:include src="/WEB-INF/templates/material/components/detail/composition.xhtml">
+                                                    <ui:param name="material" value="#{material}" />
+                                                </ui:include>
+                                            </ui:insert>
+                                        </ui:fragment>
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         label="#{msgs.materialOverview_tableheader_actions}">

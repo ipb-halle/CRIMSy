@@ -44,7 +44,7 @@ import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
-import de.ipb_halle.lbac.material.mocks.MaterialBeanMock;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.project.Project;
 import java.util.ArrayList;
@@ -69,43 +69,19 @@ import org.junit.runner.RunWith;
  * @author fmauz
  */
 @RunWith(Arquillian.class)
-public class HistoryOperationBiomaterialTest extends TestBase {
+public class HistoryOperationBiomaterialTest extends HistoryOperationTest {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private HazardService hazardService;
     
-    List<IndexEntry> indices;
-    BioMaterial biomaterial;
-    Date currentDate;
-    MaterialEditState mes;
-    HistoryOperation instance;
-    MaterialIndexDifference mid;
-    MaterialIndexBean mib;
-    Random random = new Random();
-    int projectid = 0;
-    int biomaterialId = 0;
-    TaxonomySelectionController taxonomyController;
-    MaterialBeanMock materialBeanMock;
-    private Date d_20001220, d_20001020;
 
     @Inject
     private TaxonomyService taxonomyService;
     @Inject
     private TissueService tissueService;
-    private Taxonomy plantsTaxonomy, mushroomsTaxonomy;
+    
 
-    @Before
-    public void init() {
-        setUpDates();
-        setUpTaxonomy();
-        createBioMaterial();
-        createMaterialEditState();
-        createMaterialBeanMock();
-        instance = new HistoryOperation(materialBeanMock);
-
-    }
+   
 
     /**
      * Description: The material is created without a Hazard. After that the
@@ -115,8 +91,9 @@ public class HistoryOperationBiomaterialTest extends TestBase {
      */
     @Test
     public void test01_BioMaterialDifferenceOperations() {
+        createMaterialEditState();        
         checkCurrentState();
-
+        
         //Go one step back (20.12.2000)
         instance.applyNextNegativeDifference();
         checkStateAt20001220();
@@ -132,27 +109,10 @@ public class HistoryOperationBiomaterialTest extends TestBase {
         checkCurrentState();
     }
 
-    private MaterialBeanMock createMaterialBeanMock() {
-        materialBeanMock = new MaterialBeanMock();
-        materialBeanMock.setMaterialEditState(mes);
-        materialBeanMock.setHazardService(hazardService);
-        materialBeanMock.setTaxonomyService(taxonomyService);
-        materialBeanMock.setTissueService(tissueService);
-        taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, biomaterial.getTaxonomy());
-        materialBeanMock.setTaxonomyController(taxonomyController);
-        return materialBeanMock;
-    }
+   
 
-    private void setUpTaxonomy() {
-        createTaxonomyTreeInDB(GlobalAdmissionContext.getPublicReadACL().getId(), publicUser.getId());
-        List<Taxonomy> taxonomyList = taxonomyService.loadTaxonomy(new HashMap<>(), true);
-        plantsTaxonomy = taxonomyList.get(3);
-        mushroomsTaxonomy = taxonomyList.get(1);
-    }
-
+   
     private MaterialEditState createMaterialEditState() {
-        mes = new MaterialEditState();
-        mes.setMaterialBeforeEdit(biomaterial);
         mes = new MaterialEditState(
                 new Project(),
                 currentDate,
@@ -163,49 +123,38 @@ public class HistoryOperationBiomaterialTest extends TestBase {
         return mes;
     }
 
-    private BioMaterial createBioMaterial() {
-        List<MaterialName> names = new ArrayList<>();
-        names.add(new MaterialName("Biomaterial", "en", 0));
-        biomaterial = new BioMaterial(biomaterialId, names, projectid, new HazardInformation(), new StorageInformation(), taxonomyService.loadRootTaxonomy(), null);
-        biomaterial.getHistory().addDifference(createDiffAt20001020());
-        biomaterial.getHistory().addDifference(createDiffAt20001220());
-        return biomaterial;
-    }
+  
 
-    private void setUpDates() {
-        currentDate = new Date();
-        Calendar c = new GregorianCalendar();
-        c.set(2000, 12, 20);
-        d_20001220 = c.getTime();
-        c.set(2000, 10, 20);
-        d_20001020 = c.getTime();
-    }
-
-    private void checkCurrentState() {
+    @Override
+    protected void checkCurrentState() {
         Taxonomy taxonomy = (Taxonomy) materialBeanMock.getTaxonomyController().getSelectedTaxonomy().getData();
         Assert.assertEquals(taxonomyService.loadRootTaxonomy().getId(), taxonomy.getId());
 
     }
 
-    private void checkStateAt20001020() {
+    @Override
+    protected void checkStateAt20001020() {
         Taxonomy taxonomy = (Taxonomy) materialBeanMock.getTaxonomyController().getSelectedTaxonomy().getData();
         Assert.assertEquals(mushroomsTaxonomy.getId(), taxonomy.getId());
 
     }
 
-    private void checkStateAt20001220() {
+    @Override
+    protected void checkStateAt20001220() {
         Taxonomy taxonomy = (Taxonomy) materialBeanMock.getTaxonomyController().getSelectedTaxonomy().getData();
         Assert.assertEquals(plantsTaxonomy.getId(), taxonomy.getId());
     }
 
-    private BioMaterialDifference createDiffAt20001020() {
+    @Override
+    protected BioMaterialDifference createDiffAt20001020() {
         BioMaterialDifference diff = new BioMaterialDifference();
         diff.initialise(0, publicUser.getId(), d_20001020);
         diff.addTaxonomyDiff(mushroomsTaxonomy.getId(), plantsTaxonomy.getId());
         return diff;
     }
 
-    private MaterialDifference createDiffAt20001220() {
+    @Override
+    protected MaterialDifference createDiffAt20001220() {
         BioMaterialDifference diff = new BioMaterialDifference();
         diff.addTaxonomyDiff(plantsTaxonomy.getId(), taxonomyService.loadRootTaxonomy().getId());
         diff.initialise(0, publicUser.getId(), d_20001220);
@@ -219,7 +168,6 @@ public class HistoryOperationBiomaterialTest extends TestBase {
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
         deployment = UserBeanDeployment.add(deployment);
-        deployment = MaterialBeanDeployment.add(deployment);
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }
