@@ -15,25 +15,18 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.common.service;
+package de.ipb_halle.lbac.material.common;
 
-import de.ipb_halle.lbac.material.common.MaterialSaver;
-import de.ipb_halle.lbac.material.common.MaterialValidator;
-import de.ipb_halle.lbac.material.common.history.IMaterialComparator;
-import java.io.Serializable;
+import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import java.util.Set;
 
 /**
  *
  * @author fmauz
  */
-public interface MaterialFactory extends Serializable {
+public interface MaterialValidator {
 
-    public MaterialSaver createSaver();
+    public boolean checkValidity(MaterialBean bean);
 
-    public MaterialLoader createLoader();
-    
-    public IMaterialComparator createComparator();
-    
-    public MaterialValidator createValidator();
-
+    public Set<Invalidity> getInvalidities();
 }
