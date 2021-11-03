@@ -36,8 +36,8 @@ public class SequenceValidator implements MaterialValidator {
     @Override
     public boolean checkValidity(MaterialBean bean) {
         nameValidator = new MaterialNameValidator();
-        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames());
-        errors.addAll(nameValidator.getErrors());
+        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
+
         boolean sequenzValide = true;
         if (!bean.getSequenceInfos().isSequenceTypeSelected()) {
             sequenzValide = false;

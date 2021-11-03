@@ -29,15 +29,14 @@ import java.util.Set;
  */
 public class MaterialNameValidator {
 
-    private final Set<Invalidity> errors = new HashSet<>();
+    private Set<Invalidity> errors = new HashSet<>();
     private List<MaterialName> names;
 
-    public Set<Invalidity> getErrors() {
-        return errors;
-    }
-
-    public boolean areMaterialNamesValide(List<MaterialName> names) {
+    public boolean areMaterialNamesValide(
+            List<MaterialName> names,
+            Set<Invalidity> errors) {
         this.names = names;
+        this.errors=errors;
 
         return checkNameExistance() && areAllNamesNotEmpty();
     }

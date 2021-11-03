@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.material.biomaterial;
+package de.ipb_halle.lbac.material.structure;
 
 import de.ipb_halle.lbac.material.common.Invalidity;
 import de.ipb_halle.lbac.material.common.MaterialNameValidator;
@@ -28,7 +28,7 @@ import java.util.Set;
  *
  * @author fmauz
  */
-public class TaxonomyValidator implements MaterialValidator {
+public class StructureValidator implements MaterialValidator {
 
     MaterialNameValidator nameValidator;
     Set<Invalidity> errors = new HashSet<>();
@@ -36,7 +36,9 @@ public class TaxonomyValidator implements MaterialValidator {
     @Override
     public boolean checkValidity(MaterialBean bean) {
         nameValidator = new MaterialNameValidator();
-        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
+        boolean namesValide = nameValidator.areMaterialNamesValide(
+                bean.getMaterialNameBean().getNames(),
+                errors);
         return namesValide;
     }
 

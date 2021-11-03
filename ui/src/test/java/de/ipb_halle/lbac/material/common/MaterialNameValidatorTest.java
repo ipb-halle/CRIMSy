@@ -19,6 +19,9 @@ package de.ipb_halle.lbac.material.common;
 
 import static de.ipb_halle.lbac.material.common.Invalidity.NO_MATERIAL_NAME;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,10 +41,33 @@ public class MaterialNameValidatorTest {
 
     @Test
     public void test001_checkNoExistingName() {
-        boolean isValid = validator.areMaterialNamesValide(new ArrayList<>());
+        Set<Invalidity> errors = new HashSet<>();
+        boolean isValid = validator.areMaterialNamesValide(new ArrayList<>(), errors);
         Assert.assertFalse(isValid);
-        Assert.assertEquals(1, validator.getErrors().size());
-        Assert.assertEquals(NO_MATERIAL_NAME, validator.getErrors().iterator().next());
+        Assert.assertEquals(1, errors.size());
+        Assert.assertTrue(errors.contains(NO_MATERIAL_NAME));
+    }
+
+    @Test
+    public void test002_checkNameWithEmptyString() {
+        Set<Invalidity> errors = new HashSet<>();
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("", "en", 0));
+        boolean isValid = validator.areMaterialNamesValide(names, errors);
+        Assert.assertFalse(isValid);
+        Assert.assertEquals(1, errors.size());
+        Assert.assertTrue(errors.contains(Invalidity.EMPTY_MATERIAL_NAME));
+    }
+
+    @Test
+    public void test003_allNamesValide() {
+        Set<Invalidity> errors = new HashSet<>();
+        List<MaterialName> names = new ArrayList<>();
+        names.add(new MaterialName("test", "en", 0));
+        boolean isValid = validator.areMaterialNamesValide(names, errors);
+        Assert.assertTrue(isValid);
+        Assert.assertEquals(0, errors.size());
+
     }
 
 }

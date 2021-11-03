@@ -66,7 +66,6 @@ import javax.inject.Named;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.c;
 
 /**
  * Bean for interacting with the ui to present and manipulate a single material

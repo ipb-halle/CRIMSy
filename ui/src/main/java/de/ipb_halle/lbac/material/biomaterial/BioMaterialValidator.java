@@ -35,8 +35,7 @@ public class BioMaterialValidator implements MaterialValidator {
     @Override
     public boolean checkValidity(MaterialBean bean) {
         nameValidator = new MaterialNameValidator();
-        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames());
-        errors.addAll(nameValidator.getErrors());
+        boolean namesValide = nameValidator.areMaterialNamesValide(bean.getMaterialNameBean().getNames(),errors);
         return namesValide;
 
     }
