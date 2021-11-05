@@ -31,13 +31,16 @@ public enum CompositionType implements Serializable {
 
     EXTRACT(
             MaterialType.BIOMATERIAL,
+            MaterialType.INACCESSIBLE,
             MaterialType.STRUCTURE
     ),
     PROTEIN(
             MaterialType.SEQUENCE,
+            MaterialType.INACCESSIBLE,
             MaterialType.BIOMATERIAL
     ),
-    MIXTURE(MaterialType.STRUCTURE);
+    MIXTURE(MaterialType.STRUCTURE,
+            MaterialType.INACCESSIBLE);
 
     private final List<MaterialType> allowedMaterialTypes;
 

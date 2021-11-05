@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.structure;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -45,7 +47,9 @@ public class StructureLoader implements MaterialLoader {
             EntityManager em,
             MaterialService materialService,
             TaxonomyService taxoService,
-            TissueService tissueService) {
+            TissueService tissueService,
+            ACListService aclistService,
+            User currentUser) {
 
         Query q5 = em.createNativeQuery(SQL_GET_STRUCTURE_INFOS, StructureEntity.class);
         q5.setParameter("mid", entity.getMaterialid());

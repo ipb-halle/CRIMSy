@@ -17,16 +17,18 @@
  */
 package de.ipb_halle.lbac.material.composition;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.ACPermission;
+import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
-import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.service.MaterialLoader;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.inaccessible.InaccessibleMaterial;
 import de.ipb_halle.lbac.util.Unit;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 
@@ -44,7 +46,15 @@ public class CompositionLoader implements MaterialLoader {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Material loadMaterial(MaterialEntity entity, EntityManager em, MaterialService materialService, TaxonomyService taxoService, TissueService tissueService) {
+    public Material loadMaterial(
+            MaterialEntity entity,
+            EntityManager em,
+            MaterialService materialService,
+            TaxonomyService taxoService,
+            TissueService tissueService,
+            ACListService aclistService,
+            User currentUser) {
+
         CompositionEntity compositionEntity = em.find(CompositionEntity.class, entity.getMaterialid());
         CompositionType compositionType = CompositionType.valueOf(compositionEntity.getType());
         MaterialComposition composition = new MaterialComposition(
@@ -60,13 +70,31 @@ public class CompositionLoader implements MaterialLoader {
             if (mce.getId().getComponentid() != entity.getMaterialid()) {
 
                 composition.addComponent(
-                        materialService.loadMaterialById(
-                                mce.getId().getComponentid()),
+                        loadMaterialWithPermissionCheck(
+                                mce.getId().getComponentid(),
+                                currentUser,
+                                aclistService,
+                                materialService),
                         mce.getConcentration(),
                         mce.getUnit() == null ? null : Unit.getUnit(mce.getUnit()));
             }
         }
         return composition;
+    }
+
+    private Material loadMaterialWithPermissionCheck(
+            int materialId,
+            User currentUser,
+            ACListService aclistService,
+            MaterialService materialService) {
+        Material materialOfComponent = materialService.loadMaterialById(
+                materialId);
+        if (currentUser != null) {
+            if (!aclistService.isPermitted(ACPermission.permREAD, materialOfComponent, currentUser)) {
+                materialOfComponent = InaccessibleMaterial.createNewInstance(GlobalAdmissionContext.getPublicReadACL());
+            }
+        }
+        return materialOfComponent;
     }
 
 }

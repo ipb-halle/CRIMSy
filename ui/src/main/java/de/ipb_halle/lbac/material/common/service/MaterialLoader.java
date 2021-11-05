@@ -17,6 +17,8 @@
  */
 package de.ipb_halle.lbac.material.common.service;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.Material;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
@@ -35,5 +37,7 @@ public interface MaterialLoader extends Serializable {
             EntityManager em,
             MaterialService materialService,
             TaxonomyService taxoService,
-            TissueService tissueService);
+            TissueService tissueService,
+            ACListService aclistService,
+            User currentUser);
 }
