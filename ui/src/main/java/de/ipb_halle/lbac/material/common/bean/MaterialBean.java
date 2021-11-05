@@ -469,9 +469,6 @@ public class MaterialBean implements Serializable {
         return sequenceInfos;
     }
 
-//    public void setSequenceInfos(SequenceInformation sequenceInfos) {
-//        this.sequenceInfos = sequenceInfos;
-//    }
     public MaterialNameBean getMaterialNameBean() {
         return materialNameBean;
     }

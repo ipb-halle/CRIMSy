@@ -77,7 +77,7 @@
                                                 styleClass="inputText"
                                                 value=""
                                                 placeholder="#{msgs.materialCreation_composition_nameSearchPlaceholder}">
-                                                </p:inputText>            
+                                            </p:inputText>            
                                         </p:column>
                                         <p:column styleClass="borderless">
                                             <p:commandButton
@@ -151,8 +151,8 @@
                                             ajax="true"
                                             look="link"
                                             type="button"
-                                            tooltip="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
+                                            tooltip="#{msgs.materialCreation_composition_searchResultTable_Action_Tooltip}"                                        
                                             action="#{materialCompositionBean.actionAddMaterialToComposition(material)}"
                                             update="@(.resultTable)"
                                             icon="plus"/>
@@ -190,15 +190,15 @@
                                     <b:dataTableColumn
                                         label="#{msgs.materialCreation_composition_concentrationsValue}">
                                         <b:inputText
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
                                             value="#{concentration.concentration}"
                                             />
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
-                                       label="#{msgs.materialCreation_composition_concentrationsUnit}">
+                                        label="#{msgs.materialCreation_composition_concentrationsUnit}">
                                         <b:selectOneMenu 
                                             value="#{concentration.unit}"
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
                                             >
                                             <f:selectItems
                                                 value="#{materialCompositionBean.availableAmountUnits}"
@@ -213,7 +213,7 @@
                                             type="button"
                                             icon="minus"
                                             tooltip="#{msgs.materialCreation_composition_concentrationsRemoveMaterial}"
-                                            disabled="#{materialBean.isInHistoryMode()}"
+                                            disabled="#{!materialBean.permission.isEditAllowed()}"
                                             action="#{materialCompositionBean.actionRemoveConcentrationFromComposition(concentration)}"
                                             update="@(.resultTable)"
                                             ajax="true"/>
