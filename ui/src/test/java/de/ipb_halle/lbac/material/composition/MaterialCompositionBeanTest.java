@@ -27,6 +27,7 @@ import de.ipb_halle.lbac.base.ProjectCreator;
 import de.ipb_halle.lbac.base.TestBase;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
+import de.ipb_halle.lbac.exp.ExperimentService;
 import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.project.Project;
@@ -37,14 +38,19 @@ import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.common.HazardType;
+import de.ipb_halle.lbac.material.common.IndexEntry;
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.bean.MaterialBean;
+import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
+import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
 import de.ipb_halle.lbac.material.structure.Structure;
-import de.ipb_halle.lbac.util.Unit;
+import de.ipb_halle.lbac.search.SearchResult;
+import de.ipb_halle.lbac.search.SearchService;
+import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,8 +90,14 @@ public class MaterialCompositionBeanTest extends TestBase {
 
     @Inject
     private TaxonomyService taxonomyService;
+
+    @Inject
+    private SearchService searchService;
     int publicAclId;
     private int structureId1, structureId2, biomaterialId;
+
+    @Inject
+    private HazardService hazardService;
 
     @Inject
     MaterialBean materialBean;
@@ -253,6 +265,45 @@ public class MaterialCompositionBeanTest extends TestBase {
         Assert.assertEquals(MaterialType.STRUCTURE, bean.getChoosenMaterialType());
     }
 
+    @Test
+    public void test010_saveComposition() {
+        createTaxonomyTreeInDB(publicAclId, publicUser.getId());
+        createProject("SearchServiceTest-Project-01", GlobalAdmissionContext.getPublicReadACL(), publicUser);
+        createMaterials();
+
+        materialBean.startMaterialCreation();
+        materialBean.getMaterialEditState().setCurrentProject(project);
+        materialBean.getMaterialNameBean().getNames().get(0).setValue("test-composition");
+        materialBean.setCurrentMaterialType(MaterialType.COMPOSITION);
+
+        bean.actionAddMaterialToComposition(materialService.loadMaterialById(structureId1));
+        bean.actionAddMaterialToComposition(materialService.loadMaterialById(structureId2));
+
+        materialBean.getMaterialIndexBean().getIndices().add(new IndexEntry(2, "XYZ", "de"));
+
+        materialBean.getHazardController().addHazardType(hazardService.getHazardById(1), null);
+        materialBean.getStorageInformationBuilder().addStorageCondition(StorageCondition.keepCool);
+        materialBean.getStorageInformationBuilder().setStorageClassActivated(true);
+        materialBean.getStorageInformationBuilder().setChoosenStorageClass(materialBean.getStorageInformationBuilder().getStorageClassById(1));
+
+        materialBean.actionSaveMaterial();
+
+        MaterialSearchRequestBuilder builder = new MaterialSearchRequestBuilder(publicUser, 0, 10);
+        builder.addMaterialType(MaterialType.COMPOSITION);
+        builder.setMaterialName("test-composition");
+        SearchResult result = searchService.search(Arrays.asList(builder.build()), nodeService.getLocalNode());
+        List<MaterialComposition> foundObjects = result.getAllFoundObjects(MaterialComposition.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, foundObjects.size());
+
+        MaterialComposition composition = foundObjects.get(0);
+        Assert.assertEquals(1, composition.getIndices().size());
+        Assert.assertEquals(2, composition.getComponents().size());
+        Assert.assertEquals(1, composition.getHazards().getHazards().size());
+        Assert.assertEquals(1, composition.getStorageInformation().getStorageClass().id, 0);
+        Assert.assertEquals(1, composition.getStorageInformation().getStorageConditions().size());
+
+    }
+
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment
@@ -262,6 +313,9 @@ public class MaterialCompositionBeanTest extends TestBase {
         deployment = MaterialBeanDeployment.add(deployment);
         deployment = PrintBeanDeployment.add(deployment);
         deployment = MaterialDeployment.add(deployment);
+        deployment.addClass(SearchService.class);
+        deployment.addClass(ExperimentService.class);
+        deployment.addClass(DocumentSearchService.class);
         return deployment;
     }
 
