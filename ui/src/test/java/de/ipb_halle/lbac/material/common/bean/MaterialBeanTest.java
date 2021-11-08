@@ -46,6 +46,7 @@ import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
+import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.history.MaterialStorageDifference;
 import de.ipb_halle.lbac.material.common.search.MaterialSearchRequestBuilder;
@@ -61,6 +62,7 @@ import de.ipb_halle.lbac.search.SearchResult;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.behavior.BehaviorBase;
 import javax.inject.Inject;
@@ -493,6 +495,33 @@ public class MaterialBeanTest extends TestBase {
         MaterialComposition composition = (MaterialComposition) result.getAllFoundObjects().get(0).getSearchable();
         Assert.assertEquals(1, composition.getComponents().size());
         Assert.assertEquals(material2.getId(), composition.getComponents().iterator().next().getMaterialId());
+    }
+
+    @Test
+    public void test010_saveNewStructure() {
+        project.setACList(GlobalAdmissionContext.getPublicReadACL());
+        projectService.saveEditedProjectToDb(project);
+       
+        instance.startMaterialCreation();
+        instance.getMaterialEditState().setCurrentProject(project);
+        instance.setCurrentMaterialType(MaterialType.STRUCTURE);
+
+        instance.getMaterialNameBean().getNames().get(0).setValue("test-structure");
+        instance.getMaterialIndexBean().getIndices().add(new IndexEntry(2, "XYZ", "de"));
+      
+        instance.actionSaveMaterial();
+
+        MaterialSearchRequestBuilder requestBuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        requestBuilder.setMaterialName("test-structure");
+        requestBuilder.addMaterialType(MaterialType.STRUCTURE);
+        SearchResult result = materialService.loadReadableMaterials(requestBuilder.build());
+
+        List<Structure> foundObjects = result.getAllFoundObjects(Structure.class, nodeService.getLocalNode());
+        Assert.assertEquals(1, foundObjects.size());
+
+        Structure loadedStruc = foundObjects.get(0);
+
+        Assert.assertEquals(1, loadedStruc.getIndices().size());
     }
 
     @Deployment

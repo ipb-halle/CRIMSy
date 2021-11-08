@@ -46,9 +46,7 @@ public class StructureInformationSaver implements MaterialSaver {
      */
     @Override
     public void saveMaterial(Material m, EntityManager em) {
-        MaterialIndexSaver indexSaver = new MaterialIndexSaver(em);
-        Structure s = (Structure) m;
-        indexSaver.saveIndices(s);
+        Structure s = (Structure) m;      
         if (s.getMolecule() != null) {
             saveMoleculeOf(s, em);
         }
