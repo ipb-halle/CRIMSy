@@ -106,25 +106,22 @@
                                                         format="MDLV2000"
                                                         border="true"
                                                         readonly="#{!materialBean.permission.isDetailInformationEditable('STRUCTURE_INFORMATION')}"
-                                                        widgetVar="structurePlugin">
+                                                        widgetVar="compositionStructurePlugin">
                                                     </mol:molecule>
                                                     <!-- This JS snippet guarantees proper plugin initialization after
                                                          this p:tab is rendered by AJAX and the tab comes into focus. -->
-                                                    <script>structurePlugin.then(plugin => plugin.init());</script>
+                                                    <script>compositionStructurePlugin.then(plugin => plugin.init());</script>
                                                 </p:tab>
                                                 <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('SEQUENCE')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('SEQUENCE')}">
                                                 </p:tab>
                                                 <p:tab title="#{materialCompositionBean.getLocalizedTabTitle('BIOMATERIAL')}"
                                                        disabled="#{materialCompositionBean.isMaterialTypePanelDisabled('BIOMATERIAL')}">
-
                                                 </p:tab>
                                             </p:tabView>
                                         </p:column>             
                                     </p:row>
-
                                 </p:panelGrid>
-
                             </p:column>
                             <p:column style="vertical-align: top;min-width:30%;max-width: 30%;text-align: center;" styleClass="borderless compositionMaterialTable" >
                                 <h:outputText 
@@ -138,7 +135,7 @@
                                     saveState="false"
                                     paginated="true">
                                     <b:dataTableColumn
-                                        label="ID"
+                                        label="#{msgs.materialCreation_composition_concentrationsID}"
                                         value="#{material.getId()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
@@ -176,11 +173,11 @@
                                     saveState="false"
                                     paginated="true">
                                     <b:dataTableColumn
-                                        label="ID"
+                                        label="#{msgs.materialCreation_composition_concentrationsID}"
                                         value="#{concentration.getMaterialId()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
-                                        label="Name"
+                                        label="#{msgs.materialCreation_composition_concentrationsName}"
                                         value="#{concentration.getMaterialName()}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
@@ -226,5 +223,4 @@
             </p:tab>
         </ui:composition>
     </h:body>
-
 </html>
