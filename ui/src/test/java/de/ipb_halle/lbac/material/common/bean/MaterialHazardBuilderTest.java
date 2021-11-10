@@ -206,22 +206,26 @@ public class MaterialHazardBuilderTest extends TestBase {
         Map<HazardType, String> hazards = new HashMap<>();
         hazards.put(hazardService.getHazardById(12), null);
         MaterialHazardBuilder builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(1), builder.getBioSavetyLevel());
+        Assert.assertEquals("hazard_S1", builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(13), null);
         builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(2), builder.getBioSavetyLevel());
+        Assert.assertEquals("hazard_S2", builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(14), null);
         builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(3), builder.getBioSavetyLevel());
+        Assert.assertEquals("hazard_S3", builder.getBioSavetyLevel());
 
         hazards.clear();
         hazards.put(hazardService.getHazardById(15), null);
         builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
-        Assert.assertEquals(builder.getPossibleBioSavetyLevels().get(4), builder.getBioSavetyLevel());
+        Assert.assertEquals("hazard_S4", builder.getBioSavetyLevel());
+        
+        hazards.clear();
+        builder = new MaterialHazardBuilder(hazardService, bioMaterial.getType(), true, hazards, MessagePresenterMock.getInstance());
+        Assert.assertEquals("hazard_S0", builder.getBioSavetyLevel());
     }
 
     @Test
