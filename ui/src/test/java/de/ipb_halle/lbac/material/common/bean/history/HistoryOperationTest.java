@@ -22,6 +22,7 @@ import de.ipb_halle.lbac.admission.GlobalAdmissionContext;
 import de.ipb_halle.lbac.admission.mock.UserBeanMock;
 import de.ipb_halle.lbac.base.MaterialCreator;
 import de.ipb_halle.lbac.base.TestBase;
+import de.ipb_halle.lbac.material.JsfMessagePresenter;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
@@ -31,6 +32,8 @@ import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
+import de.ipb_halle.lbac.material.common.StorageClass;
+import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
@@ -115,8 +118,9 @@ public abstract class HistoryOperationTest extends TestBase {
         createMaterialEditState();
         createMaterialBeanMock();
         instance = new HistoryOperation(materialBeanMock);
+        materialBeanMock.setHistoryOperation(instance);
 
-    }       
+    }
 
     private void setUpTaxonomy() {
         createTaxonomyTreeInDB(publicAclId, publicUser.getId());
@@ -169,6 +173,9 @@ public abstract class HistoryOperationTest extends TestBase {
         composition.addComponent(biomaterial, null, null);
         composition.getHistory().addDifference(createDiffAt20001020());
         composition.getHistory().addDifference(createDiffAt20001220());
+        composition.getStorageInformation().setStorageClass(new StorageClass(3, ""));
+        composition.getStorageInformation().getStorageConditions().add(StorageCondition.keepFrozen);
+        composition.getStorageInformation().getStorageConditions().add(StorageCondition.keepTempBelowMinus80Celsius);
 
         return composition;
     }
@@ -193,11 +200,15 @@ public abstract class HistoryOperationTest extends TestBase {
         materialBeanMock.setUserBean(userBean);
         materialBeanMock.setMaterialService(materialService);
         materialBeanMock.setAcListService(aclistService);
+        materialBeanMock.setHistoryOperation(instance);
+        materialBeanMock.createStorageInformationBuilder(MessagePresenterMock.getInstance(), materialService, composition);
         taxonomyController = new TaxonomySelectionController(taxonomyService, tissueService, biomaterial.getTaxonomy());
         materialBeanMock.setTaxonomyController(taxonomyController);
         compositionBean = new MaterialCompositionBean(materialService, MessagePresenterMock.getInstance(), userBean);
         compositionBean.startCompositionEdit(composition);
         materialBeanMock.setCompositionBean(compositionBean);
+        materialBeanMock.setHazardController(new MaterialHazardBuilder(hazardService, MaterialType.COMPOSITION, true, new HashMap<>(),
+                MessagePresenterMock.getInstance()));
         return materialBeanMock;
     }
 

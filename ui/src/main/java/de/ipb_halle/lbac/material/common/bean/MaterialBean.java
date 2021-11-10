@@ -134,7 +134,7 @@ public class MaterialBean implements Serializable {
     private boolean autoCalcFormularAndMasses = true;
 
     protected MaterialEditState materialEditState = new MaterialEditState();
-    private HistoryOperation historyOperation;
+    protected HistoryOperation historyOperation;
 
     private MaterialEditPermission permission;
 
@@ -147,7 +147,7 @@ public class MaterialBean implements Serializable {
     private transient MessagePresenter messagePresenter;
 
     protected MaterialHazardBuilder hazardController;
-    private StorageInformationBuilder storageInformationBuilder;
+    protected StorageInformationBuilder storageInformationBuilder;
 
     public enum Mode {
         CREATE, EDIT, HISTORY
@@ -618,7 +618,7 @@ public class MaterialBean implements Serializable {
     }
 
     public boolean hasDetailRight(ACPermission what, MaterialDetailType onWhat) {
-        ACList aclist = getMaterialEditState().getMaterialToEdit().getDetailRight(onWhat);
+        ACList aclist = getMaterialEditState().getMaterialToEdit().getACList();
         boolean userHasEditRight = aclist != null && getAcListService().isPermitted(what, aclist, getUserBean().getCurrentAccount());
         boolean userIsOwner = getMaterialEditState().getMaterialToEdit().getOwner().getId().equals(getUserBean().getCurrentAccount().getId());
         return !(userIsOwner || userHasEditRight);
@@ -640,6 +640,7 @@ public class MaterialBean implements Serializable {
         this.taxonomyService = taxonomyService;
     }
 
+   
     public StorageInformationBuilder getStorageInformationBuilder() {
         return storageInformationBuilder;
     }
