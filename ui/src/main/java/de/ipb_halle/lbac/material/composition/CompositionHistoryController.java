@@ -30,6 +30,8 @@ import de.ipb_halle.lbac.util.Unit;
 import java.util.Objects;
 
 /**
+ * Moves the state of the compositionBean forward and backward in time driven by
+ * a given difference
  *
  * @author fmauz
  */
@@ -50,6 +52,8 @@ public class CompositionHistoryController implements HistoryController<Compositi
     }
 
     /**
+     * Calculates the new state of the compositionBean driven by the given
+     * CompositionDifference
      *
      * @param diff
      */
@@ -71,6 +75,8 @@ public class CompositionHistoryController implements HistoryController<Compositi
     }
 
     /**
+     * Calculates the new state of the compositionBean driven by the given
+     * CompositionDifference
      *
      * @param diff
      */
@@ -106,29 +112,39 @@ public class CompositionHistoryController implements HistoryController<Compositi
             Unit unitToRemove,
             Unit unitToInsert) {
         if (materialIdToInsert != null) {
-            addOrChangeComponent(materialIdToInsert, materialIdToRemove, concentrationToInsert, concentrationToRemove, unitToRemove, unitToInsert);
+            addOrChangeConcentration(materialIdToRemove, materialIdToInsert, concentrationToRemove, concentrationToInsert, unitToRemove, unitToInsert);
         } else {
             removeConcentrationFromComposition(materialIdToRemove);
         }
     }
 
-    private void addOrChangeComponent(Integer materialIdToInsert, Integer materialIdToRemove, Double concentrationToInsert, Double concentrationToRemove, Unit unitToRemove, Unit unitToInsert) {
+    private void addOrChangeConcentration(
+            Integer materialIdToRemove,
+            Integer materialIdToInsert,
+            Double concentrationToRemove,
+            Double concentrationToInsert,
+            Unit unitToRemove,
+            Unit unitToInsert) {
         Material loadedMaterialToInsert = getMaterialWithPermissionCheck(materialIdToInsert);
 
         if (areMaterialsEqual(materialIdToInsert, materialIdToRemove)
                 && isMaterialInaccessible(loadedMaterialToInsert.getId())) {
-            changeConcentration(concentrationToInsert, concentrationToRemove, loadedMaterialToInsert.getId());
-            changeUnit(unitToInsert, unitToRemove, loadedMaterialToInsert.getId());
+            changeConcentration(concentrationToRemove, concentrationToInsert, loadedMaterialToInsert.getId());
+            changeUnit(unitToRemove, unitToInsert, loadedMaterialToInsert.getId());
         } else if (!compositionBean.isMaterialAlreadyInComposition(materialIdToInsert)) {
-            addnewConcentration(loadedMaterialToInsert, concentrationToInsert, unitToInsert);
+            addNewConcentration(loadedMaterialToInsert, concentrationToInsert, unitToInsert);
         } else {
-            changeConcentration(concentrationToInsert, concentrationToRemove, materialIdToInsert);
-            changeUnit(unitToInsert, unitToRemove, loadedMaterialToInsert.getId());
+            changeConcentration(concentrationToRemove, concentrationToInsert, materialIdToInsert);
+            changeUnit(unitToRemove, unitToInsert, loadedMaterialToInsert.getId());
         }
     }
 
-    private void addnewConcentration(Material loadedMaterialToInsert, Double concentrationToInsert, Unit unitToInsert) {
-        compositionBean.getConcentrationsInComposition().add(new Concentration(loadedMaterialToInsert, concentrationToInsert, unitToInsert));
+    private void addNewConcentration(
+            Material loadedMaterialToInsert,
+            Double concentrationToInsert,
+            Unit unitToInsert) {
+        compositionBean.getConcentrationsInComposition()
+                .add(new Concentration(loadedMaterialToInsert, concentrationToInsert, unitToInsert));
     }
 
     private boolean isMaterialInaccessible(int materialId) {
@@ -140,19 +156,27 @@ public class CompositionHistoryController implements HistoryController<Compositi
         removeConcentration(m.getId());
     }
 
-    private boolean areMaterialsEqual(Integer materialIdToInsert, Integer materialIdToRemove) {
-        return Objects.equals(materialIdToInsert, materialIdToRemove);
+    private boolean areMaterialsEqual(Integer materialId, Integer otherMaterialId) {
+        return Objects.equals(materialId, otherMaterialId);
     }
 
-    private void changeConcentration(Double concentrationToInsert, Double concentrationToRemove, Integer materialIdToInsert) {
+    private void changeConcentration(
+            Double concentrationToRemove,
+            Double concentrationToInsert,
+            Integer materialIdToInsert) {
         if (!areConcentrationsEqual(concentrationToInsert, concentrationToRemove)) {
-            compositionBean.getConcentrationWithMaterial(materialIdToInsert).setConcentration(concentrationToInsert);
+            compositionBean.getConcentrationWithMaterial(materialIdToInsert)
+                    .setConcentration(concentrationToInsert);
         }
     }
 
-    private void changeUnit(Unit unitToInsert, Unit unitToRemove, int materialIdToInsert) {
+    private void changeUnit(
+            Unit unitToRemove,
+            Unit unitToInsert,
+            int materialIdToInsert) {
         if (!Objects.equals(unitToInsert, unitToRemove)) {
-            compositionBean.getConcentrationWithMaterial(materialIdToInsert).setUnit(unitToInsert);
+            compositionBean.getConcentrationWithMaterial(materialIdToInsert)
+                    .setUnit(unitToInsert);
         }
     }
 
@@ -168,7 +192,9 @@ public class CompositionHistoryController implements HistoryController<Compositi
     }
 
     private void removeConcentration(int materialId) {
-        compositionBean.getConcentrationsInComposition().remove(compositionBean.getConcentrationWithMaterial(materialId));
+        compositionBean.getConcentrationsInComposition()
+                .remove(compositionBean
+                        .getConcentrationWithMaterial(materialId));
     }
 
     private Material getMaterialWithPermissionCheck(Integer materialId) {
