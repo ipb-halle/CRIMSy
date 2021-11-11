@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.MaterialType;
-import de.ipb_halle.lbac.material.consumable.Consumable;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
 import java.util.List;
@@ -33,6 +32,9 @@ import java.util.Objects;
  * @author fmauz
  */
 public class Sequence extends Material {
+    private static final long serialVersionUID = 1L;
+
+    private SequenceData data;
 
     public Sequence(
             int id,
@@ -43,6 +45,7 @@ public class Sequence extends Material {
         super(id, names, projectId, hazards, storageInfos);
         this.type = MaterialType.SEQUENCE;
 
+        data = new SequenceData();
     }
 
 
@@ -70,4 +73,11 @@ public class Sequence extends Material {
         return new Type(SearchTarget.MATERIAL, MaterialType.SEQUENCE);
     }
 
+    public SequenceData getData() {
+        return data;
+    }
+
+    public void setData(SequenceData data) {
+        this.data = data;
+    }
 }

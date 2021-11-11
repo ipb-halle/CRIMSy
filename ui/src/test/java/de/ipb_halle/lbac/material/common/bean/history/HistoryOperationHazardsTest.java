@@ -22,26 +22,25 @@ import de.ipb_halle.lbac.base.TestBase;
 import static de.ipb_halle.lbac.base.TestBase.prepareDeployment;
 import de.ipb_halle.lbac.device.print.PrintBeanDeployment;
 import de.ipb_halle.lbac.items.ItemDeployment;
+import de.ipb_halle.lbac.material.MaterialBeanDeployment;
 import de.ipb_halle.lbac.material.MaterialDeployment;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.bean.MaterialIndexBean;
-import de.ipb_halle.lbac.material.common.bean.MaterialNameBean;
 import de.ipb_halle.lbac.material.common.bean.MaterialEditState;
 import de.ipb_halle.lbac.material.common.history.HistoryOperation;
 import de.ipb_halle.lbac.material.structure.Molecule;
-import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.HazardType;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.bean.MaterialHazardBuilder;
-import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
-import de.ipb_halle.lbac.material.structure.StructureInformation;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.HazardService;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.composition.MaterialCompositionBean;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.project.Project;
@@ -68,6 +67,8 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class HistoryOperationHazardsTest extends TestBase {
 
+    private static final long serialVersionUID = 1L;
+
     @Inject
     private HazardService hazardService;
     @Inject
@@ -80,6 +81,9 @@ public class HistoryOperationHazardsTest extends TestBase {
     MaterialIndexDifference mid;
     MaterialIndexBean mib;
     Random random = new Random();
+
+   
+    private MaterialCompositionBean compositionBean;
 
     @Before
     public void init() {
@@ -106,7 +110,10 @@ public class HistoryOperationHazardsTest extends TestBase {
         possibleHazards.add(new HazardType(10, false, "GHS05", 1));
         possibleHazards.add(new HazardType(11, false, "GHS05", 1));
         mid.initialise(0, random.nextInt(100000), currentDate);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), new MaterialNameBean(), mib, new StructureInformation(), new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService), null, possibleHazards);
+        MateriaBeanMock mock = new MateriaBeanMock();
+        mock.setMaterialEditState(mes);
+        mock.setHazardService(hazardService);
+        instance = new HistoryOperation(mock);
     }
 
     /**
@@ -180,7 +187,7 @@ public class HistoryOperationHazardsTest extends TestBase {
                 = prepareDeployment("HistoryOperationHazardsTest.war")
                         .addClass(IndexService.class);
         deployment = ItemDeployment.add(deployment);
-        deployment = UserBeanDeployment.add(deployment);
+        deployment = UserBeanDeployment.add(deployment);      
         return MaterialDeployment.add(PrintBeanDeployment.add(deployment));
     }
 }

@@ -22,7 +22,6 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.common.HazardInformation;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
-import de.ipb_halle.lbac.material.common.entity.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.bean.Type;
@@ -46,10 +45,10 @@ public class MaterialCompositionTest {
     public void init() {
         int projectid = 10;
 
-        compo1 = new MaterialComposition(1, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.MIXTURE);
+        compo1 = new MaterialComposition(1, projectid, CompositionType.MIXTURE);
         compo1.getNames().add(new MaterialName("compo1-name1", "de", 0));
         compo1.getNames().add(new MaterialName("compo1-name2", "de", 1));
-        compo2 = new MaterialComposition(2, new ArrayList<>(), projectid, new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
+        compo2 = new MaterialComposition(2, projectid, CompositionType.EXTRACT);
         struc1 = new Structure("C", 0d, 0d, 3, new ArrayList<>(), projectid);
         struc2 = new Structure("O", 0d, 0d, 4, new ArrayList<>(), projectid);
         bio1 = new BioMaterial(0, new ArrayList<>(), 0, new HazardInformation(), new StorageInformation(), null, null);
@@ -62,8 +61,8 @@ public class MaterialCompositionTest {
         Assert.assertEquals(1, entities.size());
 
         //Composition with two components
-        compo1.addComponent(struc1, 0d);
-        compo1.addComponent(struc2, 0d);
+        compo1.addComponent(struc1, 0d,null);
+        compo1.addComponent(struc2, 0d,null);
         entities = compo1.createCompositionEntities();
 
         Assert.assertEquals(3, entities.size());
@@ -112,13 +111,13 @@ public class MaterialCompositionTest {
     @Test
     public void test006_addComponent() {
         //Add biomaterial and structure to a extract
-        compo2.addComponent(struc1, 0d);
-        compo2.addComponent(bio1, 0d);
+        compo2.addComponent(struc1, 0d,null);
+        compo2.addComponent(bio1, 0d,null);
 
         //Add biomaterial and structure to a mixture -> should result in an error
-        compo1.addComponent(struc1, 0d);
+        compo1.addComponent(struc1, 0d,null);
         Assert.assertThrows(IllegalArgumentException.class, () -> {
-            compo1.addComponent(bio1, 0d);
+            compo1.addComponent(bio1, 0d,null);
         });
 
     }

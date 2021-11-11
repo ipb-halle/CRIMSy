@@ -154,20 +154,6 @@ public class StorageInformationBuilder {
     }
 
     /**
-     * Returns a css styleclass for a deactivated storage class. It will make
-     * the text in the comboBox invisible.
-     *
-     * @return
-     */
-    public String getStorageClassMenuStyleClass() {
-        if (!isStorageClassDisabled()) {
-            return "storageClassChoosable";
-        } else {
-            return "invisibleText storageClassChoosable";
-        }
-    }
-
-    /**
      * Disabled if : user has not edit rights, state is in history mode or
      * checkBox is not selected
      *
@@ -175,6 +161,10 @@ public class StorageInformationBuilder {
      */
     public boolean isStorageClassDisabled() {
         return !storageClassActivated || inHistoryMode || !accessRightToEdit;
+    }
+    
+    public boolean isStorageClassRendered(){
+        return storageClassActivated;
     }
 
     /**

@@ -149,20 +149,22 @@
 
             <b:panel
                 rendered="#{materialBean.isValideProjectChoosen()}"
-                styleClass="materialDetailPanel">
+                style="width: 100%">
                 <!-- Note: This tabView needs to be dynamic (= lazy loading via
                            AJAX) because some molecular structure plugins do not
                            load properly when they are in hidden tabs. -->
-                <p:tabView styleClass="itemEditTabView" dynamic="true">
+                <p:tabView styleClass="itemEditTabView" dynamic="true" style="width: 100%">
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/materialNames.xhtml"/>
                     </ui:insert>
-
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/indices.xhtml"/>
                     </ui:insert>
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/structures.xhtml"/>
+                    </ui:insert>
+                    <ui:insert> 
+                        <ui:include src="/WEB-INF/templates/material/components/sequences.xhtml"/>
                     </ui:insert>
                     <ui:insert> 
                         <ui:include src="/WEB-INF/templates/material/components/hazards.xhtml"/>

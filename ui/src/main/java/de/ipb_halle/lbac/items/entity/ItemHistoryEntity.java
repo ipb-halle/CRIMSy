@@ -23,6 +23,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
+
 /**
  *
  * @author fmauz
@@ -30,8 +32,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "items_history")
 public class ItemHistoryEntity implements Serializable {
-
     private static final long serialVersionUID = 1L;
+
+    @EmbeddedId
+    private HistoryEntityId id;
 
     @Column
     private String action;
@@ -53,9 +57,6 @@ public class ItemHistoryEntity implements Serializable {
 
     @Column
     private String description_old;
-
-    @EmbeddedId
-    private ItemHistoryId id;
 
     @Column
     private Integer owner_new;
@@ -123,7 +124,7 @@ public class ItemHistoryEntity implements Serializable {
         return description_old;
     }
 
-    public ItemHistoryId getId() {
+    public HistoryEntityId getId() {
         return id;
     }
 
@@ -187,7 +188,7 @@ public class ItemHistoryEntity implements Serializable {
         this.description_old = description_old;
     }
 
-    public void setId(ItemHistoryId id) {
+    public void setId(HistoryEntityId id) {
         this.id = id;
     }
 

@@ -34,6 +34,7 @@ import de.ipb_halle.lbac.material.common.bean.StorageInformationBuilder;
 import de.ipb_halle.lbac.material.common.history.MaterialIndexDifference;
 import de.ipb_halle.lbac.material.common.service.IndexService;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
+import de.ipb_halle.lbac.material.mocks.MateriaBeanMock;
 import de.ipb_halle.lbac.material.mocks.MessagePresenterMock;
 import de.ipb_halle.lbac.material.mocks.ProjectBeanMock;
 import de.ipb_halle.lbac.material.structure.Structure;
@@ -58,9 +59,9 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class HistoryOperationNameTest extends TestBase {
-
+    
     private static final long serialVersionUID = 1L;
-
+    
     @Inject
     private MaterialService materialService;
     List<MaterialName> names;
@@ -71,7 +72,7 @@ public class HistoryOperationNameTest extends TestBase {
     MaterialIndexDifference mid;
     MaterialNameBean mnb;
     Random random = new Random();
-
+    
     @Before
     public void init() {
         names = new ArrayList<>();
@@ -84,11 +85,12 @@ public class HistoryOperationNameTest extends TestBase {
         mnb.setNames(names);
         mid = new MaterialIndexDifference();
         mid.initialise(0, random.nextInt(100000), currentDate);
-
-        StorageInformationBuilder storageInfoBuilder = new StorageInformationBuilder(MessagePresenterMock.getInstance(), materialService);
-        instance = new HistoryOperation(mes, new ProjectBeanMock(), mnb, null, new StructureInformation(), storageInfoBuilder, null, new ArrayList<>());
+        MateriaBeanMock mock = new MateriaBeanMock();
+        mock.setMaterialNameBean(mnb);
+        mock.setMaterialEditState(mes);
+        instance = new HistoryOperation(mock);
     }
-
+    
     @Test
     public void test01_nameDifferenceOperations() {
 
@@ -110,17 +112,17 @@ public class HistoryOperationNameTest extends TestBase {
         mid.getLanguageOld().add(null);
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 1 - only 1 name must exist", 1, resultNames.size());
         Assert.assertEquals("Testcase 1 - Language must be de", "de", resultNames.get(0).getLanguage());
         Assert.assertEquals("Testcase 1 - Value must be A", "A", resultNames.get(0).getValue());
         Assert.assertEquals("Testcase 1 - Rank must be 0", (long) 0, (long) resultNames.get(0).getRank());
     }
-
+    
     @Test
     public void test02_nameDifferenceOperations() {
 
@@ -128,7 +130,7 @@ public class HistoryOperationNameTest extends TestBase {
         //Testcase 2: [B,en,0],[A,de,1] --> [A,de,0]
         mnb.getNames().add(new MaterialName("B", "en", 0));
         mnb.getNames().add(new MaterialName("A", "de", 1));
-
+        
         mid.getLanguageNew().add("en");
         mid.getLanguageNew().add("de");
         mid.getValuesNew().add("B");
@@ -143,18 +145,18 @@ public class HistoryOperationNameTest extends TestBase {
         mid.getLanguageOld().add(null);
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 2- only 1 name must exist", 1, resultNames.size());
         Assert.assertEquals("Testcase 2 - Language must be de", "de", resultNames.get(0).getLanguage());
         Assert.assertEquals("Testcase 2 - Value must be A", "A", resultNames.get(0).getValue());
         Assert.assertEquals("Testcase 2 - Rank must be 0", (long) 0, (long) resultNames.get(0).getRank());
-
+        
     }
-
+    
     @Test
     public void test03_nameDifferenceOperations() {
         //################
@@ -167,17 +169,17 @@ public class HistoryOperationNameTest extends TestBase {
         mid.getRankOld().add(0);
         mid.getLanguageOld().add("de");
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 3- only 1 name must exist", 1, resultNames.size());
         Assert.assertEquals("Testcase 3 - Language must be de", "de", resultNames.get(0).getLanguage());
         Assert.assertEquals("Testcase 3 - Value must be A", "A", resultNames.get(0).getValue());
         Assert.assertEquals("Testcase 3 - Rank must be 0", (long) 0, (long) resultNames.get(0).getRank());
     }
-
+    
     @Test
     public void test04_nameDifferenceOperations() {
         //################
@@ -196,20 +198,20 @@ public class HistoryOperationNameTest extends TestBase {
         mid.getRankOld().add(null);
         mid.getLanguageOld().add("de");
         mid.getLanguageOld().add(null);
-
+        
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 4- only 1 name must exist", 1, resultNames.size());
         Assert.assertEquals("Testcase 4 - Language must be de", "de", resultNames.get(0).getLanguage());
         Assert.assertEquals("Testcase 4 - Value must be A", "A", resultNames.get(0).getValue());
         Assert.assertEquals("Testcase 4 - Rank must be 0", (long) 0, (long) resultNames.get(0).getRank());
     }
-
+    
     @Test
     public void test05_nameDifferenceOperations() {
         //################
@@ -217,7 +219,7 @@ public class HistoryOperationNameTest extends TestBase {
         mnb.getNames().add(new MaterialName("A", "de", 0));
         mnb.getNames().add(new MaterialName("B", "en", 1));
         mnb.getNames().add(new MaterialName("C", "de", 2));
-
+        
         mid.getLanguageNew().add("de");
         mid.getLanguageNew().add("en");
         mid.getLanguageNew().add("de");
@@ -236,14 +238,14 @@ public class HistoryOperationNameTest extends TestBase {
         mid.getLanguageOld().add("en");
         mid.getLanguageOld().add("de");
         mid.getLanguageOld().add(null);
-
+        
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 5- only 2 names must exist", 2, resultNames.size());
         Assert.assertEquals("Testcase 5.1 - Language must be en", "en", resultNames.get(0).getLanguage());
@@ -253,38 +255,38 @@ public class HistoryOperationNameTest extends TestBase {
         Assert.assertEquals("Testcase 5.2 - Value must be A", "A", resultNames.get(1).getValue());
         Assert.assertEquals("Testcase 5.2 - Rank must be 1", (long) 1, (long) resultNames.get(1).getRank());
     }
-
+    
     @Test
     public void test06_nameDifferenceOperations() {
         //################
         //Testcase 6: [A,de,0],[B,de,1] --> [C,en,0],[D,de,1]
         mnb.getNames().add(new MaterialName("A", "de", 0));
         mnb.getNames().add(new MaterialName("B", "en", 1));
-
+        
         mid.getLanguageNew().add("de");
         mid.getLanguageNew().add("en");
-
+        
         mid.getValuesNew().add("A");
         mid.getValuesNew().add("B");
-
+        
         mid.getRankNew().add(0);
         mid.getRankNew().add(1);
-
+        
         mid.getValuesOld().add("C");
         mid.getValuesOld().add("D");
-
+        
         mid.getRankOld().add(0);
         mid.getRankOld().add(1);
-
+        
         mid.getLanguageOld().add("de");
         mid.getLanguageOld().add("en");
-
+        
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 6- only 2 names must exist", 2, resultNames.size());
         Assert.assertEquals("Testcase 6.1 - Language must be de", "de", resultNames.get(0).getLanguage());
@@ -294,38 +296,38 @@ public class HistoryOperationNameTest extends TestBase {
         Assert.assertEquals("Testcase 6.2 - Value must be D", "D", resultNames.get(1).getValue());
         Assert.assertEquals("Testcase 6.2 - Rank must be 1", (long) 1, (long) resultNames.get(1).getRank());
     }
-
+    
     @Test
     public void test07_nameDifferenceOperations() {
         //################
         //Testcase 7: [C,de,0],[A,de,1] --> [A,de,0],[C,de,1]
         mnb.getNames().add(new MaterialName("C", "de", 0));
         mnb.getNames().add(new MaterialName("A", "de", 1));
-
+        
         mid.getLanguageNew().add("de");
         mid.getLanguageNew().add("de");
-
+        
         mid.getValuesNew().add("A");
         mid.getValuesNew().add("C");
-
+        
         mid.getRankNew().add(1);
         mid.getRankNew().add(0);
-
+        
         mid.getValuesOld().add("C");
         mid.getValuesOld().add("A");
-
+        
         mid.getRankOld().add(1);
         mid.getRankOld().add(0);
-
+        
         mid.getLanguageOld().add("de");
         mid.getLanguageOld().add("de");
-
+        
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 7- only 2 names must exist", 2, resultNames.size());
         Assert.assertEquals("Testcase 7.1 - Language must be de", "de", resultNames.get(0).getLanguage());
@@ -335,44 +337,44 @@ public class HistoryOperationNameTest extends TestBase {
         Assert.assertEquals("Testcase 7.2 - Value must be C", "C", resultNames.get(1).getValue());
         Assert.assertEquals("Testcase 7.2 - Rank must be 1", (long) 1, (long) resultNames.get(1).getRank());
     }
-
+    
     @Test
     public void test08_nameDifferenceOperations() {
         //################
         //Testcase 8: [D,en,0] --> [A,de,0],[B,en,1],[C,de,2]
         mnb.getNames().add(new MaterialName("D", "en", 0));
-
+        
         mid.getLanguageNew().add("en");
         mid.getLanguageNew().add(null);
         mid.getLanguageNew().add(null);
-
+        
         mid.getValuesNew().add("D");
         mid.getValuesNew().add(null);
         mid.getValuesNew().add(null);
-
+        
         mid.getRankNew().add(0);
         mid.getRankNew().add(null);
         mid.getRankNew().add(null);
-
+        
         mid.getValuesOld().add("A");
         mid.getValuesOld().add("B");
         mid.getValuesOld().add("C");
-
+        
         mid.getRankOld().add(0);
         mid.getRankOld().add(1);
         mid.getRankOld().add(2);
-
+        
         mid.getLanguageOld().add("de");
         mid.getLanguageOld().add("en");
         mid.getLanguageOld().add("de");
-
+        
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 8- only 3 names must exist", 3, resultNames.size());
         Assert.assertEquals("Testcase 8.1 - Language must be de", "de", resultNames.get(0).getLanguage());
@@ -385,36 +387,36 @@ public class HistoryOperationNameTest extends TestBase {
         Assert.assertEquals("Testcase 8.3 - Value must be C", "C", resultNames.get(2).getValue());
         Assert.assertEquals("Testcase 8.3 - Rank must be 2", (long) 2, (long) resultNames.get(2).getRank());
     }
-
+    
     @Test
     public void test09_nameDifferenceOperations() {
         //################
         //Testcase 9: [A,de,0] --> [B,en,0],[A,de,1]
         mnb.getNames().add(new MaterialName("A", "de", 0));
-
+        
         mid.getLanguageNew().add("de");
         mid.getLanguageNew().add(null);
-
+        
         mid.getValuesNew().add("A");
         mid.getValuesNew().add(null);
-
+        
         mid.getRankNew().add(0);
         mid.getRankNew().add(null);
-
+        
         mid.getValuesOld().add("B");
         mid.getValuesOld().add("A");
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         mid.getRankOld().add(0);
         mid.getRankOld().add(1);
-
+        
         mid.getLanguageOld().add("en");
         mid.getLanguageOld().add("de");
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 8- only 2 names must exist", 2, resultNames.size());
         Assert.assertEquals("Testcase 8.1 - Language must be en", "en", resultNames.get(0).getLanguage());
@@ -424,45 +426,45 @@ public class HistoryOperationNameTest extends TestBase {
         Assert.assertEquals("Testcase 8.2 - Value must be A", "A", resultNames.get(1).getValue());
         Assert.assertEquals("Testcase 8.2 - Rank must be 1", (long) 1, (long) resultNames.get(1).getRank());
     }
-
+    
     @Test
     public void test10_nameDifferenceOperations() {
         //################
         //Testcase 10: [C,de,0],[B,en,1] --> [A,de,0],[B,en,1],[C,de,2]
         mnb.getNames().add(new MaterialName("C", "de", 0));
         mnb.getNames().add(new MaterialName("B", "en", 1));
-
+        
         mid.getLanguageNew().add("de");
         mid.getLanguageNew().add("en");
         mid.getLanguageNew().add(null);
-
+        
         mid.getValuesNew().add("C");
         mid.getValuesNew().add("B");
         mid.getValuesNew().add(null);
-
+        
         mid.getRankNew().add(0);
         mid.getRankNew().add(1);
         mid.getRankNew().add(null);
-
+        
         mid.getValuesOld().add("A");
         mid.getValuesOld().add("B");
         mid.getValuesOld().add("C");
-
+        
         mid.getRankOld().add(0);
         mid.getRankOld().add(1);
         mid.getRankOld().add(2);
-
+        
         mid.getLanguageOld().add("de");
         mid.getLanguageOld().add("en");
         mid.getLanguageOld().add("de");
-
+        
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
         mid.getTypeId().add(1);
-
+        
         s.getHistory().addDifference(mid);
         instance.applyNextNegativeDifference();
-
+        
         List<MaterialName> resultNames = mnb.getNames();
         Assert.assertEquals("Testcase 10- only 3 names must exist", 3, resultNames.size());
         Assert.assertEquals("Testcase 10.1 - Language must be de", "de", resultNames.get(0).getLanguage());
@@ -475,7 +477,7 @@ public class HistoryOperationNameTest extends TestBase {
         Assert.assertEquals("Testcase 10.3 - Value must be C", "C", resultNames.get(2).getValue());
         Assert.assertEquals("Testcase 10.3 - Rank must be 2", (long) 2, (long) resultNames.get(2).getRank());
     }
-
+    
     @Deployment
     public static WebArchive createDeployment() {
         WebArchive deployment

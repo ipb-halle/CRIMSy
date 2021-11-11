@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.plugin.imageAnnotation;
+package de.ipb_halle.lbac.util;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;

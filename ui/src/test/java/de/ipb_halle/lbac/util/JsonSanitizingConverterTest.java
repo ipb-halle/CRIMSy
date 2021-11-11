@@ -15,7 +15,7 @@
  * limitations under the License.
  *
  */
-package de.ipb_halle.lbac.plugin.imageAnnotation;
+package de.ipb_halle.lbac.util;
 
 import static org.junit.Assert.*;
 
@@ -51,8 +51,8 @@ public class JsonSanitizingConverterTest {
 
         /*
          * We could repeat the tests from
-         * https://github.com/OWASP/json-sanitizer/blob/master/src/test/java/com
-         * /google/json/JsonSanitizerTest.java here ...
+         * https://github.com/OWASP/json-sanitizer/blob/master/src/test/java/com/google/json/JsonSanitizerTest.java
+         * here ...
          */
         assertEquals("[1,null,3]",
                 converter.getAsObject(context, component, "[1,,3,]"));

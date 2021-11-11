@@ -32,13 +32,14 @@ import de.ipb_halle.lbac.material.common.StorageInformation;
 import de.ipb_halle.lbac.material.common.StorageCondition;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionEntity;
 import de.ipb_halle.lbac.material.composition.MaterialCompositionId;
+import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.Searchable;
+import de.ipb_halle.lbac.search.bean.Type;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,7 +66,7 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
     protected InputConverter vFilter;
 
     public Material(
-            int id,
+            Integer id,
             List<MaterialName> names,
             Integer projectId,
             HazardInformation hazards,
@@ -239,8 +240,14 @@ public abstract class Material extends ACObject implements DTO, Serializable, Se
 
     public List<MaterialCompositionEntity> createCompositionEntities() {
         return Arrays.asList(new MaterialCompositionEntity()
-                        .setId(new MaterialCompositionId(id, id))
-                        .setConcentration(1d)
+                .setId(new MaterialCompositionId(id, id))
+                .setConcentration(1d)
         );
-    }       
+    }
+
+    @Override
+    public Type getTypeToDisplay() {
+        return new Type(SearchTarget.MATERIAL, type);
+    }
+
 }

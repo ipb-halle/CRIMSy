@@ -1,0 +1,15 @@
+{
+  "isProtein": true,
+  "proteinSequence": "MKIRQHHFVADEGFW",
+  "circular": false,
+  "features": {
+    "feature_1": {
+      "start": 6,
+      "end": 35,
+      "forward": true,
+      "type": "misc_structure",
+      "name": "alpha helix",
+      "color": "#B3FF00"
+    }
+  }
+}

@@ -22,9 +22,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <h:head>
         <title>CRIMSy</title>
@@ -44,15 +42,15 @@
         <h:outputStylesheet name="css/itemOverview.css"/>
         <h:outputStylesheet name="css/materialsOverview.css"/>
         <h:outputStylesheet name="css/collections.css"/>
+        <h:outputStylesheet name="css/materialEdit.css"/>
+
 
 
 
         <h:outputScript name="fine-uploader/jquery.fine-uploader.js" target="body" position="last"/>
         <h:outputScript name="js/lbac_fineUploaderMulti.js" target="body" position="last"/>
         <h:outputScript name="js/lbac_helper.js"/>
-        <h:outputScript name="js/colorCloudTerms.js"/>
-
-        <h:outputScript name="js/panelManager.js"/>
+        <h:outputScript name="js/colorCloudTerms.js"/>      
 
     </h:head>
     <h:body>
@@ -75,9 +73,9 @@
         </ui:insert>
 
         <b:container class="simplesearch">
-                <ui:insert name="content">
-                    <ui:include src="#{navigator.nextPage}"/>
-                </ui:insert>
+            <ui:insert name="content">
+                <ui:include src="#{navigator.nextPage}"/>
+            </ui:insert>
 
         </b:container>
         <ui:insert name="footer">

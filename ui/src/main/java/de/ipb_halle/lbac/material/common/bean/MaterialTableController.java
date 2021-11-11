@@ -35,6 +35,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaterialTableController implements TableController {
 
+    private static final long serialVersionUID = 1L;
+
     private String noMaterialsFoundPattern = "No materials with active filters found";
     private String MaterialsFoundPattern = "%d - %d of %d items shown";
     private MaterialService materialService;

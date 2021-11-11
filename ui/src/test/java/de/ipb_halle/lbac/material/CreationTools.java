@@ -90,7 +90,7 @@ public class CreationTools {
                 projectId,
                 hazards,
                 storage,
-                new Molecule("xcy", 1));
+                new Molecule("xcy", (int)(Math.random()*10000000)));
 
         s.setCreationTime(new Date());
         return s;

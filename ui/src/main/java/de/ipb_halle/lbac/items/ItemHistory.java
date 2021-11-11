@@ -22,7 +22,7 @@ import de.ipb_halle.lbac.container.Container;
 import de.ipb_halle.lbac.entity.DTO;
 import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.items.entity.ItemHistoryEntity;
-import de.ipb_halle.lbac.items.entity.ItemHistoryId;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.project.Project;
 import java.util.Date;
 
@@ -114,7 +114,7 @@ public class ItemHistory implements DTO, ItemDifference {
     @Override
     public ItemHistoryEntity createEntity() {
         ItemHistoryEntity entity = new ItemHistoryEntity();
-        entity.setId(new ItemHistoryId(item.getId(), actor.getId(), mdate));
+        entity.setId(new HistoryEntityId(item.getId(), mdate, actor.getId()));
         entity.setAction(action);
         entity.setAmount_new(amountNew);
         entity.setAmount_old(amountOld);

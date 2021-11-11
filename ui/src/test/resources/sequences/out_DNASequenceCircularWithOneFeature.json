@@ -1,0 +1,14 @@
+{
+  "features": {
+    "feature_1": {
+      "start": 3,
+      "end": 8,
+      "forward": true,
+      "type": "tag",
+      "name": "My Feature ABCDEF",
+      "color": "#E419DA"
+    }
+  },
+  "sequence": "ATGGGCATCTGA",
+  "circular": true
+}

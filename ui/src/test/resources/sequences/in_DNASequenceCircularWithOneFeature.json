@@ -1,0 +1,43 @@
+{
+  "primers": {},
+  "features": {
+    "61260d004a64b96fafe6f34c": {
+      "start": 3,
+      "end": 8,
+      "cursorAtEnd": true,
+      "id": "61260d004a64b96fafe6f34c",
+      "forward": true,
+      "type": "tag",
+      "name": "My Feature ABCDEF",
+      "strand": 1,
+      "notes": {},
+      "color": "#E419DA",
+      "annotationTypePlural": "features",
+      "startAngle": 1.5707963267948966,
+      "endAngle": 4.71237898038469,
+      "totalAngle": 3.141582653589793,
+      "centerAngle": 3.141592653589793,
+      "yOffset": 0
+    }
+  },
+  "parts": {},
+  "sequence": "ATGGGCATCTGA",
+  "translations": {},
+  "size": 12,
+  "circular": true,
+  "materiallyAvailable": true,
+  "name": "Untitled Sequence",
+  "description": "",
+  "fromFileUpload": false,
+  "stateTrackingId": "intPEaStD",
+  "filteredParts": {},
+  "filteredFeatures": {},
+  "cutsites": {},
+  "orfs": {},
+  "proteinSequence": "",
+  "proteinSize": 0,
+  "warnings": {},
+  "assemblyPieces": {},
+  "lineageAnnotations": {},
+  "guides": {}
+}

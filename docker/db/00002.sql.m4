@@ -18,17 +18,56 @@ include(dist/etc/config_m4.inc)dnl
  *
  */
 
-CREATE TABLE material_compositions(
-    materialid  INTEGER NOT NULL REFERENCES materials (materialid),
-    componentid INTEGER NOT NULL REFERENCES materials (materialid),
-	concentration FLOAT NOT NULL DEFAULT 0,
-    PRIMARY KEY (materialid, componentid)
-);
+\connect lbac 
+\connect - lbac
+\set LBAC_SCHEMA_VERSION '\'00002\''
+
+BEGIN TRANSACTION;
+
+UPDATE lbac.info SET value=:LBAC_SCHEMA_VERSION WHERE key='DBSchema Version';
 
 CREATE TABLE compositions(
     materialid  INTEGER NOT NULL PRIMARY KEY REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
     type VARCHAR NOT NULL
 );
 
+CREATE TABLE material_compositions(
+    materialid  INTEGER NOT NULL REFERENCES materials (materialid),
+    componentid INTEGER NOT NULL REFERENCES materials (materialid),
+	concentration FLOAT,
+	unit VARCHAR,
+    PRIMARY KEY (materialid, componentid)
+);
+
 INSERT INTO materialdetailtypes(id,name) VALUES(7,'COMPOSITION');
 
+CREATE TABLE components_history(
+    id SERIAL NOT NULL PRIMARY KEY,
+    materialid INTEGER NOT NULL REFERENCES materials(materialid),
+    mdate TIMESTAMP NOT NULL,
+    actorId INTEGER NOT NULL REFERENCES usersgroups(id),
+    digest VARCHAR,
+    action VARCHAR NOT NULL,
+    materialid_old INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE, 
+    materialid_new INTEGER REFERENCES materials (materialid) ON UPDATE CASCADE ON DELETE CASCADE,
+    concentration_old FLOAT,
+    concentration_new FLOAT,
+    unit_old VARCHAR,
+    unit_new VARCHAR
+);
+
+ALTER TABLE structures_hist RENAME COLUMN mtime TO mdate;
+ALTER TABLE materials_hist RENAME COLUMN materialid TO id;
+ALTER TABLE storages_hist RENAME COLUMN materialid TO id;
+ALTER TABLE items_history RENAME COLUMN itemid TO id;
+ALTER TABLE taxonomy_history RENAME COLUMN taxonomyid TO id;
+ALTER TABLE biomaterial_history RENAME COLUMN mtime TO mdate;
+
+ALTER TABLE structures_hist DROP CONSTRAINT structures_hist_pkey;
+ALTER TABLE structures_hist ADD PRIMARY KEY (id,actorid,mdate);
+ALTER TABLE materials_hist DROP CONSTRAINT materials_hist_pkey;
+ALTER TABLE materials_hist ADD PRIMARY KEY (id,actorid,mdate);
+ALTER TABLE storages_hist DROP CONSTRAINT storages_hist_pkey;
+ALTER TABLE storages_hist ADD PRIMARY KEY (id,actorid,mdate);
+
+COMMIT TRANSACTION;

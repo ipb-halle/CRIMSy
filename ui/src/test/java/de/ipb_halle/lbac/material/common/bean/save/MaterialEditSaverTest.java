@@ -109,7 +109,7 @@ public class MaterialEditSaverTest extends TestBase {
         mOld.getStorageInformation().setStorageClass(new StorageClass(1, "storageClass-1"));
       
       
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(materialService.getEm()));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
     }
 
     @After
@@ -148,7 +148,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 001 - Third new condition must be keep cool", (Integer) StorageCondition.keepCool.getId(), newStorageConditions.get(2));
 
         // Check the history of the storage classes 
-        List<Object[]> storageClassHist = (List) entityManagerService.doSqlQuery("select description_old,description_new,storageclass_old, storageclass_new from storages_hist where materialid=" + mNew.getId());
+        List<Object[]> storageClassHist = (List) entityManagerService.doSqlQuery("select description_old,description_new,storageclass_old, storageclass_new from storages_hist where id=" + mNew.getId());
         Assert.assertTrue("Testcase 001 - history of storageclass must not be empty", !storageClassHist.isEmpty());
         Assert.assertNull("Testcase 001 - old remarks of storage class must be null", storageClassHist.get(0)[0]);
         Assert.assertEquals("Testcase 001 - new remarks of storage class must be 'new storage remarks'", "new storage remarks", storageClassHist.get(0)[1]);
@@ -187,7 +187,7 @@ public class MaterialEditSaverTest extends TestBase {
         Assert.assertEquals("Testcase 002 - Second new condition must be acid sensitive", (Integer) StorageCondition.acidSensitive.getId(), newStorageConditions.get(1));
 
         // Check the history of the storage classes 
-        List<Object[]> storageClassHist = (List) entityManagerService.doSqlQuery("select description_old,description_new,storageclass_old, storageclass_new from storages_hist where materialid=" + mNew.getId());
+        List<Object[]> storageClassHist = (List) entityManagerService.doSqlQuery("select description_old,description_new,storageclass_old, storageclass_new from storages_hist where id=" + mNew.getId());
         Assert.assertTrue("Testcase 002 - history of storageclass must  be empty", storageClassHist.isEmpty());
 
         // Check the history of the storage conditions

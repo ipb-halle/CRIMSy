@@ -48,15 +48,12 @@ import de.ipb_halle.lbac.file.FileEntityService;
 import de.ipb_halle.lbac.items.Item;
 import de.ipb_halle.lbac.items.ItemDeployment;
 import de.ipb_halle.lbac.items.search.ItemSearchRequestBuilder;
-import de.ipb_halle.lbac.material.CreationTools;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.HazardInformation;
-import de.ipb_halle.lbac.material.mocks.StructureInformationSaverMock;
-import de.ipb_halle.lbac.material.structure.Structure;
 
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageInformation;
@@ -73,7 +70,6 @@ import de.ipb_halle.lbac.search.document.DocumentSearchService;
 import de.ipb_halle.lbac.search.termvector.TermVectorEntityService;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -91,7 +87,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -268,7 +263,8 @@ public class SearchServiceTest extends TestBase {
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setUserName(publicUser.getName());
         request = builder.build();
-        Assert.assertEquals(4, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        List<NetObject> results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
+        Assert.assertEquals(3, results.size());
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.addMaterialType(MaterialType.STRUCTURE);
@@ -285,17 +281,16 @@ public class SearchServiceTest extends TestBase {
                 Arrays.asList(new MaterialName("composition-1", "de", 0)),
                 project1.getId(),
                 new HazardInformation(),
-
                 new StorageInformation(), CompositionType.EXTRACT);
-        composition.addComponent(materialService.loadMaterialById(materialid1), 0d);
-        composition.addComponent(materialService.loadMaterialById(materialid2), 0d);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0d,null);
+        composition.addComponent(materialService.loadMaterialById(materialid2), 0d,null);
         materialService.saveMaterialToDB(composition, project1.getACList().getId(), new HashMap<>(), publicUser);
-
 
         builder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
         builder.setStructure("CC");
         request = builder.build();
-        Assert.assertEquals(1, searchService.search(Arrays.asList(request), localNode).getAllFoundObjects().size());
+        results = searchService.search(Arrays.asList(request), localNode).getAllFoundObjects();
+        Assert.assertEquals(2, results.size());
 
     }
 
@@ -455,31 +450,49 @@ public class SearchServiceTest extends TestBase {
         deleteDocuments();
     }
 
-    @Ignore("Test deactivated for the time being until materialcomposition can be created ")
     @Test
-    public void test011_searchForStructureInCompositionByTaxonomy() {
+    public void test011_searchForEmptyComposition() {
         cleanItemsFromDb();
         cleanMaterialsFromDB();
-        createTaxonomyTreeInDB(publicAclId, publicUser.getId());
-        creationTools = new CreationTools("", "", "", memberService, projectService);
 
-        BioMaterial bio = creationTools.createBioMaterial(project1, "BioMat-001", taxonomyService.loadTaxonomyById(4), null);
-        Structure structure = creationTools.createStructure(project1);
-        structure.setMolecule(null);
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
-        materialService.saveMaterialToDB(structure, publicAclId, new HashMap<>(), publicUser);
+        //Create a Composition with readable and one without readable ACL
+        MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.MIXTURE);
+        composition.getNames().add(new MaterialName("Composition X", "de", 0));
+        MaterialComposition composition2 = new MaterialComposition(null, project1.getId(), CompositionType.MIXTURE);
+        composition.getNames().add(new MaterialName("Composition Y", "de", 0));
+        materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), adminUser);
+        materialService.saveMaterialToDB(composition2, context.getAdminOnlyACL().getId(), new HashMap<>(), adminUser);
 
-        MaterialComposition composition = new MaterialComposition(expid1, new ArrayList<>(), project1.getId(), new HazardInformation(), new StorageInformation(), CompositionType.EXTRACT);
-        composition.addComponent(bio, 0d);
-        composition.addComponent(structure, 0d);
+        MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.setMaterialName("Composition");
+        SearchResult result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
+        Assert.assertEquals(1, result.getAllFoundObjects().size());
+    }
+
+    @Test
+    public void test012_searchForComposition() {
+        MaterialComposition composition = new MaterialComposition(null, project1.getId(), CompositionType.EXTRACT);
+        composition.addComponent(materialService.loadMaterialById(materialid1), 0.1d,null);
+        composition.addComponent(materialService.loadMaterialById(notReadableMaterialId), 0.2d,null);
+        composition.addComponent(bioMaterial, 0.3d,null);
+
         materialService.saveMaterialToDB(composition, publicAclId, new HashMap<>(), publicUser);
 
         MaterialSearchRequestBuilder matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
-        matRequestbuilder.addMaterialType(MaterialType.BIOMATERIAL);
-        matRequestbuilder.setMaterialName("Champignion");
+        matRequestbuilder.setMaterialName("Testmaterial-001");
+        SearchResult result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
+        Assert.assertEquals(2, result.getAllFoundObjects().size());
 
-        SearchResult result = searchService.search(Arrays.asList(matRequestbuilder.build()), localNode);
-        Assert.assertEquals(1, result.getAllFoundObjects().size());
+        matRequestbuilder = new MaterialSearchRequestBuilder(publicUser, 0, 25);
+        matRequestbuilder.setMaterialName("notReadable");
+        result = searchService.search(
+                Arrays.asList(matRequestbuilder.build()),
+                localNode);
+        Assert.assertEquals(0, result.getAllFoundObjects().size());
 
     }
 

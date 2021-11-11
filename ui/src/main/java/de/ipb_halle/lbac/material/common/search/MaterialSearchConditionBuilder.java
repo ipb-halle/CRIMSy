@@ -18,13 +18,13 @@
 package de.ipb_halle.lbac.material.common.search;
 
 import de.ipb_halle.lbac.admission.ACPermission;
-import de.ipb_halle.lbac.admission.User;
+import de.ipb_halle.lbac.items.service.ItemEntityGraphBuilder;
 import de.ipb_halle.lbac.material.MaterialType;
 import de.ipb_halle.lbac.material.common.entity.index.IndexTypeEntity;
+import de.ipb_halle.lbac.material.common.service.MaterialEntityGraphBuilder;
 import de.ipb_halle.lbac.search.SearchCategory;
 import de.ipb_halle.lbac.search.SearchConditionBuilder;
 import de.ipb_halle.lbac.search.SearchRequest;
-import de.ipb_halle.lbac.search.SearchTarget;
 import de.ipb_halle.lbac.search.lang.AttributeType;
 import de.ipb_halle.lbac.search.lang.Condition;
 import de.ipb_halle.lbac.search.lang.EntityGraph;
@@ -32,7 +32,6 @@ import de.ipb_halle.lbac.search.lang.Operator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -70,20 +69,22 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
      * @param isName limit search to names (true; SearchCategory=NAME), indices
      * (false; SearchCategory=INDEX) or not at all (SearchCategory=TEXT) (null)
      */
-    private void addIndexCondition(String pathPrefix, List<Condition> conditionList, Set<String> values, Boolean isName) {
+    private Condition createIndexCondition(String pathPrefix, List<Condition> conditionList, Set<String> values, Boolean isName) {
         if (isName != null) {
             Condition typeCondition = getBinaryLeafCondition(
                     isName ? Operator.EQUAL : Operator.NOT_EQUAL,
                     IndexTypeEntity.INDEX_TYPE_NAME,
                     rootGraphName + pathPrefix + "/material_indices",
                     AttributeType.INDEX_TYPE);
-            conditionList.add(new Condition(
+            Condition con = new Condition(
                     Operator.AND,
                     getIndexCondition(pathPrefix, values, false),
-                    typeCondition));
-            return;
+                    typeCondition);
+
+            return con;
         }
-        conditionList.add(getIndexCondition(pathPrefix, values, true));
+        Condition con = getIndexCondition(pathPrefix, values, true);
+        return con;
     }
 
     /**
@@ -137,7 +138,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                rootGraphName + "/USERSGROUPS",
+                rootGraphName + "/material_compositions/componentMaterials/USERSGROUPS",
                 AttributeType.MEMBER_NAME);
         conditionList.add(con);
     }
@@ -149,7 +150,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         Condition con = getBinaryLeafCondition(
                 Operator.ILIKE,
                 "%" + values.iterator().next() + "%",
-                rootGraphName + "/projects",
+                rootGraphName + "/material_compositions/componentMaterials/projects",
                 AttributeType.PROJECT_NAME);
         conditionList.add(con);
     }
@@ -161,13 +162,14 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         conditionList.add(getBinaryLeafCondition(
                 Operator.SUBSTRUCTURE,
                 values.iterator().next(),
-                rootGraphName + "/material_compositions/materials/structures/molecules",
+                rootGraphName + "/material_compositions/componentMaterials/structures/molecules",
                 AttributeType.MOLECULE));
     }
 
     @Override
     public Condition convertRequestToCondition(SearchRequest request, ACPermission... perm) {
         List<Condition> conditionList = getMaterialCondition(request, true);
+
         return addACL(conditionList, rootGraphName, request.getUser(), perm);
     }
 
@@ -199,12 +201,10 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
         for (SearchCategory key : request.getSearchValues().keySet()) {
             switch (key) {
                 case DEACTIVATED:
-                    addDeactivatedCondition("", conditionList, request.getSearchValues().get(key).getValues());
-                    addDeactivatedCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues());
+                    addDeactivatedCondition("/material_compositions/componentMaterials", conditionList, request.getSearchValues().get(key).getValues());
                     break;
                 case INDEX:
-                    addIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE);
-                    addIndexCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE);
+                    conditionList.add(createIndexCondition("/material_compositions/componentMaterials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.FALSE));
                     break;
                 case LABEL:
                     if (toplevel) {
@@ -213,8 +213,8 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     }
                     break;
                 case NAME:
-                    addIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE);
-                    addIndexCondition("/material_compositions/materials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE);
+                    Condition c2 = createIndexCondition("/material_compositions/componentMaterials", conditionList, request.getSearchValues().get(key).getValues(), Boolean.TRUE);
+                    conditionList.add(c2);
                     break;
                 case PROJECT:
                     if (toplevel) {
@@ -226,7 +226,7 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     break;
                 case TEXT:
                     if (toplevel) {
-                        addIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), null);
+                        conditionList.add(createIndexCondition("", conditionList, request.getSearchValues().get(key).getValues(), null));
                     }
                     break;
                 case TYPE:
@@ -239,7 +239,25 @@ public class MaterialSearchConditionBuilder extends SearchConditionBuilder {
                     break;
             }
         }
+        if (toplevel) {
+            addComponentACL(request);
+        }
         return conditionList;
+    }
+
+    private void addComponentACL(SearchRequest request) {
+        String graphPathOfComponentSubGraph = String.join(
+                "/",
+                rootGraphName,
+                "material_compositions",
+                MaterialEntityGraphBuilder.COMPONENT_MATERIAL_SUBGRAPHNAME);
+
+        EntityGraph materialSubGraph = entityGraph.selectSubGraph(graphPathOfComponentSubGraph);
+
+        addSubGraphACL(materialSubGraph,
+                MaterialEntityGraphBuilder.COMPONENT_MATERIAL_SUBGRAPHNAME,
+                request.getUser());
+
     }
 
     private Set<Integer> getIdsFromMaterialTypes(MaterialType... types) {

@@ -23,6 +23,7 @@ import de.ipb_halle.lbac.material.biomaterial.BioMaterial;
 import de.ipb_halle.lbac.material.biomaterial.BioMaterialDifference;
 import de.ipb_halle.lbac.material.common.service.MaterialService;
 import de.ipb_halle.lbac.material.structure.Molecule;
+import de.ipb_halle.lbac.material.common.history.HistoryEntityId;
 import de.ipb_halle.lbac.material.common.history.MaterialComparator;
 import de.ipb_halle.lbac.material.common.history.MaterialDifference;
 import de.ipb_halle.lbac.material.common.history.MaterialHazardDifference;
@@ -35,23 +36,22 @@ import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialHistEntity
 import de.ipb_halle.lbac.material.common.entity.hazard.HazardsMaterialsEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.MaterialHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.MaterialHistoryId;
 import de.ipb_halle.lbac.material.common.entity.index.MaterialIndexHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryEntity;
-import de.ipb_halle.lbac.material.common.entity.storage.StorageClassHistoryId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionHistoryEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionMaterialEntity;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageConditionStorageId;
 import de.ipb_halle.lbac.material.common.entity.storage.StorageEntity;
 import de.ipb_halle.lbac.material.structure.StructureEntity;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntity;
-import de.ipb_halle.lbac.material.biomaterial.TaxonomyHistEntityId;
 import de.ipb_halle.lbac.material.structure.Structure;
 import de.ipb_halle.lbac.material.biomaterial.Taxonomy;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyNestingService;
 import de.ipb_halle.lbac.material.common.IndexEntry;
 import de.ipb_halle.lbac.material.common.MaterialName;
 import de.ipb_halle.lbac.material.common.StorageCondition;
+import de.ipb_halle.lbac.material.composition.CompositionDifference;
+import de.ipb_halle.lbac.material.composition.CompositionHistoryEntity;
 import de.ipb_halle.lbac.material.structure.StructureInformationSaver;
 import java.io.Serializable;
 import java.util.List;
@@ -107,7 +107,7 @@ public class MaterialEditSaver implements Serializable {
             TaxonomyNestingService taxonomyNestingService) {
         this.materialService = materialService;
         this.taxonomyNestingService = taxonomyNestingService;
-        this.structureSaver = new StructureInformationSaver(materialService.getEm());
+        this.structureSaver = new StructureInformationSaver();
     }
 
     /**
@@ -129,7 +129,7 @@ public class MaterialEditSaver implements Serializable {
             if (diff != null) {
                 TaxonomyHistEntity the = new TaxonomyHistEntity();
                 the.setAction("EDIT");
-                the.setId(new TaxonomyHistEntityId(oldMaterial.getId(), diff.getModificationDate(), actorId));
+                the.setId(new HistoryEntityId(oldMaterial.getId(), diff.getModificationDate(), actorId));
                 if (diff.isHierarchyChanged()) {
                     updateEffectiveTaxonomy(diff);
                     the.setParentid_new(diff.getNewHierarchy().get(0));
@@ -196,8 +196,7 @@ public class MaterialEditSaver implements Serializable {
     protected void saveStorageHistoryEntries(MaterialStorageDifference diff) {
         if (diff.storageClassDiffFound()) {
             StorageClassHistoryEntity storageClassEntity = new StorageClassHistoryEntity();
-            storageClassEntity.setActorid(actorId);
-            storageClassEntity.setId(new StorageClassHistoryId(diff.getMaterialID(), diff.getModificationDate()));
+            storageClassEntity.setId(new HistoryEntityId(diff.getMaterialID(), diff.getModificationDate(), actorId));
             storageClassEntity.setStorageclass_new(diff.getStorageclassNew());
             storageClassEntity.setStorageclass_old(diff.getStorageclassOld());
             storageClassEntity.setDescription_new(diff.getDescriptionNew());
@@ -251,7 +250,7 @@ public class MaterialEditSaver implements Serializable {
             Molecule oldMol = strucDiff.getMoleculeId_old();
             if (!(oldMol == null && newMol == null)) {
                 if (newMol != null) {
-                    newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel()));
+                    newMol.setId(structureSaver.saveMolecule(newMol.getStructureModel(), materialService.getEm()));
                 }
             }
             saveMaterialStrcutureDifferences(strucDiff);
@@ -287,6 +286,16 @@ public class MaterialEditSaver implements Serializable {
         }
     }
 
+    public void saveComponentDifferences() {
+        CompositionDifference diff = comparator.getDifferenceOfType(diffs, CompositionDifference.class);
+        if (diff != null) {
+            for (CompositionHistoryEntity entity : diff.createEntity()) {
+                materialService.getEm().merge(entity);
+            }
+
+        }
+    }
+
     protected void updateBioMaterialOverview() {
         BioMaterial b = (BioMaterial) newMaterial;
         materialService.getEm().merge(b.createEntity());
@@ -302,8 +311,7 @@ public class MaterialEditSaver implements Serializable {
         }
 
         entity.setAction(diff.getAction().toString());
-        entity.setActorid(diff.getActorID());
-        entity.setId(new MaterialHistoryId(diff.getMaterialID(), diff.getmDate()));
+        entity.setId(new HistoryEntityId(diff.getMaterialID(), diff.getmDate(), diff.getActorID()));
         entity.setOwnerid_new(diff.getOwnerIdNew());
         entity.setOwnerid_old(diff.getOwnerIdOld());
         entity.setProjectid_new(diff.getProjectIdNew());
