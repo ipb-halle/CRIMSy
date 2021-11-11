@@ -35,6 +35,9 @@ public class StructureInformationSaverMock extends StructureInformationSaver {
     protected String SQL_INSERT_MOLECULE = "INSERT INTO molecules (id,molecule) VALUES(?,?)";
     private int molId = 0;
 
+    
+    
+    
     @Override
     public void saveMaterial(Material m, EntityManager em) {
         molId=(int)(Math.random()*100000000);

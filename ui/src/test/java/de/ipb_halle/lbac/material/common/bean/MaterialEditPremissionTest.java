@@ -72,7 +72,7 @@ public class MaterialEditPremissionTest extends TestBase {
 
     @Before
     public void init() {
-        materialService.setStructureInformationSaver(new StructureInformationSaverMock(em));
+        materialService.setStructureInformationSaver(new StructureInformationSaverMock());
         publicUser = memberService.loadUserById(GlobalAdmissionContext.PUBLIC_ACCOUNT_ID);
         materialBean = new MateriaBeanMock();
         materialBean.setAcListService(aclistService);
