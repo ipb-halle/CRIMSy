@@ -77,7 +77,7 @@ public class MaterialEditPremissionTest extends TestBase {
         materialBean = new MateriaBeanMock();
         materialBean.setAcListService(aclistService);
         materialBean.setHazardService(hazardService);
-        materialBean.setMessagePresenter(new MessagePresenterMock());
+        materialBean.setMessagePresenter(MessagePresenterMock.getInstance());
         permissionBean = new MaterialEditPermission(materialBean);
         materialBean.setMode(MaterialBean.Mode.CREATE);
         userBean = new UserBeanMock();
