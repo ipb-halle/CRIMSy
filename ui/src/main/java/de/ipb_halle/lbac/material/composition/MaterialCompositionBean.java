@@ -275,6 +275,17 @@ public class MaterialCompositionBean implements Serializable {
 
     }
 
+    /**
+     * Returns an empty String if the id is -1 (Inaccessible material).
+     * Otherwise return the id of the material
+     *
+     * @param c
+     * @return
+     */
+    public String getFormatedIdOfConcentration(Concentration c) {
+        return c.getMaterialId() == -1 ? "" : String.format("%d", c.getMaterialId());
+    }
+
     public boolean isCompositionTypeEditable() {
         return mode == Mode.CREATE;
     }

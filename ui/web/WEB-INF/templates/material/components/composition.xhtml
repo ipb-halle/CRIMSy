@@ -172,9 +172,9 @@
                                     var="concentration"
                                     saveState="false"
                                     paginated="true">
-                                    <b:dataTableColumn
+                                    <b:dataTableColumn                                        
                                         label="#{msgs.materialCreation_composition_concentrationsID}"
-                                        value="#{concentration.getMaterialId()}">
+                                        value="#{materialCompositionBean.getFormatedIdOfConcentration(concentration)}">
                                     </b:dataTableColumn>
                                     <b:dataTableColumn
                                         label="#{msgs.materialCreation_composition_concentrationsName}"
