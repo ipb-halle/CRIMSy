@@ -19,6 +19,8 @@ package de.ipb_halle.lbac.material.sequence;
 
 import javax.persistence.EntityManager;
 
+import de.ipb_halle.lbac.admission.ACListService;
+import de.ipb_halle.lbac.admission.User;
 import de.ipb_halle.lbac.material.biomaterial.TaxonomyService;
 import de.ipb_halle.lbac.material.biomaterial.TissueService;
 import de.ipb_halle.lbac.material.common.entity.MaterialEntity;
@@ -33,11 +35,14 @@ public class SequenceLoader implements MaterialLoader {
     private static final long serialVersionUID = 1L;
 
     @Override
-    public Sequence loadMaterial(MaterialEntity materialEntity, EntityManager em,
-            MaterialService materialService, TaxonomyService taxoService,
-            TissueService tissueService) {
-        SequenceEntity sequenceEntity = em.find(SequenceEntity.class,
-                materialEntity.getMaterialid());
+    public Sequence loadMaterial(
+            MaterialEntity materialEntity,
+            EntityManager em, MaterialService materialService,
+            TaxonomyService taxoService,
+            TissueService tissueService,
+            ACListService aclistService,
+            User currentUser) {
+        SequenceEntity sequenceEntity = em.find(SequenceEntity.class, materialEntity.getMaterialid());
         return Sequence.fromEntities(materialEntity, sequenceEntity);
     }
 }
